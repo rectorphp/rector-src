@@ -16,6 +16,7 @@ use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -31,9 +32,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->staticTypeMapper = $this->getService(StaticTypeMapper::class);
     }
 
-    /**
-     * @dataProvider provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType()
-     */
+    #[DataProvider('provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType()')]
     public function testMapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, string $expectedType): void
     {
         $string = new String_('hey');
@@ -43,7 +42,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
-    public function provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType(): Iterator
+    public static function provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType(): Iterator
     {
         $genericTypeNode = new GenericTypeNode(new IdentifierTypeNode('Traversable'), []);
         yield [$genericTypeNode, GenericObjectType::class];
@@ -84,8 +83,8 @@ final class StaticTypeMapperTest extends AbstractTestCase
 
     /**
      * @param class-string $expectedType
-     * @dataProvider provideDataForMapPhpParserNodePHPStanType()
      */
+    #[DataProvider('provideDataForMapPhpParserNodePHPStanType()')]
     public function testMapPhpParserNodePHPStanType(Node $node, string $expectedType): void
     {
         $phpStanType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);
@@ -95,7 +94,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
     /**
      * @return Iterator<class-string<IterableType>[]|Identifier[]>
      */
-    public function provideDataForMapPhpParserNodePHPStanType(): Iterator
+    public static function provideDataForMapPhpParserNodePHPStanType(): Iterator
     {
         yield [new Identifier('iterable'), IterableType::class];
     }

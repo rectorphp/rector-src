@@ -7,6 +7,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Iterator;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -39,9 +40,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
         $this->nodeNameResolver = $this->getService(NodeNameResolver::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function testResolvesClass(string $filePath): void
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
@@ -71,7 +70,7 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
         }
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }

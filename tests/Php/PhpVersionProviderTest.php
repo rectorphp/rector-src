@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Php;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class PhpVersionProviderTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider provideValidConfigData()
-     */
+    #[DataProvider('provideValidConfigData()')]
     public function testValidInput(string $invalidFilePath): void
     {
         $this->bootFromConfigFiles([$invalidFilePath]);
@@ -26,7 +25,7 @@ final class PhpVersionProviderTest extends AbstractTestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideValidConfigData(): Iterator
+    public static function provideValidConfigData(): Iterator
     {
         yield [__DIR__ . '/config/valid_explicit_value.php'];
     }

@@ -6,6 +6,7 @@ namespace Rector\Tests\Naming\Naming;
 
 use Iterator;
 use PHPStan\Type\ObjectType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -20,9 +21,7 @@ final class PropertyNamingTest extends AbstractTestCase
         $this->propertyNaming = $this->getService(PropertyNaming::class);
     }
 
-    /**
-     * @dataProvider getExpectedNameFromMethodNameDataProvider
-     */
+    #[DataProvider('getExpectedNameFromMethodNameDataProvider')]
     public function testGetExpectedNameFromMethodName(string $methodName, ?string $expectedPropertyName): void
     {
         $expectedName = $this->propertyNaming->getExpectedNameFromMethodName($methodName);
@@ -38,7 +37,7 @@ final class PropertyNamingTest extends AbstractTestCase
     /**
      * @return Iterator<mixed>
      */
-    public function getExpectedNameFromMethodNameDataProvider(): Iterator
+    public static function getExpectedNameFromMethodNameDataProvider(): Iterator
     {
         yield ['getMethods', 'method'];
         yield ['getUsedTraits', 'usedTrait'];
@@ -50,16 +49,14 @@ final class PropertyNamingTest extends AbstractTestCase
         yield ['resolveDependencies', null];
     }
 
-    /**
-     * @dataProvider provideDataPropertyName()
-     */
+    #[DataProvider('provideDataPropertyName()')]
     public function testPropertyName(string $objectName, string $expectedVariableName): void
     {
         $variableName = $this->propertyNaming->fqnToVariableName(new ObjectType($objectName));
         $this->assertSame($expectedVariableName, $variableName);
     }
 
-    public function provideDataPropertyName(): Iterator
+    public static function provideDataPropertyName(): Iterator
     {
         yield ['SomeVariable', 'someVariable'];
         yield ['IControl', 'control'];

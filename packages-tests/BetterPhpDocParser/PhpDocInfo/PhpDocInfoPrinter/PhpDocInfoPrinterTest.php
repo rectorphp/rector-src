@@ -7,14 +7,13 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter;
 use Iterator;
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt\Nop;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\FileSystem\FilePathHelper;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
 {
-    /**
-     * @dataProvider provideData()
-     * @dataProvider provideDataCallable()
-     */
+    #[DataProvider('provideData()')]
+    #[DataProvider('provideDataCallable()')]
     public function test(string $docFilePath): void
     {
         $this->doComparePrintedFileEquals($docFilePath, $docFilePath);
@@ -28,19 +27,17 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
         );
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
     }
 
-    public function provideDataCallable(): Iterator
+    public static function provideDataCallable(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
     }
 
-    /**
-     * @dataProvider provideDataEmpty()
-     */
+    #[DataProvider('provideDataEmpty()')]
     public function testEmpty(string $filePath): void
     {
         $fileContents = FileSystem::read($filePath);
@@ -49,7 +46,7 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTest
         $this->assertEmpty($this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo));
     }
 
-    public function provideDataEmpty(): Iterator
+    public static function provideDataEmpty(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
     }

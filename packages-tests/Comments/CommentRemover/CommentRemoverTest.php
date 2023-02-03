@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Comments\CommentRemover;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Comments\CommentRemover;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
@@ -31,9 +32,7 @@ final class CommentRemoverTest extends AbstractTestCase
         $this->nodePrinter = $this->getService(BetterStandardPrinter::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $filePath): void
     {
         [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);
@@ -53,7 +52,7 @@ final class CommentRemoverTest extends AbstractTestCase
         $this->assertNotSame($expectedContent, $originalContent);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }

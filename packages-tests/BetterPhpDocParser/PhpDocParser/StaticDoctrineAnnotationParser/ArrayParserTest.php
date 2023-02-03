@@ -6,6 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationP
 
 use Iterator;
 use PhpParser\Node\Scalar\String_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
@@ -26,10 +27,9 @@ final class ArrayParserTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider provideData()
-     *
      * @param ArrayItemNode[] $expectedArrayItemNodes
      */
+    #[DataProvider('provideData()')]
     public function test(string $docContent, array $expectedArrayItemNodes): void
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
@@ -38,7 +38,7 @@ final class ArrayParserTest extends AbstractTestCase
         $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield ['{key: "value"}', [new ArrayItemNode('value', 'key', String_::KIND_DOUBLE_QUOTED)]];
 

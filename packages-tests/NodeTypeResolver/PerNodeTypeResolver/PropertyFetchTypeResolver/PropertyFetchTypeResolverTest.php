@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
@@ -15,15 +16,13 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTe
 
 final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }

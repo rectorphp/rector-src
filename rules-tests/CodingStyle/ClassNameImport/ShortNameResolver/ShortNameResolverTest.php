@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Testing\TestingParser\TestingParser;
@@ -23,9 +24,9 @@ final class ShortNameResolverTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider provideData()
      * @param array<string, class-string<SomeFile>|string> $expectedShortNames
      */
+    #[DataProvider('provideData()')]
     public function test(string $filePath, array $expectedShortNames): void
     {
         $file = $this->testingParser->parseFilePathToFile($filePath);
@@ -34,7 +35,7 @@ final class ShortNameResolverTest extends AbstractTestCase
         $this->assertSame($expectedShortNames, $shortNames);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Fixture/various_imports.php.inc', [
             'VariousImports' => 'Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\Fixture\VariousImports',

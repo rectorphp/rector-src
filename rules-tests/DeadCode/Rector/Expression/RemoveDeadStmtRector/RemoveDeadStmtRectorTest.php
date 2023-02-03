@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Rector\Tests\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
@@ -20,20 +19,18 @@ final class RemoveDeadStmtRectorTest extends AbstractRectorTestCase
     /**
      * @return Iterator<array<string>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
-    /**
-     * @dataProvider provideDataForTestKeepComments()
-     */
+    #[DataProvider('provideDataForTestKeepComments()')]
     public function testKeepComments(string $filePath): void
     {
         $this->doTestFile($filePath);
     }
 
-    public function provideDataForTestKeepComments(): Iterator
+    public static function provideDataForTestKeepComments(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureRemovedComments');
     }

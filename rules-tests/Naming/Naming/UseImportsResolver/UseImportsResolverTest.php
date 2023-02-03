@@ -7,6 +7,7 @@ namespace Rector\Tests\Naming\Naming\UseImportsResolver;
 use Iterator;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -31,9 +32,7 @@ final class UseImportsResolverTest extends AbstractTestCase
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function testUsesFromProperty(string $filePath): void
     {
         $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
@@ -57,7 +56,7 @@ final class UseImportsResolverTest extends AbstractTestCase
         $this->assertContains(SecondClass::class, $stringUses);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return FixtureFileFinder::yieldDirectory(__DIR__ . '/Fixture');
     }

@@ -6,6 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationP
 
 use Iterator;
 use PhpParser\Node\Scalar\String_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
@@ -27,9 +28,9 @@ final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider provideData()
      * @param CurlyListNode|array<string, CurlyListNode> $expectedValue
      */
+    #[DataProvider('provideData()')]
     public function test(string $docContent, CurlyListNode | array $expectedValue): void
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
@@ -40,7 +41,7 @@ final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
         $this->assertEquals($expectedValue, $value);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $curlyListNode = new CurlyListNode([
             new ArrayItemNode('chalet', null, String_::KIND_DOUBLE_QUOTED),

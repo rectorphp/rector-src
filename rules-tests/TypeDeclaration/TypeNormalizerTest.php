@@ -10,6 +10,7 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\TypeDeclaration\TypeNormalizer;
 
@@ -28,9 +29,7 @@ final class TypeNormalizerTest extends AbstractTestCase
         unset($this->typeNormalizer);
     }
 
-    /**
-     * @dataProvider provideDataNormalizeArrayOfUnionToUnionArray()
-     */
+    #[DataProvider('provideDataNormalizeArrayOfUnionToUnionArray()')]
     public function testNormalizeArrayOfUnionToUnionArray(ArrayType $arrayType, string $expectedDocString): void
     {
         $unionType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($arrayType);
@@ -40,7 +39,7 @@ final class TypeNormalizerTest extends AbstractTestCase
     /**
      * @return Iterator<mixed>
      */
-    public function provideDataNormalizeArrayOfUnionToUnionArray(): Iterator
+    public static function provideDataNormalizeArrayOfUnionToUnionArray(): Iterator
     {
         $unionType = new UnionType([new StringType(), new IntegerType()]);
         $arrayType = new ArrayType(new MixedType(), $unionType);

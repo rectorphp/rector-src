@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /**
@@ -12,27 +13,25 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
  */
 final class ImportFullyQualifiedNamesRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     * @dataProvider provideDataFunction()
-     * @dataProvider provideDataGeneric()
-     */
+    #[DataProvider('provideData()')]
+    #[DataProvider('provideDataFunction()')]
+    #[DataProvider('provideDataGeneric()')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
-    public function provideDataFunction(): Iterator
+    public static function provideDataFunction(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureFunction');
     }
 
-    public function provideDataGeneric(): Iterator
+    public static function provideDataGeneric(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/FixtureGeneric');
     }

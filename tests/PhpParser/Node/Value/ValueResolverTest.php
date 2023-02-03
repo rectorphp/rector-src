@@ -9,6 +9,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Name\FullyQualified;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -23,9 +24,7 @@ final class ValueResolverTest extends AbstractTestCase
         $this->valueResolver = $this->getService(ValueResolver::class);
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function test(Expr $expr, string | bool | int | float | null $expectedValue): void
     {
         $resolvedValue = $this->valueResolver->getValue($expr);
@@ -35,7 +34,7 @@ final class ValueResolverTest extends AbstractTestCase
     /**
      * @return Iterator<array<Expr|mixed>>
      */
-    public function dataProvider(): Iterator
+    public static function dataProvider(): Iterator
     {
         $builderFactory = new BuilderFactory();
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\FileSystem\FilesFinder;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -34,9 +35,7 @@ final class FilesFinderTest extends AbstractTestCase
         $this->assertCount(0, $foundFiles);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function testSingleSuffix(string $suffix, int $count, string $expectedFileName): void
     {
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], [$suffix]);
@@ -52,7 +51,7 @@ final class FilesFinderTest extends AbstractTestCase
     /**
      * @return Iterator<array<string|int>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield ['php', 1, 'SomeFile.php'];
         yield ['yml', 1, 'some_config.yml'];

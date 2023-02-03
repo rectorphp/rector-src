@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Issues\ReturnEmptyNodes;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class ReturnEmptyNodesTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $filePath): void
     {
         $this->expectExceptionMessage('Array of nodes cannot be empty');
@@ -24,7 +23,7 @@ final class ReturnEmptyNodesTest extends AbstractRectorTestCase
     /**
      * @return Iterator<array<string>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }

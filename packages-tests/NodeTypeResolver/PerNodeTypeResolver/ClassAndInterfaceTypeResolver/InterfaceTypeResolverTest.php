@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResolver\Source\SomeInterfaceWithParentInterface;
 
@@ -16,9 +17,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ClassAndInterfaceTypeResol
  */
 final class InterfaceTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    /**
-     * @dataProvider dataProvider()
-     */
+    #[DataProvider('dataProvider()')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Interface_::class);
@@ -33,7 +32,7 @@ final class InterfaceTypeResolverTest extends AbstractNodeTypeResolverTest
     /**
      * @return Iterator<int[]|string[]|ObjectType[]>
      */
-    public function dataProvider(): Iterator
+    public static function dataProvider(): Iterator
     {
         yield [
             __DIR__ . '/Source/SomeInterfaceWithParentInterface.php',

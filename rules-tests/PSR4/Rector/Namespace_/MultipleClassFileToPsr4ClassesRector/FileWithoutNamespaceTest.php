@@ -6,6 +6,7 @@ namespace Rector\Tests\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRect
 
 use Iterator;
 use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
@@ -14,8 +15,8 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
 {
     /**
      * @param AddedFileWithContent[] $expectedFilePathsWithContents
-     * @dataProvider provideData()
      */
+    #[DataProvider('provideData()')]
     public function test(
         string $originalFilePath,
         array $expectedFilePathsWithContents,
@@ -35,7 +36,7 @@ final class FileWithoutNamespaceTest extends AbstractRectorTestCase
     /**
      * @return Iterator<mixed>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $filePathsWithContents = [
             new AddedFileWithContent(

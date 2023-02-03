@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\DependencyInjection;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -12,9 +13,9 @@ use Rector\Testing\PHPUnit\AbstractTestCase;
 final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCase
 {
     /**
-     * @dataProvider provideData()
      * @param array<string, string> $expectedConfiguration
      */
+    #[DataProvider('provideData()')]
     public function testMainConfigValues(string $configFile, array $expectedConfiguration): void
     {
         $this->bootFromConfigFiles([$configFile]);
@@ -29,7 +30,7 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $this->assertSame($expectedConfiguration, $renamedClassesDataCollector->getOldToNewClasses());
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [
             __DIR__ . '/config/main_config_with_only_imports.php', [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Util\Reflection;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
 use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
@@ -21,10 +22,10 @@ final class PrivatesAccessorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideData()
      * @param class-string<SomeClassWithPrivateMethods>|SomeClassWithPrivateMethods $object
      * @param mixed[]|int[] $arguments
      */
+    #[DataProvider('provideData()')]
     public function test(
         string | SomeClassWithPrivateMethods $object,
         string $methodName,
@@ -35,7 +36,7 @@ final class PrivatesAccessorTest extends TestCase
         $this->assertSame($expectedResult, $result);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [SomeClassWithPrivateMethods::class, 'getNumber', [], 5];
         yield [new SomeClassWithPrivateMethods(), 'getNumber', [], 5];

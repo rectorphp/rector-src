@@ -9,6 +9,7 @@ use PHPStan\Type\BooleanType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\TypeComparator\ScalarTypeComparator;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -22,9 +23,7 @@ final class ScalarTypeComparatorTest extends AbstractTestCase
         $this->scalarTypeComparator = $this->getService(ScalarTypeComparator::class);
     }
 
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(Type $firstType, Type $secondType, bool $areExpectedEqual): void
     {
         $areEqual = $this->scalarTypeComparator->areEqualScalar($firstType, $secondType);
@@ -34,7 +33,7 @@ final class ScalarTypeComparatorTest extends AbstractTestCase
     /**
      * @return Iterator<bool[]|BooleanType[]|StringType[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [new StringType(), new BooleanType(), false];
         yield [new StringType(), new StringType(), true];

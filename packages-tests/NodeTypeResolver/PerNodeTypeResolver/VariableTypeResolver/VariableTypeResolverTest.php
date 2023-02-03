@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\Source\AnotherType;
 
@@ -16,9 +17,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\Sourc
  */
 final class VariableTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $file, int $nodePosition, TypeWithClassName $expectedTypeWithClassName): void
     {
         $variableNodes = $this->getNodesForFileOfType($file, Variable::class);
@@ -30,7 +29,7 @@ final class VariableTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertSame($expectedTypeWithClassName->getClassName(), $resolvedType->getClassName());
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         $anotherTypeObjectType = new ObjectType(AnotherType::class);
         yield [__DIR__ . '/Fixture/new_class.php.inc', 1, $anotherTypeObjectType];

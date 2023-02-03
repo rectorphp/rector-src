@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Caching\Detector;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
@@ -41,8 +42,8 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
 
     /**
      * @param mixed[]|string[] $dependantFiles
-     * @dataProvider provideData()
      */
+    #[DataProvider('provideData()')]
     public function testGetDependentFileInfos(string $filePath, array $dependantFiles): void
     {
         $this->changedFilesDetector->addFileWithDependencies($filePath, $dependantFiles);
@@ -57,7 +58,7 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
         }
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/file.php', []];
 

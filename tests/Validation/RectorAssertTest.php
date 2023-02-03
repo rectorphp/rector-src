@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Validation;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Validation\RectorAssert;
 use Webmozart\Assert\InvalidArgumentException;
 
 final class RectorAssertTest extends TestCase
 {
-    /**
-     * @doesNotPerformAssertions
-     * @dataProvider provideDataValidClassNames()
-     */
+    #[DataProvider('provideDataValidClassNames()')]
+    #[DoesNotPerformAssertions]
     public function testValidClasNames(string $className): void
     {
         RectorAssert::className($className);
     }
 
-    /**
-     * @dataProvider provideDataInvalidClassNames()
-     */
+    #[DataProvider('provideDataInvalidClassNames()')]
     public function testInvalidClasNames(string $className): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -32,7 +30,7 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataValidClassNames(): Iterator
+    public static function provideDataValidClassNames(): Iterator
     {
         yield ['App'];
         yield ['App\\SomeClass'];
@@ -41,7 +39,7 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataInvalidClassNames(): Iterator
+    public static function provideDataInvalidClassNames(): Iterator
     {
         yield ['App Some'];
         yield ['App$SomeClass'];
@@ -50,10 +48,8 @@ final class RectorAssertTest extends TestCase
         yield ['3AppSome'];
     }
 
-    /**
-     * @doesNotPerformAssertions
-     * @dataProvider provideDataValidFunctionNames()
-     */
+    #[DataProvider('provideDataValidFunctionNames()')]
+    #[DoesNotPerformAssertions]
     public function testValidFunctionName(string $functionName): void
     {
         RectorAssert::functionName($functionName);
@@ -62,17 +58,15 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataValidFunctionNames(): Iterator
+    public static function provideDataValidFunctionNames(): Iterator
     {
         yield ['some_function'];
         yield ['Namespace\\some_function'];
         yield ['Namespace\\so3me_f6n'];
     }
 
-    /**
-     * @doesNotPerformAssertions
-     * @dataProvider provideDataValidMehtodNames()
-     */
+    #[DataProvider('provideDataValidMehtodNames()')]
+    #[DoesNotPerformAssertions]
     public function testValidMethodName(string $methodName): void
     {
         RectorAssert::methodName($methodName);
@@ -81,23 +75,21 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataValidMehtodNames(): Iterator
+    public static function provideDataValidMehtodNames(): Iterator
     {
         yield ['some_method'];
         yield ['__method_magic'];
         yield ['__M3th0d'];
     }
 
-    /**
-     * @dataProvider provideDataInvalidFunctionNames()
-     */
+    #[DataProvider('provideDataInvalidFunctionNames()')]
     public function testInvalidFunctionName(string $functionName): void
     {
         $this->expectException(InvalidArgumentException::class);
         RectorAssert::functionName($functionName);
     }
 
-    public function provideDataInvalidFunctionNames(): Iterator
+    public static function provideDataInvalidFunctionNames(): Iterator
     {
         yield ['35'];
         yield ['/function'];
@@ -105,9 +97,7 @@ final class RectorAssertTest extends TestCase
         yield ['-key_name'];
     }
 
-    /**
-     * @dataProvider provideDataInvalidNamespaceNames()
-     */
+    #[DataProvider('provideDataInvalidNamespaceNames()')]
     public function testNamespaceName(string $namespaceName): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -117,7 +107,7 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public function provideDataInvalidNamespaceNames(): Iterator
+    public static function provideDataInvalidNamespaceNames(): Iterator
     {
         yield ['321Namespace'];
         yield ['$__Namespace'];

@@ -12,6 +12,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTest;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\ClassThatExtendsHtml;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\Enum;
@@ -23,9 +24,7 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Sourc
  */
 final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $file, int $nodePosition, Type $expectedType): void
     {
         $propertyNodes = $this->getNodesForFileOfType($file, Property::class);
@@ -42,7 +41,7 @@ final class PropertyTypeResolverTest extends AbstractNodeTypeResolverTest
         $this->assertSame($expectedTypeAsString, $resolvedTypeAsString);
     }
 
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [__DIR__ . '/Source/MethodParamDocBlock.php', 0, new ObjectType(Html::class)];
         yield [__DIR__ . '/Source/MethodParamDocBlock.php', 1, new ObjectType(ClassThatExtendsHtml::class)];

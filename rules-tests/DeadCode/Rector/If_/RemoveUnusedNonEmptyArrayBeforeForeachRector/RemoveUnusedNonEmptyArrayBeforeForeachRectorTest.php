@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class RemoveUnusedNonEmptyArrayBeforeForeachRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @dataProvider provideData()
-     */
+    #[DataProvider('provideData()')]
     public function test(string $filePath): void
     {
         $this->doTestFile($filePath);
@@ -20,7 +19,7 @@ final class RemoveUnusedNonEmptyArrayBeforeForeachRectorTest extends AbstractRec
     /**
      * @return Iterator<array<string>>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         return $this->yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }

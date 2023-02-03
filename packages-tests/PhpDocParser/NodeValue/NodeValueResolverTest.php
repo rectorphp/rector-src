@@ -16,6 +16,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
 use PhpParser\Node\Scalar\String_;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PhpDocParser\NodeValue\NodeValueResolver;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\Tests\PhpDocParser\NodeValue\Fixture\SomeClassWithConstant;
@@ -31,9 +32,9 @@ final class NodeValueResolverTest extends AbstractTestCase
     }
 
     /**
-     * @dataProvider provideData()
      * @param string|class-string<\Rector\Tests\PhpDocParser\NodeValue\NodeValueResolverTest>|bool $expectedValue
      */
+    #[DataProvider('provideData()')]
     public function test(Expr $expr, string|bool $expectedValue): void
     {
         $resolvedValue = $this->nodeValueResolver->resolve($expr, __FILE__);
@@ -43,7 +44,7 @@ final class NodeValueResolverTest extends AbstractTestCase
     /**
      * @return Iterator<mixed[]|Expr[]>
      */
-    public function provideData(): Iterator
+    public static function provideData(): Iterator
     {
         yield [new String_('value'), 'value'];
         yield [new ClassConstFetch(new FullyQualified(self::class), 'class'), self::class];
