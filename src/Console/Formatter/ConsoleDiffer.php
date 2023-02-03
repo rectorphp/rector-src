@@ -6,6 +6,7 @@ namespace Rector\Core\Console\Formatter;
 
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 final class ConsoleDiffer
 {
@@ -14,11 +15,9 @@ final class ConsoleDiffer
     public function __construct(
         private readonly ColorConsoleDiffFormatter $colorConsoleDiffFormatter
     ) {
-        $strictUnifiedDiffOutputBuilder = new StrictUnifiedDiffOutputBuilder([
-            'fromFile' => 'Original',
-            'toFile' => 'New',
-        ]);
-        $this->differ = new Differ($strictUnifiedDiffOutputBuilder);
+        // @see https://github.com/sebastianbergmann/diff#strictunifieddiffoutputbuilder
+        $unifiedDiffOutputBuilder = new UnifiedDiffOutputBuilder();
+        $this->differ = new Differ($unifiedDiffOutputBuilder);
     }
 
     public function diff(string $old, string $new): string
