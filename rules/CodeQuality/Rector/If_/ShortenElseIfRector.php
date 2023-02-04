@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Nop;
+use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -17,6 +21,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ShortenElseIfRector extends AbstractRector
 {
+    public function __construct(private readonly CommentsMerger $commentsMerger)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Shortens else/if to elseif', [
@@ -91,6 +99,17 @@ CODE_SAMPLE
 
         if ($refactored !== null) {
             $if = $refactored;
+        }
+
+        if ($if->stmts === []) {
+            $nop = new Nop();
+            $nop->setAttribute(AttributeKey::COMMENTS, $if->getComments());
+            $if->stmts[] = $nop;
+        } else {
+            $currentStmt = current($if->stmts);
+            if ($currentStmt instanceof Stmt) {
+                $this->commentsMerger->keepChildren($currentStmt, $if);
+            }
         }
 
         $node->elseifs[] = new ElseIf_($if->cond, $if->stmts);
