@@ -21,8 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ShortenElseIfRector extends AbstractRector
 {
-    public function __construct(private readonly CommentsMerger $commentsMerger)
-    {
+    public function __construct(
+        private readonly CommentsMerger $commentsMerger
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
