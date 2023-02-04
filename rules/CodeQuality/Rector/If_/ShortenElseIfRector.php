@@ -108,9 +108,7 @@ CODE_SAMPLE
             $if->stmts[] = $nop;
         } else {
             $currentStmt = current($if->stmts);
-            if ($currentStmt instanceof Stmt) {
-                $this->commentsMerger->keepChildren($currentStmt, $if);
-            }
+            $this->commentsMerger->keepChildren($currentStmt, $if);
         }
 
         $node->elseifs[] = new ElseIf_($if->cond, $if->stmts);
