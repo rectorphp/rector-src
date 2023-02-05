@@ -13,7 +13,7 @@
         "composer/semver": "^3.3.2",
         "composer/xdebug-handler": "^3.0.3",
         "doctrine/inflector": "^2.0.6",
-        "fidry/cpu-core-counter": "0.5.1 as 0.4.1",
+        "fidry/cpu-core-counter": "^0.5.1",
         "nette/utils": "^3.2.9",
         "nikic/php-parser": "^4.15.3",
         "ondram/ci-detector": "^4.1",
