@@ -109,41 +109,55 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $expectedFileContents = $fixtureFileContents;
         }
 
-        $fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFilePath);
+        //$fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFilePath);
 
-        $inputFilePath = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
-        $expectedFilePath = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
+        $inputFileDirectory = dirname($fixtureFilePath);
+
+        $inputFilePath = $inputFileDirectory . '/' . pathinfo($fixtureFilePath, PATHINFO_BASENAME);
+        FileSystem::write($inputFilePath, $inputFileContents);
+
+        //$inputFilePath = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
+        // $expectedFilePath = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
+
+        // dump to the same location as file :)
+
+        //dump($inputFilePath);
+        //dump($expectedFileContents);
+        //die;
 
         $this->originalTempFilePath = $inputFilePath;
 
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFilePath, $fixtureFilePath);
+        $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
+
+        // clear temporary file
+        FileSystem::delete($inputFilePath);
     }
 
     protected static function getFixtureTempDirectory(): string
     {
         return FixtureTempFileDumper::getTempDirectory();
     }
+    //
+    //private function resolveExpectedContents(string $filePath): string
+    //{
+    //    $contents = FileSystem::read($filePath);
+    //
+    //    // make sure we don't get a diff in which every line is different (because of differences in EOL)
+    //    return str_replace("\r\n", "\n", $contents);
+    //}
 
-    private function resolveExpectedContents(string $filePath): string
-    {
-        $contents = FileSystem::read($filePath);
-
-        // make sure we don't get a diff in which every line is different (because of differences in EOL)
-        return str_replace("\r\n", "\n", $contents);
-    }
-
-    private function resolveOriginalFixtureFileSuffix(string $filePath): string
-    {
-        if (str_ends_with($filePath, '.inc')) {
-            $filePath = rtrim($filePath, '.inc');
-        }
-
-        if (str_ends_with($filePath, '.blade.php')) {
-            return 'blade.php';
-        }
-
-        return pathinfo($filePath, PATHINFO_EXTENSION);
-    }
+    //private function resolveOriginalFixtureFileSuffix(string $filePath): string
+    //{
+    //    if (str_ends_with($filePath, '.inc')) {
+    //        $filePath = rtrim($filePath, '.inc');
+    //    }
+    //
+    //    if (str_ends_with($filePath, '.blade.php')) {
+    //        return 'blade.php';
+    //    }
+    //
+    //    return pathinfo($filePath, PATHINFO_EXTENSION);
+    //}
 
     private function includePreloadFilesAndScoperAutoload(): void
     {
@@ -163,7 +177,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private function doTestFileMatchesExpectedContent(
         string $originalFilePath,
-        string $expectedFilePath,
+        string $expectedFileContents,
         string $fixtureFilePath
     ): void {
         $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
@@ -176,14 +190,14 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
 
         try {
-            $this->assertStringEqualsFile($expectedFilePath, $changedContent);
+            $this->assertSame($expectedFileContents, $changedContent);
         } catch (ExpectationFailedException) {
             FixtureFileUpdater::updateFixtureContent($originalFilePath, $changedContent, $fixtureFilePath);
 
-            $contents = $this->resolveExpectedContents($expectedFilePath);
+            //$contents = $this->resolveExpectedContents($expectedFileContents);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
-            $this->assertStringMatchesFormat($contents, $changedContent);
+            $this->assertStringMatchesFormat($expectedFileContents, $changedContent);
         }
     }
 
