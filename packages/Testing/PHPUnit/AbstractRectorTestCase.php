@@ -105,32 +105,22 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             );
         } else {
             // no change
-            $inputFileContents = $fixtureFileContents;
-            $expectedFileContents = $fixtureFileContents;
+            [$inputFileContents, $expectedFileContents] = [$fixtureFileContents, $fixtureFileContents];
         }
-
-        //$fileSuffix = $this->resolveOriginalFixtureFileSuffix($fixtureFilePath);
 
         $inputFileDirectory = dirname($fixtureFilePath);
 
         $inputFilePath = $inputFileDirectory . '/' . pathinfo($fixtureFilePath, PATHINFO_BASENAME);
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        //$inputFilePath = FixtureTempFileDumper::dump($inputFileContents, $fileSuffix);
-        // $expectedFilePath = FixtureTempFileDumper::dump($expectedFileContents, $fileSuffix);
-
-        // dump to the same location as file :)
-
-        //dump($inputFilePath);
-        //dump($expectedFileContents);
-        //die;
-
         $this->originalTempFilePath = $inputFilePath;
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
 
         // clear temporary file
-        FileSystem::delete($inputFilePath);
+        if ($fixtureFilePath !== $inputFilePath) {
+            FileSystem::delete($inputFilePath);
+        }
     }
 
     protected static function getFixtureTempDirectory(): string
