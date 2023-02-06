@@ -1,4 +1,4 @@
-# 420 Rules Overview
+# 419 Rules Overview
 
 <br>
 
@@ -42,7 +42,7 @@
 
 - [Php73](#php73) (9)
 
-- [Php74](#php74) (15)
+- [Php74](#php74) (14)
 
 - [Php80](#php80) (20)
 
@@ -5891,28 +5891,6 @@ Add null default to properties with PHP 7.4 property nullable type
  {
 -    public ?string $name;
 +    public ?string $name = null;
- }
-```
-
-<br>
-
-### TypedPropertyRector
-
-Changes property type by `@var` annotations or default value.
-
-- class: [`Rector\Php74\Rector\Property\TypedPropertyRector`](../rules/Php74/Rector/Property/TypedPropertyRector.php)
-
-```diff
- final class SomeClass
- {
--    /**
--     * @var int
--     */
--    private $count;
-+    private int $count;
-
--    private $isDone = false;
-+    private bool $isDone = false;
  }
 ```
 
