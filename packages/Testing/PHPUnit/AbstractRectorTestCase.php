@@ -17,6 +17,7 @@ use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
@@ -98,19 +99,33 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     protected function doTestFile(string $fixtureFilePath): void
     {
         $fixtureFileContents = FileSystem::read($fixtureFilePath);
-        if (Strings::match($fixtureFileContents, FixtureSplitter::SPLIT_LINE_REGEX)) {
+
+        if (FixtureSplitter::containsSplit($fixtureFileContents)) {
             // changed content
-            [$inputFileContents, $expectedFileContents] = FixtureSplitter::loadFileAndSplitInputAndExpected(
-                $fixtureFilePath
-            );
+            [$inputFileContents, $expectedFileContents] = FixtureSplitter::split($fixtureFilePath);
         } else {
             // no change
-            [$inputFileContents, $expectedFileContents] = [$fixtureFileContents, $fixtureFileContents];
+            $inputFileContents = $fixtureFileContents;
+            $expectedFileContents = $fixtureFileContents;
         }
 
         $inputFileDirectory = dirname($fixtureFilePath);
 
-        $inputFilePath = $inputFileDirectory . '/' . pathinfo($fixtureFilePath, PATHINFO_BASENAME);
+        // remove ".inc" suffix
+        if (str_ends_with($fixtureFilePath, '.inc')) {
+            $trimmedFixtureFilePath = Strings::substring($fixtureFilePath, 0, -4);
+        } else {
+            $trimmedFixtureFilePath = $fixtureFilePath;
+        }
+
+        $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
+        $inputFilePath = $inputFileDirectory . '/' . $fixtureBasename;
+
+        if ($fixtureFilePath === $inputFilePath) {
+            throw new ShouldNotHappenException('Fixture file and input file cannot be the same: ' . $fixtureFilePath);
+        }
+
+        // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
         $this->originalTempFilePath = $inputFilePath;
@@ -118,36 +133,13 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
 
         // clear temporary file
-        if ($fixtureFilePath !== $inputFilePath) {
-            FileSystem::delete($inputFilePath);
-        }
+        FileSystem::delete($inputFilePath);
     }
 
     protected static function getFixtureTempDirectory(): string
     {
         return FixtureTempFileDumper::getTempDirectory();
     }
-    //
-    //private function resolveExpectedContents(string $filePath): string
-    //{
-    //    $contents = FileSystem::read($filePath);
-    //
-    //    // make sure we don't get a diff in which every line is different (because of differences in EOL)
-    //    return str_replace("\r\n", "\n", $contents);
-    //}
-
-    //private function resolveOriginalFixtureFileSuffix(string $filePath): string
-    //{
-    //    if (str_ends_with($filePath, '.inc')) {
-    //        $filePath = rtrim($filePath, '.inc');
-    //    }
-    //
-    //    if (str_ends_with($filePath, '.blade.php')) {
-    //        return 'blade.php';
-    //    }
-    //
-    //    return pathinfo($filePath, PATHINFO_EXTENSION);
-    //}
 
     private function includePreloadFilesAndScoperAutoload(): void
     {

@@ -6,7 +6,6 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\ValueObject\StaticNonPhpFileSuffixes;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class NonPhpTest extends AbstractRectorTestCase
@@ -19,10 +18,7 @@ final class NonPhpTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(
-            __DIR__ . '/FixtureRenameNonPhp',
-            StaticNonPhpFileSuffixes::getSuffixRegexPattern()
-        );
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureRenameNonPhp', '*.inc');
     }
 
     public function provideConfigFilePath(): string

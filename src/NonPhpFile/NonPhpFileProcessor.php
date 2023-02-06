@@ -48,9 +48,7 @@ final class NonPhpFileProcessor implements FileProcessorInterface
                 continue;
             }
 
-            if (! $configuration->isDryRun()) {
-                $file->changeFileContent($newFileContent);
-            }
+            $file->changeFileContent($newFileContent);
         }
 
         if ($oldFileContent !== $newFileContent) {
