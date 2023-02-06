@@ -15,7 +15,7 @@ class Bar
     ];
 }
 
-class ClassConstantInsideCurrentClassAlreadyDefined extends Bar
+class ClassConstantInsideCurrentClassAlreadyDefined2 extends Bar
 {
     public function run()
     {
@@ -26,4 +26,4 @@ class ClassConstantInsideCurrentClassAlreadyDefined extends Bar
     }
 }
 
-(new ClassConstantInsideCurrentClassAlreadyDefined())->run();
+(new ClassConstantInsideCurrentClassAlreadyDefined2())->run();
