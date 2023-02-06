@@ -19,7 +19,7 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 final class RenamedClassesSourceLocator implements SourceLocator
 {
     public function __construct(
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -35,9 +35,12 @@ final class RenamedClassesSourceLocator implements SourceLocator
                 continue;
             }
 
-            if (class_exists($oldClass)) {
-                return $this->createFakeReflectionClassFromClassName($oldClass);
+            /* Use ReflectionProvider causes infinite loop */
+            if (!class_exists($oldClass)) {
+                continue;
             }
+
+            return $this->createFakeReflectionClassFromClassName($oldClass);
         }
 
         return null;

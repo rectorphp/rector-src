@@ -12,7 +12,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 /**
  * @see RenameClassRector
  */
-final class RenameMissingParent extends AbstractRectorTestCase
+final class RenameMissingParentTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
