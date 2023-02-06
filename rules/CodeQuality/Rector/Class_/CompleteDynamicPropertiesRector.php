@@ -16,6 +16,7 @@ use Rector\CodeQuality\NodeFactory\MissingPropertiesFactory;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyPresenceChecker;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -35,7 +36,8 @@ final class CompleteDynamicPropertiesRector extends AbstractRector
         private readonly ClassLikeAnalyzer $classLikeAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly PropertyPresenceChecker $propertyPresenceChecker
+        private readonly PropertyPresenceChecker $propertyPresenceChecker,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -133,6 +135,10 @@ CODE_SAMPLE
 
         $className = (string) $this->nodeNameResolver->getName($class);
         if (! $this->reflectionProvider->hasClass($className)) {
+            return true;
+        }
+
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($class, 'AllowDynamicProperties')) {
             return true;
         }
 
