@@ -710,6 +710,13 @@ parameters:
 
 		-
 			message: """
+				#Function "class_exists\\(\\)" cannot be used/left in the code\\: use ReflectionProvider\\->has\\*\\(\\) instead#
+			"""
+			count: 1
+			path: src/StaticReflection/SourceLocator/RenamedClassesSourceLocator.php
+
+		-
+			message: """
 				#^Fetching class constant class of deprecated class Rector\\\\TypeDeclaration\\\\Rector\\\\FunctionLike\\\\ReturnTypeDeclarationRector\\:
 				Moving doc types to type declarations is dangerous\\. Use specific strict types instead\\.
 				This rule will be split info many small ones\\.$#
