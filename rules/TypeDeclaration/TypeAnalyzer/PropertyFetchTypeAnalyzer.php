@@ -40,7 +40,7 @@ final class PropertyFetchTypeAnalyzer
         $propertyReflection = $propertyHolderType->getProperty($propertyName, $scope);
         $phpPropertyReflection = $this->getNativeReflectionForProperty($propertyReflection);
 
-        if ($phpPropertyReflection === null) {
+        if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
             return false;
         }
 
