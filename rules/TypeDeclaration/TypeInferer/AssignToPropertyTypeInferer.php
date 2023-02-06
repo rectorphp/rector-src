@@ -51,46 +51,11 @@ final class AssignToPropertyTypeInferer
 
     public function inferPropertyInClassLike(Property $property, string $propertyName, ClassLike $classLike): ?Type
     {
-        $assignedExprTypes = [];
-        $hasAssignDynamicPropertyValue = false;
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
-            $propertyName,
-            &$assignedExprTypes,
-            &$hasAssignDynamicPropertyValue
-        ): ?int {
-            if (! $node instanceof Assign) {
-                return null;
-            }
-
-            $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
-            if (! $expr instanceof Expr) {
-                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->var)) {
-                    return null;
-                }
-
-                /** @var PropertyFetch|StaticPropertyFetch $assignVar */
-                $assignVar = $node->var;
-                if (! $assignVar->name instanceof Identifier) {
-                    $hasAssignDynamicPropertyValue = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-
-                return null;
-            }
-
-            if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
-                return null;
-            }
-
-            $assignedExprTypes[] = $this->resolveExprStaticTypeIncludingDimFetch($node);
-
-            return null;
-        });
-
-        if ($hasAssignDynamicPropertyValue) {
+        if ($this->hasAssignDynamicPropertyValue($classLike, $propertyName)) {
             return null;
         }
+
+        $assignedExprTypes = $this->getAssignedExprTypes($classLike, $propertyName);
 
         if ($this->shouldAddNullType($classLike, $propertyName, $assignedExprTypes)) {
             $assignedExprTypes[] = new NullType();
@@ -177,5 +142,71 @@ final class AssignToPropertyTypeInferer
         }
 
         return ! $hasPropertyDefaultValue;
+    }
+
+    private function hasAssignDynamicPropertyValue(ClassLike $classLike, string $propertyName): bool
+    {
+        $hasAssignDynamicPropertyValue = false;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
+            $propertyName,
+            &$hasAssignDynamicPropertyValue,
+        ): ?int {
+            if (! $node instanceof Assign) {
+                return null;
+            }
+
+            $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
+            if (! $expr instanceof Expr) {
+                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->var)) {
+                    return null;
+                }
+
+                /** @var PropertyFetch|StaticPropertyFetch $assignVar */
+                $assignVar = $node->var;
+                if (! $assignVar->name instanceof Identifier) {
+                    $hasAssignDynamicPropertyValue = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
+                return null;
+            }
+
+            return null;
+        });
+
+        return $hasAssignDynamicPropertyValue;
+    }
+
+    /**
+     * @return array<Type>
+     */
+    private function getAssignedExprTypes(ClassLike $classLike, string $propertyName): array
+    {
+        $assignedExprTypes = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike->stmts, function (Node $node) use (
+            $propertyName,
+            &$assignedExprTypes,
+        ): ?int {
+            if (! $node instanceof Assign) {
+                return null;
+            }
+
+            $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
+            if (! $expr instanceof Expr) {
+                return null;
+            }
+
+            if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
+                return null;
+            }
+
+            $assignedExprTypes[] = $this->resolveExprStaticTypeIncludingDimFetch($node);
+
+            return null;
+        });
+
+        return $assignedExprTypes;
     }
 }
