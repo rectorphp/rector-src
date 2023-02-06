@@ -5,7 +5,7 @@ use Shopware\Core\Framework\Routing\Annotation\Since;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class Test {
+class AddDefaultValueToRoute2 {
     /**
      * @required
      * @Route("/api/_admin/reset-excluded-search-term", name="api.admin.reset-excluded-search-term", methods={"POST"})
@@ -27,7 +27,7 @@ use Shopware\Core\Framework\Routing\Annotation\Since;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class Test {
+class AddDefaultValueToRoute2 {
     /**
      * @required
      * @Route("/api/_admin/reset-excluded-search-term", name="api.admin.reset-excluded-search-term", methods={"POST"}, defaults={})
