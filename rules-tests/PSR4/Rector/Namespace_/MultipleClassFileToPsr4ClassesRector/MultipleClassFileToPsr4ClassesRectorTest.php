@@ -59,15 +59,16 @@ final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestC
     {
         $this->doTestFile(__DIR__ . '/Fixture/ClassMatchesFilename.php.inc');
 
-        //$this->assertFileWasAdded(
-        //    __DIR__ . '/Fixture/ClassMatchesFilenameException.php',
-        //    FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
-        //);
-
         $this->assertFileWasAdded(
-            __DIR__ . '/Fixture/ClassMatchesFilename.php',
-            FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilename.php')
+            __DIR__ . '/Fixture/ClassMatchesFilenameException.php',
+            FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
         );
+
+        // the original file is untouched
+        $isFileRemoved = $this->removedAndAddedFilesCollector->isFileRemoved(
+            __DIR__ . '/Fixture/ClassMatchesFilename.php'
+        );
+        $this->assertFalse($isFileRemoved);
     }
 
     public function provideConfigFilePath(): string

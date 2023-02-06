@@ -1,18 +1,14 @@
-! [NOTE] File
- !        "./multiple-class-psr4/src/C
- !        lassMatchFileName.php" will be added
 
  ! [NOTE] File
- !        "./multiple-class-psr4/src/S
- !        omeInterface.php" will be added
+ !        "./multiple-class-psr4/src/SomeInterface.php"
+ !        will be added
+
+ ! [NOTE] File "./multiple-class-psr4/src/SomeClass.php"
+ !        will be added
 
  ! [NOTE] File
- !        "./multiple-class-psr4/src/S
- !        omeClass.php" will be added
-
- ! [NOTE] File
- !        "./multiple-class-psr4/src/S
- !        omeOtherInterface.php" will be added
+ !        "./multiple-class-psr4/src/SomeOtherInterface.ph
+ !        p" will be added
 
  [WARNING] File "src/ClassNoMatchFileName.php" will be removed
 
@@ -20,16 +16,13 @@
 1 file with changes
 ===================
 
-1) src/ClassMatchFileName.php:1
+1) src/ClassMatchFileName.php:4
 
     ---------- begin diff ----------
 @@ @@
-
- namespace App;
-
--class ClassMatchFileName implements SomeInterface
--{
--}
+ class ClassMatchFileName implements SomeInterface
+ {
+ }
 -
 -interface SomeInterface
 -{
@@ -41,3 +34,4 @@ Applied rules:
 
 
  [OK] 1 file would have changed (dry-run) by Rector
+

@@ -119,10 +119,7 @@
             "@docs",
             "phpunit"
         ],
-        "check-cs": [
-            "vendor/bin/ecs check --ansi",
-            "vendor/bin/ecs check-markdown README.md --ansi"
-        ],
+        "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
         "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
         "phpstan-config": "vendor/bin/phpstan analyse config --ansi --error-format symplify",

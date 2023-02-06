@@ -24,22 +24,23 @@ use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
-use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
 
 abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
 {
     use MovingFilesTrait;
 
-    private ParameterProvider $parameterProvider;
-
     protected RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
 
     protected static ?ContainerInterface $allRectorContainer = null;
 
+    private ParameterProvider $parameterProvider;
+
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
+
+    private ?string $inputFilePath = null;
 
     protected function setUp(): void
     {
@@ -70,6 +71,11 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function tearDown(): void
     {
+        // clear temporary file
+        if (is_string($this->inputFilePath)) {
+            FileSystem::delete($this->inputFilePath);
+        }
+
         // free memory and trigger gc to reduce memory peak consumption on windows
         unset(
             $this->applicationFileProcessor,
@@ -95,6 +101,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function doTestFile(string $fixtureFilePath): void
     {
+        // prepare input file contents and expected file output contents
         $fixtureFileContents = FileSystem::read($fixtureFilePath);
 
         if (FixtureSplitter::containsSplit($fixtureFileContents)) {
@@ -106,17 +113,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $expectedFileContents = $fixtureFileContents;
         }
 
-        $inputFileDirectory = dirname($fixtureFilePath);
-
-        // remove ".inc" suffix
-        if (str_ends_with($fixtureFilePath, '.inc')) {
-            $trimmedFixtureFilePath = Strings::substring($fixtureFilePath, 0, -4);
-        } else {
-            $trimmedFixtureFilePath = $fixtureFilePath;
-        }
-
-        $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
-        $inputFilePath = $inputFileDirectory . '/' . $fixtureBasename;
+        $inputFilePath = $this->createInputFilePath($fixtureFilePath);
+        // to remove later in tearDown()
+        $this->inputFilePath = $inputFilePath;
 
         if ($fixtureFilePath === $inputFilePath) {
             throw new ShouldNotHappenException('Fixture file and input file cannot be the same: ' . $fixtureFilePath);
@@ -125,18 +124,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        //$this->originalTempFilePath = $inputFilePath;
-
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
-
-        // clear temporary file
-        FileSystem::delete($inputFilePath);
     }
-
-    //protected static function getFixtureTempDirectory(): string
-    //{
-    //    return FixtureTempFileDumper::getTempDirectory();
-    //}
 
     private function includePreloadFilesAndScoperAutoload(): void
     {
@@ -173,8 +162,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         } catch (ExpectationFailedException) {
             FixtureFileUpdater::updateFixtureContent($originalFilePath, $changedContent, $fixtureFilePath);
 
-            //$contents = $this->resolveExpectedContents($expectedFileContents);
-
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($expectedFileContents, $changedContent);
         }
@@ -197,5 +184,20 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->applicationFileProcessor->processFiles([$file], $configuration);
 
         return $file->getFileContent();
+    }
+
+    private function createInputFilePath(string $fixtureFilePath): string
+    {
+        $inputFileDirectory = dirname($fixtureFilePath);
+
+        // remove ".inc" suffix
+        if (str_ends_with($fixtureFilePath, '.inc')) {
+            $trimmedFixtureFilePath = Strings::substring($fixtureFilePath, 0, -4);
+        } else {
+            $trimmedFixtureFilePath = $fixtureFilePath;
+        }
+
+        $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
+        return $inputFileDirectory . '/' . $fixtureBasename;
     }
 }
