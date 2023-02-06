@@ -19,7 +19,7 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 final class RenamedClassesSourceLocator implements SourceLocator
 {
     public function __construct(
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
     ) {
     }
 
