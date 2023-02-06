@@ -38,12 +38,4 @@ jobs:
 
             -   uses: "ramsey/composer-install@v2"
 
-            -
-                if: github.ref == 'refs/heads/main'
-                run: |
-                    sleep 30
-                    vendor/bin/phpunit ${{ matrix.path }} --colors
-
-            -
-                if: github.ref != 'refs/heads/main'
-                run: vendor/bin/paratest ${{ matrix.path }} --colors
+            -   run: vendor/bin/paratest ${{ matrix.path }} --colors
