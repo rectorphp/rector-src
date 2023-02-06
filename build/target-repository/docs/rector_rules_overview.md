@@ -1,4 +1,4 @@
-# 422 Rules Overview
+# 420 Rules Overview
 
 <br>
 
@@ -64,7 +64,7 @@
 
 - [Transform](#transform) (34)
 
-- [TypeDeclaration](#typedeclaration) (41)
+- [TypeDeclaration](#typedeclaration) (39)
 
 - [Visibility](#visibility) (3)
 
@@ -9727,27 +9727,6 @@ Change param type based on parent param type
 
 <br>
 
-### ParamTypeDeclarationRector
-
-Change `@param` types to type declarations if not a BC-break
-
-- class: [`Rector\TypeDeclaration\Rector\FunctionLike\ParamTypeDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/ParamTypeDeclarationRector.php)
-
-```diff
- final class SomeClass
- {
--    /**
--     * @param int $number
--     */
--    public function run($number)
-+    public function run(int $number)
-     {
-     }
- }
-```
-
-<br>
-
 ### ParamTypeFromStrictTypedPropertyRector
 
 Add param type from `$param` set to typed property
@@ -9855,27 +9834,6 @@ Add "never" return-type for methods that never return anything
      public function run()
      {
          throw new InvalidException();
-     }
- }
-```
-
-<br>
-
-### ReturnTypeDeclarationRector
-
-Change `@return` types and type from static analysis to type declarations if not a BC-break
-
-- class: [`Rector\TypeDeclaration\Rector\FunctionLike\ReturnTypeDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/ReturnTypeDeclarationRector.php)
-
-```diff
- class SomeClass
- {
--    /**
--     * @return int
--     */
--    public function getCount()
-+    public function getCount(): int
-     {
      }
  }
 ```
