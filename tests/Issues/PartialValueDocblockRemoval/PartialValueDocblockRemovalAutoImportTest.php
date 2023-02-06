@@ -6,8 +6,10 @@ namespace Rector\Core\Tests\Issues\PartialValueDocblockRemoval;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
+#[RunTestsInSeparateProcesses]
 final class PartialValueDocblockRemovalAutoImportTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
