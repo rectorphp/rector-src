@@ -31,11 +31,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 {
     use MovingFilesTrait;
 
-    protected ParameterProvider $parameterProvider;
+    private ParameterProvider $parameterProvider;
 
     protected RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
-
-    protected ?string $originalTempFilePath = null;
 
     protected static ?ContainerInterface $allRectorContainer = null;
 
@@ -78,7 +76,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $this->parameterProvider,
             $this->dynamicSourceLocatorProvider,
             $this->removedAndAddedFilesCollector,
-            $this->originalTempFilePath,
         );
         gc_collect_cycles();
     }
@@ -128,7 +125,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        $this->originalTempFilePath = $inputFilePath;
+        //$this->originalTempFilePath = $inputFilePath;
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
 
