@@ -136,10 +136,10 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         FileSystem::delete($inputFilePath);
     }
 
-    protected static function getFixtureTempDirectory(): string
-    {
-        return FixtureTempFileDumper::getTempDirectory();
-    }
+    //protected static function getFixtureTempDirectory(): string
+    //{
+    //    return FixtureTempFileDumper::getTempDirectory();
+    //}
 
     private function includePreloadFilesAndScoperAutoload(): void
     {

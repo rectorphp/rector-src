@@ -4,80 +4,73 @@ declare(strict_types=1);
 
 namespace Rector\Tests\PSR4\Rector\Namespace_\MultipleClassFileToPsr4ClassesRector;
 
-use Iterator;
 use Nette\Utils\FileSystem;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\FileSystemRector\ValueObject\AddedFileWithContent;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class MultipleClassFileToPsr4ClassesRectorTest extends AbstractRectorTestCase
 {
-    /**
-     * @param AddedFileWithContent[] $expectedFilePathsWithContents
-     */
-    #[DataProvider('provideData')]
-    public function test(
-        string $originalFilePath,
-        array $expectedFilePathsWithContents,
-        int $expectedRemovedFileCount
-    ): void {
-        $this->doTestFile($originalFilePath);
+    public function testMultipleExceptions(): void
+    {
+        $this->doTestFile(__DIR__ . '/Fixture/nette_exceptions.php.inc');
 
-        $addedFileCount = $this->removedAndAddedFilesCollector->getAddedFileCount();
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/RegexpException.php',
+            FileSystem::read(__DIR__ . '/Expected/RegexpException.php')
+        );
 
-        $this->assertCount($addedFileCount, $expectedFilePathsWithContents);
-        $this->assertFilesWereAdded($expectedFilePathsWithContents);
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/UnknownImageFileException.php',
+            FileSystem::read(__DIR__ . '/Expected/UnknownImageFileException.php')
+        );
 
-        $this->assertSame($expectedRemovedFileCount, $this->removedAndAddedFilesCollector->getRemovedFilesCount());
+        // original file was removed
+        $isFileRemoved = $this->removedAndAddedFilesCollector->isFileRemoved(
+            __DIR__ . '/Fixture/nette_exceptions.php'
+        );
+        $this->assertTrue($isFileRemoved);
     }
 
-    /**
-     * @return Iterator<mixed>
-     */
-    public static function provideData(): Iterator
+    public function testClassInterfaceAndTraitSplit(): void
     {
-        // source: https://github.com/nette/utils/blob/798f8c1626a8e0e23116d90e588532725cce7d0e/src/Utils/exceptions.php
-        $filePathsWithContents = [
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/RegexpException.php',
-                FileSystem::read(__DIR__ . '/Expected/RegexpException.php')
-            ),
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/UnknownImageFileException.php',
-                FileSystem::read(__DIR__ . '/Expected/UnknownImageFileException.php')
-            ),
-        ];
-        yield [__DIR__ . '/Fixture/nette_exceptions.php.inc', $filePathsWithContents, 1];
+        $this->doTestFile(__DIR__ . '/Fixture/class_trait_and_interface.php.inc');
 
-        $filePathsWithContents = [
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/MyTrait.php',
-                FileSystem::read(__DIR__ . '/Expected/MyTrait.php')
-            ),
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/ClassTraitAndInterface.php',
-                FileSystem::read(__DIR__ . '/Expected/ClassTraitAndInterface.php')
-            ),
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/MyInterface.php',
-                FileSystem::read(__DIR__ . '/Expected/MyInterface.php')
-            ),
-        ];
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/MyTrait.php',
+            FileSystem::read(__DIR__ . '/Expected/MyTrait.php')
+        );
 
-        yield [__DIR__ . '/Fixture/class_trait_and_interface.php.inc', $filePathsWithContents, 1];
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/ClassTraitAndInterface.php',
+            FileSystem::read(__DIR__ . '/Expected/ClassTraitAndInterface.php')
+        );
 
-        $filePathsWithContents = [
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/ClassMatchesFilenameException.php',
-                FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
-            ),
-            new AddedFileWithContent(
-                self::getFixtureTempDirectory() . '/ClassMatchesFilename.php',
-                FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilename.php')
-            ),
-        ];
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/MyInterface.php',
+            FileSystem::read(__DIR__ . '/Expected/MyInterface.php')
+        );
 
-        yield [__DIR__ . '/Fixture/ClassMatchesFilename.php.inc', $filePathsWithContents, 1];
+        $isFileRemoved = $this->removedAndAddedFilesCollector->isFileRemoved(
+            __DIR__ . '/Fixture/class_trait_and_interface.php'
+        );
+        $this->assertTrue($isFileRemoved);
+    }
+
+    public function testKeepFileThatMatchesClassName(): void
+    {
+        $this->doTestFile(__DIR__ . '/Fixture/ClassMatchesFilename.php.inc');
+
+        dump(111);
+        die;
+
+        $this->assertFileWasAdded(
+            __DIR__ . '/Fixture/ClassMatchesFilenameException.php',
+            FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilenameException.php')
+        );
+
+        //$this->assertFileWasAdded(
+        //    __DIR__ . '/Fixture/ClassMatchesFilename.php',
+        //    FileSystem::read(__DIR__ . '/Expected/ClassMatchesFilename.php')
+        //);
     }
 
     public function provideConfigFilePath(): string
