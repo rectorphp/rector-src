@@ -717,24 +717,6 @@ parameters:
 
 		-
 			message: """
-				#^Fetching class constant class of deprecated class Rector\\\\TypeDeclaration\\\\Rector\\\\FunctionLike\\\\ReturnTypeDeclarationRector\\:
-				Moving doc types to type declarations is dangerous\\. Use specific strict types instead\\.
-				This rule will be split info many small ones\\.$#
-			"""
-			count: 1
-			path: tests/Issues/ComplexReadOnly/config/configured_rule.php
-
-		-
-			message: """
-				#^Fetching class constant class of deprecated class Rector\\\\TypeDeclaration\\\\Rector\\\\FunctionLike\\\\ReturnTypeDeclarationRector\\:
-				Moving doc types to type declarations is dangerous\\. Use specific strict types instead\\.
-				This rule will be split info many small ones\\.$#
-			"""
-			count: 1
-			path: tests/Issues/DoNotReplaceUnknownClasses/config/configured_rule.php
-
-		-
-			message: """
 				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
 				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
 			"""
