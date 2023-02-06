@@ -36,6 +36,6 @@ jobs:
                     php-version: ${{ matrix.php }}
                     coverage: none
 
-            -   uses: "ramsey/composer-install@v1"
+            -   uses: "ramsey/composer-install@v2"
 
             -   run: vendor/bin/paratest ${{ matrix.path }} --colors
