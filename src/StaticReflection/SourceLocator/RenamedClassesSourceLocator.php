@@ -35,7 +35,9 @@ final class RenamedClassesSourceLocator implements SourceLocator
                 continue;
             }
 
-            return $this->createFakeReflectionClassFromClassName($oldClass);
+            if (class_exists($oldClass)) {
+                return $this->createFakeReflectionClassFromClassName($oldClass);
+            }
         }
 
         return null;
