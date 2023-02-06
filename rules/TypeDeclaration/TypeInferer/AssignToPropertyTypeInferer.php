@@ -28,6 +28,7 @@ use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\NullTypeAssignDetector;
 use Rector\TypeDeclaration\AlreadyAssignDetector\PropertyDefaultAssignDetector;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
+use Rector\TypeDeclaration\TypeAnalyzer\PropertyFetchTypeAnalyzer;
 
 /**
  * @deprecated
@@ -45,7 +46,8 @@ final class AssignToPropertyTypeInferer
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly ValueResolver $valueResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly PropertyFetchTypeAnalyzer $propertyFetchTypeAnalyzer,
     ) {
     }
 
@@ -195,6 +197,12 @@ final class AssignToPropertyTypeInferer
 
             $expr = $this->propertyAssignMatcher->matchPropertyAssignExpr($node, $propertyName);
             if (! $expr instanceof Expr) {
+                return null;
+            }
+
+            if ($this->propertyFetchAnalyzer->isPropertyFetch($node->expr)
+                && $this->propertyFetchTypeAnalyzer->isPropertyFetchExprNotNativelyTyped($node->expr)
+            ) {
                 return null;
             }
 
