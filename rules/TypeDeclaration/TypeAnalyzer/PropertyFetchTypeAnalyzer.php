@@ -37,18 +37,14 @@ final class PropertyFetchTypeAnalyzer
             return false;
         }
 
-        $originalProperty = $propertyHolderType->getProperty($propertyName, $scope);
-        $nativePropertyReflection = $this->getNativeReflectionForProperty($originalProperty);
+        $propertyReflection = $propertyHolderType->getProperty($propertyName, $scope);
+        $phpPropertyReflection = $this->getNativeReflectionForProperty($propertyReflection);
 
-        if ($nativePropertyReflection === null) {
+        if ($phpPropertyReflection === null) {
             return false;
         }
 
-        if ($nativePropertyReflection->getNativeType() instanceof MixedType) {
-            return true;
-        }
-
-        return false;
+        return $phpPropertyReflection->getNativeType() instanceof MixedType;
     }
 
     private function getNativeReflectionForProperty(PropertyReflection $propertyReflection): ?PhpPropertyReflection
