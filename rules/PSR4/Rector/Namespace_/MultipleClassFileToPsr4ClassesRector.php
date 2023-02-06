@@ -104,16 +104,16 @@ CODE_SAMPLE
         }
 
         // 1. remove this node
-        if ($nodeToReturn !== null) {
+        if ($nodeToReturn instanceof Node) {
             return $nodeToReturn;
         }
 
-        $isInaddedFiles = array_filter(
+        $isInAddedFiles = (bool) array_filter(
             $this->removedAndAddedFilesCollector->getAddedFilesWithContent(),
             fn (AddedFileWithContent $addedFileWithContent): bool => $addedFileWithContent->getFilePath() === $this->file->getFilePath()
         );
 
-        if ($isInaddedFiles === []) {
+        if ($isInAddedFiles === false) {
             // 2. nothing to return - remove the file
             $this->removedAndAddedFilesCollector->removeFile($this->file->getFilePath());
         }
@@ -143,7 +143,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            // 2. new file
             $this->printNewNodes($classLike, $newNamespace);
         }
 

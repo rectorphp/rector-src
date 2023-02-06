@@ -6,7 +6,7 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\While_;
 
-class Bar
+class Bar2
 {
     protected const LOOP_NODES = [
         Do_::class,
@@ -15,7 +15,7 @@ class Bar
     ];
 }
 
-class ClassConstantInsideCurrentClassAlreadyDefined extends Bar
+class ClassConstantInsideCurrentClassAlreadyDefined3 extends Bar2
 {
     public function run()
     {
@@ -26,4 +26,4 @@ class ClassConstantInsideCurrentClassAlreadyDefined extends Bar
     }
 }
 
-(new ClassConstantInsideCurrentClassAlreadyDefined())->run();
+(new ClassConstantInsideCurrentClassAlreadyDefined3())->run();

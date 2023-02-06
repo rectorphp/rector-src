@@ -15,6 +15,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     // skip the path after defined
     $rectorConfig->skip([
-        RenameClassRector::class => [sys_get_temp_dir() . '/rector/tests_fixture_'],
+        RenameClassRector::class => [__DIR__ . '/../FixtureSkipAfterDefined'],
     ]);
 };

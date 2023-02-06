@@ -29,7 +29,7 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
 
     private function doTestFile(string $filePath): void
     {
-        [$inputFileContents, $expectedType] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);
+        [$inputFileContents, $expectedType] = FixtureSplitter::split($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputFileContents);
 
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);

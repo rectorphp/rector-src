@@ -36,7 +36,7 @@ final class RenamedClassesSourceLocator implements SourceLocator
             }
 
             /* Use ReflectionProvider causes infinite loop */
-            if (!class_exists($oldClass)) {
+            if (! class_exists($oldClass)) {
                 continue;
             }
 

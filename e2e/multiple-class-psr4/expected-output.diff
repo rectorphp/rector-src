@@ -1,8 +1,4 @@
 ! [NOTE] File
- !        "./multiple-class-psr4/src/C
- !        lassMatchFileName.php" will be added
-
- ! [NOTE] File
  !        "./multiple-class-psr4/src/S
  !        omeInterface.php" will be added
 
@@ -20,16 +16,13 @@
 1 file with changes
 ===================
 
-1) src/ClassMatchFileName.php:1
+1) src/ClassMatchFileName.php:4
 
     ---------- begin diff ----------
 @@ @@
-
- namespace App;
-
--class ClassMatchFileName implements SomeInterface
--{
--}
+ class ClassMatchFileName implements SomeInterface
+ {
+ }
 -
 -interface SomeInterface
 -{

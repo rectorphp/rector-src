@@ -35,7 +35,7 @@ final class CommentRemoverTest extends AbstractTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        [$inputContents, $expectedOutputContents] = FixtureSplitter::loadFileAndSplitInputAndExpected($filePath);
+        [$inputContents, $expectedOutputContents] = FixtureSplitter::split($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputContents);
 
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputFilePath);

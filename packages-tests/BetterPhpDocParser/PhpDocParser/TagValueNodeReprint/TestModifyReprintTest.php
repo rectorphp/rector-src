@@ -43,7 +43,7 @@ final class TestModifyReprintTest extends AbstractTestCase
 
     public function test(): void
     {
-        [$inputContent, $expectedContent] = FixtureSplitter::loadFileAndSplitInputAndExpected(
+        [$inputContent, $expectedContent] = FixtureSplitter::split(
             __DIR__ . '/FixtureModify/route_with_extra_methods.php.inc'
         );
 
