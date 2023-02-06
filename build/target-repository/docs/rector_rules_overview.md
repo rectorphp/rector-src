@@ -1,4 +1,4 @@
-# 419 Rules Overview
+# 415 Rules Overview
 
 <br>
 
@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (79)
 
-- [CodingStyle](#codingstyle) (40)
+- [CodingStyle](#codingstyle) (39)
 
 - [Compatibility](#compatibility) (1)
 
@@ -64,7 +64,7 @@
 
 - [Transform](#transform) (34)
 
-- [TypeDeclaration](#typedeclaration) (39)
+- [TypeDeclaration](#typedeclaration) (36)
 
 - [Visibility](#visibility) (3)
 
@@ -2522,34 +2522,6 @@ Separate class constant to own lines
 -    const HI = true, HELLO = 'true';
 +    const HI = true;
 +    const HELLO = 'true';
- }
-```
-
-<br>
-
-### SplitGroupedConstantsAndPropertiesRector
-
-Separate constant and properties to own lines
-
-- class: [`Rector\CodingStyle\Rector\ClassConst\SplitGroupedConstantsAndPropertiesRector`](../rules/CodingStyle/Rector/ClassConst/SplitGroupedConstantsAndPropertiesRector.php)
-
-```diff
- class SomeClass
- {
--    const HI = true, AHOJ = 'true';
-+    const HI = true;
-+    const AHOJ = 'true';
-
-     /**
-      * @var string
-      */
--    public $isIt, $isIsThough;
-+    public $isIt;
-+
-+    /**
-+     * @var string
-+     */
-+    public $isIsThough;
  }
 ```
 
@@ -9171,58 +9143,6 @@ return static function (RectorConfig $rectorConfig): void {
 
 ## TypeDeclaration
 
-### AddArrayParamDocTypeRector
-
-Adds `@param` annotation to array parameters inferred from the rest of the code
-
-- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddArrayParamDocTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddArrayParamDocTypeRector.php)
-
-```diff
- class SomeClass
- {
-     /**
-      * @var int[]
-      */
-     private $values;
-
-+    /**
-+     * @param int[] $values
-+     */
-     public function __construct(array $values)
-     {
-         $this->values = $values;
-     }
- }
-```
-
-<br>
-
-### AddArrayReturnDocTypeRector
-
-Adds `@return` annotation to array parameters inferred from the rest of the code
-
-- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddArrayReturnDocTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddArrayReturnDocTypeRector.php)
-
-```diff
- class SomeClass
- {
-     /**
-      * @var int[]
-      */
-     private $values;
-
-+    /**
-+     * @return int[]
-+     */
-     public function getValues(): array
-     {
-         return $this->values;
-     }
- }
-```
-
-<br>
-
 ### AddArrowFunctionReturnTypeRector
 
 Add known return type to arrow function
@@ -9720,29 +9640,6 @@ Add param type from `$param` set to typed property
 +    public function setAge(int $age)
      {
          $this->age = $age;
-     }
- }
-```
-
-<br>
-
-### PropertyTypeDeclarationRector
-
-Add `@var` to properties that are missing it
-
-- class: [`Rector\TypeDeclaration\Rector\Property\PropertyTypeDeclarationRector`](../rules/TypeDeclaration/Rector/Property/PropertyTypeDeclarationRector.php)
-
-```diff
- class SomeClass
- {
-+    /**
-+     * @var int
-+     */
-     private $value;
-
-     public function run()
-     {
-         $this->value = 123;
      }
  }
 ```
