@@ -28,6 +28,7 @@
         "rector/rector-php-parser": "dev-main",
         "rector/rector-phpunit": "dev-main",
         "rector/rector-symfony": "dev-main",
+        "sebastian/diff": "^5.0",
         "symfony/config": "^6.2",
         "symfony/console": "^6.2.2",
         "symfony/contracts": "^3.2",
