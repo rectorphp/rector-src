@@ -2,13 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Fixture;
 
-class NotNativelyTypedDataObject
-{
-    /**
-     * @var string
-     */
-    public $notNativelyTypedProperty;
-}
+use Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Source\NotNativelyTypedDataObject;
 
 final class SkipNotNativelyTypedPropertyFromDataObject
 {
