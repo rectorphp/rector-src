@@ -37,6 +37,7 @@
         "symfony/string": "^6.2.2",
         "symplify/easy-parallel": "^11.1",
         "symplify/rule-doc-generator-contracts": "^11.1",
+        "tracy/tracy": "^2.9",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
@@ -52,7 +53,6 @@
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
         "phpunit/phpunit": "^10.0",
         "rector/phpstan-rules": "^0.6.5",
-        "rector/rector-debugging": "dev-main",
         "rector/rector-generator": "dev-main",
         "spatie/enum": "^3.13",
         "symfony/process": "^6.2",
@@ -81,7 +81,8 @@
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "src/constants.php"
+            "src/constants.php",
+            "src/functions/node_helper.php"
         ]
     },
     "autoload-dev": {
