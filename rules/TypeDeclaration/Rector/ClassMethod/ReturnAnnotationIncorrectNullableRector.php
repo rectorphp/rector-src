@@ -10,9 +10,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -29,7 +27,6 @@ final class ReturnAnnotationIncorrectNullableRector extends AbstractRector
         private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
-        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -93,10 +90,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
-            return null;
-        }
-
         if (! $this->phpDocNestedAnnotationGuard->isPhpDocCommentCorrectlyParsed($node)) {
             return null;
         }
@@ -121,6 +114,7 @@ CODE_SAMPLE
         }
 
         $hasReturnTypeChanged = $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $updatedPhpDocType);
+
         if ($hasReturnTypeChanged) {
             return $node;
         }

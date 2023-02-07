@@ -28,7 +28,6 @@ final class StaticTypeMapperTest extends AbstractTestCase
     protected function setUp(): void
     {
         $this->boot();
-
         $this->staticTypeMapper = $this->getService(StaticTypeMapper::class);
     }
 
@@ -91,9 +90,6 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
-    /**
-     * @return Iterator<class-string<IterableType>[]|Identifier[]>
-     */
     public static function provideDataForMapPhpParserNodePHPStanType(): Iterator
     {
         yield [new Identifier('iterable'), IterableType::class];

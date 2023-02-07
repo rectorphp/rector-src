@@ -796,3 +796,6 @@ parameters:
         # reported in configs
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
 
+
+        # array type assert
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PHPStan\\PhpDocParser\\Ast\\Type\\CallableTypeParameterNode> and (.*?) will always evaluate to true#'
