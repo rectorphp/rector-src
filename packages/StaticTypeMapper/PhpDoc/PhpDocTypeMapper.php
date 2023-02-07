@@ -35,8 +35,6 @@ final class PhpDocTypeMapper
             return $phpDocTypeMapper->mapToPHPStanType($typeNode, $node, $nameScope);
         }
 
-        dump(get_class($typeNode));
-
         // fallback to PHPStan resolver
         return $this->typeNodeResolver->resolve($typeNode, $nameScope);
     }

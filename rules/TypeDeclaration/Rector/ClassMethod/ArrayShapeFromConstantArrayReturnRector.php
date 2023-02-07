@@ -85,7 +85,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->isInTestCase($node)) {
+        if ($this->isInTestCase($node, $scope)) {
             return null;
         }
 
@@ -114,6 +114,7 @@ CODE_SAMPLE
         if ($returnType instanceof ConstantArrayType) {
             return null;
         }
+
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
@@ -179,13 +180,8 @@ CODE_SAMPLE
      * Skip test case, as return methods there are usually with test data only.
      * Those arrays are hand made and return types are getting complex and messy, so this rule should skip it.
      */
-    private function isInTestCase(ClassMethod $classMethod): bool
+    private function isInTestCase(ClassMethod $classMethod, Scope $scope): bool
     {
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return false;

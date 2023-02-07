@@ -93,9 +93,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
-            return null;
-        }
+        //if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
+        //    return null;
+        //}
 
         if (! $this->phpDocNestedAnnotationGuard->isPhpDocCommentCorrectlyParsed($node)) {
             return null;
@@ -121,6 +121,10 @@ CODE_SAMPLE
         }
 
         $hasReturnTypeChanged = $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $updatedPhpDocType);
+
+        dump($hasReturnTypeChanged);
+        die;
+
         if ($hasReturnTypeChanged) {
             return $node;
         }
