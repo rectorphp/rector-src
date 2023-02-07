@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeNestingScope;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -19,9 +19,9 @@ final class ParentScopeFinder
     ) {
     }
 
-    public function find(Node $node): ClassMethod | Function_ | Class_ | Namespace_ | Closure | null
+    public function find(Variable $variable): ClassMethod | Function_ | Class_ | Namespace_ | Closure | null
     {
-        return $this->betterNodeFinder->findParentByTypes($node, [
+        return $this->betterNodeFinder->findParentByTypes($variable, [
             Closure::class,
             Function_::class,
             ClassMethod::class,

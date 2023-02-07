@@ -37,6 +37,9 @@ final class VariableNaming
     ) {
     }
 
+    /**
+     * @api
+     */
     public function resolveFromNodeWithScopeCountAndFallbackName(
         Expr $expr,
         MutatingScope $mutatingScope,
@@ -77,9 +80,6 @@ final class VariableNaming
         return $valueName;
     }
 
-    /**
-     * @api
-     */
     public function resolveFromFuncCallFirstArgumentWithSuffix(
         FuncCall $funcCall,
         string $suffix,
