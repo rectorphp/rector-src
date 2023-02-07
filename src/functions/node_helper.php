@@ -32,7 +32,9 @@ if (! function_exists('dump_node')) {
         $nodes = is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
-            dump_with_depth($node, $depth);
+            Dumper::dump($node, [
+                Dumper::DEPTH => $depth,
+            ]);
         }
     }
 }
