@@ -16,9 +16,6 @@ final class ArgumentAdderRectorTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<array<string>>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');

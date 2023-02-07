@@ -16,9 +16,6 @@ final class RenameVariableToMatchNewTypeRectorTest extends AbstractRectorTestCas
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<array<string>>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');

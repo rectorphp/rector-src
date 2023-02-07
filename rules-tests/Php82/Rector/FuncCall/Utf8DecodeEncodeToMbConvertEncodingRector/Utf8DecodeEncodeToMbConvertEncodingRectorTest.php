@@ -16,9 +16,6 @@ final class Utf8DecodeEncodeToMbConvertEncodingRectorTest extends AbstractRector
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<array<string>>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');

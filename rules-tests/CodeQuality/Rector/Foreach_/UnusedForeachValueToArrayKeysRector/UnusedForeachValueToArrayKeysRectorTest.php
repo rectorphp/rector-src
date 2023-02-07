@@ -16,9 +16,6 @@ final class UnusedForeachValueToArrayKeysRectorTest extends AbstractRectorTestCa
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<array<string>>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
