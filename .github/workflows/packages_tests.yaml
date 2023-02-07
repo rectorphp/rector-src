@@ -25,7 +25,6 @@ jobs:
                     - rectorphp/rector-phpunit
                     - rectorphp/rector-doctrine
                     - rectorphp/rector-downgrade-php
-                    - rectorphp/rector-php-parser
                 actions:
                     -
                         name: 'Unit Tests'
