@@ -808,3 +808,6 @@ parameters:
         -
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
             path: src/functions/node_helper.php
+
+        # nullable in external package
+        - '#Parameters should use "PhpParser\\Node\\Expr\\FuncCall\|string\|string\|PHPStan\\Analyser\\Scope" types as the only types passed to this method#'

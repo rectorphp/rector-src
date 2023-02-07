@@ -21,9 +21,6 @@ use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 
 /**
- * @deprecated
- * @todo merge with very similar logic in
- * @see VariableNaming
  * @see \Rector\Tests\Naming\Naming\PropertyNamingTest
  */
 final class PropertyNaming
