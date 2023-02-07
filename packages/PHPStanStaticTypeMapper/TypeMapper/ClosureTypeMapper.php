@@ -93,7 +93,7 @@ final class ClosureTypeMapper implements TypeMapperInterface
                 $parameterReflection->passedByReference()
                     ->yes(),
                 $parameterReflection->isVariadic(),
-                $parameterReflection->getName() ? ('$' . $parameterReflection->getName()) : '',
+                $parameterReflection->getName() !== '' && $parameterReflection->getName() !== '0' ? ('$' . $parameterReflection->getName()) : '',
                 $parameterReflection->isOptional()
             );
         }
