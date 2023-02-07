@@ -31,6 +31,7 @@ composer install --no-dev --ansi
 
 # early downgrade individual functions
 bin/rector process vendor/symfony/string/Resources/functions.php -c build/config/config-downgrade.php --ansi
+bin/rector process src/functions/node_helper.php -c build/config/config-downgrade.php --ansi
 
 rsync --exclude rector-build -av * rector-build --quiet
 
