@@ -3,7 +3,7 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     unused_public:
         properties: true
@@ -165,7 +165,6 @@ parameters:
             message: '#Array destruct is not allowed\. Use value object to pass data instead#'
             paths:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
-                - *Test.php
 
         -
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
@@ -700,9 +699,6 @@ parameters:
 
         # false positive
         - '#Method Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddParamTypeBasedOnPHPUnitDataProviderRector\:\:resolveDataProviderPhpDocTagNode\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|null but returns PHPStan\\PhpDocParser\\Ast\\Node\|null#'
-
-        # on purpose, as rule it about to be removed
-        - '#Register "Rector\\Php74\\Rector\\Property\\TypedPropertyRector" service to "php74\.php" config set#'
 
         -
             message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'

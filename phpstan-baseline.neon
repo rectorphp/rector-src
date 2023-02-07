@@ -2,38 +2,6 @@ parameters:
 	ignoreErrors:
 		-
 			message: """
-				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
-			"""
-			count: 1
-			path: packages-tests/Caching/Detector/config.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_DIR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheDirectory\\(\\) instead$#
-			"""
-			count: 1
-			path: packages-tests/Caching/Detector/config.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
-			"""
-			count: 1
-			path: packages-tests/Caching/ValueObject/Storage/config.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_DIR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheDirectory\\(\\) instead$#
-			"""
-			count: 1
-			path: packages-tests/Caching/ValueObject/Storage/config.php
-
-		-
-			message: """
 				#^Call to deprecated method resolve\\(\\) of class Rector\\\\PhpDocParser\\\\NodeValue\\\\NodeValueResolver\\:
 				Use Scope\\-\\>getType\\(\\) with constant types instead$#
 			"""
@@ -65,219 +33,11 @@ parameters:
 
 		-
 			message: """
-				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
-			"""
-			count: 2
-			path: packages/Caching/CacheFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_DIR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheDirectory\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Caching/CacheFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTOLOAD_PATHS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:autoloadPaths\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_DOC_BLOCK_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant BOOTSTRAP_FILES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:bootstrapFiles\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_DIR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheDirectory\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant FILE_EXTENSIONS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:fileExtensions\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant IMPORT_SHORT_CLASSES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importShortClasses\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant INDENT_CHAR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:indent\\(\\) method$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant INDENT_SIZE of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:indent\\(\\) method$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant NESTED_CHAIN_METHOD_CALL_LIMIT of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:nestedChainMethodCallLimit\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead$#
-			"""
-			count: 2
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL_JOB_SIZE of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$jobSize parameter$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL_MAX_NUMBER_OF_PROCESSES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$maxNumberOfProcess parameter$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL_TIMEOUT_IN_SECONDS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$seconds parameter$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PATHS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:paths\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PHPSTAN_FOR_RECTOR_PATH of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:phpstanConfig\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PHP_VERSION_FEATURES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:phpVersion\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SKIP of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:skip\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SYMFONY_CONTAINER_PHP_PATH_PARAMETER of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:symfonyContainerPhp\\(\\)$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SYMFONY_CONTAINER_XML_PATH_PARAMETER of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:symfonyContainerXml\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Config/RectorConfig.php
-
-		-
-			message: """
 				#^Call to deprecated method notifyNodeFileInfo\\(\\) of class Rector\\\\ChangesReporting\\\\Collector\\\\RectorChangeCollector\\:
 				Use file\\-\\> method instead$#
 			"""
 			count: 1
 			path: packages/NodeRemoval/NodeRemover.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PHPSTAN_FOR_RECTOR_PATH of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:phpstanConfig\\(\\) instead$#
-			"""
-			count: 2
-			path: packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant NESTED_CHAIN_METHOD_CALL_LIMIT of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:nestedChainMethodCallLimit\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/NodeTypeResolver/PHPStan/Scope/NodeVisitor/RemoveDeepChainMethodCallNodeVisitor.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant IMPORT_SHORT_CLASSES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importShortClasses\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
 
 		-
 			message: """
@@ -289,51 +49,11 @@ parameters:
 
 		-
 			message: """
-				#^Fetching deprecated class constant PARALLEL_TIMEOUT_IN_SECONDS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$seconds parameter$#
-			"""
-			count: 1
-			path: packages/Parallel/Application/ParallelFileProcessor.php
-
-		-
-			message: """
 				#^Call to deprecated method notifyNodeFileInfo\\(\\) of class Rector\\\\ChangesReporting\\\\Collector\\\\RectorChangeCollector\\:
 				Use file\\-\\> method instead$#
 			"""
 			count: 3
 			path: packages/PostRector/Collector/PropertyToAddCollector.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_DOC_BLOCK_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/PostRector/Rector/NameImportingPostRector.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/PostRector/Rector/NameImportingPostRector.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SKIP of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:skip\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SKIP of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:skip\\(\\) instead$#
-			"""
-			count: 1
-			path: packages/Skipper/SkipCriteriaResolver/SkippedPathsResolver.php
 
 		-
 			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\VendorLocker\\\\NodeVendorLocker\\\\ClassMethodReturnTypeOverrideGuard\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
@@ -342,45 +62,11 @@ parameters:
 
 		-
 			message: """
-				#^Fetching deprecated class constant SYMFONY_CONTAINER_XML_PATH_PARAMETER of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:symfonyContainerXml\\(\\) instead$#
-			"""
-			count: 1
-			path: rules-tests/DependencyInjection/Rector/Class_/ActionInjectionToConstructorInjectionRector/config/configured_rule.php
-
-		-
-			message: "#^Fetching class constant class of deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules-tests/Naming/Naming/PropertyNamingTest.php
-
-		-
-			message: """
 				#^Access to deprecated property \\$nodeRemover of class Rector\\\\Core\\\\Rector\\\\AbstractRector\\:
 				Use service directly or return changes nodes$#
 			"""
 			count: 1
 			path: rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: rules/CodingStyle/Node/NameImporter.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant IMPORT_SHORT_CLASSES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importShortClasses\\(\\) instead$#
-			"""
-			count: 1
-			path: rules/CodingStyle/Node/NameImporter.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\CodingStyle\\\\Rector\\\\Catch_\\\\CatchExceptionNameMatchingTypeRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php
 
 		-
 			message: "#^Call to deprecated method markAsChanged\\(\\) of class Rector\\\\BetterPhpDocParser\\\\PhpDocInfo\\\\PhpDocInfo\\.$#"
@@ -415,37 +101,6 @@ parameters:
 			message: "#^Call to deprecated method addNodeAfterNode\\(\\) of class Rector\\\\PostRector\\\\Collector\\\\NodesToAddCollector\\.$#"
 			count: 6
 			path: rules/MysqlToMysqli/Rector/Assign/MysqlAssignToMysqliRector.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Naming\\\\ExpectedNameResolver\\\\MatchParamTypeExpectedNameResolver\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Naming/ExpectedNameResolver/MatchParamTypeExpectedNameResolver.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Naming\\\\ExpectedNameResolver\\\\MatchPropertyTypeExpectedNameResolver\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Naming/ExpectedNameResolver/MatchPropertyTypeExpectedNameResolver.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Naming\\\\Naming\\\\ExpectedNameResolver\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Naming/Naming/ExpectedNameResolver.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: rules/PSR4/NodeManipulator/FullyQualifyStmtsAnalyzer.php
-
-		-
-			message: """
-				#^Call to deprecated method addNodeBeforeNode\\(\\) of class Rector\\\\PostRector\\\\Collector\\\\NodesToAddCollector\\:
-				Return created nodes right in refactor\\(\\) method to keep context instead\\.$#
-			"""
-			count: 1
-			path: rules/Php70/Rector/FuncCall/NonVariableToVariableOnFunctionCallRector.php
 
 		-
 			message: "#^Call to deprecated method addNodeAfterNode\\(\\) of class Rector\\\\PostRector\\\\Collector\\\\NodesToAddCollector\\.$#"
@@ -506,49 +161,11 @@ parameters:
 
 		-
 			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: rules/Renaming/NodeManipulator/ClassRenamer.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\NodeAnalyzer\\\\FuncCallStaticCallToMethodCallAnalyzer\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/NodeAnalyzer/FuncCallStaticCallToMethodCallAnalyzer.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\NodeFactory\\\\PropertyFetchFactory\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/NodeFactory/PropertyFetchFactory.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\NodeTypeAnalyzer\\\\TypeProvidingExprFromClassResolver\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/NodeTypeAnalyzer/TypeProvidingExprFromClassResolver.php
-
-		-
-			message: """
 				#^Access to deprecated property \\$nodeRemover of class Rector\\\\Core\\\\Rector\\\\AbstractRector\\:
 				Use service directly or return changes nodes$#
 			"""
 			count: 3
 			path: rules/Transform/Rector/Class_/ChangeSingletonToServiceRector.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\Rector\\\\FuncCall\\\\ArgumentFuncCallToMethodCallRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/Rector/FuncCall/ArgumentFuncCallToMethodCallRector.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\Rector\\\\MethodCall\\\\MethodCallToMethodCallRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/Rector/MethodCall/MethodCallToMethodCallRector.php
-
-		-
-			message: "#^Parameter \\$propertyNaming of method Rector\\\\Transform\\\\Rector\\\\New_\\\\NewToConstructorInjectionRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\Naming\\\\Naming\\\\PropertyNaming\\.$#"
-			count: 1
-			path: rules/Transform/Rector/New_/NewToConstructorInjectionRector.php
 
 		-
 			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\ClassMethod\\\\ReturnTypeFromReturnDirectArrayRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
@@ -582,123 +199,11 @@ parameters:
 
 		-
 			message: """
-				#^Fetching deprecated class constant PARALLEL_JOB_SIZE of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$jobSize parameter$#
-			"""
-			count: 1
-			path: src/Application/ApplicationFileProcessor.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL_MAX_NUMBER_OF_PROCESSES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead with pass int \\$maxNumberOfProcess parameter$#
-			"""
-			count: 1
-			path: src/Application/ApplicationFileProcessor.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTOLOAD_PATHS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:autoloadPaths\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Autoloading/AdditionalAutoloader.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant BOOTSTRAP_FILES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:bootstrapFiles\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Autoloading/BootstrapFilesIncluder.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant FILE_EXTENSIONS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:fileExtensions\\(\\) instead$#
-			"""
-			count: 2
-			path: src/Configuration/ConfigurationFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PARALLEL of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:parallel\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Configuration/ConfigurationFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PATHS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:paths\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Configuration/ConfigurationFactory.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant AUTO_IMPORT_NAMES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:importNames\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Configuration/RectorConfigProvider.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant INDENT_CHAR of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:indent\\(\\) method$#
-			"""
-			count: 1
-			path: src/Configuration/RectorConfigProvider.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant INDENT_SIZE of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:indent\\(\\) method$#
-			"""
-			count: 1
-			path: src/Configuration/RectorConfigProvider.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SYMFONY_CONTAINER_PHP_PATH_PARAMETER of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:symfonyContainerPhp\\(\\)$#
-			"""
-			count: 1
-			path: src/Configuration/RectorConfigProvider.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SYMFONY_CONTAINER_XML_PATH_PARAMETER of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:symfonyContainerXml\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Configuration/RectorConfigProvider.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant SKIP of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:skip\\(\\) instead$#
-			"""
-			count: 1
-			path: src/DependencyInjection/CompilerPass/RemoveSkippedRectorsCompilerPass.php
-
-		-
-			message: """
 				#^Call to deprecated method notifyNodeFileInfo\\(\\) of class Rector\\\\ChangesReporting\\\\Collector\\\\RectorChangeCollector\\:
 				Use file\\-\\> method instead$#
 			"""
 			count: 1
 			path: src/NodeManipulator/ArrayManipulator.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant PHP_VERSION_FEATURES of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use @see \\\\Rector\\\\Config\\\\RectorConfig\\:\\:phpVersion\\(\\) instead$#
-			"""
-			count: 1
-			path: src/Php/PhpVersionProvider.php
 
 		-
 			message: """
@@ -709,34 +214,6 @@ parameters:
 			path: src/Rector/AbstractRector.php
 
 		-
-			message: """
-				#Function "class_exists\\(\\)" cannot be used/left in the code\\: use ReflectionProvider\\->has\\*\\(\\) instead#
-			"""
+			message: "#^Function \"class_exists\\(\\)\" cannot be used/left in the code\\: use ReflectionProvider\\-\\>has\\*\\(\\) instead$#"
 			count: 1
 			path: src/StaticReflection/SourceLocator/RenamedClassesSourceLocator.php
-
-		-
-			message: """
-				#^Fetching deprecated class constant CACHE_CLASS of class Rector\\\\Core\\\\Configuration\\\\Option\\:
-				Use RectorConfig\\:\\:cacheClass\\(\\) instead$#
-			"""
-			count: 1
-			path: tests/Issues/PhpTagsAddedToBlade/config/php_tags_added_to_blade.php
-
-		-
-			message: """
-				#^Fetching class constant class of deprecated class Rector\\\\Php74\\\\Rector\\\\Property\\\\TypedPropertyRector\\:
-				Moving doc types to type declarations is dangerous\\. Use specific strict types instead\\.
-				This rule will be split info many small ones\\.$#
-			"""
-			count: 1
-			path: tests/Issues/RemoveNullWithStrictGetter/config/configured_rule.php
-
-		-
-			message: """
-				#^Fetching class constant class of deprecated class Rector\\\\Php74\\\\Rector\\\\Property\\\\TypedPropertyRector\\:
-				Moving doc types to type declarations is dangerous\\. Use specific strict types instead\\.
-				This rule will be split info many small ones\\.$#
-			"""
-			count: 1
-			path: tests/Issues/TypedPropertyByVarAndAssign/config/configured_rule.php
