@@ -690,8 +690,10 @@ parameters:
         - '#Class "Rector\\Core\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
         -
-            path: packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
             message: '#Offset (.*?)includes(.*?) always exists and is not nullable#'
+            paths:
+                - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
+                - src/Bootstrap/ExtensionConfigResolver.php
 
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
@@ -796,6 +798,13 @@ parameters:
         # reported in configs
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
 
-
         # array type assert
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PHPStan\\PhpDocParser\\Ast\\Type\\CallableTypeParameterNode> and (.*?) will always evaluate to true#'
+
+        -
+            message: '#Function "function_exists\(\)" cannot be used/left in the code#'
+            path: src/functions/node_helper.php
+
+        -
+            message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
+            path: src/functions/node_helper.php
