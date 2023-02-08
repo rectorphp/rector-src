@@ -182,7 +182,7 @@ CODE_SAMPLE
         $namespacedPrefix = Strings::after($comparedName, '\\', -1) . '\\';
 
         if ($namespacedPrefix === '\\') {
-            $namespacedPrefix = '';
+            $namespacedPrefix = $comparedName . '\\';
         }
 
         // match partial import
