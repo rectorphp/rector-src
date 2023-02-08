@@ -61,18 +61,13 @@ final class MethodParameterTypeResolver
         }
 
         $parameterTypes = [];
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
-        if ($node instanceof ClassMethod) {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-        } else {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-
-            if (! $scope instanceof Scope) {
-                return [];
-            }
-
-            $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
+        if (! $scope instanceof Scope) {
+            return [];
         }
+
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
 
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             $parameterTypes[] = $parameterReflection->getType();
