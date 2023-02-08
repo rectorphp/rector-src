@@ -12,8 +12,8 @@ $queue = app(\Queue::class);
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames;
 
-use CompanyB\Queue;
+use Illuminate\Support\Facades\Queue;
 
-$queue = app(\Illuminate\Support\Facades\Queue::class);
+$queue = app(Queue::class);
 
 ?>

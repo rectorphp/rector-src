@@ -12,8 +12,8 @@ $queue = \Queue::FOO;
 
 namespace Company\Commands\Queue;
 
-use CompanyB\Queue;
+use Illuminate\Support\Facades\Queue;
 
-$queue = \Illuminate\Support\Facades\Queue::FOO;
+$queue = Queue::FOO;
 
 ?>

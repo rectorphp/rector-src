@@ -16,7 +16,6 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace\SecondOriginalClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\FirstNamespace\FirstOriginalClass as AliasedClass;
-use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace;
 
 $aliasedClass = new AliasedClass();
 $secondClass = new SecondOriginalClass();

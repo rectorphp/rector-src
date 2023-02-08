@@ -11,6 +11,8 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClassWithMetho
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
+    $rectorConfig->removeUnusedImports();
+
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
             OldClassWithMethod::class => NewClassWithNewMethod::class,

@@ -13,9 +13,9 @@ $queue = $app->run(\Queue::class);
 
 namespace Company\Commands\Queue;
 
-use CompanyB\Queue;
+use Illuminate\Support\Facades\Queue;
 
 $app = new App();
-$queue = $app->run(\Illuminate\Support\Facades\Queue::class);
+$queue = $app->run(Queue::class);
 
 ?>
