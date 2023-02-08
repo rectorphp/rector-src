@@ -7,6 +7,7 @@ namespace Rector\PostRector\Rector;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeTraverser;
@@ -17,7 +18,6 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
@@ -119,7 +119,7 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if (! $node instanceof Name) {
+            if (! $node instanceof FullyQualified) {
                 return null;
             }
 
