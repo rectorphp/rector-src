@@ -76,7 +76,6 @@ return static function (ECSConfig $ecsConfig): void {
         // skip add space on &$variable
         FunctionTypehintSpaceFixer::class => [
             __DIR__ . '/src/PhpParser/Printer/BetterStandardPrinter.php',
-            __DIR__ . '/src/DependencyInjection/Loader/Configurator/RectorServiceConfigurator.php',
             __DIR__ . '/rules/Php70/EregToPcreTransformer.php',
         ],
 
