@@ -63,6 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // to avoid autoimporting out of the box
     $rectorConfig->importNames(false, false);
+    $rectorConfig->removeUnusedImports(false);
 
     $rectorConfig->importShortClasses();
     $rectorConfig->indent(' ', 4);

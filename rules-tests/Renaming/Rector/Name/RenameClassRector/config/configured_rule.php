@@ -19,6 +19,8 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeFinalClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeNonFinalClass;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->removeUnusedImports();
+
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
