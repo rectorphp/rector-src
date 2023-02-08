@@ -2,13 +2,14 @@
 
 namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
+use Foo2\Storage;
 use Foo2;
 
-final class NamespacedUseSingleNamespace
+final class NamespacedUseSingleNamespaceImported
 {
     public function __construct()
     {
-        new Foo2\Storage();
+        new Storage();
     }
 }
 
@@ -19,9 +20,8 @@ final class NamespacedUseSingleNamespace
 namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Foo2\Storage;
-use Foo2;
 
-final class NamespacedUseSingleNamespace
+final class NamespacedUseSingleNamespaceImported
 {
     public function __construct()
     {
