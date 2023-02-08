@@ -52,4 +52,15 @@ final class ClassAnalyzer
         // match PHPStan pattern for anonymous classes
         return StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
     }
+
+    public function hasImplements(Class_ $class, string $interfaceFQN): bool
+    {
+        foreach ($class->implements as $implement) {
+            if ($this->nodeNameResolver->isName($implement, $interfaceFQN)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
