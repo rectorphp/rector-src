@@ -191,7 +191,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (! str_starts_with($name, '\\') && str_starts_with($name, $namespacedPrefix)) {
+            if (str_starts_with($name, $namespacedPrefix)) {
                 return true;
             }
         }
