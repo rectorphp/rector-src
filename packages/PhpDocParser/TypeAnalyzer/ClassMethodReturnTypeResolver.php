@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
@@ -29,7 +28,11 @@ final class ClassMethodReturnTypeResolver
 
         $extendedMethodReflection = $classReflection->getMethod($methodName, $scope);
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($extendedMethodReflection, $classMethod, $scope);
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
+            $extendedMethodReflection,
+            $classMethod,
+            $scope
+        );
         if (! $parametersAcceptor instanceof FunctionVariant) {
             return new MixedType();
         }
