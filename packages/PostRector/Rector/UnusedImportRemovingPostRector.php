@@ -8,14 +8,15 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\NodeFinder;
+use PhpParser\NodeTraverser;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
     public function __construct(
-        private readonly NodeFinder $nodeFinder,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -25,8 +26,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             return null;
         }
 
-        /** @var Name[] $names */
-        $names = $this->nodeFinder->findInstanceOf($node, Name::class);
+        $hasChanged = false;
+        $names = $this->findNonUseImportNames($node);
 
         foreach ($node->stmts as $key => $namespaceStmt) {
             if (! $namespaceStmt instanceof Use_) {
@@ -34,7 +35,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useName = $namespaceStmt->uses[0]->name->toString();
-
             foreach ($names as $name) {
                 // use import is used → skip it
                 if ($name->toString() === $useName) {
@@ -43,8 +43,14 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             unset($node->stmts[$key]);
+            $hasChanged = true;
         }
 
+        if ($hasChanged === false) {
+            return null;
+        }
+
+        $node->stmts = array_values($node->stmts);
         return $node;
     }
 
@@ -77,5 +83,29 @@ class SomeClass
 CODE_SAMPLE
             ),
         ]);
+    }
+
+    /**
+     * @return Name[]
+     */
+    private function findNonUseImportNames(Namespace_ $namespace): array
+    {
+        /** @var Name[] $names */
+        $names = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, static function (Node $node) use (&$names) {
+            if ($node instanceof Use_) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            if (! $node instanceof Name) {
+                return null;
+            }
+
+            $names[] = $node;
+            return $node;
+        });
+
+        return $names;
     }
 }
