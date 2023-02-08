@@ -121,11 +121,14 @@ CODE_SAMPLE
             }
 
             $names[] = $node->toString();
-            $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
-            if ($originalName instanceof Name) {
-                // collect original Name as well to cover namespaced used
-                $names[] = $originalName->toString();
-                return $node;
+
+            if ($node instanceof FullyQualified) {
+                $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+
+                if ($originalName instanceof Name) {
+                    // collect original Name as well to cover namespaced used
+                    $names[] = $originalName->toString();
+                }
             }
 
             return $node;
