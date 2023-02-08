@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
@@ -15,6 +16,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
@@ -22,6 +25,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -119,7 +123,12 @@ CODE_SAMPLE
                 return null;
             }
 
-            $names[] = $node->toString();
+            $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+            if (! $originalName instanceof Name) {
+                return null;
+            }
+
+            $names[] = $originalName->toString();
             return $node;
         });
 
@@ -167,9 +176,15 @@ CODE_SAMPLE
             return true;
         }
 
+        $namespacedPrefix = Strings::after($comparedName, '\\', -1) . '\\';
+
         // match partial import
         foreach ($names as $name) {
             if (str_ends_with($comparedName, $name)) {
+                return true;
+            }
+
+            if (str_starts_with($name, $namespacedPrefix)) {
                 return true;
             }
         }
