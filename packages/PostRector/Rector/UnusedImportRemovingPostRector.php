@@ -181,6 +181,10 @@ CODE_SAMPLE
 
         $namespacedPrefix = Strings::after($comparedName, '\\', -1) . '\\';
 
+        if ($namespacedPrefix === '\\') {
+            $namespacedPrefix = $comparedName . '\\';
+        }
+
         // match partial import
         foreach ($names as $name) {
             if (str_ends_with($comparedName, $name)) {
