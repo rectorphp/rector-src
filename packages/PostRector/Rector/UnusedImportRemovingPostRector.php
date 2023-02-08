@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeTraverser;
@@ -21,7 +23,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -120,6 +122,16 @@ CODE_SAMPLE
             }
 
             $names[] = $node->toString();
+
+            if ($node instanceof FullyQualified) {
+                $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+
+                if ($originalName instanceof Name) {
+                    // collect original Name as well to cover namespaced used
+                    $names[] = $originalName->toString();
+                }
+            }
+
             return $node;
         });
 
@@ -167,9 +179,15 @@ CODE_SAMPLE
             return true;
         }
 
+        $namespacedPrefix = Strings::after($comparedName, '\\', -1) . '\\';
+
         // match partial import
         foreach ($names as $name) {
             if (str_ends_with($comparedName, $name)) {
+                return true;
+            }
+
+            if (str_starts_with($name, $namespacedPrefix)) {
                 return true;
             }
         }
