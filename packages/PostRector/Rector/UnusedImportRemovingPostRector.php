@@ -128,6 +128,7 @@ CODE_SAMPLE
                 return null;
             }
 
+            $names[] = $node->toString();
             $names[] = $originalName->toString();
             return $node;
         });
