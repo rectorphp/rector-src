@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Native\NativeMethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\Type;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -61,18 +60,13 @@ final class MethodParameterTypeResolver
         }
 
         $parameterTypes = [];
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
-        if ($node instanceof ClassMethod) {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
-        } else {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-
-            if (! $scope instanceof Scope) {
-                return [];
-            }
-
-            $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
+        if (! $scope instanceof Scope) {
+            return [];
         }
+
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
 
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             $parameterTypes[] = $parameterReflection->getType();
