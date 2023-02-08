@@ -17,15 +17,13 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use PHPStan\Reflection\ReflectionProvider;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
