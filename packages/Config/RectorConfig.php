@@ -69,6 +69,12 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::SKIP, $criteria);
     }
 
+    public function removeUnusedImports(bool $removeUnusedImports = true): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::REMOVE_UNUSED_IMPORTS, $removeUnusedImports);
+    }
+
     public function importNames(bool $importNames = true, bool $importDocBlockNames = true): void
     {
         $parameters = $this->parameters();

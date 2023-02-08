@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-class EnforceExceptionSuffixCallback
+final class EnforceExceptionSuffixCallback
 {
     public function __invoke(
         ClassLike $class,

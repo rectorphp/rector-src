@@ -19,8 +19,6 @@ class RenamePropertyRead
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass;
-
 /**
  * @property \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass $some
  * @property-read \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass $someRead

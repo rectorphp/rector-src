@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Interface_;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-class EnforceInterfaceSuffixCallback
+final class EnforceInterfaceSuffixCallback
 {
     public function __invoke(ClassLike $class, NodeNameResolver $nodeNameResolver): ?string {
         $fullyQualifiedClassName = (string) $nodeNameResolver->getName($class);

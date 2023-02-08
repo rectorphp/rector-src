@@ -37,8 +37,6 @@ namespace Acme\Bar {
 <?php
 
 namespace Acme {
-   use Acme\Foo\DoNotUpdateExistingTargetNamespace;
-
    \Acme\Bar\DoNotUpdateExistingTargetNamespace::run();
 }
 
