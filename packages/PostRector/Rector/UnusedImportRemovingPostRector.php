@@ -128,8 +128,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            // collect both FullyQualified and Name to cover namespaced used
             $names[] = $node->toString();
             $names[] = $originalName->toString();
+
             return $node;
         });
 
