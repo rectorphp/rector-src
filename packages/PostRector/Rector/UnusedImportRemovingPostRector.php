@@ -117,18 +117,17 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if (! $node instanceof FullyQualified) {
+            if (! $node instanceof Name) {
                 return null;
             }
 
-            $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
-            if (! $originalName instanceof Name) {
-                return null;
-            }
-
-            // collect both FullyQualified and Name to cover namespaced used
             $names[] = $node->toString();
-            $names[] = $originalName->toString();
+            $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+            if ($originalName instanceof Name) {
+                // collect original Name as well to cover namespaced used
+                $names[] = $originalName->toString();
+                return $node;
+            }
 
             return $node;
         });
