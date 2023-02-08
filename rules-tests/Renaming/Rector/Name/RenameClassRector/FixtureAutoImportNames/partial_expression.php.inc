@@ -19,7 +19,6 @@ class PartialExpression
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames;
 
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node;
 
 class PartialExpression
 {

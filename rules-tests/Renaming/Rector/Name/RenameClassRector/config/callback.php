@@ -8,6 +8,8 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\EnforceExceptionS
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\EnforceInterfaceSuffixCallback;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->removeUnusedImports();
+
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
             RenameClassRector::CALLBACKS => [

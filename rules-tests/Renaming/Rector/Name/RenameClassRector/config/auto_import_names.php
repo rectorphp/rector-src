@@ -11,6 +11,7 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace\S
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
+    $rectorConfig->removeUnusedImports();
 
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         OldClass::class => NewClass::class,

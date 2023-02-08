@@ -18,8 +18,6 @@ class Foo2 extends FooBar
 
 namespace Foo2;
 
-use Foo\Bar;
-
 class Foo2 extends FooBar
 {
     /**
