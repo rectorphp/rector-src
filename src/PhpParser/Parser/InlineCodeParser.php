@@ -58,7 +58,7 @@ final class InlineCodeParser
 
     /**
      * @var string
-     * @see https://regex101.com/r/10kB6S/1
+     * @see https://regex101.com/r/jO2lfl/1
      */
     private const BACKREFERENCE_NO_CURLY_START_REGEX = '#(?<!{)\$(?<backreference_number>\d+)#';
 
@@ -92,11 +92,13 @@ final class InlineCodeParser
     {
         if ($expr instanceof String_) {
             if (! StringUtils::isMatch($expr->value, self::BACKREFERENCE_NO_QUOTE_REGEX)) {
-                return Strings::replace(
+                $expr->value = Strings::replace(
                     $expr->value,
                     self::BACKREFERENCE_NO_CURLY_START_REGEX,
-                    static fn (array $match): string => '\\' . $match['backreference_number']
+                    static fn (array $match): string => "\\" . $match['backreference_number']
                 );
+
+                return $expr->value;
             }
 
             return Strings::replace(

@@ -22,7 +22,7 @@ class DirectDollarNumber
     public function run()
     {
         $str = '&#123;';
-        echo preg_replace_callback('/&#(\\d+);/', function ($matches) {
+        echo preg_replace_callback('/&#(\d+);/', function ($matches) {
             return strlen($matches[1]);
         }, utf8_encode($str));
     }
