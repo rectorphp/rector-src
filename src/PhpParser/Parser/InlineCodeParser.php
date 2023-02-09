@@ -60,7 +60,7 @@ final class InlineCodeParser
      * @var string
      * @see https://regex101.com/r/jO2lfl/1
      */
-    private const BACKREFERENCE_NO_CURLY_START_REGEX = '#(?<!{)\$(?<backreference_number>\d+)#';
+    private const BACKREFERENCE_NO_CURLY_START_REGEX = '#(?<!")\$(?<backreference_number>\d+)#';
 
     public function __construct(
         private readonly NodePrinterInterface $nodePrinter,
