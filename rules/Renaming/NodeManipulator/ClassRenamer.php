@@ -152,6 +152,12 @@ final class ClassRenamer
      */
     private function refactorName(Name $name, array $oldToNewClasses): ?Name
     {
+        $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
+
+        if ($parent instanceof Namespace_) {
+            return null;
+        }
+
         $stringName = $this->nodeNameResolver->getName($name);
 
         $newName = $oldToNewClasses[$stringName] ?? null;
