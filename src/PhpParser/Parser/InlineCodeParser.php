@@ -107,7 +107,7 @@ final class InlineCodeParser
         }
 
         if ($expr instanceof Encapsed) {
-            return $this->resolvePrintedExpr($expr);
+            return $this->resolveEncapsedValue($expr);
         }
 
         if ($expr instanceof Concat) {
@@ -117,7 +117,7 @@ final class InlineCodeParser
         return $this->nodePrinter->print($expr);
     }
 
-    private function resolvePrintedExpr(Encapsed $encapsed): string
+    private function resolveEncapsedValue(Encapsed $encapsed): string
     {
         $value = '';
         $isRequirePrint = false;
