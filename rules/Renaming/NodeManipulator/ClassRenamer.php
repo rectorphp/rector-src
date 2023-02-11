@@ -154,7 +154,7 @@ final class ClassRenamer
     {
         $parent = $name->getAttribute(AttributeKey::PARENT_NODE);
 
-        if ($parent instanceof Namespace_) {
+        if ($parent instanceof Namespace_ && $parent->name === $name) {
             return null;
         }
 
