@@ -107,21 +107,7 @@ final class InlineCodeParser
         }
 
         if ($expr instanceof Encapsed) {
-            // remove "
-            $printedExpr = trim($this->nodePrinter->print($expr), '""');
-
-            /**
-             * Encapsed "$eval_links" is printed as {$eval_links} → use its value when possible
-             */
-            if (str_starts_with($printedExpr, '{') && str_ends_with($printedExpr, '}') && count($expr->parts) === 1) {
-                $currentPart = current($expr->parts);
-                $printedExpr = (string) $this->valueResolver->getValue($currentPart);
-            }
-
-            // use \$ → $
-            $printedExpr = Strings::replace($printedExpr, self::PRESLASHED_DOLLAR_REGEX, '$');
-            // use \'{$...}\' → $...
-            return Strings::replace($printedExpr, self::CURLY_BRACKET_WRAPPER_REGEX, '$1');
+            return $this->resolvePrintedExpr($expr);
         }
 
         if ($expr instanceof Concat) {
@@ -129,6 +115,29 @@ final class InlineCodeParser
         }
 
         return $this->nodePrinter->print($expr);
+    }
+
+    private function resolvePrintedExpr(Encapsed $encapsed): string
+    {
+        $value = '';
+        $isRequirePrint = false;
+        foreach ($encapsed->parts as $part) {
+            $partValue = (string) $this->valueResolver->getValue($part);
+            if (str_ends_with($partValue, "'")) {
+                $isRequirePrint = true;
+                break;
+            }
+
+            $value .= $partValue;
+        }
+
+        $printedExpr = $isRequirePrint ? $this->nodePrinter->print($encapsed) : $value;
+        $printedExpr = trim($printedExpr, '""');
+
+        // use \$ → $
+        $printedExpr = Strings::replace($printedExpr, self::PRESLASHED_DOLLAR_REGEX, '$');
+        // use \'{$...}\' → $...
+        return Strings::replace($printedExpr, self::CURLY_BRACKET_WRAPPER_REGEX, '$1');
     }
 
     private function resolveConcatValue(Concat $concat): string

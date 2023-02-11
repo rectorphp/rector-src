@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\String_;
@@ -52,6 +53,10 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
 
         if ($node instanceof Encapsed) {
             return new MixedType();
+        }
+
+        if ($node instanceof EncapsedStringPart) {
+            return new ConstantStringType($node->value);
         }
 
         throw new NotImplementedYetException();
