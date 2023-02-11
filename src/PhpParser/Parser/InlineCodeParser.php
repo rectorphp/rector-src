@@ -132,6 +132,8 @@ final class InlineCodeParser
         }
 
         $printedExpr = $isRequirePrint ? $this->nodePrinter->print($encapsed) : $value;
+
+        // remove "
         $printedExpr = trim($printedExpr, '""');
 
         // use \$ → $
