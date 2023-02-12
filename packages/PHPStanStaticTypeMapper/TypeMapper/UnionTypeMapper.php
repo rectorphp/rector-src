@@ -175,7 +175,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        $types = $nullableType->type->types;
+        $types = [$nullableType->type];
         $types[] = new Identifier('null');
 
         return new PhpParserUnionType($types);
