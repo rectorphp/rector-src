@@ -161,17 +161,24 @@ final class UnionTypeMapper implements TypeMapperInterface
         return $this->resolveUnionTypes($phpParserUnionType);
     }
 
-    private function resolveNullableType(NullableType $nullableType): ?NullableType
+    private function resolveNullableType(NullableType $nullableType): null|NullableType|PhpParserUnionType
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULLABLE_TYPE)) {
             return null;
         }
 
-        if ($nullableType->type instanceof \PhpParser\Node\IntersectionType) {
+        if (! $nullableType->type instanceof \PhpParser\Node\IntersectionType) {
+            return $nullableType;
+        }
+
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::INTERSECTION_TYPES)) {
             return null;
         }
 
-        return $nullableType;
+        $types = $nullableType->type->types;
+        $types[] = new Identifier('null');
+
+        return new PhpParserUnionType($types);
     }
 
     /**
