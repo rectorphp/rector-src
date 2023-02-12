@@ -167,7 +167,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if (! $nullableType->type instanceof \PhpParser\Node\IntersectionType) {
+        if (! $nullableType->type instanceof PHPParserNodeIntersectionType) {
             return $nullableType;
         }
 
