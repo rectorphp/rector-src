@@ -33,9 +33,6 @@ use PHPUnit\Framework\TestCase;
 
 class NullableIntersectionType extends TestCase
 {
-    /**
-     * @var DateTime&MockObject
-     */
     private (\DateTime&\PHPUnit\Framework\MockObject\MockObject)|null $property = null;
 
     public function testExample(): void

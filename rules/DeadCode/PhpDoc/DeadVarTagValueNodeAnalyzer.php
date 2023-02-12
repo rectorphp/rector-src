@@ -6,7 +6,6 @@ namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -29,7 +28,7 @@ final class DeadVarTagValueNodeAnalyzer
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
 
-        if ($propertyType instanceof UnionType && ! $docType instanceof UnionType && ! $docType instanceof IntersectionType) {
+        if ($propertyType instanceof UnionType && ! $docType instanceof UnionType) {
             return true;
         }
 
