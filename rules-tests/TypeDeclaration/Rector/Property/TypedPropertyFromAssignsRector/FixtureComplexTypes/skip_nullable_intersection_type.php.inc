@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Tests;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
 use DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class SkipNullableIntersectionType extends TestCase
 {
     /**
      * @var DateTime&MockObject
