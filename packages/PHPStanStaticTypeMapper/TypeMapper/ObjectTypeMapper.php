@@ -118,7 +118,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             return new FullyQualified($type->getClassName());
         }
 
-        return new Identifier('object');
+        return new Name('object');
     }
 
     #[Required]
