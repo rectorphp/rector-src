@@ -224,7 +224,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         return $unionTypeAnalysis->hasArray();
     }
 
-    private function matchArrayTypes(UnionType $unionType): Name | NullableType | PhpParserUnionType | null
+    private function matchArrayTypes(UnionType $unionType): Identifier | NullableType | PhpParserUnionType | null
     {
         $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
         if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
@@ -236,7 +236,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $this->resolveNullableType(new NullableType($type));
         }
 
-        return new Name($type);
+        return new Identifier($type);
     }
 
     private function resolveUnionTypes(PhpParserUnionType $phpParserUnionType): ?PhpParserUnionType
