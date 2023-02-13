@@ -6,6 +6,7 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -109,7 +110,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
 
         if ($type->getClassName() === 'iterable') {
             // fallback
-            return new Name('iterable');
+            return new Identifier('iterable');
         }
 
         if ($type->getClassName() !== 'object') {
@@ -117,7 +118,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             return new FullyQualified($type->getClassName());
         }
 
-        return new Name('object');
+        return new Identifier('object');
     }
 
     #[Required]
