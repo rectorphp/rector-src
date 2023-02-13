@@ -110,7 +110,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
 
         if ($type->getClassName() === 'iterable') {
             // fallback
-            return new Identifier('iterable');
+            return new Name('iterable');
         }
 
         if ($type->getClassName() !== 'object') {
