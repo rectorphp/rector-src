@@ -103,17 +103,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if (! $type instanceof GenericObjectType) {
-            // fallback
-            return new FullyQualified($type->getClassName());
-        }
-
-        if ($type->getClassName() !== 'object') {
-            // fallback
-            return new FullyQualified($type->getClassName());
-        }
-
-        return new Identifier('object');
+        return new FullyQualified($type->getClassName());
     }
 
     #[Required]
