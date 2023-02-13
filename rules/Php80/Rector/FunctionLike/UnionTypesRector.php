@@ -181,7 +181,7 @@ CODE_SAMPLE
             return;
         }
 
-        $param->type = new Identifier('object');
+        $param->type = new Name('object');
         $this->hasChanged = true;
     }
 
