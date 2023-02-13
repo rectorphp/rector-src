@@ -7,6 +7,7 @@ namespace Rector\Php80\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -118,7 +119,7 @@ CODE_SAMPLE
         // add return type
 
         if ($toStringClassMethod->returnType === null) {
-            $toStringClassMethod->returnType = new Name('string');
+            $toStringClassMethod->returnType = new Identifier('string');
         }
 
         return $node;
