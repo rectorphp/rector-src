@@ -53,6 +53,9 @@ final class ClassAnalyzer
         return StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
     }
 
+    /**
+     * @api
+     */
     public function hasImplements(Class_ $class, string $interfaceFQN): bool
     {
         foreach ($class->implements as $implement) {

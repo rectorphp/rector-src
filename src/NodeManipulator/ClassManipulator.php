@@ -61,6 +61,7 @@ final class ClassManipulator
     }
 
     /**
+     * @api
      * @param string[]  $interfaceFQNS
      */
     public function removeImplements(Class_ $class, array $interfaceFQNS): void
