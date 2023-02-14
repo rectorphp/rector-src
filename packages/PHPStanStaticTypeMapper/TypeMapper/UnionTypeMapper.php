@@ -107,7 +107,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         if ($this->boolUnionTypeAnalyzer->isNullableBoolUnionType($type)
             && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)
         ) {
-            return $this->resolveNullableType(new NullableType(new Name('bool')));
+            return $this->resolveNullableType(new NullableType(new Identifier('bool')));
         }
 
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES) && $this->isFalseBoolUnion(
@@ -360,7 +360,7 @@ final class UnionTypeMapper implements TypeMapperInterface
              * @var Identifier|Name|null|PHPParserNodeIntersectionType $phpParserNode
              */
             $phpParserNode = $unionedType instanceof NullType && $typeKind === TypeKind::PROPERTY
-                ? new Name('null')
+                ? new Identifier('null')
                 : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
 
             if ($phpParserNode === null) {
