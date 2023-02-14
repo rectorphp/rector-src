@@ -4,9 +4,6 @@ namespace MyNamespace;
 
 class MyClass
 {
-    /**
-     * @return MyClass
-     */
     public function createSelf(): MyClass
     {
         return new MyClass;
@@ -21,9 +18,6 @@ namespace MyNewNamespace;
 
 class MyNewClass
 {
-    /**
-     * @return \MyNewNamespace\MyNewClass
-     */
     public function createSelf(): \MyNewNamespace\MyNewClass
     {
         return new \MyNewNamespace\MyNewClass;
