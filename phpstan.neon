@@ -99,8 +99,6 @@ parameters:
         # known value
         - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
 
-        - '#Parameter \#1 \$variable of class Rector\\Php70\\ValueObject\\VariableAssignPair constructor expects PhpParser\\Node\\Expr\\ArrayDimFetch\|PhpParser\\Node\\Expr\\PropertyFetch\|PhpParser\\Node\\Expr\\StaticPropertyFetch\|PhpParser\\Node\\Expr\\Variable, PhpParser\\Node\\Expr given#'
-
         # is nested expr
         - '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
 
@@ -432,9 +430,9 @@ parameters:
             paths:
                 # autoload check in bin file
                 - bin/rector.php
-                - src/Bootstrap/ExtensionConfigResolver.php
+                - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
                 # for config class reflection
-                - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
+                - src/Bootstrap/ExtensionConfigResolver.php
                 - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
                 - src/DependencyInjection/Skipper/ParameterSkipper.php
                 - src/DependencyInjection/DefinitionFinder.php
@@ -691,8 +689,8 @@ parameters:
         -
             message: '#Offset (.*?)includes(.*?) always exists and is not nullable#'
             paths:
-                - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
                 - src/Bootstrap/ExtensionConfigResolver.php
+                - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
 
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
