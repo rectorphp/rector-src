@@ -212,7 +212,7 @@ CODE_SAMPLE
         for ($index = $lastPosition + 1; $index < $position; ++$index) {
             $param = $classMethod->params[$index];
             if (! $param->default instanceof Expr) {
-                throw new ShouldNotHappenException('Previous position does not has default value');
+                throw new ShouldNotHappenException('Previous position does not have default value');
             }
 
             $default = $this->nodePrinter->print($param->default);
