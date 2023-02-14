@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\DependencyInjection;
 
 use PHPStan\ExtensionInstaller\GeneratedConfig;
 use Rector\Core\Exception\ShouldNotHappenException;
+use ReflectionClass;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\DependencyInjection\PHPStanExtensionsConfigResolverTest
@@ -31,7 +32,7 @@ final class PHPStanExtensionsConfigResolver
             return $this->cachedExtensionConfigFiles;
         }
 
-        $reflectionClass = new \ReflectionClass(GeneratedConfig::class);
+        $reflectionClass = new ReflectionClass(GeneratedConfig::class);
         $generatedConfigClassFileName = $reflectionClass->getFileName();
         if ($generatedConfigClassFileName === false) {
             throw new ShouldNotHappenException();

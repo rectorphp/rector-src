@@ -14,7 +14,7 @@ class ArrayStatic extends \DateTime
 
     public function __construct(DateTime $dateTime)
     {
-        $this->dateTime = rand(0,1)
+        $this->dateTime = rand(0, 15)
             ? [$dateTime]
             : null;
     }
@@ -38,7 +38,7 @@ class ArrayStatic extends \DateTime
 
     public function __construct(\DateTimeInterface $dateTime)
     {
-        $this->dateTime = rand(0,1)
+        $this->dateTime = rand(0, 15)
             ? [$dateTime]
             : null;
     }
