@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 #[RunTestsInSeparateProcesses]
