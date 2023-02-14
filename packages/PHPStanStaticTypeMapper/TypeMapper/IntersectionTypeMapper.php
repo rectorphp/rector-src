@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -94,6 +95,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
              */
             if ($intersectionedType instanceof ObjectWithoutClassType) {
                 return $resolvedType;
+            }
+
+            if (! $intersectionedType instanceof ObjectType) {
+                return null;
             }
 
             if (! $this->reflectionProvider->hasClass($resolvedTypeName)) {
