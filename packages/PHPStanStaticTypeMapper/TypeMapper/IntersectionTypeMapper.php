@@ -102,7 +102,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             }
 
             if (! $this->reflectionProvider->hasClass($resolvedTypeName)) {
-                continue;
+                return null;
             }
 
             $intersectionedTypeNodes[] = $resolvedType;
