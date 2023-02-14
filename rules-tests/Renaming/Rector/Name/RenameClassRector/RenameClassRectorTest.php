@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
+#[RunTestsInSeparateProcesses]
 final class RenameClassRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
