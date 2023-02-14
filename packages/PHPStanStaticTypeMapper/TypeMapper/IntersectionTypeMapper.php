@@ -93,14 +93,6 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 return $resolvedType;
             }
 
-            /**
-             * $this->reflectionProvider->hasClass($resolvedTypeName) returns true on iterable type
-             * this ensure type is ObjectType early
-             */
-            if (! $intersectionedType instanceof ObjectType) {
-                continue;
-            }
-
             if (! $this->reflectionProvider->hasClass($resolvedTypeName)) {
                 continue;
             }
