@@ -88,6 +88,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 
             $resolvedTypeName = (string) $resolvedType;
 
+            /**
+             * ObjectWithoutClassType can happen when use along with \PHPStan\Type\Accessory\HasMethodType
+             * Use "object" as returned type
+             */
             if ($intersectionedType instanceof ObjectWithoutClassType) {
                 return $resolvedType;
             }
