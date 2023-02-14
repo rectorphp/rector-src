@@ -432,7 +432,7 @@ parameters:
             paths:
                 # autoload check in bin file
                 - bin/rector.php
-                - src/Bootstrap/ExtensionConfigResolver.php
+                - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
                 # for config class reflection
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanServicesFactory.php
                 - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
