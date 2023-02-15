@@ -120,19 +120,12 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             $content .= $this->nl;
         }
 
-        $currentFile = $this->currentFileProvider->getFile();
-        if ($currentFile instanceof File && ! $currentFile->getFileDiff() instanceof FileDiff) {
+        if (! $this->mixPhpHtmlDecorator->isRequireReprintInlineHTML()) {
             return $content;
         }
 
-        $firstStmt = current($newStmts);
-        $lastStmt = end($newStmts);
-
-        $content = $this->cleanEndWithPHPOpenTag($lastStmt, $content);
-        $content = str_replace('<?php <?php', '<?php', $content);
-        $content = str_replace('?>?>', '?>', $content);
-
-        return $this->cleanSurplusTag($firstStmt, $content);
+        $content = $this->cleanSurplusTag($content);
+        return $this->cleanEndWithPHPOpenTag($content);
     }
 
     /**
@@ -504,12 +497,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
     }
 
-    private function cleanEndWithPHPOpenTag(Node $node, string $content): string
+    private function cleanEndWithPHPOpenTag(string $content): string
     {
-        if (! $node instanceof InlineHTML) {
-            return $content;
-        }
-
         if (str_ends_with($content, "<?php \n")) {
             return substr($content, 0, -7);
         }
@@ -521,11 +510,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return $content;
     }
 
-    private function cleanSurplusTag(Node $node, string $content): string
+    private function cleanSurplusTag(string $content): string
     {
-        if (! $node instanceof InlineHTML) {
-            return $content;
-        }
+        $content = str_replace('<?php <?php', '<?php', $content);
+        $content = str_replace('?>?>', '?>', $content);
 
         if (str_starts_with($content, "?>\n")) {
             return substr($content, 3);
