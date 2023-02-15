@@ -20,6 +20,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -468,7 +469,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType || $argValue instanceof Encapsed) {
+        if (! $type instanceof MixedType && ! $type instanceof NullType) {
+            return null;
+        }
+
+        if ($argValue instanceof Encapsed) {
             return null;
         }
 
@@ -490,13 +495,13 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function shouldSkipTrait(Expr $expr, MixedType $mixedType, bool $isTrait): bool
+    private function shouldSkipTrait(Expr $expr, MixedType|NullType $mixedType, bool $isTrait): bool
     {
         if (! $isTrait) {
             return false;
         }
 
-        if ($mixedType->isExplicitMixed()) {
+        if ($mixedType instanceof MixedType && $mixedType->isExplicitMixed()) {
             return false;
         }
 
