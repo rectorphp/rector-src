@@ -481,7 +481,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipTrait($argValue, $type, $isTrait)) {
+        if ($type instanceof MixedType && $this->shouldSkipTrait($argValue, $type, $isTrait)) {
             return null;
         }
 
@@ -495,13 +495,13 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function shouldSkipTrait(Expr $expr, MixedType|NullType $mixedType, bool $isTrait): bool
+    private function shouldSkipTrait(Expr $expr, MixedType $mixedType, bool $isTrait): bool
     {
         if (! $isTrait) {
             return false;
         }
 
-        if ($mixedType instanceof MixedType && $mixedType->isExplicitMixed()) {
+        if ($mixedType->isExplicitMixed()) {
             return false;
         }
 
