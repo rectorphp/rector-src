@@ -5,6 +5,7 @@
         "bin/rector"
     ],
     "license": "MIT",
+    "keywords": ["dev"],
     "homepage": "https://getrector.org",
     "require": {
         "php": "^8.1",
