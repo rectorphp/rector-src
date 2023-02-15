@@ -23,7 +23,9 @@ final class WithHTML
     public function run( $foo, $bar )
     {
     ?>
-        <input type="number" name="<?php echo $foo; ?>" value="<?php isset( $bar ) ? $bar : 0 ?>">
+        <input type="number" name="<?php echo $foo; ?>" value="<?php if (isset( $bar )) {
+        $bar;
+    }?>">
     <?php
     }
 }
