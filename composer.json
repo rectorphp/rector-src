@@ -5,7 +5,7 @@
         "bin/rector"
     ],
     "license": "MIT",
-    "keywords": ["dev"],
+    "keywords": ["refactoring", "automation", "migration"],
     "homepage": "https://getrector.org",
     "require": {
         "php": "^8.1",
