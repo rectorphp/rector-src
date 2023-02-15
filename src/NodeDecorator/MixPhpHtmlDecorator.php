@@ -18,10 +18,17 @@ final class MixPhpHtmlDecorator
 {
     private NodeRemover $nodeRemover;
 
+    private bool $isRequireReprintInlineHTML = false;
+
     #[Required]
     public function autowire(NodeRemover $nodeRemover): void
     {
         $this->nodeRemover = $nodeRemover;
+    }
+
+    public function isRequireReprintInlineHTML(): bool
+    {
+        return $this->isRequireReprintInlineHTML;
     }
 
     /**
@@ -89,6 +96,8 @@ final class MixPhpHtmlDecorator
 
         // remove Nop is marked  as comment of Next Node
         $this->nodeRemover->removeNode($nop);
+
+        $this->isRequireReprintInlineHTML = true;
     }
 
     private function rePrintInlineHTML(InlineHTML $inlineHTML, Stmt $stmt): void
@@ -96,6 +105,7 @@ final class MixPhpHtmlDecorator
         // Token start = -1, just added
         if ($stmt->getStartTokenPos() < 0) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $this->isRequireReprintInlineHTML = true;
         }
     }
 }
