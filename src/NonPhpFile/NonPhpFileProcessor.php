@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NonPhpFile;
 
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
+use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\ValueObject\Application\File;
@@ -13,6 +14,7 @@ use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Core\ValueObject\StaticNonPhpFileSuffixes;
 use Rector\Parallel\ValueObject\Bridge;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class NonPhpFileProcessor implements FileProcessorInterface
 {
@@ -22,6 +24,8 @@ final class NonPhpFileProcessor implements FileProcessorInterface
     public function __construct(
         private readonly array $nonPhpRectors,
         private readonly FileDiffFactory $fileDiffFactory,
+        private readonly Filesystem $filesystem,
+        private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
     ) {
     }
 
@@ -54,6 +58,8 @@ final class NonPhpFileProcessor implements FileProcessorInterface
         if ($oldFileContent !== $newFileContent) {
             $fileDiff = $this->fileDiffFactory->createFileDiff($file, $oldFileContent, $newFileContent);
             $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS][] = $fileDiff;
+
+            $this->printFile($file, $configuration);
         }
 
         return $systemErrorsAndFileDiffs;
@@ -81,5 +87,20 @@ final class NonPhpFileProcessor implements FileProcessorInterface
     public function getSupportedFileExtensions(): array
     {
         return StaticNonPhpFileSuffixes::SUFFIXES;
+    }
+
+    private function printFile(File $file, Configuration $configuration): void
+    {
+        $filePath = $file->getFilePath();
+        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
+            // skip, because this file exists no more
+            return;
+        }
+
+        if ($configuration->isDryRun()) {
+            return;
+        }
+
+        $this->filesystem->dumpFile($filePath, $file->getFileContent());
     }
 }
