@@ -111,6 +111,8 @@ final class MixPhpHtmlDecorator
         if ($stmt->getStartTokenPos() < 0) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->isRequireReprintInlineHTML = true;
+
+            return;
         }
 
         $originalNode = $stmt->getAttribute(AttributeKey::ORIGINAL_NODE);
