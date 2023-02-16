@@ -118,15 +118,13 @@ final class MixPhpHtmlDecorator
             return;
         }
 
-        $node = $inlineHTML->getAttribute(AttributeKey::PARENT_NODE);
-        $parentStmt = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $parentInlineHTML instanceof Stmt || ! $parentStmt instanceof Stmt) {
+        $node = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $node instanceof Stmt) {
             return;
         }
 
         // last Stmt that connected to InlineHTML just removed
-        if ($node !== $parentStmt) {
+        if ($inlineHTML->getAttribute(AttributeKey::PARENT_NODE) !== $node) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->isRequireReprintInlineHTML = true;
         }
