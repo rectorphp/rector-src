@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
-use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,11 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysElseRector extends AbstractRector
 {
-    public function __construct(
-        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -98,9 +92,7 @@ CODE_SAMPLE
             $this->mirrorComments($node, $firstElseIf);
 
             $nodesToReturnAfterNode = $this->getStatementsElseIfs($node);
-            if ($originalNode->else instanceof Else_ && ! $this->inlineHTMLAnalyzer->hasInlineHTML(
-                $originalNode->else
-            )) {
+            if ($originalNode->else instanceof Else_) {
                 $node->else = null;
                 $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
             }
@@ -108,7 +100,7 @@ CODE_SAMPLE
             return [$if, $node, ...$nodesToReturnAfterNode];
         }
 
-        if ($node->else instanceof Else_ && ! $this->inlineHTMLAnalyzer->hasInlineHTML($node->else)) {
+        if ($node->else instanceof Else_) {
             $stmts = $node->else->stmts;
             $node->else = null;
 
