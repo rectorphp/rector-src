@@ -9,8 +9,8 @@ final class SkipElseInlineHTML
         if (rand(0, 5) > 2) {
             return;
         } else { ?>
-			this is <?php echo "hello"; ?> world
-		<?php }
+            this is <?php echo "hello"; ?> world
+        <?php }
     }
 }
 
@@ -28,10 +28,10 @@ final class SkipElseInlineHTML
             return;
         }
         ?>
-                       this is <?php 
+            this is <?php 
         echo "hello";
         ?> world
-               <?php 
+        <?php 
     }
 }
 
