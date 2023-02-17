@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Factory so Symfony app can use services from PHPStan container
@@ -30,11 +31,30 @@ final class PHPStanServicesFactory
     public function __construct(
         private readonly ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
+        BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
-        $existingAdditionalConfigFiles = $this->resolveAdditionalConfigFiles();
+        $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
+
+        $purifiedConfigFiles = [];
+
+        foreach ($additionalConfigFiles as $key => $additionalConfigFile) {
+            $purifiedConfigFile = $bleedingEdgeIncludePurifier->purifyConfigFile($additionalConfigFile);
+
+            // nothing was changed
+            if ($purifiedConfigFile === null) {
+                continue;
+            }
+
+            $additionalConfigFiles[$key] = $purifiedConfigFile;
+            $purifiedConfigFiles[] = $purifiedConfigFile;
+        }
 
         $containerFactory = new ContainerFactory(getcwd());
-        $this->container = $containerFactory->create(sys_get_temp_dir(), $existingAdditionalConfigFiles, []);
+        $this->container = $containerFactory->create(sys_get_temp_dir(), $additionalConfigFiles, []);
+
+        // clear temporary files, after container is created
+        $filesystem = new Filesystem();
+        $filesystem->remove($purifiedConfigFiles);
     }
 
     /**
