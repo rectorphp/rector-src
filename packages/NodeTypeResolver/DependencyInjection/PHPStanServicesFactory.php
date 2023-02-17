@@ -17,36 +17,44 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Factory so Symfony app can use services from PHPStan container
+ *
+ * @see \Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory
  */
 final class PHPStanServicesFactory
 {
     private readonly Container $container;
 
     public function __construct(
-        ParameterProvider $parameterProvider,
-        PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
+        private readonly ParameterProvider $parameterProvider,
+        private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
+        BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
-        $containerFactory = new ContainerFactory(getcwd());
+        $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
 
-        $additionalConfigFiles = [];
+        $purifiedConfigFiles = [];
 
-        if ($parameterProvider->hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
-            $additionalConfigFiles[] = $parameterProvider->provideStringParameter(Option::PHPSTAN_FOR_RECTOR_PATH);
+        foreach ($additionalConfigFiles as $key => $additionalConfigFile) {
+            $purifiedConfigFile = $bleedingEdgeIncludePurifier->purifyConfigFile($additionalConfigFile);
+
+            // nothing was changed
+            if ($purifiedConfigFile === null) {
+                continue;
+            }
+
+            $additionalConfigFiles[$key] = $purifiedConfigFile;
+            $purifiedConfigFiles[] = $purifiedConfigFile;
         }
 
-        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';
-        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
-        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
+        $containerFactory = new ContainerFactory(getcwd());
+        $this->container = $containerFactory->create(sys_get_temp_dir(), $additionalConfigFiles, []);
 
-        $extensionConfigFiles = $phpStanExtensionsConfigResolver->resolve();
-        $additionalConfigFiles = array_merge($additionalConfigFiles, $extensionConfigFiles);
-
-        $existingAdditionalConfigFiles = array_filter($additionalConfigFiles, 'file_exists');
-
-        $this->container = $containerFactory->create(sys_get_temp_dir(), $existingAdditionalConfigFiles, []);
+        // clear temporary files, after container is created
+        $filesystem = new Filesystem();
+        $filesystem->remove($purifiedConfigFiles);
     }
 
     /**
@@ -119,5 +127,28 @@ final class PHPStanServicesFactory
     public function createDynamicSourceLocatorProvider(): DynamicSourceLocatorProvider
     {
         return $this->container->getByType(DynamicSourceLocatorProvider::class);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveAdditionalConfigFiles(): array
+    {
+        $additionalConfigFiles = [];
+
+        if ($this->parameterProvider->hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
+            $additionalConfigFiles[] = $this->parameterProvider->provideStringParameter(
+                Option::PHPSTAN_FOR_RECTOR_PATH
+            );
+        }
+
+        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';
+        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
+        $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
+
+        $extensionConfigFiles = $this->phpStanExtensionsConfigResolver->resolve();
+        $additionalConfigFiles = array_merge($additionalConfigFiles, $extensionConfigFiles);
+
+        return array_filter($additionalConfigFiles, 'file_exists');
     }
 }
