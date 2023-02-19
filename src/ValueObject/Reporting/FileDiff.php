@@ -33,7 +33,7 @@ final class FileDiff implements SerializableInterface
         private readonly string $diffConsoleFormatted,
         private readonly array $rectorsWithLineChanges = []
     ) {
-        Assert::allIsAOf($rectorsWithLineChanges, RectorWithLineChange::class);
+        Assert::allIsInstanceOf($rectorsWithLineChanges, RectorWithLineChange::class);
     }
 
     public function getDiff(): string
