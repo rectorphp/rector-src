@@ -216,7 +216,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Stmt) {
-                $this->processChildOfUnreachableStatementNode($node);
+                $this->setChildOfUnreachableStatementNodeAttribute($node);
             }
 
             // special case for unreachable nodes
@@ -230,7 +230,7 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
     }
 
-    private function processChildOfUnreachableStatementNode(Stmt $stmt): void
+    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
     {
         if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
             return;
