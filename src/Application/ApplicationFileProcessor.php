@@ -19,6 +19,7 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\PostRector\Contract\AfterRectorRunnerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
@@ -39,6 +40,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param FileProcessorInterface[] $fileProcessors
+     * @param AfterRectorRunnerInterface[] $afterRectorRunners
      */
     public function __construct(
         private readonly Filesystem $filesystem,
@@ -52,7 +54,8 @@ final class ApplicationFileProcessor
         private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
-        private readonly array $fileProcessors = []
+        private readonly array $fileProcessors = [],
+        private readonly array $afterRectorRunners = [],
     ) {
     }
 
@@ -86,6 +89,10 @@ final class ApplicationFileProcessor
 
             $this->fileDiffFileDecorator->decorate($files);
             $this->printFiles($files, $configuration);
+        }
+
+        foreach ($this->afterRectorRunners as $afterRectorRunner) {
+            $afterRectorRunner->run();
         }
 
         $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
