@@ -352,9 +352,6 @@ parameters:
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
-        # PHPStan 1.4.7
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsAOf|isAOf|assertInstanceOf\(\) with .* will always evaluate to true#'
-
         -
             message: '#Make callable type explicit#'
             path: src/NodeManipulator/BinaryOpManipulator.php
@@ -805,3 +802,6 @@ parameters:
 
         # nullable in external package
         - '#Parameters should use "PhpParser\\Node\\Expr\\FuncCall\|string\|string\|PHPStan\\Analyser\\Scope" types as the only types passed to this method#'
+
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:(allIsAOf|isAOf|assertInstanceOf|allIsInstanceOf)(.*?) will always evaluate to true#'
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) will always evaluate to true#'
