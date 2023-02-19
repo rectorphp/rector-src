@@ -112,7 +112,6 @@ CODE_SAMPLE
         $firstStmt = current($node->stmts);
         if ($firstStmt instanceof Stmt) {
             $nextNode = $firstStmt->getAttribute(AttributeKey::NEXT_NODE);
-            // if next node is unreachable, current Stmt already unreachable as well
             if ($nextNode instanceof Stmt && $nextNode->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                 return null;
             }
