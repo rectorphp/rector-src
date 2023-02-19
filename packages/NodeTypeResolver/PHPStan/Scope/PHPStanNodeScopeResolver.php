@@ -47,7 +47,6 @@ use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\Core\Util\StringUtils;
@@ -82,8 +81,7 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly RenamedClassesSourceLocator $renamedClassesSourceLocator,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
         $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
     }
@@ -239,11 +237,6 @@ final class PHPStanNodeScopeResolver
         }
 
         $parentStmt = $stmt->getAttribute(AttributeKey::PARENT_NODE);
-
-        if ($parentStmt instanceof Closure) {
-            $parentStmt = $this->betterNodeFinder->resolveCurrentStatement($parentStmt);
-        }
-
         if (! $parentStmt instanceof Stmt) {
             return;
         }
