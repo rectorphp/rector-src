@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Function_;
 use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php56\NodeAnalyzer\UndefinedVariableResolver;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -107,14 +106,6 @@ CODE_SAMPLE
 
         if ($variablesInitiation === []) {
             return null;
-        }
-
-        $firstStmt = current($node->stmts);
-        if ($firstStmt instanceof Stmt) {
-            $nextNode = $firstStmt->getAttribute(AttributeKey::NEXT_NODE);
-            if ($nextNode instanceof Stmt && $nextNode->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-                return null;
-            }
         }
 
         $node->stmts = array_merge($variablesInitiation, $node->stmts);
