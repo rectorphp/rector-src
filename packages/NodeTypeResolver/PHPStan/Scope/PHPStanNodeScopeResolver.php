@@ -234,11 +234,11 @@ final class PHPStanNodeScopeResolver
 
     private function processChildOfUnreachableStatementNode(Stmt $stmt): void
     {
-        $parentStmt = $stmt->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $parentStmt instanceof Node) {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
             return;
         }
+
+        $parentStmt = $stmt->getAttribute(AttributeKey::PARENT_NODE);
 
         if ($parentStmt instanceof Closure) {
             $parentStmt = $this->betterNodeFinder->resolveCurrentStatement($parentStmt);
