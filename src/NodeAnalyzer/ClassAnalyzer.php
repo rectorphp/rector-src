@@ -15,9 +15,9 @@ final class ClassAnalyzer
 {
     /**
      * @var string
-     * @see https://regex101.com/r/FQH6RT/1
+     * @see https://regex101.com/r/FQH6RT/2
      */
-    private const ANONYMOUS_CLASS_REGEX = '#AnonymousClass\w+$#';
+    private const ANONYMOUS_CLASS_REGEX = '#^AnonymousClass\w+$#';
 
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver
