@@ -240,7 +240,7 @@ final class PHPStanNodeScopeResolver
             return;
         }
 
-        if (! $parentStmt instanceof Closure) {
+        if ($parentStmt instanceof Closure) {
             $parentStmt = $this->betterNodeFinder->resolveCurrentStatement($parentStmt);
         }
 
