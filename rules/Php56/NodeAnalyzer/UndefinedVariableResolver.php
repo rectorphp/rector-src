@@ -84,10 +84,6 @@ final class UndefinedVariableResolver
             }
 
             $variableName = $this->nodeNameResolver->getName($node);
-            if (! is_string($variableName)) {
-                return null;
-            }
-
             if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName)) {
                 return null;
             }
@@ -100,8 +96,12 @@ final class UndefinedVariableResolver
         return array_unique($undefinedVariables);
     }
 
-    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, string $variableName): bool
+    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, ?string $variableName): bool
     {
+        if (! is_string($variableName)) {
+            return true;
+        }
+
         // defined 100 %
         /** @var Scope $scope */
         $scope = $variable->getAttribute(AttributeKey::SCOPE);
