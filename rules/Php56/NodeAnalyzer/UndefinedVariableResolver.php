@@ -88,6 +88,7 @@ final class UndefinedVariableResolver
                 return null;
             }
 
+            /** @var string $variableName */
             $undefinedVariables[] = $variableName;
 
             return null;
