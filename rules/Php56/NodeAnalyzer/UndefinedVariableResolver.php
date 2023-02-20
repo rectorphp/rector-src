@@ -33,6 +33,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class UndefinedVariableResolver
 {
@@ -41,7 +42,8 @@ final class UndefinedVariableResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeComparator $nodeComparator,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly VariableAnalyzer $variableAnalyzer
+        private readonly VariableAnalyzer $variableAnalyzer,
+        private readonly NodesToRemoveCollector $nodesToRemoveCollector
     ) {
     }
 
@@ -62,6 +64,11 @@ final class UndefinedVariableResolver
 
             if ($node instanceof Foreach_) {
                 // handled above
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            // the Stmt just replaced
+            if ($node instanceof Stmt && ! $node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
