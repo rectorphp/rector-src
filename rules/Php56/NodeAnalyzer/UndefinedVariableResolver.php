@@ -65,7 +65,14 @@ final class UndefinedVariableResolver
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            // the Stmt just replaced
+            /**
+             * The Stmt is
+             *
+             *      - an indirect replacement below changed Node
+             *      - as Stmt that just reprinted,
+             *
+             * so need separate run to get type correctly
+             */
             if ($node instanceof Stmt && ! $node->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
