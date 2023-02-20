@@ -33,7 +33,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class UndefinedVariableResolver
 {
@@ -42,8 +41,7 @@ final class UndefinedVariableResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeComparator $nodeComparator,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly VariableAnalyzer $variableAnalyzer,
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector
+        private readonly VariableAnalyzer $variableAnalyzer
     ) {
     }
 
