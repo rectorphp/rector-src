@@ -65,6 +65,14 @@ final class UndefinedVariableResolver
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
+            /**
+             * The Stmt that doesn't have origNode attribute yet
+             * means the Stmt is a replacement below other changed node
+             */
+            if ($node instanceof Stmt && ! $node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
             if (! $node instanceof Variable) {
                 return null;
             }
@@ -79,14 +87,11 @@ final class UndefinedVariableResolver
             }
 
             $variableName = $this->nodeNameResolver->getName($node);
-            if (! is_string($variableName)) {
-                return null;
-            }
-
             if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName)) {
                 return null;
             }
 
+            /** @var string $variableName */
             $undefinedVariables[] = $variableName;
 
             return null;
@@ -95,8 +100,12 @@ final class UndefinedVariableResolver
         return array_unique($undefinedVariables);
     }
 
-    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, string $variableName): bool
+    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, ?string $variableName): bool
     {
+        if (! is_string($variableName)) {
+            return true;
+        }
+
         // defined 100 %
         /** @var Scope $scope */
         $scope = $variable->getAttribute(AttributeKey::SCOPE);
