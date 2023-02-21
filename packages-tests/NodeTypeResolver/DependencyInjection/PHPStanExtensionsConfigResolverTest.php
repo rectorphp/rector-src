@@ -18,7 +18,7 @@ final class PHPStanExtensionsConfigResolverTest extends AbstractTestCase
         $this->phpStanExtensionsConfigResolver = $this->getService(PHPStanExtensionsConfigResolver::class);
     }
 
-    public function test(): void
+    public function testRequiredConfigs(): void
     {
         // these configs are required by this package, so must be in there
 
@@ -32,5 +32,16 @@ final class PHPStanExtensionsConfigResolverTest extends AbstractTestCase
 
         $this->assertContains($phpunitExtensionFilePath, $extensionConfigFiles);
         $this->assertContains($assertExtensionFilePath, $extensionConfigFiles);
+    }
+
+    public function testSkippedConfigs(): void
+    {
+        // these configs are skipped by this package, so must not be in there
+
+        $mglamanPhpstanDrupalExtensionFilePath = realpath(__DIR__ . '/../../../vendor/') . '/mglaman/phpstan-drupal/drupal-autoloader.php';
+
+        $extensionConfigFiles = $this->phpStanExtensionsConfigResolver->resolve();
+
+        $this->assertNotContains($mglamanPhpstanDrupalExtensionFilePath, $extensionConfigFiles);
     }
 }
