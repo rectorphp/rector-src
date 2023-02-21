@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -15,7 +16,12 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
@@ -25,6 +31,9 @@ final class CallTypesResolver
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeFactory $typeFactory,
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly AstResolver $astResolver,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -39,6 +48,15 @@ final class CallTypesResolver
         foreach ($calls as $call) {
             if (! $call instanceof StaticCall && ! $call instanceof MethodCall) {
                 continue;
+            }
+
+            $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
+            $parentClassMethod = $this->betterNodeFinder->findParentType($call, ClassMethod::class);
+
+            if ($parentClassMethod instanceof ClassMethod) {
+                if ($this->nodeComparator->areNodesEqual($parentClassMethod, $classMethod)) {
+                    return [];
+                }
             }
 
             foreach ($call->args as $position => $arg) {
