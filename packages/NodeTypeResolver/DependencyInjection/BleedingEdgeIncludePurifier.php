@@ -53,6 +53,8 @@ final class BleedingEdgeIncludePurifier
         $fileDirectory = dirname($filePath);
         $baseFileName = pathinfo($filePath, PATHINFO_BASENAME);
 
-        return $fileDirectory . '/temp_' . bin2hex(random_bytes(10)) . '_' . $baseFileName;
+        $randomBytes = random_bytes(10);
+        $randomString = bin2hex($randomBytes);
+        return $fileDirectory . '/temp_' . $randomString . '_' . $baseFileName;
     }
 }

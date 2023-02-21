@@ -805,3 +805,10 @@ parameters:
 
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(allIsAOf|isAOf|assertInstanceOf|allIsInstanceOf)(.*?) will always evaluate to true#'
         - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) will always evaluate to true#'
+
+        - '#Doing instanceof PHPStan\\Type\\.* is error\-prone and deprecated(\. Use Type\:\:.*\(\) (or .* )?instead)?#'
+
+        # phpstan 1.10.0
+        - '#Call to deprecated method getDirectClassNames\(\) of class PHPStan\\Type\\TypeUtils.*#'
+        - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
+        - '#Parameters should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs\|PhpParser\\Node\\Param" types as the only types passed to this method#'
