@@ -180,9 +180,11 @@ final class ArrayCallableMethodMatcher
         }
 
         $extendedMethodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+            $extendedMethodReflection->getVariants()
+        );
 
-        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflection) {
             if ($parameterReflection->getDefaultValue() === null) {
                 return new MixedType();
             }
