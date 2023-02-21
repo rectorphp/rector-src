@@ -127,14 +127,8 @@ final class MixPhpHtmlDecorator
 
         $parentInlineHTML = $inlineHTML->getAttribute(AttributeKey::PARENT_NODE);
 
-        /**
-         * Exactly compare different Stmt class to ensure that parent is actually changed to different Stmt
-         * and ensure no invalid reprint that cause surplus:
-         *
-         *      - <?php before <?= on short tag
-         *      - ?>\n?> return array of nodes with previously InlineHTML
-         */
-        if ($parentInlineHTML instanceof Stmt && $parentInlineHTML::class !== $node::class) {
+        // last Stmt that connected to InlineHTML just removed detected by different start token pos
+        if ($parentInlineHTML instanceof Stmt && $parentInlineHTML->getStartTokenPos() !== $node->getStartTokenPos()) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->isRequireReprintInlineHTML = true;
         }
