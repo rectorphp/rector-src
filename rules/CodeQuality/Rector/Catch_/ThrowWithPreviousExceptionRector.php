@@ -183,9 +183,11 @@ CODE_SAMPLE
         }
 
         $extendedMethodReflection = $classReflection->getConstructor();
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+            $extendedMethodReflection->getVariants()
+        );
 
-        foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $position => $parameterReflection) {
             $parameterType = $parameterReflection->getType();
             if (! $parameterType instanceof TypeWithClassName) {
                 continue;
