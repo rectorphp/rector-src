@@ -157,11 +157,13 @@ final class CurrentAndParentClassMethodComparator
         ClassMethod $classMethod,
         ExtendedMethodReflection $extendedMethodReflection
     ): bool {
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+            $extendedMethodReflection->getVariants()
+        );
 
-        foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflectionWithPhpDoc) {
             if (! isset($classMethod->params[$key])) {
-                if ($parameterReflection->getDefaultValue() !== null) {
+                if ($parameterReflectionWithPhpDoc->getDefaultValue() !== null) {
                     continue;
                 }
 
@@ -171,7 +173,7 @@ final class CurrentAndParentClassMethodComparator
             $methodParam = $classMethod->params[$key];
 
             if ($this->parameterDefaultsComparator->areDefaultValuesDifferent(
-                $parameterReflection,
+                $parameterReflectionWithPhpDoc,
                 $methodParam
             )) {
                 return true;

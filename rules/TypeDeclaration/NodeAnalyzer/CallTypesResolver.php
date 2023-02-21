@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -15,6 +16,9 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -25,6 +29,9 @@ final class CallTypesResolver
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly TypeFactory $typeFactory,
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly AstResolver $astResolver,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -41,6 +48,10 @@ final class CallTypesResolver
                 continue;
             }
 
+            if ($this->isRecursiveCall($call)) {
+                return [];
+            }
+
             foreach ($call->args as $position => $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
@@ -52,6 +63,18 @@ final class CallTypesResolver
 
         // unite to single type
         return $this->unionToSingleType($staticTypesByArgumentPosition);
+    }
+
+    private function isRecursiveCall(MethodCall|StaticCall $call): bool
+    {
+        $parentClassMethod = $this->betterNodeFinder->findParentType($call, ClassMethod::class);
+
+        if (! $parentClassMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
+        return $this->nodeComparator->areNodesEqual($parentClassMethod, $classMethod);
     }
 
     private function resolveStrictArgValueType(Arg $arg): Type
