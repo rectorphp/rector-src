@@ -187,8 +187,8 @@ CODE_SAMPLE
             $extendedMethodReflection->getVariants()
         );
 
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $position => $parameterReflection) {
-            $parameterType = $parameterReflection->getType();
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $position => $parameterReflectionWithPhpDoc) {
+            $parameterType = $parameterReflectionWithPhpDoc->getType();
             if (! $parameterType instanceof TypeWithClassName) {
                 continue;
             }
