@@ -516,7 +516,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     private function cleanSurplusTag(string $content): string
     {
         $content = str_replace('<?php <?php', '<?php', $content);
-        $content = str_replace('<?php <?=', '<?=', $content);
         $content = str_replace('?>?>', '?>', $content);
         $content = str_replace("?>\n?>", '?>', $content);
 
