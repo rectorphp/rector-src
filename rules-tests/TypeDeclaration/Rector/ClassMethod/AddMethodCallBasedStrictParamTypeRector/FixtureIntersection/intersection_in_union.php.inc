@@ -15,7 +15,7 @@ abstract class IntersectionInUnion
         return [];
     }
 
-    private function removeEmptyValues(array $input): array
+    private function removeEmptyValues($input): array
     {
         foreach ($input as &$value) {
             if (! is_array($value)) {
