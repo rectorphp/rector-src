@@ -184,8 +184,8 @@ final class ArrayCallableMethodMatcher
             $extendedMethodReflection->getVariants()
         );
 
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflection) {
-            if ($parameterReflection->getDefaultValue() === null) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
+            if ($parameterReflectionWithPhpDoc->getDefaultValue() === null) {
                 return new MixedType();
             }
         }
