@@ -48,13 +48,8 @@ final class CallTypesResolver
                 continue;
             }
 
-            $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
-            $parentClassMethod = $this->betterNodeFinder->findParentType($call, ClassMethod::class);
-
-            if ($parentClassMethod instanceof ClassMethod) {
-                if ($this->nodeComparator->areNodesEqual($parentClassMethod, $classMethod)) {
-                    return [];
-                }
+            if ($this->isRecursiveCall($call)) {
+                return [];
             }
 
             foreach ($call->args as $position => $arg) {
@@ -68,6 +63,18 @@ final class CallTypesResolver
 
         // unite to single type
         return $this->unionToSingleType($staticTypesByArgumentPosition);
+    }
+
+    private function isRecursiveCall(MethodCall|StaticCall $call): bool
+    {
+        $parentClassMethod = $this->betterNodeFinder->findParentType($call, ClassMethod::class);
+
+        if (! $parentClassMethod instanceof ClassMethod) {
+            return false;
+        }
+
+        $classMethod = $this->astResolver->resolveClassMethodFromCall($call);
+        return $this->nodeComparator->areNodesEqual($parentClassMethod, $classMethod);
     }
 
     private function resolveStrictArgValueType(Arg $arg): Type
