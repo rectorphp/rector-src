@@ -125,8 +125,13 @@ final class MixPhpHtmlDecorator
             return;
         }
 
-        // last Stmt that connected to InlineHTML just removed
-        if ($inlineHTML->getAttribute(AttributeKey::PARENT_NODE) !== $node) {
+        $parentInlineHTML = $inlineHTML->getAttribute(AttributeKey::PARENT_NODE);
+
+        /**
+         * Exactly compare different Stmt class to ensure that parent is actually changed to different Stmt
+         * and ensure no invalid reprint that cause surplus <?php before <?= on short tag
+         */
+        if ($parentInlineHTML instanceof Stmt && $parentInlineHTML::class !== $node::class) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->isRequireReprintInlineHTML = true;
         }
