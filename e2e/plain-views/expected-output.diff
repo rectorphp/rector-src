@@ -1,5 +1,5 @@
-2 files with changes
-====================
+1 file with changes
+===================
 
 1) src/view.php:0
 
@@ -13,16 +13,4 @@
 +	</div>
     ----------- end diff -----------
 
-2) src/short_open_tag.php:4
-
-    ---------- begin diff ----------
-@@ @@
-   <div class="wrap">
-     <img src="<?= escape('hi there'); ?>">
-   </div>
--  <?php
-+<?php
- }
-    ----------- end diff -----------
-
- [OK] 2 files would have changed (dry-run) by Rector
+ [OK] 1 file would have changed (dry-run) by Rector

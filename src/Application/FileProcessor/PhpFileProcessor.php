@@ -79,6 +79,11 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
+        // empty diff? return here
+        if ($fileDiff->getDiff() === '') {
+            return $systemErrorsAndFileDiffs;
+        }
+
         $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = [$fileDiff];
         return $systemErrorsAndFileDiffs;
     }
