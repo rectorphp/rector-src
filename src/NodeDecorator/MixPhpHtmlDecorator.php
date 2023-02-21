@@ -129,7 +129,10 @@ final class MixPhpHtmlDecorator
 
         /**
          * Exactly compare different Stmt class to ensure that parent is actually changed to different Stmt
-         * and ensure no invalid reprint that cause surplus <?php before <?= on short tag
+         * and ensure no invalid reprint that cause surplus:
+         *
+         *      - <?php before <?= on short tag
+         *      - ?>\n?> return array of nodes with previously InlineHTML
          */
         if ($parentInlineHTML instanceof Stmt && $parentInlineHTML::class !== $node::class) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
