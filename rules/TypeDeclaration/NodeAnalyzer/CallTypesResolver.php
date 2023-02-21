@@ -19,9 +19,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
