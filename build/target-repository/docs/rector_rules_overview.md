@@ -1,4 +1,4 @@
-# 414 Rules Overview
+# 415 Rules Overview
 
 <br>
 
@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (78)
 
-- [CodingStyle](#codingstyle) (39)
+- [CodingStyle](#codingstyle) (40)
 
 - [Compatibility](#compatibility) (1)
 
@@ -1942,6 +1942,31 @@ Type and name of catch exception should match
          }
      }
  }
+```
+
+<br>
+
+### CleanupUnneededNullsafeOperatorRector
+
+Cleanup unneeded nullsafe operator
+
+- class: [`Rector\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodingStyle/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
+
+```diff
+ class HelloWorld {
+     public function getString(): string
+     {
+          return 'hello world';
+     }
+ }
+
+ public function get(): HelloWorld
+ {
+      return new HelloWorld();
+ }
+
+-echo $this->get()?->getHelloWorld();
++echo $this->get()->getHelloWorld();
 ```
 
 <br>
