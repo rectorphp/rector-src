@@ -114,10 +114,7 @@ CODE_SAMPLE
     private function shouldSkipFromParam(Expr $expr): bool
     {
         /** @var Variable[] $variables */
-        $variables = $this->betterNodeFinder->findInstancesOf(
-            $expr,
-            [Variable::class]
-        );
+        $variables = $this->betterNodeFinder->findInstancesOf($expr, [Variable::class]);
 
         foreach ($variables as $variable) {
             if ($this->exprAnalyzer->isNonTypedFromParam($variable)) {
