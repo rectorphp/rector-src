@@ -138,10 +138,11 @@ final class ReflectionResolver
     {
         $objectType = $this->nodeTypeResolver->getType($staticCall->class);
 
-        /** @var array<class-string> $classNames */
         if ($objectType instanceof ShortenedObjectType) {
+            /** @var array<class-string> $classNames */
             $classNames = [$objectType->getFullyQualifiedName()];
         } else {
+            /** @var array<class-string> $classNames */
             $classNames = TypeUtils::getDirectClassNames($objectType);
         }
 
