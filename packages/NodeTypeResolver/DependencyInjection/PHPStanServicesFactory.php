@@ -57,6 +57,11 @@ final class PHPStanServicesFactory
         $filesystem->remove($purifiedConfigFiles);
     }
 
+    public function provideContainer(): Container
+    {
+        return $this->container;
+    }
+
     /**
      * @api
      */

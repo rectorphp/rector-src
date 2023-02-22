@@ -812,3 +812,11 @@ parameters:
         - '#Call to deprecated method getDirectClassNames\(\) of class PHPStan\\Type\\TypeUtils.*#'
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
         - '#Parameters should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs\|PhpParser\\Node\\Param" types as the only types passed to this method#'
+
+        # various usage
+        - '#Parameters should use "PHPStan\\DependencyInjection\\Container" types as the only types passed to this method#'
+
+        # actually used in global scope
+        -
+            message: '#Anonymous function has an unused use \$phpstanContainer#'
+            path: src/Autoloading/BootstrapFilesIncluder.php
