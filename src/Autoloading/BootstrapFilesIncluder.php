@@ -92,7 +92,7 @@ final class BootstrapFilesIncluder
      * PHPStan container mimics:
      * https://github.com/phpstan/phpstan-src/blob/34881e682e36e30917dcfa8dc69c70e857143436/src/Command/CommandHelper.php#L513-L515
      */
-    private function tryRequireFile(string $bootstrapFile, ?Container $phpstanContainer = null): void
+    private function tryRequireFile(string $bootstrapFile, ?Container $container = null): void
     {
         try {
             (static function (string $bootstrapFile) use ($container): void {
