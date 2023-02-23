@@ -89,11 +89,6 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
-        // return early on diff is empty
-        if ($fileDiff->getDiff() === '') {
-            return $systemErrorsAndFileDiffs;
-        }
-
         // No Line change and no PostRector change? return early
         if ($file->getRectorWithLineChanges() === [] && ! $hasChangedOnPostRector) {
             $this->rollbackOriginalFile($file, $configuration);
