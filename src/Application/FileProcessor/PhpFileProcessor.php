@@ -73,7 +73,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($filePostRectorNewStmts);
 
-            if ($file->getRectorWithLineChanges() === [] && $fileNewStmts !== $filePostRectorNewStmts) {
+            if (! $hasChangedOnPostRector && $file->getRectorWithLineChanges() === [] && $fileNewStmts !== $filePostRectorNewStmts) {
                 $hasChangedOnPostRector = true;
             }
 
