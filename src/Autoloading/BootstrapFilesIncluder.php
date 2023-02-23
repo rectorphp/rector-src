@@ -95,7 +95,7 @@ final class BootstrapFilesIncluder
     private function tryRequireFile(string $bootstrapFile, ?Container $phpstanContainer = null): void
     {
         try {
-            (static function (string $bootstrapFile) use ($phpstanContainer): void {
+            (static function (string $bootstrapFile) use ($container): void {
                 require_once $bootstrapFile;
             })($bootstrapFile);
         } catch (Throwable $throwable) {
