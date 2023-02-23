@@ -58,7 +58,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
-        $hasChangedPostRector = false;
+        $hasChangedOnPostRector = false;
 
         // 2. change nodes with Rectors
         do {
@@ -74,7 +74,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             $file->changeNewStmts($filePostRectorNewStmts);
 
             if ($file->getRectorWithLineChanges() === [] && $fileNewStmts !== $filePostRectorNewStmts) {
-                $hasChangedPostRector = true;
+                $hasChangedOnPostRector = true;
             }
 
             // 4. print to file or string
@@ -89,7 +89,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // No Line change and no PostRector change? return early
-        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedPostRector) {
+        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedOnPostRector) {
             return $systemErrorsAndFileDiffs;
         }
 
