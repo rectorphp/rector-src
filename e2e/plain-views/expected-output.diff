@@ -1,7 +1,31 @@
-1 file with changes
-===================
+4 files with changes
+====================
 
-1) src/short_open_tag_with_import_name.php:0
+1) src/with_whitespace_previous.php:0
+
+    ---------- begin diff ----------
+@@ @@
+-
+-
+-
+ <?php
+
+ echo 'test';
+    ----------- end diff -----------
+
+2) src/view.php:0
+
+    ---------- begin diff ----------
+@@ @@
+-
+-	<div>
++<div>
+ 	<?php echo 1 ?>
+-	</div>
++	</div>
+    ----------- end diff -----------
+
+3) src/short_open_tag_with_import_name.php:0
 
     ---------- begin diff ----------
 @@ @@
@@ -22,4 +46,16 @@
 +}
     ----------- end diff -----------
 
- [OK] 1 file would have changed (dry-run) by Rector
+4) src/short_open_tag.php:4
+
+    ---------- begin diff ----------
+@@ @@
+   <div class="wrap">
+     <img src="<?= escape('hi there'); ?>">
+   </div>
+-  <?php
++<?php
+ }
+    ----------- end diff -----------
+
+ [OK] 4 files would have changed (dry-run) by Rector
