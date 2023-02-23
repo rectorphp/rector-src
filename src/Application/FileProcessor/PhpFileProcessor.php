@@ -104,6 +104,20 @@ final class PhpFileProcessor implements FileProcessorInterface
         return $systemErrorsAndFileDiffs;
     }
 
+    public function supports(File $file, Configuration $configuration): bool
+    {
+        $filePathExtension = pathinfo($file->getFilePath(), PATHINFO_EXTENSION);
+        return in_array($filePathExtension, $configuration->getFileExtensions(), true);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSupportedFileExtensions(): array
+    {
+        return ['php'];
+    }
+
     private function rollbackOriginalFile(File $file, Configuration $configuration): void
     {
         if ($configuration->isDryRun()) {
@@ -117,20 +131,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         Filesystem::write($filePath, $file->getOriginalFileContent());
-    }
-
-    public function supports(File $file, Configuration $configuration): bool
-    {
-        $filePathExtension = pathinfo($file->getFilePath(), PATHINFO_EXTENSION);
-        return in_array($filePathExtension, $configuration->getFileExtensions(), true);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getSupportedFileExtensions(): array
-    {
-        return ['php'];
     }
 
     /**
