@@ -1,28 +1,25 @@
-2 files with changes
-====================
+1 file with changes
+===================
 
-1) src/view.php:0
-
-    ---------- begin diff ----------
-@@ @@
--
--	<div>
-+<div>
- 	<?php echo 1 ?>
--	</div>
-+	</div>
-    ----------- end diff -----------
-
-2) src/short_open_tag.php:4
+1) src/short_open_tag_with_import_name.php:0
 
     ---------- begin diff ----------
 @@ @@
+ <?php
++
++use PhpParser\Node\Stmt\Expression;
+ function test_callback2($newNode) {
+-  return new \PhpParser\Node\Stmt\Expression($newNode);
++  return new Expression($newNode);
+   // var_dump($output);
+   ?>
    <div class="wrap">
      <img src="<?= escape('hi there'); ?>">
    </div>
 -  <?php
+-}
 +<?php
- }
++}
     ----------- end diff -----------
 
- [OK] 2 files would have changed (dry-run) by Rector
+ [OK] 1 file would have changed (dry-run) by Rector

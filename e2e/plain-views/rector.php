@@ -10,4 +10,5 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->sets([\Rector\Set\ValueObject\SetList::CODE_QUALITY]);
+    $rectorConfig->importNames();
 };
