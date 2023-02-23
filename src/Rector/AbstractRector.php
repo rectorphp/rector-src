@@ -216,7 +216,7 @@ CODE_SAMPLE;
         $originalNode ??= $node;
 
         // nothing to change → continue
-        if ($refactoredNode === null || ! $this->nodeComparator->areSameNode($node, $originalNode)) {
+        if ($refactoredNode === null || $this->nodeComparator->areSameNode($node, $originalNode)) {
             return null;
         }
 
