@@ -213,12 +213,12 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
+        $originalNode ??= $node;
+
         // nothing to change → continue
-        if ($refactoredNode === null || $refactoredNode === $node) {
+        if ($refactoredNode === null || ! $this->nodeComparator->areSameNode($node, $originalNode)) {
             return null;
         }
-
-        $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
