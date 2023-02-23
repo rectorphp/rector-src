@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
-use Nette\Utils\FileSystem;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
@@ -59,39 +58,24 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
-        $hasChangedOnPostRector = false;
-
         // 2. change nodes with Rectors
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
 
-            $fileNewStmts = $file->getNewStmts();
-
             // 3. apply post rectors
-            $filePostRectorNewStmts = $this->postFileProcessor->traverse($fileNewStmts);
-
+            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
             // this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($filePostRectorNewStmts);
-
-            if (! $hasChangedOnPostRector && $file->getRectorWithLineChanges() === [] && $fileNewStmts !== $filePostRectorNewStmts) {
-                $hasChangedOnPostRector = true;
-            }
+            $file->changeNewStmts($newStmts);
 
             // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
         } while ($file->hasChanged());
 
-        // return early on no diff
+        // return json here
         $fileDiff = $file->getFileDiff();
         if (! $fileDiff instanceof FileDiff) {
-            return $systemErrorsAndFileDiffs;
-        }
-
-        // No Line change and no PostRector change? return early
-        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedOnPostRector) {
-            $this->rollbackOriginalFile($file, $configuration);
             return $systemErrorsAndFileDiffs;
         }
 
@@ -111,21 +95,6 @@ final class PhpFileProcessor implements FileProcessorInterface
     public function getSupportedFileExtensions(): array
     {
         return ['php'];
-    }
-
-    private function rollbackOriginalFile(File $file, Configuration $configuration): void
-    {
-        if ($configuration->isDryRun()) {
-            return;
-        }
-
-        $filePath = $file->getFilePath();
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
-            // skip, because this file exists no more
-            return;
-        }
-
-        Filesystem::write($filePath, $file->getOriginalFileContent());
     }
 
     /**
