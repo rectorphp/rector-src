@@ -70,11 +70,10 @@ final class PhpFileProcessor implements FileProcessorInterface
             // 3. apply post rectors
             $filePostRectorNewStmts = $this->postFileProcessor->traverse($fileNewStmts);
 
-            if ($fileNewStmts !== $filePostRectorNewStmts) {
-                // this is needed for new tokens added in "afterTraverse()"
-                // when Post Rector apply change
-                $file->changeNewStmts($filePostRectorNewStmts);
+            // this is needed for new tokens added in "afterTraverse()"
+            $file->changeNewStmts($filePostRectorNewStmts);
 
+            if ($file->getRectorWithLineChanges() === [] && $fileNewStmts !== $filePostRectorNewStmts) {
                 $hasChangedPostRector = true;
             }
 
