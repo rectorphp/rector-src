@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
+use Nette\Utils\FileSystem;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
@@ -88,18 +89,34 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
-        // No Line change and no PostRector change? return early
-        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedOnPostRector) {
-            return $systemErrorsAndFileDiffs;
-        }
-
         // return early on diff is empty
         if ($fileDiff->getDiff() === '') {
             return $systemErrorsAndFileDiffs;
         }
 
+        // No Line change and no PostRector change? return early
+        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedOnPostRector) {
+            $this->rollbackOriginalFile($file, $configuration);
+            return $systemErrorsAndFileDiffs;
+        }
+
         $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = [$fileDiff];
         return $systemErrorsAndFileDiffs;
+    }
+
+    private function rollbackOriginalFile(File $file, Configuration $configuration): void
+    {
+        if ($configuration->isDryRun()) {
+            return;
+        }
+
+        $filePath = $file->getFilePath();
+        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
+            // skip, because this file exists no more
+            return;
+        }
+
+        Filesystem::write($filePath, $file->getOriginalFileContent());
     }
 
     public function supports(File $file, Configuration $configuration): bool
