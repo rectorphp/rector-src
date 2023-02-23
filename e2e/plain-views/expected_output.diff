@@ -1,0 +1,24 @@
+1 file with change
+==================
+
+1) src/short_open_tag.php:4
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
++
++use PhpParser\Node\Stmt\Expression;
+ function test_callback2($newNode) {
+-  return new \PhpParser\Node\Stmt\Expression($newNode);
++  return new Expression($newNode);
+   // var_dump($output);
+   ?>
+   <div class="wrap">
+     <img src="<?= escape('hi there'); ?>">
+   </div>
+-  <?php
++<?php
+ }
+    ----------- end diff -----------
+
+ [OK] 1 files would have changed (dry-run) by Rector
