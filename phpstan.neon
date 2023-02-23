@@ -818,5 +818,5 @@ parameters:
 
         # actually used in global scope
         -
-            message: '#Anonymous function has an unused use \$phpstanContainer#'
+            message: '#Anonymous function has an unused use \$container#'
             path: src/Autoloading/BootstrapFilesIncluder.php
