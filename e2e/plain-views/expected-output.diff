@@ -1,7 +1,7 @@
-1 file with change
-==================
+1 file with changes
+===================
 
-1) src/short_open_tag.php:4
+1) src/short_open_tag_with_import_name.php:0
 
     ---------- begin diff ----------
 @@ @@
@@ -17,9 +17,9 @@
      <img src="<?= escape('hi there'); ?>">
    </div>
 -  <?php
+-}
 +<?php
- }
++}
     ----------- end diff -----------
 
- [OK] 1 files would have changed (dry-run) by Rector
-
+ [OK] 1 file would have changed (dry-run) by Rector
