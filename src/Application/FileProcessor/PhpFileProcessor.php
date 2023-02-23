@@ -58,31 +58,42 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
+        $hasChangedPostRector = false;
+
         // 2. change nodes with Rectors
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
 
+            $fileNewStmts = $file->getNewStmts();
+
             // 3. apply post rectors
-            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-            // this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($newStmts);
+            $newStmts = $this->postFileProcessor->traverse($fileNewStmts);
+
+            if ($fileNewStmts !== $newStmts) {
+                // this is needed for new tokens added in "afterTraverse()"
+                $file->changeNewStmts($newStmts);
+
+                $hasChangedPostRector = true;
+            }
 
             // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
         } while ($file->hasChanged());
 
-        // return json here
+        // return early on no diff
         $fileDiff = $file->getFileDiff();
         if (! $fileDiff instanceof FileDiff) {
             return $systemErrorsAndFileDiffs;
         }
 
-        if ($file->getRectorWithLineChanges() === []) {
+        // No Line change and no PostRector change? return early
+        if ($file->getRectorWithLineChanges() === [] && ! $hasChangedPostRector) {
             return $systemErrorsAndFileDiffs;
         }
 
+        // return early on dif is empty
         if ($fileDiff->getDiff() === '') {
             return $systemErrorsAndFileDiffs;
         }
