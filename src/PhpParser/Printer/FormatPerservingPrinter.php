@@ -40,10 +40,8 @@ final class FormatPerservingPrinter
 
     public function printParsedStmstAndTokensToString(File $file): string
     {
-        $newStmts = $this->betterStandardPrinter->resolveNewStmts($file->getNewStmts());
-
         return $this->betterStandardPrinter->printFormatPreserving(
-            $newStmts,
+            $file->getNewStmts(),
             $file->getOldStmts(),
             $file->getOldTokens()
         );
@@ -51,8 +49,6 @@ final class FormatPerservingPrinter
 
     public function printParsedStmstAndTokens(File $file): string
     {
-        $newStmts = $this->betterStandardPrinter->resolveNewStmts($file->getNewStmts());
-
-        return $this->printToFile($file->getFilePath(), $newStmts, $file->getOldStmts(), $file->getOldTokens());
+        return $this->printToFile($file->getFilePath(), $file->getNewStmts(), $file->getOldStmts(), $file->getOldTokens());
     }
 }
