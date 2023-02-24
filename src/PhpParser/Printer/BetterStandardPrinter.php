@@ -568,7 +568,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      * @param Node[] $stmts
      * @return Node[]|mixed[]
      */
-    private function resolveNewStmts(array $stmts): array
+    public function resolveNewStmts(array $stmts): array
     {
         if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
             return $this->resolveNewStmts($stmts[0]->stmts);
