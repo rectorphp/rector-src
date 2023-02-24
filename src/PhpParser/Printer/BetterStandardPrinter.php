@@ -500,19 +500,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($param->default instanceof Expr ? ' = ' . $this->p($param->default) : '');
     }
 
-    /**
-     * @param Node[] $stmts
-     * @return Node[]|mixed[]
-     */
-    private function resolveNewStmts(array $stmts): array
-    {
-        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
-            return $this->resolveNewStmts($stmts[0]->stmts);
-        }
-
-        return $stmts;
-    }
-
     private function cleanEndWithPHPOpenTag(string $content): string
     {
         if (str_ends_with($content, "<?php \n")) {
@@ -575,6 +562,19 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         return $content = $text . $content;
+    }
+
+    /**
+     * @param Node[] $stmts
+     * @return Node[]|mixed[]
+     */
+    private function resolveNewStmts(array $stmts): array
+    {
+        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+            return $this->resolveNewStmts($stmts[0]->stmts);
+        }
+
+        return $stmts;
     }
 
     /**
