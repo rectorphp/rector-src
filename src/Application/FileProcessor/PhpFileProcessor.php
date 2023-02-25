@@ -24,6 +24,7 @@ use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Throwable;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
@@ -41,7 +42,8 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
-        private readonly FilePathHelper $filePathHelper
+        private readonly FilePathHelper $filePathHelper,
+        private readonly Filesystem $filesystem
     ) {
     }
 
@@ -148,9 +150,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        $newContent = $configuration->isDryRun()
-            ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
-            : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
+        $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
 
         /**
          * When no Rules applied, the PostRector may still change the content, that's why printing still needed
@@ -175,6 +175,10 @@ final class PhpFileProcessor implements FileProcessorInterface
             if ($cleanedOriginalFileContent === $newContent) {
                 return;
             }
+        }
+
+        if (! $configuration->isDryRun()) {
+            $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
         }
 
         $file->changeFileContent($newContent);
