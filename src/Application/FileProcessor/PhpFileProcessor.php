@@ -149,9 +149,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        $newContent = $configuration->isDryRun()
-            ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
-            : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
+        // only save to string first, no need to print to file when not needed
+        $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
 
         /**
          * When no Rules applied, the PostRector may still change the content, that's why printing still needed
@@ -165,7 +164,6 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $originalFileContent = $file->getOriginalFileContent();
             if (ltrim($originalFileContent) === $newContent) {
-                $this->rollbackFileContent($file, $configuration, $originalFileContent);
                 return;
             }
 
@@ -175,22 +173,16 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $cleanedOriginalFileContent = Strings::replace($originalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($cleanedOriginalFileContent === $newContent) {
-                $this->rollbackFileContent($file, $configuration, $originalFileContent);
                 return;
             }
         }
 
-        $file->changeFileContent($newContent);
-        $this->fileDiffFileDecorator->decorate([$file]);
-    }
-
-    private function rollbackFileContent(File $file, Configuration $configuration, string $originalFileContent): void
-    {
-        if ($configuration->isDryRun()) {
-            return;
+        if (! $configuration->isDryRun()) {
+            $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $newContent);
         }
 
-        $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
+        $file->changeFileContent($newContent);
+        $this->fileDiffFileDecorator->decorate([$file]);
     }
 
     private function notifyFile(File $file): void

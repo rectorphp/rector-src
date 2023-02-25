@@ -44,6 +44,10 @@ final class FormatPerservingPrinter
         );
     }
 
+    /**
+     * @api
+     * @deprecated printParsedStmstAndTokensToString() and dumpFile() directly
+     */
     public function printParsedStmstAndTokens(File $file): string
     {
         return $this->printToFile(
