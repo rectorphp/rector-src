@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -9,7 +10,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__.'/src/',
     ]);
 
-    $rectorConfig->sets([\Rector\Set\ValueObject\SetList::CODE_QUALITY]);
+    $rectorConfig->rule(CommonNotEqualRector::class);
     $rectorConfig->importNames();
     $rectorConfig->fileExtensions(['php', 'phtml']);
 };
