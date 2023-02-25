@@ -23,8 +23,8 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Throwable;
 use Symfony\Component\Filesystem\Filesystem;
+use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
