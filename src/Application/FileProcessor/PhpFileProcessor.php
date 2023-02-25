@@ -149,6 +149,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
+        // Do not write to file to early to avoid unnecessary rollback when no diff actually needed checked next
         $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
 
         /**
