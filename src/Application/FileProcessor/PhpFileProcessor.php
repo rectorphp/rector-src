@@ -29,8 +29,9 @@ final class PhpFileProcessor implements FileProcessorInterface
 {
     /**
      * @var string
+     * @see https://regex101.com/r/O7nuds/1
      */
-    private const OPEN_TAG_SPACED_REGEX = '#(?<open_tag_spaced> +\<\?php)#';
+    private const OPEN_TAG_SPACED_REGEX = '#(?<open_tag_spaced>[^\S\r\n]+\<\?php)#';
 
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
