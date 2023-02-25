@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileProcessor;
 
+use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
@@ -26,6 +27,11 @@ use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
 {
+    /**
+     * @var string
+     */
+    private const OPEN_TAG_SPACED_REGEX = '#(?<open_tag_spaced> +\<\?php)#';
+
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
         private readonly FileProcessor $fileProcessor,
@@ -145,6 +151,31 @@ final class PhpFileProcessor implements FileProcessorInterface
         $newContent = $configuration->isDryRun()
             ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
             : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
+
+        /**
+         * When no Rules applied, the PostRector may still change the content, that's why printing still needed
+         * On printing, the space may be wiped, these below compare with original file content used to verify
+         * that no diff actually needed
+         */
+        if ($file->getRectorWithLineChanges() === []) {
+            /**
+             * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
+             * On very first content level
+             */
+            $originalFileContent = $file->getOriginalFileContent();
+            if (ltrim($originalFileContent) === $newContent) {
+                return;
+            }
+
+            /**
+             * Handle space before <?php wiped on print format preserving
+             * On inside content level
+             */
+            $cleanedOriginalFileContent = Strings::replace($originalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            if ($cleanedOriginalFileContent === $newContent) {
+                return;
+            }
+        }
 
         $file->changeFileContent($newContent);
         $this->fileDiffFileDecorator->decorate([$file]);
