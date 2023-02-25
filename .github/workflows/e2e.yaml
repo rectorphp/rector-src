@@ -30,7 +30,6 @@ jobs:
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/plain-views'
                     - 'e2e/template-extends'
-                    - 'e2e/use-rector-configurator'
                     - 'e2e/applied-rule-removed-node'
                     - 'e2e/parallel with space'
                     - 'e2e/removed-and-added-files-collector'
