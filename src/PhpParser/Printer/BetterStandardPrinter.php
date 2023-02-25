@@ -163,7 +163,9 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     public function pFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): string
     {
-        return $this->pStmts($fileWithoutNamespace->stmts, false);
+        $content = $this->pStmts($fileWithoutNamespace->stmts, false);
+
+        return ltrim($content);
     }
 
     protected function p(Node $node, $parentFormatPreserved = false): string
