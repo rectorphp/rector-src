@@ -154,7 +154,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         /**
          * When no Rules applied, the PostRector may still change the content, that's why printing still needed
-         * On printing, the space may be wiped, these below compare with original file content used to verify
+         * On printing, the space may be wiped, these below check compare with original file content used to verify
          * that no diff actually needed
          */
         if ($file->getRectorWithLineChanges() === []) {
