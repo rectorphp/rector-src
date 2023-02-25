@@ -47,8 +47,5 @@ final class FormatPerservingPrinter
     public function dumpFile(string $filePath, string $newContent): void
     {
         $this->filesystem->dumpFile($filePath, $newContent);
-
-        // @todo how to keep origianl access rights without the SplFileInfo
-        // $this->filesystem->chmod($filePath, $fileInfo->getPerms());
     }
 }
