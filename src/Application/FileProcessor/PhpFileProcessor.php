@@ -165,10 +165,7 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $originalFileContent = $file->getOriginalFileContent();
             if (ltrim($originalFileContent) === $newContent) {
-                if (! $configuration->isDryRun()) {
-                    $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
-                }
-
+                $this->rollbackFileContent($file, $configuration, $originalFileContent);
                 return;
             }
 
@@ -178,16 +175,22 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $cleanedOriginalFileContent = Strings::replace($originalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($cleanedOriginalFileContent === $newContent) {
-                if (! $configuration->isDryRun()) {
-                    $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
-                }
-
+                $this->rollbackFileContent($file, $configuration, $originalFileContent);
                 return;
             }
         }
 
         $file->changeFileContent($newContent);
         $this->fileDiffFileDecorator->decorate([$file]);
+    }
+
+    private function rollbackFileContent(File $file, Configuration $configuration, string $originalFileContent): void
+    {
+        if ($configuration->isDryRun()) {
+            return;
+        }
+
+        $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
     }
 
     private function notifyFile(File $file): void
