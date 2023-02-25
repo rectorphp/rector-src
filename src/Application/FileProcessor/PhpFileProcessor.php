@@ -177,6 +177,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             }
         }
 
+        // write to file no --dry-run used
         if (! $configuration->isDryRun()) {
             $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
         }
