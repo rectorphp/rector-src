@@ -30,10 +30,7 @@ final class FormatPerservingPrinter
     {
         $newContent = $this->betterStandardPrinter->printFormatPreserving($newStmts, $oldStmts, $oldTokens);
 
-        $this->filesystem->dumpFile($filePath, $newContent);
-
-        // @todo how to keep origianl access rights without the SplFileInfo
-        // $this->filesystem->chmod($filePath, $fileInfo->getPerms());
+        $this->dumpFile($filePath, $newContent);
 
         return $newContent;
     }
@@ -55,5 +52,13 @@ final class FormatPerservingPrinter
             $file->getOldStmts(),
             $file->getOldTokens()
         );
+    }
+
+    public function dumpFile(string $filePath, string $newContent): void
+    {
+        $this->filesystem->dumpFile($filePath, $newContent);
+
+        // @todo how to keep origianl access rights without the SplFileInfo
+        // $this->filesystem->chmod($filePath, $fileInfo->getPerms());
     }
 }

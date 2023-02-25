@@ -149,8 +149,9 @@ final class PhpFileProcessor implements FileProcessorInterface
             return;
         }
 
-        // Do not write to file too early to avoid unnecessary rollback when no diff actually needed checked next
-        $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
+        $newContent = $configuration->isDryRun()
+            ? $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file)
+            : $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
 
         /**
          * When no Rules applied, the PostRector may still change the content, that's why printing still needed
@@ -164,6 +165,10 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $originalFileContent = $file->getOriginalFileContent();
             if (ltrim($originalFileContent) === $newContent) {
+                if (! $configuration->isDryRun()) {
+                    $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
+                }
+
                 return;
             }
 
@@ -173,13 +178,12 @@ final class PhpFileProcessor implements FileProcessorInterface
              */
             $cleanedOriginalFileContent = Strings::replace($originalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($cleanedOriginalFileContent === $newContent) {
+                if (! $configuration->isDryRun()) {
+                    $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $originalFileContent);
+                }
+
                 return;
             }
-        }
-
-        // write to file when no --dry-run used
-        if (! $configuration->isDryRun()) {
-            $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokens($file);
         }
 
         $file->changeFileContent($newContent);
