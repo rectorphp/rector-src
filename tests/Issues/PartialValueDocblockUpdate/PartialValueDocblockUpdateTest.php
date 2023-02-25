@@ -6,10 +6,8 @@ namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-#[RunTestsInSeparateProcesses]
 final class PartialValueDocblockUpdateTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]

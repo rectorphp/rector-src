@@ -6,10 +6,8 @@ namespace Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchM
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-#[RunTestsInSeparateProcesses]
 final class RenameForeachValueVariableToMatchMethodCallReturnTypeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
