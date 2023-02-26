@@ -163,7 +163,8 @@ final class PhpFileProcessor implements FileProcessorInterface
              * On very first content level
              */
             $originalFileContent = $file->getOriginalFileContent();
-            if (ltrim($originalFileContent) === $newContent) {
+            $ltrimOriginalFileContent = ltrim($originalFileContent);
+            if ($ltrimOriginalFileContent === $newContent) {
                 return;
             }
 
@@ -172,6 +173,15 @@ final class PhpFileProcessor implements FileProcessorInterface
              * On inside content level
              */
             $cleanedOriginalFileContent = Strings::replace($originalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            if ($cleanedOriginalFileContent === $newContent) {
+                return;
+            }
+
+            /**
+             * Handle space before <?php wiped on print format preserving
+             * On inside content level
+             */
+            $cleanedOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($cleanedOriginalFileContent === $newContent) {
                 return;
             }
