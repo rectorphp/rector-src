@@ -173,7 +173,11 @@ final class PhpFileProcessor implements FileProcessorInterface
              * Handle space before <?php wiped on print format preserving
              * On inside content level
              */
-            $cleanedOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $cleanedOriginalFileContent = Strings::replace(
+                $ltrimOriginalFileContent,
+                self::OPEN_TAG_SPACED_REGEX,
+                '<?php'
+            );
             if ($cleanedOriginalFileContent === $newContent) {
                 return;
             }
