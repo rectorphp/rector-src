@@ -27,8 +27,9 @@ final class MatchParamTypeExpectedNameResolver
 
         $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
 
+        // include nullable too
         // skip date time + date time interface, as should be kept
-        if ($staticType instanceof ObjectType && $staticType->isInstanceOf('DateTimeInterface')->yes()) {
+        if ($staticType->isSuperTypeOf(new ObjectType('DateTimeInterface'))->yes()) {
             return null;
         }
 
