@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Nop;
-use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,11 +19,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ShortenElseIfRector extends AbstractRector
 {
-    public function __construct(
-        private readonly CommentsMerger $commentsMerger
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Shortens else/if to elseif', [
@@ -108,10 +102,7 @@ CODE_SAMPLE
         } else {
             $currentStmt = current($if->stmts);
             $mergedComments = array_merge($if->getComments(), $currentStmt->getComments());
-            $currentStmt->setAttribute(
-                AttributeKey::COMMENTS,
-                $mergedComments
-            );
+            $currentStmt->setAttribute(AttributeKey::COMMENTS, $mergedComments);
         }
 
         $node->elseifs[] = new ElseIf_($if->cond, $if->stmts);
