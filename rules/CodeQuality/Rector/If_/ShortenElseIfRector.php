@@ -107,7 +107,10 @@ CODE_SAMPLE
             $if->stmts[] = $nop;
         } else {
             $currentStmt = current($if->stmts);
-            $this->commentsMerger->keepChildren($currentStmt, $if);
+            $currentStmt->setAttribute(
+                AttributeKey::COMMENTS,
+                array_merge($if->getComments(), $currentStmt->getComments())
+            );
         }
 
         $node->elseifs[] = new ElseIf_($if->cond, $if->stmts);
