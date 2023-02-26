@@ -1,7 +1,7 @@
 <?php
 namespace Rector\Tests\CodeQuality\Rector\If_\ShortenElseIfRector\Fixture;
 
-final class DemoFile
+final class MirrorCommentDeepComment
 {
 	public function run( int $arg, array $b_arg ) {
 		if ( $arg > 5 ) {
@@ -29,7 +29,7 @@ final class DemoFile
 
 namespace Rector\Tests\CodeQuality\Rector\If_\ShortenElseIfRector\Fixture;
 
-final class DemoFile
+final class MirrorCommentDeepComment
 {
 	public function run( int $arg, array $b_arg ) {
 		if ( $arg > 5 ) {
