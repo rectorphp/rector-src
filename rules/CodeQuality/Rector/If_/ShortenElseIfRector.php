@@ -107,9 +107,10 @@ CODE_SAMPLE
             $if->stmts[] = $nop;
         } else {
             $currentStmt = current($if->stmts);
+            $mergedComments = array_merge($if->getComments(), $currentStmt->getComments());
             $currentStmt->setAttribute(
                 AttributeKey::COMMENTS,
-                array_merge($if->getComments(), $currentStmt->getComments())
+                $mergedComments
             );
         }
 
