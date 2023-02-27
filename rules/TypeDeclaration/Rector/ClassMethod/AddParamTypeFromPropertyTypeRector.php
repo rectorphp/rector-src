@@ -162,11 +162,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $exprType = $this->nodeTypeResolver->getType($node->expr);
+            $exprType = $this->nodeTypeResolver->getNativeType($node->expr);
 
             $nodeExprType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($exprType, TypeKind::PARAM);
 
-            $varType = $this->nodeTypeResolver->getType($node->var);
+            $varType = $this->nodeTypeResolver->getNativeType($node->var);
             $nodeVarType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($varType, TypeKind::ANY);
 
             if ($nodeExprType instanceof Node && ! $this->nodeComparator->areNodesEqual($nodeExprType, $nodeVarType)) {
