@@ -1,44 +1,34 @@
+# github action that checks code with Rector
 name: Rector
 
 on:
     pull_request: null
 
+
 jobs:
     rector:
         # Don't run on forks.
-        if: github.repository == 'rectorphp/rector-src'
-
-        strategy:
-            fail-fast: false
-            matrix:
-                paths:
-                    - src tests rules-tests packages packages-tests
-                    - rules
-                    - config utils
+        if: github.repository == '__CURRENT_REPOSITORY__'
 
         runs-on: ubuntu-latest
-        timeout-minutes: 10
 
         steps:
-            # workaround for missing secret in fork PRs - see https://github.com/actions/checkout/issues/298
-            # see https://github.com/rectorphp/rector/commit/d395e1c28b8e6a56711dcc2e10490a82965850e4
             -
                 uses: actions/checkout@v3
                 with:
-                    # Must be used to trigger workflow after push
+                    # needed to trigger workflow after push
                     token: ${{ secrets.ACCESS_TOKEN }}
 
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    # PHP 7.3 is required, so Rector's code is PHP 7.3 compatible even after refactoring
                     php-version: 8.1
                     coverage: none
 
-            -   run: composer install --no-progress --ansi
+            -   uses: "ramsey/composer-install@v2"
 
             ## First run Rector - here can't be --dry-run !!! it would stop the job with it and not commit anything in the future
-            -   run: bin/rector process ${{ matrix.paths }} --ansi
+            -   run: vendor/bin/rector --ansi
 
             -   run: vendor/bin/ecs check --fix --ansi
 
@@ -50,7 +40,7 @@ jobs:
                 with:
                     # The arguments for the `git add` command (see the paragraph below for more info)
                     add: .
-                    message: "[ci-review] Rector Rectify"
+                    message: "[rector] Rector fixes"
                     author_name: "GitHub Action"
                     author_email: "action@github.com"
                 env:

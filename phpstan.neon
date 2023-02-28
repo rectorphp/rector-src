@@ -820,3 +820,6 @@ parameters:
         -
             message: '#Anonymous function has an unused use \$container#'
             path: src/Autoloading/BootstrapFilesIncluder.php
+
+        # false positive on enums
+        - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
