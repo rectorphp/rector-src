@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -16,6 +15,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use Rector\BetterPhpDocParser\PhpDocManipulator\VarAnnotationManipulator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\ClassMethodAssignManipulator;
@@ -206,7 +206,7 @@ CODE_SAMPLE
             }
 
             $parentAssign = $readOnlyVariableAssign->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentAssign instanceof Arg) {
+            if (! $parentAssign instanceof Expression) {
                 continue;
             }
 
