@@ -27,7 +27,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
      * Process Node of matched type with its PHPStan scope
      * @return Node|Node[]|null
      */
-    public function refactor(Node $node): Node|array|null
+    public function refactor(Node $node)
     {
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         $originalNode ??= $node;

@@ -112,7 +112,7 @@ CODE_SAMPLE
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, static function (Node $node) use (
             &$names
-        ): int|null|Name {
+        ) {
             if ($node instanceof Use_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
