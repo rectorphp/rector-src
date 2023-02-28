@@ -12,6 +12,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
@@ -76,7 +77,7 @@ final class ClassMethodReturnTypeOverrideGuard
             null
         );
 
-        if ($methodReflection instanceof \PHPStan\Reflection\Php\PhpMethodReflection && $methodReflection->isAbstract()) {
+        if ($methodReflection instanceof PhpMethodReflection && $methodReflection->isAbstract()) {
             return true;
         }
 
