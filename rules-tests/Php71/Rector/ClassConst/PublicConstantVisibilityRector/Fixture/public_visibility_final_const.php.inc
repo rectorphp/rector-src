@@ -4,7 +4,6 @@ namespace Rector\Tests\Php71\Rector\ClassConst\PublicConstantVisibilityRector\Fi
 
 class PublicVisibilityFinalConstant
 {
-    const EXIT_OK = 0;
     final const EXIT_KO = 1;
     final const EXIT_NULL = 2;
 }
