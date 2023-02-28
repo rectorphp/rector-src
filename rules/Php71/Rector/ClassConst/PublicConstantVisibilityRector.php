@@ -69,7 +69,7 @@ CODE_SAMPLE
         }
 
         // explicitly public
-        if ($node->flags !== 0 && ! $this->visibilityManipulator->hasVisibility($node, Visibility::FINAL)) {
+        if ($this->visibilityManipulator->hasVisibility($node, Visibility::PUBLIC)) {
             return null;
         }
 
