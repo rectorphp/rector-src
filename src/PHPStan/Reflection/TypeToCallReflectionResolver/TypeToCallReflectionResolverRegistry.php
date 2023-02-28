@@ -20,10 +20,7 @@ final class TypeToCallReflectionResolverRegistry
     ) {
     }
 
-    /**
-     * @return FunctionReflection|MethodReflection|null
-     */
-    public function resolve(Type $type, Scope $scope)
+    public function resolve(Type $type, Scope $scope): FunctionReflection|MethodReflection|null
     {
         foreach ($this->resolvers as $resolver) {
             if (! $resolver->supports($type)) {

@@ -18,7 +18,6 @@ interface TypeToCallReflectionResolverInterface
 
     /**
      * @param TType $type
-     * @return FunctionReflection|MethodReflection|null
      */
-    public function resolve(Type $type, Scope $scope);
+    public function resolve(Type $type, Scope $scope): FunctionReflection|MethodReflection|null;
 }
