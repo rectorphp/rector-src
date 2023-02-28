@@ -72,7 +72,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|New_|MethodCall|StaticCall $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ClassMethod|null|New_|MethodCall|StaticCall
+    public function refactorWithScope(Node $node, Scope $scope)
     {
         if ($node instanceof ClassMethod) {
             return $this->refactorClassMethod($node, $scope);

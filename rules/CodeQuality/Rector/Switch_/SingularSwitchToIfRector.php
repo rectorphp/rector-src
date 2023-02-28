@@ -74,7 +74,7 @@ CODE_SAMPLE
      * @param Switch_ $node
      * @return Node\Stmt[]|If_|null
      */
-    public function refactor(Node $node): array|If_|null
+    public function refactor(Node $node)
     {
         if (count($node->cases) !== 1) {
             return null;

@@ -110,7 +110,7 @@ CODE_SAMPLE
     {
         $this->globalVariableNames = [];
 
-        $this->traverseNodesWithCallable($classMethod, function (Node $node) use ($class): int|PropertyFetch|null {
+        $this->traverseNodesWithCallable($classMethod, function (Node $node) use ($class) {
             if ($node instanceof Global_) {
                 $this->refactorGlobal($class, $node);
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
