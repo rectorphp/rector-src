@@ -40,17 +40,12 @@ jobs:
 
             -   run: vendor/bin/ecs check --fix --ansi
 
-            # see https://github.com/EndBug/add-and-commit
+            # see https://github.com/rectorphp/rector/issues/7579
             -
                 # commit only to core contributors who have repository access
                 if: github.event.pull_request.head.repo.full_name == github.repository
-                uses: EndBug/add-and-commit@v7.5.0
+                uses: stefanzweifel/git-auto-commit-action@v4
                 with:
-                    # The arguments for the `git add` command (see the paragraph below for more info)
-                    add: .
-                    message: "[ci-review] Rector Rectify"
-                    author_name: "GitHub Action"
-                    author_email: "action@github.com"
-                env:
-                    # to get push access
-                    GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+                    commit_message: '[ci-review] Rector Rectify'
+                    commit_author: 'GitHub Action <actions@github.com>'
+                    commit_user_email: 'action@github.com'
