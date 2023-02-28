@@ -49,4 +49,3 @@ jobs:
                     commit_message: [ci-review] Rector Rectify
                     commit_author: 'GitHub Action <actions@github.com>'
                     commit_user_email: 'action@github.com'
-                    token: ${{ secrets.ACCESS_TOKEN }}
