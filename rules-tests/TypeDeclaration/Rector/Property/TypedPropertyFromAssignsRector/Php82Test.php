@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
+namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-#[RunTestsInSeparateProcesses]
-final class RenameClassRectorTest extends AbstractRectorTestCase
+final class Php82Test extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -20,11 +18,11 @@ final class RenameClassRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixturePhp82');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule.php';
+        return __DIR__ . '/config/configured_rule_php82.php';
     }
 }

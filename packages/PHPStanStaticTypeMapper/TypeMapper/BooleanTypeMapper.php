@@ -38,13 +38,8 @@ final class BooleanTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        if ($this->isFalseBooleanTypeWithUnion($type)) {
-            return new IdentifierTypeNode('false');
-        }
-
         if ($type instanceof ConstantBooleanType) {
-            // cannot be parent of union
-            return new IdentifierTypeNode('true');
+            return new IdentifierTypeNode($type->getValue() ? 'true' : 'false');
         }
 
         return new IdentifierTypeNode('bool');
@@ -59,23 +54,16 @@ final class BooleanTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if ($this->isFalseBooleanTypeWithUnion($type)) {
-            return new Identifier('false');
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE)) {
+            return new Identifier('bool');
         }
 
-        return new Identifier('bool');
-    }
-
-    private function isFalseBooleanTypeWithUnion(Type $type): bool
-    {
         if (! $type instanceof ConstantBooleanType) {
-            return false;
+            return new Identifier('bool');
         }
 
-        if ($type->getValue()) {
-            return false;
-        }
-
-        return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES);
+        return $type->getValue()
+            ? new Identifier('true')
+            : new Identifier('false');
     }
 }

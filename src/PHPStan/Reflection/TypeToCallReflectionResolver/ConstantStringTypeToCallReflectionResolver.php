@@ -52,9 +52,8 @@ final class ConstantStringTypeToCallReflectionResolver implements TypeToCallRefl
 
     /**
      * @param ConstantStringType $type
-     * @return FunctionReflection|MethodReflection|null
      */
-    public function resolve(Type $type, Scope $scope)
+    public function resolve(Type $type, Scope $scope): FunctionReflection|MethodReflection|null
     {
         $value = $type->getValue();
 

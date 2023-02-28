@@ -354,15 +354,9 @@ final class UnionTypeMapper implements TypeMapperInterface
             }
 
             /**
-             * NullType inside UnionType is allowed
-             * make it on TypeKind property as changing other type, eg: return type may conflict with parent child implementation
-             *
-             * @var Identifier|Name|null|PHPParserNodeIntersectionType $phpParserNode
+             * NullType or ConstantBooleanType with false value inside UnionType is allowed
              */
-            $phpParserNode = $unionedType instanceof NullType && $typeKind === TypeKind::PROPERTY
-                ? new Identifier('null')
-                : $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
-
+            $phpParserNode = $this->resolveAllowedStandaloneTypeInUnionType($unionedType, $typeKind);
             if ($phpParserNode === null) {
                 return null;
             }
@@ -383,6 +377,24 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
+    }
+
+    /**
+     * @param TypeKind::* $typeKind
+     */
+    private function resolveAllowedStandaloneTypeInUnionType(
+        Type $unionedType,
+        string $typeKind
+    ): Identifier|Name|null|PHPParserNodeIntersectionType|ComplexType {
+        if ($unionedType instanceof NullType) {
+            return new Identifier('null');
+        }
+
+        if ($unionedType instanceof ConstantBooleanType && ! $unionedType->getValue()) {
+            return new Identifier('false');
+        }
+
+        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
     }
 
     private function resolveCompatibleObjectCandidate(UnionType $unionType): UnionType|TypeWithClassName|null
