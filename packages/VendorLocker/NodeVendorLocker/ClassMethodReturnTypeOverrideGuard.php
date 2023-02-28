@@ -72,11 +72,11 @@ final class ClassMethodReturnTypeOverrideGuard
 
         $methodReflection = $this->reflectionResolver->resolveMethodReflection(
             $classReflection->getName(),
-            (string) $this->nodeNameResolver->getName($classMethod),
+            $this->nodeNameResolver->getName($classMethod),
             null
         );
 
-        if ($methodReflection->isAbstract()) {
+        if ($methodReflection instanceof \PHPStan\Reflection\Php\PhpMethodReflection && $methodReflection->isAbstract()) {
             return true;
         }
 
