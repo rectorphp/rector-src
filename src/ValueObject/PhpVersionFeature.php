@@ -613,4 +613,12 @@ final class PhpVersionFeature
      * @var int
      */
     public const FILESYSTEM_ITERATOR_SKIP_DOTS = PhpVersion::PHP_82;
+
+    /**
+     * @see https://wiki.php.net/rfc/null-false-standalone-types
+     * @see https://wiki.php.net/rfc/true-type
+     *
+     * @var int
+     */
+    public const NULL_FALSE_TRUE_STANDALONE_TYPE = PhpVersion::PHP_82;
 }
