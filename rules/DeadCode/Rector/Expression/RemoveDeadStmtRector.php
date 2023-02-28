@@ -58,7 +58,7 @@ CODE_SAMPLE
      * @param Expression $node
      * @return Node[]|Node|null
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): array|Node|null
     {
         if ($this->hasGetMagic($node)) {
             return null;
