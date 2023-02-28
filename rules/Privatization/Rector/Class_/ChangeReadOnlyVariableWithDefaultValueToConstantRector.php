@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -19,6 +20,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\VarAnnotationManipulator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\ClassMethodAssignManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\PropertyToAddCollector;
 use Rector\Privatization\Naming\ConstantNaming;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -201,6 +203,11 @@ CODE_SAMPLE
                 if ($this->nodeNameResolver->isName($param->var, $variableName)) {
                     continue 2;
                 }
+            }
+
+            $parentAssign = $readOnlyVariableAssign->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentAssign instanceof Arg) {
+                continue;
             }
 
             $this->removeNode($readOnlyVariableAssign);
