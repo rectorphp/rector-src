@@ -181,4 +181,20 @@ final class VisibilityManipulator
             $this->makeStatic($node);
         }
     }
+
+    public function publicize(ClassConst|ClassMethod $node): ClassConst|ClassMethod|null
+    {
+        // already non-public
+        if (! $node->isPublic()) {
+            return null;
+        }
+
+        // explicitly public
+        if ($this->hasVisibility($node, Visibility::PUBLIC)) {
+            return null;
+        }
+
+        $this->makePublic($node);
+        return $node;
+    }
 }

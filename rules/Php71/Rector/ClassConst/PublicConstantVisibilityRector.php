@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Core\ValueObject\Visibility;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -63,19 +62,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // already non-public
-        if (! $node->isPublic()) {
-            return null;
-        }
-
-        // explicitly public
-        if ($this->visibilityManipulator->hasVisibility($node, Visibility::PUBLIC)) {
-            return null;
-        }
-
-        $this->visibilityManipulator->makePublic($node);
-
-        return $node;
+        return $this->visibilityManipulator->publicize($node);
     }
 
     public function provideMinPhpVersion(): int

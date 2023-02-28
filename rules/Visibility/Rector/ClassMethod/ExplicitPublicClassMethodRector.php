@@ -63,18 +63,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // already non-public
-        if (! $node->isPublic()) {
-            return null;
-        }
-
-        // explicitly public
-        if ($this->visibilityManipulator->hasVisibility($node, Visibility::PUBLIC)) {
-            return null;
-        }
-
-        $this->visibilityManipulator->makePublic($node);
-
-        return $node;
+        return $this->visibilityManipulator->publicize($node);
     }
 }
