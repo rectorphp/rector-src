@@ -123,6 +123,22 @@ final class VisibilityManipulator
         $this->removeVisibilityFlag($node, Visibility::READONLY);
     }
 
+    public function publicize(ClassConst|ClassMethod $node): ClassConst|ClassMethod|null
+    {
+        // already non-public
+        if (! $node->isPublic()) {
+            return null;
+        }
+
+        // explicitly public
+        if ($this->hasVisibility($node, Visibility::PUBLIC)) {
+            return null;
+        }
+
+        $this->makePublic($node);
+        return $node;
+    }
+
     /**
      * This way "abstract", "static", "final" are kept
      */
@@ -180,21 +196,5 @@ final class VisibilityManipulator
         if ($isStatic) {
             $this->makeStatic($node);
         }
-    }
-
-    public function publicize(ClassConst|ClassMethod $node): ClassConst|ClassMethod|null
-    {
-        // already non-public
-        if (! $node->isPublic()) {
-            return null;
-        }
-
-        // explicitly public
-        if ($this->hasVisibility($node, Visibility::PUBLIC)) {
-            return null;
-        }
-
-        $this->makePublic($node);
-        return $node;
     }
 }
