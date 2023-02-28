@@ -12,10 +12,8 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\AstResolver;
@@ -67,21 +65,11 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if ($classReflection->isAbstract()) {
+        if ($classReflection->isAbstract() || $classReflection->isInterface()) {
             return true;
         }
 
         if (! $this->isReturnTypeChangeAllowed($classMethod)) {
-            return true;
-        }
-
-        $methodReflection = $this->reflectionResolver->resolveMethodReflection(
-            $classReflection->getName(),
-            $this->nodeNameResolver->getName($classMethod),
-            null
-        );
-
-        if ($methodReflection instanceof PhpMethodReflection && $methodReflection->isAbstract()) {
             return true;
         }
 
