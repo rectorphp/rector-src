@@ -70,6 +70,16 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        $methodReflection = $this->reflectionResolver->resolveMethodReflection(
+            $classReflection->getName(),
+            (string) $this->nodeNameResolver->getName($classMethod),
+            null
+        );
+
+        if ($methodReflection->isAbstract()) {
+            return true;
+        }
+
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
         if ($childrenClassReflections === []) {
             return false;
