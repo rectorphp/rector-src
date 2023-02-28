@@ -1,4 +1,4 @@
-# 412 Rules Overview
+# 413 Rules Overview
 
 <br>
 
@@ -14,7 +14,7 @@
 
 - [DeadCode](#deadcode) (48)
 
-- [DependencyInjection](#dependencyinjection) (2)
+- [DependencyInjection](#dependencyinjection) (3)
 
 - [EarlyReturn](#earlyreturn) (11)
 
@@ -3815,6 +3815,27 @@ Turns action injection in Controllers to constructor injection
      {
 -        $products = $productRepository->fetchAll();
 +        $products = $this->productRepository->fetchAll();
+     }
+ }
+```
+
+<br>
+
+### AddConstructorParentCallRector
+
+Add constructor parent call
+
+- class: [`Rector\DependencyInjection\Rector\ClassMethod\AddConstructorParentCallRector`](../rules/DependencyInjection/Rector/ClassMethod/AddConstructorParentCallRector.php)
+
+```diff
+ class SunshineCommand extends ParentClassWithConstructor
+ {
+-    public function __construct()
++    public function __construct(ParentDependency $parentDependency)
+     {
+         $value = 5;
++
++        parent::__construct($parentDependency);
      }
  }
 ```
