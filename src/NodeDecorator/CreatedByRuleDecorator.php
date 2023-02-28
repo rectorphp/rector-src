@@ -37,7 +37,7 @@ final class CreatedByRuleDecorator
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    private function createByRule(Node $node, string $rectorClass): void
+    public function createByRule(Node $node, string $rectorClass): void
     {
         /** @var class-string<RectorInterface>[] $createdByRule */
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];

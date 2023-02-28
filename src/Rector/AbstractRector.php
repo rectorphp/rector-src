@@ -208,14 +208,15 @@ CODE_SAMPLE;
 
         $refactoredNode = $this->refactor($node);
 
-        // nothing to change → continue
-        if ($refactoredNode === null) {
-            return null;
-        }
-
         if ($refactoredNode === []) {
             $errorMessage = sprintf(self::EMPTY_NODE_ARRAY_MESSAGE, static::class);
             throw new ShouldNotHappenException($errorMessage);
+        }
+
+        // nothing to change → continue
+        if ($refactoredNode === null) {
+            $this->createdByRuleDecorator->createByRule($node, static::class);
+            return null;
         }
 
         $originalNode ??= $node;
