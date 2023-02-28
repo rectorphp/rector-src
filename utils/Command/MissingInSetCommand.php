@@ -21,7 +21,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class MissingInSetCommand extends Command
 {
-    private $unusedProperty;
     /**
      * @var array<string, string>
      */
