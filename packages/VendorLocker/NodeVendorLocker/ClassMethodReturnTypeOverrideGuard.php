@@ -67,6 +67,10 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        if ($classReflection->isAbstract()) {
+            return true;
+        }
+
         if (! $this->isReturnTypeChangeAllowed($classMethod)) {
             return true;
         }
