@@ -19,7 +19,7 @@ jobs:
                     # Must be used to trigger workflow after push
                     token: ${{ secrets.ACCESS_TOKEN }}
 
-            # in forks, the token is not available - so we cannot us eit
+            # in forks, the token is not available - so we cannot use it
             -
                 if: github.event.pull_request.head.repo.full_name != github.repository
                 uses: actions/checkout@v3
