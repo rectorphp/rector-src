@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNam
 
 use PHPUnit_SpecialClass;
 
-class Fixture2
+class PhpunitSpecialClass
 {
     public function create()
     {
@@ -20,7 +20,7 @@ namespace Rector\Tests\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNam
 
 use PHPUnit\SpecialClass;
 
-class Fixture2
+class PhpunitSpecialClass
 {
     public function create()
     {
