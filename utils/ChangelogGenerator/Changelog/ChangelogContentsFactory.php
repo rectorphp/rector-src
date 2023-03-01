@@ -12,8 +12,6 @@ use Webmozart\Assert\Assert;
  */
 final class ChangelogContentsFactory
 {
-    private $unused;
-
     /**
      * @var array<string, string[]>
      */
