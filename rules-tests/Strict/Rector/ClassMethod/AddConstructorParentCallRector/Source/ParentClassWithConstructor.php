@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DependencyInjection\Rector\ClassMethod\AddConstructorParentCallRector\Source;
+namespace Rector\Tests\Strict\Rector\ClassMethod\AddConstructorParentCallRector\Source;
 
 class ParentClassWithConstructor
 {

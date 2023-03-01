@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\DependencyInjection\Rector\ClassMethod;
+namespace Rector\Strict\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
@@ -19,7 +19,10 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DependencyInjection\Rector\ClassMethod\AddConstructorParentCallRector\AddConstructorParentCallRectorTest
+ * Fixer Rector for PHPStan rule:
+ * https://github.com/phpstan/phpstan-strict-rules/blob/b7dd96a5503919a43b3cd06a2dced9d4252492f2/src/Rules/Classes/RequireParentConstructCallRule.php
+ *
+ * @see \Rector\Tests\Strict\Rector\ClassMethod\AddConstructorParentCallRector\AddConstructorParentCallRectorTest
  */
 final class AddConstructorParentCallRector extends AbstractRector
 {
@@ -30,8 +33,12 @@ final class AddConstructorParentCallRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
+        $errorMessage = sprintf(
+            'Fixer for PHPStan reports by strict type rule - "%s"',
+            'PHPStan\Rules\Classes\RequireParentConstructCallRule'
+        );
         return new RuleDefinition(
-            'Add constructor parent call',
+            $errorMessage,
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

@@ -14,7 +14,7 @@
 
 - [DeadCode](#deadcode) (48)
 
-- [DependencyInjection](#dependencyinjection) (3)
+- [DependencyInjection](#dependencyinjection) (2)
 
 - [EarlyReturn](#earlyreturn) (11)
 
@@ -60,7 +60,7 @@
 
 - [Restoration](#restoration) (4)
 
-- [Strict](#strict) (5)
+- [Strict](#strict) (6)
 
 - [Transform](#transform) (34)
 
@@ -3821,27 +3821,6 @@ Turns action injection in Controllers to constructor injection
 
 <br>
 
-### AddConstructorParentCallRector
-
-Add constructor parent call
-
-- class: [`Rector\DependencyInjection\Rector\ClassMethod\AddConstructorParentCallRector`](../rules/DependencyInjection/Rector/ClassMethod/AddConstructorParentCallRector.php)
-
-```diff
- class SunshineCommand extends ParentClassWithConstructor
- {
--    public function __construct()
-+    public function __construct(ParentDependency $parentDependency)
-     {
-         $value = 5;
-+
-+        parent::__construct($parentDependency);
-     }
- }
-```
-
-<br>
-
 ### AddMethodParentCallRector
 
 Add method parent call, in case new parent method is added
@@ -7546,6 +7525,27 @@ Rename file to respect class name
 <br>
 
 ## Strict
+
+### AddConstructorParentCallRector
+
+Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\Classes\RequireParentConstructCallRule"
+
+- class: [`Rector\Strict\Rector\ClassMethod\AddConstructorParentCallRector`](../rules/Strict/Rector/ClassMethod/AddConstructorParentCallRector.php)
+
+```diff
+ class SunshineCommand extends ParentClassWithConstructor
+ {
+-    public function __construct()
++    public function __construct(ParentDependency $parentDependency)
+     {
+         $value = 5;
++
++        parent::__construct($parentDependency);
+     }
+ }
+```
+
+<br>
 
 ### BooleanInBooleanNotRuleFixerRector
 
