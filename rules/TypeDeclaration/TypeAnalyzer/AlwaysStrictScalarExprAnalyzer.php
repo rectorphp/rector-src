@@ -38,7 +38,7 @@ final class AlwaysStrictScalarExprAnalyzer
     public function matchStrictScalarExpr(Expr $expr): ?Type
     {
         if ($expr instanceof Concat) {
-            return $this->resolveConcatType($expr);
+            return new StringType();
         }
 
         if ($expr instanceof Scalar) {
@@ -73,25 +73,6 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         return null;
-    }
-
-    private function resolveConcatType(Concat $concat): ?Type
-    {
-        $leftType = $this->matchStrictScalarExpr($concat->left);
-        if ($leftType instanceof StringType) {
-            return $leftType;
-        }
-
-        $rightType = $this->matchStrictScalarExpr($concat->right);
-        if ($rightType instanceof StringType) {
-            return $rightType;
-        }
-
-        if (! $concat->left instanceof Concat) {
-            return null;
-        }
-
-        return $this->resolveConcatType($concat->left);
     }
 
     private function isScalarType(Type $type): bool
