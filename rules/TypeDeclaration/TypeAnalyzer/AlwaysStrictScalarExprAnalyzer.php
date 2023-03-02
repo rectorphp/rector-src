@@ -77,15 +77,19 @@ final class AlwaysStrictScalarExprAnalyzer
 
     private function resolveConcatType(Concat $expr): ?Type
     {
+        if ($expr->left instanceof String_) {
+            return new StringType();
+        }
+
+        if ($expr->right instanceof String_) {
+            return new StringType();
+        }
+
         while ($expr->left instanceof Concat) {
             $expr = $expr->left;
             if ($expr->left instanceof String_ || $expr->right instanceof String_) {
                 return new StringType();
             }
-        }
-
-        if ($expr->right instanceof String_) {
-            return new StringType();
         }
 
         return null;
