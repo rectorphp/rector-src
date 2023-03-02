@@ -16,7 +16,7 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 8
 
-        if: github.repository == 'rectorphp/rector-src'
+        if: github.event.pull_request.head.repo.full_name == 'rectorphp/rector-src'
         steps:
             -
                 uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
                     # Must be used to trigger workflow after push
                     token: ${{ secrets.ACCESS_TOKEN }}
 
-            - run: echo "run on ${{ github.repository }}"
+            - run: echo "run on ${{ github.event.pull_request.head.repo.full_name }}"
 
             -
                 uses: shivammathur/setup-php@v2
