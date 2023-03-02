@@ -116,6 +116,13 @@ CODE_SAMPLE
             return null;
         }
 
+        $parentCurrentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $parentNextNode = $nextNode->getAttribute(AttributeKey::PARENT_NODE);
+
+        if ($parentNextNode !== $parentCurrentNode) {
+            return null;
+        }
+
         if ($this->shouldSkip($nextNode)) {
             return null;
         }
