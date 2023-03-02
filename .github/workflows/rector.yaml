@@ -3,11 +3,11 @@ name: Rector
 on:
     pull_request: null
 
+# don't run on forks at all
+if: github.repository == 'rectorphp/rector-src'
+
 jobs:
     rector:
-        # Don't run on forks.
-        if: github.repository == 'rectorphp/rector-src'
-
         strategy:
             fail-fast: false
             matrix:
@@ -20,19 +20,11 @@ jobs:
         timeout-minutes: 8
 
         steps:
-            # workaround for missing secret in fork PRs - see https://github.com/actions/checkout/issues/298
-            # see https://github.com/rectorphp/rector/commit/d395e1c28b8e6a56711dcc2e10490a82965850e4
             -
-                if: github.event.pull_request.head.repo.full_name == github.repository
                 uses: actions/checkout@v3
                 with:
                     # Must be used to trigger workflow after push
                     token: ${{ secrets.ACCESS_TOKEN }}
-
-            # in forks, the token is not available - so we cannot use it
-            -
-                if: github.event.pull_request.head.repo.full_name != github.repository
-                uses: actions/checkout@v3
 
             -
                 uses: shivammathur/setup-php@v2
@@ -43,15 +35,11 @@ jobs:
 
             -   run: composer install --no-progress --ansi
 
-            ## First run Rector - here can't be --dry-run !!! it would stop the job with it and not commit anything in the future
+            ## here can't be --dry-run, as the change results in error code 1 and stops the job without commiting in the future
             -   run: bin/rector process ${{ matrix.paths }} --ansi
-
-            -   run: vendor/bin/ecs check --fix --ansi
 
             # see https://github.com/rectorphp/rector/issues/7579
             -
-                # commit only to core contributors who have repository access
-                if: github.event.pull_request.head.repo.full_name == github.repository
                 uses: stefanzweifel/git-auto-commit-action@v4
                 with:
                     commit_message: '[ci-review] Rector Rectify'
