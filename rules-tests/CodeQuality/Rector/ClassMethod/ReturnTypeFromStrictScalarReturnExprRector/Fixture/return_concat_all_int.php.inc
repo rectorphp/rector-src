@@ -4,8 +4,8 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalar
 
 final class SkipReturnConcatAllInt
 {
-    public function run(string $value)
+    public function run()
     {
-        return $value . 'append';
+        return 1 . 1;
     }
 }

@@ -37,7 +37,7 @@ final class AlwaysStrictScalarExprAnalyzer
 
     public function matchStrictScalarExpr(Expr $expr): ?Type
     {
-        if ($expr instanceof Concat) {
+        if ($expr instanceof Concat && ($expr->left instanceof String_  || $expr->right instanceof String_)) {
             return new StringType();
         }
 
