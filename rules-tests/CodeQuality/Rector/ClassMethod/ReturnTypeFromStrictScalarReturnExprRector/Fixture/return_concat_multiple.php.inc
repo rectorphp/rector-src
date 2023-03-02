@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
 
-final class ReturnConcat
+final class ReturnConcatMultiple
 {
-    public function run($value)
+    public function run($value, $bar, $baz)
     {
-        return $value . '/' ;
+        return $value . '/' . $bar . $baz;
     }
 }
 
@@ -16,11 +16,11 @@ final class ReturnConcat
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
 
-final class ReturnConcat
+final class ReturnConcatMultiple
 {
-    public function run($value): string
+    public function run($value, $bar, $baz): string
     {
-        return $value . '/' ;
+        return $value . '/' . $bar . $baz;
     }
 }
 
