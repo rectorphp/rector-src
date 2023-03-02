@@ -85,7 +85,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return new StringType();
         }
 
-        while ($expr->left instanceof Concat) {
+        if ($expr->left instanceof Concat) {
             $expr = $expr->left;
             $type = $this->resolveConcatType($expr);
 
