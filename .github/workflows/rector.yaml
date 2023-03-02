@@ -4,7 +4,7 @@ on:
     pull_request: null
 
 # don't run on forks at all
-if: github.repository == 'rectorphp/rector-src'
+if: github.event.pull_request.head.repo.full_name == 'rectorphp/rector-src'
 
 jobs:
     rector:
