@@ -36,10 +36,6 @@ use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnedNodesReturnTypeInfererTypeInferer;
 use Rector\TypeDeclaration\TypeNormalizer;
 
-/**
- * @deprecated
- * @todo Split into many narrow-focused rules
- */
 final class ReturnTypeInferer
 {
     public function __construct(

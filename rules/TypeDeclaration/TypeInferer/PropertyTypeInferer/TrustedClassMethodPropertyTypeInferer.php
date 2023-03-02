@@ -36,10 +36,6 @@ use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 
-/**
- * @deprecated
- * @todo split to more specialized rules with narrow focus
- */
 final class TrustedClassMethodPropertyTypeInferer
 {
     public function __construct(
