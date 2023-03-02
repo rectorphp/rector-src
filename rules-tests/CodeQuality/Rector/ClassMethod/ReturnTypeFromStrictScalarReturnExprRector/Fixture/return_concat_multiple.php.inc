@@ -4,9 +4,9 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalar
 
 final class ReturnConcatMultiple
 {
-    public function run($value, $bar, $baz)
+    public function run($value, $bar, $baz, $bat)
     {
-        return $value . '/' . $bar . $baz;
+        return $value . '/' . $bar . $baz . $bat;
     }
 }
 
@@ -18,9 +18,9 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalar
 
 final class ReturnConcatMultiple
 {
-    public function run($value, $bar, $baz): string
+    public function run($value, $bar, $baz, $bat): string
     {
-        return $value . '/' . $bar . $baz;
+        return $value . '/' . $bar . $baz . $bat;
     }
 }
 
