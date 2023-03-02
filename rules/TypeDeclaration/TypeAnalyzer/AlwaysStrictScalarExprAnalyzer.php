@@ -35,22 +35,6 @@ final class AlwaysStrictScalarExprAnalyzer
     ) {
     }
 
-    private function resolveConcatType(Concat $expr): ?Type
-    {
-        while ($expr->left instanceof Concat) {
-            $expr = $expr->left;
-            if ($expr->left instanceof String_  || $expr->right instanceof String_) {
-                return new StringType();
-            }
-        }
-
-        if ($expr->right instanceof String_) {
-            return new StringType();
-        }
-
-        return null;
-    }
-
     public function matchStrictScalarExpr(Expr $expr): ?Type
     {
         if ($expr instanceof Concat) {
@@ -86,6 +70,22 @@ final class AlwaysStrictScalarExprAnalyzer
             }
 
             return $returnType;
+        }
+
+        return null;
+    }
+
+    private function resolveConcatType(Concat $expr): ?Type
+    {
+        while ($expr->left instanceof Concat) {
+            $expr = $expr->left;
+            if ($expr->left instanceof String_ || $expr->right instanceof String_) {
+                return new StringType();
+            }
+        }
+
+        if ($expr->right instanceof String_) {
+            return new StringType();
         }
 
         return null;
