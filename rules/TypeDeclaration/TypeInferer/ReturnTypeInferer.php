@@ -37,8 +37,7 @@ use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnedNodesReturnType
 use Rector\TypeDeclaration\TypeNormalizer;
 
 /**
- * @deprecated
- * @todo Split into many narrow-focused rules
+ * @internal
  */
 final class ReturnTypeInferer
 {
