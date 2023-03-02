@@ -87,14 +87,11 @@ final class AlwaysStrictScalarExprAnalyzer
             return $rightType;
         }
 
-        if ($concat->left instanceof Concat) {
-            $concatType = $this->resolveConcatType($concat->left);
-            if ($concatType instanceof StringType) {
-                return $concatType;
-            }
+        if (! $concat->left instanceof Concat) {
+            return null;
         }
 
-        return null;
+        return $this->resolveConcatType($concat->left);
     }
 
     private function isScalarType(Type $type): bool
