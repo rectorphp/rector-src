@@ -1,9 +1,8 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-    - phpstan-baseline.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     unused_public:
         properties: true
