@@ -36,6 +36,9 @@ use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer\ReturnedNodesReturnTypeInfererTypeInferer;
 use Rector\TypeDeclaration\TypeNormalizer;
 
+/**
+ * @internal
+ */
 final class ReturnTypeInferer
 {
     public function __construct(
