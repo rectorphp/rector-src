@@ -8,5 +8,5 @@ return RectorFluentConfig::make()
     ->rename()
         ->property()
             ->onClass('SomeClass')
-                ->fromTo('oldPropety', 'newProperty')
+                ->fromTo('oldProperty', 'newProperty')
     ->build();
