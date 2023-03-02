@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
@@ -24,7 +25,8 @@ final class MatchSwitchAnalyzer
     public function __construct(
         private readonly SwitchAnalyzer $switchAnalyzer,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -93,8 +95,7 @@ final class MatchSwitchAnalyzer
             }
 
             if ($expr->var instanceof ArrayDimFetch) {
-                $arrayDimFecthName = $this->nodeNameResolver->getName($expr->var->var);
-                $assignVariableNames[] = $expr->var::class . $arrayDimFecthName . '[]';
+                $assignVariableNames[] = $this->betterStandardPrinter->print($expr->var);
             } else {
                 $assignVariableNames[] = $expr->var::class . $this->nodeNameResolver->getName($expr->var);
             }
