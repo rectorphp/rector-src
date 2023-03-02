@@ -24,6 +24,8 @@ jobs:
                     # Must be used to trigger workflow after push
                     token: ${{ secrets.ACCESS_TOKEN }}
 
+            - run: echo "run on ${{ github.repository }}"
+
             -
                 uses: shivammathur/setup-php@v2
                 with:
