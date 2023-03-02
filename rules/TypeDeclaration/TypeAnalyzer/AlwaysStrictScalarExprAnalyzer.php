@@ -75,18 +75,18 @@ final class AlwaysStrictScalarExprAnalyzer
         return null;
     }
 
-    private function resolveConcatType(Concat $expr): ?Type
+    private function resolveConcatType(Concat $concat): ?Type
     {
-        if ($expr->left instanceof String_) {
+        if ($concat->left instanceof String_) {
             return new StringType();
         }
 
-        if ($expr->right instanceof String_) {
+        if ($concat->right instanceof String_) {
             return new StringType();
         }
 
-        if ($expr->left instanceof Concat) {
-            $type = $this->resolveConcatType($expr->left);
+        if ($concat->left instanceof Concat) {
+            $type = $this->resolveConcatType($concat->left);
 
             if ($type instanceof StringType) {
                 return $type;
