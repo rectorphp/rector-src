@@ -39,6 +39,9 @@ final class NodeRemover
         $this->rectorChangeCollector->notifyNodeFileInfo($node);
     }
 
+    /**
+     * @api used in rector-doctrine
+     */
     public function removeNodeFromStatements(
         Class_ | ClassMethod | Function_ $nodeWithStatements,
         Node $toBeRemovedNode
