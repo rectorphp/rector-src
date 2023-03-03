@@ -80,8 +80,8 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * Better return created nodes right in refactor() method to keep context
-     * @deprecated
+     * In most case, it's better return created nodes right in refactor() method to keep context
+     * @internal
      */
     public function addNodeAfterNode(Node $addedNode, Node $positionNode): void
     {
