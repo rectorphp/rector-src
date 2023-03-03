@@ -345,6 +345,14 @@ CODE_SAMPLE;
 
     protected function removeNode(Node $node): void
     {
+        if ($node instanceof Arg) {
+            throw new ShouldNotHappenException('Remove arg directly with unset');
+        }
+
+        if ($node instanceof Node\Param) {
+            throw new ShouldNotHappenException('Remove param directly with unset');
+        }
+
         $this->nodeRemover->removeNode($node);
     }
 
