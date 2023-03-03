@@ -15,7 +15,7 @@ final class FileAndDirectoryFilter
      */
     public function filterDirectories(array $filesAndDirectories): array
     {
-        $directories = array_filter($filesAndDirectories, static fn (string $path): bool => ! is_file($path));
+        $directories = array_filter($filesAndDirectories, static fn (string $path): bool => is_dir($path));
 
         return array_values($directories);
     }
