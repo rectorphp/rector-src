@@ -162,13 +162,11 @@ final class ArrayTypeAnalyzer
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
         if ($phpPropertyReflection instanceof PhpPropertyReflection) {
             $reflectionProperty = $phpPropertyReflection->getNativeReflection();
-            $defaultValueExpr = $reflectionProperty->getDefaultValueExpression();
-
-            if (! $defaultValueExpr instanceof Expr) {
+            if (! $reflectionProperty->isDefaultValueAvailable()) {
                 return false;
             }
 
-            $defaultValueType = $this->nodeTypeResolver->getType($defaultValueExpr);
+            $defaultValueType = $this->nodeTypeResolver->getType($reflectionProperty->getDefaultValueExpression());
             return $defaultValueType->isArray()
                 ->yes();
         }
