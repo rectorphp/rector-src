@@ -55,10 +55,7 @@ parameters:
         # temporary stinrgable migration from template type provider
         - bin/generate-changelog.php
 
-        #- */config.php
-
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
-        - packages/BetterPhpDocParser/ValueObject/PhpDocNode/AbstractTagValueNode.php
         - packages/Testing/PHPUnit/*.php
 
         # demo rule
@@ -74,7 +71,6 @@ parameters:
         - '*tests/*/Fixture*'
         # part of composer
         - '*/tests/Rector/Psr4/MultipleClassFileToPsr4ClassesRector/Expected/Just*ExceptionWithoutNamespace.php'
-        - packages-tests/BetterPhpDocPraser/PhpDocParser/TagValueNodeReprint/Fixture/SymfonyRoute/RouteName.php
 
         # tests
         - tests/DependencyInjection/config
@@ -133,9 +129,6 @@ parameters:
         # generics nullable bugs
         - '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
-
-        # buggy phpstan clas-string
-        - '#Method (.*?) should return class\-string but returns string#'
 
         -
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
@@ -592,16 +585,6 @@ parameters:
         -
             message: "#Class cognitive complexity is 69, keep it under 50#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-
-        -
-            message: '#Use explicit names over dynamic ones#'
-            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
-        -
-            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
-            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
-        -
-            message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: "packages/PhpDocParser/NodeValue/NodeValueResolver/FuncCallValueResolver.php"
 
         -
             message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
