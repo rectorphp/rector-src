@@ -52,6 +52,7 @@ final class ParamAnalyzer
 
             if ($this->isUsedAsArg($node, $param)) {
                 $isParamUsed = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             // skip nested anonymous class
@@ -61,14 +62,17 @@ final class ParamAnalyzer
 
             if ($node instanceof Variable && $this->nodeComparator->areNodesEqual($node, $param->var)) {
                 $isParamUsed = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             if ($node instanceof Closure && $this->isVariableInClosureUses($node, $param->var)) {
                 $isParamUsed = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             if ($this->isParamUsed($node, $param)) {
                 $isParamUsed = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             return null;
