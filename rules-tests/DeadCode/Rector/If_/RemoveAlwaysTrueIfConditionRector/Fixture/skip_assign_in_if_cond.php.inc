@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fixture;
 
-final class DemoFile
+final class SkipAssignInIfCond
 {
     public function run()
     {
@@ -11,6 +11,3 @@ final class DemoFile
         }
     }
 }
-
-?>
------
