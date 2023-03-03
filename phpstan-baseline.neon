@@ -1,22 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: """
-				#^Call to deprecated method resolve\\(\\) of class Rector\\\\PhpDocParser\\\\NodeValue\\\\NodeValueResolver\\:
-				Use Scope\\-\\>getType\\(\\) with constant types instead$#
-			"""
-			count: 1
-			path: packages-tests/PhpDocParser/NodeValue/NodeValueResolverTest.php
-
-		-
-			message: """
-				#^Fetching class constant class of deprecated class Rector\\\\PhpDocParser\\\\NodeValue\\\\NodeValueResolver\\:
-				Use \\$scope\\-\\>getType\\(\\) instead$#
-			"""
-			count: 1
-			path: packages-tests/PhpDocParser/NodeValue/NodeValueResolverTest.php
-
-		-
 			message: "#^Call to deprecated method markAsChanged\\(\\) of class Rector\\\\BetterPhpDocParser\\\\PhpDocInfo\\\\PhpDocInfo\\.$#"
 			count: 3
 			path: packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php
@@ -41,24 +25,11 @@ parameters:
 
 		-
 			message: """
-				#^Call to deprecated method getDefaultValue\\(\\) of class PHPStan\\\\BetterReflection\\\\Reflection\\\\Adapter\\\\ReflectionProperty\\:
-				Use getDefaultValueExpression\\(\\)$#
-			"""
-			count: 1
-			path: packages/NodeTypeResolver/TypeAnalyzer/ArrayTypeAnalyzer.php
-
-		-
-			message: """
 				#^Call to deprecated method notifyNodeFileInfo\\(\\) of class Rector\\\\ChangesReporting\\\\Collector\\\\RectorChangeCollector\\:
 				Use file\\-\\> method instead$#
 			"""
 			count: 3
 			path: packages/PostRector/Collector/PropertyToAddCollector.php
-
-		-
-			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\VendorLocker\\\\NodeVendorLocker\\\\ClassMethodReturnTypeOverrideGuard\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
-			count: 1
-			path: packages/VendorLocker/NodeVendorLocker/ClassMethodReturnTypeOverrideGuard.php
 
 		-
 			message: """
@@ -134,22 +105,9 @@ parameters:
 			path: rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
 
 		-
-			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\Php80\\\\Rector\\\\Class_\\\\StringableForToStringRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
-			count: 1
-			path: rules/Php80/Rector/Class_/StringableForToStringRector.php
-
-		-
 			message: "#^Call to deprecated method addNodeAfterNode\\(\\) of class Rector\\\\PostRector\\\\Collector\\\\NodesToAddCollector\\.$#"
 			count: 1
 			path: rules/Php80/Rector/FuncCall/TokenGetAllToObjectRector.php
-
-		-
-			message: """
-				#^Call to deprecated method getConstants\\(\\) of class PHPStan\\\\BetterReflection\\\\Reflection\\\\Adapter\\\\ReflectionClass\\:
-				Use getReflectionConstants\\(\\)$#
-			"""
-			count: 1
-			path: rules/Privatization/Reflection/ClassConstantsResolver.php
 
 		-
 			message: """
@@ -158,44 +116,6 @@ parameters:
 			"""
 			count: 5
 			path: rules/Removing/Rector/ClassMethod/ArgumentRemoverRector.php
-
-		-
-			message: """
-				#^Access to deprecated property \\$nodeRemover of class Rector\\\\Core\\\\Rector\\\\AbstractRector\\:
-				Use service directly or return changes nodes$#
-			"""
-			count: 3
-			path: rules/Transform/Rector/Class_/ChangeSingletonToServiceRector.php
-
-		-
-			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\ClassMethod\\\\ReturnTypeFromReturnDirectArrayRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnDirectArrayRector.php
-
-		-
-			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\ClassMethod\\\\ReturnTypeFromStrictTypedCallRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictTypedCallRector.php
-
-		-
-			message: "#^Parameter \\$returnTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\Closure\\\\AddClosureReturnTypeRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\ReturnTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/Rector/Closure/AddClosureReturnTypeRector.php
-
-		-
-			message: "#^Parameter \\$trustedClassMethodPropertyTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\Property\\\\TypedPropertyFromStrictConstructorRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\PropertyTypeInferer\\\\TrustedClassMethodPropertyTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorRector.php
-
-		-
-			message: "#^Parameter \\$trustedClassMethodPropertyTypeInferer of method Rector\\\\TypeDeclaration\\\\Rector\\\\Property\\\\TypedPropertyFromStrictSetUpRector\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\PropertyTypeInferer\\\\TrustedClassMethodPropertyTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictSetUpRector.php
-
-		-
-			message: "#^Parameter \\$assignToPropertyTypeInferer of method Rector\\\\TypeDeclaration\\\\TypeInferer\\\\PropertyTypeInferer\\\\AllAssignNodePropertyTypeInferer\\:\\:__construct\\(\\) has typehint with deprecated class Rector\\\\TypeDeclaration\\\\TypeInferer\\\\AssignToPropertyTypeInferer\\.$#"
-			count: 1
-			path: rules/TypeDeclaration/TypeInferer/PropertyTypeInferer/AllAssignNodePropertyTypeInferer.php
 
 		-
 			message: """
