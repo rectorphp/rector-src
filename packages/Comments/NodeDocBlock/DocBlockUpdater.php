@@ -7,8 +7,10 @@ namespace Rector\Comments\NodeDocBlock;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PhpParser\Node\Stmt\ClassLike;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class DocBlockUpdater
@@ -41,19 +43,25 @@ final class DocBlockUpdater
 
     public function updateRefactoredNodeWithPhpDocInfo(Node $node): void
     {
-        // nothing to change? don't save it
-        $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return;
-        }
+        $nodes = ($node instanceof ClassLike || $node instanceof StmtsAwareInterface) && $node->stmts !== null
+            ? [$node, ...$node->stmts]
+            : [$node];
 
-        $phpDocNode = $phpDocInfo->getPhpDocNode();
-        if ($phpDocNode->children === []) {
-            $this->setCommentsAttribute($node);
-            return;
-        }
+        foreach ($nodes as $node) {
+            // nothing to change? don't save it
+            $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
+            if (! $phpDocInfo instanceof PhpDocInfo) {
+                continue;
+            }
 
-        $node->setDocComment(new Doc((string) $phpDocNode));
+            $phpDocNode = $phpDocInfo->getPhpDocNode();
+            if ($phpDocNode->children === []) {
+                $this->setCommentsAttribute($node);
+                continue;
+            }
+
+            $node->setDocComment(new Doc((string) $phpDocNode));
+        }
     }
 
     private function setCommentsAttribute(Node $node): void
