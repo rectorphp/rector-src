@@ -565,6 +565,7 @@ parameters:
             message: '#Use separate function calls with readable variable names#'
             paths:
                 - utils/RuleDocGenerator/PostRectorOutFilter.php
+                - src/FileSystem/FileAndDirectoryFilter.php
 
         # phpdoc node traversing
         -
