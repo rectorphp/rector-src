@@ -49,5 +49,6 @@ return static function (RectorConfig $rectorConfig): void {
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
             'Bar' => 'BarInterface',
             'App' => 'Illuminate\Support\Facades\App',
+            'NotExistsClass' => 'NewClass',
         ]);
 };
