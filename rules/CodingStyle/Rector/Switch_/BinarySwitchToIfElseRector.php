@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
-use PHPStan\Type\BooleanType;
+use PHPStan\Type\NullType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Renaming\NodeManipulator\SwitchManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -123,6 +123,6 @@ CODE_SAMPLE
         $type = $this->nodeTypeResolver->getType($expr);
         $value = $this->valueResolver->getValue($expr);
 
-        return $type instanceof BooleanType && $value === null;
+        return ! $type instanceof NullType && $value === null;
     }
 }
