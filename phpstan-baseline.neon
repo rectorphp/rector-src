@@ -132,8 +132,3 @@ parameters:
 			"""
 			count: 2
 			path: src/Rector/AbstractRector.php
-
-		-
-			message: "#^Function \"class_exists\\(\\)\" cannot be used/left in the code\\: use ReflectionProvider\\-\\>has\\*\\(\\) instead$#"
-			count: 1
-			path: src/StaticReflection/SourceLocator/RenamedClassesSourceLocator.php

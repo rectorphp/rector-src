@@ -35,11 +35,7 @@ use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
-use PHPStan\BetterReflection\Reflector\Reflector;
-use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
-use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Node\UnreachableStatementNode;
-use PHPStan\Reflection\BetterReflection\Reflector\MemoizingReflector;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
@@ -49,7 +45,6 @@ use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\StaticReflection\SourceLocator\RenamedClassesSourceLocator;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -75,12 +70,10 @@ final class PHPStanNodeScopeResolver
         private readonly RemoveDeepChainMethodCallNodeVisitor $removeDeepChainMethodCallNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
-        private readonly RenamedClassesSourceLocator $renamedClassesSourceLocator,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
-        $this->decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator($this->nodeScopeResolver);
     }
 
     /**
@@ -444,46 +437,5 @@ final class PHPStanNodeScopeResolver
         }
 
         $this->changedFilesDetector->addFileWithDependencies($filePath, $dependentFiles);
-    }
-
-    /**
-     * In case PHPStan tried to parse a file with missing class, it fails.
-     * But sometimes we want to rename old class that is missing with Rector..
-     *
-     * That's why we have to skip fatal errors of PHPStan caused by missing class,
-     * so Rector can fix it first. Then run Rector again to refactor code with new classes.
-     */
-    private function decoratePHPStanNodeScopeResolverWithRenamedClassSourceLocator(
-        NodeScopeResolver $nodeScopeResolver
-    ): void {
-        // 1. get PHPStan locator
-        /** @var MemoizingReflector $classReflector */
-        $classReflector = $this->privatesAccessor->getPrivatePropertyOfClass(
-            $nodeScopeResolver,
-            'reflector',
-            Reflector::class
-        );
-
-        $reflector = $this->privatesAccessor->getPrivatePropertyOfClass(
-            $classReflector,
-            'reflector',
-            Reflector::class
-        );
-
-        /** @var SourceLocator $sourceLocator */
-        $sourceLocator = $this->privatesAccessor->getPrivatePropertyOfClass(
-            $reflector,
-            'sourceLocator',
-            SourceLocator::class
-        );
-
-        // 2. get Rector locator
-        $aggregateSourceLocator = new AggregateSourceLocator([$sourceLocator, $this->renamedClassesSourceLocator]);
-        $this->privatesAccessor->setPrivatePropertyOfClass(
-            $reflector,
-            'sourceLocator',
-            $aggregateSourceLocator,
-            AggregateSourceLocator::class
-        );
     }
 }
