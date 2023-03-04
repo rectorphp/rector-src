@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\Switch_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Stmt\Case_;
@@ -13,7 +12,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
-use PHPStan\Type\NullType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Renaming\NodeManipulator\SwitchManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,7 +24,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class BinarySwitchToIfElseRector extends AbstractRector
 {
     public function __construct(
-        private readonly SwitchManipulator $switchManipulator
+        private readonly SwitchManipulator $switchManipulator,
+        private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
 
@@ -81,7 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipTypeWithValue($firstCase->cond)) {
+        if ($this->exprAnalyzer->isDynamicExpr($firstCase->cond)) {
             return null;
         }
 
@@ -116,13 +116,5 @@ CODE_SAMPLE
         }
 
         return $ifNode;
-    }
-
-    private function shouldSkipTypeWithValue(Expr $expr): bool
-    {
-        $type = $this->nodeTypeResolver->getType($expr);
-        $value = $this->valueResolver->getValue($expr);
-
-        return ! $type instanceof NullType && $value === null;
     }
 }
