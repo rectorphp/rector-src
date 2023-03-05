@@ -574,9 +574,9 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return $stmts;
         }
         
-        $currentStmt = current($stmts);
-        if ($currentStmt instanceof FileWithoutNamespace) {
-            return $this->resolveNewStmts($currentStmt->stmts);
+        $node = current($stmts);
+        if ($node instanceof FileWithoutNamespace) {
+            return $this->resolveNewStmts($node->stmts);
         }
 
         return $stmts;
