@@ -46,6 +46,15 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
+        $firstNode = $nodes[0];
+        if ($firstNode instanceof FileWithoutNamespace) {
+            $nodes = $firstNode->stmts;
+        }
+
+        if (! $this->rectorConfigProvider->shouldImportNames()) {
+            return $nodes;
+        }
+
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
             throw new ShouldNotHappenException();
@@ -74,18 +83,11 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
-        $firstNode = $nodes[0];
-        if ($firstNode instanceof FileWithoutNamespace) {
-            $nodes = $firstNode->stmts;
-        }
+        $removedShortUses = $this->renamedClassesDataCollector->getOldClasses();
 
         // B. no namespace? add in the top
         // first clean
-        if ($this->rectorConfigProvider->shouldImportNames()) {
-            $oldClasses = $this->renamedClassesDataCollector->getOldClasses();
-            $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $oldClasses);
-        }
-
+        $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedShortUses);
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
         // then add, to prevent adding + removing false positive of same short use
 
