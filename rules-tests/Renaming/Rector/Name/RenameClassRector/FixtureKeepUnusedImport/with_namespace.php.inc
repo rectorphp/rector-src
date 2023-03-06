@@ -4,7 +4,7 @@ namespace App;
 
 use Psr\SimpleCache\CacheInterface;
 
-class NoNamespace implements \Psr\SimpleCache\CacheInterface
+class NoNamespace implements CacheInterface
 {
 }
 
