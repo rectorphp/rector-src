@@ -79,12 +79,11 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes = $firstNode->stmts;
         }
 
-        $removedShortUses = $this->renamedClassesDataCollector->getOldClasses();
-
         // B. no namespace? add in the top
         // first clean
         if ($this->rectorConfigProvider->shouldImportNames()) {
-            $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedShortUses);
+            $oldClasses = $this->renamedClassesDataCollector->getOldClasses();
+            $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $oldClasses);
         }
 
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
