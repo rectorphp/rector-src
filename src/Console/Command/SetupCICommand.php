@@ -7,6 +7,7 @@ namespace Rector\Core\Console\Command;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use OndraM\CiDetector\CiDetector;
+use function sprintf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,27 +80,20 @@ final class SetupCICommand extends Command
 
         $this->symfonyStyle->newLine();
 
-        $this->symfonyStyle->note('The "rector.yaml" workflow was added');
-        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->success('The ".github/workflows/rector.yaml" file was added');
 
-        $this->symfonyStyle->title('2 steps more to run you Github Action:');
+        $this->symfonyStyle->writeln('<comment>2 more steps to run Rector in CI:</comment>');
+
+        $this->symfonyStyle->newLine();
         $this->symfonyStyle->writeln(
-            '1) Generate new Github Token here:' .
-            PHP_EOL .
-            $this->createClickableLink('https://github.com/settings/tokens/new')
+            '1) Generate token with "repo" scope:' . \PHP_EOL . 'https://github.com/settings/tokens/new'
         );
 
         $this->symfonyStyle->newLine();
-
-        $repositoryUrl = sprintf('https://github.com/%s/settings/secrets/actions/new', $currentRepository);
-
+        $repositoryNewSecretsLink = sprintf('https://github.com/%s/settings/secrets/actions/new', $currentRepository);
         $this->symfonyStyle->writeln(
-            '2) Add it to your repository secrets under "GITHUB_TOKE" name:'
-            . PHP_EOL .
-            $this->createClickableLink($repositoryUrl)
+            '2) Add the token to Action secrets as "GITHUB_TOKEN":' . \PHP_EOL . $repositoryNewSecretsLink
         );
-
-        $this->symfonyStyle->newLine();
 
         return Command::SUCCESS;
     }
