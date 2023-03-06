@@ -52,39 +52,37 @@ final class UseAddingPostRector extends AbstractPostRector
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
         $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath($file->getFilePath());
 
-        $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
         // nothing to import or remove
-        if ($useImportTypes === [] && $functionUseImportTypes === [] && $oldToNewClasses === []) {
+        if ($useImportTypes === [] && $functionUseImportTypes === [] && $removedUses === []) {
             return $nodes;
         }
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
 
+        $firstNode = $nodes[0];
+        if ($firstNode instanceof FileWithoutNamespace) {
+            $nodes = $firstNode->stmts;
+        }
+
+        // first clean
+        $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedUses);
+
         // A. has namespace? add under it
         $namespace = $this->betterNodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
         if ($namespace instanceof Namespace_) {
-            // first clean
             // then add, to prevent adding + removing false positive of same short use
             $this->useImportsAdder->addImportsToNamespace($namespace, $useImportTypes, $functionUseImportTypes);
 
             return $nodes;
         }
 
-        $firstNode = $nodes[0];
-        if ($firstNode instanceof FileWithoutNamespace) {
-            $nodes = $firstNode->stmts;
-        }
-
-        $removedShortUses = $this->renamedClassesDataCollector->getOldClasses();
-
         // B. no namespace? add in the top
-        // first clean
-        $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedShortUses);
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
-        // then add, to prevent adding + removing false positive of same short use
 
+        // then add, to prevent adding + removing false positive of same short use
         return $this->useImportsAdder->addImportsToStmts($nodes, $useImportTypes, $functionUseImportTypes);
     }
 

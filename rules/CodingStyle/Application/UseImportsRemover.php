@@ -16,10 +16,10 @@ final class UseImportsRemover
 
     /**
      * @param Stmt[] $stmts
-     * @param string[] $removedShortUses
+     * @param string[] $removedUses
      * @return Stmt[]
      */
-    public function removeImportsFromStmts(array $stmts, array $removedShortUses): array
+    public function removeImportsFromStmts(array $stmts, array $removedUses): array
     {
         /**
          * Verify import name to cover conflict on rename+import,
@@ -34,7 +34,7 @@ final class UseImportsRemover
                 continue;
             }
 
-            $this->removeUseFromUse($removedShortUses, $stmt);
+            $this->removeUseFromUse($removedUses, $stmt);
 
             // nothing left → remove
             if ($stmt->uses === []) {
@@ -46,12 +46,12 @@ final class UseImportsRemover
     }
 
     /**
-     * @param string[] $removedShortUses
+     * @param string[] $removedUses
      */
-    private function removeUseFromUse(array $removedShortUses, Use_ $use): void
+    private function removeUseFromUse(array $removedUses, Use_ $use): void
     {
         foreach ($use->uses as $usesKey => $useUse) {
-            foreach ($removedShortUses as $removedShortUse) {
+            foreach ($removedUses as $removedShortUse) {
                 if ($useUse->name->toString() === $removedShortUse) {
                     unset($use->uses[$usesKey]);
                 }
