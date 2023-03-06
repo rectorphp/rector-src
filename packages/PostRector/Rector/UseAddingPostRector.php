@@ -83,6 +83,17 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedUses);
         }
 
+        return $this->resolveNodesWithImportedUses($nodes, $useImportTypes, $functionUseImportTypes, $namespace);
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @param FullyQualifiedObjectType[] $useImportTypes
+     * @param FullyQualifiedObjectType[] $functionUseImportTypes
+     * @return Stmt[]
+     */
+    private function resolveNodesWithImportedUses(array $nodes, array $useImportTypes, array $functionUseImportTypes, ?Namespace_ $namespace): array
+    {
         // A. has namespace? add under it
         if ($namespace instanceof Namespace_) {
             // then add, to prevent adding + removing false positive of same short use
