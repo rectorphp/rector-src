@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\CodingStyle\Application\UseImportsRemover;
-use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -31,7 +30,6 @@ final class UseAddingPostRector extends AbstractPostRector
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -43,15 +41,6 @@ final class UseAddingPostRector extends AbstractPostRector
     {
         // no nodes → just return
         if ($nodes === []) {
-            return $nodes;
-        }
-
-        $firstNode = $nodes[0];
-        if ($firstNode instanceof FileWithoutNamespace) {
-            $nodes = $firstNode->stmts;
-        }
-
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
             return $nodes;
         }
 
@@ -81,6 +70,11 @@ final class UseAddingPostRector extends AbstractPostRector
             $this->useImportsAdder->addImportsToNamespace($namespace, $useImportTypes, $functionUseImportTypes);
 
             return $nodes;
+        }
+
+        $firstNode = $nodes[0];
+        if ($firstNode instanceof FileWithoutNamespace) {
+            $nodes = $firstNode->stmts;
         }
 
         $removedShortUses = $this->renamedClassesDataCollector->getOldClasses();
