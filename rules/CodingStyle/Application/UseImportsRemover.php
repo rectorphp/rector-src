@@ -6,7 +6,6 @@ namespace Rector\CodingStyle\Application;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\NodeRemoval\NodeRemover;
 
