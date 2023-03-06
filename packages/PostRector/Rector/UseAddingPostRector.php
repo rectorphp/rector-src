@@ -41,10 +41,6 @@ final class UseAddingPostRector extends AbstractPostRector
      */
     public function beforeTraverse(array $nodes): array
     {
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
-            return $nodes;
-        }
-
         // no nodes → just return
         if ($nodes === []) {
             return $nodes;
@@ -87,7 +83,10 @@ final class UseAddingPostRector extends AbstractPostRector
 
         // B. no namespace? add in the top
         // first clean
-        $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedShortUses);
+        if ($this->rectorConfigProvider->shouldImportNames()) {
+            $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedShortUses);
+        }
+
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
         // then add, to prevent adding + removing false positive of same short use
 
