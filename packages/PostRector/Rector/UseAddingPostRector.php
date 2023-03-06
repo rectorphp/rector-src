@@ -6,6 +6,7 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
@@ -67,11 +68,22 @@ final class UseAddingPostRector extends AbstractPostRector
             $nodes = $firstNode->stmts;
         }
 
-        // first clean
-        $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedUses);
+        $namespace = $this->betterNodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
+        if (! $firstNode instanceof FileWithoutNamespace && ! $namespace instanceof Namespace_) {
+            return $nodes;
+        }
+
+        if ($namespace instanceof Namespace_) {
+            // clean namespace stmts, don't assign, this used to clean the stmts of Namespace_
+            $this->useImportsRemover->removeImportsFromStmts($namespace->stmts, $removedUses);
+        }
+
+        if ($firstNode instanceof FileWithoutNamespace) {
+            // clean no-namespace stmts, assign
+            $nodes = $this->useImportsRemover->removeImportsFromStmts($nodes, $removedUses);
+        }
 
         // A. has namespace? add under it
-        $namespace = $this->betterNodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
         if ($namespace instanceof Namespace_) {
             // then add, to prevent adding + removing false positive of same short use
             $this->useImportsAdder->addImportsToNamespace($namespace, $useImportTypes, $functionUseImportTypes);
