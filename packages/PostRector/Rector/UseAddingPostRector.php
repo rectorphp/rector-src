@@ -6,7 +6,6 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
