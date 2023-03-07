@@ -100,11 +100,13 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        if ($oldToNewClasses === [] && ! $this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
-            return null;
+        if ($oldToNewClasses !== []) {
+            return $this->classRenamer->renameNode($node, $oldToNewClasses);
         }
-
-        return $this->classRenamer->renameNode($node, $oldToNewClasses);
+        if ($this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
+            return $this->classRenamer->renameNode($node, $oldToNewClasses);
+        }
+        return null;
     }
 
     /**
