@@ -103,9 +103,11 @@ CODE_SAMPLE
         if ($oldToNewClasses !== []) {
             return $this->classRenamer->renameNode($node, $oldToNewClasses);
         }
+
         if ($this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
             return $this->classRenamer->renameNode($node, $oldToNewClasses);
         }
+
         return null;
     }
 
