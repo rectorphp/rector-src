@@ -90,6 +90,7 @@ final class SetupCICommand extends Command
         );
 
         $this->symfonyStyle->newLine();
+
         $repositoryNewSecretsLink = sprintf('https://github.com/%s/settings/secrets/actions/new', $currentRepository);
         $this->symfonyStyle->writeln(
             '2) Add the token to Action secrets as "ACCESS_TOKEN":' . \PHP_EOL . $repositoryNewSecretsLink
@@ -120,10 +121,5 @@ final class SetupCICommand extends Command
 
         $match = Strings::match($output, self::GITHUB_REPOSITORY_REGEX);
         return $match['repository_name'] ?? null;
-    }
-
-    private function createClickableLink(string $url): string
-    {
-        return sprintf('<href=%s>%s</>', $url, $url);
     }
 }
