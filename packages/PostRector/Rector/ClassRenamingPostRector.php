@@ -57,18 +57,13 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
             return $result;
         }
 
-        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-        $rootNode = $this->betterNodeFinder->findParentType($node, Namespace_::class);
-        if ($rootNode instanceof Namespace_) {
-            $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
+        $rootNode = $this->betterNodeFinder->findParentByTypes($node, [Namespace_::class, FileWithoutNamespace::class]);
+        if (! $rootNode instanceof Node) {
             return $result;
         }
 
-        $rootNode = $this->betterNodeFinder->findParentType($node, FileWithoutNamespace::class);
-        if ($rootNode instanceof FileWithoutNamespace) {
-            $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
-            return $result;
-        }
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
+        $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
 
         return $result;
     }
