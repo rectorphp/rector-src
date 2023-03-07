@@ -48,6 +48,10 @@ final class UseAddingPostRector extends AbstractPostRector
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
         $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath($file->getFilePath());
 
+        if ($useImportTypes === [] && $functionUseImportTypes === []) {
+            return $nodes;
+        }
+
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
         $firstNode = $nodes[0];
