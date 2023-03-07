@@ -6,7 +6,6 @@ namespace Rector\Renaming\Rector\Name;
 
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
@@ -98,7 +97,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace|Use_ $node
+     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -107,15 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node instanceof Use_) {
-            return $this->classRenamer->renameNode($node, $oldToNewClasses);
-        }
-
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
-            return null;
-        }
-
-        return $this->processCleanUpUse($node, $oldToNewClasses);
+        return $this->classRenamer->renameNode($node, $oldToNewClasses);
     }
 
     /**
@@ -136,21 +127,6 @@ CODE_SAMPLE
         Assert::allString(array_keys($configuration));
 
         $this->addOldToNewClasses($configuration);
-    }
-
-    /**
-     * @param array<string, string> $oldToNewClasses
-     */
-    private function processCleanUpUse(Use_ $use, array $oldToNewClasses): ?Use_
-    {
-        foreach ($use->uses as $useUse) {
-            if (! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
-                $this->removeNode($use);
-                return $use;
-            }
-        }
-
-        return null;
     }
 
     /**
