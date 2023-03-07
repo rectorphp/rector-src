@@ -6,47 +6,28 @@ namespace Rector\CodingStyle\Application;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\NodeRemoval\NodeRemover;
 
 final class UseImportsRemover
 {
     public function __construct(
-        private readonly RectorConfigProvider $rectorConfigProvider,
         private readonly NodeRemover $nodeRemover
-    )
-    {
+    ) {
     }
 
     /**
      * @param Stmt[] $stmts
      * @param string[] $removedUses
-     * @return Stmt[]
      */
-    public function removeImportsFromStmts(array $stmts, array $removedUses): array
+    public function removeImportsFromStmts(array $stmts, array $removedUses): void
     {
-        /**
-         * Verify import name to cover conflict on rename+import,
-         * but without $rectorConfig->removeUnusedImports() used
-         */
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
-            return $stmts;
-        }
-
-        foreach ($stmts as $stmtKey => $stmt) {
+        foreach ($stmts as $stmt) {
             if (! $stmt instanceof Use_) {
                 continue;
             }
 
             $this->removeUseFromUse($removedUses, $stmt);
-
-            // nothing left → remove
-            if ($stmt->uses === []) {
-                unset($stmts[$stmtKey]);
-            }
         }
-
-        return $stmts;
     }
 
     /**

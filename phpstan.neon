@@ -537,7 +537,6 @@ parameters:
                 - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
                 - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                - packages/PostRector/Rector/UseAddingPostRector.php
 
         -
             message: '#Method call return value that should be used, but is not#'
