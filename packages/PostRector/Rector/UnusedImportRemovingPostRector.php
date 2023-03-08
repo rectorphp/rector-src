@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Configuration\RectorConfigProvider;
@@ -43,6 +44,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         foreach ($node->stmts as $key => $namespaceStmt) {
             if (! $namespaceStmt instanceof Use_) {
+                continue;
+            }
+
+            if ($namespaceStmt->uses === []) {
                 continue;
             }
 
