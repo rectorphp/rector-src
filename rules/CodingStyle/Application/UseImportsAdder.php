@@ -29,22 +29,22 @@ final class UseImportsAdder
      * @param Stmt[] $stmts
      * @param Use_[] $newUses
      */
-    private function mirrorUseComments(array $stmts, array $newUses): void
+    private function mirrorUseComments(array $stmts, array $newUses, int $indexStmt = 0): void
     {
         if ($stmts === []) {
             return;
         }
 
-        if ($stmts[0] instanceof Use_) {
-            $comments = (array) $stmts[0]->getAttribute(AttributeKey::COMMENTS);
+        if ($stmts[$indexStmt] instanceof Use_) {
+            $comments = (array) $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS);
 
             if ($comments !== []) {
                 $newUses[0]->setAttribute(
                     AttributeKey::COMMENTS,
-                    $stmts[0]->getAttribute(AttributeKey::COMMENTS)
+                    $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS)
                 );
 
-                $stmts[0]->setAttribute(AttributeKey::COMMENTS, null);
+                $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, null);
             }
         }
     }
@@ -80,6 +80,8 @@ final class UseImportsAdder
                     // add extra space, if there are no new use imports to be added
                     $nodesToAdd = array_merge([new Nop()], $newUses);
                 }
+
+                $this->mirrorUseComments($stmts, $newUses, 1);
 
                 array_splice($stmts, $key + 1, 0, $nodesToAdd);
 

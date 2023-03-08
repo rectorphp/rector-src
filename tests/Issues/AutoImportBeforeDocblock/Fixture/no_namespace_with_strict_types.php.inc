@@ -25,11 +25,11 @@ final class NoNamespaceWithStrictTypes
 <?php
 
 declare(strict_types=1);
-
 /**
  * License
  */
 use Foobar\B;
+
 use Foobar\A;
 
 /**
