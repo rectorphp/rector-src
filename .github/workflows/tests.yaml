@@ -38,4 +38,4 @@ jobs:
 
             -   uses: "ramsey/composer-install@v2"
 
-            -   run: vendor/bin/phpunit ${{ matrix.path }} --colors
+            -   run: vendor/bin/paratest ${{ matrix.path }} --colors
