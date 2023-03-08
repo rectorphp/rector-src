@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -90,7 +89,6 @@ CODE_SAMPLE
             ClassLike::class,
             Namespace_::class,
             FileWithoutNamespace::class,
-            Use_::class,
         ];
     }
 
