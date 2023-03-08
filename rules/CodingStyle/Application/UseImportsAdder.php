@@ -81,7 +81,7 @@ final class UseImportsAdder
                     $nodesToAdd = array_merge([new Nop()], $newUses);
                 }
 
-                $this->mirrorUseComments($stmts, $newUses, 1);
+                $this->mirrorUseComments($stmts, $newUses, $key + 1);
 
                 array_splice($stmts, $key + 1, 0, $nodesToAdd);
 
