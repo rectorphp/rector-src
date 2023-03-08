@@ -6,14 +6,12 @@ namespace Rector\Renaming\Rector\Name;
 
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -38,7 +36,6 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
-        private readonly RectorConfigProvider $rectorConfigProvider,
         private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
     ) {
     }
@@ -98,24 +95,20 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace|Use_ $node
+     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace $node
      */
     public function refactor(Node $node): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        if ($oldToNewClasses === [] && ! $this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
-            return null;
-        }
-
-        if (! $node instanceof Use_) {
+        if ($oldToNewClasses !== []) {
             return $this->classRenamer->renameNode($node, $oldToNewClasses);
         }
 
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
-            return null;
+        if ($this->renameClassCallbackHandler->hasOldToNewClassCallbacks()) {
+            return $this->classRenamer->renameNode($node, $oldToNewClasses);
         }
 
-        return $this->processCleanUpUse($node, $oldToNewClasses);
+        return null;
     }
 
     /**
@@ -136,21 +129,6 @@ CODE_SAMPLE
         Assert::allString(array_keys($configuration));
 
         $this->addOldToNewClasses($configuration);
-    }
-
-    /**
-     * @param array<string, string> $oldToNewClasses
-     */
-    private function processCleanUpUse(Use_ $use, array $oldToNewClasses): ?Use_
-    {
-        foreach ($use->uses as $useUse) {
-            if (! $useUse->alias instanceof Identifier && isset($oldToNewClasses[$useUse->name->toString()])) {
-                $this->removeNode($use);
-                return $use;
-            }
-        }
-
-        return null;
     }
 
     /**
