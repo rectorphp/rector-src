@@ -9,7 +9,7 @@ use Foobar\A;
 /**
  * Docblock
  */
-final class DemoFile
+final class NoNamespace
 {
     public function run()
     {
@@ -31,7 +31,7 @@ use Foobar\A;
 /**
  * Docblock
  */
-final class DemoFile
+final class NoNamespace
 {
     public function run()
     {
