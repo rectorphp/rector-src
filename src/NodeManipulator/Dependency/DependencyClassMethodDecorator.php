@@ -78,7 +78,7 @@ final class DependencyClassMethodDecorator
                 break;
             }
 
-            $paramsWithoutDefaultValue[] = $param;
+            $paramsWithoutDefaultValue[] = clone $param;
         }
 
         $cleanParams = $this->cleanParamsFromVisibilityAndAttributes($paramsWithoutDefaultValue);
@@ -86,6 +86,11 @@ final class DependencyClassMethodDecorator
 
         // replicate parent parameters
         if ($cleanParamsToAdd !== []) {
+            foreach ($cleanParamsToAdd as $toAdd) {
+                $paramName = $this->nodeNameResolver->getName($toAdd);
+                $this->incrementParamIfExists($toAdd, $paramName, $cleanParamsToAdd, $classMethod->params);
+            }
+
             $classMethod->params = array_merge($cleanParamsToAdd, $classMethod->params);
         }
 
@@ -145,6 +150,44 @@ final class DependencyClassMethodDecorator
                 return true;
             }
         );
+    }
+
+    /**
+     * @param Param[] $newParams
+     * @param Param[] $originalParams
+     */
+    private function incrementParamIfExists(Param $paramToAdd, string $newName, array $newParams, array $originalParams, int $count = 0): void
+    {
+        $name = $newName;
+
+        if ($count > 0) {
+            $name .= $count;
+        }
+
+        foreach ($newParams as $param) {
+            if ($paramToAdd === $param) {
+                continue;
+            }
+
+            if ($this->nodeNameResolver->isName($param, $name)) {
+                ++$count;
+                $this->incrementParamIfExists($paramToAdd, $newName, $newParams, $originalParams, $count);
+                return;
+            }
+        }
+
+        foreach ($originalParams as $param) {
+            if ($this->nodeNameResolver->isName($param, $name)) {
+                ++$count;
+                $this->incrementParamIfExists($paramToAdd, $newName, $newParams, $originalParams, $count);
+                return;
+            }
+        }
+
+        if ($name !== $newName) {
+            $paramToAdd->var = clone $paramToAdd->var;
+            $paramToAdd->var->name = $name;
+        }
     }
 
     private function areMaybeTypesEqual(?Type $type1, ?Type $type2): bool
