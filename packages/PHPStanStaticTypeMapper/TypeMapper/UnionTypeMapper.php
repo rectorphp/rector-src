@@ -509,16 +509,16 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        $type = $this->typeFactory->createMixedPassedOrUnionType($unionType->getTypes());
-        if (! $type instanceof UnionType) {
-            return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
+        $unionType = $this->typeFactory->createMixedPassedOrUnionType($unionType->getTypes());
+        if (! $unionType instanceof UnionType) {
+            return $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionType, $typeKind);
         }
 
         // avoid infinite loop by compare early
-        if (count($type->getTypes()) === count($phpParserUnionType->types)) {
+        if (count($unionType->getTypes()) === count($phpParserUnionType->types)) {
             return $phpParserUnionType;
         }
 
-        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
+        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionType, $typeKind);
     }
 }
