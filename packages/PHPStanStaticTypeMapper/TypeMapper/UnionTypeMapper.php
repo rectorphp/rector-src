@@ -30,6 +30,7 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -56,7 +57,8 @@ final class UnionTypeMapper implements TypeMapperInterface
         private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
         private readonly BoolUnionTypeAnalyzer $boolUnionTypeAnalyzer,
         private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly TypeFactory $typeFactory
     ) {
     }
 
@@ -289,7 +291,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         if ($phpParserUnionType !== null) {
-            return $this->narrowBoolType($unionType, $phpParserUnionType);
+            return $this->narrowBoolType($unionType, $phpParserUnionType, $typeKind);
         }
 
         if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
@@ -486,9 +488,13 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new Identifier('int');
     }
 
+    /**
+     * @param TypeKind::* $typeKind
+     */
     private function narrowBoolType(
         UnionType $unionType,
-        PhpParserUnionType $phpParserUnionType
+        PhpParserUnionType $phpParserUnionType,
+        string $typeKind
     ): PhpParserUnionType|null|Identifier {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             // maybe all one type
@@ -503,6 +509,16 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        return $phpParserUnionType;
+        $type = $this->typeFactory->createMixedPassedOrUnionType($unionType->getTypes());
+        if (! $type instanceof UnionType) {
+            return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
+        }
+
+        // avoid infinite loop by compare early
+        if (count($type->getTypes()) === count($phpParserUnionType->types)) {
+            return $phpParserUnionType;
+        }
+
+        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
     }
 }
