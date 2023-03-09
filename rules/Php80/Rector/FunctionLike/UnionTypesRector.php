@@ -214,7 +214,7 @@ CODE_SAMPLE
             TypeKind::RETURN
         );
 
-        if (! $phpParserUnionType instanceof PhpParserUnionType) {
+        if (! $phpParserUnionType instanceof Node) {
             return;
         }
 
@@ -252,10 +252,10 @@ CODE_SAMPLE
 
     private function shouldSkipParamTypeRefactor(
         Name|Identifier|ComplexType|null $type,
-        Name|ComplexType|Node|null $phpParserUnionType
+        Name|Identifier|ComplexType|null $phpParserUnionType
     ): bool {
         if (! $phpParserUnionType instanceof PhpParserUnionType) {
-            return true;
+            return $type instanceof Node;
         }
 
         if ($type instanceof PhpParserUnionType) {
