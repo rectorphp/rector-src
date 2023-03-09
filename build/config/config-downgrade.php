@@ -18,6 +18,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-downgrade.neon');
 
     $rectorConfig->import(DowngradeLevelSetList::DOWN_TO_PHP_72);
+
+    $rectorConfig->fileExtensions(['php', 'phtml']);
 };
 
 /**
