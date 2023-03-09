@@ -495,7 +495,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         UnionType $unionType,
         PhpParserUnionType $phpParserUnionType,
         string $typeKind
-    ): PhpParserUnionType|null|Identifier {
+    ): PhpParserUnionType|null|Identifier|Name|ComplexType {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             // maybe all one type
             if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
