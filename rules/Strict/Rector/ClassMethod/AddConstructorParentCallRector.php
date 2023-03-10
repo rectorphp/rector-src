@@ -80,8 +80,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $class = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $class instanceof Class_) {
+        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
+        if (! $classLike instanceof Class_) {
             return null;
         }
 
@@ -98,7 +98,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies($class, $node, $scope);
+        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies($classLike, $node, $scope);
 
         return $node;
     }
