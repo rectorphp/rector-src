@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\FixturePhp80;
 
-final class ArrayMapReturnArray2
+final class PregReplaceCallbackClosure
 {
     public function run()
     {
@@ -18,7 +18,7 @@ final class ArrayMapReturnArray2
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\FixturePhp80;
 
-final class ArrayMapReturnArray2
+final class PregReplaceCallbackClosure
 {
     public function run()
     {

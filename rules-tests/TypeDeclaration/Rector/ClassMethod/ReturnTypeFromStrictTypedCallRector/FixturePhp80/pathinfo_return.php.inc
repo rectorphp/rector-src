@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\FixturePhp80;
 
-final class ArrayMapReturnArray3
+final class PathInfoReturn
 {
     /**
      * Extracts the extension of the given filename.
@@ -25,7 +25,7 @@ final class ArrayMapReturnArray3
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\FixturePhp80;
 
-final class ArrayMapReturnArray3
+final class PathInfoReturn
 {
     /**
      * Extracts the extension of the given filename.
