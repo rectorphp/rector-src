@@ -25,7 +25,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCal
 
 final class ReturnSelfDifferentNamespace
 {
-    public function run()
+    public function run(): array
     {
         return
             array_map(function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Source\ReturnSelfFromSource {

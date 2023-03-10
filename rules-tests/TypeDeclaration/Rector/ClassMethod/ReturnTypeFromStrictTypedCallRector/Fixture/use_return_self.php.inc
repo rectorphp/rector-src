@@ -35,7 +35,7 @@ class ReturnSelf {
 
 final class UseReturnSelf
 {
-    public function run()
+    public function run(): array
     {
         return
             array_map(function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\ReturnSelf {
