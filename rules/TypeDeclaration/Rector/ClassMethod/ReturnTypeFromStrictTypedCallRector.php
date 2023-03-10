@@ -116,8 +116,8 @@ CODE_SAMPLE
                 return false;
             }
 
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
-            if ($currentFunctionLike !== $node) {
+            $currentReturnFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
+            if ($currentReturnFunctionLike !== $currentFunctionLike) {
                 return false;
             }
 
