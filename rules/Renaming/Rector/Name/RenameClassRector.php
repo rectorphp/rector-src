@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Renaming\Helper\RenameClassCallbackHandler;
@@ -88,12 +87,11 @@ CODE_SAMPLE
             Expression::class,
             ClassLike::class,
             Namespace_::class,
-            FileWithoutNamespace::class,
         ];
     }
 
     /**
-     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|FileWithoutNamespace $node
+     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property $node
      */
     public function refactor(Node $node): ?Node
     {
