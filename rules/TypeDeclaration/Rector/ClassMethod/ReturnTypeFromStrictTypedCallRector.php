@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
@@ -116,8 +117,8 @@ CODE_SAMPLE
                 return false;
             }
 
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
-            if ($currentFunctionLike !== $node) {
+            $currentReturnFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
+            if ($currentReturnFunctionLike !== $currentFunctionLike) {
                 return false;
             }
 
@@ -222,7 +223,7 @@ CODE_SAMPLE
 
     private function refactorSingleReturnType(
         Return_ $return,
-        Identifier|Name|NullableType $returnedStrictTypeNode,
+        Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,
         ClassMethod | Function_ | Closure $functionLike
     ): Closure | ClassMethod | Function_ {
         $resolvedType = $this->nodeTypeResolver->getType($return);

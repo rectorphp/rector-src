@@ -43,7 +43,7 @@ class ReturnSelfNullable {
 
 final class UseReturnSelfNullable
 {
-    public function run()
+    public function run(): array
     {
         return
             array_map(function (): ?\Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\ReturnSelfNullable {
