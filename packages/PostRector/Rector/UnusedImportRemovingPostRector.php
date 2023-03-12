@@ -175,6 +175,11 @@ CODE_SAMPLE
         return array_merge($phpNames, $docBlockNames);
     }
 
+    private function resolveAliasName(UseUse $useUse): ?string
+    {
+        return $this->resolveAliasName($useUse);
+    }
+
     /**
      * @param string[]  $names
      */
@@ -191,9 +196,7 @@ CODE_SAMPLE
             $namespacedPrefix = $comparedName . '\\';
         }
 
-        $alias = $useUse->alias instanceof Identifier
-            ? $useUse->alias->toString()
-            : null;
+        $alias = $this->resolveAliasName($useUse);
 
         // match partial import
         foreach ($names as $name) {
@@ -213,11 +216,13 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (str_contains($name, '\\')) {
-                $namePrefix = Strings::before($name, '\\', 1);
-                if ($alias === $namePrefix) {
-                    return true;
-                }
+            if (! str_contains($name, '\\')) {
+                continue;
+            }
+
+            $namePrefix = Strings::before($name, '\\', 1);
+            if ($alias === $namePrefix) {
+                return true;
             }
         }
 
