@@ -27,30 +27,6 @@ final class UseImportsAdder
 
     /**
      * @param Stmt[] $stmts
-     * @param Use_[] $newUses
-     */
-    private function mirrorUseComments(array $stmts, array $newUses, int $indexStmt = 0): void
-    {
-        if ($stmts === []) {
-            return;
-        }
-
-        if ($stmts[$indexStmt] instanceof Use_) {
-            $comments = (array) $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS);
-
-            if ($comments !== []) {
-                $newUses[0]->setAttribute(
-                    AttributeKey::COMMENTS,
-                    $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS)
-                );
-
-                $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, null);
-            }
-        }
-    }
-
-    /**
-     * @param Stmt[] $stmts
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImportTypes
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      * @return Stmt[]
@@ -127,6 +103,30 @@ final class UseImportsAdder
         $this->mirrorUseComments($namespace->stmts, $newUses);
 
         $namespace->stmts = array_merge($newUses, $namespace->stmts);
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @param Use_[] $newUses
+     */
+    private function mirrorUseComments(array $stmts, array $newUses, int $indexStmt = 0): void
+    {
+        if ($stmts === []) {
+            return;
+        }
+
+        if ($stmts[$indexStmt] instanceof Use_) {
+            $comments = (array) $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS);
+
+            if ($comments !== []) {
+                $newUses[0]->setAttribute(
+                    AttributeKey::COMMENTS,
+                    $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS)
+                );
+
+                $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, null);
+            }
+        }
     }
 
     /**

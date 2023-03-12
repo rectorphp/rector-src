@@ -156,8 +156,13 @@ final class DependencyClassMethodDecorator
      * @param Param[] $newParams
      * @param Param[] $originalParams
      */
-    private function incrementParamIfExists(Param $param, string $newName, array $newParams, array $originalParams, int $count = 0): void
-    {
+    private function incrementParamIfExists(
+        Param $param,
+        string $newName,
+        array $newParams,
+        array $originalParams,
+        int $count = 0
+    ): void {
         $name = $newName;
 
         if ($count > 0) {
