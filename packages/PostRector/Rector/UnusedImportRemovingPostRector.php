@@ -140,7 +140,7 @@ CODE_SAMPLE
             return $node;
         });
 
-        return array_unique($names);
+        return $names;
     }
 
     /**
@@ -161,7 +161,7 @@ CODE_SAMPLE
             $names = array_merge($names, $phpDocInfo->getAnnotationClassNames());
         });
 
-        return array_unique($names);
+        return $names;
     }
 
     /**
@@ -172,7 +172,8 @@ CODE_SAMPLE
         $phpNames = $this->findNonUseImportNames($namespace);
         $docBlockNames = $this->findNamesInDocBlocks($namespace);
 
-        return array_merge($phpNames, $docBlockNames);
+        $names = array_merge($phpNames, $docBlockNames);
+        return array_unique($names);
     }
 
     private function resolveAliasName(UseUse $useUse): ?string
