@@ -151,8 +151,7 @@ CODE_SAMPLE
         $names = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
-            &$names,
-            &$lookupNode
+            &$names
         ) {
             if (! $node->hasAttribute(AttributeKey::COMMENTS)) {
                 return null;
@@ -160,10 +159,6 @@ CODE_SAMPLE
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $names = array_merge($names, $phpDocInfo->getAnnotationClassNames());
-
-            if (! $lookupNode instanceof Node) {
-                $lookupNode = $node;
-            }
         });
 
         return array_unique($names);
