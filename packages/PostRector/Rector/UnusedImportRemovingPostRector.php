@@ -172,10 +172,6 @@ CODE_SAMPLE
         $names = array_unique($names);
         if ($lookupNode instanceof Node) {
             foreach ($names as $key => $annotationClassName) {
-                if (str_contains($annotationClassName, '\\')) {
-                    continue;
-                }
-
                 $useNameAliased = $this->aliasNameResolver->resolveAliasOriginalNameFromBareUse(
                     $lookupNode,
                     $annotationClassName

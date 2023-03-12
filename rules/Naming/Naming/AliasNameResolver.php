@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming\Naming;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -42,6 +43,9 @@ final class AliasNameResolver
 
     public function resolveAliasOriginalNameFromBareUse(Node $node, string $nameString): ?string
     {
+        $nameString = str_contains($nameString, '\\')
+            ? Strings::before($nameString, '\\', -1)
+            : $nameString;
         $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
 
         foreach ($uses as $use) {
