@@ -14,6 +14,7 @@ use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Naming\Naming\AliasNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,7 +25,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider
+        private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly AliasNameResolver $aliasNameResolver
     ) {
     }
 
@@ -55,12 +57,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-            // skip aliased imports, harder to check
-            if ($useUse->alias !== null) {
-                continue;
-            }
-
             $comparedName = $useUse->name->toString();
+
             if ($this->isUseImportUsed($comparedName, $names)) {
                 continue;
             }
@@ -152,9 +150,12 @@ CODE_SAMPLE
     private function findNamesInDocBlocks(Namespace_|FileWithoutNamespace $namespace): array
     {
         $names = [];
+        // assign Node below to faster get use from Node
+        $lookupNode = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
-            &$names
+            &$names,
+            &$lookupNode
         ) {
             if (! $node->hasAttribute(AttributeKey::COMMENTS)) {
                 return null;
@@ -162,7 +163,28 @@ CODE_SAMPLE
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $names = array_merge($names, $phpDocInfo->getAnnotationClassNames());
+
+            if (! $lookupNode instanceof Node) {
+                $lookupNode = $node;
+            }
         });
+
+        if ($lookupNode instanceof Node) {
+            foreach ($names as $key => $annotationClassName) {
+                if (str_contains($annotationClassName, '\\')) {
+                    continue;
+                }
+
+                $useNameAliased = $this->aliasNameResolver->resolveAliasOriginalNameFromBareUse(
+                    $lookupNode,
+                    $annotationClassName
+                );
+
+                if (is_string($useNameAliased)) {
+                    $names[$key] = $useNameAliased;
+                }
+            }
+        }
 
         return $names;
     }
