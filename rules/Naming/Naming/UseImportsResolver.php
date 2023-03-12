@@ -24,10 +24,7 @@ final class UseImportsResolver
      */
     public function resolveForNode(Node $node): array
     {
-        $namespace = $this->betterNodeFinder->findParentByTypes(
-            $node,
-            [Namespace_::class, FileWithoutNamespace::class]
-        );
+        $namespace = $this->resolveNamespace($node);
         if (! $namespace instanceof Node) {
             return [];
         }
@@ -38,16 +35,25 @@ final class UseImportsResolver
         );
     }
 
+    private function resolveNamespace(Node $node): null|Namespace_|FileWithoutNamespace
+    {
+        if ($node instanceof Namespace_ || $node instanceof FileWithoutNamespace) {
+            return $node;
+        }
+
+        return $this->betterNodeFinder->findParentByTypes(
+            $node,
+            [Namespace_::class, FileWithoutNamespace::class]
+        );
+    }
+
     /**
      * @api
      * @return Use_[]
      */
     public function resolveBareUsesForNode(Node $node): array
     {
-        $namespace = $this->betterNodeFinder->findParentByTypes(
-            $node,
-            [Namespace_::class, FileWithoutNamespace::class]
-        );
+        $namespace = $this->resolveNamespace($node);
         if (! $namespace instanceof Node) {
             return [];
         }

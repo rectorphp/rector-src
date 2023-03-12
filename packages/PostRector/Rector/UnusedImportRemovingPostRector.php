@@ -6,15 +6,16 @@ namespace Rector\PostRector\Rector;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Naming\Naming\AliasNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,8 +26,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly AliasNameResolver $aliasNameResolver
+        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -57,9 +57,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-            $comparedName = $useUse->name->toString();
 
-            if ($this->isUseImportUsed($comparedName, $names)) {
+            if ($this->isUseImportUsed($useUse, $names)) {
                 continue;
             }
 
@@ -150,8 +149,6 @@ CODE_SAMPLE
     private function findNamesInDocBlocks(Namespace_|FileWithoutNamespace $namespace): array
     {
         $names = [];
-        // assign Node below to faster get use from Node
-        $lookupNode = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
             &$names,
@@ -169,21 +166,7 @@ CODE_SAMPLE
             }
         });
 
-        $names = array_unique($names);
-        if ($lookupNode instanceof Node) {
-            foreach ($names as $key => $annotationClassName) {
-                $useNameAliased = $this->aliasNameResolver->resolveAliasOriginalNameFromBareUse(
-                    $lookupNode,
-                    $annotationClassName
-                );
-
-                if (is_string($useNameAliased)) {
-                    $names[$key] = $useNameAliased;
-                }
-            }
-        }
-
-        return $names;
+        return array_unique($names);
     }
 
     /**
@@ -200,8 +183,9 @@ CODE_SAMPLE
     /**
      * @param string[]  $names
      */
-    private function isUseImportUsed(string $comparedName, array $names): bool
+    private function isUseImportUsed(UseUse $useUse, array $names): bool
     {
+        $comparedName = $useUse->name->toString();
         if (in_array($comparedName, $names, true)) {
             return true;
         }
@@ -212,6 +196,10 @@ CODE_SAMPLE
             $namespacedPrefix = $comparedName . '\\';
         }
 
+        $alias = $useUse->alias instanceof Identifier
+            ? $useUse->alias->toString()
+            : null;
+
         // match partial import
         foreach ($names as $name) {
             if (str_ends_with($comparedName, $name)) {
@@ -220,6 +208,21 @@ CODE_SAMPLE
 
             if (str_starts_with($name, $namespacedPrefix)) {
                 return true;
+            }
+
+            if (! is_string($alias)) {
+                continue;
+            }
+
+            if ($alias === $name) {
+                return true;
+            }
+
+            if (str_contains($name, '\\')) {
+                $namePrefix = Strings::before($name, '\\', 1);
+                if ($alias === $namePrefix) {
+                    return true;
+                }
             }
         }
 
