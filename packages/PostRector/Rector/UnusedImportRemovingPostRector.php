@@ -177,7 +177,9 @@ CODE_SAMPLE
 
     private function resolveAliasName(UseUse $useUse): ?string
     {
-        return $this->resolveAliasName($useUse);
+        return $useUse->alias instanceof Identifier
+            ? $useUse->alias->toString()
+            : null;
     }
 
     /**
