@@ -141,7 +141,7 @@ CODE_SAMPLE
             return $node;
         });
 
-        return $names;
+        return array_unique($names);
     }
 
     /**
@@ -169,6 +169,7 @@ CODE_SAMPLE
             }
         });
 
+        $names = array_unique($names);
         if ($lookupNode instanceof Node) {
             foreach ($names as $key => $annotationClassName) {
                 if (str_contains($annotationClassName, '\\')) {
