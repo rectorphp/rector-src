@@ -28,6 +28,7 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 use Rector\TypeDeclaration\TypeNormalizer;
 
 final class TypeComparator
@@ -289,7 +290,7 @@ final class TypeComparator
          * @see https://wiki.php.net/rfc/this_return_type for more context
          */
         if ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType) {
-            return false;
+            return $phpParserNodeType instanceof SelfStaticType;
         }
 
         $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
