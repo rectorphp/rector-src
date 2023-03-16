@@ -283,6 +283,17 @@ final class TypeComparator
 
     private function isThisTypeInFinalClass(Type $phpStanDocType, Type $phpParserNodeType, Node $node): bool
     {
+        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+
+        // it can be interface or trait
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
+        if ($class->isFinal()) {
+            return true;
+        }
+
         /**
          * Special case for $this/(self|static) compare
          *
@@ -290,21 +301,10 @@ final class TypeComparator
          * @see https://wiki.php.net/rfc/this_return_type for more context
          */
         if ($phpStanDocType instanceof ThisType && $phpParserNodeType instanceof StaticType) {
-            return $phpParserNodeType instanceof SelfStaticType;
-        }
-
-        $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
-
-        if (! $isStaticReturnDocTypeWithThisType) {
-            return true;
-        }
-
-        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-
-        if (! $class instanceof Class_) {
             return false;
         }
 
-        return $class->isFinal();
+        $isStaticReturnDocTypeWithThisType = $phpStanDocType instanceof StaticType && $phpParserNodeType instanceof ThisType;
+        return ! $isStaticReturnDocTypeWithThisType;
     }
 }
