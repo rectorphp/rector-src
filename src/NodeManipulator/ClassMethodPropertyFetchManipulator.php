@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeTraverser;
@@ -43,6 +45,10 @@ final class ClassMethodPropertyFetchManipulator
             (array) $classMethod->stmts,
             function (Node $node) use ($propertyName, &$assignedParamName, $classMethod): ?int {
                 if (! $node instanceof Assign) {
+                    return null;
+                }
+
+                if (! $node->var instanceof PropertyFetch && ! $node->var instanceof StaticPropertyFetch) {
                     return null;
                 }
 
@@ -100,6 +106,10 @@ final class ClassMethodPropertyFetchManipulator
             (array) $classMethod->stmts,
             function (Node $node) use ($propertyName, &$assignExprs, $paramNames, $classMethod): ?int {
                 if (! $node instanceof Assign) {
+                    return null;
+                }
+
+                if (! $node->var instanceof PropertyFetch && ! $node->var instanceof StaticPropertyFetch) {
                     return null;
                 }
 
