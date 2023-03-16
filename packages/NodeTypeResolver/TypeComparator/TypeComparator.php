@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PhpParser\Node;
+use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ArrayType;
@@ -24,6 +27,7 @@ use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -285,9 +289,10 @@ final class TypeComparator
     {
         $class = $this->betterNodeFinder->findParentType($node, Class_::class);
 
-        // it can be interface or trait
+        // just reprinted
         if (! $class instanceof Class_) {
-            return false;
+            $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+            return ! $originalNode instanceof Node;
         }
 
         if ($class->isFinal()) {
