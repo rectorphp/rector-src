@@ -143,6 +143,11 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
             return new MixedType();
         }
 
+        $parentClassMethod = $this->betterNodeFinder->findParentType($return, ClassMethod::class);
+        if ($parentClassMethod === $originalFunctionLike) {
+            return new MixedType();
+        }
+
         return $this->resolveClassMethod($methodReflection, $originalFunctionLike);
     }
 
