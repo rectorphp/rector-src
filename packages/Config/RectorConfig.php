@@ -219,7 +219,7 @@ final class RectorConfig extends ContainerConfigurator
 
     public function containerCacheDirectory(string $directoryPath): void
     {
-        // the container cache directory must be a directory on the first place
+        // container cache directory must be a directory on the first place
         Assert::directory($directoryPath);
 
         $parameters = $this->parameters();
