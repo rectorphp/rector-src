@@ -50,7 +50,11 @@ final class PHPStanServicesFactory
         }
 
         $containerFactory = new ContainerFactory(getcwd());
-        $this->container = $containerFactory->create(sys_get_temp_dir(), $additionalConfigFiles, []);
+        $this->container = $containerFactory->create(
+            $parameterProvider->provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+            $additionalConfigFiles,
+            []
+        );
 
         // clear temporary files, after container is created
         $filesystem = new Filesystem();
