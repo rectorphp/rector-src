@@ -215,6 +215,14 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::CACHE_DIR, $directoryPath);
     }
 
+    public function containerCacheDirectory(string $directoryPath): void
+    {
+        Assert::directory($directoryPath);
+
+        $parameters = $this->parameters();
+        $parameters->set(Option::CONTAINER_CACHE_DIRECTORY, $directoryPath);
+    }
+
     /**
      * @param class-string<CacheStorageInterface> $cacheClass
      */
