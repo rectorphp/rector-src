@@ -219,8 +219,7 @@ final class RectorConfig extends ContainerConfigurator
 
     public function containerCacheDirectory(string $directoryPath): void
     {
-        // the container cache is default to sys_get_temp_dir() in config/config.php which must be a directory
-        // on the first place
+        // the container cache directory must be a directory on the first place
         Assert::directory($directoryPath);
 
         $parameters = $this->parameters();
