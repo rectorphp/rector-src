@@ -364,7 +364,7 @@ final class AstResolver
         $paramNode = null;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            function (Node $node) use ($desiredClassName, $desiredPropertyName, &$propertyNode) {
+            function (Node $node) use ($desiredClassName, $desiredPropertyName, &$paramNode) {
                 if (! $node instanceof Class_) {
                     return null;
                 }
@@ -384,7 +384,7 @@ final class AstResolver
                     }
 
                     if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
-                        $propertyNode = $param;
+                        $paramNode = $param;
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
                 }
