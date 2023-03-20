@@ -91,20 +91,17 @@ final class AstResolver
             return null;
         }
 
-        /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf($nodes, ClassLike::class);
+        /** @var ClassLike|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof ClassLike && $this->nodeNameResolver->isName(
+                    $node,
+                    $classLikeName
+                ) && $node->getMethod($methodName) instanceof ClassMethod
+        );
 
-        foreach ($classLikes as $classLike) {
-            if (! $this->nodeNameResolver->isName($classLike, $classLikeName)) {
-                continue;
-            }
-
-            $classMethod = $classLike->getMethod($methodName);
-            if (! $classMethod instanceof ClassMethod) {
-                continue;
-            }
-
-            return $classMethod;
+        if ($classLike instanceof ClassLike && ($method = $classLike->getMethod($methodName)) instanceof ClassMethod) {
+            return $method;
         }
 
         return null;
@@ -135,17 +132,16 @@ final class AstResolver
             return null;
         }
 
-        /** @var Function_[] $functions */
-        $functions = $this->betterNodeFinder->findInstanceOf($nodes, Function_::class);
-        foreach ($functions as $function) {
-            if (! $this->nodeNameResolver->isName($function, $functionName)) {
-                continue;
-            }
+        /** @var Function_|null $function */
+        $function = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof Function_ && $this->nodeNameResolver->isName(
+                    $node,
+                    $functionName
+                )
+        );
 
-            return $function;
-        }
-
-        return null;
+        return $function;
     }
 
     /**
@@ -249,12 +245,17 @@ final class AstResolver
         $nativeReflectionProperty = $phpPropertyReflection->getNativeReflection();
         $desiredPropertyName = $nativeReflectionProperty->getName();
 
-        /** @var Property[] $properties */
-        $properties = $this->betterNodeFinder->findInstanceOf($nodes, Property::class);
-        foreach ($properties as $property) {
-            if ($this->nodeNameResolver->isName($property, $desiredPropertyName)) {
-                return $property;
-            }
+        /** @var Property|null $property */
+        $property = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof Property && $this->nodeNameResolver->isName(
+                    $node,
+                    $desiredPropertyName
+                )
+        );
+
+        if ($property instanceof Property) {
+            return $property;
         }
 
         // promoted property
