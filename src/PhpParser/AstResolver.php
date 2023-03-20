@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
@@ -27,14 +28,13 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 
 /**
@@ -54,7 +54,7 @@ final class AstResolver
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ReflectionResolver $reflectionResolver,
@@ -92,27 +92,29 @@ final class AstResolver
             return null;
         }
 
-        /** @var ClassMethod|null $classMethod */
-        $classMethod = $this->betterNodeFinder->findFirst(
+        $classMethod = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
-            function (Node $node) use ($classLikeName, $methodName): bool {
-                if (! $node instanceof ClassMethod) {
-                    return false;
+            function (Node $node) use ($classLikeName, $methodName, &$classMethod): ?int {
+                if (! $node instanceof ClassLike) {
+                    return null;
                 }
 
-                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if (! $parentNode instanceof ClassLike) {
-                    return false;
+                if (! $this->nodeNameResolver->isName($node, $classLikeName)) {
+                    return null;
                 }
 
-                if (! $this->nodeNameResolver->isName($parentNode, $classLikeName)) {
-                    return false;
+                $method = $node->getMethod($methodName);
+                if ($method instanceof ClassMethod) {
+                    $classMethod = $method;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
-                return $parentNode->getMethod($methodName) === $node;
+                return null;
             }
         );
 
+        /** @var ClassMethod|null $classMethod */
         return $classMethod;
     }
 
@@ -141,16 +143,25 @@ final class AstResolver
             return null;
         }
 
-        /** @var Function_|null $function */
-        $function = $this->betterNodeFinder->findFirst(
+        $functionNode = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
-            fn (Node $node): bool => $node instanceof Function_ && $this->nodeNameResolver->isName(
-                $node,
-                $functionName
-            )
+            function (Node $node) use ($functionName, &$functionNode): ?int {
+                if (! $node instanceof Function_) {
+                    return null;
+                }
+
+                if (! $this->nodeNameResolver->isName($node, $functionName)) {
+                    return null;
+                }
+
+                $functionNode = $node;
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
         );
 
-        return $function;
+        /** @var Function_|null $functionNode */
+        return $functionNode;
     }
 
     /**
@@ -174,11 +185,9 @@ final class AstResolver
 
     public function resolveClassMethodFromCall(MethodCall | StaticCall $call): ?ClassMethod
     {
-        if ($call instanceof MethodCall) {
-            $callerStaticType = $this->nodeTypeResolver->getType($call->var);
-        } else {
-            $callerStaticType = $this->nodeTypeResolver->getType($call->class);
-        }
+        $callerStaticType = $call instanceof MethodCall
+            ? $this->nodeTypeResolver->getType($call->var)
+            : $this->nodeTypeResolver->getType($call->class);
 
         if (! $callerStaticType instanceof TypeWithClassName) {
             return null;
@@ -217,20 +226,30 @@ final class AstResolver
                 continue;
             }
 
-            /** @var Trait_|null $trait */
-            $trait = $this->betterNodeFinder->findFirst(
+            $traitName = $classLike->getName();
+
+            $traitNode = null;
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
                 $nodes,
-                fn (Node $node): bool => $node instanceof Trait_ && $this->nodeNameResolver->isName(
-                    $node,
-                    $classLike->getName()
-                )
+                function (Node $node) use ($traitName, &$traitNode): ?int {
+                    if (! $node instanceof Trait_) {
+                        return null;
+                    }
+
+                    if (! $this->nodeNameResolver->isName($node, $traitName)) {
+                        return null;
+                    }
+
+                    $traitNode = $node;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
             );
 
-            if (! $trait instanceof Trait_) {
+            if (! $traitNode instanceof Trait_) {
                 continue;
             }
 
-            $traits[] = $trait;
+            $traits[] = $traitNode;
         }
 
         return $traits;
@@ -255,33 +274,35 @@ final class AstResolver
         $desiredClassName = $classReflection->getName();
         $desiredPropertyName = $nativeReflectionProperty->getName();
 
-        /** @var Property|null $property */
-        $property = $this->betterNodeFinder->findFirst(
+        /** @var Property|null $propertyNode */
+        $propertyNode = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
-            function (Node $node) use ($desiredClassName, $desiredPropertyName): bool {
-                if (! $node instanceof Property) {
-                    return false;
+            function (Node $node) use ($desiredClassName, $desiredPropertyName, &$propertyNode): ?int {
+                if (! $node instanceof ClassLike) {
+                    return null;
                 }
 
-                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if (! $parentNode instanceof ClassLike) {
-                    return false;
+                if (! $this->nodeNameResolver->isName($node, $desiredClassName)) {
+                    return null;
                 }
 
-                if (! $this->nodeNameResolver->isName($parentNode, $desiredClassName)) {
-                    return false;
+                $property = $node->getProperty($desiredPropertyName);
+                if ($property instanceof Property) {
+                    $propertyNode = $node;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
-                return $parentNode->getProperty($desiredPropertyName) === $node;
+                return null;
             }
         );
 
-        if ($property instanceof Property) {
-            return $property;
+        if ($propertyNode instanceof Property) {
+            return $propertyNode;
         }
 
         // promoted property
-        return $this->findPromotedPropertyByName($nodes, $desiredPropertyName);
+        return $this->findPromotedPropertyByName($nodes, $desiredClassName, $desiredPropertyName);
     }
 
     private function locateClassMethodInTrait(string $methodName, MethodReflection $methodReflection): ?ClassMethod
@@ -290,16 +311,24 @@ final class AstResolver
         $traits = $this->parseClassReflectionTraits($classReflection);
 
         /** @var ClassMethod|null $classMethod */
-        $classMethod = $this->betterNodeFinder->findFirst(
+        $classMethod = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $traits,
-            fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
+            function (Node $node) use ($methodName, &$classMethod): ?int {
+                if (! $node instanceof ClassMethod) {
+                    return null;
+                }
+
+                if (! $this->nodeNameResolver->isName($node, $methodName)) {
+                    return null;
+                }
+
+                $classMethod = $node;
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
         );
 
-        if ($classMethod instanceof ClassMethod) {
-            return $classMethod;
-        }
-
-        return null;
+        return $classMethod;
     }
 
     /**
@@ -326,29 +355,43 @@ final class AstResolver
     /**
      * @param Stmt[] $stmts
      */
-    private function findPromotedPropertyByName(array $stmts, string $desiredPropertyName): ?Param
-    {
-        $class = $this->betterNodeFinder->findFirstInstanceOf($stmts, Class_::class);
-        if (! $class instanceof Class_) {
-            return null;
-        }
+    private function findPromotedPropertyByName(
+        array $stmts,
+        string $desiredClassName,
+        string $desiredPropertyName
+    ): ?Param {
+        /** @var Param|null $paramNode */
+        $paramNode = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $stmts,
+            function (Node $node) use ($desiredClassName, $desiredPropertyName, &$propertyNode) {
+                if (! $node instanceof Class_) {
+                    return null;
+                }
 
-        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod) {
-            return null;
-        }
+                if (! $this->nodeNameResolver->isName($node, $desiredClassName)) {
+                    return null;
+                }
 
-        foreach ($constructClassMethod->getParams() as $param) {
-            if ($param->flags === 0) {
-                continue;
+                $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+                if (! $constructClassMethod instanceof ClassMethod) {
+                    return null;
+                }
+
+                foreach ($constructClassMethod->getParams() as $param) {
+                    if ($param->flags === 0) {
+                        continue;
+                    }
+
+                    if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
+                        $propertyNode = $param;
+                        return NodeTraverser::STOP_TRAVERSAL;
+                    }
+                }
             }
+        );
 
-            if ($this->nodeNameResolver->isName($param, $desiredPropertyName)) {
-                return $param;
-            }
-        }
-
-        return null;
+        return $paramNode;
     }
 
     private function resolveFunctionFromFuncCall(FuncCall $funcCall, Scope $scope): ?Function_
