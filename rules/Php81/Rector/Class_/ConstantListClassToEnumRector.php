@@ -140,8 +140,8 @@ CODE_SAMPLE
     ): bool {
         $hasNodeChanged = false;
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
-        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflection) {
             $classNameAndTagValueNode = $this->enumParamAnalyzer->matchParameterClassName(
                 $parameterReflection,
                 $phpDocInfo

@@ -21,8 +21,8 @@ final class SpreadVariablesCollector
     {
         $spreadParameterReflections = [];
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
-        foreach ($parametersAcceptor->getParameters() as $key => $parameterReflection) {
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflection) {
             if (! $parameterReflection->isVariadic()) {
                 continue;
             }
