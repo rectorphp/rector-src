@@ -11,7 +11,6 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 
 final class ParametersAcceptorSelectorVariantsWrapper
 {
@@ -19,7 +18,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
         FunctionReflection|MethodReflection $reflection,
         CallLike|FunctionLike $node,
         Scope $scope
-    ): ParametersAcceptor|ParametersAcceptorWithPhpDocs {
+    ): ParametersAcceptor {
         $variants = $reflection->getVariants();
         if ($node instanceof FunctionLike) {
             return self::selectFromVariants($variants);
@@ -39,7 +38,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
     /**
      * @param ParametersAcceptor[]  $variants
      */
-    public static function selectFromVariants(array $variants): ParametersAcceptor|ParametersAcceptorWithPhpDocs
+    public static function selectFromVariants(array $variants): ParametersAcceptor
     {
         $parameterAcceptors = [];
         foreach ($variants as $variant) {
