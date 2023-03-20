@@ -25,6 +25,7 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class TypeProvidingExprFromClassResolver
 {
@@ -74,7 +75,7 @@ final class TypeProvidingExprFromClassResolver
         $methodReflections = $this->getClassMethodReflections($classReflection);
 
         foreach ($methodReflections as $methodReflection) {
-            $functionVariant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+            $functionVariant = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
             $returnType = $functionVariant->getReturnType();
 
             if (! $this->isMatchingType($returnType, $objectType)) {

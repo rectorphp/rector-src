@@ -31,6 +31,7 @@ use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class ArrayCallableMethodMatcher
 {
@@ -180,7 +181,7 @@ final class ArrayCallableMethodMatcher
         }
 
         $extendedMethodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants(
             $extendedMethodReflection->getVariants()
         );
 

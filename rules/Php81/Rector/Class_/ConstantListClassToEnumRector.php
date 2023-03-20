@@ -16,6 +16,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeAnalyzer\EnumParamAnalyzer;
 use Rector\Php80\ValueObject\ClassNameAndTagValueNode;
 use Rector\Php81\NodeAnalyzer\EnumConstListClassDetector;
@@ -139,7 +140,7 @@ CODE_SAMPLE
     ): bool {
         $hasNodeChanged = false;
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
             $classNameAndTagValueNode = $this->enumParamAnalyzer->matchParameterClassName(
                 $parameterReflection,

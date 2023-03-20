@@ -37,4 +37,14 @@ final class ParametersAcceptorSelectorVariantsWrapper
             ? ParametersAcceptorSelector::selectFromArgs($scope, $node->getArgs(), $variants)
             : ParametersAcceptorSelector::selectSingle($variants);
     }
+
+    public static function selectFromVariants(array $variants): ParametersAcceptor
+    {
+        $parameterAcceptors = [];
+        foreach ($variants as $variant) {
+            $parameterAcceptors[] = ParametersAcceptorSelector::selectSingle([$variant]);
+        }
+
+        return ParametersAcceptorSelector::combineAcceptors($parameterAcceptors);
+    }
 }

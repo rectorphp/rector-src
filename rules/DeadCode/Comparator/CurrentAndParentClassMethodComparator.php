@@ -21,6 +21,7 @@ use Rector\DeadCode\Comparator\Parameter\ParameterDefaultsComparator;
 use Rector\DeadCode\Comparator\Parameter\ParameterTypeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class CurrentAndParentClassMethodComparator
 {
@@ -157,7 +158,7 @@ final class CurrentAndParentClassMethodComparator
         ClassMethod $classMethod,
         ExtendedMethodReflection $extendedMethodReflection
     ): bool {
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants(
             $extendedMethodReflection->getVariants()
         );
 

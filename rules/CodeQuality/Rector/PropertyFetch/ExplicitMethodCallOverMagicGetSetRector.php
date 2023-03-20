@@ -16,6 +16,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -167,7 +168,7 @@ CODE_SAMPLE
 
             $methodReflection = $callerType->getMethod($possibleGetterMethodName, $scope);
 
-            $variant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+            $variant = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
             $returnType = $variant->getReturnType();
 
             if (! $propertyType->isSuperTypeOf($returnType)->yes()) {
@@ -216,7 +217,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($extendedMethodReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($extendedMethodReflection->getVariants());
         $parameters = $parametersAcceptor->getParameters();
         if (count($parameters) !== 1) {
             return true;

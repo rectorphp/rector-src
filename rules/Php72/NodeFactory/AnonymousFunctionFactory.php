@@ -45,6 +45,7 @@ use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php72\NodeManipulator\ClosureNestedUsesDecorator;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -112,7 +113,7 @@ final class AnonymousFunctionFactory
     public function createFromPhpMethodReflection(PhpMethodReflection $phpMethodReflection, Expr $expr): ?Closure
     {
         /** @var FunctionVariantWithPhpDocs $parametersAcceptorWithPhpDocs */
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle($phpMethodReflection->getVariants());
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($phpMethodReflection->getVariants());
 
         $newParams = $this->createParams($phpMethodReflection, $parametersAcceptorWithPhpDocs->getParameters());
 

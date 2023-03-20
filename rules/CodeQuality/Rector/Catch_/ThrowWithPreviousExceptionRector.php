@@ -21,6 +21,7 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -183,7 +184,7 @@ CODE_SAMPLE
         }
 
         $extendedMethodReflection = $classReflection->getConstructor();
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants(
             $extendedMethodReflection->getVariants()
         );
 

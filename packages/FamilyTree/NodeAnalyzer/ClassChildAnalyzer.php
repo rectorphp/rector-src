@@ -10,6 +10,7 @@ use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class ClassChildAnalyzer
 {
@@ -76,7 +77,7 @@ final class ClassChildAnalyzer
         }
 
         foreach ($parentClassMethods as $parentClassMethod) {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethod->getVariants());
+            $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($parentClassMethod->getVariants());
             $nativeReturnType = $parametersAcceptor->getNativeReturnType();
 
             if (! $nativeReturnType instanceof MixedType) {

@@ -15,6 +15,7 @@ use PHPStan\Type\BooleanType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ExprParameterReflectionTypeCorrector
@@ -49,7 +50,7 @@ final class ExprParameterReflectionTypeCorrector
 
         $extendedMethodReflection = $attributeClassReflection->getConstructor();
 
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants(
             $extendedMethodReflection->getVariants()
         );
 
