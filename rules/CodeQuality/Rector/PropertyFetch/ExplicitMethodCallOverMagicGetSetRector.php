@@ -217,8 +217,8 @@ CODE_SAMPLE
             return false;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($extendedMethodReflection->getVariants());
-        $parameters = $parametersAcceptor->getParameters();
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($extendedMethodReflection->getVariants());
+        $parameters = $parametersAcceptorWithPhpDocs->getParameters();
         if (count($parameters) !== 1) {
             return true;
         }
