@@ -250,9 +250,6 @@ final class AstResolver
             }
 
             $traits[] = $traitNode;
-
-            // ensure nullify after assign to ensure it will re-fill
-            $traitNode = null;
         }
 
         return $traits;
