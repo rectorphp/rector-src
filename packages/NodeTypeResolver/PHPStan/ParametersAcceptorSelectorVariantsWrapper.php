@@ -28,7 +28,8 @@ final class ParametersAcceptorSelectorVariantsWrapper
             return ParametersAcceptorSelector::selectSingle($variants);
         }
 
-        // on CallLike, using count() is more performance than direct selectFromArgs()
+        // on CallLike, using count() check to fallback to use selectSingle()
+        // is more performance than direct selectFromArgs()
         return count($variants) > 1
             ? ParametersAcceptorSelector::selectFromArgs($scope, $node->getArgs(), $variants)
             : ParametersAcceptorSelector::selectSingle($variants);
