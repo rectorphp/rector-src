@@ -41,11 +41,6 @@ final class ParametersAcceptorSelectorVariantsWrapper
      */
     public static function selectFromVariants(array $variants): ParametersAcceptorWithPhpDocs
     {
-        $parameterAcceptors = [];
-        foreach ($variants as $variant) {
-            $parameterAcceptors[] = ParametersAcceptorSelector::selectSingle([$variant]);
-        }
-
-        return ParametersAcceptorSelector::combineAcceptors($parameterAcceptors);
+        return ParametersAcceptorSelector::combineAcceptors($variants);
     }
 }
