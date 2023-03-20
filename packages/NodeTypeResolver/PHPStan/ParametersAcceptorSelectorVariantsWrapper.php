@@ -11,6 +11,7 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 
 final class ParametersAcceptorSelectorVariantsWrapper
 {
@@ -38,7 +39,7 @@ final class ParametersAcceptorSelectorVariantsWrapper
     /**
      * @param ParametersAcceptor[]  $variants
      */
-    public static function selectFromVariants(array $variants): ParametersAcceptor
+    public static function selectFromVariants(array $variants): ParametersAcceptorWithPhpDocs
     {
         $parameterAcceptors = [];
         foreach ($variants as $variant) {

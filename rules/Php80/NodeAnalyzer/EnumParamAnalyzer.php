@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeAnalyzer;
 
+use PHPStan\Reflection\ParameterReflectionWithPhpDocs;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -28,10 +29,10 @@ final class EnumParamAnalyzer
     }
 
     public function matchParameterClassName(
-        ParameterReflection $parameterReflection,
+        ParameterReflectionWithPhpDocs $parameterReflectionWithPhpDocs,
         PhpDocInfo $phpDocInfo
     ): ?ClassNameAndTagValueNode {
-        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterReflection->getName());
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($parameterReflectionWithPhpDocs->getName());
         if (! $paramTagValueNode instanceof ParamTagValueNode) {
             return null;
         }

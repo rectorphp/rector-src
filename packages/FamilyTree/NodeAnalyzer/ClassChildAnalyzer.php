@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\FamilyTree\NodeAnalyzer;
 
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
@@ -79,10 +77,6 @@ final class ClassChildAnalyzer
 
         foreach ($parentClassMethods as $parentClassMethod) {
             $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($parentClassMethod->getVariants());
-            if (! $parametersAcceptor instanceof ParametersAcceptorWithPhpDocs) {
-                continue;
-            }
-
             $nativeReturnType = $parametersAcceptor->getNativeReturnType();
 
             if (! $nativeReturnType instanceof MixedType) {
