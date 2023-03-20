@@ -43,7 +43,7 @@
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
-        "brianium/paratest": "^7.1",
+        "brianium/paratest": "^7.1.2",
         "cweagans/composer-patches": "^1.7.2",
         "icanhazstring/composer-unused": "^0.8.5",
         "myclabs/php-enum": "^1.8.4",
@@ -53,7 +53,7 @@
         "phpstan/phpstan-php-parser": "^1.1",
         "phpstan/phpstan-strict-rules": "^1.4.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
-        "phpunit/phpunit": "10.0.16",
+        "phpunit/phpunit": "^10.0.17",
         "rector/phpstan-rules": "^0.6.5",
         "rector/rector-generator": "dev-main",
         "spatie/enum": "^3.13",
