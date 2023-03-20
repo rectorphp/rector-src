@@ -289,7 +289,7 @@ final class AstResolver
 
                 $property = $node->getProperty($desiredPropertyName);
                 if ($property instanceof Property) {
-                    $propertyNode = $node;
+                    $propertyNode = $property;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }
 
