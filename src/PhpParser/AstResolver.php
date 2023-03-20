@@ -44,19 +44,11 @@ final class AstResolver
 {
     /**
      * Parsing files is very heavy performance, so this will help to leverage it
-     * The value can be also null, as the method might not exist in the class.
+     * The value can be also null, when no statements could be parsed from the file.
      *
-     * @var array<class-string, array<string, ClassMethod|null>>
+     * @var array<string, Stmt[]|null>
      */
-    private array $classMethodsByClassAndMethod = [];
-
-    /**
-     * Parsing files is very heavy performance, so this will help to leverage it
-     * The value can be also null, as the method might not exist in the class.
-     *
-     * @var array<string, Function_|null>>
-     */
-    private array $functionsByName = [];
+    private array $parsedFileNodes = [];
 
     public function __construct(
         private readonly SmartPhpParser $smartPhpParser,
@@ -87,16 +79,6 @@ final class AstResolver
         $classLikeName = $classReflection->getName();
         $methodName = $methodReflection->getName();
 
-        if (isset($this->classMethodsByClassAndMethod[$classLikeName][$methodName])) {
-            return $this->classMethodsByClassAndMethod[$classLikeName][$methodName];
-        }
-
-        // saved as null data
-        if (array_key_exists($classLikeName, $this->classMethodsByClassAndMethod)
-            && array_key_exists($methodName, $this->classMethodsByClassAndMethod[$classLikeName])) {
-            return null;
-        }
-
         $fileName = $classReflection->getFileName();
 
         // probably native PHP method → un-parseable
@@ -109,25 +91,19 @@ final class AstResolver
             return null;
         }
 
-        /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf($nodes, ClassLike::class);
+        /** @var ClassLike|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof ClassLike && $this->nodeNameResolver->isName(
+                    $node,
+                    $classLikeName
+                ) && $node->getMethod($methodName) instanceof ClassMethod
+        );
 
-        foreach ($classLikes as $classLike) {
-            if (! $this->nodeNameResolver->isName($classLike, $classLikeName)) {
-                continue;
-            }
-
-            $classMethod = $classLike->getMethod($methodName);
-            if (! $classMethod instanceof ClassMethod) {
-                continue;
-            }
-
-            $this->classMethodsByClassAndMethod[$classLikeName][$methodName] = $classMethod;
-            return $classMethod;
+        if ($classLike instanceof ClassLike && ($method = $classLike->getMethod($methodName)) instanceof ClassMethod) {
+            return $method;
         }
 
-        // avoids looking for a class in a file where is not present
-        $this->classMethodsByClassAndMethod[$classLikeName][$methodName] = null;
         return null;
     }
 
@@ -146,15 +122,6 @@ final class AstResolver
     {
         $functionName = $functionReflection->getName();
 
-        if (isset($this->functionsByName[$functionName])) {
-            return $this->functionsByName[$functionName];
-        }
-
-        // saved as null data
-        if (array_key_exists($functionName, $this->functionsByName)) {
-            return null;
-        }
-
         $fileName = $functionReflection->getFileName();
         if ($fileName === null) {
             return null;
@@ -165,23 +132,16 @@ final class AstResolver
             return null;
         }
 
-        /** @var Function_[] $functions */
-        $functions = $this->betterNodeFinder->findInstanceOf($nodes, Function_::class);
-        foreach ($functions as $function) {
-            if (! $this->nodeNameResolver->isName($function, $functionName)) {
-                continue;
-            }
+        /** @var Function_|null $function */
+        $function = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof Function_ && $this->nodeNameResolver->isName(
+                    $node,
+                    $functionName
+                )
+        );
 
-            // to avoid parsing missing function again
-            $this->functionsByName[$functionName] = $function;
-
-            return $function;
-        }
-
-        // to avoid parsing missing function again
-        $this->functionsByName[$functionName] = null;
-
-        return null;
+        return $function;
     }
 
     /**
@@ -285,12 +245,17 @@ final class AstResolver
         $nativeReflectionProperty = $phpPropertyReflection->getNativeReflection();
         $desiredPropertyName = $nativeReflectionProperty->getName();
 
-        /** @var Property[] $properties */
-        $properties = $this->betterNodeFinder->findInstanceOf($nodes, Property::class);
-        foreach ($properties as $property) {
-            if ($this->nodeNameResolver->isName($property, $desiredPropertyName)) {
-                return $property;
-            }
+        /** @var Property|null $property */
+        $property = $this->betterNodeFinder->findFirst(
+            $nodes,
+            fn (Node $node): bool => $node instanceof Property && $this->nodeNameResolver->isName(
+                    $node,
+                    $desiredPropertyName
+                )
+        );
+
+        if ($property instanceof Property) {
+            return $property;
         }
 
         // promoted property
@@ -308,7 +273,6 @@ final class AstResolver
             fn (Node $node): bool => $node instanceof ClassMethod && $this->nodeNameResolver->isName($node, $methodName)
         );
 
-        $this->classMethodsByClassAndMethod[$classReflection->getName()][$methodName] = $classMethod;
         if ($classMethod instanceof ClassMethod) {
             return $classMethod;
         }
@@ -321,13 +285,17 @@ final class AstResolver
      */
     private function parseFileNameToDecoratedNodes(string $fileName): ?array
     {
+        if (isset($this->parsedFileNodes[$fileName])) {
+            return $this->parsedFileNodes[$fileName];
+        }
+
         $stmts = $this->smartPhpParser->parseFile($fileName);
         if ($stmts === []) {
-            return null;
+            return $this->parsedFileNodes[$fileName] = null;
         }
 
         $file = new File($fileName, FileSystem::read($fileName));
-        return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+        return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
     }
 
     /**
