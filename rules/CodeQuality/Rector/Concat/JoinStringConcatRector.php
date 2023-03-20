@@ -126,6 +126,10 @@ CODE_SAMPLE
         }
 
         $resultString = new String_($leftValue . $rightValue);
+        if (! ctype_print($resultString->value)) {
+            return $node;
+        }
+
         if (Strings::length($resultString->value) >= self::LINE_BREAK_POINT) {
             $this->nodeReplacementIsRestricted = true;
             return $node;
