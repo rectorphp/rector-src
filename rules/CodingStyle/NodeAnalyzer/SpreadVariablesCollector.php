@@ -22,12 +22,12 @@ final class SpreadVariablesCollector
         $spreadParameterReflections = [];
 
         $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflection) {
-            if (! $parameterReflection->isVariadic()) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflectionWithPhpDoc) {
+            if (! $parameterReflectionWithPhpDoc->isVariadic()) {
                 continue;
             }
 
-            $spreadParameterReflections[$key] = $parameterReflection;
+            $spreadParameterReflections[$key] = $parameterReflectionWithPhpDoc;
         }
 
         return $spreadParameterReflections;

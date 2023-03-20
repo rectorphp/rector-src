@@ -141,16 +141,16 @@ CODE_SAMPLE
         $hasNodeChanged = false;
 
         $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::selectFromVariants($methodReflection->getVariants());
-        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflection) {
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
             $classNameAndTagValueNode = $this->enumParamAnalyzer->matchParameterClassName(
-                $parameterReflection,
+                $parameterReflectionWithPhpDoc,
                 $phpDocInfo
             );
             if (! $classNameAndTagValueNode instanceof ClassNameAndTagValueNode) {
                 continue;
             }
 
-            $param = $this->getParamByName($classMethod, $parameterReflection->getName());
+            $param = $this->getParamByName($classMethod, $parameterReflectionWithPhpDoc->getName());
             if (! $param instanceof Param) {
                 continue;
             }
