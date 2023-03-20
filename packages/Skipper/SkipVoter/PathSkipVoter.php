@@ -10,6 +10,11 @@ use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
 final class PathSkipVoter implements SkipVoterInterface
 {
+    /**
+     * @var array<string, bool>
+     */
+    private array $skippedFiles = [];
+
     public function __construct(
         private readonly FileInfoMatcher $fileInfoMatcher,
         private readonly SkippedPathsResolver $skippedPathsResolver
@@ -23,7 +28,11 @@ final class PathSkipVoter implements SkipVoterInterface
 
     public function shouldSkip(string | object $element, string $filePath): bool
     {
+        if (isset($this->skippedFiles[$filePath])) {
+            return $this->skippedFiles[$filePath];
+        }
+
         $skippedPaths = $this->skippedPathsResolver->resolve();
-        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
+        return $this->skippedFiles[$filePath] = $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
     }
 }
