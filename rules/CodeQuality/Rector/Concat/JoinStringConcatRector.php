@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -133,7 +134,7 @@ CODE_SAMPLE
         }
 
         $resultString = new String_($leftValue . $rightValue);
-        if (Strings::match($resultString->value, self::ASCII_REGEX)) {
+        if (StringUtils::isMatch($resultString->value, self::ASCII_REGEX)) {
             return $node;
         }
 
