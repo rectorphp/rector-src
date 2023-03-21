@@ -25,6 +25,13 @@ final class JoinStringConcatRector extends AbstractRector
 
     private bool $nodeReplacementIsRestricted = false;
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/VaXM1t/1
+     * @see https://stackoverflow.com/questions/4147646/determine-if-utf-8-text-is-all-ascii
+     */
+    private const ASCII_REGEX = '#[^\x00-\x7F]#';
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -126,7 +133,7 @@ CODE_SAMPLE
         }
 
         $resultString = new String_($leftValue . $rightValue);
-        if (! ctype_print($resultString->value)) {
+        if (Strings::match($resultString->value, self::ASCII_REGEX)) {
             return $node;
         }
 
