@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Concat\JoinStringConcatRector\Fixture;
 
-final class SkipWithMultiByte
+final class SkipWithAscii
 {
     public function run(string $content)
     {
