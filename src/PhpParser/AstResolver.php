@@ -88,7 +88,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
@@ -139,7 +139,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
@@ -222,7 +222,7 @@ final class AstResolver
             }
 
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-            if ($nodes === null) {
+            if ($nodes === []) {
                 continue;
             }
 
@@ -334,7 +334,7 @@ final class AstResolver
     /**
      * @return Stmt[]|null
      */
-    private function parseFileNameToDecoratedNodes(string $fileName): ?array
+    public function parseFileNameToDecoratedNodes(string $fileName): ?array
     {
         if (isset($this->parsedFileNodes[$fileName])) {
             return $this->parsedFileNodes[$fileName];

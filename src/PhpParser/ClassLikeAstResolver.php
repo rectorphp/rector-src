@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Enum_;
@@ -12,23 +13,22 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PhpDocParser\PhpParser\SmartPhpParser;
+use Symfony\Contracts\Service\Attribute\Required;
 
 final class ClassLikeAstResolver
 {
-    /**
-     * Parsing files is very heavy performance, so this will help to leverage it
-     * The value can be also null, as the method might not exist in the class.
-     *
-     * @var array<class-string, Class_|Trait_|Interface_|Enum_|null>
-     */
-    private array $classLikesByName = [];
+    private AstResolver $astResolver;
 
     public function __construct(
-        private readonly SmartPhpParser $smartPhpParser,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
     ) {
+    }
+
+    #[Required]
+    public function autowire(AstResolver $astResolver): void
+    {
+        $this->astResolver = $astResolver;
     }
 
     public function resolveClassFromClassReflection(
@@ -39,44 +39,30 @@ final class ClassLikeAstResolver
         }
 
         $className = $classReflection->getName();
-        if (isset($this->classLikesByName[$className])) {
-            return $this->classLikesByName[$className];
-        }
-
-        // saved as null data
-        if (array_key_exists($className, $this->classLikesByName)) {
-            return null;
-        }
-
         $fileName = $classReflection->getFileName();
 
         // probably internal class
         if ($fileName === null) {
-            // avoid parsing falsy-file again
-            $this->classLikesByName[$className] = null;
             return null;
         }
 
-        $stmts = $this->smartPhpParser->parseFile($fileName);
+        $stmts = $this->astResolver->parseFileNameToDecoratedNodes($fileName);
         if ($stmts === []) {
-            // avoid parsing falsy-file again
-            $this->classLikesByName[$className] = null;
             return null;
         }
 
-        /** @var array<Class_|Trait_|Interface_|Enum_> $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf($stmts, ClassLike::class);
+        /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $stmts,
+            function (Node $node) use ($className): bool {
+                if (! $node instanceof ClassLike) {
+                    return false;
+                }
 
-        foreach ($classLikes as $classLike) {
-            if (! $this->nodeNameResolver->isName($classLike, $className)) {
-                continue;
+                return $this->nodeNameResolver->isName($node, $className);
             }
+        );
 
-            $this->classLikesByName[$className] = $classLike;
-            return $classLike;
-        }
-
-        $this->classLikesByName[$className] = null;
-        return null;
+        return $classLike;
     }
 }
