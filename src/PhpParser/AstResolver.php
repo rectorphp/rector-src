@@ -266,7 +266,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
