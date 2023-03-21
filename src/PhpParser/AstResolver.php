@@ -332,9 +332,9 @@ final class AstResolver
     }
 
     /**
-     * @return Stmt[]|null
+     * @return Stmt[]
      */
-    public function parseFileNameToDecoratedNodes(string $fileName): ?array
+    public function parseFileNameToDecoratedNodes(string $fileName): array
     {
         if (isset($this->parsedFileNodes[$fileName])) {
             return $this->parsedFileNodes[$fileName];
@@ -342,7 +342,7 @@ final class AstResolver
 
         $stmts = $this->smartPhpParser->parseFile($fileName);
         if ($stmts === []) {
-            return $this->parsedFileNodes[$fileName] = null;
+            return $this->parsedFileNodes[$fileName] = [];
         }
 
         $file = new File($fileName, FileSystem::read($fileName));
