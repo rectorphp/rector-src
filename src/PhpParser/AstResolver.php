@@ -88,7 +88,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
@@ -139,7 +139,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
@@ -222,7 +222,7 @@ final class AstResolver
             }
 
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-            if ($nodes === null) {
+            if ($nodes === []) {
                 continue;
             }
 
@@ -266,7 +266,7 @@ final class AstResolver
         }
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === null) {
+        if ($nodes === []) {
             return null;
         }
 
@@ -332,9 +332,9 @@ final class AstResolver
     }
 
     /**
-     * @return Stmt[]|null
+     * @return Stmt[]
      */
-    private function parseFileNameToDecoratedNodes(string $fileName): ?array
+    public function parseFileNameToDecoratedNodes(string $fileName): array
     {
         if (isset($this->parsedFileNodes[$fileName])) {
             return $this->parsedFileNodes[$fileName];
@@ -342,7 +342,7 @@ final class AstResolver
 
         $stmts = $this->smartPhpParser->parseFile($fileName);
         if ($stmts === []) {
-            return $this->parsedFileNodes[$fileName] = null;
+            return $this->parsedFileNodes[$fileName] = [];
         }
 
         $file = new File($fileName, FileSystem::read($fileName));
