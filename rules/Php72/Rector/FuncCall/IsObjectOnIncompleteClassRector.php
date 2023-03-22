@@ -74,11 +74,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isObjectType($node->args[0]->value, $incompleteClassObjectType)) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
-        if ($this->shouldSkip($node)) {
+        if (! $this->isObjectType($node->args[0]->value, $incompleteClassObjectType)) {
             return null;
         }
 

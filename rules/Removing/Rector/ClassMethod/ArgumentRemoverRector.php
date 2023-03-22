@@ -67,14 +67,14 @@ CODE_SAMPLE
         $this->hasChanged = false;
 
         foreach ($this->removedArguments as $removedArgument) {
+            if (! $this->isName($node->name, $removedArgument->getMethod())) {
+                continue;
+            }
+
             if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
                 $node,
                 $removedArgument->getObjectType()
             )) {
-                continue;
-            }
-
-            if (! $this->isName($node->name, $removedArgument->getMethod())) {
                 continue;
             }
 

@@ -220,11 +220,11 @@ CODE_SAMPLE
 
     private function isReflectionParameterGetTypeMethodCall(MethodCall $methodCall): bool
     {
-        if (! $this->isObjectType($methodCall->var, new ObjectType('ReflectionParameter'))) {
+        if (! $this->isName($methodCall->name, 'getType')) {
             return false;
         }
 
-        return $this->isName($methodCall->name, 'getType');
+        return $this->isObjectType($methodCall->var, new ObjectType('ReflectionParameter'));
     }
 
     private function refactorReflectionParameterGetName(MethodCall $methodCall): Ternary
@@ -236,11 +236,11 @@ CODE_SAMPLE
 
     private function isReflectionFunctionAbstractGetReturnTypeMethodCall(MethodCall $methodCall): bool
     {
-        if (! $this->isObjectType($methodCall->var, new ObjectType('ReflectionFunctionAbstract'))) {
+        if (! $this->isName($methodCall->name, 'getReturnType')) {
             return false;
         }
 
-        return $this->isName($methodCall->name, 'getReturnType');
+        return $this->isObjectType($methodCall->var, new ObjectType('ReflectionFunctionAbstract'));
     }
 
     private function refactorReflectionFunctionGetReturnType(MethodCall $methodCall): Node | Ternary

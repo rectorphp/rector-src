@@ -67,11 +67,11 @@ CODE_SAMPLE
         $propertyNode = $propertyFetchNode->var;
 
         foreach ($this->propertyAssignsToMethodCalls as $propertyAssignToMethodCall) {
-            if (! $this->isObjectType($propertyFetchNode->var, $propertyAssignToMethodCall->getObjectType())) {
+            if (! $this->isName($propertyFetchNode, $propertyAssignToMethodCall->getOldPropertyName())) {
                 continue;
             }
 
-            if (! $this->isName($propertyFetchNode, $propertyAssignToMethodCall->getOldPropertyName())) {
+            if (! $this->isObjectType($propertyFetchNode->var, $propertyAssignToMethodCall->getObjectType())) {
                 continue;
             }
 

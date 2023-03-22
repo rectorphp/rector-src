@@ -55,6 +55,11 @@ final class NodeTypeResolver
     private array $nodeTypeResolvers = [];
 
     /**
+     * @var array<string, bool>
+     */
+    private array $traitExistsCache = [];
+
+    /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
      */
     public function __construct(
@@ -350,7 +355,11 @@ final class NodeTypeResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
-        if (\trait_exists($requiredObjectType->getClassName())) {
+        if (!isset($this->traitExistsCache[$classReflection->getName()])) {
+            $this->traitExistsCache[$classReflection->getName()] = \trait_exists($requiredObjectType->getClassName());
+        }
+
+        if ($this->traitExistsCache[$classReflection->getName()]) {
             foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
                 if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
                     return true;

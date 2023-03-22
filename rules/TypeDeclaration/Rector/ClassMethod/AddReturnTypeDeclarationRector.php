@@ -84,12 +84,12 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         foreach ($this->methodReturnTypes as $methodReturnType) {
-            $objectType = $methodReturnType->getObjectType();
-            if (! $this->isObjectType($node, $objectType)) {
+            if (! $this->isName($node, $methodReturnType->getMethod())) {
                 continue;
             }
 
-            if (! $this->isName($node, $methodReturnType->getMethod())) {
+            $objectType = $methodReturnType->getObjectType();
+            if (! $this->isObjectType($node, $objectType)) {
                 continue;
             }
 
