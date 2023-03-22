@@ -526,10 +526,6 @@ final class BetterNodeFinder
             return null;
         }
 
-        if ($previousNode === $node) {
-            return null;
-        }
-
         $foundNode = $this->findFirst($previousNode, $filter);
 
         // we found what we need

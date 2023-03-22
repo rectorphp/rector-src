@@ -440,6 +440,12 @@ CODE_SAMPLE;
             $nodes = [...$nodes, $nextNode];
         }
 
+        // no need to connect nodes when only its own node
+        // this is to avoid infinite loop
+        if (count($nodes) === 1) {
+            return;
+        }
+
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new NodeConnectingVisitor());
         $nodeTraverser->traverse($nodes);
