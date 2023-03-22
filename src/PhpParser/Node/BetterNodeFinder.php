@@ -22,11 +22,13 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
+use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
 
 /**
@@ -39,7 +41,8 @@ final class BetterNodeFinder
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly MultiInstanceofChecker $multiInstanceofChecker
+        private readonly MultiInstanceofChecker $multiInstanceofChecker,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -234,28 +237,37 @@ final class BetterNodeFinder
      */
     public function findClassMethodAssignsToLocalProperty(ClassMethod $classMethod, string $propertyName): array
     {
-        return $this->find((array) $classMethod->stmts, function (Node $node) use ($classMethod, $propertyName): bool {
+        /** @var Assign[] $assigns */
+        $assigns = [];
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) use ($propertyName, &$assigns): int|null|Assign {
+            // skip anonymous classes and inner function
+            if ($node instanceof Class_ || $node instanceof Function_) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
             if (! $node instanceof Assign) {
-                return false;
+                return null;
             }
 
             if (! $node->var instanceof PropertyFetch) {
-                return false;
+                return null;
             }
 
             $propertyFetch = $node->var;
             if (! $this->nodeNameResolver->isName($propertyFetch->var, 'this')) {
-                return false;
+                return null;
             }
 
-            $parentFunctionLike = $this->findParentType($node, ClassMethod::class);
-
-            if ($parentFunctionLike !== $classMethod) {
-                return false;
+            if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
+                return null;
             }
 
-            return $this->nodeNameResolver->isName($propertyFetch->name, $propertyName);
+            $assigns[] = $node;
+            return $node;
         });
+
+        return $assigns;
     }
 
     /**
