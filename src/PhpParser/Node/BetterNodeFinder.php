@@ -240,7 +240,9 @@ final class BetterNodeFinder
         /** @var Assign[] $assigns */
         $assigns = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) use ($propertyName, &$assigns): int|null|Assign {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $classMethod->stmts, function (
+            Node $node
+        ) use ($propertyName, &$assigns): int|null|Assign {
             // skip anonymous classes and inner function
             if ($node instanceof Class_ || $node instanceof Function_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -561,16 +563,8 @@ final class BetterNodeFinder
     {
         Assert::isAOf($type, Node::class);
 
-        $foundInstances = $this->nodeFinder->findInstanceOf($nodes, $type);
-        foreach ($foundInstances as $foundInstance) {
-            if (! $this->nodeNameResolver->isName($foundInstance, $name)) {
-                continue;
-            }
-
-            return $foundInstance;
-        }
-
-        return null;
+        return $this->nodeFinder->findFirst($nodes, fn (Node $node): bool =>
+            $node instanceof $type && $this->nodeNameResolver->isName($node, $name));
     }
 
     /**
