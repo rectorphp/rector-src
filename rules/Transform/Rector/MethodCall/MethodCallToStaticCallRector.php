@@ -80,11 +80,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         foreach ($this->methodCallsToStaticCalls as $methodCallToStaticCall) {
-            if (! $this->isObjectType($node->var, $methodCallToStaticCall->getOldObjectType())) {
+            if (! $this->isName($node->name, $methodCallToStaticCall->getOldMethod())) {
                 continue;
             }
 
-            if (! $this->isName($node->name, $methodCallToStaticCall->getOldMethod())) {
+            if (! $this->isObjectType($node->var, $methodCallToStaticCall->getOldObjectType())) {
                 continue;
             }
 

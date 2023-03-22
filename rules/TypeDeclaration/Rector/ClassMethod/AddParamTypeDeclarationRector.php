@@ -89,11 +89,11 @@ CODE_SAMPLE
         $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
 
         foreach ($this->addParamTypeDeclarations as $addParamTypeDeclaration) {
-            if (! $this->isObjectType($classLike, $addParamTypeDeclaration->getObjectType())) {
+            if (! $this->isName($node, $addParamTypeDeclaration->getMethodName())) {
                 continue;
             }
 
-            if (! $this->isName($node, $addParamTypeDeclaration->getMethodName())) {
+            if (! $this->isObjectType($classLike, $addParamTypeDeclaration->getObjectType())) {
                 continue;
             }
 

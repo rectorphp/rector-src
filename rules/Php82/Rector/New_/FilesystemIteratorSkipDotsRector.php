@@ -54,11 +54,11 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
      */
     public function refactor(Node $node): ?New_
     {
-        if (! $this->isObjectType($node->class, new ObjectType('FilesystemIterator'))) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        if ($node->isFirstClassCallable()) {
+        if (! $this->isObjectType($node->class, new ObjectType('FilesystemIterator'))) {
             return null;
         }
 

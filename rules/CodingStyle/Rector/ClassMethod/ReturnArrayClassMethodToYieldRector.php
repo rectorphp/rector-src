@@ -88,11 +88,11 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         foreach ($this->methodsToYields as $methodToYield) {
-            if (! $this->isObjectType($node, $methodToYield->getObjectType())) {
+            if (! $this->isName($node, $methodToYield->getMethod())) {
                 continue;
             }
 
-            if (! $this->isName($node, $methodToYield->getMethod())) {
+            if (! $this->isObjectType($node, $methodToYield->getObjectType())) {
                 continue;
             }
 

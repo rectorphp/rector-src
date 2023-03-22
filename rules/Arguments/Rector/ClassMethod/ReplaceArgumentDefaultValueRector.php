@@ -77,14 +77,14 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($this->replacedArguments as $replacedArgument) {
+            if (! $this->isName($node->name, $replacedArgument->getMethod())) {
+                continue;
+            }
+
             if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
                 $node,
                 $replacedArgument->getObjectType()
             )) {
-                continue;
-            }
-
-            if (! $this->isName($node->name, $replacedArgument->getMethod())) {
                 continue;
             }
 
