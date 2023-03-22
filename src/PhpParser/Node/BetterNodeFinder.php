@@ -240,7 +240,12 @@ final class BetterNodeFinder
         /** @var Assign[] $assigns */
         $assigns = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $classMethod->stmts, function (Node $node) use ($propertyName, &$assigns): int|null|Assign {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $classMethod->stmts, function (
+            Node $node
+        ) use (
+            $propertyName,
+            &$assigns
+        ): int|null|Assign {
             // skip anonymous classes and inner function
             if ($node instanceof Class_ || $node instanceof Function_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
