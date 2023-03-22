@@ -119,8 +119,14 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
+        if ($node->hasAttribute(AttributeKey::TYPE)) {
+            return $node->getAttribute(AttributeKey::TYPE);
+        }
+
         if ($node instanceof Property && $node->type instanceof NullableType) {
-            return $this->getType($node->type);
+            $type = $this->getType($node->type);
+            $node->setAttribute(AttributeKey::TYPE, $type);
+            return $type;
         }
 
         if ($node instanceof NullableType) {
@@ -130,13 +136,16 @@ final class NodeTypeResolver
 
             $type = $this->getType($node->type);
             if (! $type instanceof MixedType) {
-                return new UnionType([$type, new NullType()]);
+                $union = new UnionType([$type, new NullType()]);
+                $node->setAttribute(AttributeKey::TYPE, $union);
+                return $union;
             }
         }
 
         if ($node instanceof Ternary) {
             $ternaryType = $this->resolveTernaryType($node);
             if (! $ternaryType instanceof MixedType) {
+                $node->setAttribute(AttributeKey::TYPE, $ternaryType);
                 return $ternaryType;
             }
         }
@@ -146,7 +155,9 @@ final class NodeTypeResolver
             $second = $this->getType($node->right);
 
             if ($this->isUnionTypeable($first, $second)) {
-                return new UnionType([$first, $second]);
+                $union = new UnionType([$first, $second]);
+                $node->setAttribute(AttributeKey::TYPE, $union);
+                return $union;
             }
         }
 
@@ -162,7 +173,9 @@ final class NodeTypeResolver
                 $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $type, $scope);
             }
 
-            return $this->hasOffsetTypeCorrector->correct($type);
+            $type = $this->hasOffsetTypeCorrector->correct($type);
+            $node->setAttribute(AttributeKey::TYPE, $type);
+            return $type;
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -171,29 +184,41 @@ final class NodeTypeResolver
             if ($node instanceof ConstFetch) {
                 $name = $node->name->toString();
                 if (strtolower($name) === 'null') {
-                    return new NullType();
+                    $type = new NullType();
+                    $node->setAttribute(AttributeKey::TYPE, $type);
+                    return $type;
                 }
             }
 
             if ($node instanceof Identifier) {
-                return $this->identifierTypeResolver->resolve($node);
+                $type = $this->identifierTypeResolver->resolve($node);
+                $node->setAttribute(AttributeKey::TYPE, $type);
+                return $type;
             }
 
-            return new MixedType();
+            $type = new MixedType();
+            $node->setAttribute(AttributeKey::TYPE, $type);
+            return $type;
         }
 
         if (! $node instanceof Expr) {
             // scalar type, e.g. from param type name
             if ($node instanceof Identifier) {
-                return $this->identifierTypeResolver->resolve($node);
+                $type = $this->identifierTypeResolver->resolve($node);
+                $node->setAttribute(AttributeKey::TYPE, $type);
+                return $type;
             }
 
-            return new MixedType();
+            $type = new MixedType();
+            $node->setAttribute(AttributeKey::TYPE, $type);
+            return $type;
         }
 
         // skip anonymous classes, ref https://github.com/rectorphp/rector/issues/1574
         if ($node instanceof New_ && $this->classAnalyzer->isAnonymousClass($node->class)) {
-            return new ObjectWithoutClassType();
+            $type = new ObjectWithoutClassType();
+            $node->setAttribute(AttributeKey::TYPE, $type);
+            return $type;
         }
 
         $type = $scope->getType($node);
@@ -202,14 +227,18 @@ final class NodeTypeResolver
 
         // hot fix for phpstan not resolving chain method calls
         if (! $node instanceof MethodCall) {
+            $node->setAttribute(AttributeKey::TYPE, $type);
             return $type;
         }
 
         if (! $type instanceof MixedType) {
+            $node->setAttribute(AttributeKey::TYPE, $type);
             return $type;
         }
 
-        return $this->getType($node->var);
+        $type = $this->getType($node->var);
+        $node->setAttribute(AttributeKey::TYPE, $type);
+        return $type;
     }
 
     /**
@@ -350,9 +379,12 @@ final class NodeTypeResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
-        foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
-            if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
-                return true;
+
+        if (\trait_exists($requiredObjectType->getClassName())) {
+            foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+                if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
+                    return true;
+                }
             }
         }
 

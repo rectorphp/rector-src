@@ -26,6 +26,11 @@ final class AttributeKey
     public const SCOPE = 'scope';
 
     /**
+     * @var string
+     */
+    public const TYPE = 'type';
+
+    /**
      * Internal php-parser name.
      * Do not change this even if you want!
      *
