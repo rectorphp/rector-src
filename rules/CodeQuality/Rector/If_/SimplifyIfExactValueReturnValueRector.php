@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
@@ -65,6 +66,10 @@ CODE_SAMPLE
             // on last stmt already
             if (! isset($node->stmts[$key+1])) {
                 return null;
+            }
+
+            if (! $stmt instanceof If_) {
+                continue;
             }
 
             $nextNode = $node->stmts[$key+1];
