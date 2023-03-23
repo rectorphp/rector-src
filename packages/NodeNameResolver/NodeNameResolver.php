@@ -25,6 +25,9 @@ final class NodeNameResolver
 {
     /**
      * Used to check if a string might contain a regex or fnmatch pattern
+     *
+     * @var string
+     * @see https://regex101.com/r/ImTV1W/1
      */
     private const CONTAINS_WILDCARD_CHARS_REGEX = '/[\*\#\~\/]/';
     /**
