@@ -26,7 +26,7 @@ final class NodeNameResolver
     /**
      * Used to check if a string might contain a regex or fnmatch pattern
      */
-    private const CONTAINS_WILDCARD_CHARS_PATTERN = '/[\*\#\~\/]/';
+    private const CONTAINS_WILDCARD_CHARS_REGEX = '/[\*\#\~\/]/';
     /**
      * @var array<string, NodeNameResolverInterface|null>
      */
@@ -200,7 +200,7 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        if (Strings::match($desiredName, self::CONTAINS_WILDCARD_CHARS_PATTERN) !== null) {
+        if (Strings::match($desiredName, self::CONTAINS_WILDCARD_CHARS_REGEX) !== null) {
             // is probably regex pattern
             if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
                 return StringUtils::isMatch($resolvedName, $desiredName);
