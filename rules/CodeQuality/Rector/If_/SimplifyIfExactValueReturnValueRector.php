@@ -61,7 +61,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?StmtsAwareInterface
     {
-        $hasChanged = false;
         foreach ((array) $node->stmts as $key => $stmt) {
             if (! $stmt instanceof If_) {
                 continue;
@@ -87,10 +86,6 @@ CODE_SAMPLE
             }
 
             unset($node->stmts[$key]);
-            $hasChanged = true;
-        }
-
-        if ($hasChanged) {
             return $node;
         }
 
