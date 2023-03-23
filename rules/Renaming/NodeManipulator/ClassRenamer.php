@@ -452,7 +452,7 @@ final class ClassRenamer
     private function createOldToNewTypes(Node $node, array $oldToNewClasses): array
     {
         $oldToNewClasses = $this->resolveOldToNewClassCallbacks($node, $oldToNewClasses);
-        $cacheKey = md5(serialize($oldToNewClasses));
+        $cacheKey = \hash('crc32c', \serialize($oldToNewClasses));
 
         if (isset($this->oldToNewTypesByCacheKey[$cacheKey])) {
             return $this->oldToNewTypesByCacheKey[$cacheKey];
