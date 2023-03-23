@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -13,6 +12,7 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -125,7 +125,7 @@ final class IfManipulator
 
     public function isIfAndElseWithSameVariableAssignAsLastStmts(If_ $if, Expr $desiredExpr): bool
     {
-        if (!$if->else instanceof Else_) {
+        if (! $if->else instanceof Else_) {
             return false;
         }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\If_;
 
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\ConditionEvaluator;
@@ -110,7 +110,7 @@ CODE_SAMPLE
     private function refactorIsNotMatch(If_ $if): ?array
     {
         // no else → just remove the node
-        if (!$if->else instanceof Else_) {
+        if (! $if->else instanceof Else_) {
             $this->removeNode($if);
             return null;
         }

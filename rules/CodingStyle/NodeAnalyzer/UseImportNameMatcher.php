@@ -69,7 +69,7 @@ final class UseImportNameMatcher
             throw new ShouldNotHappenException();
         }
 
-        if (!$originalUseUse->alias instanceof Identifier) {
+        if (! $originalUseUse->alias instanceof Identifier) {
             return $prefix . $originalUseUse->name->toString();
         }
 

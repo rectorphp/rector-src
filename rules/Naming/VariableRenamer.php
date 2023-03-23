@@ -39,7 +39,7 @@ final class VariableRenamer
     ): void {
         $isRenamingActive = false;
 
-        if (!$assign instanceof Assign) {
+        if (! $assign instanceof Assign) {
             $isRenamingActive = true;
         }
 

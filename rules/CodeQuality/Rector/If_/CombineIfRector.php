@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;

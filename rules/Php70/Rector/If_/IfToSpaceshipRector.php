@@ -199,7 +199,7 @@ CODE_SAMPLE
         $onlyIfStmt = $if->stmts[0];
 
         if ($onlyIfStmt instanceof Return_) {
-            if (!$onlyIfStmt->expr instanceof Expr) {
+            if (! $onlyIfStmt->expr instanceof Expr) {
                 return;
             }
 

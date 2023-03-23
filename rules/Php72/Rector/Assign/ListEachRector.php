@@ -82,13 +82,13 @@ CODE_SAMPLE
         $eachFuncCall = $node->expr;
 
         // only key: list($key, ) = each($values);
-        if ($listNode->items[0] instanceof ArrayItem && !$listNode->items[1] instanceof ArrayItem) {
+        if ($listNode->items[0] instanceof ArrayItem && ! $listNode->items[1] instanceof ArrayItem) {
             $keyFuncCall = $this->nodeFactory->createFuncCall('key', $eachFuncCall->args);
             return new Assign($listNode->items[0]->value, $keyFuncCall);
         }
 
         // only value: list(, $value) = each($values);
-        if ($listNode->items[1] instanceof ArrayItem && !$listNode->items[0] instanceof ArrayItem) {
+        if ($listNode->items[1] instanceof ArrayItem && ! $listNode->items[0] instanceof ArrayItem) {
             $nextFuncCall = $this->nodeFactory->createFuncCall('next', $eachFuncCall->args);
             $this->nodesToAddCollector->addNodeAfterNode($nextFuncCall, $node);
 
@@ -146,6 +146,6 @@ CODE_SAMPLE
             return false;
         }
 
-        return !$listNode->items[1] instanceof ArrayItem;
+        return ! $listNode->items[1] instanceof ArrayItem;
     }
 }

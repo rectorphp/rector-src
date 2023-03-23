@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Guard;
 
-use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
@@ -51,7 +51,7 @@ final class ParentPropertyLookupGuard
             return false;
         }
 
-        if (!$class->extends instanceof Name) {
+        if (! $class->extends instanceof Name) {
             return true;
         }
 

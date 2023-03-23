@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Collector;
 
-use PhpParser\Node\Identifier;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\Foreach_;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -50,7 +50,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node->keyVar instanceof Expr) {
+        if (! $node->keyVar instanceof Expr) {
             return null;
         }
 

@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$node->var instanceof Variable) {
+        if (! $node->var instanceof Variable) {
             return null;
         }
 

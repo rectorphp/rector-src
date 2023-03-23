@@ -81,7 +81,7 @@ CODE_SAMPLE
         }
 
         // skip short ternary
-        if (!$node->if instanceof Expr) {
+        if (! $node->if instanceof Expr) {
             return null;
         }
 

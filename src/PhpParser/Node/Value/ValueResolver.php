@@ -138,7 +138,7 @@ final class ValueResolver
     public function areValuesEqual(array $nodes, array $expectedValues): bool
     {
         foreach ($nodes as $i => $node) {
-            if (!$node instanceof Expr) {
+            if (! $node instanceof Expr) {
                 return false;
             }
 

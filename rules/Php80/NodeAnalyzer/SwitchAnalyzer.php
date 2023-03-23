@@ -77,7 +77,7 @@ final class SwitchAnalyzer
     public function hasEachCaseSingleStmt(Switch_ $switch): bool
     {
         foreach ($switch->cases as $case) {
-            if (!$case->cond instanceof Expr) {
+            if (! $case->cond instanceof Expr) {
                 continue;
             }
 
@@ -94,7 +94,7 @@ final class SwitchAnalyzer
     public function hasDefaultSingleStmt(Switch_ $switch): bool
     {
         foreach ($switch->cases as $case) {
-            if (!$case->cond instanceof Expr) {
+            if (! $case->cond instanceof Expr) {
                 $stmtsWithoutBreak = array_filter(
                     $case->stmts,
                     static fn (Node $node): bool => ! $node instanceof Break_

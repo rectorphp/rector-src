@@ -110,7 +110,7 @@ final class TokenManipulator
                 return null;
             }
 
-            if (!$this->assignedNameExpr instanceof Expr) {
+            if (! $this->assignedNameExpr instanceof Expr) {
                 return null;
             }
 
@@ -267,7 +267,7 @@ final class TokenManipulator
                 return null;
             }
 
-            if (!$possibleTokenArray->dim instanceof Expr) {
+            if (! $possibleTokenArray->dim instanceof Expr) {
                 return null;
             }
 
@@ -291,7 +291,7 @@ final class TokenManipulator
 
     private function isArrayDimFetchWithDimIntegerValue(ArrayDimFetch $arrayDimFetch, int $value): bool
     {
-        if (!$arrayDimFetch->dim instanceof Expr) {
+        if (! $arrayDimFetch->dim instanceof Expr) {
             return false;
         }
 

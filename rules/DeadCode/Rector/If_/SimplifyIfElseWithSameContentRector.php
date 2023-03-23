@@ -69,7 +69,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?array
     {
-        if (!$node->else instanceof Else_) {
+        if (! $node->else instanceof Else_) {
             return null;
         }
 

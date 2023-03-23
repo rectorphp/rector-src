@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\PHPStan;
 
-use PhpParser\Node\Identifier;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -105,7 +105,7 @@ final class ObjectTypeSpecifier
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
             foreach ($use->uses as $useUse) {
-                if (!$useUse->alias instanceof Identifier) {
+                if (! $useUse->alias instanceof Identifier) {
                     continue;
                 }
 

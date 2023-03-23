@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator\Dependency;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -198,11 +198,11 @@ final class DependencyClassMethodDecorator
 
     private function areMaybeTypesEqual(?Type $type1, ?Type $type2): bool
     {
-        if (!$type1 instanceof Type) {
-            return !$type2 instanceof Type;
+        if (! $type1 instanceof Type) {
+            return ! $type2 instanceof Type;
         }
 
-        if (!$type2 instanceof Type) {
+        if (! $type2 instanceof Type) {
             // Type 1 is already not null
             return false;
         }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
@@ -170,7 +170,7 @@ CODE_SAMPLE
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($notIdentical));
         }
 
-        if (!$nextReturnNode->expr instanceof Expr) {
+        if (! $nextReturnNode->expr instanceof Expr) {
             return null;
         }
 
@@ -190,7 +190,7 @@ CODE_SAMPLE
      */
     private function isElseSeparatedThenIf(If_ $if): bool
     {
-        if (!$if->else instanceof Else_) {
+        if (! $if->else instanceof Else_) {
             return false;
         }
 

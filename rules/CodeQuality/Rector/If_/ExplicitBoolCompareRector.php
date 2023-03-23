@@ -94,7 +94,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // skip short ternary
-        if ($node instanceof Ternary && !$node->if instanceof Expr) {
+        if ($node instanceof Ternary && ! $node->if instanceof Expr) {
             return null;
         }
 

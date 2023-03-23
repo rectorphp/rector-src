@@ -52,7 +52,7 @@ final class ArgumentDefaultValueReplacer
             return true;
         }
 
-        if (!$expr instanceof Expr) {
+        if (! $expr instanceof Expr) {
             return false;
         }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use PhpParser\Node\Identifier;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -17,6 +16,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -412,7 +412,7 @@ final class PHPStanNodeScopeResolver
             return (string) $classLike->namespacedName;
         }
 
-        if (!$classLike->name instanceof Identifier) {
+        if (! $classLike->name instanceof Identifier) {
             throw new ShouldNotHappenException();
         }
 

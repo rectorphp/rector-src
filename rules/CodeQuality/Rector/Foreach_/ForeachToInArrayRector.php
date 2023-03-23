@@ -102,7 +102,7 @@ CODE_SAMPLE
 
         /** @var Return_ $return */
         $return = $firstNodeInsideForeach->stmts[0];
-        if (!$returnToRemove->expr instanceof Expr) {
+        if (! $returnToRemove->expr instanceof Expr) {
             return null;
         }
 
@@ -192,7 +192,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (!$ifStatment->expr instanceof Expr) {
+        if (! $ifStatment->expr instanceof Expr) {
             return false;
         }
 

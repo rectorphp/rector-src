@@ -110,11 +110,11 @@ final class ArrayCallableMethodMatcher
 
     private function shouldSkipNullItems(Array_ $array): bool
     {
-        if (!$array->items[0] instanceof ArrayItem) {
+        if (! $array->items[0] instanceof ArrayItem) {
             return true;
         }
 
-        return !$array->items[1] instanceof ArrayItem;
+        return ! $array->items[1] instanceof ArrayItem;
     }
 
     private function shouldSkipAssociativeArray(mixed $values): bool
@@ -185,7 +185,7 @@ final class ArrayCallableMethodMatcher
         );
 
         foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
-            if (!$parameterReflectionWithPhpDoc->getDefaultValue() instanceof Type) {
+            if (! $parameterReflectionWithPhpDoc->getDefaultValue() instanceof Type) {
                 return new MixedType();
             }
         }

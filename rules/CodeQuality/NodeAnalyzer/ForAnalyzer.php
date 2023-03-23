@@ -125,7 +125,7 @@ final class ForAnalyzer
                 }
 
                 $arrayDimFetch = $node->var;
-                if (!$arrayDimFetch->dim instanceof Expr) {
+                if (! $arrayDimFetch->dim instanceof Expr) {
                     return false;
                 }
 

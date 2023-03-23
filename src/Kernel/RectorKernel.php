@@ -67,7 +67,7 @@ final class RectorKernel
      */
     public function getContainer(): ContainerInterface
     {
-        if (!$this->container instanceof ContainerInterface) {
+        if (! $this->container instanceof ContainerInterface) {
             throw new ShouldNotHappenException();
         }
 

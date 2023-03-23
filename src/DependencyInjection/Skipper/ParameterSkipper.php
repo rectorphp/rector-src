@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\Skipper;
 
-use ReflectionType;
 use Rector\Core\DependencyInjection\TypeResolver\ParameterTypeResolver;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionType;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -87,7 +87,7 @@ final class ParameterSkipper
 
     private function isArrayType(ReflectionParameter $reflectionParameter): bool
     {
-        if (!$reflectionParameter->getType() instanceof ReflectionType) {
+        if (! $reflectionParameter->getType() instanceof ReflectionType) {
             return false;
         }
 

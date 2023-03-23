@@ -137,7 +137,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (!$node->expr instanceof Expr) {
+        if (! $node->expr instanceof Expr) {
             return false;
         }
 

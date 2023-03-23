@@ -471,7 +471,7 @@ final class PhpDocInfo
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type
     {
-        if (!$phpDocTagValueNode instanceof PhpDocTagValueNode) {
+        if (! $phpDocTagValueNode instanceof PhpDocTagValueNode) {
             return new MixedType();
         }
 

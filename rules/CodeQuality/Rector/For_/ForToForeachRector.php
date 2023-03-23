@@ -109,7 +109,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$this->iteratedExpr instanceof Expr) {
+        if (! $this->iteratedExpr instanceof Expr) {
             return null;
         }
 

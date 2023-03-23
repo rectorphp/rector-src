@@ -68,7 +68,7 @@ final class ScopeNestingComparator
             fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $seekedExpr)
         );
 
-        if (!$foundParentNode->else instanceof Else_) {
+        if (! $foundParentNode->else instanceof Else_) {
             return false;
         }
 

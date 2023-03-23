@@ -47,7 +47,7 @@ final class ControllerClassMethodManipulator
 
     private function hasParentClassController(Class_ $class): bool
     {
-        if (!$class->extends instanceof Name) {
+        if (! $class->extends instanceof Name) {
             return false;
         }
 

@@ -26,7 +26,7 @@ final class PropertyTypeDecorator
 
     public function decorate(Property $property, ?Type $type): void
     {
-        if (!$type instanceof Type) {
+        if (! $type instanceof Type) {
             return;
         }
 

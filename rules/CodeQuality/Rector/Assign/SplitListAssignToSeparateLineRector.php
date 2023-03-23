@@ -110,7 +110,7 @@ CODE_SAMPLE
     {
         $standaloneAssignExpresssions = [];
         foreach ($expr->items as $key => $leftArrayItem) {
-            if (!$leftArrayItem instanceof ArrayItem) {
+            if (! $leftArrayItem instanceof ArrayItem) {
                 continue;
             }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Rector\Property;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
@@ -100,7 +100,7 @@ CODE_SAMPLE
         $onlyProperty = $node->props[0];
 
         // we need default value
-        if (!$onlyProperty->default instanceof Expr) {
+        if (! $onlyProperty->default instanceof Expr) {
             return null;
         }
 

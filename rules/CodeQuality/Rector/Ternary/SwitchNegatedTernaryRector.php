@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Ternary;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Ternary;
 use Rector\Core\Rector\AbstractRector;
@@ -69,7 +69,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$node->if instanceof Expr) {
+        if (! $node->if instanceof Expr) {
             return null;
         }
 

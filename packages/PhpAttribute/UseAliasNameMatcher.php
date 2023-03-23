@@ -34,7 +34,7 @@ final class UseAliasNameMatcher
                     continue;
                 }
 
-                if (!$originalUseUse->alias instanceof Identifier) {
+                if (! $originalUseUse->alias instanceof Identifier) {
                     continue;
                 }
 

@@ -71,7 +71,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (!$nextNode->expr instanceof Expr) {
+            if (! $nextNode->expr instanceof Expr) {
                 return null;
             }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Switch_;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Stmt\Case_;
@@ -78,7 +78,7 @@ CODE_SAMPLE
 
         /** @var Case_ $firstCase */
         $firstCase = array_shift($cases);
-        if (!$firstCase->cond instanceof Expr) {
+        if (! $firstCase->cond instanceof Expr) {
             return null;
         }
 

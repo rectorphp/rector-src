@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Foreach_;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -75,7 +75,7 @@ CODE_SAMPLE
     {
         $this->return = null;
 
-        if (!$node->keyVar instanceof Expr) {
+        if (! $node->keyVar instanceof Expr) {
             return null;
         }
 

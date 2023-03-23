@@ -41,7 +41,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function beforeTraverse(Node $node): void
     {
-        if (!$this->currentPhpParserNode instanceof \PhpParser\Node) {
+        if (! $this->currentPhpParserNode instanceof \PhpParser\Node) {
             throw new ShouldNotHappenException('Set "$currentPhpParserNode" first');
         }
     }
@@ -80,7 +80,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        if (!$this->currentPhpParserNode instanceof \PhpParser\Node) {
+        if (! $this->currentPhpParserNode instanceof \PhpParser\Node) {
             throw new ShouldNotHappenException();
         }
 

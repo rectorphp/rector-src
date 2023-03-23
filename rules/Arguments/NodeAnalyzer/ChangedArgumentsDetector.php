@@ -22,7 +22,7 @@ final class ChangedArgumentsDetector
 
     public function isDefaultValueChanged(Param $param, mixed $value): bool
     {
-        if (!$param->default instanceof Expr) {
+        if (! $param->default instanceof Expr) {
             return false;
         }
 
@@ -35,7 +35,7 @@ final class ChangedArgumentsDetector
             return false;
         }
 
-        if (!$newType instanceof Type) {
+        if (! $newType instanceof Type) {
             return true;
         }
 

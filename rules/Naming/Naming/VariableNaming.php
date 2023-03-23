@@ -60,7 +60,7 @@ final class VariableNaming
 
     public function createCountedValueName(string $valueName, ?Scope $scope): string
     {
-        if (!$scope instanceof Scope) {
+        if (! $scope instanceof Scope) {
             return $valueName;
         }
 

@@ -301,7 +301,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pExpr_Yield(Yield_ $yield): string
     {
-        if (!$yield->value instanceof Expr) {
+        if (! $yield->value instanceof Expr) {
             return 'yield';
         }
 

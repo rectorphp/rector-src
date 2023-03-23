@@ -58,7 +58,7 @@ final class NetteInjectDetector
         }
 
         // has no parent class
-        if (!$class->extends instanceof Name) {
+        if (! $class->extends instanceof Name) {
             return false;
         }
 

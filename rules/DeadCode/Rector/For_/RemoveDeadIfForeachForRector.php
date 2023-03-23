@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\For_;
 
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;

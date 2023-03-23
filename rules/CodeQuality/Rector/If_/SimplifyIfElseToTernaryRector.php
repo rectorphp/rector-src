@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
-use PhpParser\Node\Stmt\Else_;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
@@ -80,7 +80,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node->else instanceof Else_) {
+        if (! $node->else instanceof Else_) {
             return null;
         }
 

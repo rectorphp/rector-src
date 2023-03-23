@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Comparator\Parameter;
 
-use PHPStan\Type\Type;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PHPStan\Reflection\ParameterReflection;
+use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\DowngradePhp80\Reflection\DefaultParameterValueResolver;
 
@@ -21,7 +21,7 @@ final class ParameterDefaultsComparator
 
     public function areDefaultValuesDifferent(ParameterReflection $parameterReflection, Param $param): bool
     {
-        if (!$parameterReflection->getDefaultValue() instanceof Type && !$param->default instanceof Expr) {
+        if (! $parameterReflection->getDefaultValue() instanceof Type && ! $param->default instanceof Expr) {
             return false;
         }
 
@@ -39,14 +39,14 @@ final class ParameterDefaultsComparator
 
     private function isMutuallyExclusiveNull(ParameterReflection $parameterReflection, Param $param): bool
     {
-        if (!$parameterReflection->getDefaultValue() instanceof Type && $param->default instanceof Expr) {
+        if (! $parameterReflection->getDefaultValue() instanceof Type && $param->default instanceof Expr) {
             return true;
         }
 
-        if (!$parameterReflection->getDefaultValue() instanceof Type) {
+        if (! $parameterReflection->getDefaultValue() instanceof Type) {
             return false;
         }
 
-        return !$param->default instanceof Expr;
+        return ! $param->default instanceof Expr;
     }
 }

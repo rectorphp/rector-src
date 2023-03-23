@@ -151,6 +151,6 @@ final class SwitchExprsResolver
         }
 
         // default value
-        return !$case->cond instanceof Expr;
+        return ! $case->cond instanceof Expr;
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Transform\Rector\ClassMethod;
 
-use PhpParser\Node\Expr;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\ClassMethod;
