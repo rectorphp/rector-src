@@ -29,6 +29,7 @@ final class NodeNameResolver
      * @see https://regex101.com/r/ImTV1W/1
      */
     private const CONTAINS_WILDCARD_CHARS_REGEX = '/[\*\#\~\/]/';
+
     /**
      * @var array<string, NodeNameResolverInterface|null>
      */
