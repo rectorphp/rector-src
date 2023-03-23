@@ -100,7 +100,7 @@ final class ClassRenamer
      */
     private function refactorPhpDoc(Node $node, array $oldToNewTypes, array $oldToNewClasses): void
     {
-        if ($node->getDocComment() === null && $node->getComments() === []) {
+        if ($node->getDocComment() === null && $node->getComments() === [] && !$node->hasAttribute(AttributeKey::PHP_DOC_INFO)) {
             return;
         }
 
