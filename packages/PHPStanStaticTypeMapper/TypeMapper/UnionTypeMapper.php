@@ -290,7 +290,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $phpParserUnionType;
         }
 
-        if ($phpParserUnionType instanceof \PhpParser\Node\UnionType) {
+        if ($phpParserUnionType instanceof PhpParserUnionType) {
             return $this->narrowBoolType($unionType, $phpParserUnionType, $typeKind);
         }
 
