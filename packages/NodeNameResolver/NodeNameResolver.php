@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeNameResolver;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -22,6 +23,15 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeNameResolver
 {
+    /**
+     * Used to check if a string might contain a regex or fnmatch pattern
+     */
+    private const CONTAINS_WILDCARD_CHARS_PATTERN = '/[\*\#\~\/]/';
+    /**
+     * @var array<string, NodeNameResolverInterface|null>
+     */
+    private array $nodeNameResolversByClass = [];
+
     /**
      * @param NodeNameResolverInterface[] $nodeNameResolvers
      */
@@ -117,12 +127,9 @@ final class NodeNameResolver
             $this->invalidNameNodeReporter->reportInvalidNodeForName($node);
         }
 
-        foreach ($this->nodeNameResolvers as $nodeNameResolver) {
-            if (! is_a($node, $nodeNameResolver->getNode(), true)) {
-                continue;
-            }
-
-            return $nodeNameResolver->resolve($node);
+        $resolvedName = $this->resolveNodeName($node);
+        if ($resolvedName !== null) {
+            return $resolvedName;
         }
 
         // more complex
@@ -188,19 +195,21 @@ final class NodeNameResolver
             return false;
         }
 
-        // is probably regex pattern
-        if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
-            return StringUtils::isMatch($resolvedName, $desiredName);
-        }
-
-        // is probably fnmatch
-        if (\str_contains($desiredName, '*')) {
-            return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
-        }
-
         // special case
         if ($desiredName === 'Object') {
             return $desiredName === $resolvedName;
+        }
+
+        if (Strings::match($desiredName, self::CONTAINS_WILDCARD_CHARS_PATTERN) !== null) {
+            // is probably regex pattern
+            if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
+                return StringUtils::isMatch($resolvedName, $desiredName);
+            }
+
+            // is probably fnmatch
+            if (\str_contains($desiredName, '*')) {
+                return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
+            }
         }
 
         return strtolower($resolvedName) === strtolower($desiredName);
@@ -228,5 +237,33 @@ final class NodeNameResolver
         }
 
         return $this->isStringName($resolvedName, $desiredName);
+    }
+
+    private function resolveNodeName(Node $node): ?string
+    {
+        $nodeClass = \get_class($node);
+        if (array_key_exists($nodeClass, $this->nodeNameResolversByClass)) {
+            $resolver = $this->nodeNameResolversByClass[$nodeClass];
+
+            if ($resolver instanceof NodeNameResolverInterface) {
+                return $resolver->resolve($node);
+            }
+
+            return null;
+        }
+
+        foreach ($this->nodeNameResolvers as $nodeNameResolver) {
+            if (!\is_a($node, $nodeNameResolver->getNode(), \true)) {
+                continue;
+            }
+
+            $this->nodeNameResolversByClass[$nodeClass] = $nodeNameResolver;
+
+            return $nodeNameResolver->resolve($node);
+        }
+
+        $this->nodeNameResolversByClass[$nodeClass] = null;
+
+        return null;
     }
 }
