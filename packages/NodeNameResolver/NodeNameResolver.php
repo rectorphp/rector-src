@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeNameResolver;
 
-use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
@@ -203,7 +202,7 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        if (Strings::match($desiredName, self::CONTAINS_WILDCARD_CHARS_REGEX) !== null) {
+        if (StringUtils::isMatch($desiredName, self::CONTAINS_WILDCARD_CHARS_REGEX)) {
             // is probably regex pattern
             if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
                 return StringUtils::isMatch($resolvedName, $desiredName);
@@ -244,7 +243,7 @@ final class NodeNameResolver
 
     private function resolveNodeName(Node $node): ?string
     {
-        $nodeClass = \get_class($node);
+        $nodeClass = $node::class;
         if (array_key_exists($nodeClass, $this->nodeNameResolversByClass)) {
             $resolver = $this->nodeNameResolversByClass[$nodeClass];
 
