@@ -74,16 +74,16 @@ CODE_SAMPLE
 
             $nextNode = $node->stmts[$key+1];
             if (! $nextNode instanceof Return_) {
-                continue;
+                return null;
             }
 
             $expr = $this->ifManipulator->matchIfValueReturnValue($stmt);
             if (! $expr instanceof Expr) {
-                continue;
+                return null;
             }
 
             if (! $this->nodeComparator->areNodesEqual($expr, $nextNode->expr)) {
-                continue;
+                return null;
             }
 
             unset($node->stmts[$key]);
