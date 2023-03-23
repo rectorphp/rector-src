@@ -378,12 +378,10 @@ final class BetterNodeFinder
                 return [];
             }
 
-            $variables = $this->findInstancesOf($scopeNode, [Variable::class]);
-
-            return array_filter(
-                $variables,
-                fn (Variable $variable): bool => $this->nodeNameResolver->isName($variable, $exprName)
-            );
+            /** @var Variable[] $variables */
+            $variables = $this->find($scopeNode, fn (Node $node): bool =>
+                $node instanceof Variable && $this->nodeNameResolver->isName($node, $exprName));
+            return $variables;
         }
 
         if ($expr instanceof Property) {
@@ -399,13 +397,12 @@ final class BetterNodeFinder
             return [];
         }
 
-        $propertyFetches = $this->findInstancesOf($scopeNode, [PropertyFetch::class, StaticPropertyFetch::class]);
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->find($scopeNode, fn (Node $node): bool =>
+            ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch)
+                && $this->nodeNameResolver->isName($node->name, $exprName));
 
-        return array_filter(
-            $propertyFetches,
-            fn (PropertyFetch | StaticPropertyFetch $propertyFetch): bool =>
-                $this->nodeNameResolver->isName($propertyFetch->name, $exprName)
-        );
+        return $propertyFetches;
     }
 
     /**
