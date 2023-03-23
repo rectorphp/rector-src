@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -56,7 +55,7 @@ CODE_SAMPLE
 
         foreach ($node->parts as $index => $nodePart) {
             if ($nodePart instanceof Variable) {
-                $previousNode = $nodePart->getAttribute(AttributeKey::PREVIOUS_NODE);
+                $previousNode = $node->parts[$index - 1] ?? null;
                 $previousNodeEndTokenPosition = $previousNode instanceof Node ? $previousNode->getEndTokenPos() : $startTokenPos;
 
                 if ($previousNodeEndTokenPosition + 1 === $nodePart->getStartTokenPos()) {
