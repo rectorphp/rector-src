@@ -63,13 +63,13 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         foreach ((array) $node->stmts as $key => $stmt) {
+            if (! $stmt instanceof If_) {
+                continue;
+            }
+
             // on last stmt already
             if (! isset($node->stmts[$key+1])) {
                 return null;
-            }
-
-            if (! $stmt instanceof If_) {
-                continue;
             }
 
             $nextNode = $node->stmts[$key+1];
