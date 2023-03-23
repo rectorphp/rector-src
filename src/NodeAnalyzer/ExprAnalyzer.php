@@ -95,10 +95,6 @@ final class ExprAnalyzer
                 return false;
             }
 
-            if ($expr->name->toString() !== 'class') {
-                return true;
-            }
-
             // static::class cannot be used for compile-time class name resolution
             return $expr->class->toString() !== ObjectReference::STATIC;
         }
