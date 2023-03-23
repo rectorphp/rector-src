@@ -100,6 +100,10 @@ final class ClassRenamer
      */
     private function refactorPhpDoc(Node $node, array $oldToNewTypes, array $oldToNewClasses): void
     {
+        if ($node->getDocComment() === null && $node->getComments() === []) {
+            return;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if (! $phpDocInfo->hasByTypes(NodeTypes::TYPE_AWARE_NODES) && ! $phpDocInfo->hasByAnnotationClasses(
             NodeTypes::TYPE_AWARE_DOCTRINE_ANNOTATION_CLASSES
