@@ -99,7 +99,7 @@ final class StaticTypeMapper
         if ($phpDocTagValueNode instanceof TemplateTagValueNode) {
             // special case
             $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
-            if ($phpDocTagValueNode->bound === null) {
+            if (! $phpDocTagValueNode->bound instanceof TypeNode) {
                 return new MixedType();
             }
 

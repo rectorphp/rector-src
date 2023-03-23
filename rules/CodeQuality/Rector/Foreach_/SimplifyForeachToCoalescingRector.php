@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Foreach_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -74,7 +75,7 @@ CODE_SAMPLE
     {
         $this->return = null;
 
-        if ($node->keyVar === null) {
+        if (! $node->keyVar instanceof Expr) {
             return null;
         }
 
@@ -164,9 +165,9 @@ CODE_SAMPLE
         $coalesce = new Coalesce(new ArrayDimFetch(
             $foreach->expr,
             $checkedNode
-        ), $this->return instanceof Return_ && $this->return->expr !== null ? $this->return->expr : $checkedNode);
+        ), $this->return instanceof Return_ && $this->return->expr instanceof Expr ? $this->return->expr : $checkedNode);
 
-        if ($this->return !== null) {
+        if ($this->return instanceof Return_) {
             return new Return_($coalesce);
         }
 

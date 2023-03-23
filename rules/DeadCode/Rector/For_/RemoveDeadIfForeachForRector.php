@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
@@ -113,7 +114,7 @@ CODE_SAMPLE
             return;
         }
 
-        if ($if->else !== null) {
+        if ($if->else instanceof Else_) {
             $if->cond = $this->conditionInverter->createInvertedCondition($if->cond);
             $if->stmts = $if->else->stmts;
             $if->else = null;

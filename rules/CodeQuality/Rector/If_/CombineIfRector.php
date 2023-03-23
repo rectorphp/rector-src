@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
@@ -91,7 +92,7 @@ CODE_SAMPLE
 
     private function shouldSkip(If_ $if): bool
     {
-        if ($if->else !== null) {
+        if ($if->else instanceof Else_) {
             return true;
         }
 
@@ -107,7 +108,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($if->stmts[0]->else !== null) {
+        if ($if->stmts[0]->else instanceof Else_) {
             return true;
         }
 

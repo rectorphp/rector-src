@@ -120,7 +120,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($node->default !== null) {
+            if ($node->default instanceof Expr) {
                 return null;
             }
 

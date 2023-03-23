@@ -6,11 +6,13 @@ namespace Rector\Naming\Guard;
 
 use DateTimeInterface;
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
@@ -181,7 +183,7 @@ final class BreakingVariableRenameGuard
                 return true;
             }
 
-            if ($previousForeach->keyVar === null) {
+            if (! $previousForeach->keyVar instanceof Expr) {
                 return false;
             }
 
@@ -202,7 +204,7 @@ final class BreakingVariableRenameGuard
 
             $variableUses[] = $this->betterNodeFinder->findVariableOfName($previousIf->stmts, $currentVariableName);
 
-            $previousStmts = $previousIf->else !== null ? $previousIf->else->stmts : [];
+            $previousStmts = $previousIf->else instanceof Else_ ? $previousIf->else->stmts : [];
             $variableUses[] = $this->betterNodeFinder->findVariableOfName($previousStmts, $currentVariableName);
             $variableUses[] = $this->betterNodeFinder->findVariableOfName($previousIf->elseifs, $currentVariableName);
 

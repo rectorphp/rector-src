@@ -13,6 +13,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ExtendedMethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Type\Type;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -163,7 +164,7 @@ final class CurrentAndParentClassMethodComparator
 
         foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflectionWithPhpDoc) {
             if (! isset($classMethod->params[$key])) {
-                if ($parameterReflectionWithPhpDoc->getDefaultValue() !== null) {
+                if ($parameterReflectionWithPhpDoc->getDefaultValue() instanceof Type) {
                     continue;
                 }
 

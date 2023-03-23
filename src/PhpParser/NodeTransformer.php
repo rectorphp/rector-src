@@ -72,7 +72,7 @@ final class NodeTransformer
         $yieldNodes = [];
 
         foreach ($array->items as $arrayItem) {
-            if ($arrayItem === null) {
+            if (! $arrayItem instanceof ArrayItem) {
                 continue;
             }
 

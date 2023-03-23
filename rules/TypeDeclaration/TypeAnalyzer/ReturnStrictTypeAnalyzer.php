@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -37,7 +38,7 @@ final class ReturnStrictTypeAnalyzer
         $returnedStrictTypeNodes = [];
 
         foreach ($returns as $return) {
-            if ($return->expr === null) {
+            if (! $return->expr instanceof Expr) {
                 return [];
             }
 

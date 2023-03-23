@@ -65,7 +65,7 @@ CODE_SAMPLE
         $nestedTernary = $node->else;
 
         $spaceshipNode = $this->processSmallerThanTernary($node, $nestedTernary);
-        if ($spaceshipNode !== null) {
+        if ($spaceshipNode instanceof Spaceship) {
             return $spaceshipNode;
         }
 

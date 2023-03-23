@@ -74,7 +74,7 @@ final class AssignManipulator
             return true;
         }
 
-        if ($parentNode !== null && $this->multiInstanceofChecker->isInstanceOf(
+        if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
             $parentNode,
             self::MODIFYING_NODE_TYPES
         )) {

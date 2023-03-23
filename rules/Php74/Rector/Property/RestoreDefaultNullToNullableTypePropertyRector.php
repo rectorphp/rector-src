@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php74\Rector\Property;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Rector\AbstractRector;
@@ -87,7 +88,7 @@ CODE_SAMPLE
         }
 
         $onlyProperty = $property->props[0];
-        if ($onlyProperty->default !== null) {
+        if ($onlyProperty->default instanceof Expr) {
             return true;
         }
 

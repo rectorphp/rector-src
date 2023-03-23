@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\FunctionLike;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -86,7 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($lastStmt->expr !== null) {
+        if ($lastStmt->expr instanceof Expr) {
             return null;
         }
 

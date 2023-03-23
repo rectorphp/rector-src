@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\NodeAnalyzer;
 
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -57,7 +58,7 @@ final class NetteInjectDetector
         }
 
         // has no parent class
-        if ($class->extends === null) {
+        if (! $class->extends instanceof Name) {
             return false;
         }
 

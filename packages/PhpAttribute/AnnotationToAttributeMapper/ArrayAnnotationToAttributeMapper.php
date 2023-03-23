@@ -82,7 +82,7 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
 
     private function resolveValueExprWithSingleQuoteHandling(ArrayItem $arrayItem): ArrayItem
     {
-        if ($arrayItem->key === null && $arrayItem->value instanceof ClassConstFetch && $arrayItem->value->class instanceof Name && str_contains(
+        if (! $arrayItem->key instanceof Expr && $arrayItem->value instanceof ClassConstFetch && $arrayItem->value->class instanceof Name && str_contains(
             (string) $arrayItem->value->class,
             "'"
         )) {

@@ -89,7 +89,7 @@ final class TernaryToNullCoalescingRector extends AbstractRector implements MinP
 
     private function processTernaryWithIsset(Ternary $ternary, Isset_ $isset): ?Coalesce
     {
-        if ($ternary->if === null) {
+        if (! $ternary->if instanceof Expr) {
             return null;
         }
 

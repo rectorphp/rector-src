@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeNestingScope;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -85,7 +86,7 @@ final class ContextAnalyzer
 
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
             if ($nextNode instanceof Node) {
-                if ($nextNode instanceof Return_ && $nextNode->expr === null) {
+                if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
                     continue;
                 }
 

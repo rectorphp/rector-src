@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Helper;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Param;
 use PHPStan\Type\ClosureType;
@@ -53,7 +54,7 @@ final class PhpDocNullableTypeHelper
 
         if ($phpParserType instanceof UnionType) {
             $isPhpParserTypeContainingNullType = TypeCombinator::containsNull($phpParserType);
-        } elseif ($param->default !== null) {
+        } elseif ($param->default instanceof Expr) {
             $value = $this->valueResolver->getValue($param->default);
             $isPhpParserTypeContainingNullType = $value === null || ($param->default instanceof ConstFetch && $value === 'null');
         } else {

@@ -92,12 +92,12 @@ CODE_SAMPLE
         }
 
         $processIdentical = $this->processIdenticalOrNotIdentical($parentNode, $node, $expr);
-        if ($processIdentical !== null) {
+        if ($processIdentical instanceof Expr) {
             return $processIdentical;
         }
 
         $processGreaterOrSmaller = $this->processGreaterOrSmaller($parentNode, $node, $expr);
-        if ($processGreaterOrSmaller !== null) {
+        if ($processGreaterOrSmaller instanceof NotIdentical) {
             return $processGreaterOrSmaller;
         }
 

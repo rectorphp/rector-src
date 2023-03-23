@@ -23,7 +23,7 @@ final class SpacingAwareTemplateTagValueNode extends TemplateTagValueNode implem
     {
         // @see https://github.com/rectorphp/rector/issues/3438
         # 'as'/'of'
-        $bound = $this->bound !== null ? ' ' . $this->preposition . ' ' . $this->bound : '';
+        $bound = $this->bound instanceof TypeNode ? ' ' . $this->preposition . ' ' . $this->bound : '';
 
         $content = $this->name . $bound . ' ' . $this->description;
         return trim($content);

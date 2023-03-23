@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Array_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
@@ -82,7 +83,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($arrayItem->key === null) {
+            if (! $arrayItem->key instanceof Expr) {
                 continue;
             }
 

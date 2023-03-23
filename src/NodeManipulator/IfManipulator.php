@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -124,7 +125,7 @@ final class IfManipulator
 
     public function isIfAndElseWithSameVariableAssignAsLastStmts(If_ $if, Expr $desiredExpr): bool
     {
-        if ($if->else === null) {
+        if (! $if->else instanceof Else_) {
             return false;
         }
 
@@ -224,7 +225,7 @@ final class IfManipulator
 
     public function isIfWithoutElseAndElseIfs(If_ $if): bool
     {
-        if ($if->else !== null) {
+        if ($if->else instanceof Else_) {
             return false;
         }
 

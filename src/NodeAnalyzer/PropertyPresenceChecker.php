@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -98,7 +99,7 @@ final class PropertyPresenceChecker
         PropertyMetadata $propertyMetadata,
         PhpPropertyReflection $phpPropertyReflection
     ): Property | Param | null {
-        if ($propertyMetadata->getType() === null) {
+        if (! $propertyMetadata->getType() instanceof Type) {
             return null;
         }
 

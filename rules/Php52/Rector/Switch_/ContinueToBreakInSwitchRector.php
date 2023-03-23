@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php52\Rector\Switch_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Break_;
@@ -103,7 +104,7 @@ CODE_SAMPLE
 
     private function processContinueStatement(Continue_ $continue): Break_ | Continue_
     {
-        if ($continue->num === null) {
+        if (! $continue->num instanceof Expr) {
             return new Break_();
         }
 

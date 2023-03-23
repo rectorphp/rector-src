@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -70,7 +71,7 @@ final class ObjectTypeSpecifier
         }
 
         $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType, $uses);
-        if ($aliasedObjectType !== null) {
+        if ($aliasedObjectType instanceof AliasedObjectType) {
             return $aliasedObjectType;
         }
 
@@ -104,7 +105,7 @@ final class ObjectTypeSpecifier
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
             foreach ($use->uses as $useUse) {
-                if ($useUse->alias === null) {
+                if (! $useUse->alias instanceof Identifier) {
                     continue;
                 }
 
@@ -170,12 +171,12 @@ final class ObjectTypeSpecifier
                 ? $use->prefix . '\\'
                 : '';
             foreach ($use->uses as $useUse) {
-                if ($useUse->alias !== null) {
+                if ($useUse->alias instanceof Identifier) {
                     continue;
                 }
 
                 $partialNamespaceObjectType = $this->matchPartialNamespaceObjectType($prefix, $objectType, $useUse);
-                if ($partialNamespaceObjectType !== null) {
+                if ($partialNamespaceObjectType instanceof ShortenedObjectType) {
                     return $partialNamespaceObjectType;
                 }
 

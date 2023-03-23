@@ -64,7 +64,7 @@ final class PlainValueParser
 
         // normalize value
         $constExprNode = $this->matchConstantValue($currentTokenValue);
-        if ($constExprNode !== null) {
+        if ($constExprNode instanceof ConstExprNode) {
             return $constExprNode;
         }
 

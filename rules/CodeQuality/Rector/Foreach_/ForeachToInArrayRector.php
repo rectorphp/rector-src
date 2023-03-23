@@ -102,7 +102,7 @@ CODE_SAMPLE
 
         /** @var Return_ $return */
         $return = $firstNodeInsideForeach->stmts[0];
-        if ($returnToRemove->expr === null) {
+        if (! $returnToRemove->expr instanceof Expr) {
             return null;
         }
 
@@ -131,7 +131,7 @@ CODE_SAMPLE
 
     private function shouldSkipForeach(Foreach_ $foreach): bool
     {
-        if ($foreach->keyVar !== null) {
+        if ($foreach->keyVar instanceof Expr) {
             return true;
         }
 
@@ -192,7 +192,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($ifStatment->expr === null) {
+        if (! $ifStatment->expr instanceof Expr) {
             return false;
         }
 

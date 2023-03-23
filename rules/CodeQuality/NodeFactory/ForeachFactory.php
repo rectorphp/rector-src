@@ -18,7 +18,7 @@ final class ForeachFactory
         ?Expr $iteratedExpr,
         ?string $keyValueName
     ): Foreach_ {
-        if ($iteratedExpr === null) {
+        if (! $iteratedExpr instanceof Expr) {
             throw new ShouldNotHappenException();
         }
 
