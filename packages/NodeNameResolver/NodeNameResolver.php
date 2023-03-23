@@ -256,7 +256,7 @@ final class NodeNameResolver
         }
 
         foreach ($this->nodeNameResolvers as $nodeNameResolver) {
-            if (!\is_a($node, $nodeNameResolver->getNode(), \true)) {
+            if (! \is_a($node, $nodeNameResolver->getNode(), \true)) {
                 continue;
             }
 

@@ -807,3 +807,7 @@ parameters:
 
         # false positive on enums
         - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
+
+        - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+

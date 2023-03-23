@@ -67,11 +67,11 @@ CODE_SAMPLE
             }
 
             // on last stmt already
-            if (! isset($node->stmts[$key+1])) {
+            if (! isset($node->stmts[$key + 1])) {
                 return null;
             }
 
-            $nextNode = $node->stmts[$key+1];
+            $nextNode = $node->stmts[$key + 1];
             if (! $nextNode instanceof Return_) {
                 return null;
             }

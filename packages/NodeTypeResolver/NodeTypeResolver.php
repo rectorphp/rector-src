@@ -355,7 +355,7 @@ final class NodeTypeResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
-        if (!isset($this->traitExistsCache[$classReflection->getName()])) {
+        if (! isset($this->traitExistsCache[$classReflection->getName()])) {
             $this->traitExistsCache[$classReflection->getName()] = \trait_exists($requiredObjectType->getClassName());
         }
 

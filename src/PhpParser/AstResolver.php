@@ -305,6 +305,27 @@ final class AstResolver
         return $this->findPromotedPropertyByName($nodes, $desiredClassName, $desiredPropertyName);
     }
 
+    /**
+     * @return Stmt[]
+     */
+    public function parseFileNameToDecoratedNodes(string $fileName): array
+    {
+        if (isset($this->parsedFileNodes[$fileName])) {
+            return $this->parsedFileNodes[$fileName];
+        }
+
+        $stmts = $this->smartPhpParser->parseFile($fileName);
+        if ($stmts === []) {
+            return $this->parsedFileNodes[$fileName] = [];
+        }
+
+        $file = new File($fileName, FileSystem::read($fileName));
+        return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile(
+            $file,
+            $stmts
+        );
+    }
+
     private function locateClassMethodInTrait(string $methodName, MethodReflection $methodReflection): ?ClassMethod
     {
         $classReflection = $methodReflection->getDeclaringClass();
@@ -329,27 +350,6 @@ final class AstResolver
         );
 
         return $classMethod;
-    }
-
-    /**
-     * @return Stmt[]
-     */
-    public function parseFileNameToDecoratedNodes(string $fileName): array
-    {
-        if (isset($this->parsedFileNodes[$fileName])) {
-            return $this->parsedFileNodes[$fileName];
-        }
-
-        $stmts = $this->smartPhpParser->parseFile($fileName);
-        if ($stmts === []) {
-            return $this->parsedFileNodes[$fileName] = [];
-        }
-
-        $file = new File($fileName, FileSystem::read($fileName));
-        return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile(
-            $file,
-            $stmts
-        );
     }
 
     /**
