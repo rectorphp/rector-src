@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Arguments\NodeAnalyzer;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
@@ -21,7 +22,7 @@ final class ChangedArgumentsDetector
 
     public function isDefaultValueChanged(Param $param, mixed $value): bool
     {
-        if ($param->default === null) {
+        if (!$param->default instanceof Expr) {
             return false;
         }
 
@@ -34,7 +35,7 @@ final class ChangedArgumentsDetector
             return false;
         }
 
-        if ($newType === null) {
+        if (!$newType instanceof Type) {
             return true;
         }
 

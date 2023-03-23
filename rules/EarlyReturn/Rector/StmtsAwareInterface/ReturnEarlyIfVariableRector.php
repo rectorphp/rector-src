@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\EarlyReturn\Rector\StmtsAwareInterface;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -86,7 +87,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt instanceof If_ && $stmt->else === null && $stmt->elseifs === []) {
+            if ($stmt instanceof If_ && !$stmt->else instanceof Else_ && $stmt->elseifs === []) {
                 // is single condition if
                 $if = $stmt;
                 if (count($if->stmts) !== 1) {

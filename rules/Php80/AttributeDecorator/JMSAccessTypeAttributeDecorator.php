@@ -27,7 +27,7 @@ final class JMSAccessTypeAttributeDecorator implements AttributeDecoratorInterfa
         }
 
         $currentArg = $args[0];
-        if ($currentArg->name !== null) {
+        if ($currentArg->name instanceof Identifier) {
             return;
         }
 

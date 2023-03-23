@@ -14,7 +14,7 @@ final class ClassNaming
     public function getShortName(string | Name | Identifier | ClassLike $name): string
     {
         if ($name instanceof ClassLike) {
-            if ($name->name === null) {
+            if (!$name->name instanceof Identifier) {
                 return '';
             }
 

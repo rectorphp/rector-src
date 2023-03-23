@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
+use PhpParser\Node\Stmt\Else_;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -79,7 +80,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->else === null) {
+        if (!$node->else instanceof Else_) {
             return null;
         }
 

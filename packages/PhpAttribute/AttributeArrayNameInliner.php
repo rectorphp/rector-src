@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PhpAttribute;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -71,7 +72,7 @@ final class AttributeArrayNameInliner
                 } elseif ($arrayItem->key instanceof String_) {
                     $arrayItemString = $arrayItem->key;
                     $newArgs[] = new Arg($arrayItem->value, false, false, [], new Identifier($arrayItemString->value));
-                } elseif ($arrayItem->key === null) {
+                } elseif (!$arrayItem->key instanceof Expr) {
                     // silent key
                     $newArgs[] = new Arg($arrayItem->value);
                 } else {

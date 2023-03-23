@@ -80,7 +80,7 @@ CODE_SAMPLE
         }
 
         $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if ($previousNode !== null) {
+        if ($previousNode instanceof Node) {
             return null;
         }
 

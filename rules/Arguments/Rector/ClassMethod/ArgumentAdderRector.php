@@ -276,7 +276,7 @@ CODE_SAMPLE
         }
 
         $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($defaultValue));
-        if ($type !== null) {
+        if ($type instanceof Type) {
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -152,7 +153,7 @@ CODE_SAMPLE
 
     private function processReturnTrue(If_ $if, Return_ $nextReturnNode): Return_
     {
-        if ($if->cond instanceof BooleanNot && $nextReturnNode->expr !== null && $this->valueResolver->isTrue(
+        if ($if->cond instanceof BooleanNot && $nextReturnNode->expr instanceof Expr && $this->valueResolver->isTrue(
             $nextReturnNode->expr
         )) {
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($if->cond->expr));
@@ -169,7 +170,7 @@ CODE_SAMPLE
             return new Return_($this->exprBoolCaster->boolCastOrNullCompareIfNeeded($notIdentical));
         }
 
-        if ($nextReturnNode->expr === null) {
+        if (!$nextReturnNode->expr instanceof Expr) {
             return null;
         }
 
@@ -189,7 +190,7 @@ CODE_SAMPLE
      */
     private function isElseSeparatedThenIf(If_ $if): bool
     {
-        if ($if->else === null) {
+        if (!$if->else instanceof Else_) {
             return false;
         }
 
@@ -218,6 +219,6 @@ CODE_SAMPLE
         }
 
         // return must have value
-        return $ifInnerNode->expr !== null;
+        return $ifInnerNode->expr instanceof Expr;
     }
 }

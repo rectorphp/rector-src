@@ -160,7 +160,7 @@ final class TrustedClassMethodPropertyTypeInferer
         // special case for alias
         if ($param->type instanceof FullyQualified) {
             $type = $this->resolveFullyQualifiedOrAliasedObjectType($param);
-            if ($type !== null) {
+            if ($type instanceof Type) {
                 return $type;
             }
         }
@@ -198,7 +198,7 @@ final class TrustedClassMethodPropertyTypeInferer
             return true;
         }
 
-        if ($param->default !== null) {
+        if ($param->default instanceof Expr) {
             $defaultValueStaticType = $this->nodeTypeResolver->getType($param->default);
             if ($defaultValueStaticType instanceof NullType) {
                 return true;

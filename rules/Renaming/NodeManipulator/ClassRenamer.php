@@ -205,7 +205,7 @@ final class ClassRenamer
             return;
         }
 
-        if ($uses->alias !== null) {
+        if ($uses->alias instanceof Identifier) {
             return;
         }
 

@@ -53,7 +53,7 @@ final class ArrayManipulator
     public function addItemToArrayUnderKey(Array_ $array, ArrayItem $newArrayItem, string $key): void
     {
         foreach ($array->items as $item) {
-            if ($item === null) {
+            if (!$item instanceof ArrayItem) {
                 continue;
             }
 
@@ -76,7 +76,7 @@ final class ArrayManipulator
     public function findItemInInArrayByKeyAndUnset(Array_ $array, string $keyName): ?ArrayItem
     {
         foreach ($array->items as $i => $item) {
-            if ($item === null) {
+            if (!$item instanceof ArrayItem) {
                 continue;
             }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\For_;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
@@ -113,7 +114,7 @@ CODE_SAMPLE
             return;
         }
 
-        if ($if->else !== null) {
+        if ($if->else instanceof Else_) {
             $if->cond = $this->conditionInverter->createInvertedCondition($if->cond);
             $if->stmts = $if->else->stmts;
             $if->else = null;

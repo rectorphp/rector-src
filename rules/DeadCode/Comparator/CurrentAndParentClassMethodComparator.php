@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Comparator;
 
+use PHPStan\Type\Type;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
@@ -163,7 +164,7 @@ final class CurrentAndParentClassMethodComparator
 
         foreach ($parametersAcceptorWithPhpDocs->getParameters() as $key => $parameterReflectionWithPhpDoc) {
             if (! isset($classMethod->params[$key])) {
-                if ($parameterReflectionWithPhpDoc->getDefaultValue() !== null) {
+                if ($parameterReflectionWithPhpDoc->getDefaultValue() instanceof Type) {
                     continue;
                 }
 

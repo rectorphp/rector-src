@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -89,7 +90,7 @@ final class PhpDocTypeChanger
         );
 
         $currentVarTagValueNode = $phpDocInfo->getVarTagValueNode();
-        if ($currentVarTagValueNode !== null) {
+        if ($currentVarTagValueNode instanceof VarTagValueNode) {
             // only change type
             $currentVarTagValueNode->type = $newPHPStanPhpDocType;
             $phpDocInfo->markAsChanged();
@@ -125,7 +126,7 @@ final class PhpDocTypeChanger
 
         $currentReturnTagValueNode = $phpDocInfo->getReturnTagValue();
 
-        if ($currentReturnTagValueNode !== null) {
+        if ($currentReturnTagValueNode instanceof ReturnTagValueNode) {
             // only change type
             $currentReturnTagValueNode->type = $newPHPStanPhpDocType;
             $phpDocInfo->markAsChanged();
@@ -153,7 +154,7 @@ final class PhpDocTypeChanger
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
         // override existing type
-        if ($paramTagValueNode !== null) {
+        if ($paramTagValueNode instanceof ParamTagValueNode) {
             // already set
             $currentType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
                 $paramTagValueNode->type,

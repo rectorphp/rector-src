@@ -89,7 +89,7 @@ CODE_SAMPLE
             }
 
             foreach ($nestedArrayItem->items as $nestedArrayItemItem) {
-                if ($nestedArrayItemItem === null) {
+                if (!$nestedArrayItemItem instanceof ArrayItem) {
                     continue;
                 }
 

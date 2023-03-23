@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeManipulator;
 
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
@@ -46,7 +47,7 @@ final class ControllerClassMethodManipulator
 
     private function hasParentClassController(Class_ $class): bool
     {
-        if ($class->extends === null) {
+        if (!$class->extends instanceof Name) {
             return false;
         }
 

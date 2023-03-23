@@ -94,7 +94,7 @@ CODE_SAMPLE
             }
 
             // skip explicit assigns
-            if ($parentNode->dim !== null) {
+            if ($parentNode->dim instanceof Expr) {
                 continue;
             }
 

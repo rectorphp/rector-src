@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\ClassMethod;
 
+use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\StaticCall;
@@ -122,7 +123,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $classLike->extends === null;
+        return !$classLike->extends instanceof Name;
     }
 
     private function isMethodReturnType(ClassMethod $classMethod, string $type): bool

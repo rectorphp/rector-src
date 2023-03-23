@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\Identifier;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
@@ -46,7 +47,7 @@ final class AliasUsesResolver
             UseUse $useUse,
             string $name
         ) use (&$aliasedUses): void {
-            if ($useUse->alias === null) {
+            if (!$useUse->alias instanceof Identifier) {
                 return;
             }
 

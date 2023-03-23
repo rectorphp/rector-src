@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Foreach_;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -92,7 +93,7 @@ CODE_SAMPLE
         $condExpr = $ifNode->cond;
 
         $foreachKeyVar = $node->keyVar;
-        if ($foreachKeyVar !== null && $this->shouldSkipForeachKeyUsage($ifNode, $foreachKeyVar)) {
+        if ($foreachKeyVar instanceof Expr && $this->shouldSkipForeachKeyUsage($ifNode, $foreachKeyVar)) {
             return null;
         }
 
@@ -123,7 +124,7 @@ CODE_SAMPLE
         /** @var If_ $ifNode */
         $ifNode = $foreach->stmts[0];
 
-        if ($ifNode->else !== null) {
+        if ($ifNode->else instanceof Else_) {
             return true;
         }
 

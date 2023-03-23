@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\AlreadyAssignDetector;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 
@@ -16,6 +17,6 @@ final class PropertyDefaultAssignDetector
             return false;
         }
 
-        return $property->props[0]->default !== null;
+        return $property->props[0]->default instanceof Expr;
     }
 }

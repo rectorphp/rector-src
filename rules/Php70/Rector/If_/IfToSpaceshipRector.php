@@ -163,7 +163,7 @@ CODE_SAMPLE
     {
         $this->matchOnEqual($if);
 
-        if ($if->else !== null) {
+        if ($if->else instanceof Else_) {
             $this->processElse($if->else);
         } else {
             $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
@@ -199,7 +199,7 @@ CODE_SAMPLE
         $onlyIfStmt = $if->stmts[0];
 
         if ($onlyIfStmt instanceof Return_) {
-            if ($onlyIfStmt->expr === null) {
+            if (!$onlyIfStmt->expr instanceof Expr) {
                 return;
             }
 
@@ -237,7 +237,7 @@ CODE_SAMPLE
             $this->firstValue = $ternary->cond->left;
             $this->secondValue = $ternary->cond->right;
 
-            if ($ternary->if !== null) {
+            if ($ternary->if instanceof Expr) {
                 $this->onSmaller = $this->valueResolver->getValue($ternary->if);
             }
 
@@ -247,7 +247,7 @@ CODE_SAMPLE
             $this->firstValue = $ternary->cond->right;
             $this->secondValue = $ternary->cond->left;
 
-            if ($ternary->if !== null) {
+            if ($ternary->if instanceof Expr) {
                 $this->onGreater = $this->valueResolver->getValue($ternary->if);
             }
 

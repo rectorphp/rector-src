@@ -82,7 +82,7 @@ CODE_SAMPLE
         }
 
         // skip non-short ternary
-        if ($node->if !== null) {
+        if ($node->if instanceof Expr) {
             return null;
         }
 

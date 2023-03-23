@@ -32,7 +32,7 @@ final class NullableInverse
 {
     public function run(?PhpDocInfo $phpDocInfo)
     {
-        if ($phpDocInfo instanceof PhpDocInfo) {
+        if ($phpDocInfo instanceof \Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo) {
             return $phpDocInfo->getNode();
         }
 

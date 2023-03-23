@@ -301,7 +301,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pExpr_Yield(Yield_ $yield): string
     {
-        if ($yield->value === null) {
+        if (!$yield->value instanceof Expr) {
             return 'yield';
         }
 
@@ -312,7 +312,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return sprintf(
             '%syield %s%s%s',
             $shouldAddBrackets ? '(' : '',
-            $yield->key !== null ? $this->p($yield->key) . ' => ' : '',
+            $yield->key instanceof Expr ? $this->p($yield->key) . ' => ' : '',
             $this->p($yield->value),
             $shouldAddBrackets ? ')' : ''
         );

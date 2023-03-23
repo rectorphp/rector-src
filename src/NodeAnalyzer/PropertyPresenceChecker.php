@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
+use PHPStan\Type\Type;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
@@ -98,7 +99,7 @@ final class PropertyPresenceChecker
         PropertyMetadata $propertyMetadata,
         PhpPropertyReflection $phpPropertyReflection
     ): Property | Param | null {
-        if ($propertyMetadata->getType() === null) {
+        if (!$propertyMetadata->getType() instanceof Type) {
             return null;
         }
 

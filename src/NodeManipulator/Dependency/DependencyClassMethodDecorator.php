@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator\Dependency;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -74,7 +75,7 @@ final class DependencyClassMethodDecorator
     ): void {
         $paramsWithoutDefaultValue = [];
         foreach ($parentClassMethod->params as $param) {
-            if ($param->default !== null) {
+            if ($param->default instanceof Expr) {
                 break;
             }
 
@@ -197,11 +198,11 @@ final class DependencyClassMethodDecorator
 
     private function areMaybeTypesEqual(?Type $type1, ?Type $type2): bool
     {
-        if ($type1 === null) {
-            return $type2 === null;
+        if (!$type1 instanceof Type) {
+            return !$type2 instanceof Type;
         }
 
-        if ($type2 === null) {
+        if (!$type2 instanceof Type) {
             // Type 1 is already not null
             return false;
         }

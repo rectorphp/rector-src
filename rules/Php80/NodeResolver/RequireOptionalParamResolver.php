@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeResolver;
 
+use PHPStan\Type\Type;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 
@@ -18,7 +19,7 @@ final class RequireOptionalParamResolver
         $requireParams = [];
 
         foreach ($parametersAcceptor->getParameters() as $position => $parameterReflection) {
-            if ($parameterReflection->getDefaultValue() === null && ! $parameterReflection->isVariadic()) {
+            if (!$parameterReflection->getDefaultValue() instanceof Type && ! $parameterReflection->isVariadic()) {
                 $requireParams[$position] = $parameterReflection;
             } else {
                 $optionalParams[$position] = $parameterReflection;

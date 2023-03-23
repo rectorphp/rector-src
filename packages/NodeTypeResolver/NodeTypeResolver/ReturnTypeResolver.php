@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\Type;
@@ -38,7 +39,7 @@ final class ReturnTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        if ($node->expr === null) {
+        if (!$node->expr instanceof Expr) {
             return new VoidType();
         }
 

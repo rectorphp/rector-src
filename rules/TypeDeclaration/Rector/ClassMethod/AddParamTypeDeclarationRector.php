@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -135,7 +136,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            return $classLike->extends === null;
+            return !$classLike->extends instanceof Name;
         }
 
         // skip interface without parents

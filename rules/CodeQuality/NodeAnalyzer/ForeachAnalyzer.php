@@ -54,7 +54,7 @@ final class ForeachAnalyzer
             return null;
         }
 
-        if ($onlyStatement->var->dim !== null) {
+        if ($onlyStatement->var->dim instanceof Expr) {
             return null;
         }
 

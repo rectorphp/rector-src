@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Property;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -73,7 +74,7 @@ CODE_SAMPLE
         }
 
         $onlyProperty = $node->props[0];
-        if ($onlyProperty->default !== null) {
+        if ($onlyProperty->default instanceof Expr) {
             return null;
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\FuncCall;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -166,7 +167,7 @@ CODE_SAMPLE
             $this->tokenManipulator->removeIsArray([$node], $singleToken);
 
             // drop if "If_" node not needed
-            if ($node instanceof If_ && $node->else !== null) {
+            if ($node instanceof If_ && $node->else instanceof Else_) {
                 if (! $this->nodeComparator->areNodesEqual($node->stmts, $node->else->stmts)) {
                     return null;
                 }

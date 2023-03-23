@@ -246,7 +246,7 @@ CODE_SAMPLE
     private function refactorReflectionFunctionGetReturnType(MethodCall $methodCall): Node | Ternary
     {
         $refactoredMethodCall = $this->refactorIfHasReturnTypeWasCalled($methodCall);
-        if ($refactoredMethodCall !== null) {
+        if ($refactoredMethodCall instanceof Node) {
             return $refactoredMethodCall;
         }
 

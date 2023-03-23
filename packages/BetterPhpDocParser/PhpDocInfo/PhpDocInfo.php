@@ -235,7 +235,7 @@ final class PhpDocInfo
      */
     public function hasByAnnotationClasses(array $annotationsClasses): bool
     {
-        return $this->getByAnnotationClasses($annotationsClasses) !== null;
+        return $this->getByAnnotationClasses($annotationsClasses) instanceof DoctrineAnnotationTagValueNode;
     }
 
     /**
@@ -397,7 +397,7 @@ final class PhpDocInfo
         $this->hasChanged = true;
 
         $node = $this->currentNodeProvider->getNode();
-        if ($node !== null) {
+        if ($node instanceof \PhpParser\Node) {
             $this->rectorChangeCollector->notifyNodeFileInfo($node);
         }
     }
@@ -471,7 +471,7 @@ final class PhpDocInfo
 
     private function getTypeOrMixed(?PhpDocTagValueNode $phpDocTagValueNode): MixedType | Type
     {
-        if ($phpDocTagValueNode === null) {
+        if (!$phpDocTagValueNode instanceof PhpDocTagValueNode) {
             return new MixedType();
         }
 

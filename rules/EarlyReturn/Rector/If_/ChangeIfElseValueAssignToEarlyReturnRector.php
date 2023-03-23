@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\EarlyReturn\Rector\If_;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt;
@@ -86,7 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($nextNode->expr === null) {
+        if (!$nextNode->expr instanceof Expr) {
             return null;
         }
 

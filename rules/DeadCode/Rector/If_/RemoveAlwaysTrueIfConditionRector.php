@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\If_;
 
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -78,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): If_|null|array
     {
-        if ($node->else !== null) {
+        if ($node->else instanceof Else_) {
             return null;
         }
 
