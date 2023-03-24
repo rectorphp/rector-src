@@ -100,6 +100,7 @@ return static function (RectorConfig $rectorConfig): void {
             // used in PHPStan
             __DIR__ . '/../packages/NodeTypeResolver/Reflection/BetterReflection/RectorBetterReflectionSourceLocatorFactory.php',
             __DIR__ . '/../packages/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php',
+            __DIR__ . '/../packages/ChangesReporting/Output/Gitlab/CodeQuality/',
         ]);
 
     // psr-4

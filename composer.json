@@ -40,6 +40,7 @@
         "symplify/easy-parallel": "^11.1",
         "symplify/rule-doc-generator-contracts": "^11.1",
         "tracy/tracy": "^2.9",
+        "violet/streaming-json-encoder": "*",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
