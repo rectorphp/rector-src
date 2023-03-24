@@ -1,11 +1,11 @@
 <?php
 
+namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity]
-namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
-
 class Carrier
 {
     #[ORM\Id]
@@ -23,12 +23,12 @@ class Carrier
 -----
 <?php
 
+namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity]
-namespace Rector\Tests\Php81\Rector\ClassMethod\NewInInitializerRector\Fixture;
-
 class Carrier
 {
     public function __construct(
