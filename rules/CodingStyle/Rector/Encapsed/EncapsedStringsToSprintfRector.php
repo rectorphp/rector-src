@@ -157,12 +157,17 @@ CODE_SAMPLE
 
     /**
      * @param Expr[] $argumentVariables
-     * @return Concat|FuncCall|null
      */
-    private function createSprintfFuncCallOrConcat(string $mask, array $argumentVariables): ?Node
+    private function createSprintfFuncCallOrConcat(string $mask, array $argumentVariables): Concat|FuncCall|Expr|null
     {
-        if ($mask === '%s%s' && count($argumentVariables) === 2) {
-            return new Concat($argumentVariables[0], $argumentVariables[1]);
+        $bareMask = str_repeat('%s', count($argumentVariables));
+
+        if ($mask === $bareMask) {
+            if (count($argumentVariables) === 1) {
+                return $argumentVariables[0];
+            }
+
+            return $this->nodeFactory->createConcat($argumentVariables);
         }
 
         // checks for windows or linux line ending. \n is contained in both.

@@ -26,7 +26,7 @@ class Fixture
         $lorem = new \DateTime();
         $ipsum = "";
 
-        echo sprintf('%s', $ipsum);
+        echo $ipsum;
     }
 }
 
