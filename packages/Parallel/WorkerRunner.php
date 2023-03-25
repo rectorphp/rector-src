@@ -90,20 +90,6 @@ final class WorkerRunner
                     $this->currentFileProvider->setFile($file);
 
                     $errorAndFileDiffs = $this->processFiles($file, $configuration, $errorAndFileDiffs);
-
-                    // warn about deprecated @noRector annotation
-                    if (! str_ends_with($file->getFilePath(), 'WorkerRunner.php')
-                        && (
-                            str_contains($file->getFileContent(), ' @noRector ') ||
-                            str_contains($file->getFileContent(), ' @norector ')
-                        )
-                    ) {
-                        $systemErrors[] = new SystemError(
-                            'The @noRector annotation was deprecated and removed due to hiding fixed errors. Use more precise $rectorConfig->skip() method in the rector.php config.',
-                            $file->getFilePath()
-                        );
-                        continue;
-                    }
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
                     $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
