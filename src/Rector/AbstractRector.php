@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
@@ -239,7 +238,7 @@ CODE_SAMPLE;
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
-            $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+            $this->updateParentNodes($refactoredNode, $parentNode);
             $this->connectNodes($refactoredNode, $node);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
@@ -253,7 +252,7 @@ CODE_SAMPLE;
             ? new Expression($refactoredNode)
             : $refactoredNode;
 
-        $this->updateAndconnectParentNodes($refactoredNode, $parentNode);
+        $this->updateParentNodes($refactoredNode, $parentNode);
         $this->connectNodes([$refactoredNode], $node);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
@@ -397,7 +396,7 @@ CODE_SAMPLE;
     /**
      * @param Node[]|Node $node
      */
-    private function updateAndconnectParentNodes(array | Node $node, ?Node $parentNode): void
+    private function updateParentNodes(array | Node $node, ?Node $parentNode): void
     {
         if (! $parentNode instanceof Node) {
             return;
@@ -406,13 +405,9 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            // update parents relations - must run before addVisitor(new ParentConnectingVisitor())
+            // update parents relations
             $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
         }
-
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new ParentConnectingVisitor());
-        $nodeTraverser->traverse($nodes);
     }
 
     /**
