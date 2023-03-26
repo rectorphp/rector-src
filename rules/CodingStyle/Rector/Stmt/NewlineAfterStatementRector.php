@@ -126,7 +126,7 @@ CODE_SAMPLE
 
         $totalKeys = array_key_last($node->stmts);
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
-            if (! isset($node->stmts[$key + 1])) {
+            if (! isset($node->stmts[$key], $node->stmts[$key + 1])) {
                 break;
             }
 
