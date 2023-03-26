@@ -145,13 +145,8 @@ final class ApplicationFileProcessor
     {
         $fileExtensions = $configuration->getFileExtensions();
         $fileWithExtensionsFilter = static function (string $filePath) use ($fileExtensions): bool {
-            foreach ($fileExtensions as $fileExtension) {
-                if (str_ends_with($filePath, '.' . $fileExtension)) {
-                    return true;
-                }
-            }
-
-            return false;
+            $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+            return in_array($filePathExtension, $fileExtensions, true);
         };
 
         $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
