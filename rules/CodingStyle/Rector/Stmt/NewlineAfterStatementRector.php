@@ -154,6 +154,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($this->isRemoved($nextStmt, $stmt)) {
+                continue;
+            }
+
             array_splice($node->stmts, $key + 1, 0, [new Nop()]);
 
             $hasChanged = true;
@@ -203,16 +207,8 @@ CODE_SAMPLE
         return ! isset($comments[0]);
     }
 
-    private function shouldSkip(Stmt $nextStmt, Stmt $stmt): bool
+    private function isRemoved(Stmt $nextStmt, Stmt $stmt): bool
     {
-        if (! in_array($stmt::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
-            return true;
-        }
-
-        if (in_array($nextStmt::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true)) {
-            return true;
-        }
-
         if ($this->nodesToRemoveCollector->isNodeRemoved($stmt)) {
             return true;
         }
@@ -221,5 +217,14 @@ CODE_SAMPLE
         $parentnextStmt = $nextStmt->getAttribute(AttributeKey::PARENT_NODE);
 
         return $parentnextStmt !== $parentCurrentNode;
+    }
+
+    private function shouldSkip(Stmt $nextStmt, Stmt $stmt): bool
+    {
+        if (! in_array($stmt::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
+            return true;
+        }
+
+        return in_array($nextStmt::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true);
     }
 }
