@@ -54,11 +54,6 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $currentStmt = current($file->getOldStmts());
-        if ($currentStmt instanceof InlineHTML) {
-            return null;
-        }
-
         $currentStmt = current($file->getNewStmts());
         if ($currentStmt instanceof InlineHTML) {
             return null;

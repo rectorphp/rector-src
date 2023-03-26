@@ -37,7 +37,6 @@ namespace A
     {
     }
 }
-
 namespace B
 {
     interface E

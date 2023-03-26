@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
@@ -20,15 +21,16 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -50,13 +52,16 @@ final class NewlineAfterStatementRector extends AbstractRector
         While_::class,
         For_::class,
         ClassConst::class,
-        Namespace_::class,
         TryCatch::class,
         Class_::class,
         Trait_::class,
         Interface_::class,
         Switch_::class,
     ];
+
+    public function __construct(private readonly NodesToRemoveCollector $nodesToRemoveCollector)
+    {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -98,67 +103,75 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Stmt::class];
+        return [StmtsAwareInterface::class, ClassLike::class];
     }
 
     /**
-     * @param Stmt $node
-     * @return Stmt[]|null
+     * @param StmtsAwareInterface|ClassLike $node
      */
-    public function refactor(Node $node): ?array
+    public function refactor(Node $node): null|StmtsAwareInterface|ClassLike
     {
-        if (! in_array($node::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
-            return null;
-        }
+        return $this->processAddNewLine($node, false);
+    }
 
-        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Node) {
-            return null;
-        }
-
-        $parentCurrentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        $parentNextNode = $nextNode->getAttribute(AttributeKey::PARENT_NODE);
-
-        if ($parentNextNode !== $parentCurrentNode) {
-            return null;
-        }
-
-        if ($this->shouldSkip($nextNode)) {
-            return null;
-        }
-
-        $endLine = $node->getEndLine();
-        $line = $nextNode->getStartLine();
-        $rangeLine = $line - $endLine;
-
-        if ($rangeLine > 1) {
-            /** @var Comment[]|null $comments */
-            $comments = $nextNode->getAttribute(AttributeKey::COMMENTS);
-
-            if ($this->hasNoComment($comments)) {
-                return null;
+    private function processAddNewLine(
+        StmtsAwareInterface|ClassLike $node,
+        bool $hasChanged
+    ): null|StmtsAwareInterface|ClassLike {
+        foreach ((array) $node->stmts as $key => $stmt) {
+            if (! isset($node->stmts[$key + 1])) {
+                break;
             }
 
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nextNode);
-            if ($phpDocInfo->hasChanged()) {
-                return null;
+            $nextStmt = $node->stmts[$key + 1];
+            if ($this->shouldSkip($nextStmt, $stmt)) {
+                continue;
             }
 
-            /** @var Comment[] $comments */
-            $line = $comments[0]->getStartLine();
+            $endLine = $stmt->getEndLine();
+            $line = $nextStmt->getStartLine();
             $rangeLine = $line - $endLine;
 
             if ($rangeLine > 1) {
-                return null;
+                $rangeLine = $this->resolveRangeLineFromComment($rangeLine, $line, $endLine, $nextStmt);
             }
+
+            // skip same line or < 0 that cause infinite loop or crash
+            if ($rangeLine <= 0 || $rangeLine > 1) {
+                continue;
+            }
+
+            array_splice($node->stmts, $key + 1, 0, [new Nop()]);
+
+            $hasChanged = true;
+
+            return $this->processAddNewLine($node, $hasChanged);
         }
 
-        // skip same line or < 0 that cause infinite loop or crash
-        if ($rangeLine <= 0) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        return [$node, new Nop()];
+        return null;
+    }
+
+    private function resolveRangeLineFromComment(int $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
+    {
+        /** @var Comment[]|null $comments */
+        $comments = $nextStmt->getAttribute(AttributeKey::COMMENTS);
+
+        if ($this->hasNoComment($comments)) {
+            return $rangeLine;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nextStmt);
+        if ($phpDocInfo->hasChanged()) {
+            return $rangeLine;
+        }
+
+        /** @var Comment[] $comments */
+        $line = $comments[0]->getStartLine();
+        return $line - $endLine;
     }
 
     /**
@@ -173,12 +186,23 @@ CODE_SAMPLE
         return ! isset($comments[0]);
     }
 
-    private function shouldSkip(?Node $nextNode): bool
+    private function shouldSkip(Stmt $nextStmt, Stmt $stmt): bool
     {
-        if (! $nextNode instanceof Stmt) {
+        if (! in_array($stmt::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
             return true;
         }
 
-        return in_array($nextNode::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true);
+        if (in_array($nextStmt::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true)) {
+            return true;
+        }
+
+        if ($this->nodesToRemoveCollector->isNodeRemoved($stmt)) {
+            return true;
+        }
+
+        $parentCurrentNode = $stmt->getAttribute(AttributeKey::PARENT_NODE);
+        $parentnextStmt = $nextStmt->getAttribute(AttributeKey::PARENT_NODE);
+
+        return $parentnextStmt !== $parentCurrentNode;
     }
 }
