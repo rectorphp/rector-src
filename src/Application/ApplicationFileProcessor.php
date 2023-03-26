@@ -144,7 +144,7 @@ final class ApplicationFileProcessor
     public function configurePHPStanNodeScopeResolver(array $filePaths, Configuration $configuration): void
     {
         $fileExtensions = $configuration->getFileExtensions();
-        $phpFilter = static function (string $filePath) use ($fileExtensions): bool {
+        $fileWithExtensionsFilter = static function (string $filePath) use ($fileExtensions): bool {
             foreach ($fileExtensions as $fileExtension) {
                 if (str_ends_with($filePath, '.' . $fileExtension)) {
                     return true;
@@ -154,7 +154,7 @@ final class ApplicationFileProcessor
             return false;
         };
 
-        $phpFilePaths = array_filter($filePaths, $phpFilter);
+        $phpFilePaths = array_filter($filePaths, $fileWithExtensionsFilter);
         $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
     }
 
