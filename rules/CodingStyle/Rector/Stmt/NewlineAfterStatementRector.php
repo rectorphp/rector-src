@@ -59,8 +59,9 @@ final class NewlineAfterStatementRector extends AbstractRector
         Switch_::class,
     ];
 
-    public function __construct(private readonly NodesToRemoveCollector $nodesToRemoveCollector)
-    {
+    public function __construct(
+        private readonly NodesToRemoveCollector $nodesToRemoveCollector
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -118,7 +119,11 @@ CODE_SAMPLE
         StmtsAwareInterface|ClassLike $node,
         bool $hasChanged
     ): null|StmtsAwareInterface|ClassLike {
-        foreach ((array) $node->stmts as $key => $stmt) {
+        if ($node->stmts === null) {
+            return null;
+        }
+
+        foreach ($node->stmts as $key => $stmt) {
             if (! isset($node->stmts[$key + 1])) {
                 break;
             }
@@ -159,7 +164,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveRangeLineFromComment(int|float $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
+    private function resolveRangeLineFromComment(int $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
     {
         /** @var Comment[]|null $comments */
         $comments = $nextStmt->getAttribute(AttributeKey::COMMENTS);
