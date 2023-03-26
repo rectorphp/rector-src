@@ -82,7 +82,7 @@ final class WorkerRunner
             $systemErrors = [];
 
             // 1. allow PHPStan to work with static reflection on provided files
-            $this->applicationFileProcessor->configurePHPStanNodeScopeResolver($filePaths);
+            $this->applicationFileProcessor->configurePHPStanNodeScopeResolver($filePaths, $configuration);
 
             foreach ($filePaths as $filePath) {
                 try {
