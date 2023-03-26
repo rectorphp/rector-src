@@ -154,8 +154,8 @@ final class ApplicationFileProcessor
             return false;
         };
 
-        $phpFilePaths = array_filter($filePaths, $fileWithExtensionsFilter);
-        $this->nodeScopeResolver->setAnalysedFiles($phpFilePaths);
+        $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
+        $this->nodeScopeResolver->setAnalysedFiles($filePaths);
     }
 
     /**
