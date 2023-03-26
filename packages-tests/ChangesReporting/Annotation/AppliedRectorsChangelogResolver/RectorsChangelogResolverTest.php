@@ -34,7 +34,7 @@ final class RectorsChangelogResolverTest extends AbstractTestCase
         $rectorsChangelogs = $this->rectorsChangelogResolver->resolve($this->fileDiff->getRectorClasses());
 
         $expectedRectorsChangelogs = [
-            RectorWithChangelog::class => 'https://github.com/rectorphp/rector/blob/master/docs/rector_rules_overview.md',
+            RectorWithChangelog::class => 'https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md',
         ];
         $this->assertSame($expectedRectorsChangelogs, $rectorsChangelogs);
     }
