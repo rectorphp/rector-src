@@ -135,10 +135,12 @@ CODE_SAMPLE
             if ($rangeLine > 1) {
                 $rangeLine = $this->resolveRangeLineFromComment($rangeLine, $line, $endLine, $nextStmt);
             }
+
             // skip same line or < 0 that cause infinite loop or crash
             if ($rangeLine <= 0) {
                 continue;
             }
+
             if ($rangeLine > 1) {
                 continue;
             }
