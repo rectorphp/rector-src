@@ -164,7 +164,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveRangeLineFromComment(int $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
+    private function resolveRangeLineFromComment(int|float $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
     {
         /** @var Comment[]|null $comments */
         $comments = $nextStmt->getAttribute(AttributeKey::COMMENTS);
