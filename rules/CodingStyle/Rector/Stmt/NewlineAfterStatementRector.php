@@ -117,18 +117,22 @@ CODE_SAMPLE
 
     private function processAddNewLine(
         StmtsAwareInterface|ClassLike $node,
-        bool $hasChanged
+        bool $hasChanged,
+        int $jumpToKey = 0
     ): null|StmtsAwareInterface|ClassLike {
         if ($node->stmts === null) {
             return null;
         }
 
-        foreach ($node->stmts as $key => $stmt) {
+        $totalKeys = array_key_last($node->stmts);
+        for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
             if (! isset($node->stmts[$key + 1])) {
                 break;
             }
 
+            $stmt = $node->stmts[$key];
             $nextStmt = $node->stmts[$key + 1];
+
             if ($this->shouldSkip($nextStmt, $stmt)) {
                 continue;
             }
@@ -154,7 +158,7 @@ CODE_SAMPLE
 
             $hasChanged = true;
 
-            return $this->processAddNewLine($node, $hasChanged);
+            return $this->processAddNewLine($node, $hasChanged, $key + 2);
         }
 
         if ($hasChanged) {
@@ -164,8 +168,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveRangeLineFromComment(int|float $rangeLine, int $line, int $endLine, Stmt $nextStmt): int|float
-    {
+    private function resolveRangeLineFromComment(
+        int|float $rangeLine,
+        int $line,
+        int $endLine,
+        Stmt $nextStmt
+    ): int|float {
         /** @var Comment[]|null $comments */
         $comments = $nextStmt->getAttribute(AttributeKey::COMMENTS);
 
