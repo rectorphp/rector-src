@@ -135,9 +135,11 @@ CODE_SAMPLE
             if ($rangeLine > 1) {
                 $rangeLine = $this->resolveRangeLineFromComment($rangeLine, $line, $endLine, $nextStmt);
             }
-
             // skip same line or < 0 that cause infinite loop or crash
-            if ($rangeLine <= 0 || $rangeLine > 1) {
+            if ($rangeLine <= 0) {
+                continue;
+            }
+            if ($rangeLine > 1) {
                 continue;
             }
 
@@ -155,7 +157,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveRangeLineFromComment(int $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
+    private function resolveRangeLineFromComment(int|float $rangeLine, int $line, int $endLine, Stmt $nextStmt): int
     {
         /** @var Comment[]|null $comments */
         $comments = $nextStmt->getAttribute(AttributeKey::COMMENTS);
