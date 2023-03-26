@@ -8,7 +8,7 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://github.com/rectorphp/rector/blob/master/docs/rector_rules_overview.md
+ * @changelog https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md
  */
 final class RectorWithChangelog implements RectorInterface
 {

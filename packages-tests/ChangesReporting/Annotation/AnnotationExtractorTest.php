@@ -36,7 +36,7 @@ final class AnnotationExtractorTest extends TestCase
         yield 'Class with changelog annotation' => [
             RectorWithChangelog::class,
             '@changelog',
-            'https://github.com/rectorphp/rector/blob/master/docs/rector_rules_overview.md',
+            'https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md',
         ];
 
         yield 'Class without changelog annotation' => [RectorWithOutChangelog::class, '@changelog', null];
