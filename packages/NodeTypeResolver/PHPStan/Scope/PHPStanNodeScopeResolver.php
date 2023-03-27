@@ -46,6 +46,7 @@ use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\NodeTraverser\CleanVisitorNodeTraverser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -73,7 +74,8 @@ final class PHPStanNodeScopeResolver
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser
     ) {
     }
 
@@ -376,9 +378,8 @@ final class PHPStanNodeScopeResolver
      */
     private function removeDeepChainMethodCallNodes(array $nodes): void
     {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor($this->removeDeepChainMethodCallNodeVisitor);
-        $nodeTraverser->traverse($nodes);
+        $this->cleanVisitorNodeTraverser->addVisitor($this->removeDeepChainMethodCallNodeVisitor);
+        $this->cleanVisitorNodeTraverser->traverse($nodes);
     }
 
     private function resolveClassOrInterfaceScope(

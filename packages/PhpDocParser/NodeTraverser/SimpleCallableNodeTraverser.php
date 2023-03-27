@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\PhpDocParser\NodeTraverser;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
+use Rector\Core\PhpParser\NodeTraverser\CleanVisitorNodeTraverser;
 use Rector\PhpDocParser\NodeVisitor\CallableNodeVisitor;
 
 /**
@@ -13,6 +13,10 @@ use Rector\PhpDocParser\NodeVisitor\CallableNodeVisitor;
  */
 final class SimpleCallableNodeTraverser
 {
+    public function __construct(private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser)
+    {
+    }
+
     /**
      * @param callable(Node $node): (int|Node|null) $callable
      * @param Node|Node[]|null $node
@@ -27,11 +31,10 @@ final class SimpleCallableNodeTraverser
             return;
         }
 
-        $nodeTraverser = new NodeTraverser();
         $callableNodeVisitor = new CallableNodeVisitor($callable);
-        $nodeTraverser->addVisitor($callableNodeVisitor);
+        $this->cleanVisitorNodeTraverser->addVisitor($callableNodeVisitor);
 
         $nodes = $node instanceof Node ? [$node] : $node;
-        $nodeTraverser->traverse($nodes);
+        $this->cleanVisitorNodeTraverser->traverse($nodes);
     }
 }

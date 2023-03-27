@@ -10,12 +10,13 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Rector\Core\PhpParser\NodeTraverser\CleanVisitorNodeTraverser;
 
 final class SimplePhpParser
 {
     private readonly Parser $phpParser;
 
-    public function __construct()
+    public function __construct(private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser)
     {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
@@ -41,9 +42,7 @@ final class SimplePhpParser
             return [];
         }
 
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new NodeConnectingVisitor());
-
-        return $nodeTraverser->traverse($stmts);
+        $this->cleanVisitorNodeTraverser->addVisitor(new NodeConnectingVisitor());
+        return $this->cleanVisitorNodeTraverser->traverse($stmts);
     }
 }
