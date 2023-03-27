@@ -65,7 +65,8 @@ final class InlineCodeParser
     public function __construct(
         private readonly NodePrinterInterface $nodePrinter,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private readonly ValueResolver $valueResolver
+        private readonly SimplePhpParser $simplePhpParser,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -83,7 +84,7 @@ final class InlineCodeParser
         $content = StringUtils::isMatch($content, self::OPEN_PHP_TAG_REGEX) ? $content : '<?php ' . $content;
         $content = StringUtils::isMatch($content, self::ENDING_SEMI_COLON_REGEX) ? $content : $content . ';';
 
-        return $this->nodeScopeAndMetadataDecorator->decorateStmtsFromString($content);
+        return $this->simplePhpParser->parseString($content);
     }
 
     public function stringify(Expr $expr): string

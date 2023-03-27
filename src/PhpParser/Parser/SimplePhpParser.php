@@ -6,7 +6,6 @@ namespace Rector\Core\PhpParser\Parser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
