@@ -68,10 +68,6 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($node);
-        if ($classReflection->isAnonymous()) {
-            return null;
-        }
-
         if (! $node->isFinal()) {
             return null;
         }
