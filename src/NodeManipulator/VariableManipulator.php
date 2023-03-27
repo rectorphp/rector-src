@@ -18,6 +18,8 @@ use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -179,21 +181,34 @@ final class VariableManipulator
      */
     private function collectVariableUsages(ClassMethod $classMethod, Variable $variable, Assign $assign): array
     {
-        return $this->betterNodeFinder->find((array) $classMethod->getStmts(), function (Node $node) use (
-            $variable,
-            $assign
-        ): bool {
-            if (! $node instanceof Variable) {
-                return false;
-            }
+        /** @var Variable[] $variables */
+        $variables = [];
 
-            // skip initialization
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode === $assign) {
-                return false;
-            }
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $classMethod->getStmts(),
+            function (Node $node) use ($variable, $assign, &$variables): ?int {
+                // skip anonymous classes and inner function
+                if ($node instanceof Class_ || $node instanceof Function_) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-            return $this->nodeComparator->areNodesEqual($node, $variable);
-        });
+                // skip initialization
+                if ($node === $assign) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $node instanceof Variable) {
+                    return null;
+                }
+
+                if ($this->nodeComparator->areNodesEqual($node, $variable)) {
+                    $variables[] = $node;
+                }
+
+                return null;
+            }
+        );
+
+        return $variables;
     }
 }
