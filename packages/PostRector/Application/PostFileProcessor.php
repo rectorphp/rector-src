@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\PostRector\Application;
 
 use PhpParser\Node\Stmt;
-use PhpParser\NodeTraverser;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\PhpParser\NodeTraverser\CleanVisitorNodeTraverser;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
@@ -28,6 +28,7 @@ final class PostFileProcessor
         private readonly Skipper $skipper,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly CurrentRectorProvider $currentRectorProvider,
+        private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser,
         array $postRectors
     ) {
         $this->postRectors = $this->sortByPriority($postRectors);
@@ -46,9 +47,8 @@ final class PostFileProcessor
 
             $this->currentRectorProvider->changeCurrentRector($postRector);
 
-            $nodeTraverser = new NodeTraverser();
-            $nodeTraverser->addVisitor($postRector);
-            $stmts = $nodeTraverser->traverse($stmts);
+            $this->cleanVisitorNodeTraverser->addVisitor($postRector);
+            $stmts = $this->cleanVisitorNodeTraverser->traverse($stmts);
         }
 
         return $stmts;
