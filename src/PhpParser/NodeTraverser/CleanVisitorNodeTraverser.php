@@ -11,7 +11,6 @@ final class CleanVisitorNodeTraverser extends NodeTraverser
 {
     public function addVisitor(NodeVisitor $nodeVisitor): void
     {
-        $this->visitors = [];
-        $this->visitors[] = $nodeVisitor;
+        $this->visitors = [$nodeVisitor];
     }
 }
