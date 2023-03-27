@@ -66,7 +66,7 @@ final class InlineCodeParser
         private readonly NodePrinterInterface $nodePrinter,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly SimplePhpParser $simplePhpParser,
-        private readonly ValueResolver $valueResolver,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
