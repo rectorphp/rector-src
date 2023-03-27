@@ -9,6 +9,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use Rector\Core\PhpParser\NodeTraverser\CleanVisitorNodeTraverser;
+use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -20,7 +21,8 @@ final class NodeScopeAndMetadataDecorator
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly NodeConnectingVisitor $nodeConnectingVisitor,
         private readonly FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
-        private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser
+        private readonly CleanVisitorNodeTraverser $cleanVisitorNodeTraverser,
+        private readonly SimplePhpParser $simplePhpParser
     ) {
     }
 
@@ -44,11 +46,12 @@ final class NodeScopeAndMetadataDecorator
     }
 
     /**
-     * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    public function decorateNodesFromStmts(array $stmts): array
+    public function decorateStmtsFromString(string $content): array
     {
+        $stmts = $this->simplePhpParser->parseString($content);
+
         $this->cleanVisitorNodeTraverser->addVisitor($this->nodeConnectingVisitor);
         return $this->cleanVisitorNodeTraverser->traverse($stmts);
     }
