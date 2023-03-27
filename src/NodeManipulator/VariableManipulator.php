@@ -198,7 +198,7 @@ final class VariableManipulator
                 if ($node instanceof Arg && $node->value instanceof Variable && ! $this->variableToConstantGuard->isReadArg(
                     $node
                 )) {
-                    $variables[] = $node;
+                    $variables = [$node];
                     return NodeTraverser::STOP_TRAVERSAL;
                 }
 
