@@ -118,6 +118,8 @@ CODE_SAMPLE;
 
     private CleanVisitorNodeTraverser $cleanVisitorNodeTraverser;
 
+    private NodeConnectingVisitor $nodeConnectingVisitor;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -141,7 +143,8 @@ CODE_SAMPLE;
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
         DocBlockUpdater $docBlockUpdater,
-        CleanVisitorNodeTraverser $cleanVisitorNodeTraverser
+        CleanVisitorNodeTraverser $cleanVisitorNodeTraverser,
+        NodeConnectingVisitor $nodeConnectingVisitor
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -165,6 +168,7 @@ CODE_SAMPLE;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
         $this->cleanVisitorNodeTraverser = $cleanVisitorNodeTraverser;
+        $this->nodeConnectingVisitor = $nodeConnectingVisitor;
     }
 
     /**
@@ -440,7 +444,7 @@ CODE_SAMPLE;
             $nodes = [...$nodes, $nextNode];
         }
 
-        $this->cleanVisitorNodeTraverser->addVisitor(new NodeConnectingVisitor());
+        $this->cleanVisitorNodeTraverser->addVisitor($this->nodeConnectingVisitor);
         $this->cleanVisitorNodeTraverser->traverse($nodes);
     }
 
