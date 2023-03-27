@@ -85,7 +85,7 @@ final class InlineCodeParser
         $content = StringUtils::isMatch($content, self::ENDING_SEMI_COLON_REGEX) ? $content : $content . ';';
 
         $stmts = $this->simplePhpParser->parseString($content);
-        return $this->nodeScopeAndMetadataDecorator->decorateStmtsFromString($stmts);
+        return $this->nodeScopeAndMetadataDecorator->decorateNodesFromStmts($stmts);
     }
 
     public function stringify(Expr $expr): string

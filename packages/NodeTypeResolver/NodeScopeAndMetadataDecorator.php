@@ -47,7 +47,7 @@ final class NodeScopeAndMetadataDecorator
      * @param Stmt[] $stmts
      * @return Stmt[]
      */
-    public function decorateStmtsFromString(array $stmts): array
+    public function decorateNodesFromStmts(array $stmts): array
     {
         $this->cleanVisitorNodeTraverser->addVisitor($this->nodeConnectingVisitor);
         return $this->cleanVisitorNodeTraverser->traverse($stmts);
