@@ -78,11 +78,11 @@ CODE_SAMPLE
 
             $expr = $this->ifManipulator->matchIfValueReturnValue($stmt);
             if (! $expr instanceof Expr) {
-                continue;
+                return null;
             }
 
             if (! $this->nodeComparator->areNodesEqual($expr, $nextNode->expr)) {
-                continue;
+                return null;
             }
 
             unset($node->stmts[$key]);
