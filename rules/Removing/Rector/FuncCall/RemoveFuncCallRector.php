@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Removing\ValueObject\RemoveFuncCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -19,7 +18,7 @@ use Webmozart\Assert\Assert;
 final class RemoveFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var RemoveFuncCall[]
+     * @var string[]
      */
     private array $removedFunctions = [];
 
@@ -36,7 +35,7 @@ CODE_SAMPLE
 $x = 'something';
 CODE_SAMPLE
                 ,
-                [new RemoveFuncCall('var_dump')]
+                ['var_dump']
             ),
         ]);
     }
@@ -55,7 +54,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         foreach ($this->removedFunctions as $removedFunction) {
-            if (! $this->isName($node->name, $removedFunction->getFunction())) {
+            if (! $this->isName($node->name, $removedFunction)) {
                 continue;
             }
 
@@ -72,7 +71,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, RemoveFuncCall::class);
+        Assert::allString($configuration);
         $this->removedFunctions = $configuration;
     }
 }
