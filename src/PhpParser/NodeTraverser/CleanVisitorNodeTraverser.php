@@ -9,9 +9,9 @@ use PhpParser\NodeVisitor;
 
 final class CleanVisitorNodeTraverser extends NodeTraverser
 {
-    public function addVisitor(NodeVisitor $visitor)
+    public function addVisitor(NodeVisitor $nodeVisitor): void
     {
         $this->visitors = [];
-        $this->visitors[] = $visitor;
+        $this->visitors[] = $nodeVisitor;
     }
 }
