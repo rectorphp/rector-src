@@ -24,7 +24,6 @@ use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\ReadWrite\Guard\VariableToConstantGuard;
 
@@ -161,8 +160,7 @@ final class VariableManipulator
         $variableUsages = $this->collectVariableUsages($classMethod, $assign->var, $assign);
 
         foreach ($variableUsages as $variableUsage) {
-            $parentNode = $variableUsage->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Arg && ! $this->variableToConstantGuard->isReadArg($parentNode)) {
+            if ($variableUsage instanceof Arg) {
                 return false;
             }
 
@@ -177,11 +175,11 @@ final class VariableManipulator
     }
 
     /**
-     * @return Variable[]
+     * @return Variable[]|Arg[]
      */
     private function collectVariableUsages(ClassMethod $classMethod, Variable $variable, Assign $assign): array
     {
-        /** @var Variable[] $variables */
+        /** @var Variable[]|Arg[] $variables */
         $variables = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
@@ -195,6 +193,13 @@ final class VariableManipulator
                 // skip initialization
                 if ($node === $assign) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($node instanceof Arg && $node->value instanceof Variable && ! $this->variableToConstantGuard->isReadArg(
+                    $node
+                )) {
+                    $variables[] = $node;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
                 if (! $node instanceof Variable) {
