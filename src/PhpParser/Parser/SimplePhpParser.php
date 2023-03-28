@@ -40,6 +40,6 @@ final class SimplePhpParser
             return [];
         }
 
-        $this->nodeConnectingTraverser->traverse($stmts);
+        return $this->nodeConnectingTraverser->traverse($stmts);
     }
 }
