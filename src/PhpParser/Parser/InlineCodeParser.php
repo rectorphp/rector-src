@@ -16,7 +16,6 @@ use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
 final class InlineCodeParser
 {
@@ -64,7 +63,6 @@ final class InlineCodeParser
 
     public function __construct(
         private readonly NodePrinterInterface $nodePrinter,
-        private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly ValueResolver $valueResolver
     ) {
