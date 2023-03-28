@@ -63,18 +63,22 @@ final class PHPStanNodeScopeResolver
      */
     private const CONTEXT = 'context';
 
+    private readonly NodeTraverser $nodeTraverser;
+
     public function __construct(
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly DependencyResolver $dependencyResolver,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly RemoveDeepChainMethodCallNodeVisitor $removeDeepChainMethodCallNodeVisitor,
+        private RemoveDeepChainMethodCallNodeVisitor $removeDeepChainMethodCallNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
+        $this->nodeTraverser = new NodeTraverser();
+        $this->nodeTraverser->addVisitor($removeDeepChainMethodCallNodeVisitor);
     }
 
     /**
@@ -94,7 +98,7 @@ final class PHPStanNodeScopeResolver
          */
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
-        $this->removeDeepChainMethodCallNodes($stmts);
+        $this->nodeTraverser->traverse($stmts);
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
@@ -369,16 +373,6 @@ final class PHPStanNodeScopeResolver
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 
         return $stmts;
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    private function removeDeepChainMethodCallNodes(array $nodes): void
-    {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor($this->removeDeepChainMethodCallNodeVisitor);
-        $nodeTraverser->traverse($nodes);
     }
 
     private function resolveClassOrInterfaceScope(
