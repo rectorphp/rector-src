@@ -14,12 +14,22 @@ use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 
 final class NodeScopeAndMetadataDecorator
 {
+    private NodeTraverser $nodeTraverser;
+
     public function __construct(
-        private readonly CloningVisitor $cloningVisitor,
+        private CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private readonly NodeConnectingVisitor $nodeConnectingVisitor,
-        private readonly FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
+        private NodeConnectingVisitor $nodeConnectingVisitor,
+        private FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
     ) {
+        $this->nodeTraverser = new NodeTraverser();
+
+        // needed also for format preserving printing
+        $this->nodeTraverser->addVisitor($cloningVisitor);
+
+        // this one has to be run again to re-connect nodes with new attributes
+        $this->nodeTraverser->addVisitor($nodeConnectingVisitor);
+        $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
     }
 
     /**
@@ -29,15 +39,6 @@ final class NodeScopeAndMetadataDecorator
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $file->getFilePath());
-
-        $nodeTraverser = new NodeTraverser();
-        // needed also for format preserving printing
-        $nodeTraverser->addVisitor($this->cloningVisitor);
-
-        // this one has to be run again to re-connect nodes with new attributes
-        $nodeTraverser->addVisitor($this->nodeConnectingVisitor);
-        $nodeTraverser->addVisitor($this->functionLikeParamArgPositionNodeVisitor);
-
-        return $nodeTraverser->traverse($stmts);
+        return $this->nodeTraverser->traverse($stmts);
     }
 }
