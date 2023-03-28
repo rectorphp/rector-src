@@ -14,13 +14,13 @@ use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 
 final class NodeScopeAndMetadataDecorator
 {
-    private NodeTraverser $nodeTraverser;
+    private readonly NodeTraverser $nodeTraverser;
 
     public function __construct(
-        private CloningVisitor $cloningVisitor,
+        CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private NodeConnectingVisitor $nodeConnectingVisitor,
-        private FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
+        NodeConnectingVisitor $nodeConnectingVisitor,
+        FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
