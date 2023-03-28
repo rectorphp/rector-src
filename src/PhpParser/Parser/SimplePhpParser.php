@@ -6,16 +6,15 @@ namespace Rector\Core\PhpParser\Parser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NodeConnectingVisitor;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
 
 final class SimplePhpParser
 {
     private readonly Parser $phpParser;
 
-    public function __construct()
+    public function __construct(private readonly NodeConnectingTraverser $nodeConnectingTraverser)
     {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
@@ -41,9 +40,6 @@ final class SimplePhpParser
             return [];
         }
 
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new NodeConnectingVisitor());
-
-        return $nodeTraverser->traverse($stmts);
+        return $this->nodeConnectingTraverser->traverse($stmts);
     }
 }
