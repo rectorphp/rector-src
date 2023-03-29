@@ -14,8 +14,9 @@ final class SimplePhpParser
 {
     private readonly Parser $phpParser;
 
-    public function __construct(private readonly NodeConnectingTraverser $nodeConnectingTraverser)
-    {
+    public function __construct(
+        private readonly NodeConnectingTraverser $nodeConnectingTraverser
+    ) {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
     }

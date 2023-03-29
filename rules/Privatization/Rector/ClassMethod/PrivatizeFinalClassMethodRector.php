@@ -70,10 +70,10 @@ CODE_SAMPLE
         if (! $node->isFinal()) {
             return null;
         }
-        
+
         $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($node);
         $hasChanged = false;
-        
+
         foreach ($node->getMethods() as $classMethod) {
             if ($this->shouldSkipClassMethod($classMethod)) {
                 continue;

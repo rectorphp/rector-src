@@ -75,6 +75,7 @@ use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
+use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
 use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
@@ -199,5 +200,6 @@ return static function (RectorConfig $rectorConfig): void {
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
+        SwitchTrueToIfRector::class,
     ]);
 };
