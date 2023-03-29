@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Switch_;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -64,12 +68,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Stmt\Switch_::class];
+        return [Switch_::class];
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\Switch_ $node
-     * @return Node\Stmt\If_[]
+     * @param Switch_ $node
+     * @return Stmt[]|null
      */
     public function refactor(Node $node): ?array
     {
@@ -77,22 +81,26 @@ CODE_SAMPLE
             return null;
         }
 
-        $ifs = [];
+        $newStmts = [];
 
         $defaultCase = null;
 
         foreach ($node->cases as $case) {
             if (! $case->cond instanceof Node\Expr) {
                 $defaultCase = $case;
-                return null;
+                continue;
             }
 
-            $if = new Node\Stmt\If_($case->cond);
+            $if = new If_($case->cond);
             $if->stmts = $case->stmts;
 
-            $ifs[] = $if;
+            $newStmts[] = $if;
         }
 
-        return $ifs;
+        if ($defaultCase instanceof Case_) {
+            $newStmts = array_merge($newStmts, $defaultCase->stmts);
+        }
+
+        return $newStmts;
     }
 }
