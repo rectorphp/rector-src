@@ -67,11 +67,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->stmts[$key - 1])) {
-                return null;
-            }
-
-            $previousNode = $node->stmts[$key - 1];
+            $previousNode = $node->stmts[$key - 1] ?? null;
             if (! $previousNode instanceof If_) {
                 return null;
             }
@@ -95,6 +91,10 @@ CODE_SAMPLE
             }
 
             $previousFirstStmt = $previousNode->stmts[0];
+            if (! $previousFirstStmt instanceof Return_) {
+                return null;
+            }
+
             if (! $this->nodeComparator->areNodesEqual($previousFirstStmt, $stmt)) {
                 return null;
             }
