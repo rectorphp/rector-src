@@ -200,4 +200,5 @@ return static function (RectorConfig $rectorConfig): void {
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
     ]);
+    $rectorConfig->rule(\Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector::class);
 };

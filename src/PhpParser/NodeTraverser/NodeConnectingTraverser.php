@@ -12,7 +12,7 @@ final class NodeConnectingTraverser extends NodeTraverser
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->addVisitor(new NodeConnectingVisitor());
     }
 }
