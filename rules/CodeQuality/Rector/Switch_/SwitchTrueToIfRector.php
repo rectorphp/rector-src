@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Switch_;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Case_;
@@ -86,7 +87,7 @@ CODE_SAMPLE
         $defaultCase = null;
 
         foreach ($node->cases as $case) {
-            if (! $case->cond instanceof Node\Expr) {
+            if (! $case->cond instanceof Expr) {
                 $defaultCase = $case;
                 continue;
             }
@@ -98,7 +99,7 @@ CODE_SAMPLE
         }
 
         if ($defaultCase instanceof Case_) {
-            $newStmts = array_merge($newStmts, $defaultCase->stmts);
+            return array_merge($newStmts, $defaultCase->stmts);
         }
 
         return $newStmts;
