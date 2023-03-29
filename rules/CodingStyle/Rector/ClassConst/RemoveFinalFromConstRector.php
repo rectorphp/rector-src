@@ -65,12 +65,12 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        foreach ($node->getConstants() as $constant) {
-            if (! $constant->isFinal()) {
+        foreach ($node->getConstants() as $classConst) {
+            if (! $classConst->isFinal()) {
                 continue;
             }
 
-            $this->visibilityManipulator->removeFinal($constant);
+            $this->visibilityManipulator->removeFinal($classConst);
             $hasChanged = true;
         }
 
