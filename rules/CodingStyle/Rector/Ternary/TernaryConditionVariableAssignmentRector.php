@@ -79,8 +79,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if ($previousNode instanceof Node) {
+        $assignedTo = $node->getAttribute(AttributeKey::ASSIGNED_TO);
+        if ($assignedTo instanceof Node) {
             return null;
         }
 
