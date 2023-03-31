@@ -6,31 +6,22 @@ namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use ReflectionClass;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassAnalyzer
 {
-    public function __construct(private readonly ReflectionProvider $reflectionProvider)
-    {
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider
+    ) {
     }
 
-    public function isAnonymousClass(Node|ReflectionClass $node): bool
+    public function isAnonymousClass(Node|ClassReflection $node): bool
     {
-        if ($node instanceof ReflectionClass) {
-            if ($node->isAnonymous()) {
-                return true;
-            }
-
-            if (! $this->reflectionProvider->hasClass($node->getName())) {
-                return false;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($node->getName());
-            return $classReflection->isAnonymous();
+        if ($node instanceof ClassReflection) {
+            return $node->isAnonymous();
         }
 
         if (! $node instanceof Class_) {
