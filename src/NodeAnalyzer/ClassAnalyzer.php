@@ -8,16 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassAnalyzer
 {
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
-    ) {
-    }
-
     public function isAnonymousClass(Node|ClassReflection $node): bool
     {
         if ($node instanceof ClassReflection) {
