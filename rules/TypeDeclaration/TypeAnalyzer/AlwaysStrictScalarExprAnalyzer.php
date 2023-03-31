@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -33,13 +34,15 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -47,6 +50,15 @@ final class AlwaysStrictScalarExprAnalyzer
     {
         if ($expr instanceof Concat) {
             return new StringType();
+        }
+
+        if ($expr instanceof Cast) {
+            $type = $this->nodeTypeResolver->getType($expr);
+            if ($this->isScalarType($type)) {
+                return $type;
+            }
+
+            return null;
         }
 
         if ($expr instanceof Scalar) {
