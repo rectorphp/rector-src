@@ -12,12 +12,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassAnalyzer
 {
-    public function isAnonymousClass(Node|ClassReflection $node): bool
+    public function isAnonymousClass(Node $node): bool
     {
-        if ($node instanceof ClassReflection) {
-            return $node->isAnonymous();
-        }
-
         if (! $node instanceof Class_) {
             return false;
         }

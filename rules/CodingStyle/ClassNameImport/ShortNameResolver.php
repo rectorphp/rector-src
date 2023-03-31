@@ -18,7 +18,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\Application\File;
@@ -26,6 +25,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use ReflectionClass;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -51,8 +51,7 @@ final class ShortNameResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly UseImportNameMatcher $useImportNameMatcher,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly UseImportNameMatcher $useImportNameMatcher
     ) {
     }
 
@@ -224,13 +223,15 @@ final class ShortNameResolver
     {
         $shortNamesToFullyQualifiedNames = [];
 
+        $nativeReflectionClass = $classReflection instanceof ClassReflection && ! $classReflection->isAnonymous()
+            ? $classReflection->getNativeReflection()
+            : null;
+
         foreach ($shortNames as $shortName) {
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
-            if ($classReflection instanceof ClassReflection && ! $this->classAnalyzer->isAnonymousClass(
-                $classReflection
-            )) {
-                $fullyQualifiedName = Reflection::expandClassName($shortName, $classReflection->getNativeReflection());
+            if ($nativeReflectionClass instanceof ReflectionClass) {
+                $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
             } elseif (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
             } else {
