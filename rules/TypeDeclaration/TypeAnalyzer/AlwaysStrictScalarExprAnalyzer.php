@@ -46,6 +46,16 @@ final class AlwaysStrictScalarExprAnalyzer
     ) {
     }
 
+    private function resolveCastType(Cast $expr): ?Type
+    {
+        $type = $this->nodeTypeResolver->getType($expr);
+        if ($this->isScalarType($type)) {
+            return $type;
+        }
+
+        return null;
+    }
+
     public function matchStrictScalarExpr(Expr $expr): ?Type
     {
         if ($expr instanceof Concat) {
@@ -53,12 +63,7 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         if ($expr instanceof Cast) {
-            $type = $this->nodeTypeResolver->getType($expr);
-            if ($this->isScalarType($type)) {
-                return $type;
-            }
-
-            return null;
+            return $this->resolveCastType($expr);
         }
 
         if ($expr instanceof Scalar) {
@@ -79,17 +84,7 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         if ($expr instanceof FuncCall) {
-            $returnType = $this->resolveFuncCallType($expr);
-
-            if (! $returnType instanceof Type) {
-                return null;
-            }
-
-            if (! $this->isScalarType($returnType)) {
-                return null;
-            }
-
-            return $returnType;
+            return $this->resolveFuncCallType($expr);
         }
 
         return $this->resolveIndirectReturnType($expr);
@@ -190,6 +185,11 @@ final class AlwaysStrictScalarExprAnalyzer
             $scope
         );
 
-        return $parametersAcceptor->getReturnType();
+        $returnType = $parametersAcceptor->getReturnType();
+        if (! $this->isScalarType($returnType)) {
+            return null;
+        }
+
+        return $returnType;
     }
 }
