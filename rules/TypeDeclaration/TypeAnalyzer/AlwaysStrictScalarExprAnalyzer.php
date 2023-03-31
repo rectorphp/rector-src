@@ -46,9 +46,9 @@ final class AlwaysStrictScalarExprAnalyzer
     ) {
     }
 
-    private function resolveCastType(Cast $expr): ?Type
+    private function resolveCastType(Cast $cast): ?Type
     {
-        $type = $this->nodeTypeResolver->getType($expr);
+        $type = $this->nodeTypeResolver->getType($cast);
         if ($this->isScalarType($type)) {
             return $type;
         }
