@@ -21,6 +21,10 @@ final class ClassAnalyzer
     public function isAnonymousClass(Node|ReflectionClass $node): bool
     {
         if ($node instanceof ReflectionClass) {
+            if ($node->isAnonymous()) {
+                return true;
+            }
+
             if (! $this->reflectionProvider->hasClass($node->getName())) {
                 return false;
             }
