@@ -5,38 +5,31 @@ declare(strict_types=1);
 namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\Class_;
-use Rector\Core\Util\StringUtils;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ReflectionProvider;
+use ReflectionClass;
 
 final class ClassAnalyzer
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/FQH6RT/2
-     */
-    private const ANONYMOUS_CLASS_REGEX = '#^AnonymousClass\w+$#';
-
-    public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
-    ) {
+    public function __construct(private readonly ReflectionProvider $reflectionProvider)
+    {
     }
 
-    public function isAnonymousClassName(string $className): bool
+    public function isAnonymousClass(Node|ReflectionClass $node): bool
     {
-        return StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
-    }
+        if ($node instanceof ReflectionClass) {
+            if (! $this->reflectionProvider->hasClass($node->getName())) {
+                return false;
+            }
 
-    public function isAnonymousClass(Node $node): bool
-    {
-        if (! $node instanceof Class_) {
-            return false;
+            $classReflection = $this->reflectionProvider->getClass($node->getName());
+            return $classReflection->isAnonymous();
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof New_) {
+        if (! $node instanceof Class_) {
             return false;
         }
 
@@ -44,12 +37,16 @@ final class ClassAnalyzer
             return true;
         }
 
-        $className = $this->nodeNameResolver->getName($node);
-        if ($className === null) {
-            return true;
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return false;
         }
 
-        // match PHPStan pattern for anonymous classes
-        return StringUtils::isMatch($className, self::ANONYMOUS_CLASS_REGEX);
+        $classReflection = $scope->getClassReflection();
+        if ($classReflection instanceof ClassReflection) {
+            return $classReflection->isAnonymous();
+        }
+
+        return false;
     }
 }
