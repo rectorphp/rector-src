@@ -38,10 +38,10 @@ final class NopVisitor extends NodeVisitorAbstract
                 continue;
             }
 
-            $startLine = $node->stmts[$key - 1]->getStartLine();
+            $previousEndLine = $node->stmts[$key - 1]->getEndLine();
             $endLine = $stmt->getEndLine();
 
-            if ($startLine !== $endLine) {
+            if ($previousEndLine !== $endLine) {
                 continue;
             }
 
