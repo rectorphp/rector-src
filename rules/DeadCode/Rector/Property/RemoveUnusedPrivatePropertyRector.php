@@ -122,12 +122,15 @@ CODE_SAMPLE
         if (!isset($class->stmts[$key + 1])) {
             return;
         }
+
         if (!$class->stmts[$key + 1] instanceof Nop) {
             return;
         }
+
         if ($class->stmts[$key + 1]->getEndLine() !== $property->getStartLine()) {
             return;
         }
+
         unset($class->stmts[$key + 1]);
     }
 
