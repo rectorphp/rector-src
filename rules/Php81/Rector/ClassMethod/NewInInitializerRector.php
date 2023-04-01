@@ -161,6 +161,7 @@ CODE_SAMPLE
         }
 
         $param->flags = $property->flags;
+        $param->attrGroups = array_merge($property->attrGroups, $param->attrGroups);
         $this->removeNode($property);
     }
 
