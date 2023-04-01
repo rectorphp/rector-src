@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-final class CronController
+final class RemoveSamelineCommentProperty
 {
 
     protected $_distributoradaids = [];
 
-    private $_max_fileage = 3600; // 1h
+    private $_max_fileage = 3600;// 1h
 }
 
 ?>
@@ -16,7 +16,7 @@ final class CronController
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-final class CronController
+final class RemoveSamelineCommentProperty
 {
 
     protected $_distributoradaids = [];

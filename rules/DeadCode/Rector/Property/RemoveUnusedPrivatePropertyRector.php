@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\NodeManipulator\PropertyManipulator;
@@ -86,7 +87,11 @@ CODE_SAMPLE
     {
         $hasRemoved = false;
 
-        foreach ($node->getProperties() as $property) {
+        foreach ($node->stmts as $key => $property) {
+            if (! $property instanceof Property) {
+                continue;
+            }
+
             if ($this->shouldSkipProperty($property)) {
                 continue;
             }
@@ -104,11 +109,19 @@ CODE_SAMPLE
             );
 
             if ($isRemoved) {
+                $this->processRemoveSameLineComment($node, $property, $key);
                 $hasRemoved = true;
             }
         }
 
         return $hasRemoved ? $node : null;
+    }
+
+    private function processRemoveSameLineComment(Class_ $node, Property $property, int $key): void
+    {
+        if (isset($node->stmts[$key + 1]) && $node->stmts[$key + 1] instanceof Nop && $node->stmts[$key + 1]->getEndLine() === $property->getStartLine()) {
+            unset($node->stmts[$key + 1]);
+        }
     }
 
     private function shouldSkipProperty(Property $property): bool
