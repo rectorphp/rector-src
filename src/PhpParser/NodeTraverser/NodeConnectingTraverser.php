@@ -7,7 +7,7 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NodeConnectingVisitor;
 
-final class NodeConnectingTraverser extends NodeTraverser
+class NodeConnectingTraverser extends NodeTraverser
 {
     public function __construct()
     {

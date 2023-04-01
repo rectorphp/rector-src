@@ -30,7 +30,7 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
+use Rector\Core\PhpParser\NodeTraverser\NodeNopConnectingTraverser;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -114,7 +114,7 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
-    private NodeConnectingTraverser $nodeConnectingTraverser;
+    private NodeNopConnectingTraverser $nodeNopConnectingTraverser;
 
     #[Required]
     public function autowire(
@@ -139,7 +139,7 @@ CODE_SAMPLE;
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
         DocBlockUpdater $docBlockUpdater,
-        NodeConnectingTraverser $nodeConnectingTraverser
+        NodeNopConnectingTraverser $nodeNopConnectingTraverser
     ): void {
         $this->nodesToRemoveCollector = $nodesToRemoveCollector;
         $this->nodeRemover = $nodeRemover;
@@ -162,7 +162,7 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
-        $this->nodeConnectingTraverser = $nodeConnectingTraverser;
+        $this->nodeNopConnectingTraverser = $nodeNopConnectingTraverser;
     }
 
     /**
@@ -438,7 +438,7 @@ CODE_SAMPLE;
             $nodes = [...$nodes, $nextNode];
         }
 
-        $this->nodeConnectingTraverser->traverse($nodes);
+        $this->nodeNopConnectingTraverser->traverse($nodes);
     }
 
     private function printDebugCurrentFileAndRule(): void
