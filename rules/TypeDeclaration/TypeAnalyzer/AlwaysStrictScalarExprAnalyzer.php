@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -33,20 +34,36 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
+    }
+
+    private function resolveCastType(Cast $cast): ?Type
+    {
+        $type = $this->nodeTypeResolver->getType($cast);
+        if ($this->isScalarType($type)) {
+            return $type;
+        }
+
+        return null;
     }
 
     public function matchStrictScalarExpr(Expr $expr): ?Type
     {
         if ($expr instanceof Concat) {
             return new StringType();
+        }
+
+        if ($expr instanceof Cast) {
+            return $this->resolveCastType($expr);
         }
 
         if ($expr instanceof Scalar) {
@@ -67,17 +84,7 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         if ($expr instanceof FuncCall) {
-            $returnType = $this->resolveFuncCallType($expr);
-
-            if (! $returnType instanceof Type) {
-                return null;
-            }
-
-            if (! $this->isScalarType($returnType)) {
-                return null;
-            }
-
-            return $returnType;
+            return $this->resolveFuncCallType($expr);
         }
 
         return $this->resolveIndirectReturnType($expr);
@@ -178,6 +185,11 @@ final class AlwaysStrictScalarExprAnalyzer
             $scope
         );
 
-        return $parametersAcceptor->getReturnType();
+        $returnType = $parametersAcceptor->getReturnType();
+        if (! $this->isScalarType($returnType)) {
+            return null;
+        }
+
+        return $returnType;
     }
 }
