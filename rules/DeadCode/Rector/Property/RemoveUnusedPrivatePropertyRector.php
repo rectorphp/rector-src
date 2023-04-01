@@ -117,11 +117,18 @@ CODE_SAMPLE
         return $hasRemoved ? $node : null;
     }
 
-    private function processRemoveSameLineComment(Class_ $node, Property $property, int $key): void
+    private function processRemoveSameLineComment(Class_ $class, Property $property, int $key): void
     {
-        if (isset($node->stmts[$key + 1]) && $node->stmts[$key + 1] instanceof Nop && $node->stmts[$key + 1]->getEndLine() === $property->getStartLine()) {
-            unset($node->stmts[$key + 1]);
+        if (!isset($class->stmts[$key + 1])) {
+            return;
         }
+        if (!$class->stmts[$key + 1] instanceof Nop) {
+            return;
+        }
+        if ($class->stmts[$key + 1]->getEndLine() !== $property->getStartLine()) {
+            return;
+        }
+        unset($class->stmts[$key + 1]);
     }
 
     private function shouldSkipProperty(Property $property): bool
