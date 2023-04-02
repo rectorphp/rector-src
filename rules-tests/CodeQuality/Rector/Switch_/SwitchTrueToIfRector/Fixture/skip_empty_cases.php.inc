@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Switch_\SwitchTrueToIfRector\Fixture;
 
-class SkipEmtyCases
+class SkipEmptyCases
 {
     public function run()
     {
