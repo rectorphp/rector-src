@@ -119,11 +119,11 @@ CODE_SAMPLE
 
     private function processRemoveSameLineComment(Class_ $class, Property $property, int $key): void
     {
-        if (!isset($class->stmts[$key + 1])) {
+        if (! isset($class->stmts[$key + 1])) {
             return;
         }
 
-        if (!$class->stmts[$key + 1] instanceof Nop) {
+        if (! $class->stmts[$key + 1] instanceof Nop) {
             return;
         }
 
