@@ -8,7 +8,6 @@ use Iterator;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\ExpectedNameResolver\MatchPropertyTypeExpectedNameResolver;
@@ -16,7 +15,6 @@ use Rector\Naming\ValueObject\PropertyRename;
 use Rector\Naming\ValueObjectFactory\PropertyRenameFactory;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
-#[RunTestsInSeparateProcesses]
 final class PropertyRenameFactoryTest extends AbstractTestCase
 {
     private PropertyRenameFactory $propertyRenameFactory;

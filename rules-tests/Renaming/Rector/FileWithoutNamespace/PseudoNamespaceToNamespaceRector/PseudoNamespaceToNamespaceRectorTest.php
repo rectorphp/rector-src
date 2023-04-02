@@ -6,10 +6,8 @@ namespace Rector\Tests\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNam
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-#[RunTestsInSeparateProcesses]
 final class PseudoNamespaceToNamespaceRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
