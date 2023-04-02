@@ -84,37 +84,36 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Node|null|array
     {
-        $processNode = clone $node;
-        if ($this->inlineHTMLAnalyzer->hasInlineHTML($processNode)) {
+        if ($this->inlineHTMLAnalyzer->hasInlineHTML($node)) {
             return null;
         }
 
-        $expectedNamespace = $this->psr4AutoloadNamespaceMatcher->getExpectedNamespace($this->file, $processNode);
+        $expectedNamespace = $this->psr4AutoloadNamespaceMatcher->getExpectedNamespace($this->file, $node);
         if ($expectedNamespace === null) {
             return null;
         }
 
         // is namespace and already correctly named?
-        if ($processNode instanceof Namespace_ && $this->nodeNameResolver->isCaseSensitiveName(
-            $processNode,
+        if ($node instanceof Namespace_ && $this->nodeNameResolver->isCaseSensitiveName(
+            $node,
             $expectedNamespace
         )) {
             return null;
         }
 
-        if ($processNode instanceof Namespace_ && $this->hasNamespaceInPreviousNamespace($processNode)) {
+        if ($node instanceof Namespace_ && $this->hasNamespaceInPreviousNamespace($node)) {
             return null;
         }
 
         // to put declare_strict types on correct place
-        if ($processNode instanceof FileWithoutNamespace) {
-            return $this->refactorFileWithoutNamespace($processNode, $expectedNamespace);
+        if ($node instanceof FileWithoutNamespace) {
+            return $this->refactorFileWithoutNamespace($node, $expectedNamespace);
         }
 
-        $processNode->name = new Name($expectedNamespace);
-        $this->fullyQualifyStmtsAnalyzer->process($processNode->stmts);
+        $node->name = new Name($expectedNamespace);
+        $this->fullyQualifyStmtsAnalyzer->process($node->stmts);
 
-        return $processNode;
+        return $node;
     }
 
     private function hasNamespaceInPreviousNamespace(Namespace_ $namespace): bool
