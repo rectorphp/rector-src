@@ -120,6 +120,12 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($value instanceof Array_) {
+                $array->items = [...$array->items, ...$value->items];
+
+                continue;
+            }
+
             $value = $this->resolveValue($value);
             $array->items[] = $this->createUnpackedArrayItem($value);
         }
