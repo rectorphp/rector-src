@@ -99,7 +99,11 @@ CODE_SAMPLE
         }
 
         if ($defaultCase instanceof Case_) {
-            return array_merge($newStmts, $defaultCase->stmts);
+            $newStmts = array_merge($newStmts, $defaultCase->stmts);
+        }
+
+        if ($newStmts === []) {
+            return null;
         }
 
         return $newStmts;
