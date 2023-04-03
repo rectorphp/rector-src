@@ -127,7 +127,7 @@ CODE_SAMPLE
 
         $this->removeNode($node);
 
-        return $node;
+        return null;
     }
 
     private function resolveClassLike(MethodCall $methodCall): ?ClassLike

@@ -56,10 +56,10 @@ A) Return null for no change:
 
     return null;
 
-B) Remove the Node:
+B) Remove the Node and return null:
 
     \$this->removeNode(\$node);
-    return \$node;
+    return null;
 CODE_SAMPLE;
 
     protected NodeNameResolver $nodeNameResolver;
@@ -210,7 +210,7 @@ CODE_SAMPLE;
 
         $refactoredNode = $this->refactor($node);
 
-        // nothing to change → continue
+        // nothing to change or just removed via removeNode() → continue
         if ($refactoredNode === null) {
             return null;
         }
