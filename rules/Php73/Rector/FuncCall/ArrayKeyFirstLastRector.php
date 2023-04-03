@@ -130,7 +130,8 @@ CODE_SAMPLE
 
         $this->removeNode($node);
 
-        return null;
+        // change next node before remove, so it needs to return the Node
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
