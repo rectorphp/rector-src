@@ -454,7 +454,7 @@ final class PhpDocInfo
     /**
      * @return string[]
      */
-    public function findConstFetchNodeClassNames(): array
+    public function getConstFetchNodeClassNames(): array
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
 
