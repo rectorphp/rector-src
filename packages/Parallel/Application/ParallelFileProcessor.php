@@ -74,33 +74,6 @@ final class ParallelFileProcessor
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
         $this->processPool = new ProcessPool($tcpServer);
 
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
-            $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
-            $outEncoder = new Encoder($connection);
-
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
-                $action = $data[ReactCommand::ACTION];
-                if ($action !== Action::HELLO) {
-                    return;
-                }
-
-                $processIdentifier = $data[Option::PARALLEL_IDENTIFIER];
-                $parallelProcess = $this->processPool->getProcess($processIdentifier);
-                $parallelProcess->bindConnection($inDecoder, $outEncoder);
-
-                if ($jobs === []) {
-                    $this->processPool->quitProcess($processIdentifier);
-                    return;
-                }
-
-                $job = array_pop($jobs);
-                $parallelProcess->request([
-                    ReactCommand::ACTION => Action::MAIN,
-                    Content::FILES => $job,
-                ]);
-            });
-        });
-
         /** @var string $serverAddress */
         $serverAddress = $tcpServer->getAddress();
 
@@ -196,6 +169,33 @@ final class ParallelFileProcessor
                 $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
             };
         };
+
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
+            $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
+            $outEncoder = new Encoder($connection);
+
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
+                $action = $data[ReactCommand::ACTION];
+                if ($action !== Action::HELLO) {
+                    return;
+                }
+
+                $processIdentifier = $data[Option::PARALLEL_IDENTIFIER];
+                $parallelProcess = $this->processPool->getProcess($processIdentifier);
+                $parallelProcess->bindConnection($inDecoder, $outEncoder);
+
+                if ($jobs === []) {
+                    $this->processPool->quitProcess($processIdentifier);
+                    return;
+                }
+
+                $job = array_pop($jobs);
+                $parallelProcess->request([
+                    ReactCommand::ACTION => Action::MAIN,
+                    Content::FILES => $job,
+                ]);
+            });
+        });
 
         for ($i = 0; $i < $numberOfProcesses; ++$i) {
             // nothing else to process, stop now
