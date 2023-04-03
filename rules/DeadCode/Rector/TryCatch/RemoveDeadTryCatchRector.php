@@ -73,7 +73,7 @@ CODE_SAMPLE
 
         if ($this->isEmpty($node->stmts)) {
             $this->removeNode($node);
-            return $node;
+            return null;
         }
 
         if (count($node->catches) !== 1) {

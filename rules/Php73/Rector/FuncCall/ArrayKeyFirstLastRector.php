@@ -130,6 +130,7 @@ CODE_SAMPLE
 
         $this->removeNode($node);
 
+        // change next node before remove, so it needs to return the Node
         return $node;
     }
 

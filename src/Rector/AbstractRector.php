@@ -52,14 +52,14 @@ abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorIn
     private const EMPTY_NODE_ARRAY_MESSAGE = <<<CODE_SAMPLE
 Array of nodes cannot be empty. Ensure "%s->refactor()" returns non-empty array for Nodes.
 
-A) Return null for no change:
+A) Direct return null for no change:
 
     return null;
 
 B) Remove the Node:
 
     \$this->removeNode(\$node);
-    return \$node;
+    return null;
 CODE_SAMPLE;
 
     protected NodeNameResolver $nodeNameResolver;
@@ -210,7 +210,7 @@ CODE_SAMPLE;
 
         $refactoredNode = $this->refactor($node);
 
-        // nothing to change → continue
+        // nothing to change or just removed via removeNode() → continue
         if ($refactoredNode === null) {
             return null;
         }
