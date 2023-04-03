@@ -129,6 +129,74 @@ final class ParallelFileProcessor
 
         $timeoutInSeconds = $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
 
+        $onDataCallableProvider = function (string $processIdentifier, ParallelProcess $parallelProcess) use (
+                &$systemErrors,
+                &$fileDiffs,
+                &$jobs,
+                $postFileCallback,
+                &$systemErrorsCount,
+                &$reachedInternalErrorsCountLimit
+            ): callable {
+            return function (array $json) use (
+                $parallelProcess,
+                &$systemErrors,
+                &$fileDiffs,
+                &$jobs,
+                $postFileCallback,
+                &$systemErrorsCount,
+                &$reachedInternalErrorsCountLimit,
+                $processIdentifier
+            ): void {
+                // decode arrays to objects
+                foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
+                    if (is_string($jsonError)) {
+                        $systemErrors[] = new SystemError('System error: ' . $jsonError);
+                        continue;
+                    }
+
+                    $systemErrors[] = SystemError::decode($jsonError);
+                }
+
+                foreach ($json[Bridge::FILE_DIFFS] as $jsonError) {
+                    $fileDiffs[] = FileDiff::decode($jsonError);
+                }
+
+                $postFileCallback($json[Bridge::FILES_COUNT]);
+
+                $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
+                if ($systemErrorsCount >= self::SYSTEM_ERROR_LIMIT) {
+                    $reachedInternalErrorsCountLimit = true;
+                    $this->processPool->quitAll();
+                }
+
+                if ($jobs === []) {
+                    $this->processPool->quitProcess($processIdentifier);
+                    return;
+                }
+
+                $job = array_pop($jobs);
+                $parallelProcess->request([
+                    ReactCommand::ACTION => Action::MAIN,
+                    Content::FILES => $job,
+                ]);
+            };
+        };
+
+        $onExitCallableProvider = function (string $processIdentifier) use (&$systemErrors): callable {
+            return function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
+                $this->processPool->tryQuitProcess($processIdentifier);
+                if ($exitCode === Command::SUCCESS) {
+                    return;
+                }
+
+                if ($exitCode === null) {
+                    return;
+                }
+
+                $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
+            };
+        };
+
         for ($i = 0; $i < $numberOfProcesses; ++$i) {
             // nothing else to process, stop now
             if ($jobs === []) {
@@ -147,68 +215,18 @@ final class ParallelFileProcessor
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
+            $onDataCallable = $onDataCallableProvider($processIdentifier, $parallelProcess);
+            $onExitCallable = $onExitCallableProvider($processIdentifier);
+
             $parallelProcess->start(
                 // 1. callable on data
-                function (array $json) use (
-                    $parallelProcess,
-                    &$systemErrors,
-                    &$fileDiffs,
-                    &$jobs,
-                    $postFileCallback,
-                    &$systemErrorsCount,
-                    &$reachedInternalErrorsCountLimit,
-                    $processIdentifier
-                ): void {
-                    // decode arrays to objects
-                    foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
-                        if (is_string($jsonError)) {
-                            $systemErrors[] = new SystemError('System error: ' . $jsonError);
-                            continue;
-                        }
-
-                        $systemErrors[] = SystemError::decode($jsonError);
-                    }
-
-                    foreach ($json[Bridge::FILE_DIFFS] as $jsonError) {
-                        $fileDiffs[] = FileDiff::decode($jsonError);
-                    }
-
-                    $postFileCallback($json[Bridge::FILES_COUNT]);
-
-                    $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
-                    if ($systemErrorsCount >= self::SYSTEM_ERROR_LIMIT) {
-                        $reachedInternalErrorsCountLimit = true;
-                        $this->processPool->quitAll();
-                    }
-
-                    if ($jobs === []) {
-                        $this->processPool->quitProcess($processIdentifier);
-                        return;
-                    }
-
-                    $job = array_pop($jobs);
-                    $parallelProcess->request([
-                        ReactCommand::ACTION => Action::MAIN,
-                        Content::FILES => $job,
-                    ]);
-                },
+                $onDataCallable,
 
                 // 2. callable on error
                 $handleErrorCallable,
 
                 // 3. callable on exit
-                function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
-                    $this->processPool->tryQuitProcess($processIdentifier);
-                    if ($exitCode === Command::SUCCESS) {
-                        return;
-                    }
-
-                    if ($exitCode === null) {
-                        return;
-                    }
-
-                    $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
-                }
+                $onExitCallable
             );
 
             $this->processPool->attachProcess($processIdentifier, $parallelProcess);
