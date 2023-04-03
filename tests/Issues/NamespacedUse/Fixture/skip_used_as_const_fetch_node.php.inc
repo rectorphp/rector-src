@@ -4,7 +4,7 @@ namespace Rector\Core\Tests\Issues\NamespacedUse\Fixture;
 
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 
-final class SkipUsedWithAsterisk
+final class SkipUsedAsConstFetchNode
 {
     /**
      * @param TypeKind::* $typeKind
