@@ -29,11 +29,8 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
      */
     public function refactor(Node $node)
     {
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-        $originalNode ??= $node;
-
         /** @var MutatingScope|null $currentScope */
-        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
 
         if (! $currentScope instanceof MutatingScope) {
             $currentScope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath());

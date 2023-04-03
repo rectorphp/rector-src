@@ -231,7 +231,7 @@ CODE_SAMPLE;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         /** @var MutatingScope|null $currentScope */
-        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
         $filePath = $this->file->getFilePath();
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
