@@ -106,8 +106,12 @@ CODE_SAMPLE
         bool $hasChanged,
         int $jumpToKey = 0
     ): ?StmtsAwareInterface {
+        if ($stmtsAware->stmts === null) {
+            return null;
+        }
+
         /** @var int $totalKeys */
-        $totalKeys = array_key_last((array) $stmtsAware->stmts);
+        $totalKeys = array_key_last($stmtsAware->stmts);
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
             if (! isset($stmtsAware->stmts[$key], $stmtsAware->stmts[$key + 1])) {
                 break;
