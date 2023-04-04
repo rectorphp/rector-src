@@ -159,6 +159,9 @@ CODE_SAMPLE
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $names = array_merge($names, $phpDocInfo->getAnnotationClassNames());
+
+            $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
+            $names = array_merge($names, $constFetchNodeNames);
         });
 
         return $names;
