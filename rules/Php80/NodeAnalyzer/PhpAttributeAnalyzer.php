@@ -19,10 +19,10 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PhpAttributeAnalyzer
 {
@@ -30,7 +30,7 @@ final class PhpAttributeAnalyzer
         private readonly AstResolver $astResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -41,15 +41,14 @@ final class PhpAttributeAnalyzer
     {
         $classNames = [];
 
-        $this->betterNodeFinder->find(
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $namespace->stmts,
-            static function (Node $subNode) use (&$classNames) : bool {
+            static function (Node $subNode) use (&$classNames) {
                 if ($subNode instanceof Attribute) {
                     $classNames[] = $subNode->name->toString();
-                    return true;
                 }
 
-                return false;
+                return null;
             }
         );
 
