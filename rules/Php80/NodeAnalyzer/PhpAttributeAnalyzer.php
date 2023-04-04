@@ -48,6 +48,7 @@ final class PhpAttributeAnalyzer
                     $classNames[] = $subNode->name->toString();
                     return true;
                 }
+
                 return false;
             }
         );
