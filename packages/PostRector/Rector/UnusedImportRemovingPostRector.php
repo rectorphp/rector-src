@@ -17,6 +17,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -26,7 +27,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider
+        private readonly RectorConfigProvider $rectorConfigProvider,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
@@ -170,12 +172,21 @@ CODE_SAMPLE
     /**
      * @return string[]
      */
+    public function findAttributeNames(Namespace_|FileWithoutNamespace $namespace): array
+    {
+        return $this->phpAttributeAnalyzer->getClassNames($namespace);
+    }
+
+    /**
+     * @return string[]
+     */
     private function resolveUsedPhpAndDocNames(Namespace_|FileWithoutNamespace $namespace): array
     {
         $phpNames = $this->findNonUseImportNames($namespace);
         $docBlockNames = $this->findNamesInDocBlocks($namespace);
+        $attributeNames = $this->phpAttributeAnalyzer->getClassNames($namespace);
 
-        $names = array_merge($phpNames, $docBlockNames);
+        $names = array_merge($phpNames, $docBlockNames, $attributeNames);
         return array_unique($names);
     }
 

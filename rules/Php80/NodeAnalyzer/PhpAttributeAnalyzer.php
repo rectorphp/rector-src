@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Php80\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -13,11 +15,15 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PhpAttributeAnalyzer
 {
@@ -25,7 +31,30 @@ final class PhpAttributeAnalyzer
         private readonly AstResolver $astResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getClassNames(Namespace_|FileWithoutNamespace $namespace): array
+    {
+        $classNames = [];
+
+        $this->betterNodeFinder->find(
+            $namespace->stmts,
+            function (Node $subNode) use (&$classNames): bool {
+                if ($subNode instanceof Attribute) {
+                    $classNames[] = $subNode->name->toString();
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        return $classNames;
     }
 
     public function hasPhpAttribute(Property | ClassLike | ClassMethod | Param $node, string $attributeClass): bool
