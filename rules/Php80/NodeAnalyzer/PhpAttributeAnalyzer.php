@@ -23,7 +23,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PhpAttributeAnalyzer
 {
