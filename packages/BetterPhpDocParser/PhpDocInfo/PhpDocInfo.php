@@ -463,7 +463,7 @@ final class PhpDocInfo
         $resolvedClasses = [];
 
         foreach ($genericTagValueNodes as $genericTagValueNode) {
-            $resolvedClasses[] = ltrim($genericTagValueNode->value, '@');
+            $resolvedClasses[] = $genericTagValueNode->value;
         }
 
         return $resolvedClasses;
