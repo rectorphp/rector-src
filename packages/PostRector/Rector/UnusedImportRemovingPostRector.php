@@ -172,14 +172,6 @@ CODE_SAMPLE
     /**
      * @return string[]
      */
-    public function findAttributeNames(Namespace_|FileWithoutNamespace $namespace): array
-    {
-        return $this->phpAttributeAnalyzer->getClassNames($namespace);
-    }
-
-    /**
-     * @return string[]
-     */
     private function resolveUsedPhpAndDocNames(Namespace_|FileWithoutNamespace $namespace): array
     {
         $phpNames = $this->findNonUseImportNames($namespace);
