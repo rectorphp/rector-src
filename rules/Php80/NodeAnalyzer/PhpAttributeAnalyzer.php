@@ -43,12 +43,11 @@ final class PhpAttributeAnalyzer
 
         $this->betterNodeFinder->find(
             $namespace->stmts,
-            function (Node $subNode) use (&$classNames): bool {
+            static function (Node $subNode) use (&$classNames) : bool {
                 if ($subNode instanceof Attribute) {
                     $classNames[] = $subNode->name->toString();
                     return true;
                 }
-
                 return false;
             }
         );
