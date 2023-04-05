@@ -16,7 +16,7 @@ interface MinPhpVersionInterface
 {
     /**
      * @todo upgrade to Enum and return of Enum object in the future.
-     * Requires refactoring of \Rector\Core\ValueObject\PhpVersion and PhpVersionFeatures object at the same time.
+     * Requires refactoring of \Rector\Core\ValueObject\PhpVersion and \Rector\Core\ValueObject\PhpVersionFeature object at the same time.
      */
     public function provideMinPhpVersion(): int;
 }
