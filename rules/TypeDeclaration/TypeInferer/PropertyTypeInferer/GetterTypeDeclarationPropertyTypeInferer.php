@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\TypeDeclaration\FunctionLikeReturnTypeResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
@@ -18,8 +17,7 @@ final class GetterTypeDeclarationPropertyTypeInferer
     public function __construct(
         private readonly FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
         private readonly ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        //private readonly BetterNodeFinder $betterNodeFinder
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 

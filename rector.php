@@ -57,6 +57,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->importNames();
+    $rectorConfig->removeUnusedImports();
     $rectorConfig->parallel();
 
     $rectorConfig->skip([

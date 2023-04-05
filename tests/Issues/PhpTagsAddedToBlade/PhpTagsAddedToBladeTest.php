@@ -7,7 +7,6 @@ namespace Rector\Core\Tests\Issues\PhpTagsAddedToBlade;
 use Nette\Utils\FileSystem;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
