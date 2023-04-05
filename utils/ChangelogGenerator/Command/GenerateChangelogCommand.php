@@ -11,7 +11,6 @@ use Rector\Utils\ChangelogGenerator\Enum\Option;
 use Rector\Utils\ChangelogGenerator\Enum\RepositoryName;
 use Rector\Utils\ChangelogGenerator\GithubApiCaller;
 use Rector\Utils\ChangelogGenerator\GitResolver;
-use Rector\Utils\ChangelogGenerator\ValueObject\Commit;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
