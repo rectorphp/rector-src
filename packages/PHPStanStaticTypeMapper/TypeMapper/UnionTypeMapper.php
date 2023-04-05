@@ -39,7 +39,6 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\BoolUnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
-use function Symfony\Component\String\b;
 use Symfony\Contracts\Service\Attribute\Required;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
