@@ -17,8 +17,7 @@ final class GetterTypeDeclarationPropertyTypeInferer
     public function __construct(
         private readonly FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
         private readonly ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        //private readonly BetterNodeFinder $betterNodeFinder
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
