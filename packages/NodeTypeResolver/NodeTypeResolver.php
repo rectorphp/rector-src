@@ -244,7 +244,7 @@ final class NodeTypeResolver
             return true;
         }
 
-        return $nodeType instanceof FloatType;
+        return $nodeType->isFloat()->yes();
     }
 
     /**
