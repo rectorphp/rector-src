@@ -123,7 +123,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return true;
         }
 
-        if ($type instanceof FloatType) {
+        if ($type->isFloat()->yes()) {
             return true;
         }
 

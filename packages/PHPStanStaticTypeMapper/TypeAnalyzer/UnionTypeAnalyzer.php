@@ -114,7 +114,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($type instanceof FloatType) {
+            if ($type->isFloat()->yes()) {
                 continue;
             }
 

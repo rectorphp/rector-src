@@ -164,7 +164,7 @@ CODE_SAMPLE
             return $this->resolveInteger($isNegated, $expr);
         }
 
-        if ($exprType instanceof FloatType) {
+        if ($exprType->isFloat()->yes()) {
             return $this->resolveFloat($isNegated, $expr);
         }
 
