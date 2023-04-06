@@ -118,12 +118,12 @@ final class TypeComparator
             return false;
         }
 
-        if (! $mainType instanceof ArrayType) {
+        if (! $mainType->isArray()->yes()) {
             return $mainType->isSuperTypeOf($checkedType)
                 ->yes();
         }
 
-        if (! $checkedType instanceof ArrayType) {
+        if (! $checkedType->isArray()->yes()) {
             return $mainType->isSuperTypeOf($checkedType)
                 ->yes();
         }
@@ -153,11 +153,11 @@ final class TypeComparator
      */
     private function areArrayTypeWithSingleObjectChildToParent(Type $firstType, Type $secondType): bool
     {
-        if (! $firstType instanceof ArrayType) {
+        if (! $firstType->isArray()->yes()) {
             return false;
         }
 
-        if (! $secondType instanceof ArrayType) {
+        if (! $secondType->isArray()->yes()) {
             return false;
         }
 
@@ -214,11 +214,11 @@ final class TypeComparator
 
     private function areArrayUnionConstantEqualTypes(Type $firstType, Type $secondType): bool
     {
-        if (! $firstType instanceof ArrayType) {
+        if (! $firstType->isArray()->yes()) {
             return false;
         }
 
-        if (! $secondType instanceof ArrayType) {
+        if (! $secondType->isArray()->yes()) {
             return false;
         }
 

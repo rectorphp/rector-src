@@ -101,7 +101,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
             }
         }
 
-        if ($itemType instanceof ArrayType && $this->isGenericArrayCandidate($itemType)) {
+        if ($itemType->isArray()->yes() && $this->isGenericArrayCandidate($itemType)) {
             return $this->createGenericArrayType($type, $typeKind, true);
         }
 
@@ -252,7 +252,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
             return false;
         }
 
-        return ! $arrayType->getItemType() instanceof ArrayType;
+        return ! $arrayType->getItemType()->isArray()->yes();
     }
 
     /**

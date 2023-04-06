@@ -138,7 +138,7 @@ CODE_SAMPLE
         }
 
         $currentVarType = $phpDocInfo->getVarType();
-        if ($currentVarType instanceof ArrayType && $currentVarType->getItemType() instanceof MixedType) {
+        if ($currentVarType->isArray()->yes() && $currentVarType->getItemType() instanceof MixedType) {
             return true;
         }
 

@@ -79,7 +79,7 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
 
     private function isAllowedExpr(Expr $expr, Scope $scope): bool
     {
-        if (! $scope->getType($expr) instanceof ArrayType) {
+        if (! $scope->getType($expr)->isArray()->yes()) {
             return false;
         }
 
@@ -109,7 +109,7 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         $nativeType = $phpPropertyReflection->getNativeType();
 
         if (! $nativeType instanceof MixedType) {
-            return $nativeType instanceof ArrayType;
+            return $nativeType->isArray()->yes();
         }
 
         $property = $this->astResolver->resolvePropertyFromPropertyReflection($phpPropertyReflection);
@@ -125,6 +125,6 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         }
 
         $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
-        return $type instanceof ArrayType;
+        return $type->isArray()->yes();
     }
 }

@@ -34,7 +34,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($unionedType instanceof ArrayType) {
+            if ($unionedType->isArray()->yes()) {
                 $hasArray = true;
                 continue;
             }
