@@ -401,7 +401,7 @@ final class AnonymousFunctionFactory
         FunctionVariantWithPhpDocs $functionVariantWithPhpDocs,
         StaticCall|MethodCall $innerMethodCall
     ): array {
-        if ($functionVariantWithPhpDocs->getReturnType() instanceof VoidType) {
+        if ($functionVariantWithPhpDocs->getReturnType()->isVoid()->yes()) {
             return [new Expression($innerMethodCall)];
         }
 

@@ -122,7 +122,7 @@ final class ReturnTypeInferer
         ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         Type $resolvedType
     ): Type {
-        if ($resolvedType instanceof VoidType) {
+        if ($resolvedType->isVoid()->yes()) {
             if ($functionLike instanceof ArrowFunction) {
                 return new MixedType();
             }
