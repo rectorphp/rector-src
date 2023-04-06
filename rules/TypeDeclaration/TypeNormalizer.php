@@ -41,7 +41,7 @@ final class TypeNormalizer
      */
     public function normalizeArrayOfUnionToUnionArray(Type $type, int $arrayNesting = 1): Type
     {
-        if (! $type instanceof ArrayType) {
+        if (! $type->isArray()->yes()) {
             return $type;
         }
 
@@ -54,7 +54,7 @@ final class TypeNormalizer
             $this->collectedNestedArrayTypes = [];
         }
 
-        if ($type->getItemType() instanceof ArrayType) {
+        if ($type->getItemType()->isArray()->yes()) {
             ++$arrayNesting;
             $this->normalizeArrayOfUnionToUnionArray($type->getItemType(), $arrayNesting);
         } elseif ($type->getItemType() instanceof UnionType) {
@@ -192,7 +192,7 @@ final class TypeNormalizer
 
     private function isArrayNeverType(Type $type): bool
     {
-        if (! $type instanceof ArrayType) {
+        if (! $type->isArray()->yes()) {
             return false;
         }
 

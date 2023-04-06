@@ -115,7 +115,7 @@ final class ExpectedNameResolver
 
         $returnedType = $this->nodeTypeResolver->getType($expr);
 
-        if ($returnedType instanceof ArrayType) {
+        if ($returnedType->isArray()->yes()) {
             return null;
         }
 
@@ -163,7 +163,7 @@ final class ExpectedNameResolver
         }
 
         $innerReturnedType = null;
-        if ($returnedType instanceof ArrayType) {
+        if ($returnedType->isArray()->yes()) {
             $innerReturnedType = $this->resolveReturnTypeFromArrayType($expr, $returnedType);
             if (! $innerReturnedType instanceof Type) {
                 return null;
@@ -192,7 +192,7 @@ final class ExpectedNameResolver
         Type $returnedType,
         ?ExpectedName $expectedName
     ): bool {
-        return ($returnedType instanceof ArrayType) && $expectedName !== null;
+        return ($returnedType->isArray()->yes()) && $expectedName !== null;
     }
 
     private function isDynamicNameCall(MethodCall | StaticCall | FuncCall $expr): bool

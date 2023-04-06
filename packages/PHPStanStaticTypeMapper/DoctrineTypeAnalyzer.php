@@ -24,7 +24,7 @@ final class DoctrineTypeAnalyzer
                 $hasDoctrineCollectionType = true;
             }
 
-            if ($unionedType instanceof ArrayType) {
+            if ($unionedType->isArray()->yes()) {
                 $arrayType = $unionedType;
             }
         }
@@ -33,7 +33,7 @@ final class DoctrineTypeAnalyzer
             return false;
         }
 
-        return $arrayType instanceof ArrayType;
+        return $arrayType->isArray()->yes();
     }
 
     private function isCollectionObjectType(Type $type): bool

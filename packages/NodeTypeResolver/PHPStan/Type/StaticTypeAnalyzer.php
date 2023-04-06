@@ -34,7 +34,7 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        if ($type instanceof ArrayType) {
+        if ($type->isArray()->yes()) {
             return $this->isAlwaysTruableArrayType($type);
         }
 

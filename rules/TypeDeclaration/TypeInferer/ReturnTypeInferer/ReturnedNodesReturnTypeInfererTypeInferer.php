@@ -153,7 +153,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
 
     private function isArrayTypeMixed(Type $type): bool
     {
-        if (! $type instanceof ArrayType) {
+        if (! $type->isArray()->yes()) {
             return false;
         }
 

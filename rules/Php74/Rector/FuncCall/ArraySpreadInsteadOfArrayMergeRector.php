@@ -139,7 +139,7 @@ CODE_SAMPLE
         }
 
         $arrayStaticType = $this->getType($expr);
-        if (! $arrayStaticType instanceof ArrayType) {
+        if (! $arrayStaticType->isArray()->yes()) {
             return true;
         }
 

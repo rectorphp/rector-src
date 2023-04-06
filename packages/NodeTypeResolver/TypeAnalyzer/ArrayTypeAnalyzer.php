@@ -69,7 +69,7 @@ final class ArrayTypeAnalyzer
             }
         }
 
-        return $nodeType instanceof ArrayType;
+        return $nodeType->isArray()->yes();
     }
 
     private function isIntersectionArrayType(Type $nodeType): bool
@@ -79,7 +79,7 @@ final class ArrayTypeAnalyzer
         }
 
         foreach ($nodeType->getTypes() as $intersectionNodeType) {
-            if ($intersectionNodeType instanceof ArrayType) {
+            if ($intersectionNodeType->isArray()->yes()) {
                 continue;
             }
 
@@ -129,7 +129,7 @@ final class ArrayTypeAnalyzer
         }
 
         $varType = $propertyPhpDocInfo->getVarType();
-        return $varType instanceof ArrayType || $varType instanceof ArrayShapeNode || $varType instanceof IterableType;
+        return $varType->isArray()->yes() || $varType instanceof ArrayShapeNode || $varType instanceof IterableType;
     }
 
     /**

@@ -53,7 +53,7 @@ final class GenericClassStringTypeNormalizer
             return $this->resolveClassStringInUnionType($type);
         }
 
-        if ($type instanceof ArrayType && $type->getKeyType() instanceof UnionType) {
+        if ($type->isArray()->yes() && $type->getKeyType() instanceof UnionType) {
             return $this->resolveArrayTypeWithUnionKeyType($type);
         }
 
@@ -98,14 +98,14 @@ final class GenericClassStringTypeNormalizer
         $unionTypes = $type->getTypes();
 
         foreach ($unionTypes as $unionType) {
-            if (! $unionType instanceof ArrayType) {
+            if (! $unionType->isArray()->yes()) {
                 return $type;
             }
 
             $keyType = $unionType->getKeyType();
             $itemType = $unionType->getItemType();
 
-            if ($itemType instanceof ArrayType) {
+            if ($itemType->isArray()->yes()) {
                 $arrayType = new ArrayType(new MixedType(), new MixedType());
                 return new ArrayType($keyType, $arrayType);
             }

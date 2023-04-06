@@ -40,7 +40,7 @@ final class PregMatchTypeCorrector
             return $originalType;
         }
 
-        if ($originalType instanceof ArrayType) {
+        if ($originalType->isArray()->yes()) {
             return $originalType;
         }
 

@@ -247,7 +247,7 @@ CODE_SAMPLE
         }
 
         // must be array type
-        if (! $arrayDimVariableType instanceof ArrayType) {
+        if (! $arrayDimVariableType->isArray()->yes()) {
             return null;
         }
 
