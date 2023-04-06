@@ -146,7 +146,7 @@ final class ReturnTypeInferer
 
         if ($resolvedType instanceof UnionType) {
             $benevolentUnionTypeIntegerType = $this->resolveBenevolentUnionTypeInteger($functionLike, $resolvedType);
-            if ($benevolentUnionTypeIntegerType instanceof IntegerType) {
+            if ($benevolentUnionTypeIntegerType->isInteger()->yes()) {
                 return $benevolentUnionTypeIntegerType;
             }
         }
@@ -165,7 +165,7 @@ final class ReturnTypeInferer
             return $unionType;
         }
 
-        if (! ($types[0] instanceof IntegerType && $types[1]->isString()->yes())) {
+        if (! ($types[0]->isInteger()->yes() && $types[1]->isString()->yes())) {
             return $unionType;
         }
 

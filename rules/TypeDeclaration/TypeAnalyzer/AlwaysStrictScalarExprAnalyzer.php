@@ -127,7 +127,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return true;
         }
 
-        if ($type instanceof IntegerType) {
+        if ($type->isInteger()->yes()) {
             return true;
         }
 

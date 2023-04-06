@@ -26,7 +26,7 @@ final class ScalarTypeComparator
             return $firstTypeClass === $secondTypeClass;
         }
 
-        if ($firstType instanceof IntegerType && $secondType instanceof IntegerType) {
+        if ($firstType->isInteger()->yes() && $secondType->isInteger()->yes()) {
             return true;
         }
 
@@ -80,7 +80,7 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if ($type instanceof IntegerType) {
+        if ($type->isInteger()->yes()) {
             return true;
         }
 
