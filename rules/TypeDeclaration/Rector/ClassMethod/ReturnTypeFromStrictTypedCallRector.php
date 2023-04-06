@@ -150,7 +150,7 @@ CODE_SAMPLE
         $resolvedType = $this->nodeTypeResolver->getType($arrowFunction->expr);
 
         // void type is not accepted for arrow functions - https://www.php.net/manual/en/functions.arrow.php#125673
-        if ($resolvedType instanceof VoidType) {
+        if ($resolvedType->isVoid()->yes()) {
             return null;
         }
 
@@ -169,7 +169,7 @@ CODE_SAMPLE
         $inferReturnType = $this->returnTypeInferer->inferFunctionLike($node);
         if ($inferReturnType instanceof UnionType) {
             foreach ($inferReturnType->getTypes() as $type) {
-                if ($type instanceof VoidType) {
+                if ($type->isVoid()->yes()) {
                     return true;
                 }
             }
