@@ -64,7 +64,7 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        if ($type instanceof BooleanType) {
+        if ($type->isBoolean()->yes()) {
             return true;
         }
 
