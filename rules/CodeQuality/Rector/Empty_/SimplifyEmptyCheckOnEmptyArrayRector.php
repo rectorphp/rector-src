@@ -125,6 +125,11 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         }
 
         $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
+
+        if ($type === null) {
+            return false;
+        }
+
         return $type->isArray()->yes();
     }
 }

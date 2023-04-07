@@ -33,7 +33,8 @@ final class TypeHasher
             return $type->describe(VerbosityLevel::precise()) . $type->isExplicitMixed();
         }
 
-        if ($type->isArray()->yes()) {
+        // @todo
+        if ($type instanceof ArrayType) {
             return $this->createTypeHash($type->getItemType()) . $this->createTypeHash($type->getKeyType()) . '[]';
         }
 
