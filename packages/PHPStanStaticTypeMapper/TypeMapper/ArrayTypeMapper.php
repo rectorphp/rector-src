@@ -101,7 +101,8 @@ final class ArrayTypeMapper implements TypeMapperInterface
             }
         }
 
-        if ($itemType->isArray()->yes() && $this->isGenericArrayCandidate($itemType)) {
+        // @todo
+        if ($itemType instanceof ArrayType && $this->isGenericArrayCandidate($itemType)) {
             return $this->createGenericArrayType($type, $typeKind, true);
         }
 

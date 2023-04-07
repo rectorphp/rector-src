@@ -153,11 +153,13 @@ final class TypeComparator
      */
     private function areArrayTypeWithSingleObjectChildToParent(Type $firstType, Type $secondType): bool
     {
-        if (! $firstType->isArray()->yes()) {
+        // @todo
+        if (! $firstType instanceof ArrayType) {
             return false;
         }
 
-        if (! $secondType->isArray()->yes()) {
+        // @todo
+        if (! $secondType instanceof ArrayType) {
             return false;
         }
 
