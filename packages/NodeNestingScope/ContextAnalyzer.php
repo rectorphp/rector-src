@@ -34,9 +34,10 @@ final class ContextAnalyzer
 
     public function isInLoop(Node $node): bool
     {
-        $stopNodes = array_merge(ControlStructure::LOOP_NODES, self::BREAK_NODES);
-
-        $firstParent = $this->betterNodeFinder->findParentByTypes($node, $stopNodes);
+        $firstParent = $this->betterNodeFinder->findParentByTypes(
+            $node,
+            [...ControlStructure::LOOP_NODES, ...self::BREAK_NODES]
+        );
         if (! $firstParent instanceof Node) {
             return false;
         }
@@ -63,9 +64,7 @@ final class ContextAnalyzer
      */
     public function isInIf(Node $node): bool
     {
-        $breakNodes = array_merge([If_::class], self::BREAK_NODES);
-
-        $previousNode = $this->betterNodeFinder->findParentByTypes($node, $breakNodes);
+        $previousNode = $this->betterNodeFinder->findParentByTypes($node, [If_::class, ...self::BREAK_NODES]);
         if (! $previousNode instanceof Node) {
             return false;
         }
