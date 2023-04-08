@@ -6,8 +6,8 @@ class IntegerKeys
 {
     public function run()
     {
-        $iter1 = [0 => 'two', 3 => 'four'];
-        $iter2 = [5 => 'six', 7 => 'eight'];
+        $iter1 = [0 => 'two'];
+        $iter2 = [1 => 'four'];
 
         return array_merge($iter1, $iter2);
     }
@@ -23,8 +23,8 @@ class IntegerKeys
 {
     public function run()
     {
-        $iter1 = [0 => 'two', 3 => 'four'];
-        $iter2 = [5 => 'six', 7 => 'eight'];
+        $iter1 = [0 => 'two'];
+        $iter2 = [1 => 'four'];
 
         return [...$iter1, ...$iter2];
     }
