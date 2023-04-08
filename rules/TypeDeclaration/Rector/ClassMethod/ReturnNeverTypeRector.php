@@ -31,6 +31,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ReturnNeverTypeRector extends AbstractRector
 {
+    /**
+     * @var array<int|string, mixed>&mixed[]
+     */
+    private const YIELD_AND_CONDITIONAL_NODES = [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES];
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
@@ -112,11 +116,9 @@ CODE_SAMPLE
         if ($hasReturn) {
             return true;
         }
-
-        $yieldAndConditionalNodes = array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
         $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
-            $yieldAndConditionalNodes
+            self::YIELD_AND_CONDITIONAL_NODES
         );
 
         if ($hasNotNeverNodes) {
@@ -143,7 +145,7 @@ CODE_SAMPLE
         return $this->isName($node->returnType, 'never');
     }
 
-    private function hasNeverFuncCall(ClassMethod | Function_ | Closure $functionLike): bool
+    private function hasNeverFuncCall(\ClassMethod|\Closure|\Function_ $functionLike): bool
     {
         $hasNeverType = false;
 
