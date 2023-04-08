@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PHPStan\Type\ClassStringType;
+use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 /**
@@ -69,7 +70,7 @@ final class ScalarTypeComparator
 
     private function isScalarType(Type $type): bool
     {
-        if ($type->isString()->yes()) {
+        if ($type instanceof StringType) {
             return true;
         }
 
