@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PHPStan\Type\ClassStringType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\Type;
 
 /**
