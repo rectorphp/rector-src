@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Type;
 
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
-use PHPStan\Type\FloatType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -77,7 +74,8 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        return $type->isFloat()->yes();
+        return $type->isFloat()
+            ->yes();
     }
 
     private function isAlwaysTruableUnionType(Type $type): bool
