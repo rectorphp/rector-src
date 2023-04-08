@@ -30,7 +30,7 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if ($firstType->isFloat()->yes() && $secondType->isFloat()->yes()) {
+        if ($firstType instanceof FloatType && $secondType instanceof FloatType) {
             return true;
         }
 
@@ -76,7 +76,7 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if ($type->isFloat()->yes()) {
+        if ($type instanceof FloatType) {
             return true;
         }
 
