@@ -175,7 +175,7 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
-            if ($returnType->isVoid()->yes() && ! $childReturnType->isVoid()->yes()) {
+            if ($returnType instanceof VoidType && ! $childReturnType instanceof VoidType) {
                 return true;
             }
         }
