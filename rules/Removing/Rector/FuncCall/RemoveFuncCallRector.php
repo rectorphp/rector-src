@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -58,12 +59,19 @@ CODE_SAMPLE
                 continue;
             }
 
+            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+            if ($parent instanceof Node\Expr || $parent instanceof Node\Stmt) {
+                $this->removeNode($parent);
+                break;
+            }
+
             $this->removeNode($node);
 
-            return null;
+            break;
         }
 
-        return $node;
+        return null;
     }
 
     /**
