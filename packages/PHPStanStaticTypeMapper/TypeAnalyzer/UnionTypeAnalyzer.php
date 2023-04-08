@@ -115,7 +115,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($type instanceof IntegerType) {
+            if ($type->isInteger()->yes()) {
                 continue;
             }
 
