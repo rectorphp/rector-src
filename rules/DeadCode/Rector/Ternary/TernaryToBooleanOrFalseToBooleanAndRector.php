@@ -80,7 +80,7 @@ CODE_SAMPLE
         }
 
         $ifType = $this->getType($node->if);
-        if (! $ifType->isBoolean()->yes()) {
+        if (! $ifType instanceof BooleanType) {
             return null;
         }
 

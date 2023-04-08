@@ -92,7 +92,7 @@ CODE_SAMPLE
         $booleanExpr = $expression->expr;
 
         $leftStaticType = $this->getType($booleanExpr->left);
-        if (! $leftStaticType->isBoolean()->yes()) {
+        if (! $leftStaticType instanceof BooleanType) {
             return null;
         }
 

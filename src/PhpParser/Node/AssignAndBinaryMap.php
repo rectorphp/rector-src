@@ -132,7 +132,7 @@ final class AssignAndBinaryMap
         }
 
         $type = $scope->getType($expr);
-        if ($type->isBoolean()->yes()) {
+        if ($type instanceof BooleanType) {
             return $expr;
         }
 

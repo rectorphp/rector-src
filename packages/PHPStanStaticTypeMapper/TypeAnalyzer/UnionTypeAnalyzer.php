@@ -118,7 +118,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($type->isBoolean()->yes()) {
+            if ($type instanceof BooleanType) {
                 continue;
             }
 

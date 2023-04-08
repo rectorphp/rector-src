@@ -34,7 +34,11 @@ final class ScalarTypeComparator
             return true;
         }
 
-        return $firstType instanceof BooleanType && $secondType instanceof BooleanType;
+        if (! $firstType instanceof BooleanType) {
+            return false;
+        }
+
+        return $secondType instanceof BooleanType;
     }
 
     /**
