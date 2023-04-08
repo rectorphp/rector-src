@@ -113,10 +113,9 @@ CODE_SAMPLE
             return true;
         }
 
-        $yieldAndConditionalNodes = array_merge([Yield_::class], ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES);
         $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
-            $yieldAndConditionalNodes
+            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
         );
 
         if ($hasNotNeverNodes) {
@@ -143,7 +142,7 @@ CODE_SAMPLE
         return $this->isName($node->returnType, 'never');
     }
 
-    private function hasNeverFuncCall(ClassMethod | Function_ | Closure $functionLike): bool
+    private function hasNeverFuncCall(ClassMethod | Closure | Function_ $functionLike): bool
     {
         $hasNeverType = false;
 
