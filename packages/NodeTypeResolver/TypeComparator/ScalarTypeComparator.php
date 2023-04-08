@@ -17,7 +17,7 @@ final class ScalarTypeComparator
 {
     public function areEqualScalar(Type $firstType, Type $secondType): bool
     {
-        if ($firstType instanceof StringType && $secondType instanceof StringType) {
+        if ($firstType->isString()->yes() && $secondType->isString()->yes()) {
             // prevents "class-string" vs "string"
             $firstTypeClass = $firstType::class;
             $secondTypeClass = $secondType::class;
@@ -55,11 +55,11 @@ final class ScalarTypeComparator
         }
 
         // treat class-string and string the same
-        if ($firstType instanceof ClassStringType && $secondType instanceof StringType) {
+        if ($firstType->isString()->yes() && $secondType->isString()->yes()) {
             return false;
         }
 
-        if (! $firstType instanceof StringType) {
+        if (! $firstType->isString()->yes()) {
             return $firstType::class !== $secondType::class;
         }
 
@@ -72,7 +72,7 @@ final class ScalarTypeComparator
 
     private function isScalarType(Type $type): bool
     {
-        if ($type instanceof StringType) {
+        if ($type->isString()->yes()) {
             return true;
         }
 
