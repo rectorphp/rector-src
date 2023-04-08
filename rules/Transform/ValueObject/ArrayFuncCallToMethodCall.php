@@ -9,12 +9,6 @@ use Rector\Transform\Contract\ValueObject\ArgumentFuncCallToMethodCallInterface;
 
 final class ArrayFuncCallToMethodCall implements ArgumentFuncCallToMethodCallInterface
 {
-    /**
-     * @param non-empty-string $function
-     * @param non-empty-string $class
-     * @param non-empty-string $arrayMethod
-     * @param non-empty-string $nonArrayMethod
-     */
     public function __construct(
         private readonly string $function,
         private readonly string $class,

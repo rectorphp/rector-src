@@ -133,9 +133,6 @@ CODE_SAMPLE
         return $this->nodeFactory->createStaticCall($objectReference, $methodName, $node->args);
     }
 
-    /**
-     * @return ObjectReference::STATIC|ObjectReference::SELF
-     */
     private function resolveClassSelf(MethodCall $methodCall): string
     {
         $classLike = $this->betterNodeFinder->findParentType($methodCall, Class_::class);
