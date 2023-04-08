@@ -111,7 +111,7 @@ CODE_SAMPLE
         }
 
         $conditionStaticType = $this->getType($conditionNode);
-        if ($conditionStaticType->isBoolean()->yes()) {
+        if ($conditionStaticType instanceof BooleanType) {
             return null;
         }
 

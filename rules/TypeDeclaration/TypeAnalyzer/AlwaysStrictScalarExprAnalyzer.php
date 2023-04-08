@@ -131,7 +131,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return true;
         }
 
-        return $type->isBoolean()->yes();
+        return $type instanceof BooleanType;
     }
 
     private function resolveTypeFromScalar(Scalar $scalar): Type|null

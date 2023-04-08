@@ -34,11 +34,11 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if (! $firstType->isBoolean()->yes()) {
+        if (! $firstType instanceof BooleanType) {
             return false;
         }
 
-        return $secondType->isBoolean()->yes();
+        return $secondType instanceof BooleanType;
     }
 
     /**
@@ -84,6 +84,6 @@ final class ScalarTypeComparator
             return true;
         }
 
-        return $type->isBoolean()->yes();
+        return $type instanceof BooleanType;
     }
 }
