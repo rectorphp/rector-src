@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\TypeComparator;
 
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
@@ -34,11 +33,12 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if (! $firstType instanceof BooleanType) {
+        if (! $firstType->isBoolean()->yes()) {
             return false;
         }
 
-        return $secondType instanceof BooleanType;
+        return $secondType->isBoolean()
+            ->yes();
     }
 
     /**
@@ -84,6 +84,7 @@ final class ScalarTypeComparator
             return true;
         }
 
-        return $type instanceof BooleanType;
+        return $type->isBoolean()
+            ->yes();
     }
 }

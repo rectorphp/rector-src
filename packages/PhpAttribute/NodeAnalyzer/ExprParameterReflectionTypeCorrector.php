@@ -11,7 +11,6 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Core\PhpParser\Node\NodeFactory;
@@ -96,7 +95,7 @@ final class ExprParameterReflectionTypeCorrector
             return new LNumber((int) $item->value);
         }
 
-        if ($clearParameterType instanceof BooleanType && $item instanceof String_) {
+        if ($clearParameterType->isBoolean()->yes() && $item instanceof String_) {
             if (strtolower($item->value) === 'true') {
                 return $this->nodeFactory->createTrue();
             }

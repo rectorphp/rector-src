@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Ternary;
-use PHPStan\Type\BooleanType;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -111,7 +110,7 @@ final class UnnecessaryTernaryExpressionRector extends AbstractRector
     private function processTrueIfExpressionWithFalseElseExpression(Expr $expr): Expr
     {
         $exprType = $this->getType($expr);
-        if ($exprType instanceof BooleanType) {
+        if ($exprType->isBoolean()->yes()) {
             return $expr;
         }
 
@@ -122,7 +121,7 @@ final class UnnecessaryTernaryExpressionRector extends AbstractRector
     {
         if ($expr instanceof BooleanNot) {
             $negatedExprType = $this->getType($expr->expr);
-            if ($negatedExprType instanceof BooleanType) {
+            if ($negatedExprType->isBoolean()->yes()) {
                 return $expr->expr;
             }
 
@@ -130,7 +129,7 @@ final class UnnecessaryTernaryExpressionRector extends AbstractRector
         }
 
         $exprType = $this->getType($expr);
-        if ($exprType instanceof BooleanType) {
+        if ($exprType->isBoolean()->yes()) {
             return new BooleanNot($expr);
         }
 

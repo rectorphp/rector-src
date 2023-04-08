@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\UnionType;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -61,7 +60,7 @@ final class ExprBoolCaster
         }
 
         $exprType = $this->nodeTypeResolver->getType($expr);
-        if ($exprType instanceof BooleanType) {
+        if ($exprType->isBoolean()->yes()) {
             return false;
         }
 
