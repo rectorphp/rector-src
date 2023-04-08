@@ -24,6 +24,8 @@ use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\FloatType;
+use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -242,8 +244,7 @@ final class NodeTypeResolver
             return true;
         }
 
-        return $nodeType->isFloat()
-            ->yes();
+        return $nodeType->isFloat()->yes();
     }
 
     /**
