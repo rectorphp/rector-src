@@ -22,9 +22,13 @@ final class ContextAnalyzer
 {
     /**
      * Nodes that break the scope they way up, e.g. class method
-     * @var array<class-string<FunctionLike>>
+     * @var string[]
      */
     private const BREAK_NODES = [FunctionLike::class, ClassMethod::class];
+    /**
+     * @var array<int|string, mixed>&mixed[]
+     */
+    private const STOP_NODES = [...ControlStructure::LOOP_NODES, ...self::BREAK_NODES];
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -34,9 +38,7 @@ final class ContextAnalyzer
 
     public function isInLoop(Node $node): bool
     {
-        $stopNodes = array_merge(ControlStructure::LOOP_NODES, self::BREAK_NODES);
-
-        $firstParent = $this->betterNodeFinder->findParentByTypes($node, $stopNodes);
+        $firstParent = $this->betterNodeFinder->findParentByTypes($node, self::STOP_NODES);
         if (! $firstParent instanceof Node) {
             return false;
         }
@@ -63,9 +65,7 @@ final class ContextAnalyzer
      */
     public function isInIf(Node $node): bool
     {
-        $breakNodes = array_merge([If_::class], self::BREAK_NODES);
-
-        $previousNode = $this->betterNodeFinder->findParentByTypes($node, $breakNodes);
+        $previousNode = $this->betterNodeFinder->findParentByTypes($node, self::BREAK_NODES);
         if (! $previousNode instanceof Node) {
             return false;
         }
