@@ -6,9 +6,9 @@ namespace Rector\Removing\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -46,29 +46,24 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [FuncCall::class, Expression::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param FuncCall|Expression $node
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->removedFunctions as $removedFunction) {
-            if (! $this->isName($node->name, $removedFunction)) {
-                continue;
-            }
+        $expr = $node->expr;
 
-            $parent = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $expr instanceof FuncCall) {
+            return null;
+        }
 
-            if ($parent instanceof Node\Expr || $parent instanceof Node\Stmt) {
-                $this->removeNode($parent);
-                break;
-            }
+        $removed = $this->removeNodeIfNeeded($expr);
 
-            $this->removeNode($node);
-
-            break;
+        if (! $removed) {
+            $this->removeNodeIfNeeded($node);
         }
 
         return null;
@@ -81,5 +76,24 @@ CODE_SAMPLE
     {
         Assert::allString($configuration);
         $this->removedFunctions = $configuration;
+    }
+
+    private function removeNodeIfNeeded(FuncCall $node): bool
+    {
+        $removed = false;
+
+        foreach ($this->removedFunctions as $removedFunction) {
+            if (!$this->isName($node->name, $removedFunction)) {
+                continue;
+            }
+
+            $this->removeNode($node);
+
+            $removed = true;
+
+            break;
+        }
+
+        return $removed;
     }
 }
