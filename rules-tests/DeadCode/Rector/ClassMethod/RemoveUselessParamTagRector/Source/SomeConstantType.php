@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector\Source;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Source;
 
 final class SomeConstantType
 {
