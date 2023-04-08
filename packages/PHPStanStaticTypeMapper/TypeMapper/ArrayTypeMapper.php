@@ -247,7 +247,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private function isIntegerKeyAndNonNestedArray(ArrayType $arrayType): bool
     {
-        if (! $arrayType->getKeyType()->isInteger()->yes()) {
+        if (! $arrayType->getKeyType() instanceof IntegerType) {
             return false;
         }
 

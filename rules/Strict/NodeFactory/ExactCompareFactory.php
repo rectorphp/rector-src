@@ -38,7 +38,7 @@ final class ExactCompareFactory
             return new Identical($expr, new String_(''));
         }
 
-        if ($exprType->isInteger()->yes()) {
+        if ($exprType instanceof IntegerType) {
             return new Identical($expr, new LNumber(0));
         }
 
@@ -70,7 +70,7 @@ final class ExactCompareFactory
             return new NotIdentical($expr, new String_(''));
         }
 
-        if ($exprType->isInteger()->yes()) {
+        if ($exprType instanceof IntegerType) {
             return new NotIdentical($expr, new LNumber(0));
         }
 

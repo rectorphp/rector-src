@@ -90,7 +90,7 @@ final class ExprParameterReflectionTypeCorrector
         $clearParameterType = TypeCombinator::removeNull($parameterType);
 
         // correct type
-        if ($clearParameterType->isInteger()->yes() && $item instanceof String_) {
+        if ($clearParameterType instanceof IntegerType && $item instanceof String_) {
             return new LNumber((int) $item->value);
         }
 
