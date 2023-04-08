@@ -41,7 +41,7 @@ final class PhpDocTypeChanger
     /**
      * @var array<class-string<Node>>
      */
-    public const ALLOWED_TYPES = [
+    private const ALLOWED_TYPES = [
         GenericTypeNode::class,
         SpacingAwareArrayTypeNode::class,
         SpacingAwareCallableTypeNode::class,
