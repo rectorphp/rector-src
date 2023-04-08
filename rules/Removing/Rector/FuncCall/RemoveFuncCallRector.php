@@ -46,11 +46,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, Expression::class];
+        return [Expression::class];
     }
 
     /**
-     * @param FuncCall|Expression $node
+     * @param Expression $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -60,11 +60,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $removed = $this->removeNodeIfNeeded($expr);
-
-        if (! $removed) {
-            $this->removeNodeIfNeeded($node);
-        }
+        $this->removeNodeIfNeeded($node, $expr);
 
         return null;
     }
@@ -78,22 +74,16 @@ CODE_SAMPLE
         $this->removedFunctions = $configuration;
     }
 
-    private function removeNodeIfNeeded(FuncCall $node): bool
+    private function removeNodeIfNeeded(Expression $node, FuncCall $expr): void
     {
-        $removed = false;
-
         foreach ($this->removedFunctions as $removedFunction) {
-            if (!$this->isName($node->name, $removedFunction)) {
+            if (!$this->isName($expr->name, $removedFunction)) {
                 continue;
             }
 
             $this->removeNode($node);
 
-            $removed = true;
-
             break;
         }
-
-        return $removed;
     }
 }
