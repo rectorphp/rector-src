@@ -26,7 +26,8 @@ final class DeadReturnTagValueNodeAnalyzer
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
         private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
-        private readonly StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard
+        private readonly StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 
@@ -50,7 +51,7 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if (in_array($returnTagValueNode->type::class, PhpDocTypeChanger::ALLOWED_TYPES, true)) {
+        if ($this->phpDocTypeChanger->isAllowed($returnTagValueNode->type)) {
             return false;
         }
 
