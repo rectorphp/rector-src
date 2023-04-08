@@ -13,7 +13,7 @@ final class BoolUnionTypeAnalyzer
     public function isBoolUnionType(UnionType $unionType): bool
     {
         foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof BooleanType) {
+            if (! $unionedType->isBoolean()->yes()) {
                 return false;
             }
         }
@@ -30,7 +30,7 @@ final class BoolUnionTypeAnalyzer
                 continue;
             }
 
-            if ($unionedType instanceof BooleanType) {
+            if ($unionedType->isBoolean()->yes()) {
                 continue;
             }
 

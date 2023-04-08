@@ -61,7 +61,7 @@ final class ExprBoolCaster
         }
 
         $exprType = $this->nodeTypeResolver->getType($expr);
-        if ($exprType instanceof BooleanType) {
+        if ($exprType->isBoolean()->yes()) {
             return false;
         }
 
