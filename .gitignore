@@ -4,6 +4,7 @@ composer.lock
 # PHPStorm meta files
 .idea/
 
+phpunit.xml
 .phpunit.result.cache
 # since PHPUnit 10
 .phpunit.cache
