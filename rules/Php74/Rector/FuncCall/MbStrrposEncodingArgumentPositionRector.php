@@ -65,7 +65,7 @@ final class MbStrrposEncodingArgumentPositionRector extends AbstractRector imple
         }
 
         $secondArgType = $this->getType($node->args[2]->value);
-        if ($secondArgType->isInteger()->yes()) {
+        if ($secondArgType instanceof IntegerType) {
             return null;
         }
 

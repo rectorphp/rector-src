@@ -42,7 +42,7 @@ final class SwitchAnalyzer
         $uniqueTypes = $this->typeFactory->uniquateTypes($types);
         $countUniqueTypes = count($uniqueTypes);
 
-        if ($countUniqueTypes === 1 && $uniqueTypes[0]->isInteger()->yes()) {
+        if ($countUniqueTypes === 1 && $uniqueTypes[0] instanceof IntegerType) {
             $switchCondType = $this->nodeTypeResolver->getType($expr);
             if (! $switchCondType instanceof MixedType && $switchCondType->isString()->maybe()) {
                 return true;

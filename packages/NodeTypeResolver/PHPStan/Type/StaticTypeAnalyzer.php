@@ -73,7 +73,7 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        if ($type->isInteger()->yes()) {
+        if ($type instanceof IntegerType) {
             return true;
         }
 

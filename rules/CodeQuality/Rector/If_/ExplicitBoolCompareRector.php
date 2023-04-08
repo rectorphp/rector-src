@@ -160,7 +160,7 @@ CODE_SAMPLE
         }
 
         $exprType = $this->getType($expr);
-        if ($exprType->isInteger()->yes()) {
+        if ($exprType instanceof IntegerType) {
             return $this->resolveInteger($isNegated, $expr);
         }
 
