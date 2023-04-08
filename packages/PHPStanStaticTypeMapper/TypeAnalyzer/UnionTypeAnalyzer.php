@@ -110,7 +110,7 @@ final class UnionTypeAnalyzer
         }
 
         foreach ($types as $type) {
-            if ($type instanceof StringType && ! $type instanceof ConstantStringType) {
+            if ($type->isString()->yes() && ! $type instanceof ConstantStringType) {
                 continue;
             }
 
