@@ -158,13 +158,16 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             return;
         }
 
+        $fixtureFilename = basename($fixtureFilePath);
+        $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
+
         try {
-            $this->assertSame($expectedFileContents, $changedContent);
+            $this->assertSame($expectedFileContents, $changedContent, $failureMessage);
         } catch (ExpectationFailedException) {
             FixtureFileUpdater::updateFixtureContent($originalFilePath, $changedContent, $fixtureFilePath);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
-            $this->assertStringMatchesFormat($expectedFileContents, $changedContent);
+            $this->assertStringMatchesFormat($expectedFileContents, $changedContent, $failureMessage);
         }
     }
 
