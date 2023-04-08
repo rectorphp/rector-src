@@ -130,9 +130,6 @@ final class ProcessCommand extends AbstractProcessCommand
         }
     }
 
-    /**
-     * @return ExitCode::*
-     */
     private function resolveReturnCode(ProcessResult $processResult, Configuration $configuration): int
     {
         // some system errors were found → fail

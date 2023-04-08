@@ -55,7 +55,6 @@ final class ClosureTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param ClosureType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
@@ -74,7 +73,6 @@ final class ClosureTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @return CallableTypeParameterNode[]
      */
     private function createCallableTypeParameterNodes(ClosureType $closureType, string $typeKind): array

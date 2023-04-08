@@ -39,7 +39,6 @@ final class CallableTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param CallableType $type
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
@@ -50,7 +49,6 @@ final class CallableTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param CallableType|ClosureType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node

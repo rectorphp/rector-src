@@ -266,7 +266,6 @@ final class NodeFactory
     }
 
     /**
-     * @param string|ObjectReference::* $class
      * @param Node[] $args
      */
     public function createStaticCall(string $class, string $method, array $args = []): StaticCall
@@ -343,7 +342,6 @@ final class NodeFactory
 
     /**
      * @api phpunit
-     * @param string|ObjectReference::* $constantName
      */
     public function createClassConstFetchFromName(Name $className, string $constantName): ClassConstFetch
     {
@@ -448,9 +446,6 @@ final class NodeFactory
         return $booleanAnd;
     }
 
-    /**
-     * @param string|ObjectReference::* $className
-     */
     private function createName(string $className): Name|FullyQualified
     {
         if (in_array($className, [ObjectReference::PARENT, ObjectReference::SELF, ObjectReference::STATIC], true)) {

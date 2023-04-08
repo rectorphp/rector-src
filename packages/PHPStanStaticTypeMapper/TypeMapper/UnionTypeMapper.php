@@ -33,7 +33,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\BoolUnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
@@ -184,9 +183,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new PhpParserUnionType($types);
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function mapNullabledType(Type $nullabledType, string $typeKind): ?Node
     {
         // void cannot be nullable
@@ -278,7 +274,6 @@ final class UnionTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @return Name|FullyQualified|ComplexType|Identifier|null
      */
     private function matchTypeForUnionedObjectTypes(UnionType $unionType, string $typeKind): ?Node
@@ -339,9 +334,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new FullyQualified($compatibleObjectType->getClassName());
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function matchPhpParserUnionType(
         UnionType $unionType,
         string $typeKind
@@ -380,9 +372,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function resolveAllowedStandaloneTypeInUnionType(
         Type $unionedType,
         string $typeKind
@@ -487,9 +476,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new Identifier('int');
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function narrowBoolType(
         UnionType $unionType,
         PhpParserUnionType $phpParserUnionType,

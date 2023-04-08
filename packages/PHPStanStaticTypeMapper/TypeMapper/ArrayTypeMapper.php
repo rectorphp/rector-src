@@ -82,7 +82,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param ArrayType $type
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
@@ -126,9 +125,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return new Identifier('array');
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function createArrayTypeNodeFromUnionType(
         UnionType $unionType,
         string $typeKind
@@ -186,9 +182,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return false;
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function createGenericArrayType(
         ArrayType $arrayType,
         string $typeKind,
@@ -254,9 +247,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return ! $arrayType->getItemType() instanceof ArrayType;
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function narrowConstantArrayTypeOfUnionType(
         ArrayType $arrayType,
         Type $itemType,
@@ -281,9 +271,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         return null;
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function createTypeNodeFromGenericClassStringType(
         GenericClassStringType $genericClassStringType,
         string $typeKind

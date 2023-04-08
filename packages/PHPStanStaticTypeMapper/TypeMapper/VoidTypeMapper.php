@@ -47,7 +47,6 @@ final class VoidTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param VoidType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
