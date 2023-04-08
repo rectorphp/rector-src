@@ -14,7 +14,6 @@ use PHPStan\Type\ConditionalType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 
 final class PHPStanStaticTypeMapper
 {
@@ -26,9 +25,6 @@ final class PHPStanStaticTypeMapper
     ) {
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
         foreach ($this->typeMappers as $typeMapper) {
@@ -54,9 +50,6 @@ final class PHPStanStaticTypeMapper
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     public function mapToPhpParserNode(Type $type, string $typeKind): Name | ComplexType | Identifier | null
     {
         foreach ($this->typeMappers as $typeMapper) {

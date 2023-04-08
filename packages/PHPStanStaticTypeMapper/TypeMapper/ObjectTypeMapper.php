@@ -16,7 +16,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
@@ -111,9 +110,6 @@ final class ObjectTypeMapper implements TypeMapperInterface
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
     private function mapGenericObjectType(GenericObjectType $genericObjectType, string $typeKind): TypeNode
     {
         $name = $this->resolveGenericObjectTypeName($genericObjectType);

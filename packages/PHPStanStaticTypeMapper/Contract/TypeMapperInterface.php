@@ -10,7 +10,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 
 /**
  * @template TType of Type
@@ -24,13 +23,11 @@ interface TypeMapperInterface
 
     /**
      * @param TType $type
-     * @param TypeKind::* $typeKind
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode;
 
     /**
      * @param TType $type
-     * @param TypeKind::* $typeKind
      * @return Name|ComplexType|Identifier|null
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node;

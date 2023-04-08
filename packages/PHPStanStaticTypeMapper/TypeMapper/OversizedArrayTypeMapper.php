@@ -12,7 +12,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\OversizedArrayType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 
 /**
  * @implements TypeMapperInterface<OversizedArrayType>
@@ -28,7 +27,6 @@ final class OversizedArrayTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param OversizedArrayType $type
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
@@ -37,7 +35,6 @@ final class OversizedArrayTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param OversizedArrayType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node

@@ -35,7 +35,6 @@ final class NullTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @param NullType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
