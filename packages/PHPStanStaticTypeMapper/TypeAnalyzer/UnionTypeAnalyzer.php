@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeAnalyzer;
 
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
