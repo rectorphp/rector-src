@@ -32,6 +32,7 @@ final class DeadParamTagValueNodeAnalyzer
         private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
         private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
         private readonly ParamAnalyzer $paramAnalyzer,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 
@@ -58,7 +59,7 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        if (in_array($paramTagValueNode->type::class, PhpDocTypeChanger::ALLOWED_TYPES, true)) {
+        if ($this->phpDocTypeChanger->isAllowed($paramTagValueNode->type)) {
             return false;
         }
 
