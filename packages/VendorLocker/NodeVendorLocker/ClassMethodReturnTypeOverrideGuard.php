@@ -178,9 +178,11 @@ final class ClassMethodReturnTypeOverrideGuard
             if (!$returnType->isVoid()->yes()) {
                 continue;
             }
+
             if ($childReturnType->isVoid()->yes()) {
                 continue;
             }
+
             return true;
         }
 
