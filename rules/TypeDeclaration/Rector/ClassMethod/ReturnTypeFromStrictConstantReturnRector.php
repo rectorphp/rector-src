@@ -94,9 +94,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @return PhpVersion::*
-     */
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
