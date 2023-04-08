@@ -142,7 +142,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($cond);
-        if (! $type instanceof BooleanType) {
+        if (! $type->isBoolean()->yes()) {
             return false;
         }
 
