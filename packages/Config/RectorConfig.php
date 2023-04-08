@@ -149,9 +149,6 @@ final class RectorConfig extends ContainerConfigurator
         }
     }
 
-    /**
-     * @param PhpVersion::* $phpVersion
-     */
     public function phpVersion(int $phpVersion): void
     {
         $parameters = $this->parameters();
