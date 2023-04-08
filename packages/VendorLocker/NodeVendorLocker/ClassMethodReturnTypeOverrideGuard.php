@@ -14,7 +14,6 @@ use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\VoidType;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -176,9 +175,15 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
-            if ($returnType instanceof VoidType && ! $childReturnType instanceof VoidType) {
-                return true;
+            if (!$returnType->isVoid()->yes()) {
+                continue;
             }
+
+            if ($childReturnType->isVoid()->yes()) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
