@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\TypeComparator;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 
 /**
