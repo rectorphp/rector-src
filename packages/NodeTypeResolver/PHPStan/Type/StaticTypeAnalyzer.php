@@ -74,8 +74,7 @@ final class StaticTypeAnalyzer
             return true;
         }
 
-        return $type->isFloat()
-            ->yes();
+        return $type instanceof FloatType;
     }
 
     private function isAlwaysTruableUnionType(Type $type): bool
