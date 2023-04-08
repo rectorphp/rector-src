@@ -53,7 +53,7 @@ CODE_SAMPLE
 
         $type = $this->getType($node->expr);
 
-        if ($type instanceof VoidType) {
+        if ($type->isVoid()->yes()) {
             return null;
         }
 
