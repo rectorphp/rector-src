@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
+use PHPStan\Type\BooleanType;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -79,12 +80,12 @@ CODE_SAMPLE
             $identical = $node->expr;
 
             $leftType = $this->getType($identical->left);
-            if (! $leftType->isBoolean()->yes()) {
+            if (! $leftType instanceof BooleanType) {
                 return null;
             }
 
             $rightType = $this->getType($identical->right);
-            if (! $rightType->isBoolean()->yes()) {
+            if (! $rightType instanceof BooleanType) {
                 return null;
             }
 
@@ -97,12 +98,12 @@ CODE_SAMPLE
     private function processIdentical(Identical $identical): ?NotIdentical
     {
         $leftType = $this->getType($identical->left);
-        if (! $leftType->isBoolean()->yes()) {
+        if (! $leftType instanceof BooleanType) {
             return null;
         }
 
         $rightType = $this->getType($identical->right);
-        if (! $rightType->isBoolean()->yes()) {
+        if (! $rightType instanceof BooleanType) {
             return null;
         }
 

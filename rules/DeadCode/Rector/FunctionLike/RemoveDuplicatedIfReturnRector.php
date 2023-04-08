@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
+use PHPStan\Type\BooleanType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -141,7 +142,7 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($cond);
-        if (! $type->isBoolean()->yes()) {
+        if (! $type instanceof BooleanType) {
             return false;
         }
 

@@ -94,10 +94,7 @@ CODE_SAMPLE
             $expr->args[1] = new Arg($resultVariable);
 
             $nextExpression = $stmtsAware->stmts[$key + 1];
-            $this->traverseNodesWithCallable($nextExpression, function (Node $node) use (
-                $resultVariable,
-                &$hasChanged
-            ): ?Variable {
+            $this->traverseNodesWithCallable($nextExpression, function (Node $node) use ($resultVariable, &$hasChanged): ?Variable {
                 if (! $node instanceof FuncCall) {
                     return null;
                 }

@@ -17,11 +17,13 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BenevolentUnionType;
+use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\VoidType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Php\PhpVersionProvider;
@@ -120,7 +122,7 @@ final class ReturnTypeInferer
         ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         Type $resolvedType
     ): Type {
-        if ($resolvedType->isVoid()->yes()) {
+        if ($resolvedType instanceof VoidType) {
             if ($functionLike instanceof ArrowFunction) {
                 return new MixedType();
             }
@@ -144,7 +146,7 @@ final class ReturnTypeInferer
 
         if ($resolvedType instanceof UnionType) {
             $benevolentUnionTypeIntegerType = $this->resolveBenevolentUnionTypeInteger($functionLike, $resolvedType);
-            if ($benevolentUnionTypeIntegerType->isInteger()->yes()) {
+            if ($benevolentUnionTypeIntegerType instanceof IntegerType) {
                 return $benevolentUnionTypeIntegerType;
             }
         }
@@ -155,7 +157,7 @@ final class ReturnTypeInferer
     private function resolveBenevolentUnionTypeInteger(
         ClassMethod|Function_|Closure|ArrowFunction $functionLike,
         UnionType $unionType
-    ): Type {
+    ): UnionType|IntegerType {
         $types = $unionType->getTypes();
         $countTypes = count($types);
 
@@ -163,7 +165,7 @@ final class ReturnTypeInferer
             return $unionType;
         }
 
-        if (! ($types[0]->isInteger()->yes() && $types[1]->isString()->yes())) {
+        if (! ($types[0] instanceof IntegerType && $types[1]->isString()->yes())) {
             return $unionType;
         }
 

@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PHPStan\Type\BooleanType;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -92,7 +93,7 @@ CODE_SAMPLE
         $booleanExpr = $expression->expr;
 
         $leftStaticType = $this->getType($booleanExpr->left);
-        if (! $leftStaticType->isBoolean()->yes()) {
+        if (! $leftStaticType instanceof BooleanType) {
             return null;
         }
 
