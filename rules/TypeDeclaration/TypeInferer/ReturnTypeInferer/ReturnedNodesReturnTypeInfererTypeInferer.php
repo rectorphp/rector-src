@@ -170,7 +170,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
             $correctedType = $this->inferFromReturnedMethodCall($return, $functionLike);
 
             // override only if has some extra value
-            if (! $correctedType instanceof MixedType && ! $correctedType->isVoid()->yes()) {
+            if (! $correctedType instanceof MixedType && ! $correctedType instanceof VoidType) {
                 return $correctedType;
             }
         }
