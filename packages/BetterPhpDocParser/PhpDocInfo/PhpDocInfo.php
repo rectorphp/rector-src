@@ -458,7 +458,10 @@ final class PhpDocInfo
     public function getGenericTagClassNames(): array
     {
         /** @var GenericTagValueNode[] $genericTagValueNodes */
-        $genericTagValueNodes = $this->phpDocNodeByTypeFinder->findByType($this->phpDocNode, GenericTagValueNode::class);
+        $genericTagValueNodes = $this->phpDocNodeByTypeFinder->findByType(
+            $this->phpDocNode,
+            GenericTagValueNode::class
+        );
 
         $resolvedClasses = [];
 
