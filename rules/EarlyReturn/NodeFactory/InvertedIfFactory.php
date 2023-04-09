@@ -6,6 +6,7 @@ namespace Rector\EarlyReturn\NodeFactory;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -27,11 +28,9 @@ final class InvertedIfFactory
      * @param Expr[] $conditions
      * @return If_[]
      */
-    public function createFromConditions(If_ $if, array $conditions, Return_ $return): array
+    public function createFromConditions(If_ $if, array $conditions, Return_ $return, ?Stmt $ifNextReturn): array
     {
         $ifs = [];
-        $ifNextReturn = $this->getIfNextReturn($if);
-
         $stmt = $this->contextAnalyzer->isInLoop($if) && ! $ifNextReturn instanceof Return_
             ? [new Continue_()]
             : [$return];
@@ -61,15 +60,5 @@ final class InvertedIfFactory
             $if,
             static fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
         );
-    }
-
-    private function getIfNextReturn(If_ $if): ?Return_
-    {
-        $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Return_) {
-            return null;
-        }
-
-        return $nextNode;
     }
 }
