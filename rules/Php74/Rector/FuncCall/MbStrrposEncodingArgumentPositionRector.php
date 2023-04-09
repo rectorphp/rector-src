@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
-use PHPStan\Type\IntegerType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -65,7 +64,7 @@ final class MbStrrposEncodingArgumentPositionRector extends AbstractRector imple
         }
 
         $secondArgType = $this->getType($node->args[2]->value);
-        if ($secondArgType instanceof IntegerType) {
+        if ($secondArgType->isInteger()->yes()) {
             return null;
         }
 

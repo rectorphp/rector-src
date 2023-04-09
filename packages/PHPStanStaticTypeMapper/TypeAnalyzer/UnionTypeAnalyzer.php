@@ -6,7 +6,6 @@ namespace Rector\PHPStanStaticTypeMapper\TypeAnalyzer;
 
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -115,7 +114,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($type instanceof IntegerType) {
+            if ($type->isInteger()->yes()) {
                 continue;
             }
 

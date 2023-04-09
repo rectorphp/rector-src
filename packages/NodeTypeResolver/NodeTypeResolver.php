@@ -24,7 +24,6 @@ use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -239,7 +238,7 @@ final class NodeTypeResolver
     public function isNumberType(Expr $expr): bool
     {
         $nodeType = $this->getType($expr);
-        if ($nodeType instanceof IntegerType) {
+        if ($nodeType->isInteger()->yes()) {
             return true;
         }
 

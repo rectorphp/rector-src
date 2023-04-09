@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PHPStan\Type\ClassStringType;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\Type;
 
 /**
@@ -23,7 +22,7 @@ final class ScalarTypeComparator
             return $firstTypeClass === $secondTypeClass;
         }
 
-        if ($firstType instanceof IntegerType && $secondType instanceof IntegerType) {
+        if ($firstType->isInteger()->yes() && $secondType->isInteger()->yes()) {
             return true;
         }
 
@@ -78,7 +77,7 @@ final class ScalarTypeComparator
             return true;
         }
 
-        if ($type instanceof IntegerType) {
+        if ($type->isInteger()->yes()) {
             return true;
         }
 
