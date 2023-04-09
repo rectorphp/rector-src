@@ -23,7 +23,6 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
-use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -163,7 +162,7 @@ CODE_SAMPLE
             return $this->resolveInteger($isNegated, $expr);
         }
 
-        if ($exprType instanceof FloatType) {
+        if ($exprType->isFloat()->yes()) {
             return $this->resolveFloat($isNegated, $expr);
         }
 

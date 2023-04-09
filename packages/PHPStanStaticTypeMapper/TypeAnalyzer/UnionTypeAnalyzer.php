@@ -6,7 +6,6 @@ namespace Rector\PHPStanStaticTypeMapper\TypeAnalyzer;
 
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
-use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
@@ -112,7 +111,7 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($type instanceof FloatType) {
+            if ($type->isFloat()->yes()) {
                 continue;
             }
 
