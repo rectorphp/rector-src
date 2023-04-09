@@ -135,7 +135,7 @@ CODE_SAMPLE
 
                 $node->stmts = array_merge(
                     $newStmts,
-                    $this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts)
+                    $this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts, $nextStmt)
                 );
 
                 return $node;
@@ -154,7 +154,13 @@ CODE_SAMPLE
                 $afterStmts[] = new Return_();
             }
 
-            $changedStmts = $this->processReplaceIfs($stmt, $booleanAndConditions, $ifNextReturnClone, $afterStmts);
+            $changedStmts = $this->processReplaceIfs(
+                $stmt,
+                $booleanAndConditions,
+                $ifNextReturnClone,
+                $afterStmts,
+                $nextStmt
+            );
 
             // update stmts
             $node->stmts = array_merge($newStmts, $changedStmts);
@@ -187,9 +193,10 @@ CODE_SAMPLE
         If_ $if,
         array $conditions,
         Return_ $ifNextReturnClone,
-        array $afters
+        array $afters,
+        ?Stmt $nextStmt
     ): array {
-        $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone);
+        $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturnClone, $nextStmt);
         $this->mirrorComments($ifs[0], $if);
 
         $result = array_merge($ifs, $afters);
