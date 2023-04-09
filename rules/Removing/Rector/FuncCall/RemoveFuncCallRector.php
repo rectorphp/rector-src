@@ -77,7 +77,7 @@ CODE_SAMPLE
     private function removeNodeIfNeeded(Expression $node, FuncCall $expr): void
     {
         foreach ($this->removedFunctions as $removedFunction) {
-            if (!$this->isName($expr->name, $removedFunction)) {
+            if (! $this->isName($expr->name, $removedFunction)) {
                 continue;
             }
 
