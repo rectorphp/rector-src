@@ -12,7 +12,6 @@ use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
-use PHPStan\Type\StringType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
@@ -109,7 +108,7 @@ final class UnionTypeAnalyzer
         }
 
         foreach ($types as $type) {
-            if ($type instanceof StringType && ! $type instanceof ConstantStringType) {
+            if ($type->isString()->yes() && ! $type instanceof ConstantStringType) {
                 continue;
             }
 
