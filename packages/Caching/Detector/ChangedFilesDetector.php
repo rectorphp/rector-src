@@ -15,6 +15,11 @@ use Rector\Caching\Enum\CacheKey;
  */
 final class ChangedFilesDetector
 {
+    /**
+     * @var array<string, string[]>
+     */
+    private array $dependentFiles = [];
+
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
         private readonly Cache $cache
@@ -24,13 +29,23 @@ final class ChangedFilesDetector
     /**
      * @param string[] $dependentFiles
      */
-    public function addFileWithDependencies(string $filePath, array $dependentFiles): void
+    public function addFileDependentFiles(string $filePath, array $dependentFiles): void
+    {
+        $filePathCacheKey = $this->getFilePathCacheKey($filePath);
+        $this->dependentFiles[$filePathCacheKey] = $dependentFiles;
+    }
+
+    public function addFileWithDependencies(string $filePath): void
     {
         $filePathCacheKey = $this->getFilePathCacheKey($filePath);
         $hash = $this->hashFile($filePath);
 
         $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
-        $this->cache->save($filePathCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY, $dependentFiles);
+        $this->cache->save(
+            $filePathCacheKey . '_files',
+            CacheKey::DEPENDENT_FILES_KEY,
+            $this->dependentFiles[$filePathCacheKey],
+        );
     }
 
     public function hasFileChanged(string $filePath): bool

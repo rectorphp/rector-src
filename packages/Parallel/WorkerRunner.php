@@ -7,6 +7,7 @@ namespace Rector\Parallel;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
+use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
@@ -41,7 +42,8 @@ final class WorkerRunner
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly array $fileProcessors = []
+        private readonly ChangedFilesDetector $changedFilesDetector,
+        private readonly array $fileProcessors = [],
     ) {
     }
 
@@ -85,14 +87,24 @@ final class WorkerRunner
             $this->applicationFileProcessor->configurePHPStanNodeScopeResolver($filePaths, $configuration);
 
             foreach ($filePaths as $filePath) {
+                $file = null;
+
                 try {
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
                     $errorAndFileDiffs = $this->processFiles($file, $configuration, $errorAndFileDiffs);
+
+                    if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
+                        $this->changedFilesDetector->invalidateFile($file->getFilePath());
+                    } else {
+                        $this->changedFilesDetector->addFileWithDependencies($file->getFilePath());
+                    }
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
                     $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
+
+                    $this->invalidateFile($file);
                 }
             }
 
@@ -157,5 +169,14 @@ final class WorkerRunner
         $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
 
         return $systemErrors;
+    }
+
+    private function invalidateFile(?File $file): void
+    {
+        if ($file === null) {
+            return;
+        }
+
+        $this->changedFilesDetector->invalidateFile($file->getFilePath());
     }
 }
