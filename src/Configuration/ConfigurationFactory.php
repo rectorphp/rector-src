@@ -50,8 +50,7 @@ final class ConfigurationFactory
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
 
-        /** @var string|null $memoryLimit */
-        $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
+        $memoryLimit = $this->resolveMemoryLimit($input);
 
         return new Configuration(
             $isDryRun,
@@ -123,5 +122,19 @@ final class ConfigurationFactory
 
         // fallback to parameter
         return $this->parameterProvider->provideArrayParameter(Option::PATHS);
+    }
+
+    private function resolveMemoryLimit(InputInterface $input): string | null
+    {
+        $memoryLimit = $input->getOption(Option::MEMORY_LIMIT);
+        if ($memoryLimit !== null) {
+            return (string) $memoryLimit;
+        }
+
+        if (! $this->parameterProvider->hasParameter(Option::MEMORY_LIMIT)) {
+            return null;
+        }
+
+        return $this->parameterProvider->provideStringParameter(Option::MEMORY_LIMIT);
     }
 }
