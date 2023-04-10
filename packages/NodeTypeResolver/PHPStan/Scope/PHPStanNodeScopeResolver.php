@@ -436,6 +436,6 @@ final class PHPStanNodeScopeResolver
             }
         }
 
-        $this->changedFilesDetector->addFileWithDependencies($filePath, $dependentFiles);
+        $this->changedFilesDetector->addFileDependentFiles($filePath, $dependentFiles);
     }
 }
