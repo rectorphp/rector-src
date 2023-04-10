@@ -108,6 +108,12 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $filePath
         ): void {
+            // scope refreshing happen after refactor()
+            if ($isScopeRefreshing && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
+                // clean up previous node as always refilled with NodeConnectingVisitor via NodeConnectingTraverser
+                $node->setAttribute(AttributeKey::PREVIOUS_NODE, null);
+            }
+
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
@@ -162,7 +168,7 @@ final class PHPStanNodeScopeResolver
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof Assign) {
+            if ($node instanceof Assign || $node instanceof AssignOp) {
                 // decorate value as well
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
