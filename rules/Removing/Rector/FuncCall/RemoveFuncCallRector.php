@@ -74,14 +74,14 @@ CODE_SAMPLE
         $this->removedFunctions = $configuration;
     }
 
-    private function removeNodeIfNeeded(Expression $node, FuncCall $expr): void
+    private function removeNodeIfNeeded(Expression $expression, FuncCall $funcCall): void
     {
         foreach ($this->removedFunctions as $removedFunction) {
-            if (! $this->isName($expr->name, $removedFunction)) {
+            if (! $this->isName($funcCall->name, $removedFunction)) {
                 continue;
             }
 
-            $this->removeNode($node);
+            $this->removeNode($expression);
 
             break;
         }
