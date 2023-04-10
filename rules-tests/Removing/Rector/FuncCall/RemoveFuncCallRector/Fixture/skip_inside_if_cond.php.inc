@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Removing\Rector\FuncCall\RemoveFuncCallRector\Fixture;
 
-class SomeAction
+class SkipInsideIfCond
 {
     public function run()
     {
