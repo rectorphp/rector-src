@@ -60,6 +60,12 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL_JOB_SIZE, $jobSize);
     }
 
+    public function noDiffs(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::NO_DIFFS, true);
+    }
+
     /**
      * @param array<int|string, mixed> $criteria
      */
