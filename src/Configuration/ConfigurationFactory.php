@@ -40,7 +40,7 @@ final class ConfigurationFactory
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
 
-        $showDiffs = ! (bool) $input->getOption(Option::NO_DIFFS);
+        $showDiffs = $this->shouldShowDiffs($input);
 
         $paths = $this->resolvePaths($input);
 
@@ -80,6 +80,17 @@ final class ConfigurationFactory
         }
 
         return $outputFormat === ConsoleOutputFormatter::NAME;
+    }
+
+    private function shouldShowDiffs(InputInterface $input): bool
+    {
+        $noDiffs = (bool) $input->getOption(Option::NO_DIFFS);
+        if ($noDiffs) {
+            return false;
+        }
+
+        // fallback to parameter
+        return ! $this->parameterProvider->provideBoolParameter(Option::NO_DIFFS);
     }
 
     /**
