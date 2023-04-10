@@ -35,7 +35,7 @@ final class ConfigurationFactory
     public function createFromInput(InputInterface $input): Configuration
     {
         $isDryRun = (bool) $input->getOption(Option::DRY_RUN);
-        $shouldClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
+        $shouldClearCache = $this->shouldClearCache($input);
 
         $outputFormat = (string) $input->getOption(Option::OUTPUT_FORMAT);
         $showProgressBar = $this->shouldShowProgressBar($input, $outputFormat);
@@ -66,6 +66,17 @@ final class ConfigurationFactory
             $isParallel,
             $memoryLimit
         );
+    }
+
+    private function shouldClearCache(InputInterface $input): bool
+    {
+        $clearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
+        if ($clearCache) {
+            return true;
+        }
+
+        // fallback to parameter
+        return $this->parameterProvider->provideBoolParameter(Option::CLEAR_CACHE);
     }
 
     private function shouldShowProgressBar(InputInterface $input, string $outputFormat): bool

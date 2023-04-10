@@ -209,6 +209,12 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, $limit);
     }
 
+    public function clearCache(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::CLEAR_CACHE, true);
+    }
+
     public function cacheDirectory(string $directoryPath): void
     {
         // cache directory path is created via mkdir in CacheFactory
