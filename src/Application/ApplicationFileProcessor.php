@@ -110,6 +110,7 @@ final class ApplicationFileProcessor
         if ($shouldShowProgressBar) {
             $fileCount = count($files);
             $this->rectorOutputStyle->progressStart($fileCount);
+            $this->rectorOutputStyle->progressAdvance(0);
         }
 
         $systemErrorsAndFileDiffs = [
@@ -226,27 +227,19 @@ final class ApplicationFileProcessor
             $filePaths
         );
 
-        // for progress bar
-        $isProgressBarStarted = false;
-
-        $postFileCallback = function (int $stepCount) use (
-            &$isProgressBarStarted,
-            $filePaths,
-            $configuration
-        ): void {
-            if (! $configuration->shouldShowProgressBar()) {
-                return;
-            }
-
-            if (! $isProgressBarStarted) {
-                $fileCount = count($filePaths);
-                $this->rectorOutputStyle->progressStart($fileCount);
-                $isProgressBarStarted = true;
-            }
-
-            $this->rectorOutputStyle->progressAdvance($stepCount);
-            // running in parallel here → nothing else to do
+        $postFileCallback = static function (int $stepCount): void {
         };
+
+        if ($configuration->shouldShowProgressBar()) {
+            $fileCount = count($filePaths);
+            $this->rectorOutputStyle->progressStart($fileCount);
+            $this->rectorOutputStyle->progressAdvance(0);
+
+            $postFileCallback = function (int $stepCount): void {
+                $this->rectorOutputStyle->progressAdvance($stepCount);
+                // running in parallel here → nothing else to do
+            };
+        }
 
         $mainScript = $this->resolveCalledRectorBinary();
         if ($mainScript === null) {
