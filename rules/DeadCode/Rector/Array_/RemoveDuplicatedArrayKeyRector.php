@@ -109,20 +109,23 @@ CODE_SAMPLE
      */
     private function filterItemsWithSameKey(array $arrayItemsByKeys): array
     {
-        /** @var ArrayItem[][] $arrayItemsByKeys */
-        $arrayItemsByKeys = array_filter(
-            $arrayItemsByKeys,
-            static fn (array $arrayItems): bool => count($arrayItems) > 1
-        );
+        $result = [];
+        foreach ($arrayItemsByKeys as $arrayItems) {
+            if (count($arrayItems) <= 1) {
+                continue;
+            }
 
-        return array_filter(
-            $arrayItemsByKeys,
-            fn (array $arrayItems): bool =>
-                count($arrayItems) > 1
-                && ! $this->multiInstanceofChecker->isInstanceOf(
-                    current($arrayItems)->key,
-                    self::ALLOWED_KEY_DUPLICATES
-                )
-        );
+            $currentArrayItem = current($arrayItems);
+            /** @var Expr $currentArrayItemKey */
+            $currentArrayItemKey = $currentArrayItem->key;
+
+            if ($this->multiInstanceofChecker->isInstanceOf($currentArrayItemKey, self::ALLOWED_KEY_DUPLICATES)) {
+                continue;
+            }
+
+            $result[] = $arrayItems;
+        }
+
+        return $result;
     }
 }
