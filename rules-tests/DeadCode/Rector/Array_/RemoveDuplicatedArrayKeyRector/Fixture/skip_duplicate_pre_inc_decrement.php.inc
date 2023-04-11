@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector\Fixture;
 
-final class SkipDuplicatePreIncrement
+final class SkipDuplicatePreIncDecrement
 {
     public function run()
     {
