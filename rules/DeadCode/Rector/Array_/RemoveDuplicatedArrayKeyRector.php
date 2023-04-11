@@ -8,8 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\PreDec;
+use PhpParser\Node\Expr\PreInc;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,8 +22,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDuplicatedArrayKeyRector extends AbstractRector
 {
+    /**
+     * @var array<class-string<Expr>>
+     */
+    private const ALLOWED_KEY_DUPLICATES = [PreInc::class, PreDec::class];
+
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly NodePrinterInterface $nodePrinter,
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -100,12 +109,23 @@ CODE_SAMPLE
      */
     private function filterItemsWithSameKey(array $arrayItemsByKeys): array
     {
-        /** @var ArrayItem[][] $arrayItemsByKeys */
-        $arrayItemsByKeys = array_filter(
-            $arrayItemsByKeys,
-            static fn (array $arrayItems): bool => count($arrayItems) > 1
-        );
+        $result = [];
+        foreach ($arrayItemsByKeys as $arrayItems) {
+            if (count($arrayItems) <= 1) {
+                continue;
+            }
 
-        return array_filter($arrayItemsByKeys, static fn (array $arrayItems): bool => count($arrayItems) > 1);
+            $currentArrayItem = current($arrayItems);
+            /** @var Expr $currentArrayItemKey */
+            $currentArrayItemKey = $currentArrayItem->key;
+
+            if ($this->multiInstanceofChecker->isInstanceOf($currentArrayItemKey, self::ALLOWED_KEY_DUPLICATES)) {
+                continue;
+            }
+
+            $result[] = $arrayItems;
+        }
+
+        return $result;
     }
 }
