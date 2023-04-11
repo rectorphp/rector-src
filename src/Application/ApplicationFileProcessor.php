@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use PHPStan\Analyser\NodeScopeResolver;
-use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Configuration\Option;
@@ -53,8 +52,7 @@ final class ApplicationFileProcessor
         private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors = [],
+        private readonly array $fileProcessors = []
     ) {
     }
 
@@ -128,12 +126,6 @@ final class ApplicationFileProcessor
 
                 $result = $fileProcessor->process($file, $configuration);
                 $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
-            }
-
-            if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
-                $this->changedFilesDetector->invalidateFile($file->getFilePath());
-            } else {
-                $this->changedFilesDetector->addFileWithDependencies($file->getFilePath());
             }
 
             // progress bar +1

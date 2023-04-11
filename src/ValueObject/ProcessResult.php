@@ -63,4 +63,17 @@ final class ProcessResult
     {
         return $this->removedNodeCount;
     }
+
+    /**
+     * @return string[]
+     */
+    public function getChangedFilePaths(): array
+    {
+        $fileInfos = [];
+        foreach ($this->fileDiffs as $fileDiff) {
+            $fileInfos[] = $fileDiff->getRelativeFilePath();
+        }
+
+        return array_unique($fileInfos);
+    }
 }

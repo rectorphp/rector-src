@@ -32,7 +32,7 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
         $filePath = __DIR__ . '/Source/file.php';
 
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
-        $this->changedFilesDetector->addFileWithDependencies($filePath);
+        $this->changedFilesDetector->addFileWithDependencies($filePath, []);
 
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
         $this->changedFilesDetector->invalidateFile($filePath);
@@ -46,9 +46,7 @@ final class ChangedFilesDetectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function testGetDependentFileInfos(string $filePath, array $dependantFiles): void
     {
-        $this->changedFilesDetector->addFileDependentFiles($filePath, $dependantFiles);
-        $this->changedFilesDetector->addFileWithDependencies($filePath);
-
+        $this->changedFilesDetector->addFileWithDependencies($filePath, $dependantFiles);
         $dependantFilePaths = $this->changedFilesDetector->getDependentFilePaths($filePath);
 
         $dependantFilesCount = count($dependantFiles);

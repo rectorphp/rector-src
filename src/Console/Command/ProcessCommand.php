@@ -89,6 +89,9 @@ final class ProcessCommand extends AbstractProcessCommand
         $processResult = $this->processResultFactory->create($systemErrorsAndFileDiffs);
         $outputFormatter->report($processResult, $configuration);
 
+        // invalidate affected files
+        $this->invalidateCacheForChangedAndErroredFiles($processResult);
+
         return $this->resolveReturnCode($processResult, $configuration);
     }
 
@@ -108,6 +111,22 @@ final class ProcessCommand extends AbstractProcessCommand
         $optionClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
         if ($optionDebug || $optionClearCache) {
             $this->changedFilesDetector->clear();
+        }
+    }
+
+    private function invalidateCacheForChangedAndErroredFiles(ProcessResult $processResult): void
+    {
+        foreach ($processResult->getChangedFilePaths() as $changedFilePath) {
+            $this->changedFilesDetector->invalidateFile($changedFilePath);
+        }
+
+        foreach ($processResult->getErrors() as $systemError) {
+            $errorFile = $systemError->getFile();
+            if (! is_string($errorFile)) {
+                continue;
+            }
+
+            $this->changedFilesDetector->invalidateFile($errorFile);
         }
     }
 
