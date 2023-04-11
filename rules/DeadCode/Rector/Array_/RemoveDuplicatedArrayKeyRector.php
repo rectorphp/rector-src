@@ -8,8 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\PreDec;
+use PhpParser\Node\Expr\PreInc;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\MultiInstanceofChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -19,8 +22,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDuplicatedArrayKeyRector extends AbstractRector
 {
+    /**
+     * @var array<class-string<Expr>>
+     */
+    private const ALLOWED_KEY_DUPLICATES = [PreInc::class, PreDec::class];
+
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly NodePrinterInterface $nodePrinter,
+        private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
 
@@ -106,6 +115,14 @@ CODE_SAMPLE
             static fn (array $arrayItems): bool => count($arrayItems) > 1
         );
 
-        return array_filter($arrayItemsByKeys, static fn (array $arrayItems): bool => count($arrayItems) > 1);
+        return array_filter(
+            $arrayItemsByKeys,
+            fn (array $arrayItems): bool =>
+                count($arrayItems) > 1
+                && ! $this->multiInstanceofChecker->isInstanceOf(
+                    current($arrayItems)->key,
+                    self::ALLOWED_KEY_DUPLICATES
+                )
+        );
     }
 }
