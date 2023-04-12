@@ -9,9 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\MutatingScope;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
@@ -42,7 +40,7 @@ final class ScopeAnalyzer
         Node $node,
         string $filePath,
         ?MutatingScope $mutatingScope = null
-    ): ?MutatingScope {
+    ): MutatingScope {
         if ($mutatingScope instanceof MutatingScope) {
             return $mutatingScope;
         }
@@ -62,29 +60,6 @@ final class ScopeAnalyzer
             return $parentScope;
         }
 
-        /**
-         * There is no higher Node than FileWithoutNamespace
-         * There is no code that can live outside Namespace_, @see https://3v4l.org/har0k
-         */
-        if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
-            return $this->scopeFactory->createFromFile($filePath);
-        }
-
-        /**
-         * Fallback when current Node is FileWithoutNamespace or Namespace_ already
-         */
-        if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
-            return $this->scopeFactory->createFromFile($filePath);
-        }
-
-        /**
-         * Node and parent Node doesn't has Scope, and parent Node Start token pos is < 0,
-         * it means the node and parent node just re-printed, the Scope need to be resolved from file
-         */
-        if ($parentNode->getStartTokenPos() < 0) {
-            return $this->scopeFactory->createFromFile($filePath);
-        }
-
-        return null;
+        return $this->scopeFactory->createFromFile($filePath);
     }
 }

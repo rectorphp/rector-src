@@ -61,27 +61,6 @@ final class ChangedNodeScopeRefresher
 
         $mutatingScope = $this->scopeAnalyzer->resolveScope($node, $filePath, $mutatingScope);
 
-        if (! $mutatingScope instanceof MutatingScope) {
-            /**
-             * @var Node $parentNode
-             *
-             * $parentNode is always a Node when $mutatingScope is null, as checked in previous
-             *
-             *      $this->scopeAnalyzer->resolveScope()
-             *
-             *  which verify if no parent and no scope, it resolve Scope from File
-             */
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-            $errorMessage = sprintf(
-                'Node "%s" with parent of "%s" is missing scope required for scope refresh.',
-                $node::class,
-                $parentNode::class
-            );
-
-            throw new ShouldNotHappenException($errorMessage);
-        }
-
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes
         // so we need to somehow get a parent scope that is already in the same place the $node is
 
