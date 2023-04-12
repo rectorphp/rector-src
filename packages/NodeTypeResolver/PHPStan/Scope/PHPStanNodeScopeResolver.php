@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
@@ -43,6 +44,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -113,7 +115,8 @@ final class PHPStanNodeScopeResolver
                 $node instanceof Return_ ||
                 $node instanceof Assign ||
                 $node instanceof EnumCase ||
-                $node instanceof AssignOp
+                $node instanceof AssignOp ||
+                $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -162,7 +165,7 @@ final class PHPStanNodeScopeResolver
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof Assign) {
+            if ($node instanceof Assign || $node instanceof AssignOp) {
                 // decorate value as well
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
