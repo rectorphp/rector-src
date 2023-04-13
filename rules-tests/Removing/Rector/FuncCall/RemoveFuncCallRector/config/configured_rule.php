@@ -7,7 +7,5 @@ use Rector\Removing\Rector\FuncCall\RemoveFuncCallRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(RemoveFuncCallRector::class, [
-            'var_dump'
-        ]);
+        ->ruleWithConfiguration(RemoveFuncCallRector::class, ['var_dump']);
 };
