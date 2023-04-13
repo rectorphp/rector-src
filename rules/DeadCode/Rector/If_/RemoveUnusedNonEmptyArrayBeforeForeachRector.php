@@ -162,26 +162,26 @@ CODE_SAMPLE
         return $this->countManipulator->isCounterHigherThanOne($booleanAnd->right, $foreachExpr);
     }
 
-    private function refactorStmtsAware(StmtsAwareInterface $stmtsAware, bool $hasChanged, int $jumpToKey = 0): ?StmtsAwareInterface
+    private function refactorStmtsAware(StmtsAwareInterface $node, bool $hasChanged, int $jumpToKey = 0): ?StmtsAwareInterface
     {
-        if ($stmtsAware->stmts === null) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $totalKeys = array_key_last($stmtsAware->stmts);
+        $totalKeys = array_key_last($node->stmts);
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key], $stmtsAware->stmts[$key + 1])) {
+            if (! isset($node->stmts[$key], $node->stmts[$key + 1])) {
                 break;
             }
 
-            $stmt = $stmtsAware->stmts[$key];
-            $nextStmt = $stmtsAware->stmts[$key + 1];
+            $stmt = $node->stmts[$key];
+            $nextStmt = $node->stmts[$key + 1];
 
             if (! $stmt instanceof If_) {
                 continue;
             }
 
-            $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
+            $nextStmt = $node->stmts[$key + 1] ?? null;
             if (! $nextStmt instanceof Foreach_) {
                 continue;
             }
@@ -193,15 +193,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            unset($stmtsAware->stmts[$key]);
+            unset($node->stmts[$key]);
 
             $hasChanged = true;
 
-            return $this->refactorStmtsAware($stmtsAware, $hasChanged, $key + 2);
+            return $this->refactorStmtsAware($node, $hasChanged, $key + 2);
         }
 
         if ($hasChanged) {
-            return $stmtsAware;
+            return $node;
         }
 
         return null;
