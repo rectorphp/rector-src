@@ -30,6 +30,22 @@ final class UselessIfCondBeforeForeachDetector
 
     /**
      * Matches:
+     * empty($values)
+     */
+    public function isMatchingEmptyAndForeachedExpr(If_ $if, Expr $foreachExpr): bool
+    {
+        if (! $if->cond instanceof Empty_) {
+            return false;
+        }
+
+        /** @var Empty_ $empty */
+        $empty = $if->cond;
+
+        return $this->nodeComparator->areNodesEqual($empty->expr, $foreachExpr);
+    }
+
+    /**
+     * Matches:
      * !empty($values)
      */
     public function isMatchingNotEmpty(If_ $if, Expr $foreachExpr, Scope $scope): bool
@@ -46,26 +62,7 @@ final class UselessIfCondBeforeForeachDetector
         /** @var Empty_ $empty */
         $empty = $cond->expr;
 
-        if (! $this->nodeComparator->areNodesEqual($empty->expr, $foreachExpr)) {
-            return false;
-        }
-
-        // is array though?
-        $arrayType = $scope->getType($empty->expr);
-        if (! $arrayType->isArray()->yes()) {
-            return false;
-        }
-
-        $previousParam = $this->fromPreviousParam($foreachExpr);
-        if (! $previousParam instanceof Param) {
-            return true;
-        }
-
-        if ($this->paramAnalyzer->isNullable($previousParam)) {
-            return false;
-        }
-
-        return ! $this->paramAnalyzer->hasDefaultNull($previousParam);
+        return $this->areCondExprAndForeachExprSame($empty, $foreachExpr, $scope);
     }
 
     /**
@@ -127,5 +124,30 @@ final class UselessIfCondBeforeForeachDetector
         }
 
         return $expr->items === [];
+    }
+
+    private function areCondExprAndForeachExprSame(Empty_ $empty, Expr $foreachExpr, Scope $scope): bool
+    {
+        if (! $this->nodeComparator->areNodesEqual($empty->expr, $foreachExpr)) {
+            return false;
+        }
+
+        // is array though?
+        $arrayType = $scope->getType($empty->expr);
+        if (! $arrayType->isArray()
+            ->yes()) {
+            return false;
+        }
+
+        $previousParam = $this->fromPreviousParam($foreachExpr);
+        if (! $previousParam instanceof Param) {
+            return true;
+        }
+
+        if ($this->paramAnalyzer->isNullable($previousParam)) {
+            return false;
+        }
+
+        return ! $this->paramAnalyzer->hasDefaultNull($previousParam);
     }
 }
