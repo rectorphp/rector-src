@@ -72,12 +72,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $stmts = $node->stmts;
-        if ($stmts === null) {
-            return null;
-        }
-
-        if ((is_countable($stmts) ? count($stmts) : 0) < 3) {
+        $stmts = (array) $node->stmts;
+        if (count($stmts) < 3) {
             return null;
         }
 
