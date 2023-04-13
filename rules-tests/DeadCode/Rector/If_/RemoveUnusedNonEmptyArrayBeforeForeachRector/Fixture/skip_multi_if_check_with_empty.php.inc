@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector\Fixture;
 
-final class IfCheckWithEmpty
+final class SkipMultiIfCheckWithEmpty
 {
     public function run(array $items, array $items2)
     {
