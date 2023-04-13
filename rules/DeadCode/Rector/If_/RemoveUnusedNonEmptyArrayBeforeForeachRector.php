@@ -176,7 +176,7 @@ CODE_SAMPLE
 
             // the foreach must be the last one
             if (isset($stmtsAware->stmts[$key + 2])) {
-                continue;
+                return null;
             }
 
             if (! $this->uselessIfCondBeforeForeachDetector->isMatchingEmptyAndForeachedExpr(
