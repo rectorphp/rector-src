@@ -82,11 +82,6 @@ return static function (RectorConfig $rectorConfig): void {
             // false positive on plurals
             __DIR__ . '/packages/Testing/PHPUnit/Behavior/MovingFilesTrait.php',
         ],
-
-        // race condition with stmts aware patch and PHPStan type
-        \Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector::class => [
-            __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
-        ],
     ]);
 
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');
