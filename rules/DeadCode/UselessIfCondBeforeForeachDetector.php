@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -41,7 +42,20 @@ final class UselessIfCondBeforeForeachDetector
         /** @var Empty_ $empty */
         $empty = $if->cond;
 
-        return $this->nodeComparator->areNodesEqual($empty->expr, $foreachExpr);
+        if (! $this->nodeComparator->areNodesEqual($empty->expr, $foreachExpr)) {
+            return false;
+        }
+
+        if ($if->stmts === []) {
+            return true;
+        }
+
+        if (count($if->stmts) !== 1) {
+            return false;
+        }
+
+        $stmt = $if->stmts[0];
+        return $stmt instanceof Return_ && ! $stmt->expr instanceof Expr;
     }
 
     /**
