@@ -14,6 +14,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
+use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,6 +46,7 @@ final class MissingInSetCommand extends Command
         NullifyUnionNullableRector::class,
         // optional
         DataProviderArrayItemsNewlinedRector::class,
+        FlipNegatedTernaryInstanceofRector::class,
     ];
 
     /**

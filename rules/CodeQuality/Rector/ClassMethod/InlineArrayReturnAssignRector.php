@@ -77,7 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($stmts) < 3) {
+        if ((is_countable($stmts) ? count($stmts) : 0) < 3) {
             return null;
         }
 
