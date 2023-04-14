@@ -168,6 +168,7 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var int $lastKey */
         $lastKey = array_key_last($stmtsAware->stmts);
         if (! isset($stmtsAware->stmts[$lastKey], $stmtsAware->stmts[$lastKey - 1])) {
             return null;
