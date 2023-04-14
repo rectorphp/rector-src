@@ -164,32 +164,30 @@ CODE_SAMPLE
 
     private function refactorStmtsAware(StmtsAwareInterface $stmtsAware): ?StmtsAwareInterface
     {
-        foreach ((array) $stmtsAware->stmts as $key => $stmt) {
-            if (! $stmt instanceof If_) {
-                continue;
-            }
-
-            $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
-            if (! $nextStmt instanceof Foreach_) {
-                continue;
-            }
-
-            // the foreach must be the last one
-            if (isset($stmtsAware->stmts[$key + 2])) {
-                return null;
-            }
-
-            if (! $this->uselessIfCondBeforeForeachDetector->isMatchingEmptyAndForeachedExpr(
-                $stmt,
-                $nextStmt->expr
-            )) {
-                continue;
-            }
-
-            unset($stmtsAware->stmts[$key]);
-            return $stmtsAware;
+        if ($stmtsAware->stmts === null) {
+            return null;
         }
 
-        return null;
+        $lastKey = array_key_last($stmtsAware->stmts);
+        if (! isset($stmtsAware->stmts[$lastKey], $stmtsAware->stmts[$lastKey - 1])) {
+            return null;
+        }
+
+        $stmt = $stmtsAware->stmts[$lastKey - 1];
+        if (! $stmt instanceof If_) {
+            return null;
+        }
+
+        $nextStmt = $stmtsAware->stmts[$lastKey];
+        if (! $nextStmt instanceof Foreach_) {
+            return null;
+        }
+
+        if (! $this->uselessIfCondBeforeForeachDetector->isMatchingEmptyAndForeachedExpr($stmt, $nextStmt->expr)) {
+            return null;
+        }
+
+        unset($stmtsAware->stmts[$lastKey - 1]);
+        return $stmtsAware;
     }
 }
