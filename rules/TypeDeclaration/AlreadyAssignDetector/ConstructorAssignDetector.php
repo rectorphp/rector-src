@@ -65,8 +65,8 @@ final class ConstructorAssignDetector
                 $assign = $node;
 
                 $isFirstLevelStatement = $assign->getAttribute(self::IS_FIRST_LEVEL_STATEMENT);
-                $isFirstNested = $assign->getAttribute(self::IS_ASSIGNED_IN_ALL_BRANCHES);
-                if ($isFirstLevelStatement !== true && $isFirstNested !== true) {
+                $isAssignedInAllBranches = $assign->getAttribute(self::IS_ASSIGNED_IN_ALL_BRANCHES);
+                if ($isFirstLevelStatement !== true && $isAssignedInAllBranches !== true) {
                     return null;
                 }
 
