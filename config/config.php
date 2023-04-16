@@ -16,6 +16,7 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\Dependency\DependencyResolver;
 use PHPStan\File\FileHelper;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -189,6 +190,9 @@ return static function (RectorConfig $rectorConfig): void {
         ->factory([service(PHPStanServicesFactory::class), 'createDependencyResolver']);
     $services->set(FileHelper::class)
         ->factory([service(PHPStanServicesFactory::class), 'createFileHelper']);
+
+    $services->set(ExprPrinter::class)
+        ->factory([service(PHPStanServicesFactory::class), 'createExprPrinter']);
 
     $services->set(Cache::class)
         ->factory([service(CacheFactory::class), 'create']);
