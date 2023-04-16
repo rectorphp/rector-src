@@ -14,6 +14,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,6 +45,7 @@ final class MissingInSetCommand extends Command
         RemoveJustPropertyFetchRector::class,
         FalseReturnClassMethodToNullableRector::class,
         NullifyUnionNullableRector::class,
+        DeclareStrictTypesRector::class,
         // optional
         DataProviderArrayItemsNewlinedRector::class,
         FlipNegatedTernaryInstanceofRector::class,
