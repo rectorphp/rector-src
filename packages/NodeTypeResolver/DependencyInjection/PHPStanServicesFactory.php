@@ -11,6 +11,7 @@ use PHPStan\Dependency\DependencyResolver;
 use PHPStan\DependencyInjection\Container;
 use PHPStan\DependencyInjection\ContainerFactory;
 use PHPStan\File\FileHelper;
+use PHPStan\Node\Printer\ExprPrinter;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
@@ -112,6 +113,14 @@ final class PHPStanServicesFactory
     public function createDependencyResolver(): DependencyResolver
     {
         return $this->container->getByType(DependencyResolver::class);
+    }
+
+    /**
+     * @api
+     */
+    public function createExprPrinter(): ExprPrinter
+    {
+        return $this->container->getByType(ExprPrinter::class);
     }
 
     /**
