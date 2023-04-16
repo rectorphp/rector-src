@@ -11,8 +11,6 @@ services:
     - Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory
     - Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocator\IntermediateSourceLocator
     - Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider
-    - PHPStan\Node\Printer\ExprPrinter
-    - PHPStan\Node\Printer\Printer
 
     # basically decorates native PHPStan source locator with a dynamic source locator that is also available in Rector DI
     betterReflectionSourceLocator:
