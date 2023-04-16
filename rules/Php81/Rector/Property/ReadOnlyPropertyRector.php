@@ -119,10 +119,6 @@ CODE_SAMPLE
     private function refactorProperty(Property $property): ?Property
     {
         // 1. is property read-only?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($property)) {
-            return null;
-        }
-
         if ($property->isReadonly()) {
             return null;
         }
@@ -135,11 +131,15 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($property->isStatic()) {
+            return null;
+        }
+
         if (! $this->visibilityManipulator->hasVisibility($property, Visibility::PRIVATE)) {
             return null;
         }
 
-        if ($property->isStatic()) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($property)) {
             return null;
         }
 
