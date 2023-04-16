@@ -14,6 +14,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\ValueObject\MethodName;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -27,9 +28,11 @@ final class ConstructorAssignDetector
      * @var string
      */
     private const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
+    public const IS_ASSIGNED_IN_ALL_BRANCHES = 'assigned_in_all_branches';
 
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyAssignMatcher $propertyAssignMatcher,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
@@ -60,10 +63,10 @@ final class ConstructorAssignDetector
 
                 /** @var Assign $assign */
                 $assign = $node;
-                $isFirstLevelStatement = $assign->getAttribute(self::IS_FIRST_LEVEL_STATEMENT);
 
-                // cannot be nested
-                if ($isFirstLevelStatement !== true) {
+                $isFirstLevelStatement = $assign->getAttribute(self::IS_FIRST_LEVEL_STATEMENT);
+                $isFirstNested = $assign->getAttribute(self::IS_ASSIGNED_IN_ALL_BRANCHES);
+                if ($isFirstLevelStatement !== true && $isFirstNested !== true) {
                     return null;
                 }
 
@@ -105,6 +108,70 @@ final class ConstructorAssignDetector
 
                 if ($methodStmt instanceof Expression) {
                     $methodStmt->expr->setAttribute(self::IS_FIRST_LEVEL_STATEMENT, true);
+                }
+
+                // support top level if statements
+                if ($methodStmt instanceof Node\Stmt\If_) {
+                    $alwaysAssignedProperties = [];
+                    foreach($methodStmt->stmts as $ifStmt) {
+                        $assign = null;
+                        if ($ifStmt instanceof Expression && $ifStmt->expr instanceof Assign) {
+                            $assign = $ifStmt->expr;
+                        }
+
+                        if ($assign instanceof Assign && $assign->var instanceof Expr\PropertyFetch) {
+                            $name = $this->nodeNameResolver->getName($assign->var);
+                            $alwaysAssignedProperties[$name] = $assign;
+                        }
+                    }
+
+                    /*
+                    foreach($methodStmt->elseifs as $elseif) {
+                        $elseifAssignedProperties = [];
+                        foreach($elseif->stmts as $elseifStmt) {
+                            $assign = null;
+                            if ($elseifStmt instanceof Expression && $elseifStmt->expr instanceof Assign) {
+                                $assign = $elseifStmt->expr;
+                            }
+
+                            if ($assign instanceof Assign && $assign->var instanceof Expr\PropertyFetch) {
+                                $name = $this->nodeNameResolver->getName($assign->var);
+                                $elseifAssignedProperties[$name] = $assign;
+                            }
+                        }
+
+                        foreach($alwaysAssignedProperties as $name => $assign) {
+                            if (!array_key_exists($name, $elseifAssignedProperties)) {
+                                unset($alwaysAssignedProperties[$name]);
+                            }
+                        }
+                    }
+                    */
+
+                    $elseAssignedProperties = [];
+                    $elseStmts = [];
+                    if ($methodStmt->else !== null) {
+                        $elseStmts = $methodStmt->else->stmts;
+                    }
+                    foreach($elseStmts as $elseStmt) {
+                        $assign = null;
+                        if ($elseStmt instanceof Expression && $elseStmt->expr instanceof Assign) {
+                            $assign = $elseStmt->expr;
+                        }
+
+                        if ($assign instanceof Assign && $assign->var instanceof Expr\PropertyFetch) {
+                            $name = $this->nodeNameResolver->getName($assign->var);
+                            $elseAssignedProperties[$name] = $assign;
+                        }
+                    }
+                    foreach($alwaysAssignedProperties as $name => $assign) {
+                        if (!array_key_exists($name, $elseAssignedProperties)) {
+                            continue;
+                        }
+
+                        $assign->setAttribute(self::IS_ASSIGNED_IN_ALL_BRANCHES, true);
+                        $elseAssignedProperties[$name]->setAttribute(self::IS_ASSIGNED_IN_ALL_BRANCHES, true);
+                    }
                 }
             }
         }

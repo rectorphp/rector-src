@@ -15,6 +15,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
 final class PropertyFetchAssignManipulator
 {
@@ -45,6 +46,10 @@ final class PropertyFetchAssignManipulator
             (array) $classMethod->getStmts(),
             function (Node $node) use ($propertyName, $classLike, &$count): ?int {
                 if (! $node instanceof Assign) {
+                    return null;
+                }
+
+                if ($node->getAttribute(ConstructorAssignDetector::IS_ASSIGNED_IN_ALL_BRANCHES) === true) {
                     return null;
                 }
 
