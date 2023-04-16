@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class ConditionalAssignInConstructor
+final class IfElseAssignInConstructor
 {
     private string $env;
 
@@ -22,7 +22,7 @@ final class ConditionalAssignInConstructor
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-final class ConditionalAssignInConstructor
+final class IfElseAssignInConstructor
 {
     private readonly string $env;
 
