@@ -341,11 +341,11 @@ final class NodeTypeResolver
 
     private function isObjectTypeOfObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
     {
-        if ($resolvedObjectType->isInstanceOf($requiredObjectType->getClassName())->yes()) {
+        if ($resolvedObjectType->getClassName() === $requiredObjectType->getClassName()) {
             return true;
         }
 
-        if ($resolvedObjectType->getClassName() === $requiredObjectType->getClassName()) {
+        if ($resolvedObjectType->isInstanceOf($requiredObjectType->getClassName())->yes()) {
             return true;
         }
 
