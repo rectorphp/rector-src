@@ -21,6 +21,8 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
+use PHPStan\Node\Printer\ExprPrinter;
+use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantBooleanType;
@@ -58,6 +60,11 @@ final class NodeTypeResolver
     private array $traitExistsCache = [];
 
     /**
+     * @var array<string, Type>
+     */
+    private array $resolvedTypes = [];
+
+    /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
      */
     public function __construct(
@@ -69,6 +76,7 @@ final class NodeTypeResolver
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private readonly IdentifierTypeResolver $identifierTypeResolver,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
+        private readonly ExprPrinter $exprPrinter,
         array $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
@@ -121,6 +129,17 @@ final class NodeTypeResolver
     }
 
     public function getType(Node $node): Type
+    {
+        $key = $this->getNodeKey($node);
+
+        if (! array_key_exists($key, $this->resolvedTypes)) {
+            $this->resolvedTypes[$key] = $this->resolveType($node);
+        }
+
+        return $this->resolvedTypes[$key];
+    }
+
+    private function resolveType(Node $node): Type
     {
         if ($node instanceof Property && $node->type instanceof NullableType) {
             return $this->getType($node->type);
@@ -405,5 +424,23 @@ final class NodeTypeResolver
         }
 
         return new MixedType();
+    }
+
+    /**
+     * Stolen from phpstan-src getNodeKey->getNodeKey()
+     */
+    private function getNodeKey(Expr $node): string
+    {
+        $key = $this->exprPrinter->printExpr($node);
+
+        if (
+            $node instanceof Node\FunctionLike
+            && $node->hasAttribute(ArrayMapArgVisitor::ATTRIBUTE_NAME)
+            && $node->hasAttribute('startFilePos')
+        ) {
+            $key .= '/*' . $node->getAttribute('startFilePos') . '*/';
+        }
+
+        return $key;
     }
 }
