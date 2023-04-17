@@ -14,6 +14,7 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
@@ -30,7 +31,10 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODING_STYLE,
     ]);
 
-    $rectorConfig->rules([FalseReturnClassMethodToNullableRector::class]);
+    $rectorConfig->rules([
+        FalseReturnClassMethodToNullableRector::class,
+        DeclareStrictTypesRector::class,
+    ]);
 
     $rectorConfig->ruleWithConfiguration(
         PreferThisOrSelfMethodCallRector::class,
