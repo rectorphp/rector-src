@@ -52,7 +52,7 @@ CODE_SAMPLE
 
         $currentNode = current($nodes);
 
-        // multiple declare is allowed, with declare(strict_types=1) only allowed on verify first stmt
+        // multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($currentNode instanceof Declare_) {
             return $nodes;
         }
