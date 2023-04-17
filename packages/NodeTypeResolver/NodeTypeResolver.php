@@ -53,11 +53,6 @@ final class NodeTypeResolver
     private array $nodeTypeResolvers = [];
 
     /**
-     * @var array<string, bool>
-     */
-    private array $traitExistsCache = [];
-
-    /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
      */
     public function __construct(
@@ -349,24 +344,25 @@ final class NodeTypeResolver
             return true;
         }
 
+        if (! $this->reflectionProvider->hasClass($requiredObjectType->getClassName())) {
+            return false;
+        }
+        $requiredClassReflection = $this->reflectionProvider->getClass($requiredObjectType->getClassName());
+
         if (! $this->reflectionProvider->hasClass($resolvedObjectType->getClassName())) {
             return false;
         }
+        $resolvedClassReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
 
-        $classReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
-        if (! isset($this->traitExistsCache[$classReflection->getName()])) {
-            $this->traitExistsCache[$classReflection->getName()] = \trait_exists($requiredObjectType->getClassName());
-        }
-
-        if ($this->traitExistsCache[$classReflection->getName()]) {
-            foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
+        if ($requiredClassReflection->isTrait()) {
+            foreach ($resolvedClassReflection->getAncestors() as $ancestorClassReflection) {
                 if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
                     return true;
                 }
             }
         }
 
-        return $classReflection->isSubclassOf($requiredObjectType->getClassName());
+        return $resolvedClassReflection->isSubclassOf($requiredObjectType->getClassName());
     }
 
     private function resolveObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
