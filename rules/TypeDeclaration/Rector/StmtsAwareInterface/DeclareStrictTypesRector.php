@@ -51,7 +51,13 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        $currentNode = current($this->file->getNewStmts());
+        $newStmts = $this->file->getNewStmts();
+
+        if ($newStmts === []) {
+            return null;
+        }
+
+        $currentNode = current($newStmts);
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
