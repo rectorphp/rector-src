@@ -72,7 +72,7 @@ CODE_SAMPLE
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
 
-        $rectorWithLineChange = new RectorWithLineChange(static::class, $stmt->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         return array_merge([$strictTypesDeclare, new Nop()], $nodes);
