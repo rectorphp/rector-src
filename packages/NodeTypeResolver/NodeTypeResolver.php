@@ -125,13 +125,23 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
-        $key = $this->getNodeKey($node);
+        if ($node instanceof Expr) {
+            $key = $this->getNodeKey($node);
 
-        if (! array_key_exists($key, $this->resolvedTypes)) {
-            $this->resolvedTypes[$key] = $this->resolveType($node);
+            $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+            if (! array_key_exists($key, $this->resolvedTypes) ||
+                ! $originalNode instanceof Node ||
+                $originalNode->getStartTokenPos() !== $node->getStartTokenPos() ||
+                $originalNode->getEndTokenPos() !== $node->getEndTokenPos()
+            ) {
+
+                $this->resolvedTypes[$key] = $this->resolveType($node);
+            }
+
+            return $this->resolvedTypes[$key];
         }
 
-        return $this->resolvedTypes[$key];
+        return $this->resolveType($node);
     }
 
     private function resolveType(Node $node): Type
