@@ -54,9 +54,12 @@ CODE_SAMPLE
 
         // multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($currentNode instanceof Declare_) {
-            return null;
+            foreach ($currentNode->declares as $declare) {
+                if ($declare->key->toString() === 'strict_types') {
+                    return null;
+                }
+            }
         }
-
 
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
