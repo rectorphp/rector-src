@@ -18,12 +18,12 @@ use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Parallel\Application\ParallelFileProcessor;
+use Rector\Parallel\ScheduleFactory;
 use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
-use Symplify\EasyParallel\ScheduleFactory;
 
 final class ApplicationFileProcessor
 {
