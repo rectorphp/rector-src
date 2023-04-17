@@ -50,7 +50,7 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        $currentNode = current($nodes);
+        $currentNode = current($this->file->getNewStmts());
 
         // multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($currentNode instanceof Declare_) {
