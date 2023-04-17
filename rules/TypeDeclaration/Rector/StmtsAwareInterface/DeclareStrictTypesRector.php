@@ -54,7 +54,7 @@ CODE_SAMPLE
 
         // multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($currentNode instanceof Declare_) {
-            return $nodes;
+            return null;
         }
 
 
