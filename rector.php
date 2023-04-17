@@ -31,10 +31,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODING_STYLE,
     ]);
 
-    $rectorConfig->rules([
-        FalseReturnClassMethodToNullableRector::class,
-        DeclareStrictTypesRector::class,
-    ]);
+    $rectorConfig->rules([FalseReturnClassMethodToNullableRector::class, DeclareStrictTypesRector::class]);
 
     $rectorConfig->ruleWithConfiguration(
         PreferThisOrSelfMethodCallRector::class,
