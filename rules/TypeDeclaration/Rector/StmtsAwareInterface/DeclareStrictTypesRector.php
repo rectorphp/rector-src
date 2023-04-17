@@ -52,7 +52,8 @@ CODE_SAMPLE
 
         $currentNode = current($this->file->getNewStmts());
 
-        // multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
+        // when first stmt is Declare_, verify if there is strict_types definition already,
+        // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($currentNode instanceof Declare_) {
             foreach ($currentNode->declares as $declare) {
                 if ($declare->key->toString() === 'strict_types') {
