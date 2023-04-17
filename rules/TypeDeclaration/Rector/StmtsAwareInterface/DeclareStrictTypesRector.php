@@ -50,11 +50,13 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        // has declare already?
-        $declare = $this->betterNodeFinder->findFirstInstanceOf($nodes, Declare_::class);
-        if ($declare instanceof Declare_) {
+        $currentNode = current($nodes);
+
+        // multiple declare is allowed, with declare(strict_types=1) only allowed on verify first stmt
+        if ($currentNode instanceof Declare_) {
             return $nodes;
         }
+
 
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
