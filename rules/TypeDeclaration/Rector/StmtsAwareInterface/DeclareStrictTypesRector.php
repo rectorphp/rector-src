@@ -10,6 +10,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
+use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -64,6 +65,9 @@ CODE_SAMPLE
 
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
+
+        $rectorWithLineChange = new RectorWithLineChange(static::class, $currentNode->getLine());
+        $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         return array_merge([$strictTypesDeclare, new Nop()], $nodes);
     }
