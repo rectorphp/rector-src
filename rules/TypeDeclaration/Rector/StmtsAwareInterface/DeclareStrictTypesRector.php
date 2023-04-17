@@ -57,12 +57,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentNode = current($newStmts);
+        $stmt = current($newStmts);
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
-        if ($currentNode instanceof Declare_) {
-            foreach ($currentNode->declares as $declare) {
+        if ($stmt instanceof Declare_) {
+            foreach ($stmt->declares as $declare) {
                 if ($declare->key->toString() === 'strict_types') {
                     return null;
                 }
@@ -72,7 +72,7 @@ CODE_SAMPLE
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
 
-        $rectorWithLineChange = new RectorWithLineChange(static::class, $currentNode->getLine());
+        $rectorWithLineChange = new RectorWithLineChange(static::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         return array_merge([$strictTypesDeclare, new Nop()], $nodes);
