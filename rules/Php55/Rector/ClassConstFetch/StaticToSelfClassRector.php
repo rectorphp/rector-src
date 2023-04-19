@@ -62,7 +62,7 @@ CODE_SAMPLE
     /**
      * @param ClassConstFetch $node
      */
-    public function refactor(Node $node): ClassConstFetch
+    public function refactor(Node $node): ?ClassConstFetch
     {
         if (! $node->class instanceof Name) {
             return null;
