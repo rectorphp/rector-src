@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfClassRector;
+namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
