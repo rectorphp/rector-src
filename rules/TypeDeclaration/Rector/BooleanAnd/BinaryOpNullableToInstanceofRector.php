@@ -76,10 +76,11 @@ CODE_SAMPLE
     {
         $nullableObjectType = $this->returnNullableObjectType($node->left);
 
+        $hasChanged = false;
         if ($nullableObjectType instanceof ObjectType) {
             $node->left = $this->createExprInstanceof($node->left, $nullableObjectType);
 
-            return $node;
+            $hasChanged = true;
         }
 
         $nullableObjectType = $this->returnNullableObjectType($node->right);
@@ -87,6 +88,10 @@ CODE_SAMPLE
         if ($nullableObjectType instanceof ObjectType) {
             $node->right = $this->createExprInstanceof($node->right, $nullableObjectType);
 
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
             return $node;
         }
 
@@ -95,16 +100,28 @@ CODE_SAMPLE
 
     private function processNegationBooleanOr(BooleanOr $booleanOr): ?BooleanOr
     {
+        $hasChanged = false;
         if ($booleanOr->left instanceof BooleanNot) {
             $nullableObjectType = $this->returnNullableObjectType($booleanOr->left->expr);
 
             if ($nullableObjectType instanceof ObjectType) {
                 $booleanOr->left->expr = $this->createExprInstanceof($booleanOr->left->expr, $nullableObjectType);
-
-                return $booleanOr;
+                $hasChanged = true;
             }
+        }
 
-            return null;
+        if ($booleanOr->right instanceof BooleanNot) {
+            $nullableObjectType = $this->returnNullableObjectType($booleanOr->right->expr);
+
+            if ($nullableObjectType instanceof ObjectType) {
+                $booleanOr->right->expr = $this->createExprInstanceof($booleanOr->right->expr, $nullableObjectType);
+
+                $hasChanged = true;
+            }
+        }
+
+        if ($hasChanged) {
+            return $booleanOr;
         }
 
         /** @var BooleanOr|null $result */
