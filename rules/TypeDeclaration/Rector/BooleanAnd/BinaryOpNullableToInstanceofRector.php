@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
@@ -64,6 +65,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof BooleanOr) {
+            return $this->processNegationBooleanOr($node);
+        }
+
+        return $this->processsNullableInstance($node);
+    }
+
+    private function processsNullableInstance(BooleanAnd|BooleanOr $node): null|BooleanAnd|BooleanOr
+    {
         $nullableObjectType = $this->returnNullableObjectType($node->left);
 
         if ($nullableObjectType instanceof ObjectType) {
@@ -81,6 +91,25 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function processNegationBooleanOr(BooleanOr $booleanOr): ?BooleanOr
+    {
+        if ($booleanOr->left instanceof BooleanNot) {
+            $nullableObjectType = $this->returnNullableObjectType($booleanOr->left->expr);
+
+            if ($nullableObjectType instanceof ObjectType) {
+                $booleanOr->left->expr = $this->createExprInstanceof($booleanOr->left->expr, $nullableObjectType);
+
+                return $booleanOr;
+            }
+
+            return null;
+        }
+
+        /** @var BooleanOr|null $result */
+        $result =  $this->processsNullableInstance($booleanOr);
+        return $result;
     }
 
     private function returnNullableObjectType(Expr $expr): ObjectType|null
