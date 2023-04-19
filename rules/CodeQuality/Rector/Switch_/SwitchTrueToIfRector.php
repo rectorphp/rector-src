@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -87,6 +88,14 @@ CODE_SAMPLE
         $defaultCase = null;
 
         foreach ($node->cases as $case) {
+            if (count($case->stmts) !== 1) {
+                return null;
+            }
+
+            if (! $case->stmts[0] instanceof Return_) {
+                return null;
+            }
+
             if (! $case->cond instanceof Expr) {
                 $defaultCase = $case;
                 continue;
