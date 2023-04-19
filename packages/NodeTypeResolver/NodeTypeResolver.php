@@ -129,7 +129,12 @@ final class NodeTypeResolver
             $key = $this->getNodeKey($node);
 
             $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+            // re-resolve type when
+            // - it was not resolved yet
+            // - it was just created by rector
+            // - the node was just changed/rectified
             if (! array_key_exists($key, $this->resolvedTypes) ||
+                $node->hasAttribute(AttributeKey::CREATED_BY_RULE) ||
                 ! $originalNode instanceof Node ||
                 $originalNode->getStartTokenPos() !== $node->getStartTokenPos() ||
                 $originalNode->getEndTokenPos() !== $node->getEndTokenPos()
