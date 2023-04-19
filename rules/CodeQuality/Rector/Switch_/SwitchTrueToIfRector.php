@@ -88,11 +88,7 @@ CODE_SAMPLE
         $defaultCase = null;
 
         foreach ($node->cases as $case) {
-            if (count($case->stmts) !== 1) {
-                return null;
-            }
-
-            if (! $case->stmts[0] instanceof Return_) {
+            if (! end($case->stmts) instanceof Return_) {
                 return null;
             }
 
