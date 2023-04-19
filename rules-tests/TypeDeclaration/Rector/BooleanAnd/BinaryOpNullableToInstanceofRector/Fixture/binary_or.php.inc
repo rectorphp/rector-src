@@ -6,7 +6,7 @@ use Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofR
 
 function binaryOr(?SomeInstance $someClass)
 {
-    if ($someClass || $someClass->someMethod()) {
+    if (! $someClass || $someClass->someMethod()) {
         return 'yes';
     }
 
@@ -23,7 +23,7 @@ use Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofR
 
 function binaryOr(?SomeInstance $someClass)
 {
-    if ($someClass instanceof \Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector\Source\SomeInstance || $someClass->someMethod()) {
+    if (! $someClass instanceof \Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector\Source\SomeInstance || $someClass->someMethod()) {
         return 'yes';
     }
 
