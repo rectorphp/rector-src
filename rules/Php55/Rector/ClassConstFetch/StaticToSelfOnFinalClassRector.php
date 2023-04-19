@@ -19,9 +19,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/class_name_scalars
  * @changelog https://3v4l.org/AHr9C#v5.5.0
- * @see \Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfClassRector\StaticToSelfClassRectorTest
+ * @see \Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector\StaticToSelfOnFinalClassRectorTest
  */
-final class StaticToSelfClassRector extends AbstractRector implements MinPhpVersionInterface
+final class StaticToSelfOnFinalClassRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {

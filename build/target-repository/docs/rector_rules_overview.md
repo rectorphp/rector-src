@@ -4703,11 +4703,11 @@ The /e modifier is no longer supported, use preg_replace_callback instead
 
 <br>
 
-### StaticToSelfClassRector
+### StaticToSelfOnFinalClassRector
 
 Change `static::class` to `self::class` on final class
 
-- class: [`Rector\Php55\Rector\ClassConstFetch\StaticToSelfClassRector`](../rules/Php55/Rector/ClassConstFetch/StaticToSelfClassRector.php)
+- class: [`Rector\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector`](../rules/Php55/Rector/ClassConstFetch/StaticToSelfOnFinalClassRector.php)
 
 ```diff
  final class SomeClass

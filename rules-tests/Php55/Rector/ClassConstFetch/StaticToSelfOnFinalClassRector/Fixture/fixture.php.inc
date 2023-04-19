@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfClassRector\Fixture;
+namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector\Fixture;
 
 final class Fixture
 {
@@ -14,7 +14,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfClassRector\Fixture;
+namespace Rector\Tests\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector\Fixture;
 
 final class Fixture
 {
