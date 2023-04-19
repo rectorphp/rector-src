@@ -8,6 +8,7 @@ use Rector\CodeQuality\Rector\Identical\GetClassToInstanceOfRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\BinaryOp\RemoveDuplicatedInstanceOfRector;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
+use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 
@@ -20,5 +21,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveDuplicatedInstanceOfRector::class,
         RemoveDeadInstanceOfRector::class,
         FlipNegatedTernaryInstanceofRector::class,
+        BinaryOpNullableToInstanceofRector::class,
     ]);
 };
