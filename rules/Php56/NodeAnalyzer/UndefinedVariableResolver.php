@@ -142,7 +142,7 @@ final class UndefinedVariableResolver
 
     private function shouldSkipVariable(Variable $variable, Node $parentNode): bool
     {
-        if ($parentNode instanceof Coalesce && $parentNode->left === $variable) {
+        if ($this->isAsCoalesceLeftOrAssignOpCoalesceVar($parentNode, $variable)) {
             return true;
         }
 
@@ -155,10 +155,6 @@ final class UndefinedVariableResolver
         }
 
         if ($this->issetOrUnsetOrEmptyParent($parentNode)) {
-            return true;
-        }
-
-        if ($this->isAsCoalesceLeftOrAssignOpCoalesceVar($parentNode, $variable)) {
             return true;
         }
 
