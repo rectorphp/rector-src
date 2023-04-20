@@ -119,7 +119,7 @@
             "@check-cs",
             "@phpstan",
             "@docs",
-            "phpunit"
+            "paratest"
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
