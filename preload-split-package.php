@@ -254,11 +254,14 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/T
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/ParserFactory.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/Node.php';
+require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/NodeVisitor.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Lexer/Lexer.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/NodeAttributes.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocTagValueNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/Type/TypeNode.php';
+require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/AbstractNodeVisitor.php';
+require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/Attribute.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprArrayItemNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprArrayNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprFalseNode.php';
@@ -269,6 +272,8 @@ require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprTrueNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstFetchNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/ConstExpr/QuoteAwareConstExprStringNode.php';
+require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/NodeTraverser.php';
+require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/NodeVisitor/CloningVisitor.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagMethodValueNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagPropertyValueNode.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagValueNode.php';
