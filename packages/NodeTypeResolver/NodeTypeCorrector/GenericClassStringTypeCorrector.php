@@ -32,7 +32,6 @@ final class GenericClassStringTypeCorrector
                 return $traverseCallback($traversedType);
             }
 
-            /** @var ClassReflection $classReflection */
             $classReflection = $this->reflectionProvider->getClass($value);
             if ($classReflection->getName() !== $value) {
                 return $traverseCallback($traversedType);
