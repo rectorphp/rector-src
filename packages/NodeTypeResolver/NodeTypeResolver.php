@@ -365,7 +365,7 @@ final class NodeTypeResolver
             }
         }
 
-        return $resolvedClassReflection->isSubclassOf($requiredClassName);
+        return false;
     }
 
     private function resolveObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
