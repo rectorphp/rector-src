@@ -27,17 +27,11 @@ final class GenericClassStringTypeCorrector
                 return $traverseCallback($traversedType);
             }
 
-            $value = $traversedType->getValue();
-            if (! $this->reflectionProvider->hasClass($value)) {
-                return $traverseCallback($traversedType);
+            if ($traversedType->isClassStringType()->yes()) {
+                return new GenericClassStringType($traversedType->getClassStringObjectType());
             }
 
-            $classReflection = $this->reflectionProvider->getClass($value);
-            if ($classReflection->getName() !== $value) {
-                return $traverseCallback($traversedType);
-            }
-
-            return new GenericClassStringType(new ObjectType($value));
+            return $traverseCallback($traversedType);
         });
     }
 }
