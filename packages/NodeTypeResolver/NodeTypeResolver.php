@@ -336,33 +336,36 @@ final class NodeTypeResolver
 
     private function isObjectTypeOfObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
     {
-        if ($resolvedObjectType->getClassName() === $requiredObjectType->getClassName()) {
+        $requiredClassName = $requiredObjectType->getClassName();
+        $resolvedClassName = $resolvedObjectType->getClassName();
+
+        if ($resolvedClassName === $requiredClassName) {
             return true;
         }
 
-        if ($resolvedObjectType->isInstanceOf($requiredObjectType->getClassName())->yes()) {
+        if ($resolvedObjectType->isInstanceOf($requiredClassName)->yes()) {
             return true;
         }
 
-        if (! $this->reflectionProvider->hasClass($requiredObjectType->getClassName())) {
+        if (! $this->reflectionProvider->hasClass($requiredClassName)) {
             return false;
         }
-        $requiredClassReflection = $this->reflectionProvider->getClass($requiredObjectType->getClassName());
+        $requiredClassReflection = $this->reflectionProvider->getClass($requiredClassName);
 
-        if (! $this->reflectionProvider->hasClass($resolvedObjectType->getClassName())) {
+        if (! $this->reflectionProvider->hasClass($resolvedClassName)) {
             return false;
         }
-        $resolvedClassReflection = $this->reflectionProvider->getClass($resolvedObjectType->getClassName());
+        $resolvedClassReflection = $this->reflectionProvider->getClass($resolvedClassName);
 
         if ($requiredClassReflection->isTrait()) {
             foreach ($resolvedClassReflection->getAncestors() as $ancestorClassReflection) {
-                if ($ancestorClassReflection->hasTraitUse($requiredObjectType->getClassName())) {
+                if ($ancestorClassReflection->hasTraitUse($requiredClassName)) {
                     return true;
                 }
             }
         }
 
-        return $resolvedClassReflection->isSubclassOf($requiredObjectType->getClassName());
+        return $resolvedClassReflection->isSubclassOf($requiredClassName);
     }
 
     private function resolveObjectType(ObjectType $resolvedObjectType, ObjectType $requiredObjectType): bool
