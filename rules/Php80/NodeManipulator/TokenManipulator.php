@@ -377,9 +377,11 @@ final class TokenManipulator
         if ($parentNode->right !== $funcCall) {
             return $funcCall;
         }
+
         if (!$isLeftValueTrue) {
             return $funcCall;
         }
+
         return $parentNode;
     }
 }
