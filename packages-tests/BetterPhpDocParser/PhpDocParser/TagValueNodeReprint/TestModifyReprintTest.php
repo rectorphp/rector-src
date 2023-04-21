@@ -9,6 +9,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
@@ -56,8 +57,8 @@ final class TestModifyReprintTest extends AbstractTestCase
 
         // this will extended tokens of first node
         $methodsCurlyListNode = new CurlyListNode([
-            new ArrayItemNode('GET', null, String_::KIND_DOUBLE_QUOTED),
-            new ArrayItemNode('HEAD', null, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode(new StringNode('GET')),
+            new ArrayItemNode(new StringNode('HEAD')),
         ]);
         $doctrineAnnotationTagValueNode->values[] = new ArrayItemNode($methodsCurlyListNode, 'methods');
 

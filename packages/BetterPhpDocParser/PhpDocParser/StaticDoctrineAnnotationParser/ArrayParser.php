@@ -8,6 +8,7 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 
 /**
@@ -181,20 +182,20 @@ final class ArrayParser
         $valueQuoteKind = $this->resolveQuoteKind($value);
         if (is_string($value) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
-            $value = trim($value, '"');
+            $value = new StringNode(substr($value, 1, strlen($value) - 2));
         }
 
         $keyQuoteKind = $this->resolveQuoteKind($key);
         if (is_string($key) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
-            $key = trim($key, '"');
+            $key = new StringNode(substr($key, 1, strlen($key) - 2));
         }
 
         if ($key !== null) {
-            return new ArrayItemNode($value, $key, $valueQuoteKind, $keyQuoteKind);
+            return new ArrayItemNode($value, $key);
         }
 
-        return new ArrayItemNode($value, null, $valueQuoteKind, $keyQuoteKind);
+        return new ArrayItemNode($value);
     }
 
     private function isQuotedWith(mixed $value, string $quotes): bool

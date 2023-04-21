@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprTrueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
@@ -42,11 +43,11 @@ final class PlainValueParser
     }
 
     /**
-     * @return string|mixed[]|ConstExprNode|DoctrineAnnotationTagValueNode
+     * @return string|mixed[]|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
      */
     public function parseValue(
         BetterTokenIterator $tokenIterator
-    ): string | array | ConstExprNode | DoctrineAnnotationTagValueNode {
+    ): string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
         // temporary hackaround multi-line doctrine annotations
@@ -91,7 +92,7 @@ final class PlainValueParser
 
         $end = $tokenIterator->currentPosition();
         if ($start + 1 < $end) {
-            return $tokenIterator->printFromTo($start, $end);
+            return new StringNode($tokenIterator->printFromTo($start, $end));
         }
 
         return $currentTokenValue;

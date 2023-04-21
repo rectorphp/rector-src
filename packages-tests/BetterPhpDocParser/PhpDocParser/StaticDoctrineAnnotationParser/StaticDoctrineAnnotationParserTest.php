@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
@@ -44,8 +45,8 @@ final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
     public static function provideData(): Iterator
     {
         $curlyListNode = new CurlyListNode([
-            new ArrayItemNode('chalet', null, String_::KIND_DOUBLE_QUOTED),
-            new ArrayItemNode('apartment', null, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode(new StringNode('chalet')),
+            new ArrayItemNode(new StringNode('apartment')),
         ]);
         yield ['{"chalet", "apartment"}', $curlyListNode];
 

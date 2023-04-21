@@ -5,7 +5,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\D
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\DiscriminatorMap({ "1" = "CostDetailEntity" })
+ * @ORM\DiscriminatorMap({ 1 = "CostDetailEntity" })
  */
 class PreserveIntKeyDefined
 {
