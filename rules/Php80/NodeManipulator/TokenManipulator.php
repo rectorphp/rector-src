@@ -130,11 +130,6 @@ final class TokenManipulator
         });
     }
 
-    private function isIdenticalOrNotIdentical(Node $node): bool
-    {
-        return $node instanceof Identical || $node instanceof NotIdentical;
-    }
-
     /**
      * @param Node[] $nodes
      */
@@ -164,11 +159,7 @@ final class TokenManipulator
                 return null;
             }
 
-            $constName = $this->nodeNameResolver->getName($constFetch);
-            if ($constName === null) {
-                return null;
-            }
-
+            $constName = (string) $this->nodeNameResolver->getName($constFetch);
             if (! StringUtils::isMatch($constName, '#^T_#')) {
                 return null;
             }
@@ -240,6 +231,11 @@ final class TokenManipulator
             $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
             return $node;
         });
+    }
+
+    private function isIdenticalOrNotIdentical(Node $node): bool
+    {
+        return $node instanceof Identical || $node instanceof NotIdentical;
     }
 
     private function replaceTernary(Ternary $ternary): void
@@ -384,7 +380,7 @@ final class TokenManipulator
             return $funcCall;
         }
 
-        if (!$isLeftValueTrue) {
+        if (! $isLeftValueTrue) {
             return $funcCall;
         }
 
