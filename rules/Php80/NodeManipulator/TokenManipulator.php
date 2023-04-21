@@ -374,10 +374,12 @@ final class TokenManipulator
         }
 
         $isLeftValueTrue = $this->valueResolver->isValue($parentNode->left, true);
-        if ($parentNode->right === $funcCall && $isLeftValueTrue) {
-            return $parentNode;
+        if ($parentNode->right !== $funcCall) {
+            return $funcCall;
         }
-
-        return $funcCall;
+        if (!$isLeftValueTrue) {
+            return $funcCall;
+        }
+        return $parentNode;
     }
 }
