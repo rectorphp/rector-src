@@ -220,10 +220,6 @@ final class TokenManipulator
                 return $node;
             }
 
-            if (! $parentNode instanceof Node) {
-                return null;
-            }
-
             if ($parentNode instanceof BooleanNot) {
                 $parentOfParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
                 if ($parentOfParentNode instanceof BinaryOp) {
