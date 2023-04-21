@@ -131,7 +131,7 @@ CODE_SAMPLE
             }
 
             if (! $node instanceof Assign) {
-                return ! (bool) $this->betterNodeFinder->findFirst(
+                return ! (bool) $this->betterNodeFinder->find(
                     $node,
                     fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($expr, $subNode)
                 );
