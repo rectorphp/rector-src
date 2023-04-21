@@ -137,7 +137,7 @@ final class TokenManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
-        ): ?MethodCall {
+        ): null|MethodCall|BooleanNot {
             if (! $node instanceof Identical && ! $node instanceof NotIdentical) {
                 return null;
             }
@@ -167,10 +167,16 @@ final class TokenManipulator
                 return null;
             }
 
-            return $this->createIsTConstTypeMethodCall(
+            $isTConstTypeMethodCall = $this->createIsTConstTypeMethodCall(
                 $arrayDimFetch,
                 $arrayDimFetchAndConstFetch->getConstFetch()
             );
+
+            if ($node instanceof Identical) {
+                return $isTConstTypeMethodCall;
+            }
+
+            return new BooleanNot($isTConstTypeMethodCall);
         });
     }
 
