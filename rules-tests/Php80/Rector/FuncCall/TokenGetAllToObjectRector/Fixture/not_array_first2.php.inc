@@ -33,7 +33,7 @@ final class NotArrayFirst2
         $tokens = \PhpToken::tokenize($code);
         $this->tokens = [];
         foreach ($tokens as $token) {
-            if ($token[0] !== T_WHITESPACE && $token[0] !== T_INLINE_HTML) {
+            if (! $token->is(T_WHITESPACE) && ! $token->is(T_INLINE_HTML)) {
                 $this->tokens = $token->text;
             }
         }
