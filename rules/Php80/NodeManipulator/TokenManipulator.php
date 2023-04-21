@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -137,7 +138,7 @@ final class TokenManipulator
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
         ): ?MethodCall {
-            if (! $node instanceof Identical) {
+            if (! $node instanceof Identical && ! $node instanceof NotIdentical) {
                 return null;
             }
 
@@ -311,7 +312,7 @@ final class TokenManipulator
         return $this->valueResolver->isValue($arrayDimFetch->dim, $value);
     }
 
-    private function matchArrayDimFetchAndConstFetch(Identical $identical): ?ArrayDimFetchAndConstFetch
+    private function matchArrayDimFetchAndConstFetch(Identical|NotIdentical $identical): ?ArrayDimFetchAndConstFetch
     {
         if ($identical->left instanceof ArrayDimFetch && $identical->right instanceof ConstFetch) {
             return new ArrayDimFetchAndConstFetch($identical->left, $identical->right);
