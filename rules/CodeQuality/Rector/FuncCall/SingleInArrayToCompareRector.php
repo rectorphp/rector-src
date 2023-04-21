@@ -94,6 +94,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if($firstArrayItem->unpack){
+            return null;
+        }
+
         if (! isset($node->args[0])) {
             return null;
         }
