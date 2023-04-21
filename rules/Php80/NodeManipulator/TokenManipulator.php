@@ -130,6 +130,11 @@ final class TokenManipulator
         });
     }
 
+    private function isIdenticalOrNotIdentical(Node $node): bool
+    {
+        return $node instanceof Identical || $node instanceof NotIdentical;
+    }
+
     /**
      * @param Node[] $nodes
      */
@@ -138,10 +143,11 @@ final class TokenManipulator
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
         ): null|MethodCall|BooleanNot {
-            if (! $node instanceof Identical && ! $node instanceof NotIdentical) {
+            if (! $this->isIdenticalOrNotIdentical($node)) {
                 return null;
             }
 
+            /** @var Identical|NotIdentical $node */
             $arrayDimFetchAndConstFetch = $this->matchArrayDimFetchAndConstFetch($node);
             if (! $arrayDimFetchAndConstFetch instanceof ArrayDimFetchAndConstFetch) {
                 return null;
