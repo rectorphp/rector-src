@@ -220,12 +220,15 @@ final class TokenManipulator
                 return $node;
             }
 
-            if ($parentNode instanceof BooleanNot) {
-                $parentOfParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-                if ($parentOfParentNode instanceof BinaryOp) {
-                    $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
-                    return $node;
-                }
+            if (! $parentNode instanceof BooleanNot) {
+                $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
+                return $node;
+            }
+
+            $parentOfParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentOfParentNode instanceof BinaryOp) {
+                $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
+                return $node;
             }
 
             $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
