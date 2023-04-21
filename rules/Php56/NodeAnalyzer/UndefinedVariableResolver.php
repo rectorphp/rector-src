@@ -146,10 +146,6 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->variableAnalyzer->isStaticOrGlobal($variable)) {
-            return true;
-        }
-
         if ($this->isAssign($parentNode)) {
             return true;
         }
@@ -163,10 +159,6 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->isDifferentWithOriginalNodeOrNoScope($variable)) {
-            return true;
-        }
-
         $variableName = $this->nodeNameResolver->getName($variable);
 
         // skip $this, as probably in outer scope
@@ -175,6 +167,14 @@ final class UndefinedVariableResolver
         }
 
         if ($variableName === null) {
+            return true;
+        }
+
+        if ($this->isDifferentWithOriginalNodeOrNoScope($variable)) {
+            return true;
+        }
+
+        if ($this->variableAnalyzer->isStaticOrGlobal($variable)) {
             return true;
         }
 
