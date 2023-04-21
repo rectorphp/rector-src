@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
@@ -210,6 +211,18 @@ final class TokenManipulator
             if ($parentNode instanceof Ternary) {
                 $this->replaceTernary($parentNode);
                 return $node;
+            }
+
+            if (! $parentNode instanceof Node) {
+                return null;
+            }
+
+            if ($parentNode instanceof BooleanNot) {
+                $parentOfParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+                if ($parentOfParentNode instanceof BinaryOp) {
+                    $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
+                    return $node;
+                }
             }
 
             $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
