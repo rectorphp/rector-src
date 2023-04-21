@@ -345,12 +345,14 @@ final class TokenManipulator
             return true;
         }
 
-        if ($parentNode instanceof BooleanNot) {
-            $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParentNode instanceof If_) {
-                $parentParentNode->cond = $parentNode;
-                return true;
-            }
+        if (! $parentNode instanceof BooleanNot) {
+            return false;
+        }
+
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentParentNode instanceof If_) {
+            $parentParentNode->cond = $parentNode;
+            return true;
         }
 
         return false;
