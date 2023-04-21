@@ -9,7 +9,9 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -135,11 +137,12 @@ final class TokenManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($nodes, function (Node $node) use (
             $singleTokenVariable
-        ): ?MethodCall {
-            if (! $node instanceof Identical) {
+        ): null|MethodCall|BooleanNot {
+            if (! $this->isIdenticalOrNotIdentical($node)) {
                 return null;
             }
 
+            /** @var Identical|NotIdentical $node */
             $arrayDimFetchAndConstFetch = $this->matchArrayDimFetchAndConstFetch($node);
             if (! $arrayDimFetchAndConstFetch instanceof ArrayDimFetchAndConstFetch) {
                 return null;
@@ -156,19 +159,21 @@ final class TokenManipulator
                 return null;
             }
 
-            $constName = $this->nodeNameResolver->getName($constFetch);
-            if ($constName === null) {
-                return null;
-            }
-
+            $constName = (string) $this->nodeNameResolver->getName($constFetch);
             if (! StringUtils::isMatch($constName, '#^T_#')) {
                 return null;
             }
 
-            return $this->createIsTConstTypeMethodCall(
+            $isTConstTypeMethodCall = $this->createIsTConstTypeMethodCall(
                 $arrayDimFetch,
                 $arrayDimFetchAndConstFetch->getConstFetch()
             );
+
+            if ($node instanceof Identical) {
+                return $isTConstTypeMethodCall;
+            }
+
+            return new BooleanNot($isTConstTypeMethodCall);
         });
     }
 
@@ -212,9 +217,25 @@ final class TokenManipulator
                 return $node;
             }
 
+            if (! $parentNode instanceof BooleanNot) {
+                $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
+                return $node;
+            }
+
+            $parentOfParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentOfParentNode instanceof BinaryOp) {
+                $this->nodesToRemoveCollector->addNodeToRemove($parentNode);
+                return $node;
+            }
+
             $this->nodesToRemoveCollector->addNodeToRemove($nodeToRemove);
             return $node;
         });
+    }
+
+    private function isIdenticalOrNotIdentical(Node $node): bool
+    {
+        return $node instanceof Identical || $node instanceof NotIdentical;
     }
 
     private function replaceTernary(Ternary $ternary): void
@@ -298,7 +319,7 @@ final class TokenManipulator
         return $this->valueResolver->isValue($arrayDimFetch->dim, $value);
     }
 
-    private function matchArrayDimFetchAndConstFetch(Identical $identical): ?ArrayDimFetchAndConstFetch
+    private function matchArrayDimFetchAndConstFetch(Identical|NotIdentical $identical): ?ArrayDimFetchAndConstFetch
     {
         if ($identical->left instanceof ArrayDimFetch && $identical->right instanceof ConstFetch) {
             return new ArrayDimFetchAndConstFetch($identical->left, $identical->right);
@@ -329,12 +350,14 @@ final class TokenManipulator
             return true;
         }
 
-        if ($parentNode instanceof BooleanNot) {
-            $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentParentNode instanceof If_) {
-                $parentParentNode->cond = $parentNode;
-                return true;
-            }
+        if (! $parentNode instanceof BooleanNot) {
+            return false;
+        }
+
+        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentParentNode instanceof If_) {
+            $parentParentNode->cond = $parentNode;
+            return true;
         }
 
         return false;
@@ -343,18 +366,24 @@ final class TokenManipulator
     private function matchParentNodeInCaseOfIdenticalTrue(FuncCall $funcCall): Identical | FuncCall
     {
         $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Identical) {
-            $isRightValueTrue = $this->valueResolver->isValue($parentNode->right, true);
-            if ($parentNode->left === $funcCall && $isRightValueTrue) {
-                return $parentNode;
-            }
-
-            $isLeftValueTrue = $this->valueResolver->isValue($parentNode->left, true);
-            if ($parentNode->right === $funcCall && $isLeftValueTrue) {
-                return $parentNode;
-            }
+        if (! $parentNode instanceof Identical) {
+            return $funcCall;
         }
 
-        return $funcCall;
+        $isRightValueTrue = $this->valueResolver->isValue($parentNode->right, true);
+        if ($parentNode->left === $funcCall && $isRightValueTrue) {
+            return $parentNode;
+        }
+
+        $isLeftValueTrue = $this->valueResolver->isValue($parentNode->left, true);
+        if ($parentNode->right !== $funcCall) {
+            return $funcCall;
+        }
+
+        if (! $isLeftValueTrue) {
+            return $funcCall;
+        }
+
+        return $parentNode;
     }
 }
