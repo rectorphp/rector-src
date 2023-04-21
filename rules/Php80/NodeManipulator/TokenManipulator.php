@@ -359,16 +359,18 @@ final class TokenManipulator
     private function matchParentNodeInCaseOfIdenticalTrue(FuncCall $funcCall): Identical | FuncCall
     {
         $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Identical) {
-            $isRightValueTrue = $this->valueResolver->isValue($parentNode->right, true);
-            if ($parentNode->left === $funcCall && $isRightValueTrue) {
-                return $parentNode;
-            }
+        if (! $parentNode instanceof Identical) {
+            return $funcCall;
+        }
 
-            $isLeftValueTrue = $this->valueResolver->isValue($parentNode->left, true);
-            if ($parentNode->right === $funcCall && $isLeftValueTrue) {
-                return $parentNode;
-            }
+        $isRightValueTrue = $this->valueResolver->isValue($parentNode->right, true);
+        if ($parentNode->left === $funcCall && $isRightValueTrue) {
+            return $parentNode;
+        }
+
+        $isLeftValueTrue = $this->valueResolver->isValue($parentNode->left, true);
+        if ($parentNode->right === $funcCall && $isLeftValueTrue) {
+            return $parentNode;
         }
 
         return $funcCall;
