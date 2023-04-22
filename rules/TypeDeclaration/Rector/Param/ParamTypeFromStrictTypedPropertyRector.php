@@ -103,6 +103,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($classMethod->isAbstract()) {
+            return null;
+        }
+
         if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
             return null;
         }
@@ -111,7 +115,6 @@ CODE_SAMPLE
 
         $paramName = $this->getName($param);
 
-        /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
             if (! $this->nodeComparator->areNodesEqual($assign->expr, $param->var)) {
