@@ -28,8 +28,8 @@ final class LocalConstantFinder
             return null;
         }
 
-        $constatName = $this->nodeNameResolver->getName($classConstFetch->name);
-        if ($constatName === null) {
+        $constantName = $this->nodeNameResolver->getName($classConstFetch->name);
+        if ($constantName === null) {
             return null;
         }
 
@@ -42,14 +42,14 @@ final class LocalConstantFinder
             return null;
         }
 
-        return $this->findConstantByName($class, $constatName);
+        return $this->findConstantByName($class, $constantName);
     }
 
-    private function findConstantByName(Class_ $class, string $constatName): ?Const_
+    private function findConstantByName(Class_ $class, string $constantName): ?Const_
     {
         foreach ($class->getConstants() as $classConsts) {
             foreach ($classConsts->consts as $const) {
-                if (! $this->nodeNameResolver->isName($const->name, $constatName)) {
+                if (! $this->nodeNameResolver->isName($const->name, $constantName)) {
                     continue;
                 }
 
