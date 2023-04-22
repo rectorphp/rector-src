@@ -44,16 +44,16 @@ final class LocalMethodCallFinder
         $matchingMethodCalls = [];
 
         foreach ($methodCalls as $methodCall) {
+            if (! $this->nodeNameResolver->isName($methodCall->name, $classMethodName)) {
+                continue;
+            }
+
             $callerType = $this->nodeTypeResolver->getType($methodCall->var);
             if (! $callerType instanceof TypeWithClassName) {
                 continue;
             }
 
             if ($callerType->getClassName() !== $className) {
-                continue;
-            }
-
-            if (! $this->nodeNameResolver->isName($methodCall->name, $classMethodName)) {
                 continue;
             }
 
