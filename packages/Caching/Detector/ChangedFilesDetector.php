@@ -43,6 +43,7 @@ final class ChangedFilesDetector
             return $currentFileHash !== $cachedValue;
         }
 
+        // we don't have a value to compare against. Be defensive and assume its changed
         return true;
     }
 
