@@ -22,32 +22,15 @@ final class PhpFilesFinder
      */
     public function findInPaths(array $paths): array
     {
-        $filePaths = $this->filesFinder->findInDirectoriesAndFiles($paths);
-        $suffixRegexPattern = StaticNonPhpFileSuffixes::getSuffixRegexPattern();
+        $filePaths = $this->filesFinder->findInDirectoriesAndFiles($paths, ['php']);
 
         // filter out non-PHP files
         foreach ($filePaths as $key => $filePath) {
-            //            $pathname = $filePath->getPathname();
 
             /**
              *  check .blade.php early so next .php check in next if can be skipped
              */
             if (str_ends_with($filePath, '.blade.php')) {
-                unset($filePaths[$key]);
-                continue;
-            }
-
-            /**
-             * obvious
-             */
-            if (str_ends_with($filePath, '.php')) {
-                continue;
-            }
-
-            /**
-             * only check with regex when needed
-             */
-            if (StringUtils::isMatch($filePath, $suffixRegexPattern)) {
                 unset($filePaths[$key]);
             }
         }
