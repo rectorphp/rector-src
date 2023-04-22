@@ -42,7 +42,7 @@ final class LocalConstantFinder
             return null;
         }
 
-        return $this->findConstantByName($class, $constatName);;
+        return $this->findConstantByName($class, $constatName);
     }
 
     private function findConstantByName(Class_ $class, string $constatName): ?Const_
