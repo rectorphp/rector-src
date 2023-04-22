@@ -212,21 +212,16 @@ final class ClassMethodAssignManipulator
     {
         $referencedVariables = [];
 
-        /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
 
         foreach ($variables as $variable) {
-            if ($this->nodeNameResolver->isName($variable, 'this')) {
+            $variableName = $this->nodeNameResolver->getName($variable);
+            if ($variableName === 'this') {
                 continue;
             }
 
             $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
             if ($parentNode instanceof Node && $this->isExplicitlyReferenced($parentNode)) {
-                $variableName = $this->nodeNameResolver->getName($variable);
-                if ($variableName === null) {
-                    continue;
-                }
-
                 $referencedVariables[] = $variableName;
                 continue;
             }
@@ -242,11 +237,6 @@ final class ClassMethodAssignManipulator
             }
 
             if ($argumentPosition === null) {
-                continue;
-            }
-
-            $variableName = $this->nodeNameResolver->getName($variable);
-            if ($variableName === null) {
                 continue;
             }
 
@@ -332,10 +322,6 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        if (! $this->nodeNameResolver->isNames($node, ['array_shift', '*sort'])) {
-            return false;
-        }
-
         if (! isset($node->args[0])) {
             return false;
         }
@@ -344,7 +330,11 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        // is 1t argument
+        if (! $this->nodeNameResolver->isNames($node, ['array_shift', '*sort'])) {
+            return false;
+        }
+
+        // is 1st argument
         return $node->args[0]->value !== $variable;
     }
 
