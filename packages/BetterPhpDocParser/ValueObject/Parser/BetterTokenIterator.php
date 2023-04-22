@@ -103,7 +103,7 @@ final class BetterTokenIterator extends TokenIterator
     }
 
     /**
-     * @return array<array{0: string, 1: int}>
+     * @return array<int, array{string, int, int}>
      */
     public function getTokens(): array
     {
