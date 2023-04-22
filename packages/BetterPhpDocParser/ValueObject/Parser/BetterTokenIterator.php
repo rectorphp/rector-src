@@ -20,18 +20,16 @@ final class BetterTokenIterator extends TokenIterator
      */
     private const INDEX = 'index';
 
-    private readonly PrivatesAccessor $privatesAccessor;
-
     /**
      * @param array<int, mixed> $tokens
      */
     public function __construct(array $tokens, int $index = 0)
     {
-        $this->privatesAccessor = new PrivatesAccessor();
+        $privatesAccessor = new PrivatesAccessor();
 
         if ($tokens === []) {
-            $this->privatesAccessor->setPrivateProperty($this, self::TOKENS, []);
-            $this->privatesAccessor->setPrivateProperty($this, self::INDEX, 0);
+            $privatesAccessor->setPrivateProperty($this, self::TOKENS, []);
+            $privatesAccessor->setPrivateProperty($this, self::INDEX, 0);
         } else {
             parent::__construct($tokens, $index);
         }
@@ -99,7 +97,7 @@ final class BetterTokenIterator extends TokenIterator
 
     public function currentPosition(): int
     {
-        return $this->privatesAccessor->getPrivateProperty($this, self::INDEX);
+        return $this->currentTokenIndex();
     }
 
     public function count(): int
