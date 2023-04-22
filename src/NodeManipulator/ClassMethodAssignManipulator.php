@@ -216,7 +216,7 @@ final class ClassMethodAssignManipulator
 
         foreach ($variables as $variable) {
             $variableName = $this->nodeNameResolver->getName($variable);
-            if ($variableName === 'this') {
+            if ($variableName === 'this' || $variableName === null) {
                 continue;
             }
 
