@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
@@ -62,6 +63,10 @@ CODE_SAMPLE
 
         if ($stmt instanceof FileWithoutNamespace) {
             $stmt = current($stmt->stmts);
+
+            if (! $stmt instanceof Stmt) {
+                return null;
+            }
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
