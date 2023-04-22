@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -58,6 +59,10 @@ CODE_SAMPLE
         }
 
         $stmt = current($newStmts);
+
+        if ($stmt instanceof FileWithoutNamespace) {
+            $stmt = current($stmt->stmts);
+        }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
