@@ -43,19 +43,19 @@ final class NodeComparator
         }
 
         if (is_array($firstNode)) {
-            Assert::allIsAOf($firstNode, Node::class);
-
             if (!is_array($secondNode)) {
                 return false;
             }
+
+            Assert::allIsAOf($firstNode, Node::class);
         }
 
         if (is_array($secondNode)) {
-            Assert::allIsAOf($secondNode, Node::class);
-
             if (!is_array($firstNode)) {
                 return false;
             }
+
+            Assert::allIsAOf($secondNode, Node::class);
         }
 
         return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
