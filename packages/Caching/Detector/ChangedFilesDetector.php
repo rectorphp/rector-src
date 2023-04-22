@@ -35,11 +35,15 @@ final class ChangedFilesDetector
 
     public function hasFileChanged(string $filePath): bool
     {
-        $currentFileHash = $this->hashFile($filePath);
         $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
-
         $cachedValue = $this->cache->load($fileInfoCacheKey, CacheKey::FILE_HASH_KEY);
-        return $currentFileHash !== $cachedValue;
+
+        if ($cachedValue !== null) {
+            $currentFileHash = $this->hashFile($filePath);
+            return $currentFileHash !== $cachedValue;
+        }
+
+        return true;
     }
 
     public function invalidateFile(string $filePath): void
