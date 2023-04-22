@@ -219,6 +219,11 @@ final class ReflectionResolver
     public function resolvePropertyReflectionFromPropertyFetch(
         PropertyFetch | StaticPropertyFetch $propertyFetch
     ): ?PhpPropertyReflection {
+        $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
+        if ($propertyName === null) {
+            return null;
+        }
+
         $fetcheeType = $propertyFetch instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($propertyFetch->var)
             : $this->nodeTypeResolver->getType($propertyFetch->class);
@@ -232,11 +237,6 @@ final class ReflectionResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($fetcheeType->getClassName());
-
-        $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
-        if ($propertyName === null) {
-            return null;
-        }
 
         if (! $classReflection->hasProperty($propertyName)) {
             return null;
