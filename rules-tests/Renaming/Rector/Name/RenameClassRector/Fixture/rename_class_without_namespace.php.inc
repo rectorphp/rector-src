@@ -17,14 +17,14 @@ class MyOldClass
 
 namespace MyNamespace;
 
-class MyNewClass
+class MyNewClass2
 {
     /**
-     * @return \MyNamespace\MyNewClass
+     * @return \MyNamespace\MyNewClass2
      */
-    public function createSelf(): \MyNamespace\MyNewClass
+    public function createSelf(): \MyNamespace\MyNewClass2
     {
-        return new \MyNamespace\MyNewClass;
+        return new \MyNamespace\MyNewClass2;
     }
 }
 

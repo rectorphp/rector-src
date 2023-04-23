@@ -32,10 +32,10 @@ return static function (RectorConfig $rectorConfig): void {
             'Twig_AbstractManualExtension' => AbstractManualExtension::class,
             'Twig_Extension_Sandbox' => 'Twig\Extension\SandboxExtension',
             // Renaming class itself and its namespace
-            'MyNamespace\MyClass' => 'MyNewNamespace\MyNewClass',
+            'MyNamespace\MylegacyClass' => 'MyNewNamespace\MyNewClass',
             'MyNamespace\MyTrait' => 'MyNewNamespace\MyNewTrait',
             'MyNamespace\MyInterface' => 'MyNewNamespace\MyNewInterface',
-            'MyOldClass' => 'MyNamespace\MyNewClass',
+            'MyOldClass' => 'MyNamespace\MyNewClass2',
             'AnotherMyOldClass' => 'AnotherMyNewClass',
             'MyNamespace\AnotherMyClass' => 'MyNewClassWithoutNamespace',
             // test duplicated class - @see https://github.com/rectorphp/rector/issues/1438
