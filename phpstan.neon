@@ -514,7 +514,7 @@ parameters:
             paths:
                 - bin/rector.php
                 - src/Bootstrap/RectorConfigsResolver.php
-                - src/ValueObject/StaticNonPhpFileSuffixes.php
+                - src/NonPhpFile/NonPhpFileProcessor.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
 
         # part of tests
