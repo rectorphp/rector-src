@@ -172,7 +172,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
     }
 
-    private function processFilePath(string $filePath, $inputFileContents): string
+    private function processFilePath(string $filePath, string $inputFileContents): string
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
