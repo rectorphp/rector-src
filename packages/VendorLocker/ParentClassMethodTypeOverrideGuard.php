@@ -42,6 +42,7 @@ final class ParentClassMethodTypeOverrideGuard
             if ($parentClassReflection->hasNativeMethod($methodName)) {
                 return $parentClassReflection->getNativeMethod($methodName);
             }
+
             $parentClassReflection = $parentClassReflection->getParentClass();
         }
 
