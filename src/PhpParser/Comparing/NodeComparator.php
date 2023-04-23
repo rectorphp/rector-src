@@ -38,6 +38,7 @@ final class NodeComparator
         if ($firstNode instanceof Node && ! $secondNode instanceof Node) {
             return false;
         }
+
         if (! $firstNode instanceof Node && $secondNode instanceof Node) {
             return false;
         }
