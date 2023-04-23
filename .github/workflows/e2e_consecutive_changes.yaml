@@ -1,0 +1,52 @@
+# This workflow runs system tests: Use the Rector application from the source
+# checkout to process "fixture" projects in e2e/ directory
+# to see if those can be processed successfully
+name: End to End tests with consecutive changes
+
+on:
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    end_to_end:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php_version: ['8.1']
+                directory:
+                    - 'e2e/consecutive-changes-with-cache'
+
+        name: End to end test - ${{ matrix.directory }}
+
+        steps:
+            -   uses: actions/checkout@v3
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php_version }}
+                    coverage: none
+
+            # run in root rector-src
+            -   run: composer install --ansi
+
+            # run in e2e subdir
+            -
+                run: composer install --ansi
+                working-directory: ${{ matrix.directory }}
+
+            # run e2e test
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-1.diff
+                working-directory: ${{ matrix.directory }}
+
+            # this tests that a 2nd run with cache and consecutive changes works, see https://github.com/rectorphp/rector-src/pull/3614#issuecomment-1507742338
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-2.diff
+                working-directory: ${{ matrix.directory }}

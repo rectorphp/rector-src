@@ -1,0 +1,27 @@
+1 file with changes
+===================
+
+1) src/Source.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ $a = true;
+ $b = true;
+-
+-if ($a && $b) {
+-    return true;
++if (!$a) {
++    return;
+ }
++if (!$b) {
++    return;
++}
++return true;
+    ----------- end diff -----------
+
+Applied rules:
+ * ChangeAndIfToEarlyReturnRector
+
+
+ [OK] 1 file has been changed by Rector
