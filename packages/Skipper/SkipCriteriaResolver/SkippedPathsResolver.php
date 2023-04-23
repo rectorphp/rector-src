@@ -40,12 +40,12 @@ final class SkippedPathsResolver
                 continue;
             }
 
-            if (file_exists($value)) {
+            if (\str_contains((string) $value, '*')) {
                 $this->skippedPaths[] = $this->filePathHelper->normalizePathAndSchema($value);
                 continue;
             }
 
-            if (\str_contains((string) $value, '*')) {
+            if (file_exists($value)) {
                 $this->skippedPaths[] = $this->filePathHelper->normalizePathAndSchema($value);
             }
         }
