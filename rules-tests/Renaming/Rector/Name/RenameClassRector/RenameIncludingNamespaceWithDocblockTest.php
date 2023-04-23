@@ -24,6 +24,6 @@ final class RenameIncludingNamespaceWithDocblockTest extends AbstractRectorTestC
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule.php';
+        return __DIR__ . '/config/configured_rule_rename_including_namespace_with_docblock.php';
     }
 }
