@@ -107,7 +107,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         if (FixtureSplitter::containsSplit($fixtureFileContents)) {
             // changed content
-            [$inputFileContents, $expectedFileContents] = FixtureSplitter::split($fixtureFileContents);
+            [$inputFileContents, $expectedFileContents] = FixtureSplitter::splitFixtureFileContents($fixtureFileContents);
         } else {
             // no change
             $inputFileContents = $fixtureFileContents;

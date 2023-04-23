@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Rector\Testing\Fixture;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**
@@ -25,7 +26,17 @@ final class FixtureSplitter
     /**
      * @return array<string, string>
      */
-    public static function split(string $fixtureFileContents): array
+    public static function split(string $filePath): array
+    {
+        $fixtureFileContents = FileSystem::read($filePath);
+
+        return Strings::split($fixtureFileContents, self::SPLIT_LINE_REGEX);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
         return Strings::split($fixtureFileContents, self::SPLIT_LINE_REGEX);
     }
