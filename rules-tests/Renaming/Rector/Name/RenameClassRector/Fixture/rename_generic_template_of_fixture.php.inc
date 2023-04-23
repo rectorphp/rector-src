@@ -2,17 +2,17 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-use MyNamespace\MyClass;
+use MyNamespace\MylegacyClass;
 
 /**
- * @template T of MyClass
+ * @template T of MylegacyClass
  */
 interface MyServiceInterface
 {
     /**
      * @return T
      */
-    public function get(): MyClass;
+    public function get(): MylegacyClass;
 }
 
 ?>

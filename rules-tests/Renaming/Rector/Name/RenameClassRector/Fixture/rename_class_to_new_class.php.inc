@@ -2,14 +2,14 @@
 
 namespace MyNamespace;
 
-class MyClass
+class MylegacyClass
 {
     /**
-     * @return MyClass
+     * @return MylegacyClass
      */
-    public function createSelf(): MyClass
+    public function createSelf(): MylegacyClass
     {
-        return new MyClass;
+        return new MylegacyClass;
     }
 }
 
