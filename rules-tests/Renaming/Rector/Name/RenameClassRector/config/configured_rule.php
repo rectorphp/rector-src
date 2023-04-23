@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Acme\Bar\DoNotUpdateExistingTargetNamespace;
 use Manual\Twig\TwigFilter;
-use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture\DuplicatedClass;
@@ -20,8 +19,6 @@ use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeFinalClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SomeNonFinalClass;
 
 return static function (RectorConfig $rectorConfig): void {
-    // to avoid random error on CI
-    $rectorConfig->cacheClass(FileCacheStorage::class);
     $rectorConfig->removeUnusedImports();
 
     $rectorConfig
