@@ -94,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if($firstArrayItem->unpack){
+        if ($firstArrayItem->unpack) {
             return null;
         }
 

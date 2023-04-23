@@ -35,15 +35,16 @@ final class NodeComparator
      */
     public function areNodesEqual(Node | array | null $firstNode, Node | array | null $secondNode): bool
     {
-        if ($firstNode instanceof Node && !$secondNode instanceof Node) {
+        if ($firstNode instanceof Node && ! $secondNode instanceof Node) {
             return false;
         }
-        if (!$firstNode instanceof Node && $secondNode instanceof Node) {
+
+        if (! $firstNode instanceof Node && $secondNode instanceof Node) {
             return false;
         }
 
         if (is_array($firstNode)) {
-            if (!is_array($secondNode)) {
+            if (! is_array($secondNode)) {
                 return false;
             }
 
@@ -51,7 +52,7 @@ final class NodeComparator
         }
 
         if (is_array($secondNode)) {
-            if (!is_array($firstNode)) {
+            if (! is_array($firstNode)) {
                 return false;
             }
 

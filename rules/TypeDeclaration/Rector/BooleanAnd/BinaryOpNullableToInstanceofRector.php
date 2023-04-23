@@ -125,7 +125,7 @@ CODE_SAMPLE
         }
 
         /** @var BooleanOr|null $result */
-        $result =  $this->processsNullableInstance($booleanOr);
+        $result = $this->processsNullableInstance($booleanOr);
         return $result;
     }
 
