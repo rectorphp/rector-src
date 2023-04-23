@@ -125,7 +125,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
+        $this->doTestFileMatchesExpectedContent($inputFilePath, $inputFileContents, $expectedFileContents, $fixtureFilePath);
     }
 
     private function includePreloadFilesAndScoperAutoload(): void
@@ -146,12 +146,13 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private function doTestFileMatchesExpectedContent(
         string $originalFilePath,
+        string $inputFileContents,
         string $expectedFileContents,
         string $fixtureFilePath
     ): void {
         $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
 
-        $changedContent = $this->processFilePath($originalFilePath);
+        $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);
 
         // file is removed, we cannot compare it
         if ($this->removedAndAddedFilesCollector->isFileRemoved($originalFilePath)) {
@@ -171,7 +172,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
     }
 
-    private function processFilePath(string $filePath): string
+    private function processFilePath(string $filePath, string $inputFileContents): string
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
@@ -184,7 +185,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $configurationFactory = $this->getService(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);
 
-        $file = new File($filePath, FileSystem::read($filePath));
+        $file = new File($filePath, $inputFileContents);
         $this->applicationFileProcessor->processFiles([$file], $configuration);
 
         return $file->getFileContent();
