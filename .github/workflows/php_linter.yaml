@@ -3,6 +3,10 @@ name: PHP Linter
 on:
     pull_request: null
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 env:
     # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
     COMPOSER_ROOT_VERSION: "dev-main"
