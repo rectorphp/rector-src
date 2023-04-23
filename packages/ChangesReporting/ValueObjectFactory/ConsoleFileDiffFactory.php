@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
 use Rector\Core\Console\Formatter\ConsoleDiffer;
-use Rector\Core\Differ\DefaultDiffer;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 
-/**
- * In case you only need console diffs and not default-diffs, you should use the more efficient ConsoleFileDiffFactory instead.
- */
-final class FileDiffFactory
+final class ConsoleFileDiffFactory
 {
     public function __construct(
-        private readonly DefaultDiffer $defaultDiffer,
         private readonly ConsoleDiffer $consoleDiffer,
         private readonly FilePathHelper $filePathHelper,
     ) {
@@ -29,7 +24,7 @@ final class FileDiffFactory
         // always keep the most recent diff
         return new FileDiff(
             $relativeFilePath,
-            $this->defaultDiffer->diff($oldContent, $newContent),
+            '', // computing the diff can be slow, therefore we only compute what we need
             $this->consoleDiffer->diff($oldContent, $newContent),
             $file->getRectorWithLineChanges()
         );

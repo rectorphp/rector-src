@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NonPhpFile;
 
+use Rector\ChangesReporting\ValueObjectFactory\ConsoleFileDiffFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
@@ -23,7 +24,7 @@ final class NonPhpFileProcessor implements FileProcessorInterface
      */
     public function __construct(
         private readonly array $nonPhpRectors,
-        private readonly FileDiffFactory $fileDiffFactory,
+        private readonly ConsoleFileDiffFactory $fileDiffFactory,
         private readonly Filesystem $filesystem,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
     ) {

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application\FileDecorator;
 
+use Rector\ChangesReporting\ValueObjectFactory\ConsoleFileDiffFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\ValueObject\Application\File;
 
 final class FileDiffFileDecorator
 {
     public function __construct(
-        private readonly FileDiffFactory $fileDiffFactory
+        private readonly ConsoleFileDiffFactory $fileDiffFactory
     ) {
     }
 
