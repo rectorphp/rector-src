@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector\Fixture;
 
-class Fixture6
+class PhpunitTestCaseSplit
 {
     /**
      * @param \PHPUnit_Framework_TestCase $test
@@ -20,7 +20,7 @@ class Fixture6
 
 namespace Rector\Tests\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector\Fixture;
 
-class Fixture6
+class PhpunitTestCaseSplit
 {
     /**
      * @param \PHPUnit\Framework\TestCase $test
