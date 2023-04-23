@@ -212,6 +212,7 @@ final class ClassMethodAssignManipulator
     {
         $referencedVariables = [];
 
+        /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->findInstanceOf($classMethod, Variable::class);
 
         foreach ($variables as $variable) {
