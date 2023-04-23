@@ -1,0 +1,29 @@
+1 file with changes
+===================
+
+1) src/Source.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ $a = true;
+ $b = true;
++if (!$a) {
++    return;
++}
+
+-if ($a && $b) {
+-    return true;
++if (!$b) {
++    return;
+ }
++
++return true;
+    ----------- end diff -----------
+
+Applied rules:
+ * NewlineAfterStatementRector
+ * ChangeAndIfToEarlyReturnRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector
