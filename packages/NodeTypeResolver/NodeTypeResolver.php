@@ -359,7 +359,7 @@ final class NodeTypeResolver
             }
 
             $resolvedClassReflection = $this->reflectionProvider->getClass($resolvedClassName);
-            
+
             foreach ($resolvedClassReflection->getAncestors() as $ancestorClassReflection) {
                 if ($ancestorClassReflection->hasTraitUse($requiredClassName)) {
                     return true;

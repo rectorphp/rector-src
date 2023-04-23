@@ -17,7 +17,7 @@ final class AccessoryNonEmptyStringTypeCorrector
             return $mainType;
         }
 
-        if (!$mainType->isNonEmptyString()->yes()) {
+        if (! $mainType->isNonEmptyString()->yes()) {
             return $mainType;
         }
 

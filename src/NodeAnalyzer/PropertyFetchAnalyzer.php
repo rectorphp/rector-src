@@ -78,7 +78,7 @@ final class PropertyFetchAnalyzer
             return false;
         }
 
-        if (!$this->nodeNameResolver->isName($node->name, $desiredPropertyName)) {
+        if (! $this->nodeNameResolver->isName($node->name, $desiredPropertyName)) {
             return false;
         }
 
