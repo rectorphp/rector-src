@@ -25,6 +25,7 @@ jobs:
                     - tests
                     - rules-tests
                     - packages-tests
+                    - utils-tests
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
         steps:
