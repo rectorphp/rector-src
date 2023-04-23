@@ -18,7 +18,7 @@ final class RenameIncludingNamespaceWithDocblockTest extends AbstractRectorTestC
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureIncludingNmaespaceWithDocblock');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureIncludingNamespaceWithDocblock');
     }
 
     public function provideConfigFilePath(): string
