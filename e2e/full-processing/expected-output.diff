@@ -8,23 +8,22 @@
 
  $a = true;
  $b = true;
--
--if ($a && $b) {
--    return true;
 +if (!$a) {
 +    return;
- }
-+
++}
+
+-if ($a && $b) {
+-    return true;
 +if (!$b) {
 +    return;
-+}
+ }
 +
 +return true;
     ----------- end diff -----------
 
 Applied rules:
- * ChangeAndIfToEarlyReturnRector
  * NewlineAfterStatementRector
+ * ChangeAndIfToEarlyReturnRector
 
 
  [OK] 1 file would have changed (dry-run) by Rector

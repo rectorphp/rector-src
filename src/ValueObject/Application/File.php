@@ -152,4 +152,11 @@ final class File
     {
         return $this->rectorWithLineChanges;
     }
+
+    public function reset(): void
+    {
+        $this->oldStmts = [];
+        $this->newStmts = [];
+        $this->oldTokens = [];
+    }
 }

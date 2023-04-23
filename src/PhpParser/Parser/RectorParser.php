@@ -25,6 +25,14 @@ final class RectorParser
         return $this->parser->parseFile($filePath);
     }
 
+    public function parseStringToStmtsAndTokens(string $sourceCode): StmtsAndTokens
+    {
+        $stmts = $this->parser->parseString($sourceCode);
+        $tokens = $this->lexer->getTokens();
+
+        return new StmtsAndTokens($stmts, $tokens);
+    }
+
     public function parseFileToStmtsAndTokens(string $filePath): StmtsAndTokens
     {
         $stmts = $this->parseFile($filePath);

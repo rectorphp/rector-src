@@ -78,6 +78,10 @@ final class PhpFileProcessor implements FileProcessorInterface
             // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
+
+            if ($file->hasChanged() /* @todo: && there is a rector that requires new parsing involved in the configuration, like NewlineAfterStatementRector */) {
+                $this->parseFileAndDecorateNodes($file, false);
+            }
         } while ($file->hasChanged());
 
         // return json here
@@ -107,13 +111,16 @@ final class PhpFileProcessor implements FileProcessorInterface
     /**
      * @return SystemError[]
      */
-    private function parseFileAndDecorateNodes(File $file): array
+    private function parseFileAndDecorateNodes(File $file, bool $initialParse = true): array
     {
         $this->currentFileProvider->setFile($file);
-        $this->notifyFile($file);
+
+        if ($initialParse) {
+            $this->notifyFile($file);
+        }
 
         try {
-            $this->fileProcessor->parseFileInfoToLocalCache($file);
+            $this->fileProcessor->parseFileInfoToLocalCache($file, $initialParse);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {

@@ -23,10 +23,15 @@ final class FileProcessor
     ) {
     }
 
-    public function parseFileInfoToLocalCache(File $file): void
+    public function parseFileInfoToLocalCache(File $file, bool $initialParse = true): void
     {
         // store tokens by absolute path, so we don't have to print them right now
-        $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($file->getFilePath());
+        if ($initialParse) {
+            $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($file->getFilePath());
+        } else {
+            $file->reset();
+            $stmtsAndTokens = $this->rectorParser->parseStringToStmtsAndTokens($file->getFileContent());
+        }
 
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();
