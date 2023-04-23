@@ -38,7 +38,7 @@ final class ParentClassMethodTypeOverrideGuard
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
         $parentClassReflection = $classReflection->getParentClass();
-        while  ($parentClassReflection !== null) {
+        while  ($parentClassReflection instanceof ClassReflection) {
             if ($parentClassReflection->hasNativeMethod($methodName)) {
                 return $parentClassReflection->getNativeMethod($methodName);
             }
