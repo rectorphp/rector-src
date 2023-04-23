@@ -103,6 +103,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($classMethod->isAbstract()) {
+            return null;
+        }
+
         if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
             return null;
         }
