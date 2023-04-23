@@ -52,6 +52,8 @@ final class ConfigurationFactory
 
         $memoryLimit = $this->resolveMemoryLimit($input);
 
+        $isUsingFullProcessing = $this->parameterProvider->provideBoolParameter(Option::FULL_PROCESSING);
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
@@ -63,7 +65,8 @@ final class ConfigurationFactory
             $parallelPort,
             $parallelIdentifier,
             $isParallel,
-            $memoryLimit
+            $memoryLimit,
+            $isUsingFullProcessing,
         );
     }
 

@@ -59,6 +59,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             Bridge::FILE_DIFFS => [],
         ];
 
+        $isUsingFullProcessing = $configuration->isUsingFullProcessing();
+
         try {
             // 1. parse files to nodes
             $this->parseFileAndDecorateNodes($file);
@@ -67,6 +69,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
             // 2. change nodes with Rectors
             $rectorWithLineChanges = null;
+            $lastPassHasChanged = false;
             do {
                 $file->changeHasChanged(false);
                 $this->fileProcessor->refactor($file, $configuration);
@@ -87,6 +90,12 @@ final class PhpFileProcessor implements FileProcessorInterface
                     $rectorWithLineChanges = $file->getRectorWithLineChanges();
 
                     $fileHasChanged = true;
+                    $lastPassHasChanged = true;
+                } elseif ($isUsingFullProcessing && $lastPassHasChanged) {
+                    $this->parseFileAndDecorateNodes($file, false);
+                    $file->changeHasChanged(true);
+                    $fileHasChangedInCurrentPass = true;
+                    $lastPassHasChanged = false;
                 }
             } while ($fileHasChangedInCurrentPass);
         } catch (SystemErrorException $systemErrorException) {
@@ -139,13 +148,16 @@ final class PhpFileProcessor implements FileProcessorInterface
     /**
      * @throws SystemErrorException
      */
-    private function parseFileAndDecorateNodes(File $file): void
+    private function parseFileAndDecorateNodes(File $file, bool $initialParse = true): void
     {
         $this->currentFileProvider->setFile($file);
-        $this->notifyFile($file);
+
+        if ($initialParse) {
+            $this->notifyFile($file);
+        }
 
         try {
-            $this->fileProcessor->parseFileInfoToLocalCache($file);
+            $this->fileProcessor->parseFileInfoToLocalCache($file, $initialParse);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
             throw $shouldNotHappenException;
         } catch (AnalysedCodeException $analysedCodeException) {
