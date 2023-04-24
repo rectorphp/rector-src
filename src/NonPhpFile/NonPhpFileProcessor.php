@@ -12,7 +12,6 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
-use Rector\Core\ValueObject\StaticNonPhpFileSuffixes;
 use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Filesystem\Filesystem;
 
