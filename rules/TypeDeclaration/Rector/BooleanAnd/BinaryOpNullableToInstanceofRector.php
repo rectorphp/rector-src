@@ -12,8 +12,8 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\TypeDeclaration\TypeAnalyzer\NullableTypeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -22,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class BinaryOpNullableToInstanceofRector extends AbstractRector
 {
+    public function __construct(
+        private readonly NullableTypeAnalyzer $nullableTypeAnalyzer,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change && and || between nullable objects to instanceof compares', [
@@ -74,7 +79,7 @@ CODE_SAMPLE
 
     private function processsNullableInstance(BooleanAnd|BooleanOr $node): null|BooleanAnd|BooleanOr
     {
-        $nullableObjectType = $this->returnNullableObjectType($node->left);
+        $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($node->left);
 
         $hasChanged = false;
         if ($nullableObjectType instanceof ObjectType) {
@@ -83,7 +88,7 @@ CODE_SAMPLE
             $hasChanged = true;
         }
 
-        $nullableObjectType = $this->returnNullableObjectType($node->right);
+        $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($node->right);
 
         if ($nullableObjectType instanceof ObjectType) {
             $node->right = $this->createExprInstanceof($node->right, $nullableObjectType);
@@ -102,7 +107,7 @@ CODE_SAMPLE
     {
         $hasChanged = false;
         if ($booleanOr->left instanceof BooleanNot) {
-            $nullableObjectType = $this->returnNullableObjectType($booleanOr->left->expr);
+            $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($booleanOr->left->expr);
 
             if ($nullableObjectType instanceof ObjectType) {
                 $booleanOr->left->expr = $this->createExprInstanceof($booleanOr->left->expr, $nullableObjectType);
@@ -111,7 +116,7 @@ CODE_SAMPLE
         }
 
         if ($booleanOr->right instanceof BooleanNot) {
-            $nullableObjectType = $this->returnNullableObjectType($booleanOr->right->expr);
+            $nullableObjectType = $this->nullableTypeAnalyzer->resolveNullableObjectType($booleanOr->right->expr);
 
             if ($nullableObjectType instanceof ObjectType) {
                 $booleanOr->right->expr = $this->createExprInstanceof($booleanOr->right->expr, $nullableObjectType);
@@ -127,18 +132,6 @@ CODE_SAMPLE
         /** @var BooleanOr|null $result */
         $result = $this->processsNullableInstance($booleanOr);
         return $result;
-    }
-
-    private function returnNullableObjectType(Expr $expr): ObjectType|null
-    {
-        $exprType = $this->getType($expr);
-
-        $baseType = TypeCombinator::removeNull($exprType);
-        if (! $baseType instanceof ObjectType) {
-            return null;
-        }
-
-        return $baseType;
     }
 
     private function createExprInstanceof(Expr $expr, ObjectType $objectType): Instanceof_

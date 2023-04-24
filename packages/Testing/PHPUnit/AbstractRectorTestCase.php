@@ -107,7 +107,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         if (FixtureSplitter::containsSplit($fixtureFileContents)) {
             // changed content
-            [$inputFileContents, $expectedFileContents] = FixtureSplitter::splitFixtureFileContents($fixtureFileContents);
+            [$inputFileContents, $expectedFileContents] = FixtureSplitter::splitFixtureFileContents(
+                $fixtureFileContents
+            );
         } else {
             // no change
             $inputFileContents = $fixtureFileContents;
@@ -125,7 +127,12 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $inputFileContents, $expectedFileContents, $fixtureFilePath);
+        $this->doTestFileMatchesExpectedContent(
+            $inputFilePath,
+            $inputFileContents,
+            $expectedFileContents,
+            $fixtureFilePath
+        );
     }
 
     private function includePreloadFilesAndScoperAutoload(): void

@@ -24,7 +24,6 @@ final class PhpFilesFinder
 
         // filter out non-PHP files
         foreach ($filePaths as $key => $filePath) {
-
             /**
              *  check .blade.php early so next .php check in next if can be skipped
              */

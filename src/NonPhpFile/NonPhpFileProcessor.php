@@ -22,7 +22,6 @@ final class NonPhpFileProcessor implements FileProcessorInterface
      */
     private const SUFFIXES = ['neon', 'yaml', 'xml', 'yml', 'twig', 'latte', 'blade.php', 'tpl'];
 
-
     /**
      * @param NonPhpRectorInterface[] $nonPhpRectors
      */

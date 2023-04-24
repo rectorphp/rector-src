@@ -43,7 +43,7 @@ final class FileProcessor
         $file->changeNewStmts($newStmts);
 
         $this->affectedFilesCollector->removeFromList($file);
-        while ($otherTouchedFile = $this->affectedFilesCollector->getNext()) {
+        while (($otherTouchedFile = $this->affectedFilesCollector->getNext()) instanceof File) {
             $this->refactor($otherTouchedFile, $configuration);
         }
     }

@@ -104,10 +104,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($varTagValueNode->type === null) {
-            return null;
-        }
-
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $node);
 
         $updatedPhpDocType = $this->phpDocNullableTypeHelper->resolveUpdatedPhpDocTypeFromPhpDocTypeAndPhpParserType(
