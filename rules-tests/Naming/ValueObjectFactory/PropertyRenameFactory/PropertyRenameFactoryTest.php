@@ -65,6 +65,6 @@ final class PropertyRenameFactoryTest extends AbstractTestCase
 
     public static function provideData(): Iterator
     {
-        yield [__DIR__ . '/Fixture/rename_property_and_property_fetch.php.inc', 'eliteManager', 'eventManager'];
+        yield [__DIR__ . '/Fixture/rename_property_and_property_fetch2.php.inc', 'eliteManager', 'eventManager'];
     }
 }
