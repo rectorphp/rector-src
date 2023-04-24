@@ -43,7 +43,7 @@ final class NarrowUnionMultiParams
         $this->someExpr($string, $staticCall);
     }
 
-    private function someExpr(\PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall|\PhpParser\Node\Scalar\String_ $expr, \PhpParser\Node\Expr\StaticCall $staticCal)
+    private function someExpr(\PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall|\PhpParser\Node\Scalar\String_ $expr, \PhpParser\Node\Expr\StaticCall $staticCall)
     {
     }
 }
