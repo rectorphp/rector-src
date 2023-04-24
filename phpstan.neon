@@ -806,3 +806,15 @@ parameters:
         - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
         - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
+        -
+            message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
+            path: rules/Naming/VariableRenamer.php
+
+        -
+            message: '#Method call return value that should be used, but is not#'
+            paths:
+                - rules/Naming/ParamRenamer/ParamRenamer.php
+                - rules/Naming/PropertyRenamer/PropertyPromotionRenamer.php
+                - rules/Naming/Rector/Assign/RenameVariableToMatchMethodCallReturnTypeRector.php
+                - rules/Naming/Rector/ClassMethod/RenameVariableToMatchNewTypeRector.php
+                - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
