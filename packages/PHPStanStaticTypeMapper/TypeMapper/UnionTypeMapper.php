@@ -518,6 +518,6 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $phpParserUnionType;
         }
 
-        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionType, $typeKind);
+        return null;
     }
 }
