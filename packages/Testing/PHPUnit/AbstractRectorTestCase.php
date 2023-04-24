@@ -127,24 +127,12 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-<<<<<<< HEAD
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $inputFileContents, $expectedFileContents, $fixtureFilePath);
-=======
-        if (! is_file($inputFilePath)) {
-            // give enough time to write process
-            sleep(3);
-
-            // write temp file
-            FileSystem::write($inputFilePath, $inputFileContents);
-        }
-
         $this->doTestFileMatchesExpectedContent(
             $inputFilePath,
             $inputFileContents,
             $expectedFileContents,
             $fixtureFilePath
         );
->>>>>>> 52309ecf84 (apply cs)
     }
 
     private function includePreloadFilesAndScoperAutoload(): void
