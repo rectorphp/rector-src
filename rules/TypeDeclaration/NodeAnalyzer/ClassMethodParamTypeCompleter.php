@@ -41,7 +41,7 @@ final class ClassMethodParamTypeCompleter
         $totalTypes = count($classParameterTypes);
 
         foreach ($classParameterTypes as $position => $argumentStaticType) {
-            if ($totalTypes > 1 && $argumentStaticType instanceof \PHPStan\Type\UnionType) {
+            if ($totalTypes > 1 && $argumentStaticType instanceof UnionType) {
                 return null;
             }
 
