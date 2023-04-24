@@ -220,6 +220,7 @@ final class ClassMethodAssignManipulator
             if ($variableName === 'this') {
                 continue;
             }
+
             if ($variableName === null) {
                 continue;
             }
