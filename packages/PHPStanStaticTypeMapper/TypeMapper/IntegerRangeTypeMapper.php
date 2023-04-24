@@ -48,9 +48,11 @@ final class IntegerRangeTypeMapper implements TypeMapperInterface
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::SCALAR_TYPES)) {
             return null;
         }
+
         if ($type->getMin() === null) {
             return null;
         }
+
         if ($type->getMax() === null) {
             return null;
         }
