@@ -6,7 +6,7 @@ namespace Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory\Fixture;
 
 use Rector\Tests\Naming\ValueObjectFactory\PropertyRenameFactory\Source\EliteManager;
 
-final class SkipSomeClass
+final class RenamePropertyAndPropertyFetch2
 {
     /**
      * @var EliteManager
