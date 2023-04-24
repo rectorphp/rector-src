@@ -36,16 +36,18 @@ final class VariableRenamer
         string $oldName,
         string $expectedName,
         ?Assign $assign = null
-    ): void {
+    ): bool {
         $isRenamingActive = false;
 
         if (! $assign instanceof Assign) {
             $isRenamingActive = true;
         }
 
+        $hasRenamed = false;
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->getStmts(),
-            function (Node $node) use ($oldName, $expectedName, $assign, &$isRenamingActive): ?Variable {
+            function (Node $node) use ($oldName, $expectedName, $assign, &$isRenamingActive, &$hasRenamed): ?Variable {
                 if ($assign instanceof Assign && $node === $assign) {
                     $isRenamingActive = true;
                     return null;
@@ -71,9 +73,16 @@ final class VariableRenamer
                     return null;
                 }
 
-                return $this->renameVariableIfMatchesName($node, $oldName, $expectedName);
+                $variable = $this->renameVariableIfMatchesName($node, $oldName, $expectedName);
+                if ($variable instanceof Variable) {
+                    $hasRenamed = true;
+                }
+
+                return $variable;
             }
         );
+
+        return $hasRenamed;
     }
 
     private function isParamInParentFunction(Variable $variable): bool
