@@ -17,6 +17,7 @@ use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
+use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -51,6 +52,7 @@ final class MissingInSetCommand extends Command
         DataProviderArrayItemsNewlinedRector::class,
         FlipNegatedTernaryInstanceofRector::class,
         BinaryOpNullableToInstanceofRector::class,
+        WhileNullableToInstanceofRector::class,
     ];
 
     /**
