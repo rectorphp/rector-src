@@ -20,17 +20,6 @@ final class BoolUnionTypeAnalyzer
         return true;
     }
 
-    public function hasBoolType(UnionType $unionType): bool
-    {
-        foreach ($unionType->getTypes() as $unionedType) {
-            if ($unionedType->isBoolean()->yes()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function isNullableBoolUnionType(UnionType $unionType): bool
     {
         $hasNullable = false;
