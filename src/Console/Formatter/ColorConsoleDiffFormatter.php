@@ -63,14 +63,11 @@ final class ColorConsoleDiffFormatter
 
         // remove description of added + remove; obvious on diffs
         foreach ($escapedDiffLines as $key => $escapedDiffLine) {
-            if ($escapedDiffLine === '--- Original') {
-                unset($escapedDiffLines[$key]);
+            if (! in_array($escapedDiffLine, ['--- Original', '+++ New'], true)) {
                 continue;
             }
 
-            if ($escapedDiffLine === '+++ New') {
-                unset($escapedDiffLines[$key]);
-            }
+            unset($escapedDiffLines[$key]);
         }
 
         $coloredLines = array_map(function (string $string): string {
