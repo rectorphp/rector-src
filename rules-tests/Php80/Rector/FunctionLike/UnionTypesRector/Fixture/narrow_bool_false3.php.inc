@@ -26,6 +26,9 @@ namespace Rector\Tests\Php80\Rector\FunctionLike\UnionTypesRector\Fixture;
 
 class NarrowBoolFalse3
 {
+    /**
+     * @param bool|int|false|int<0, max> $param
+     */
     public function go(bool|int $param): bool|int
     {
         if (rand(0, 1)) {
