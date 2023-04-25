@@ -309,10 +309,6 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $this->narrowBoolType($unionType, $phpParserUnionType, $typeKind);
         }
 
-        if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
-            return new Identifier('bool');
-        }
-
         $compatibleObjectTypeNode = $this->processResolveCompatibleObjectCandidates($unionType);
         if ($compatibleObjectTypeNode instanceof NullableType || $compatibleObjectTypeNode instanceof FullyQualified) {
             return $compatibleObjectTypeNode;
@@ -511,12 +507,12 @@ final class UnionTypeMapper implements TypeMapperInterface
         PhpParserUnionType $phpParserUnionType,
         string $typeKind
     ): PhpParserUnionType|null|Identifier|Name|ComplexType {
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            // maybe all one type
-            if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
-                return new Identifier('bool');
-            }
+        // maybe all one type
+        if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
+            return new Identifier('bool');
+        }
 
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
         }
 
