@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\Fixture;
 
-final class SkipNoReturnArrayReverse
+final class SkipArrayReverseIndex
 {
     public function run()
     {
