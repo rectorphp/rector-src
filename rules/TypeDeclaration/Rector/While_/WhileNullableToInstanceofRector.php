@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Do_;
+use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\While_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -64,11 +66,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [While_::class, Do_::class];
+        return [While_::class, Do_::class, If_::class, ElseIf_::class];
     }
 
     /**
-     * @param While_|Do_ $node
+     * @param While_|Do_|If_|ElseIf_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -92,7 +94,7 @@ CODE_SAMPLE
         return new Instanceof_($expr, $fullyQualified);
     }
 
-    private function refactorNotIdentical(While_|Do_ $while, NotIdentical $notIdentical): While_|Do_|null
+    private function refactorNotIdentical(While_|Do_|If_|ElseIf_ $while, NotIdentical $notIdentical): While_|Do_|If_|ElseIf_|null
     {
         if (! $this->valueResolver->isNull($notIdentical->right)) {
             return null;
