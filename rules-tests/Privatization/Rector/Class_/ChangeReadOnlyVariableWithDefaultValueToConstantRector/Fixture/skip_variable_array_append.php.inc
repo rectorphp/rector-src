@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Privatization\Rector\Class_\ChangeReadOnlyVariableWithDefaultValueToConstantRector\Fixture;
 
-final class SkipVariableAssignment
+final class SkipVariableArrayAppend
 {
     /**
      * @var string[]
