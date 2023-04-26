@@ -245,7 +245,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
         }
-        
+
         if (count($phpParserUnionType->types) === 2) {
             return $phpParserUnionType;
         }
@@ -256,23 +256,20 @@ final class UnionTypeMapper implements TypeMapperInterface
                 $identifierNames[] = $type->toString();
             }
         }
-        
+
         if (! in_array('bool', $identifierNames, true)) {
             return $phpParserUnionType;
         }
-        
+
         if (! in_array('false', $identifierNames, true)) {
             return $phpParserUnionType;
         }
 
-        foreach ($phpParserUnionType->types as $key => $type) {
-            if ($type instanceof Identifier && $type->toString() === 'false') {
-                unset($phpParserUnionType->types[$key]);
-                $phpParserUnionType->types = array_values($phpParserUnionType->types);
-
-                return $phpParserUnionType;
-            }
-        }
+        $phpParserUnionType->types = array_filter(
+            $phpParserUnionType->types,
+            fn (Node $node): bool => ! $node instanceof Identifier || $node->toString() !== 'false'
+        );
+        $phpParserUnionType->types = array_values($phpParserUnionType->types);
 
         return $phpParserUnionType;
     }
