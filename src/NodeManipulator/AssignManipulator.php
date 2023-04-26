@@ -93,7 +93,7 @@ final class AssignManipulator
                 $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
             }
 
-            if ($parentNode instanceof Assign || $this->multiInstanceofChecker->isInstanceOf($parentNode, self::MODIFYING_NODE_TYPES)) {
+            if ($parentNode !== null && ($parentNode instanceof Assign || $this->multiInstanceofChecker->isInstanceOf($parentNode, self::MODIFYING_NODE_TYPES))) {
                 return $parentNode->var === $previousParent;
             }
         }
