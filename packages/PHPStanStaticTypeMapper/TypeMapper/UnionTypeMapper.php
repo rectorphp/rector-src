@@ -245,6 +245,10 @@ final class UnionTypeMapper implements TypeMapperInterface
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
         }
+        
+        if (count($phpParserUnionType->types) === 2) {
+            return $phpParserUnionType;
+        }
 
         $identifierNames = [];
         foreach ($phpParserUnionType->types as $type) {
