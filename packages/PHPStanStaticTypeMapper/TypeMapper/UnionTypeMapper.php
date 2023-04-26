@@ -246,29 +246,30 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
+        if (count($phpParserUnionType->types) === 2) {
+            return $phpParserUnionType;
+        }
+
         $identifierNames = [];
         foreach ($phpParserUnionType->types as $type) {
             if ($type instanceof Identifier) {
                 $identifierNames[] = $type->toString();
             }
         }
-        
+
         if (! in_array('bool', $identifierNames, true)) {
             return $phpParserUnionType;
         }
-        
+
         if (! in_array('false', $identifierNames, true)) {
             return $phpParserUnionType;
         }
 
-        foreach ($phpParserUnionType->types as $key => $type) {
-            if ($type instanceof Identifier && $type->toString() === 'false') {
-                unset($phpParserUnionType->types[$key]);
-                $phpParserUnionType->types = array_values($phpParserUnionType->types);
-
-                return $phpParserUnionType;
-            }
-        }
+        $phpParserUnionType->types = array_filter(
+            $phpParserUnionType->types,
+            static fn(Node $node): bool => ! $node instanceof Identifier || $node->toString() !== 'false'
+        );
+        $phpParserUnionType->types = array_values($phpParserUnionType->types);
 
         return $phpParserUnionType;
     }
