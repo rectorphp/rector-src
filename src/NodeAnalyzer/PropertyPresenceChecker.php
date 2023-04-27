@@ -46,10 +46,6 @@ final class PropertyPresenceChecker
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
-
         $property = $class->getProperty($propertyMetadata->getName());
         if ($property instanceof Property) {
             return $property;
