@@ -127,6 +127,14 @@ final class AssignManipulator
         }
 
         $node = $parentArrayItem->getAttribute(AttributeKey::PARENT_NODE);
-        return $node instanceof Assign && $node->var === $parentArrayItem;
+        if (! $this->multiInstanceofChecker->isInstanceOf(
+            $node,
+            self::MODIFYING_NODE_TYPES
+        )) {
+            return false;
+        }
+
+        /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentArrayItem */
+        return $node->var === $parentArrayItem;
     }
 }
