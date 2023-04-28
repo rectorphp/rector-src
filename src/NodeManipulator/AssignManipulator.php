@@ -70,15 +70,12 @@ final class AssignManipulator
     public function isLeftPartOfAssign(Node $node): bool
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Assign || $parentNode instanceof AssignOp) {
-            return $this->nodeComparator->areNodesEqual($parentNode->var, $node);
-        }
-
         if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
             $parentNode,
-            self::MODIFYING_NODE_TYPES
+            [Assign::class, ...self::MODIFYING_NODE_TYPES]
         )) {
-            return true;
+            /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
+            return $parentNode->var === $node;
         }
 
         if ($this->isOnArrayDestructuring($parentNode)) {
@@ -100,26 +97,6 @@ final class AssignManipulator
                 /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
                 return $parentNode->var === $previousParent;
             }
-        }
-
-        return false;
-    }
-
-    public function isNodePartOfAssign(Node $node): bool
-    {
-        $previousNode = $node;
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        while ($parentNode instanceof Node && ! $parentNode instanceof Expression) {
-            if ($parentNode instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $parentNode->var,
-                $previousNode
-            )) {
-                return true;
-            }
-
-            $previousNode = $parentNode;
-            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         }
 
         return false;

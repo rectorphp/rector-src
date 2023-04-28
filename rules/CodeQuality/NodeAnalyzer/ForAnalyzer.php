@@ -157,7 +157,7 @@ final class ForAnalyzer
             return false;
         }
 
-        if ($this->assignManipulator->isNodePartOfAssign($parentNode)) {
+        if ($this->assignManipulator->isLeftPartOfAssign($arrayDimFetch)) {
             return true;
         }
 
