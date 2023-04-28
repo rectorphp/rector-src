@@ -97,6 +97,7 @@ final class AssignManipulator
                 $parentNode,
                 [Assign::class, ...self::MODIFYING_NODE_TYPES]
             )) {
+                /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
                 return $parentNode->var === $previousParent;
             }
         }
