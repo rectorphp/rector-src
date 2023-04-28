@@ -130,6 +130,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
                 if (! $nodeVarType instanceof Type) {
                     $nodeVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
                 }
+
                 if ($nodeVarType instanceof ThisType ) {
                     $this->renameProperty($class, $renamedProperty);
                 }            
