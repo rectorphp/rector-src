@@ -20,9 +20,7 @@ use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt\Expression;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -34,6 +32,7 @@ final class AssignManipulator
      * @var array<class-string<Expr>>
      */
     private const MODIFYING_NODE_TYPES = [
+        Assign::class,
         AssignOp::class,
         PreDec::class,
         PostDec::class,
@@ -43,7 +42,6 @@ final class AssignManipulator
 
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
@@ -70,15 +68,12 @@ final class AssignManipulator
     public function isLeftPartOfAssign(Node $node): bool
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Assign || $parentNode instanceof AssignOp) {
-            return $this->nodeComparator->areNodesEqual($parentNode->var, $node);
-        }
-
         if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
             $parentNode,
             self::MODIFYING_NODE_TYPES
         )) {
-            return true;
+            /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
+            return $parentNode->var === $node;
         }
 
         if ($this->isOnArrayDestructuring($parentNode)) {
@@ -95,31 +90,11 @@ final class AssignManipulator
 
             if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
                 $parentNode,
-                [Assign::class, ...self::MODIFYING_NODE_TYPES]
+                self::MODIFYING_NODE_TYPES
             )) {
                 /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
                 return $parentNode->var === $previousParent;
             }
-        }
-
-        return false;
-    }
-
-    public function isNodePartOfAssign(Node $node): bool
-    {
-        $previousNode = $node;
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        while ($parentNode instanceof Node && ! $parentNode instanceof Expression) {
-            if ($parentNode instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $parentNode->var,
-                $previousNode
-            )) {
-                return true;
-            }
-
-            $previousNode = $parentNode;
-            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         }
 
         return false;
