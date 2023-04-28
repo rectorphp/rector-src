@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\Rector\PropertyFetch;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
@@ -125,7 +126,7 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
                 continue;
             }
             
-            if (! $nodeVarType instanceof \PHPStan\Type\Type) {
+            if (! $nodeVarType instanceof Type) {
                 $nodeVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
             }
 
