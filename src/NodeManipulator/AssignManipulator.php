@@ -34,6 +34,7 @@ final class AssignManipulator
      * @var array<class-string<Expr>>
      */
     private const MODIFYING_NODE_TYPES = [
+        Assign::class,
         AssignOp::class,
         PreDec::class,
         PostDec::class,
@@ -72,7 +73,7 @@ final class AssignManipulator
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
             $parentNode,
-            [Assign::class, ...self::MODIFYING_NODE_TYPES]
+            self::MODIFYING_NODE_TYPES
         )) {
             /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
             return $parentNode->var === $node;
@@ -92,7 +93,7 @@ final class AssignManipulator
 
             if ($parentNode instanceof Node && $this->multiInstanceofChecker->isInstanceOf(
                 $parentNode,
-                [Assign::class, ...self::MODIFYING_NODE_TYPES]
+                self::MODIFYING_NODE_TYPES
             )) {
                 /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
                 return $parentNode->var === $previousParent;
