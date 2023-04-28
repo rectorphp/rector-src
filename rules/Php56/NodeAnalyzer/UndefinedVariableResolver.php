@@ -66,10 +66,10 @@ final class UndefinedVariableResolver
             }
 
             /**
-             * The Stmt that doesn't have origNode attribute yet
-             * means the Stmt is a replacement below other changed node
+             * The Node that doesn't have origNode attribute yet
+             * means the Node is a replacement below other changed node
              */
-            if ($node instanceof Stmt && ! $node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            if (! $node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
