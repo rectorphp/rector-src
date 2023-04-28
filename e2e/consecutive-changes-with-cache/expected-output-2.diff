@@ -1,0 +1,23 @@
+ 1 file with changes
+===================
+
+1) src/Source.php:4
+
+    ---------- begin diff ----------
+@@ @@
+ if (!$a) {
+     return;
+ }
++
+ if (!$b) {
+     return;
+ }
++
+ return true;
+    ----------- end diff -----------
+
+Applied rules:
+ * NewlineAfterStatementRector
+
+
+ [OK] 1 file has been changed by Rector
