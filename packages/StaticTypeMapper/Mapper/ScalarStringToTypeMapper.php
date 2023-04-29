@@ -12,6 +12,7 @@ use PHPStan\Type\CallableType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
+use PHPStan\Type\IntegerRangeType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
@@ -33,7 +34,8 @@ final class ScalarStringToTypeMapper
         AccessoryNonEmptyStringType::class => ['non-empty-string'],
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
-        IntegerType::class => ['int', 'integer'],
+        IntegerType::class => ['int', 'integer', 'positive-int'],
+        IntegerRangeType::class => ['positive-int'],
         BooleanType::class => ['bool', 'boolean'],
         NullType::class => ['null'],
         VoidType::class => ['void'],
