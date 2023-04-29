@@ -62,7 +62,8 @@ final class ScalarStringToTypeMapper
                 continue;
             }
 
-            if ($objectType !== IntegerRangeType::class) {
+            // not using ::class in loop as code downgraded to get_class()
+            if ($objectType !== 'PHPStan\Type\IntegerRangeType') {
                 return new $objectType();
             }
 
