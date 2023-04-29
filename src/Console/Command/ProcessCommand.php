@@ -60,9 +60,13 @@ final class ProcessCommand extends AbstractProcessCommand
 
         $configuration = $this->configurationFactory->createFromInput($input);
         $this->memoryLimiter->adjust($configuration);
-        
+
         // disable console output in case of json output formatter
-        if (in_array($configuration->getOutputFormat(), [JsonOutputFormatter::NAME, WorkerOutputFormatter::NAME], true)) {
+        if (in_array(
+            $configuration->getOutputFormat(),
+            [JsonOutputFormatter::NAME, WorkerOutputFormatter::NAME],
+            true
+        )) {
             $this->rectorOutputStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 

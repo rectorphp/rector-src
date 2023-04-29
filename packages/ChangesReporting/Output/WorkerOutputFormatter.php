@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\Output;
 
-use Nette\Utils\Json;
-use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
-use Rector\Parallel\ValueObject\Bridge;
 
 final class WorkerOutputFormatter implements OutputFormatterInterface
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Parallel\Command;
 
-use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\ChangesReporting\Output\WorkerOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Symfony\Component\Console\Command\Command;

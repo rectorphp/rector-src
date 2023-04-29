@@ -41,7 +41,8 @@ final class FileDiff implements SerializableInterface
         return $this->diff;
     }
 
-    public function isConsoleFormatted(): bool {
+    public function isConsoleFormatted(): bool
+    {
         return $this->isConsoleFormatted;
     }
 
