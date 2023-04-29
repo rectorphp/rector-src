@@ -186,7 +186,9 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         $file->changeFileContent($newContent);
-        $this->fileDiffFileDecorator->decorate([$file]);
+        if ($configuration->shouldShowDiffs()) {
+            $this->fileDiffFileDecorator->decorate([$file]);
+        }
     }
 
     private function notifyFile(File $file): void
