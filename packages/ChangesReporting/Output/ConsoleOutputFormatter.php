@@ -87,9 +87,6 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $message = sprintf('<options=bold>%d) %s</>', ++$i, $relativeFilePath);
 
-            if (!$fileDiff->isConsoleFormatted()) {
-                throw new ShouldNotHappenException();
-            }
             $this->rectorOutputStyle->writeln($message);
             $this->rectorOutputStyle->newLine();
             $this->rectorOutputStyle->writeln($fileDiff->getDiff());
