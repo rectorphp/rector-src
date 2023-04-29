@@ -33,7 +33,7 @@ final class Name
     /**
      * @var string
      */
-    public const DIFF_CONSOLE_FORMATTED = 'diff_console_formatted';
+    public const DIFF_CONSOLE_FORMATTED = 'is_console_formatted';
 
     /**
      * @var string

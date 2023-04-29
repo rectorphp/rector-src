@@ -6,6 +6,7 @@ namespace Rector\Core\Application\FileDecorator;
 
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\Configuration;
 
 final class FileDiffFileDecorator
 {
@@ -17,7 +18,7 @@ final class FileDiffFileDecorator
     /**
      * @param File[] $files
      */
-    public function decorate(array $files): void
+    public function decorate(array $files, Configuration $configuration): void
     {
         foreach ($files as $file) {
             if (! $file->hasChanged()) {
@@ -27,7 +28,8 @@ final class FileDiffFileDecorator
             $fileDiff = $this->fileDiffFactory->createFileDiff(
                 $file,
                 $file->getOriginalFileContent(),
-                $file->getFileContent()
+                $file->getFileContent(),
+                $configuration
             );
 
             $file->setFileDiff($fileDiff);

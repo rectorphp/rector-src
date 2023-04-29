@@ -49,6 +49,6 @@ final class RectorsChangelogResolverTest extends AbstractTestCase
         ];
 
         $relativeFilePath = $this->filePathHelper->relativePath(__FILE__);
-        return new FileDiff($relativeFilePath, 'foo', 'foo', $rectorWithLineChanges);
+        return new FileDiff($relativeFilePath, 'foo', false, $rectorWithLineChanges);
     }
 }

@@ -7,6 +7,7 @@ namespace Rector\ChangesReporting\Output;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
@@ -45,6 +46,10 @@ final class JsonOutputFormatter implements OutputFormatterInterface
             $relativeFilePath = $fileDiff->getRelativeFilePath();
 
             $appliedRectorsWithChangelog = $this->rectorsChangelogResolver->resolve($fileDiff->getRectorClasses());
+
+            if ($fileDiff->isConsoleFormatted()) {
+                throw new ShouldNotHappenException();
+            }
 
             $errorsJson[Bridge::FILE_DIFFS][] = [
                 'file' => $relativeFilePath,

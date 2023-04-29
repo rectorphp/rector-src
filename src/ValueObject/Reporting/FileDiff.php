@@ -30,7 +30,7 @@ final class FileDiff implements SerializableInterface
     public function __construct(
         private readonly string $relativeFilePath,
         private readonly string $diff,
-        private readonly string $diffConsoleFormatted,
+        private readonly bool $isConsoleFormatted,
         private readonly array $rectorsWithLineChanges = []
     ) {
         Assert::allIsInstanceOf($rectorsWithLineChanges, RectorWithLineChange::class);
@@ -41,9 +41,8 @@ final class FileDiff implements SerializableInterface
         return $this->diff;
     }
 
-    public function getDiffConsoleFormatted(): string
-    {
-        return $this->diffConsoleFormatted;
+    public function isConsoleFormatted(): bool {
+        return $this->isConsoleFormatted;
     }
 
     public function getRelativeFilePath(): string
@@ -86,14 +85,14 @@ final class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array{relative_file_path: string, diff: string, diff_console_formatted: string, rectors_with_line_changes: RectorWithLineChange[]}
+     * @return array{relative_file_path: string, diff: string, is_console_formatted: bool, rectors_with_line_changes: RectorWithLineChange[]}
      */
     public function jsonSerialize(): array
     {
         return [
             Name::RELATIVE_FILE_PATH => $this->relativeFilePath,
             Name::DIFF => $this->diff,
-            Name::DIFF_CONSOLE_FORMATTED => $this->diffConsoleFormatted,
+            Name::DIFF_CONSOLE_FORMATTED => $this->isConsoleFormatted,
             Name::RECTORS_WITH_LINE_CHANGES => $this->rectorsWithLineChanges,
         ];
     }

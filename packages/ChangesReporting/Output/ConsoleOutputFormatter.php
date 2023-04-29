@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\Core\Contract\Console\OutputStyleInterface;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
@@ -86,9 +87,12 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $message = sprintf('<options=bold>%d) %s</>', ++$i, $relativeFilePath);
 
+            if (!$fileDiff->isConsoleFormatted()) {
+                throw new ShouldNotHappenException();
+            }
             $this->rectorOutputStyle->writeln($message);
             $this->rectorOutputStyle->newLine();
-            $this->rectorOutputStyle->writeln($fileDiff->getDiffConsoleFormatted());
+            $this->rectorOutputStyle->writeln($fileDiff->getDiff());
 
             $rectorsChangelogsLines = $this->createRectorChangelogLines($fileDiff);
 
