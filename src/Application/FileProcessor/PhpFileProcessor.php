@@ -82,6 +82,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->printFile($file, $configuration);
 
             if ($file->hasChanged()) {
+                $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
                 $rectorWithLineChanges = $file->getRectorWithLineChanges();
             }
         } while ($file->hasChanged());
