@@ -33,7 +33,7 @@ final class ScalarStringToTypeMapper
         AccessoryNonEmptyStringType::class => ['non-empty-string'],
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
-        IntegerType::class => ['int', 'integer', 'positive-int'],
+        IntegerType::class => ['int', 'integer', 'positive-int', 'negative-int'],
         BooleanType::class => ['bool', 'boolean'],
         NullType::class => ['null'],
         VoidType::class => ['void'],
