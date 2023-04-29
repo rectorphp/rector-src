@@ -35,7 +35,6 @@ final class ScalarStringToTypeMapper
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
         IntegerType::class => ['int', 'integer',],
-        IntegerRangeType::class => ['positive-int', 'negative-int'],
         BooleanType::class => ['bool', 'boolean'],
         NullType::class => ['null'],
         VoidType::class => ['void'],
@@ -57,21 +56,20 @@ final class ScalarStringToTypeMapper
             return new ConstantBooleanType(true);
         }
 
+        if ($loweredScalarName === 'positive-int') {
+            return IntegerRangeType::createAllGreaterThan(0);
+        }
+
+        if ($loweredScalarName === 'negative-int') {
+            return IntegerRangeType::createAllSmallerThan(0);
+        }
+
         foreach (self::SCALAR_NAME_BY_TYPE as $objectType => $scalarNames) {
             if (! in_array($loweredScalarName, $scalarNames, true)) {
                 continue;
             }
 
-            // not using ::class in loop as code downgraded to get_class()
-            if ($objectType !== 'PHPStan\Type\IntegerRangeType') {
-                return new $objectType();
-            }
-
-            if ($loweredScalarName === 'positive-int') {
-                return IntegerRangeType::createAllGreaterThan(0);
-            }
-
-            return IntegerRangeType::createAllSmallerThan(0);
+            return new $objectType();
         }
 
         if ($loweredScalarName === 'array') {
