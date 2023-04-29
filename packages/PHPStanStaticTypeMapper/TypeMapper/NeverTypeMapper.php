@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
+use Rector\Core\Php\PhpVersionProvider;
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 
@@ -17,6 +20,10 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
  */
 final class NeverTypeMapper implements TypeMapperInterface
 {
+    public function __construct(private readonly PhpVersionProvider $phpVersionProvider)
+    {
+    }
+
     /**
      * @return class-string<Type>
      */
@@ -43,6 +50,14 @@ final class NeverTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        return null;
+        if ($typeKind !== TypeKind::RETURN) {
+            return null;
+        }
+
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NEVER_TYPE)) {
+            return null;
+        }
+
+        return new Identifier('never');
     }
 }
