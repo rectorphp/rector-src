@@ -41,7 +41,7 @@ final class WorkerCommand extends AbstractProcessCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $configuration = $this->configurationFactory->createFromInput($input);
+        $configuration = $this->configurationFactory->createFromInput($input, $output->isDecorated());
         $this->memoryLimiter->adjust($configuration);
 
         $streamSelectLoop = new StreamSelectLoop();

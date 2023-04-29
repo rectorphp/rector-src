@@ -57,7 +57,7 @@ final class ProcessCommand extends AbstractProcessCommand
             return self::SUCCESS;
         }
 
-        $configuration = $this->configurationFactory->createFromInput($input);
+        $configuration = $this->configurationFactory->createFromInput($input, $output->isDecorated());
         $this->memoryLimiter->adjust($configuration);
 
         // disable console output in case of json output formatter
