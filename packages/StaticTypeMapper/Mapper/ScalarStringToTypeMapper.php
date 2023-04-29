@@ -12,6 +12,7 @@ use PHPStan\Type\CallableType;
 use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
+use PHPStan\Type\IntegerRangeType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
@@ -33,7 +34,8 @@ final class ScalarStringToTypeMapper
         AccessoryNonEmptyStringType::class => ['non-empty-string'],
         ClassStringType::class => ['class-string'],
         FloatType::class => ['float', 'real', 'double'],
-        IntegerType::class => ['int', 'integer', 'positive-int', 'negative-int'],
+        IntegerType::class => ['int', 'integer',],
+        IntegerRangeType::class => ['positive-int', 'negative-int'],
         BooleanType::class => ['bool', 'boolean'],
         NullType::class => ['null'],
         VoidType::class => ['void'],
@@ -60,7 +62,15 @@ final class ScalarStringToTypeMapper
                 continue;
             }
 
-            return new $objectType();
+            if ($objectType !== IntegerRangeType::class) {
+                return new $objectType();
+            }
+
+            if ($loweredScalarName === 'positive-int') {
+                return IntegerRangeType::createAllGreaterThan(0);
+            }
+
+            return IntegerRangeType::createAllSmallerThan(0);
         }
 
         if ($loweredScalarName === 'array') {
