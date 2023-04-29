@@ -32,6 +32,6 @@ final class WorkerOutputFormatter implements OutputFormatterInterface
 
     public function report(ProcessResult $processResult, Configuration $configuration): void
     {
-        echo $this->jsonOutputFormatter->report($processResult, $configuration);
+        $this->jsonOutputFormatter->report($processResult, $configuration);
     }
 }
