@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Parallel\Command;
 
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\ChangesReporting\Output\WorkerOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -83,9 +84,9 @@ final class WorkerCommandLineFactory
             $workerCommandArray[] = escapeshellarg($path);
         }
 
-        // set json output
+        // set worker output
         $workerCommandArray[] = self::OPTION_DASHES . Option::OUTPUT_FORMAT;
-        $workerCommandArray[] = escapeshellarg(JsonOutputFormatter::NAME);
+        $workerCommandArray[] = escapeshellarg(WorkerOutputFormatter::NAME);
 
         if ($input->hasOption(Option::CONFIG)) {
             $workerCommandArray[] = '--config';

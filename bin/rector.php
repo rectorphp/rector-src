@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\ChangesReporting\Output\WorkerOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ConsoleApplication;
@@ -145,7 +146,7 @@ try {
     $outputFormat = $argvInput->getParameterOption('--' . Option::OUTPUT_FORMAT);
 
     // report fatal error in json format
-    if ($outputFormat === JsonOutputFormatter::NAME) {
+    if (in_array($outputFormat, [JsonOutputFormatter::NAME, WorkerOutputFormatter::NAME], true)) {
         echo Json::encode([
             'fatal_errors' => [$throwable->getMessage()],
         ]);

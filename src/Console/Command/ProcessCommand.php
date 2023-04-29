@@ -6,6 +6,7 @@ namespace Rector\Core\Console\Command;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
+use Rector\ChangesReporting\Output\WorkerOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Configuration\ConfigInitializer;
@@ -61,7 +62,7 @@ final class ProcessCommand extends AbstractProcessCommand
         $this->memoryLimiter->adjust($configuration);
 
         // disable console output in case of json output formatter
-        if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
+        if (in_array($configuration->getOutputFormat(), [JsonOutputFormatter::NAME, WorkerOutputFormatter::NAME], true)) {
             $this->rectorOutputStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
