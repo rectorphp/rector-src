@@ -7,6 +7,7 @@ namespace Rector\Core\Application\FileProcessor;
 use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
+use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
@@ -38,7 +39,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly FileProcessor $fileProcessor,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly FileDiffFileDecorator $fileDiffFileDecorator,
+        private readonly FileDiffFactory $fileDiffFactory,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
@@ -66,7 +67,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // 2. change nodes with Rectors
-        $changedAtLeastOnce = false;
+        $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
@@ -81,14 +82,19 @@ final class PhpFileProcessor implements FileProcessorInterface
             $this->printFile($file, $configuration);
 
             if ($file->hasChanged()) {
-                $changedAtLeastOnce = true;
+                $rectorWithLineChanges = $file->getRectorWithLineChanges();
             }
         } while ($file->hasChanged());
 
-        if ($changedAtLeastOnce && $configuration->shouldShowDiffs()) {
-            $file->changeHasChanged(true);
-            $this->fileDiffFileDecorator->decorate([$file]);
-            $file->changeHasChanged(false);
+        if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
+            $file->setFileDiff(
+                $this->fileDiffFactory->createFileDiffWithLineChanges(
+                    $file,
+                    $file->getOriginalFileContent(),
+                    $file->getFileContent(),
+                    $rectorWithLineChanges
+                )
+            );
         }
 
         // return json here
