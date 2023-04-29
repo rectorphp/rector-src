@@ -33,7 +33,7 @@ final class FileDiffFactory
     /**
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */
-    public function createFileDiffWithLineChanges(File $file, string $oldContent, string $newContent, $rectorsWithLineChanges): FileDiff
+    public function createFileDiffWithLineChanges(File $file, string $oldContent, string $newContent, array $rectorsWithLineChanges): FileDiff
     {
         $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
 
