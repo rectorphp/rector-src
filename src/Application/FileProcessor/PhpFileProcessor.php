@@ -66,6 +66,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // 2. change nodes with Rectors
+        $changedAtLeastOnce = false;
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
@@ -78,7 +79,17 @@ final class PhpFileProcessor implements FileProcessorInterface
             // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
+
+            if ($file->hasChanged()) {
+                $changedAtLeastOnce = true;
+            }
         } while ($file->hasChanged());
+
+        if ($changedAtLeastOnce && $configuration->shouldShowDiffs()) {
+            $file->changeHasChanged(true);
+            $this->fileDiffFileDecorator->decorate([$file]);
+            $file->changeHasChanged(false);
+        }
 
         // return json here
         $fileDiff = $file->getFileDiff();
@@ -186,9 +197,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         $file->changeFileContent($newContent);
-        if ($configuration->shouldShowDiffs()) {
-            $this->fileDiffFileDecorator->decorate([$file]);
-        }
     }
 
     private function notifyFile(File $file): void
