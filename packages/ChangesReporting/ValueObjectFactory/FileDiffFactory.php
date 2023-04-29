@@ -33,8 +33,12 @@ final class FileDiffFactory
     /**
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */
-    public function createFileDiffWithLineChanges(File $file, string $oldContent, string $newContent, array $rectorsWithLineChanges): FileDiff
-    {
+    public function createFileDiffWithLineChanges(
+        File $file,
+        string $oldContent,
+        string $newContent,
+        array $rectorsWithLineChanges
+    ): FileDiff {
         $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
 
         // always keep the most recent diff
@@ -48,11 +52,6 @@ final class FileDiffFactory
 
     public function createTempFileDiff(File $file): FileDiff
     {
-        return $this->createFileDiffWithLineChanges(
-            $file,
-            '',
-            '',
-            $file->getRectorWithLineChanges()
-        );
+        return $this->createFileDiffWithLineChanges($file, '', '', $file->getRectorWithLineChanges());
     }
 }

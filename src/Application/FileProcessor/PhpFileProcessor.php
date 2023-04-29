@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
-use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
