@@ -11,4 +11,7 @@
   <php>
     <ini name="memory_limit" value="-1"/>
   </php>
+  <extensions>
+    <bootstrap class="Paraunit\Configuration\ParaunitExtension"/>
+  </extensions>
 </phpunit>

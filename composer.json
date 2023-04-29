@@ -44,6 +44,7 @@
     },
     "require-dev": {
         "cweagans/composer-patches": "^1.7.2",
+        "facile-it/paraunit": "^2.0",
         "icanhazstring/composer-unused": "^0.8.5",
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
@@ -118,7 +119,7 @@
             "@check-cs",
             "@phpstan",
             "@docs",
-            "phpunit"
+            "paraunit run"
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
