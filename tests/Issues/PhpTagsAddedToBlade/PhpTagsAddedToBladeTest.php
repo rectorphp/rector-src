@@ -36,8 +36,7 @@ final class PhpTagsAddedToBladeTest extends AbstractRectorTestCase
             true,
             ConsoleOutputFormatter::NAME,
             ['php'],
-            [$inputFilePath],
-            false
+            [$inputFilePath]
         );
 
         $systemErrorsAndFileDiffs = $this->applicationFileProcessor->run($configuration, new ArrayInput([]));
