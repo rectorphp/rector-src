@@ -84,7 +84,9 @@ final class ApplicationFileProcessor
 
             $systemErrorsAndFileDiffs = $this->processFiles($files, $configuration);
 
-            $this->fileDiffFileDecorator->decorate($files);
+            if ($configuration->shouldShowDiffs()) {
+                $this->fileDiffFileDecorator->decorate($files);
+            }
             $this->printFiles($files, $configuration);
         }
 
