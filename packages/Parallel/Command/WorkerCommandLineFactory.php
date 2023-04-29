@@ -87,10 +87,6 @@ final class WorkerCommandLineFactory
         $workerCommandArray[] = self::OPTION_DASHES . Option::OUTPUT_FORMAT;
         $workerCommandArray[] = escapeshellarg(JsonOutputFormatter::NAME);
 
-        // disable colors, breaks json_decode() otherwise
-        // @see https://github.com/symfony/symfony/issues/1238
-        $workerCommandArray[] = '--no-ansi';
-
         if ($input->hasOption(Option::CONFIG)) {
             $workerCommandArray[] = '--config';
             /**
