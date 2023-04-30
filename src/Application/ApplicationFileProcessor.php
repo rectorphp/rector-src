@@ -87,6 +87,7 @@ final class ApplicationFileProcessor
             if ($configuration->shouldShowDiffs()) {
                 $this->fileDiffFileDecorator->decorate($files);
             }
+
             $this->printFiles($files, $configuration);
         }
 
