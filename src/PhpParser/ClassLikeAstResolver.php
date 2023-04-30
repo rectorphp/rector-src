@@ -38,7 +38,6 @@ final class ClassLikeAstResolver
             return null;
         }
 
-        $className = $classReflection->getName();
         $fileName = $classReflection->getFileName();
 
         // probably internal class
@@ -51,6 +50,7 @@ final class ClassLikeAstResolver
             return null;
         }
 
+        $className = $classReflection->getName();
         /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
         $classLike = $this->betterNodeFinder->findFirst(
             $stmts,
