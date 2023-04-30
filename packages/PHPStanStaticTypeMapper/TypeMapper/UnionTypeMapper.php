@@ -268,7 +268,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         $phpParserUnionType->types = array_filter(
             $phpParserUnionType->types,
-            static fn(Node $node): bool => ! $node instanceof Identifier || $node->toString() !== 'false'
+            static fn (Node $node): bool => ! $node instanceof Identifier || $node->toString() !== 'false'
         );
         $phpParserUnionType->types = array_values($phpParserUnionType->types);
 
