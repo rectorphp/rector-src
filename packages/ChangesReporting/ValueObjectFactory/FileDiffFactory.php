@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
+use Rector\ChangesReporting\Output\WorkerOutputFormatter;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Console\Formatter\ConsoleDiffer;
