@@ -27,6 +27,11 @@ final class FileDiffFactory
         return $this->createFileDiffWithLineChanges($file, $oldContent, $newContent, $file->getRectorWithLineChanges(), $configuration);
     }
 
+    public function createTempFileDiff(File $file, Configuration $configuration): FileDiff
+    {
+        return $this->createFileDiffWithLineChanges($file, '', '', $file->getRectorWithLineChanges(), $configuration);
+    }
+
     /**
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */
@@ -42,11 +47,6 @@ final class FileDiffFactory
             return $this->factory($file, $oldContent, $newContent, $this->consoleDiffer, $rectorsWithLineChanges);
         }
         return $this->factory($file, $oldContent, $newContent, $this->defaultDiffer, $rectorsWithLineChanges);
-    }
-
-    public function createTempFileDiff(File $file, Configuration $configuration): FileDiff
-    {
-        return $this->factory($file, '', '', $file->getRectorWithLineChanges(), $configuration);
     }
 
     /**
