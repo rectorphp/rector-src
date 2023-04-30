@@ -66,7 +66,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // 2. change nodes with Rectors
-        $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
@@ -82,25 +81,24 @@ final class PhpFileProcessor implements FileProcessorInterface
 
             if ($file->hasChanged()) {
                 $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
-                $rectorWithLineChanges = $file->getRectorWithLineChanges();
             }
         } while ($file->hasChanged());
-
-        if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
-            $file->setFileDiff(
-                $this->fileDiffFactory->createFileDiffWithLineChanges(
-                    $file,
-                    $file->getOriginalFileContent(),
-                    $file->getFileContent(),
-                    $rectorWithLineChanges
-                )
-            );
-        }
 
         // return json here
         $fileDiff = $file->getFileDiff();
         if (! $fileDiff instanceof FileDiff) {
             return $systemErrorsAndFileDiffs;
+        }
+
+        if ($configuration->shouldShowDiffs()) {
+            $file->setFileDiff(
+                $this->fileDiffFactory->createFileDiffWithLineChanges(
+                    $file,
+                    $file->getOriginalFileContent(),
+                    $file->getFileContent(),
+                    $fileDiff->getRectorChanges()
+                )
+            );
         }
 
         $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = [$fileDiff];
