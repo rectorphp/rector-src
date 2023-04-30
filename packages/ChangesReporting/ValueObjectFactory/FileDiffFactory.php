@@ -43,7 +43,7 @@ final class FileDiffFactory
         Configuration $configuration
     ): FileDiff {
 
-        if ($configuration->getOutputFormat() === ConsoleOutputFormatter::NAME) {
+        if (in_array($configuration->getOutputFormat(), [ConsoleOutputFormatter::NAME, WorkerOutputFormatter::NAME], true)) {
             return $this->factory($file, $oldContent, $newContent, $this->consoleDiffer, $rectorsWithLineChanges);
         }
         return $this->factory($file, $oldContent, $newContent, $this->defaultDiffer, $rectorsWithLineChanges);
