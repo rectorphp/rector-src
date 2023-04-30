@@ -76,10 +76,6 @@ final class AstResolver
     public function resolveClassMethodFromMethodReflection(MethodReflection $methodReflection): ?ClassMethod
     {
         $classReflection = $methodReflection->getDeclaringClass();
-
-        $classLikeName = $classReflection->getName();
-        $methodName = $methodReflection->getName();
-
         $fileName = $classReflection->getFileName();
 
         // probably native PHP method → un-parseable
@@ -91,6 +87,9 @@ final class AstResolver
         if ($nodes === []) {
             return null;
         }
+
+        $classLikeName = $classReflection->getName();
+        $methodName = $methodReflection->getName();
 
         $classMethod = null;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
@@ -131,8 +130,6 @@ final class AstResolver
 
     public function resolveFunctionFromFunctionReflection(FunctionReflection $functionReflection): ?Function_
     {
-        $functionName = $functionReflection->getName();
-
         $fileName = $functionReflection->getFileName();
         if ($fileName === null) {
             return null;
@@ -143,7 +140,9 @@ final class AstResolver
             return null;
         }
 
+        $functionName = $functionReflection->getName();
         $functionNode = null;
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
             function (Node $node) use ($functionName, &$functionNode): ?int {
