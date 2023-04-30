@@ -64,7 +64,7 @@
         "symplify/vendor-patches": "^11.2.3",
         "tomasvotruba/cognitive-complexity": "^0.0.1",
         "tomasvotruba/type-coverage": "^0.0.5",
-        "tomasvotruba/unused-public": "^0.0.26"
+        "tomasvotruba/unused-public": "^0.1.10"
     },
     "replace": {
         "rector/rector": "self.version",
