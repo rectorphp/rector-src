@@ -92,7 +92,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         if ($configuration->shouldShowDiffs()) {
             $file->setFileDiff(
-                $this->fileDiffFactory->createFileDiffWithLineChanges(
+                $this->fileDiffFactory->finalizeTempDiff(
                     $file,
                     $file->getOriginalFileContent(),
                     $file->getFileContent(),
