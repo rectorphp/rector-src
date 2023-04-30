@@ -7,7 +7,7 @@ namespace Rector\Core\Application\FileProcessor;
 use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
-use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
+use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
@@ -38,7 +38,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly FileProcessor $fileProcessor,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly FileDiffFileDecorator $fileDiffFileDecorator,
+        private readonly FileDiffFactory $fileDiffFactory,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
@@ -66,6 +66,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // 2. change nodes with Rectors
+        $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
             $this->fileProcessor->refactor($file, $configuration);
@@ -78,7 +79,23 @@ final class PhpFileProcessor implements FileProcessorInterface
             // 4. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
+
+            if ($file->hasChanged()) {
+                $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
+                $rectorWithLineChanges = $file->getRectorWithLineChanges();
+            }
         } while ($file->hasChanged());
+
+        if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
+            $file->setFileDiff(
+                $this->fileDiffFactory->createFileDiffWithLineChanges(
+                    $file,
+                    $file->getOriginalFileContent(),
+                    $file->getFileContent(),
+                    $rectorWithLineChanges
+                )
+            );
+        }
 
         // return json here
         $fileDiff = $file->getFileDiff();
@@ -186,9 +203,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         $file->changeFileContent($newContent);
-        if ($configuration->shouldShowDiffs()) {
-            $this->fileDiffFileDecorator->decorate([$file]);
-        }
     }
 
     private function notifyFile(File $file): void
