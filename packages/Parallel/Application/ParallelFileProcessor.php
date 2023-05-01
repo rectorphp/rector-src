@@ -14,6 +14,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Console\Command\ProcessCommand;
 use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\Parallel\ParallelProcessWithIdentifier;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\ValueObject\Bridge;
@@ -198,17 +199,11 @@ final class ParallelFileProcessor
                 break;
             }
 
-            $processIdentifier = Random::generate();
-            $workerCommandLine = $this->workerCommandLineFactory->create(
-                $mainScript,
-                ProcessCommand::class,
-                'worker',
-                $input,
-                $processIdentifier,
-                $serverPort,
-            );
+            $parallelProcessWithIdentifier = $this->createParallelProcessWithIdentifier($mainScript, $input, $serverPort, $streamSelectLoop, $timeoutInSeconds);
+            $processIdentifier = $parallelProcessWithIdentifier->getIdentifier();
+            $parallelProcess = $parallelProcessWithIdentifier->getParallelProcess();
 
-            $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
+            $this->processPool->attachProcess($processIdentifier, $parallelProcess);
 
             $onDataCallable = $onDataCallableProvider($processIdentifier, $parallelProcess);
             $onExitCallable = $onExitCallableProvider($processIdentifier);
@@ -223,8 +218,6 @@ final class ParallelFileProcessor
                 // 3. callable on exit
                 $onExitCallable
             );
-
-            $this->processPool->attachProcess($processIdentifier, $parallelProcess);
         }
 
         $streamSelectLoop->run();
@@ -241,5 +234,22 @@ final class ParallelFileProcessor
             Bridge::SYSTEM_ERRORS => $systemErrors,
             Bridge::SYSTEM_ERRORS_COUNT => count($systemErrors),
         ];
+    }
+
+    private function createParallelProcessWithIdentifier(string $mainScript, InputInterface $input, int $serverPort, StreamSelectLoop $streamSelectLoop, int $timeoutInSeconds): ParallelProcessWithIdentifier
+    {
+        $processIdentifier = Random::generate();
+        $workerCommandLine = $this->workerCommandLineFactory->create(
+            $mainScript,
+            ProcessCommand::class,
+            'worker',
+            $input,
+            $processIdentifier,
+            $serverPort,
+        );
+
+        $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
+
+        return new ParallelProcessWithIdentifier($processIdentifier, $parallelProcess);
     }
 }
