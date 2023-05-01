@@ -62,6 +62,9 @@ final class ParallelFileProcessor
         InputInterface $input
     ): array {
         $jobs = array_reverse($schedule->getJobs());
+        $jobIdentifiers = [];
+        $jobProcesses = [];
+
         $streamSelectLoop = new StreamSelectLoop();
 
         // basic properties setup
@@ -102,6 +105,23 @@ final class ParallelFileProcessor
         };
 
         $timeoutInSeconds = $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
+        $useSeparateProcessPerJob = $this->parameterProvider->provideBoolParameter(Option::PARALLEL_USE_SEPARATE_PROCESS_PER_JOB);
+
+        if ($useSeparateProcessPerJob) {
+            $jobByProcessIdentifier = [];
+
+            foreach ($jobs as $job) {
+                $parallelProcessWithIdentifier = $this->createParallelProcessWithIdentifier($mainScript, $input, $serverPort, $streamSelectLoop, $timeoutInSeconds);
+                $processIdentifier = $parallelProcessWithIdentifier->getIdentifier();
+                $parallelProcess = $parallelProcessWithIdentifier->getParallelProcess();
+
+                $jobByProcessIdentifier[$processIdentifier] = $job;
+                $jobProcesses[$processIdentifier] = $parallelProcess;
+            }
+
+            $jobs = $jobByProcessIdentifier;
+            $jobIdentifiers = array_keys($jobByProcessIdentifier);
+        }
 
         $onDataCallableProvider = function (string $processIdentifier, ParallelProcess $parallelProcess) use (
                 &$systemErrors,
@@ -109,7 +129,8 @@ final class ParallelFileProcessor
                 &$jobs,
                 $postFileCallback,
                 &$systemErrorsCount,
-                &$reachedInternalErrorsCountLimit
+                &$reachedInternalErrorsCountLimit,
+                $useSeparateProcessPerJob,
             ): callable {
             return function (array $json) use (
                 $parallelProcess,
@@ -119,6 +140,7 @@ final class ParallelFileProcessor
                 $postFileCallback,
                 &$systemErrorsCount,
                 &$reachedInternalErrorsCountLimit,
+                $useSeparateProcessPerJob,
                 $processIdentifier
             ): void {
                 // decode arrays to objects
@@ -143,7 +165,7 @@ final class ParallelFileProcessor
                     $this->processPool->quitAll();
                 }
 
-                if ($jobs === []) {
+                if ($useSeparateProcessPerJob || $jobs === []) {
                     $this->processPool->quitProcess($processIdentifier);
                     return;
                 }
@@ -156,21 +178,49 @@ final class ParallelFileProcessor
             };
         };
 
-        $onExitCallableProvider = function (string $processIdentifier) use (&$systemErrors): callable {
-            return function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
+        $onExitCallableProvider = function (string $processIdentifier) use ($useSeparateProcessPerJob, &$onDataCallableProvider, &$handleErrorCallable, &$onExitCallableProvider, &$systemErrors, &$jobIdentifiers, &$jobProcesses): callable {
+            return function ($exitCode, string $stdErr) use ($processIdentifier, $useSeparateProcessPerJob, &$onDataCallableProvider, &$handleErrorCallable, &$onExitCallableProvider, &$systemErrors, &$jobIdentifiers, &$jobProcesses): void {
                 $this->processPool->tryQuitProcess($processIdentifier);
 
                 if ($exitCode !== Command::SUCCESS && $exitCode !== null) {
                     $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
                 }
+
+                if (! $useSeparateProcessPerJob) {
+                    return;
+                }
+
+                if ($jobIdentifiers === []) {
+                    return;
+                }
+
+                $nextProcessIdentifier = array_pop($jobIdentifiers);
+                $nextParallelProcess = $jobProcesses[$nextProcessIdentifier];
+                unset($jobProcesses[$nextProcessIdentifier]);
+
+                $this->processPool->attachProcess($nextProcessIdentifier, $nextParallelProcess);
+
+                $onDataCallable = $onDataCallableProvider($nextProcessIdentifier, $nextParallelProcess);
+                $onExitCallable = $onExitCallableProvider($nextProcessIdentifier);
+
+                $nextParallelProcess->start(
+                    // 1. callable on data
+                    $onDataCallable,
+
+                    // 2. callable on error
+                    $handleErrorCallable,
+
+                    // 3. callable on exit
+                    $onExitCallable
+                );
             };
         };
 
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use ($useSeparateProcessPerJob, &$jobs): void {
             $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
             $outEncoder = new Encoder($connection);
 
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use ($useSeparateProcessPerJob, &$jobs, $inDecoder, $outEncoder): void {
                 $action = $data[ReactCommand::ACTION];
                 if ($action !== Action::HELLO) {
                     return;
@@ -185,7 +235,8 @@ final class ParallelFileProcessor
                     return;
                 }
 
-                $job = array_pop($jobs);
+                $job = $useSeparateProcessPerJob ? $jobs[$processIdentifier] : array_pop($jobs);
+
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $job,
@@ -194,14 +245,24 @@ final class ParallelFileProcessor
         });
 
         for ($i = 0; $i < $numberOfProcesses; ++$i) {
-            // nothing else to process, stop now
-            if ($jobs === []) {
-                break;
-            }
+            if ($useSeparateProcessPerJob) {
+                // nothing else to process, stop now
+                if ($jobIdentifiers === []) {
+                    break;
+                }
 
-            $parallelProcessWithIdentifier = $this->createParallelProcessWithIdentifier($mainScript, $input, $serverPort, $streamSelectLoop, $timeoutInSeconds);
-            $processIdentifier = $parallelProcessWithIdentifier->getIdentifier();
-            $parallelProcess = $parallelProcessWithIdentifier->getParallelProcess();
+                $processIdentifier = array_pop($jobIdentifiers);
+                $parallelProcess = $jobProcesses[$processIdentifier];
+            } else {
+                // nothing else to process, stop now
+                if ($jobs === []) {
+                    break;
+                }
+
+                $parallelProcessWithIdentifier = $this->createParallelProcessWithIdentifier($mainScript, $input, $serverPort, $streamSelectLoop, $timeoutInSeconds);
+                $processIdentifier = $parallelProcessWithIdentifier->getIdentifier();
+                $parallelProcess = $parallelProcessWithIdentifier->getParallelProcess();
+            }
 
             $this->processPool->attachProcess($processIdentifier, $parallelProcess);
 
