@@ -9,10 +9,10 @@ final class MultiInstanceofChecker
     /**
      * @param array<class-string> $types
      */
-    public function isInstanceOf(object | string $object, array $types): bool
+    public function isInstanceOf(object $object, array $types): bool
     {
         foreach ($types as $type) {
-            if (is_a($object, $type, true)) {
+            if ($object instanceof $type) {
                 return true;
             }
         }
