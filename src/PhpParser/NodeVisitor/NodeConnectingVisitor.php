@@ -18,33 +18,30 @@ final class NodeConnectingVisitor extends NodeVisitorAbstract
     /**
      * @var Node[]
      */
-    private $stack = [];
+    private array $stack = [];
 
-    /**
-     * @var ?Node
-     */
-    private $previous;
+    private ?Node $node = null;
 
-    public function beforeTraverse(array $nodes) {
+    public function beforeTraverse(array $nodes): void {
         $this->stack    = [];
-        $this->previous = null;
+        $this->node = null;
     }
 
-    public function enterNode(Node $node) {
+    public function enterNode(Node $node): void {
         if (!empty($this->stack)) {
             $node->setAttribute('parent', $this->stack[count($this->stack) - 1]);
         }
 
-        if (! in_array($this->previous, [null, $node], true) && $this->previous->getAttribute('parent') === $node->getAttribute('parent')) {
-            $node->setAttribute('previous', $this->previous);
-            $this->previous->setAttribute('next', $node);
+        if (! in_array($this->node, [null, $node], true) && $this->node->getAttribute('parent') === $node->getAttribute('parent')) {
+            $node->setAttribute('previous', $this->node);
+            $this->node->setAttribute('next', $node);
         }
 
         $this->stack[] = $node;
     }
 
-    public function leaveNode(Node $node) {
-        $this->previous = $node;
+    public function leaveNode(Node $node): void {
+        $this->node = $node;
 
         array_pop($this->stack);
     }

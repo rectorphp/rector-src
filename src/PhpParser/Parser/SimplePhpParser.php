@@ -14,6 +14,7 @@ use PhpParser\ParserFactory;
 final class SimplePhpParser
 {
     private readonly NodeTraverser $nodeTraverser;
+
     private readonly Parser $phpParser;
 
     public function __construct()
