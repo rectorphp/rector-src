@@ -197,6 +197,12 @@ final class Option
     public const PARALLEL_JOB_TIMEOUT_IN_SECONDS = 'parallel-job-timeout-in-seconds';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass bool $useSeparateProcessPerJob parameter
+     * @var string
+     */
+    public const PARALLEL_USE_SEPARATE_PROCESS_PER_JOB = 'parallel-use-separate-process-per-job';
+
+    /**
      * @var string
      */
     public const MEMORY_LIMIT = 'memory-limit';

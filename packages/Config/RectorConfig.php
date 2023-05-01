@@ -50,7 +50,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL, false);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20): void
+    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20, bool $useSeparateProcessPerJob = false): void
     {
         $parameters = $this->parameters();
         $parameters->set(Option::PARALLEL, true);
@@ -58,6 +58,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
         $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, $maxNumberOfProcess);
         $parameters->set(Option::PARALLEL_JOB_SIZE, $jobSize);
+        $parameters->set(Option::PARALLEL_USE_SEPARATE_PROCESS_PER_JOB, $useSeparateProcessPerJob);
     }
 
     public function noDiffs(): void
