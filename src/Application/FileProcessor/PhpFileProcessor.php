@@ -14,6 +14,7 @@ use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Exception\SystemErrorException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -59,10 +60,11 @@ final class PhpFileProcessor implements FileProcessorInterface
         ];
 
         // 1. parse files to nodes
-        $parsingSystemErrors = $this->parseFileAndDecorateNodes($file);
-        if ($parsingSystemErrors !== []) {
+        try {
+            $this->parseFileAndDecorateNodes($file);
+        } catch (SystemErrorException $systemErrorException) {
             // we cannot process this file as the parsing and type resolving itself went wrong
-            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = $parsingSystemErrors;
+            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = [$systemErrorException->getSystemError()];
 
             return $systemErrorsAndFileDiffs;
         }
@@ -135,9 +137,9 @@ final class PhpFileProcessor implements FileProcessorInterface
     }
 
     /**
-     * @return SystemError[]
+     * @throws SystemErrorException
      */
-    private function parseFileAndDecorateNodes(File $file): array
+    private function parseFileAndDecorateNodes(File $file): void
     {
         $this->currentFileProvider->setFile($file);
         $this->notifyFile($file);
@@ -156,7 +158,7 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $analysedCodeException,
                 $file->getFilePath()
             );
-            return [$autoloadSystemError];
+            throw new SystemErrorException($autoloadSystemError);
         } catch (Throwable $throwable) {
             if ($this->rectorOutputStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
@@ -165,10 +167,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
             $systemError = new SystemError($throwable->getMessage(), $relativeFilePath, $throwable->getLine());
 
-            return [$systemError];
+            throw new SystemErrorException($systemError);
         }
-
-        return [];
     }
 
     private function printFile(File $file, Configuration $configuration): void
