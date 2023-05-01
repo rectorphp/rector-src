@@ -158,15 +158,10 @@ final class ParallelFileProcessor
         $onExitCallableProvider = function (string $processIdentifier) use (&$systemErrors): callable {
             return function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
                 $this->processPool->tryQuitProcess($processIdentifier);
-                if ($exitCode === Command::SUCCESS) {
-                    return;
-                }
 
-                if ($exitCode === null) {
-                    return;
+                if ($exitCode !== Command::SUCCESS && $exitCode !== null) {
+                    $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
                 }
-
-                $systemErrors[] = new SystemError('Child process error: ' . $stdErr);
             };
         };
 
