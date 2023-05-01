@@ -70,7 +70,16 @@ final class PhpFileProcessor implements FileProcessorInterface
             // 2. change nodes with Rectors
             $rectorWithLineChanges = null;
             $lastPassHasChanged = false;
+            $forceBreak = false;
+            $changingLoopCount = 0;
             do {
+                if ($isUsingFullProcessing && $changingLoopCount > 42) {
+                    $file->resetFileContent();
+                    $this->parseFileAndDecorateNodes($file, false);
+                    $lastPassHasChanged = false;
+                    $forceBreak = true;
+                }
+
                 $file->changeHasChanged(false);
                 $this->fileProcessor->refactor($file, $configuration);
 
@@ -91,13 +100,14 @@ final class PhpFileProcessor implements FileProcessorInterface
 
                     $fileHasChanged = true;
                     $lastPassHasChanged = true;
+                    ++$changingLoopCount;
                 } elseif ($isUsingFullProcessing && $lastPassHasChanged) {
                     $this->parseFileAndDecorateNodes($file, false);
                     $file->changeHasChanged(true);
                     $fileHasChangedInCurrentPass = true;
                     $lastPassHasChanged = false;
                 }
-            } while ($fileHasChangedInCurrentPass);
+            } while ($fileHasChangedInCurrentPass && ! $forceBreak);
         } catch (SystemErrorException $systemErrorException) {
             // we cannot process this file as the parsing and type resolving itself went wrong
             $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = [$systemErrorException->getSystemError()];

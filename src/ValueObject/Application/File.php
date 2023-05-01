@@ -67,6 +67,11 @@ final class File
         $this->hasChanged = true;
     }
 
+    public function resetFileContent(): void
+    {
+        $this->fileContent = $this->originalFileContent;
+    }
+
     public function getOriginalFileContent(): string
     {
         return $this->originalFileContent;
