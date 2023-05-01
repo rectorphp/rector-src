@@ -6,6 +6,7 @@ namespace Rector\Core\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * Visitor that connects a child node to its parent node
@@ -22,27 +23,40 @@ final class NodeConnectingVisitor extends NodeVisitorAbstract
 
     private ?Node $node = null;
 
-    public function beforeTraverse(array $nodes): void {
-        $this->stack    = [];
+    public function beforeTraverse(array $nodes)
+    {
+        $this->stack = [];
         $this->node = null;
+
+        return null;
     }
 
-    public function enterNode(Node $node): void {
+    public function enterNode(Node $node)
+    {
         if ($this->stack !== []) {
-            $node->setAttribute('parent', $this->stack[count($this->stack) - 1]);
+            $node->setAttribute(AttributeKey::PARENT_NODE, $this->stack[count($this->stack) - 1]);
         }
 
-        if (! in_array($this->node, [null, $node], true) && $this->node->getAttribute('parent') === $node->getAttribute('parent')) {
-            $node->setAttribute('previous', $this->node);
-            $this->node->setAttribute('next', $node);
+        if ($this->node instanceof Node
+            && $this->node !== $node
+            && $this->node->getAttribute(AttributeKey::PARENT_NODE) === $node->getAttribute(
+                AttributeKey::PARENT_NODE
+            )) {
+            $node->setAttribute(AttributeKey::PREVIOUS_NODE, $this->node);
+            $this->node->setAttribute(AttributeKey::NEXT_NODE, $node);
         }
 
         $this->stack[] = $node;
+
+        return null;
     }
 
-    public function leaveNode(Node $node): void {
+    public function leaveNode(Node $node)
+    {
         $this->node = $node;
 
         array_pop($this->stack);
+
+        return null;
     }
 }
