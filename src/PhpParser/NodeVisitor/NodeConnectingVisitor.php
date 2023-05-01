@@ -28,7 +28,7 @@ final class NodeConnectingVisitor extends NodeVisitorAbstract
     }
 
     public function enterNode(Node $node): void {
-        if (!empty($this->stack)) {
+        if ($this->stack !== []) {
             $node->setAttribute('parent', $this->stack[count($this->stack) - 1]);
         }
 
