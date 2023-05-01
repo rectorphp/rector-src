@@ -75,7 +75,7 @@ final class WorkerCommandLineFactoryTest extends TestCase
                 self::COMMAND => 'process',
                 Option::SOURCE => ['src'],
             ],
-            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'worker' --no-ansi",
         ];
 
         yield [
@@ -84,7 +84,7 @@ final class WorkerCommandLineFactoryTest extends TestCase
                 Option::SOURCE => ['src'],
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
             ],
-            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'worker' --no-ansi",
         ];
 
         yield [
@@ -94,7 +94,7 @@ final class WorkerCommandLineFactoryTest extends TestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::DEBUG => true,
             ],
-            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'worker' --no-ansi",
         ];
     }
 
