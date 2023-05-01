@@ -1,0 +1,7 @@
+[ERROR] Could not process
+         "/home/runner/work/rector-src/rector-src/vendor/symplify/easy-parallel/
+         src/ValueObject/ParallelProcess.php" file, due to:
+         "Child process timed out after 1 seconds". On line: 105
+
+ [ERROR] Could not process some files, due to:
+         "Reached system errors count limit of 50, exiting...".

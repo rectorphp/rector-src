@@ -6,6 +6,7 @@ namespace Rector\Core\Application\FileProcessor;
 
 use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
+use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileProcessor;
@@ -39,6 +40,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileDiffFactory $fileDiffFactory,
+        private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
@@ -65,6 +67,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
+        $fileHasChanged = false;
+
         // 2. change nodes with Rectors
         $rectorWithLineChanges = null;
         do {
@@ -80,11 +84,20 @@ final class PhpFileProcessor implements FileProcessorInterface
             // important to detect if file has changed
             $this->printFile($file, $configuration);
 
-            if ($file->hasChanged()) {
+            $fileHasChangedInCurrentPass = $file->hasChanged();
+
+            if ($fileHasChangedInCurrentPass) {
                 $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
                 $rectorWithLineChanges = $file->getRectorWithLineChanges();
+
+                $fileHasChanged = true;
             }
-        } while ($file->hasChanged());
+        } while ($fileHasChangedInCurrentPass);
+
+        // 5. add as cacheable if not changed at all
+        if (! $fileHasChanged) {
+            $this->changedFilesDetector->addCachableFile($file->getFilePath());
+        }
 
         if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
             $file->setFileDiff(
