@@ -59,42 +59,42 @@ final class PhpFileProcessor implements FileProcessorInterface
             Bridge::FILE_DIFFS => [],
         ];
 
-        // 1. parse files to nodes
         try {
+            // 1. parse files to nodes
             $this->parseFileAndDecorateNodes($file);
+
+            $fileHasChanged = false;
+
+            // 2. change nodes with Rectors
+            $rectorWithLineChanges = null;
+            do {
+                $file->changeHasChanged(false);
+                $this->fileProcessor->refactor($file, $configuration);
+
+                // 3. apply post rectors
+                $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
+                // this is needed for new tokens added in "afterTraverse()"
+                $file->changeNewStmts($newStmts);
+
+                // 4. print to file or string
+                // important to detect if file has changed
+                $this->printFile($file, $configuration);
+
+                $fileHasChangedInCurrentPass = $file->hasChanged();
+
+                if ($fileHasChangedInCurrentPass) {
+                    $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
+                    $rectorWithLineChanges = $file->getRectorWithLineChanges();
+
+                    $fileHasChanged = true;
+                }
+            } while ($fileHasChangedInCurrentPass);
         } catch (SystemErrorException $systemErrorException) {
             // we cannot process this file as the parsing and type resolving itself went wrong
             $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = [$systemErrorException->getSystemError()];
 
             return $systemErrorsAndFileDiffs;
         }
-
-        $fileHasChanged = false;
-
-        // 2. change nodes with Rectors
-        $rectorWithLineChanges = null;
-        do {
-            $file->changeHasChanged(false);
-            $this->fileProcessor->refactor($file, $configuration);
-
-            // 3. apply post rectors
-            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-            // this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($newStmts);
-
-            // 4. print to file or string
-            // important to detect if file has changed
-            $this->printFile($file, $configuration);
-
-            $fileHasChangedInCurrentPass = $file->hasChanged();
-
-            if ($fileHasChangedInCurrentPass) {
-                $file->setFileDiff($this->fileDiffFactory->createTempFileDiff($file));
-                $rectorWithLineChanges = $file->getRectorWithLineChanges();
-
-                $fileHasChanged = true;
-            }
-        } while ($fileHasChangedInCurrentPass);
 
         // 5. add as cacheable if not changed at all
         if (! $fileHasChanged) {
