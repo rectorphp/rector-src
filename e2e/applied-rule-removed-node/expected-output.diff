@@ -4,7 +4,7 @@
 1) src/DeadConstructor.php:1
 
     ---------- begin diff ----------
-@@ @@
+@@ -2,7 +2,4 @@
 
  final class DeadConstructor
  {
@@ -21,7 +21,7 @@ Applied rules:
 2) src/AlwaysTrue.php:3
 
     ---------- begin diff ----------
-@@ @@
+@@ -4,9 +4,6 @@
  {
      public function run()
      {

@@ -4,7 +4,7 @@
 1) src/short_open_tag_with_import_name.php:0
 
     ---------- begin diff ----------
-@@ @@
+@@ -1,10 +1,12 @@
  <?php
 +
 +use PhpParser\Node\Stmt\Expression;

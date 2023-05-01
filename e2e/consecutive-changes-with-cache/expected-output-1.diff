@@ -4,7 +4,7 @@
 1) src/Source.php:1
 
     ---------- begin diff ----------
-@@ @@
+@@ -2,7 +2,10 @@
 
  $a = true;
  $b = true;

@@ -4,7 +4,7 @@
 1) src/SomeClassNotFound.php:3
 
     ---------- begin diff ----------
-@@ @@
+@@ -4,5 +4,4 @@
 
  final class SomeClassNotFound
  {
@@ -19,7 +19,7 @@ Applied rules:
 2) src/NamespacedSomeClassFound.php:5
 
     ---------- begin diff ----------
-@@ @@
+@@ -6,5 +6,4 @@
 
  final class NamespacedSomeClassFound
  {

@@ -19,7 +19,7 @@
 1) src/ClassMatchFileName.php:4
 
     ---------- begin diff ----------
-@@ @@
+@@ -5,7 +5,3 @@
  class ClassMatchFileName implements SomeInterface
  {
  }

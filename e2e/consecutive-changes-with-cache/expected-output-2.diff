@@ -4,7 +4,7 @@
 1) src/Source.php:4
 
     ---------- begin diff ----------
-@@ @@
+@@ -5,7 +5,9 @@
  if (!$a) {
      return;
  }

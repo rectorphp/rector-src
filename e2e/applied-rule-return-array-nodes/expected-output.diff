@@ -4,7 +4,7 @@
 1) src/RemoveAlwaysElse.php:5
 
     ---------- begin diff ----------
-@@ @@
+@@ -6,8 +6,7 @@
      {
          if ($value) {
              throw new \InvalidStateException;
@@ -23,7 +23,7 @@ Applied rules:
 2) src/MultiRules.php:5
 
     ---------- begin diff ----------
-@@ @@
+@@ -6,12 +6,7 @@
      {
          if (true === false) {
              return -1;
