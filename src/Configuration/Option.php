@@ -224,4 +224,10 @@ final class Option
      * @var string
      */
     public const CONTAINER_CACHE_DIRECTORY = 'container-cache-directory';
+
+    /**
+     * @internal Use @see \Rector\Config\RectorConfig::enableFullProcessing() instead
+     * @var string
+     */
+    public const FULL_PROCESSING = 'full-processing';
 }

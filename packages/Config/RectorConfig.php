@@ -258,4 +258,10 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::INDENT_CHAR, $character);
         $parameters->set(Option::INDENT_SIZE, $count);
     }
+
+    public function enableFullProcessing(): void
+    {
+        $parameters = $this->parameters();
+        $parameters->set(Option::FULL_PROCESSING, true);
+    }
 }
