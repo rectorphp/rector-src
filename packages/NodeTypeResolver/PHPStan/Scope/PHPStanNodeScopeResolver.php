@@ -389,11 +389,7 @@ final class PHPStanNodeScopeResolver
             return;
         }
 
-        if (! $parentTrait->namespacedName instanceof Name) {
-            return;
-        }
-
-        $parentTraitName = $parentTrait->namespacedName->toString();
+        $parentTraitName = $this->resolveClassName($parentTrait);
         foreach ($class->stmts as $stmt) {
             if (! $stmt instanceof TraitUse) {
                 continue;
