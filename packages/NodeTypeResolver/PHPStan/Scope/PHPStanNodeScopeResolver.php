@@ -113,13 +113,13 @@ final class PHPStanNodeScopeResolver
             $filePath
         ): void {
             if ((
-                    $node instanceof Expression ||
-                    $node instanceof Return_ ||
-                    $node instanceof Assign ||
-                    $node instanceof EnumCase ||
-                    $node instanceof AssignOp ||
-                    $node instanceof Cast
-                ) && $node->expr instanceof Expr) {
+                $node instanceof Expression ||
+                $node instanceof Return_ ||
+                $node instanceof Assign ||
+                $node instanceof EnumCase ||
+                $node instanceof AssignOp ||
+                $node instanceof Cast
+            ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
@@ -211,10 +211,6 @@ final class PHPStanNodeScopeResolver
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
-                if ($mutatingScope->isInTrait()) { die('here ...');
-                    return;
-                }
-
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
             }
@@ -394,6 +390,10 @@ final class PHPStanNodeScopeResolver
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
+            if ($mutatingScope->isInTrait()) { die('here ...');
+                return;
+            }
+
         } elseif (! $this->reflectionProvider->hasClass($className)) {
             return $mutatingScope;
         } else {
