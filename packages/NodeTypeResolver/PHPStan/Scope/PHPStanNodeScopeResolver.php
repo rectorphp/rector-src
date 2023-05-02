@@ -381,6 +381,34 @@ final class PHPStanNodeScopeResolver
         return $stmts;
     }
 
+    private function cleanUpLoadedTraitUseInAnonymousClass(Class_ $classLike): void
+    {
+        $parentTrait = $this->betterNodeFinder->findParentType($classLike, Trait_::class);
+
+        if (! $parentTrait instanceof Trait_) {
+            return;
+        }
+
+        if (! $parentTrait->namespacedName instanceof Name) {
+            return;
+        }
+
+        $parentTraitName = $parentTrait->namespacedName->toString();
+        foreach ($classLike->stmts as $stmt) {
+            if (! $stmt instanceof TraitUse) {
+                continue;
+            }
+
+            foreach ($stmt->traits as $traitKey => $trait) {
+                // trait already loaded, load twice inner make infinite loop
+                // so remove from the TraitUse data
+                if ($parentTraitName === $trait->toString()) {
+                    unset($stmt->traits[$traitKey]);
+                }
+            }
+        }
+    }
+
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ | Enum_ $classLike,
         MutatingScope $mutatingScope,
@@ -390,12 +418,7 @@ final class PHPStanNodeScopeResolver
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
-            foreach ($classLike->stmts as $key => $stmt) {
-                if ($stmt instanceof TraitUse) {
-                    unset($classLike->stmts[$key]);
-                }
-            }
-
+            $this->cleanUpLoadedTraitUseInAnonymousClass($classLike);
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
         } elseif (! $this->reflectionProvider->hasClass($className)) {
             return $mutatingScope;
