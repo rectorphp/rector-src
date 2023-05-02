@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use _HumbugBox8860548cfcbd\PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -45,7 +44,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -110,17 +108,18 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
+            &$nodeCallback,
             $isScopeRefreshing,
             $filePath
         ): void {
             if ((
-                $node instanceof Expression ||
-                $node instanceof Return_ ||
-                $node instanceof Assign ||
-                $node instanceof EnumCase ||
-                $node instanceof AssignOp ||
-                $node instanceof Cast
-            ) && $node->expr instanceof Expr) {
+                    $node instanceof Expression ||
+                    $node instanceof Return_ ||
+                    $node instanceof Assign ||
+                    $node instanceof EnumCase ||
+                    $node instanceof AssignOp ||
+                    $node instanceof Cast
+                ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
@@ -202,7 +201,9 @@ final class PHPStanNodeScopeResolver
                     ScopeContext::class
                 );
 
-                $this->decorateTrait($node, $traitScope);
+                $node->setAttribute(AttributeKey::SCOPE, $traitScope);
+                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
             }
@@ -271,19 +272,8 @@ final class PHPStanNodeScopeResolver
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
-    private function decorateTrait(Trait_ $trait, MutatingScope $mutatingScope): void
+    private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
     {
-        $trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-        foreach ($trait->stmts as $stmt) {
-            $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            if ($stmt instanceof StmtsAwareInterface) {
-                foreach ((array)$stmt->stmts as $innerStmt) {
-                    $innerStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            }
-        }
-
         foreach ($trait->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
                 foreach ($attr->args as $arg) {
