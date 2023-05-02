@@ -202,7 +202,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->decorateTraitStmts($node, $filePath, $traitScope);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -270,6 +270,12 @@ final class PHPStanNodeScopeResolver
         }
 
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+    }
+
+    private function decorateTraitStmts(Trait_ $trait, string $filePath, MutatingScope $mutatingScope): void
+    {
+        $mutatingScope = $mutatingScope->enterTrait($mutatingScope->getClassReflection());
+        $this->processNodes($trait->stmts, $filePath, $mutatingScope);
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
