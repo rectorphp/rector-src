@@ -44,7 +44,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -109,6 +108,7 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
+            &$nodeCallback,
             $isScopeRefreshing,
             $filePath
         ): void {
@@ -202,7 +202,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->decorateTraitStmts($node, $filePath, $traitScope);
+                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -270,22 +270,6 @@ final class PHPStanNodeScopeResolver
         }
 
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-    }
-
-    private function decorateTraitStmts(Trait_|Stmt $trait, string $filePath, MutatingScope $mutatingScope): void
-    {
-        if ($trait instanceof Class_) {
-            return;
-        }
-
-        if (! $trait instanceof Trait_ && ! $trait instanceof StmtsAwareInterface) {
-            return;
-        }
-
-        foreach ((array) $trait->stmts as $stmt) {
-            $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            $this->decorateTraitStmts($stmt, $filePath, $mutatingScope);
-        }
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
