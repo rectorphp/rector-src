@@ -381,9 +381,9 @@ final class PHPStanNodeScopeResolver
         return $stmts;
     }
 
-    private function cleanUpLoadedTraitUseInAnonymousClass(Class_ $classLike): void
+    private function cleanUpLoadedTraitUseInAnonymousClass(Class_ $class): void
     {
-        $parentTrait = $this->betterNodeFinder->findParentType($classLike, Trait_::class);
+        $parentTrait = $this->betterNodeFinder->findParentType($class, Trait_::class);
 
         if (! $parentTrait instanceof Trait_) {
             return;
@@ -394,7 +394,7 @@ final class PHPStanNodeScopeResolver
         }
 
         $parentTraitName = $parentTrait->namespacedName->toString();
-        foreach ($classLike->stmts as $stmt) {
+        foreach ($class->stmts as $stmt) {
             if (! $stmt instanceof TraitUse) {
                 continue;
             }
