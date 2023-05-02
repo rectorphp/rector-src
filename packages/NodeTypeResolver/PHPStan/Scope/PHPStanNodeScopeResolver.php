@@ -44,6 +44,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -202,7 +203,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->decorateTraitStmts($node, $filePath, $traitScope);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -270,6 +271,26 @@ final class PHPStanNodeScopeResolver
         }
 
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+    }
+
+    private function decorateTraitStmts(Trait_|Stmt $trait, string $filePath, MutatingScope $mutatingScope): void
+    {
+        if ($trait instanceof Class_) {
+            return;
+        }
+
+        if (! $trait instanceof Trait_ && ! $trait instanceof StmtsAwareInterface) {
+            return;
+        }
+
+        foreach ($trait->stmts as $stmt) {
+            if ($stmt instanceof Class_) {
+                continue;
+            }
+
+            $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $this->decorateTraitStmts($stmt, $filePath, $mutatingScope);
+        }
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
@@ -390,10 +411,6 @@ final class PHPStanNodeScopeResolver
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
-            if ($mutatingScope->isInTrait()) { die('here ...');
-
-            }
-
         } elseif (! $this->reflectionProvider->hasClass($className)) {
             return $mutatingScope;
         } else {
