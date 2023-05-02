@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use _HumbugBox8860548cfcbd\PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -44,6 +45,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -275,6 +277,11 @@ final class PHPStanNodeScopeResolver
 
         foreach ($trait->stmts as $stmt) {
             $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($stmt instanceof StmtsAwareInterface) {
+                foreach ((array)$stmt->stmts as $innerStmt) {
+                    $innerStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
         }
 
         foreach ($trait->attrGroups as $attrGroup) {
