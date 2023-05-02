@@ -108,6 +108,7 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
+            &$nodeCallback,
             $isScopeRefreshing,
             $filePath
         ): void {
@@ -201,7 +202,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->decorateTraitStmts($node, $filePath, $traitScope);
+                $this->decorateTraitStmts($node, $traitScope, $nodeCallback);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -271,7 +272,10 @@ final class PHPStanNodeScopeResolver
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
-    private function decorateTraitStmts(Trait_ $trait, string $filePath, MutatingScope $mutatingScope): void
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function decorateTraitStmts(Trait_ $trait, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         $classReflection = $mutatingScope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
@@ -279,7 +283,7 @@ final class PHPStanNodeScopeResolver
         }
 
         $mutatingScope = $mutatingScope->enterTrait($classReflection);
-        $this->processNodes($trait->stmts, $filePath, $mutatingScope);
+        $this->nodeScopeResolver->processNodes($trait->stmts, $mutatingScope, $nodeCallback);
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
