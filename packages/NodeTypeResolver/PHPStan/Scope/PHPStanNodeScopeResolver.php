@@ -389,6 +389,12 @@ final class PHPStanNodeScopeResolver
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
+            foreach ($classLike->stmts as $key => $stmt) {
+                if ($stmt instanceof Stmt\TraitUse) {
+                    unset($classLike->stmts[$key]);
+                }
+            }
+
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
         } elseif (! $this->reflectionProvider->hasClass($className)) {
             return $mutatingScope;
