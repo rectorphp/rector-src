@@ -202,7 +202,6 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
