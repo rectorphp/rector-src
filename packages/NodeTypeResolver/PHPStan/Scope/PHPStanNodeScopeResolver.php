@@ -284,10 +284,6 @@ final class PHPStanNodeScopeResolver
         }
 
         foreach ($trait->stmts as $stmt) {
-            if ($stmt instanceof Class_) {
-                continue;
-            }
-
             $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $this->decorateTraitStmts($stmt, $filePath, $mutatingScope);
         }
