@@ -391,7 +391,7 @@ final class PHPStanNodeScopeResolver
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
             if ($mutatingScope->isInTrait()) { die('here ...');
-                return;
+
             }
 
         } elseif (! $this->reflectionProvider->hasClass($className)) {
