@@ -108,7 +108,6 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
-            &$nodeCallback,
             $isScopeRefreshing,
             $filePath
         ): void {
@@ -274,7 +273,12 @@ final class PHPStanNodeScopeResolver
 
     private function decorateTraitStmts(Trait_ $trait, string $filePath, MutatingScope $mutatingScope): void
     {
-        $mutatingScope = $mutatingScope->enterTrait($mutatingScope->getClassReflection());
+        $classReflection = $mutatingScope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return;
+        }
+
+        $mutatingScope = $mutatingScope->enterTrait($classReflection);
         $this->processNodes($trait->stmts, $filePath, $mutatingScope);
     }
 
