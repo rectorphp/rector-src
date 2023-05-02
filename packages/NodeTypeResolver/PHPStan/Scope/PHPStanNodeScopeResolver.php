@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -390,7 +391,7 @@ final class PHPStanNodeScopeResolver
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
             foreach ($classLike->stmts as $key => $stmt) {
-                if ($stmt instanceof Stmt\TraitUse) {
+                if ($stmt instanceof TraitUse) {
                     unset($classLike->stmts[$key]);
                 }
             }
