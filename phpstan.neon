@@ -750,7 +750,7 @@ parameters:
         - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
 
         -
-            message: '#Instead of protected element in use private element or contract method#'
+            message: '#Instead of protected element, use private element or contract method#'
             paths:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
