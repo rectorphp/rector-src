@@ -167,6 +167,10 @@ CODE_SAMPLE
 
             $methodReflection = $callerType->getMethod($possibleGetterMethodName, $scope);
 
+            if (! $methodReflection->isPublic()) {
+                continue;
+            }
+
             $variant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
             $returnType = $variant->getReturnType();
 
