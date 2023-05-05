@@ -4,30 +4,48 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
+use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 
-final class IdentifierTypeResolver
+/**
+ * @implements NodeTypeResolverInterface<Identifier>
+ */
+final class IdentifierTypeResolver implements NodeTypeResolverInterface
 {
-    public function resolve(Identifier $identifier): StringType | BooleanType | IntegerType | FloatType | MixedType
+    /**
+     * @return array<class-string<Node>>
+     */
+    public function getNodeClasses(): array
     {
-        if ($identifier->toLowerString() === 'string') {
+        return [Identifier::class];
+    }
+
+    /**
+     * @param Identifier $node
+     * @return StringType|BooleanType|IntegerType|FloatType|MixedType
+     */
+    public function resolve(Node $node): Type
+    {
+        if ($node->toLowerString() === 'string') {
             return new StringType();
         }
 
-        if ($identifier->toLowerString() === 'bool') {
+        if ($node->toLowerString() === 'bool') {
             return new BooleanType();
         }
 
-        if ($identifier->toLowerString() === 'int') {
+        if ($node->toLowerString() === 'int') {
             return new IntegerType();
         }
 
-        if ($identifier->toLowerString() === 'float') {
+        if ($node->toLowerString() === 'float') {
             return new FloatType();
         }
 
