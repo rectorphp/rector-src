@@ -40,7 +40,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
-use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
@@ -62,7 +61,6 @@ final class NodeTypeResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly HasOffsetTypeCorrector $hasOffsetTypeCorrector,
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
-        private readonly IdentifierTypeResolver $identifierTypeResolver,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         array $nodeTypeResolvers
     ) {
@@ -173,19 +171,10 @@ final class NodeTypeResolver
                 }
             }
 
-            if ($node instanceof Identifier) {
-                return $this->identifierTypeResolver->resolve($node);
-            }
-
             return new MixedType();
         }
 
         if (! $node instanceof Expr) {
-            // scalar type, e.g. from param type name
-            if ($node instanceof Identifier) {
-                return $this->identifierTypeResolver->resolve($node);
-            }
-
             return new MixedType();
         }
 
