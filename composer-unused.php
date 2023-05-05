@@ -10,6 +10,7 @@ use ComposerUnused\ComposerUnused\Configuration\PatternFilter;
 return static function (Configuration $config): Configuration {
     // rector dependencies
     $config->addPatternFilter(PatternFilter::fromString('#rector/.#'));
+    $config->addPatternFilter(PatternFilter::fromString('#phpstan/phpstan#'));
 
     return $config;
 };
