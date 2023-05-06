@@ -93,7 +93,7 @@ final class WorkerRunner
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
-                    $errorAndFileDiffs = $this->processFiles($file, $configuration, $errorAndFileDiffs);
+                    $errorAndFileDiffs = $this->processFile($file, $configuration, $errorAndFileDiffs);
 
                     if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
                         $this->invalidateFile($file);
@@ -131,7 +131,7 @@ final class WorkerRunner
      * @param array{system_errors: SystemError[], file_diffs: FileDiff[]}|mixed[] $errorAndFileDiffs
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    private function processFiles(File $file, Configuration $configuration, array $errorAndFileDiffs): array
+    private function processFile(File $file, Configuration $configuration, array $errorAndFileDiffs): array
     {
         foreach ($this->fileProcessors as $fileProcessor) {
             if (! $fileProcessor->supports($file, $configuration)) {
