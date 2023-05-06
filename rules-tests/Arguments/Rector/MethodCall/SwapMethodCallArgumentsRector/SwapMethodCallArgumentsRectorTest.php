@@ -18,9 +18,7 @@ final class SwapMethodCallArgumentsRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        foreach (self::yieldFilesFromDirectory(__DIR__ . '/Fixture') as $filePath) {
-            yield basename((string) $filePath[0]) => $filePath;
-        }
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string
