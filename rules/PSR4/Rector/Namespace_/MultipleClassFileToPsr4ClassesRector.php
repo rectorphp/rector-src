@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Printer\NeighbourClassLikePrinter;
 use Rector\Core\Rector\AbstractRector;
@@ -28,7 +27,6 @@ final class MultipleClassFileToPsr4ClassesRector extends AbstractRector
         private readonly FileInfoDeletionAnalyzer $fileInfoDeletionAnalyzer,
         private readonly NeighbourClassLikePrinter $neighbourClassLikePrinter,
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -173,23 +171,4 @@ CODE_SAMPLE
         $filePath = $this->file->getFilePath();
         $this->neighbourClassLikePrinter->printClassLike($classLike, $mainNode, $filePath, $this->file);
     }
-<<<<<<< HEAD
-
-    /**
-     * @return ClassLike[]
-     */
-    private function findNonAnonymousClassLikes(Node $node): array
-    {
-        $classLikes = $this->betterNodeFinder->findInstanceOf([$node], ClassLike::class);
-
-        return array_filter($classLikes, function (ClassLike $classLike): bool {
-            if (! $classLike instanceof Class_) {
-                return true;
-            }
-
-            return ! $this->classAnalyzer->isAnonymousClass($classLike);
-        });
-    }
-=======
->>>>>>> 2988dfd416 (Move findNonAnonymousClassLikes to BetterNodeFinder)
 }

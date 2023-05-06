@@ -46,7 +46,7 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractRecto
                 <<<'CODE_SAMPLE'
 // src/SomeClass.php
 
-class SomeClass
+classLike SomeClass
 {
 }
 CODE_SAMPLE
@@ -56,7 +56,7 @@ CODE_SAMPLE
 
 namespace App\CustomNamespace;
 
-class SomeClass
+classLike SomeClass
 {
 }
 CODE_SAMPLE
@@ -109,7 +109,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $renames = $this->getClassLikeRenames($processNode, $expectedNamespace);
+        $renames = $this->getClassLikeRenames($node, $expectedNamespace);
         $this->renamedClassesDataCollector->addOldToNewClasses($renames);
 
         // to put declare_strict types on correct place
@@ -167,29 +167,31 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FileWithoutNamespace|Namespace_ $node
      * @return array<string,string>
      */
-    private function getClassLikeRenames(Node $node, string $expectedNamespace): array
+    private function getClassLikeRenames(FileWithoutNamespace|Namespace_ $node, string $expectedNamespace): array
     {
         $originalNamespace = $this->nodeNameResolver->getName($node) ?? '';
         $classLikes = $this->betterNodeFinder->findNonAnonymousClassLikes($node);
+
         $classLikesNames = array_map(
-            static function (ClassLike $class): string {
-                Assert::notNull($class->name);
-                return $class->name->toString();
+            static function (ClassLike $classLike): string {
+                Assert::notNull($classLike->name);
+                return $classLike->name->toString();
             },
             $classLikes
         );
+
         $oldClassLikeNames = array_map(
             static fn (string $name): string => $originalNamespace . '\\' . $name,
             $classLikesNames
         );
+
         $newClassLikeNames = array_map(
             static fn (string $name): string => $expectedNamespace . '\\' . $name,
             $classLikesNames
         );
-        $renames = array_combine($oldClassLikeNames, $newClassLikeNames);
-        return $renames;
+
+        return array_combine($oldClassLikeNames, $newClassLikeNames);
     }
 }
