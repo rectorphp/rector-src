@@ -100,6 +100,11 @@ final class ClassRenamer
      */
     private function refactorPhpDoc(Node $node, array $oldToNewTypes, array $oldToNewClasses): void
     {
+        if (!$this->hasOriginalNodePhpDoc($node)) {
+            // no need to create empty PHPDoc nodes and traverse over those, if the code had no PHPDoc in the first place
+            return;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if (! $phpDocInfo->hasByTypes(NodeTypes::TYPE_AWARE_NODES) && ! $phpDocInfo->hasByAnnotationClasses(
             NodeTypes::TYPE_AWARE_DOCTRINE_ANNOTATION_CLASSES
@@ -486,5 +491,18 @@ final class ClassRenamer
     private function resolveOldToNewClassCallbacks(Node $node, array $oldToNewClasses): array
     {
         return [...$oldToNewClasses, ...$this->renameClassCallbackHandler->getOldToNewClassesFromNode($node)];
+    }
+
+    /**
+     * Checks whether the original node has any PHPDoc comments.
+     */
+    private function hasOriginalNodePhpDoc(Node $node): bool
+    {
+        $origNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if ($origNode instanceof Node && $origNode->getDocComment() === null && $origNode->getComments() === []) {
+            return false;
+        }
+
+        return true;
     }
 }
