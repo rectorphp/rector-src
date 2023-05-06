@@ -133,7 +133,7 @@ CODE_SAMPLE
         }
 
         $type = $this->getType($foreach->expr);
-        return ! $type instanceof ArrayType;
+        return ! $type->isArray()->yes();
     }
 
     private function shouldSkipForeachKeyUsage(If_ $if, Expr $expr): bool
