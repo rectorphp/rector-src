@@ -22,6 +22,7 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\NodeTypeResolver\TypeAnalyzer\ArrayTypeAnalyzer;
 use Rector\ReadWrite\NodeAnalyzer\ReadExprAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,6 +37,7 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
         private readonly ReadExprAnalyzer $readExprAnalyzer,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly ArrayTypeAnalyzer $arrayTypeAnalyzer
     ) {
     }
 
@@ -128,7 +130,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $ifNode->elseifs !== [];
+        if ($ifNode->elseifs !== []) {
+            return true;
+        }
+
+        return ! $this->arrayTypeAnalyzer->isArrayType($foreach->expr);
     }
 
     private function shouldSkipForeachKeyUsage(If_ $if, Expr $expr): bool
