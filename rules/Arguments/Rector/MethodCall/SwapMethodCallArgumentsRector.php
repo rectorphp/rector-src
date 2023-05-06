@@ -120,6 +120,9 @@ CODE_SAMPLE
         SwapMethodCallArguments $swapMethodCallArguments,
         MethodCall|StaticCall $call
     ): array {
+        if ($call->isFirstClassCallable()) {
+            return [];
+        }
         $newArguments = [];
         foreach ($swapMethodCallArguments->getOrder() as $oldPosition => $newPosition) {
             if (! isset($call->getArgs()[$oldPosition])) {
