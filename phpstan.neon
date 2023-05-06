@@ -1,19 +1,8 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
-    - phpstan-baseline.neon
 
 parameters:
     reportUnmatchedIgnoredErrors: false
-
-    unused_public:
-        properties: true
-        constants: true
-        methods: true
-
-    type_coverage:
-        param_type: 99
-        return_type: 99
-        property_type: 99
 
     cognitive_complexity:
         class: 50
@@ -23,10 +12,6 @@ parameters:
 
     # requires exact closure types
     checkMissingCallableSignature: true
-
-    parallel:
-        # to prevent full thread lagging pc
-        maximumNumberOfProcesses: 15
 
     paths:
         - rector.php
@@ -243,8 +228,6 @@ parameters:
         -
             path: src/Bootstrap/RectorConfigsResolver.php
             message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
-
-        - '#Cognitive complexity for "Rector\\Core\\NodeManipulator\\ClassMethodAssignManipulator\:\:collectReferenceVariableNames\(\)" is 13, keep it under 10#'
 
         # known value object, nullable due to typed property
         -
@@ -692,10 +675,6 @@ parameters:
             message: '#Anonymous (variable|variables) in#'
             path: utils/ChangelogGenerator
 
-        -
-            message: '#Separate function "sprintf\(\)" in method call to standalone row to improve readability#'
-            path: utils/ChangelogGenerator
-
         # std class api
         -
             message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
@@ -756,11 +735,6 @@ parameters:
                 - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
                 - src/Console/Command/AbstractProcessCommand.php
                 - src/Rector/AbstractRector.php
-
-        # allow PHPUnit 10 attributes without keys
-        -
-            message: '#Attribute must have all names explicitly defined#'
-            path: '*Test.php'
 
         # useless
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'

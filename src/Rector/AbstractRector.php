@@ -77,7 +77,7 @@ CODE_SAMPLE;
     protected BetterNodeFinder $betterNodeFinder;
 
     /**
-     * @deprecated Use service directly or return changes nodes
+     * @internal Use service directly or return changes nodes
      */
     protected NodeRemover $nodeRemover;
 

@@ -81,8 +81,10 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Expr $assignVariable */
         $assignVariable = $this->foreachAnalyzer->matchAssignItemsOnlyForeachArrayVariable($node);
+        if (! $assignVariable instanceof Expr) {
+            return null;
+        }
 
         return new Assign($assignVariable, $node->expr);
     }

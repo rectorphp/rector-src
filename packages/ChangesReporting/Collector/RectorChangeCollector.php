@@ -20,7 +20,7 @@ final class RectorChangeCollector
     }
 
     /**
-     * @deprecated Use file-> method instead
+     * @internal Use file-> method instead
      */
     public function notifyNodeFileInfo(Node $node): void
     {
