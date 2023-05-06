@@ -13,10 +13,6 @@ parameters:
     # requires exact closure types
     checkMissingCallableSignature: true
 
-    parallel:
-        # to prevent full thread lagging pc
-        maximumNumberOfProcesses: 15
-
     paths:
         - rector.php
         - bin
