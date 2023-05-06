@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Arguments\Rector\MethodCall\SwapMethodCallArgumentsRector\SwapMethodCallArgumentsRectorTest
  */
-class SwapMethodCallArgumentsRector extends AbstractRector implements ConfigurableRectorInterface
+final class SwapMethodCallArgumentsRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var string
@@ -74,6 +74,12 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return [];
+        }
+
+        $args = $node->getArgs();
+
         foreach ($this->methodArgumentSwaps as $methodArgumentSwap) {
             if (! $this->isName($node->name, $methodArgumentSwap->getMethod())) {
                 continue;
@@ -83,7 +89,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $newArguments = $this->resolveNewArguments($methodArgumentSwap, $node);
+            $newArguments = $this->resolveNewArguments($methodArgumentSwap, $args);
             if ($newArguments === []) {
                 return null;
             }
@@ -96,6 +102,7 @@ CODE_SAMPLE
 
             return $node;
         }
+
         return null;
     }
 
@@ -110,30 +117,27 @@ CODE_SAMPLE
         if ($node instanceof MethodCall) {
             return $this->isObjectType($node->var, $objectType);
         }
+
         return $this->isObjectType($node->class, $objectType);
     }
 
     /**
+     * @param Arg[] $args
      * @return array<int, Arg>
      */
-    private function resolveNewArguments(
-        SwapMethodCallArguments $swapMethodCallArguments,
-        MethodCall|StaticCall $call
-    ): array {
-        if ($call->isFirstClassCallable()) {
-            return [];
-        }
+    private function resolveNewArguments(SwapMethodCallArguments $swapMethodCallArguments, array $args): array
+    {
         $newArguments = [];
         foreach ($swapMethodCallArguments->getOrder() as $oldPosition => $newPosition) {
-            if (! isset($call->getArgs()[$oldPosition])) {
+            if (! isset($args[$oldPosition])) {
                 continue;
             }
 
-            if (! isset($call->getArgs()[$newPosition])) {
+            if (! isset($args[$newPosition])) {
                 continue;
             }
 
-            $newArguments[$newPosition] = $call->getArgs()[$oldPosition];
+            $newArguments[$newPosition] = $args[$oldPosition];
         }
 
         return $newArguments;
