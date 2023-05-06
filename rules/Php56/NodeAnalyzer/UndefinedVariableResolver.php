@@ -123,7 +123,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        // when parent Node origNode is null, it must parent Node just reprinted, so it can't be verified
+        // when parent Node origNode is null, it means parent Node just reprinted, so it can't be verified
         // so skip it
         return ! $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node;
     }
