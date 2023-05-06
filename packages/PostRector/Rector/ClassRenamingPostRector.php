@@ -51,21 +51,21 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
             return null;
         }
 
-        $result = $this->classRenamer->renameNode($node, $oldToNewClasses);
+        $resultNode = $this->classRenamer->renameNode($node, $oldToNewClasses);
 
         if (! $this->rectorConfigProvider->shouldImportNames()) {
-            return $result;
+            return $resultNode;
         }
 
         $rootNode = $this->betterNodeFinder->findParentByTypes($node, [Namespace_::class, FileWithoutNamespace::class]);
         if (! $rootNode instanceof Node) {
-            return $result;
+            return $resultNode;
         }
 
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
         $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
 
-        return $result;
+        return $resultNode;
     }
 
     public function getRuleDefinition(): RuleDefinition

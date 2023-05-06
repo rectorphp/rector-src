@@ -109,8 +109,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $renames = $this->getClassLikeRenames($node, $expectedNamespace);
-        $this->renamedClassesDataCollector->addOldToNewClasses($renames);
+        $classLikeRenames = $this->getClassLikeRenames($node, $expectedNamespace);
+
+        $this->renamedClassesDataCollector->addOldToNewClasses($classLikeRenames);
 
         // to put declare_strict types on correct place
         if ($node instanceof FileWithoutNamespace) {
