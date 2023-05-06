@@ -117,9 +117,13 @@ final class UndefinedVariableResolver
         return $currentStmt instanceof Stmt && $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true;
     }
 
-    private function issetOrUnsetOrEmptyParent(Node $parentNode): bool
+    private function shouldSkipWithParent(Node $parentNode): bool
     {
-        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
+        if (in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true)) {
+            return true;
+        }
+
+        return ! $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE) instanceof Node;
     }
 
     private function isAsCoalesceLeftOrAssignOpCoalesceVar(Node $parentNode, Variable $variable): bool
@@ -150,7 +154,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->issetOrUnsetOrEmptyParent($parentNode)) {
+        if ($this->shouldSkipWithParent($parentNode)) {
             return true;
         }
 
