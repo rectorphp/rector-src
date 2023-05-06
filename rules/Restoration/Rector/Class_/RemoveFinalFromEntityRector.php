@@ -20,18 +20,12 @@ final class RemoveFinalFromEntityRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const ALLOWED_ANNOTATIONS = [
-        'Doctrine\ORM\Mapping\Entity',
-        'Doctrine\ORM\Mapping\Embeddable'
-    ];
+    private const ALLOWED_ANNOTATIONS = ['Doctrine\ORM\Mapping\Entity', 'Doctrine\ORM\Mapping\Embeddable'];
 
     /**
      * @var string[]
      */
-    private const ALLOWED_ATTRIBUTES = [
-        'Doctrine\ORM\Mapping\Entity',
-        'Doctrine\ORM\Mapping\Embeddable'
-    ];
+    private const ALLOWED_ATTRIBUTES = ['Doctrine\ORM\Mapping\Entity', 'Doctrine\ORM\Mapping\Embeddable'];
 
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
