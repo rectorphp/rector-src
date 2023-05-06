@@ -35,7 +35,7 @@ final class SimplifyForeachToArrayFilterRector extends AbstractRector
         private readonly ArrayFilterFactory $arrayFilterFactory,
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
         private readonly ReadExprAnalyzer $readExprAnalyzer,
-        private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly PhpVersionProvider $phpVersionProvider
     ) {
     }
 
@@ -128,7 +128,12 @@ CODE_SAMPLE
             return true;
         }
 
-        return $ifNode->elseifs !== [];
+        if ($ifNode->elseifs !== []) {
+            return true;
+        }
+
+        $type = $this->getType($foreach->expr);
+        return ! $type->isArray()->yes();
     }
 
     private function shouldSkipForeachKeyUsage(If_ $if, Expr $expr): bool
