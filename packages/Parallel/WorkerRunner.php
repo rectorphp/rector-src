@@ -173,7 +173,7 @@ final class WorkerRunner
 
     private function invalidateFile(?File $file): void
     {
-        if (!$file instanceof File) {
+        if (! $file instanceof File) {
             return;
         }
 
