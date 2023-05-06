@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php56\NodeAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
@@ -117,9 +118,9 @@ final class UndefinedVariableResolver
         return $currentStmt instanceof Stmt && $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true;
     }
 
-    private function issetOrUnsetOrEmptyParent(Node $parentNode): bool
+    private function shouldSkipWithParent(Node $parentNode): bool
     {
-        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
+        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class, Arg::class], true);
     }
 
     private function isAsCoalesceLeftOrAssignOpCoalesceVar(Node $parentNode, Variable $variable): bool
@@ -150,7 +151,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->issetOrUnsetOrEmptyParent($parentNode)) {
+        if ($this->shouldSkipWithParent($parentNode)) {
             return true;
         }
 
