@@ -20,7 +20,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Case_;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
@@ -118,19 +117,9 @@ final class UndefinedVariableResolver
         return $currentStmt instanceof Stmt && $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true;
     }
 
-    private function shouldSkipWithParent(Node $parentNode, Variable $variable): bool
+    private function issetOrUnsetOrEmptyParent(Node $parentNode): bool
     {
-        if (in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true)) {
-            return true;
-        }
-
-        $originalNode = $variable->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalNode instanceof Node) {
-            return false;
-        }
-
-        $originalNodeParent = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
-        return $originalNodeParent instanceof Catch_;
+        return in_array($parentNode::class, [Unset_::class, UnsetCast::class, Isset_::class, Empty_::class], true);
     }
 
     private function isAsCoalesceLeftOrAssignOpCoalesceVar(Node $parentNode, Variable $variable): bool
@@ -161,7 +150,7 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        if ($this->shouldSkipWithParent($parentNode, $variable)) {
+        if ($this->issetOrUnsetOrEmptyParent($parentNode)) {
             return true;
         }
 
