@@ -75,7 +75,7 @@ CODE_SAMPLE
         }
 
         if ($node->isFirstClassCallable()) {
-            return [];
+            return null;
         }
 
         $args = $node->getArgs();
