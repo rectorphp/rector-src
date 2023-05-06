@@ -129,8 +129,8 @@ final class UndefinedVariableResolver
             return false;
         }
 
-        $originalNodeParent = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
-        return $originalNodeParent instanceof Catch_;
+        $node = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
+        return $node instanceof Catch_;
     }
 
     private function isAsCoalesceLeftOrAssignOpCoalesceVar(Node $parentNode, Variable $variable): bool
