@@ -21,6 +21,7 @@ use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Symplify\EasyParallel\Enum\Action;
+use Symplify\EasyParallel\Enum\Content;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
@@ -78,7 +79,7 @@ final class WorkerRunner
             $systemErrorsCount = 0;
 
             /** @var string[] $filePaths */
-            $filePaths = $json[Bridge::FILES] ?? [];
+            $filePaths = $json[Content::FILES] ?? [];
 
             $errorAndFileDiffs = [];
             $systemErrors = [];
