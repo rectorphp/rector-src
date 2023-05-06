@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\Contract\Processor;
 
+use Rector\Core\Exception\ParsingException;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 
 interface FileProcessorInterface
@@ -14,9 +14,9 @@ interface FileProcessorInterface
     public function supports(File $file, Configuration $configuration): bool;
 
     /**
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
+     * @throws ParsingException
      */
-    public function process(File $file, Configuration $configuration): array;
+    public function process(File $file, Configuration $configuration): ?FileDiff;
 
     /**
      * @return string[]

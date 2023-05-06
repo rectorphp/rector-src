@@ -13,6 +13,7 @@ use Rector\Core\Application\FileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Exception\ParsingException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
@@ -21,7 +22,6 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
-use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Throwable;
@@ -48,24 +48,10 @@ final class PhpFileProcessor implements FileProcessorInterface
     ) {
     }
 
-    /**
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
-     */
-    public function process(File $file, Configuration $configuration): array
+    public function process(File $file, Configuration $configuration): ?FileDiff
     {
-        $systemErrorsAndFileDiffs = [
-            Bridge::SYSTEM_ERRORS => [],
-            Bridge::FILE_DIFFS => [],
-        ];
-
         // 1. parse files to nodes
-        $parsingSystemErrors = $this->parseFileAndDecorateNodes($file);
-        if ($parsingSystemErrors !== []) {
-            // we cannot process this file as the parsing and type resolving itself went wrong
-            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = $parsingSystemErrors;
-
-            return $systemErrorsAndFileDiffs;
-        }
+        $this->parseFileAndDecorateNodes($file);
 
         $fileHasChanged = false;
 
@@ -111,13 +97,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         }
 
         // return json here
-        $fileDiff = $file->getFileDiff();
-        if (! $fileDiff instanceof FileDiff) {
-            return $systemErrorsAndFileDiffs;
-        }
-
-        $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] = [$fileDiff];
-        return $systemErrorsAndFileDiffs;
+        return $file->getFileDiff();
     }
 
     public function supports(File $file, Configuration $configuration): bool
@@ -126,18 +106,15 @@ final class PhpFileProcessor implements FileProcessorInterface
         return in_array($filePathExtension, $configuration->getFileExtensions(), true);
     }
 
-    /**
-     * @return string[]
-     */
     public function getSupportedFileExtensions(): array
     {
         return ['php'];
     }
 
     /**
-     * @return SystemError[]
+     * @throws ParsingException
      */
-    private function parseFileAndDecorateNodes(File $file): array
+    private function parseFileAndDecorateNodes(File $file): void
     {
         $this->currentFileProvider->setFile($file);
         $this->notifyFile($file);
@@ -156,7 +133,8 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $analysedCodeException,
                 $file->getFilePath()
             );
-            return [$autoloadSystemError];
+
+            throw new ParsingException($autoloadSystemError);
         } catch (Throwable $throwable) {
             if ($this->rectorOutputStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
@@ -165,10 +143,8 @@ final class PhpFileProcessor implements FileProcessorInterface
             $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
             $systemError = new SystemError($throwable->getMessage(), $relativeFilePath, $throwable->getLine());
 
-            return [$systemError];
+            throw new ParsingException($systemError);
         }
-
-        return [];
     }
 
     private function printFile(File $file, Configuration $configuration): void

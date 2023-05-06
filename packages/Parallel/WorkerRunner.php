@@ -12,9 +12,9 @@ use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Exception\ParsingException;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
-use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -36,7 +36,6 @@ final class WorkerRunner
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
-        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
@@ -80,7 +79,7 @@ final class WorkerRunner
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
 
-            $errorAndFileDiffs = [];
+            $fileDiffs = [];
             $systemErrors = [];
 
             // 1. allow PHPStan to work with static reflection on provided files
@@ -93,16 +92,23 @@ final class WorkerRunner
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
-                    $errorAndFileDiffs = $this->processFile($file, $configuration, $errorAndFileDiffs);
+                    $fileDiff = $this->processFile($file, $configuration);
 
-                    if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
-                        $this->invalidateFile($file);
-                    } elseif (! $configuration->isDryRun()) {
+                    if ($fileDiff instanceof FileDiff) {
+                        array_unshift($fileDiffs, $fileDiff);
+                    }
+
+                    if (! $configuration->isDryRun()) {
                         $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
                     }
+                } catch (ParsingException $parsingException) {
+                    ++$systemErrorsCount;
+                    $systemErrors[] = $parsingException->getSystemError();
+
+                    $this->invalidateFile($file);
                 } catch (Throwable $throwable) {
                     ++$systemErrorsCount;
-                    $systemErrors = $this->collectSystemErrors($systemErrors, $throwable, $filePath);
+                    $systemErrors[] = $this->createSystemError($throwable, $filePath);
 
                     $this->invalidateFile($file);
                 }
@@ -116,7 +122,7 @@ final class WorkerRunner
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
-                    Bridge::FILE_DIFFS => $errorAndFileDiffs[Bridge::FILE_DIFFS] ?? [],
+                    Bridge::FILE_DIFFS => $fileDiffs,
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $systemErrors,
                     Bridge::SYSTEM_ERRORS_COUNT => $systemErrorsCount,
@@ -127,48 +133,37 @@ final class WorkerRunner
         $decoder->on(ReactEvent::ERROR, $handleErrorCallback);
     }
 
-    /**
-     * @param array{system_errors: SystemError[], file_diffs: FileDiff[]}|mixed[] $errorAndFileDiffs
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
-     */
-    private function processFile(File $file, Configuration $configuration, array $errorAndFileDiffs): array
+    private function processFile(File $file, Configuration $configuration): ?FileDiff
     {
         foreach ($this->fileProcessors as $fileProcessor) {
             if (! $fileProcessor->supports($file, $configuration)) {
                 continue;
             }
 
-            $currentErrorsAndFileDiffs = $fileProcessor->process($file, $configuration);
-            $errorAndFileDiffs = $this->arrayParametersMerger->merge(
-                $errorAndFileDiffs,
-                $currentErrorsAndFileDiffs
-            );
+            $fileDiff = $fileProcessor->process($file, $configuration);
+
+            if ($fileDiff instanceof FileDiff) {
+                return $fileDiff;
+            }
         }
 
-        return $errorAndFileDiffs;
+        return null;
     }
 
-    /**
-     * @param SystemError[] $systemErrors
-     * @return SystemError[]
-     */
-    private function collectSystemErrors(array $systemErrors, Throwable $throwable, string $filePath): array
+    private function createSystemError(Throwable $throwable, string $filePath): SystemError
     {
         $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
 
         if ($this->rectorConsoleOutputStyle->isDebug()) {
-            $systemErrors[] = new SystemError(
+            return new SystemError(
                 $errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(),
                 $filePath,
                 $throwable->getLine()
             );
-            return $systemErrors;
         }
 
         $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
-        $systemErrors[] = new SystemError($errorMessage, $filePath, $throwable->getLine());
-
-        return $systemErrors;
+        return new SystemError($errorMessage, $filePath, $throwable->getLine());
     }
 
     private function invalidateFile(?File $file): void

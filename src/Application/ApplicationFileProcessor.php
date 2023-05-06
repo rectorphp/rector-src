@@ -12,7 +12,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
-use Rector\Core\Util\ArrayParametersMerger;
+use Rector\Core\Exception\ParsingException;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -48,7 +48,6 @@ final class ApplicationFileProcessor
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileFactory $fileFactory,
         private readonly NodeScopeResolver $nodeScopeResolver,
-        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
@@ -124,24 +123,25 @@ final class ApplicationFileProcessor
         ];
 
         foreach ($files as $file) {
-            foreach ($this->fileProcessors as $fileProcessor) {
-                if (! $fileProcessor->supports($file, $configuration)) {
-                    continue;
+            try {
+                $fileDiff = $this->processFile($file, $configuration);
+
+                if ($fileDiff instanceof FileDiff) {
+                    array_unshift($systemErrorsAndFileDiffs[Bridge::FILE_DIFFS], $fileDiff);
                 }
 
-                $result = $fileProcessor->process($file, $configuration);
-                $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
-            }
+                if (! $configuration->isDryRun()) {
+                    $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
+                }
+            } catch (ParsingException $parsingException) {
+                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][] = $parsingException->getSystemError();
 
-            if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
                 $this->changedFilesDetector->invalidateFile($file->getFilePath());
-            } elseif (! $configuration->isDryRun()) {
-                $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
-            }
-
-            // progress bar +1
-            if ($shouldShowProgressBar) {
-                $this->rectorOutputStyle->progressAdvance();
+            } finally {
+                // progress bar +1
+                if ($shouldShowProgressBar) {
+                    $this->rectorOutputStyle->progressAdvance();
+                }
             }
         }
 
@@ -163,6 +163,23 @@ final class ApplicationFileProcessor
 
         $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
         $this->nodeScopeResolver->setAnalysedFiles($filePaths);
+    }
+
+    private function processFile(File $file, Configuration $configuration): ?FileDiff
+    {
+        foreach ($this->fileProcessors as $fileProcessor) {
+            if (! $fileProcessor->supports($file, $configuration)) {
+                continue;
+            }
+
+            $fileDiff = $fileProcessor->process($file, $configuration);
+
+            if ($fileDiff instanceof FileDiff) {
+                return $fileDiff;
+            }
+        }
+
+        return null;
     }
 
     /**
