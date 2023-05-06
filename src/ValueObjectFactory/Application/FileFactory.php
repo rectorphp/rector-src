@@ -6,7 +6,7 @@ namespace Rector\Core\ValueObjectFactory\Application;
 
 use Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Application\FileProcessor\ChainFileProcessor;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -16,13 +16,10 @@ use Rector\Core\ValueObject\Configuration;
  */
 final class FileFactory
 {
-    /**
-     * @param FileProcessorInterface[] $fileProcessors
-     */
     public function __construct(
         private readonly FilesFinder $filesFinder,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors,
+        private readonly ChainFileProcessor $chainFileProcessor,
     ) {
     }
 
@@ -60,14 +57,7 @@ final class FileFactory
      */
     private function resolveSupportedFileExtensions(Configuration $configuration): array
     {
-        $supportedFileExtensions = [];
-
-        foreach ($this->fileProcessors as $fileProcessor) {
-            $supportedFileExtensions = array_merge(
-                $supportedFileExtensions,
-                $fileProcessor->getSupportedFileExtensions()
-            );
-        }
+        $supportedFileExtensions = $this->chainFileProcessor->getSupportedFileExtensions();
 
         // basic PHP extensions
         $supportedFileExtensions = array_merge($supportedFileExtensions, $configuration->getFileExtensions());

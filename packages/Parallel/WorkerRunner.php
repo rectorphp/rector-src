@@ -9,9 +9,9 @@ use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\ApplicationFileProcessor;
+use Rector\Core\Application\FileProcessor\ChainFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ParsingException;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
@@ -32,9 +32,6 @@ final class WorkerRunner
      */
     private const RESULT = 'result';
 
-    /**
-     * @param FileProcessorInterface[] $fileProcessors
-     */
     public function __construct(
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
@@ -42,7 +39,7 @@ final class WorkerRunner
         private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors = [],
+        private readonly ChainFileProcessor $chainFileProcessor,
     ) {
     }
 
@@ -92,7 +89,7 @@ final class WorkerRunner
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
-                    $fileDiff = $this->processFile($file, $configuration);
+                    $fileDiff = $this->chainFileProcessor->process($file, $configuration);
 
                     if ($fileDiff instanceof FileDiff) {
                         array_unshift($fileDiffs, $fileDiff);
@@ -131,23 +128,6 @@ final class WorkerRunner
         });
 
         $decoder->on(ReactEvent::ERROR, $handleErrorCallback);
-    }
-
-    private function processFile(File $file, Configuration $configuration): ?FileDiff
-    {
-        foreach ($this->fileProcessors as $fileProcessor) {
-            if (! $fileProcessor->supports($file, $configuration)) {
-                continue;
-            }
-
-            $fileDiff = $fileProcessor->process($file, $configuration);
-
-            if ($fileDiff instanceof FileDiff) {
-                return $fileDiff;
-            }
-        }
-
-        return null;
     }
 
     private function createSystemError(Throwable $throwable, string $filePath): SystemError

@@ -7,11 +7,11 @@ namespace Rector\Core\Application;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
+use Rector\Core\Application\FileProcessor\ChainFileProcessor;
 use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ParsingException;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
@@ -38,9 +38,6 @@ final class ApplicationFileProcessor
      */
     private array $systemErrors = [];
 
-    /**
-     * @param FileProcessorInterface[] $fileProcessors
-     */
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
@@ -53,7 +50,7 @@ final class ApplicationFileProcessor
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors = [],
+        private readonly ChainFileProcessor $chainFileProcessor,
     ) {
     }
 
@@ -124,7 +121,7 @@ final class ApplicationFileProcessor
 
         foreach ($files as $file) {
             try {
-                $fileDiff = $this->processFile($file, $configuration);
+                $fileDiff = $this->chainFileProcessor->process($file, $configuration);
 
                 if ($fileDiff instanceof FileDiff) {
                     array_unshift($systemErrorsAndFileDiffs[Bridge::FILE_DIFFS], $fileDiff);
@@ -163,23 +160,6 @@ final class ApplicationFileProcessor
 
         $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
         $this->nodeScopeResolver->setAnalysedFiles($filePaths);
-    }
-
-    private function processFile(File $file, Configuration $configuration): ?FileDiff
-    {
-        foreach ($this->fileProcessors as $fileProcessor) {
-            if (! $fileProcessor->supports($file, $configuration)) {
-                continue;
-            }
-
-            $fileDiff = $fileProcessor->process($file, $configuration);
-
-            if ($fileDiff instanceof FileDiff) {
-                return $fileDiff;
-            }
-        }
-
-        return null;
     }
 
     /**
