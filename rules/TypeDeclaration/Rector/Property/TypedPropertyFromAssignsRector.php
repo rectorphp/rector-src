@@ -111,6 +111,15 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
+            return null;
+        }
+
+        // non-private property can be anything with not inline public configured
+        if (! $node->isPrivate() && ! $this->inlinePublic) {
+            return null;
+        }
+
         $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($node);
         if (! $inferredType instanceof Type) {
             return null;
@@ -121,23 +130,12 @@ CODE_SAMPLE
         }
 
         $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($node, $inferredType);
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY);
         if ($typeNode === null) {
             return null;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
-            return null;
-        }
-
-        // non-private property can be anything with not inline public configured
-        if (! $node->isPrivate() && ! $this->inlinePublic) {
-            return null;
-        }
-
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if ($inferredType instanceof UnionType) {
             $this->propertyTypeDecorator->decoratePropertyUnionType(
                 $inferredType,
