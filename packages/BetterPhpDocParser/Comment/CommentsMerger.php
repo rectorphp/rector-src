@@ -37,9 +37,6 @@ final class CommentsMerger
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, null);
     }
 
-    /**
-     * @api
-     */
     public function keepParent(Node $newNode, Node $oldNode): void
     {
         $parentNode = $oldNode->getAttribute(AttributeKey::PARENT_NODE);
@@ -58,9 +55,6 @@ final class CommentsMerger
         $newNode->setAttribute(AttributeKey::COMMENTS, $comments);
     }
 
-    /**
-     * @api
-     */
     public function keepChildren(Node $newNode, Node $oldNode): void
     {
         $childrenComments = $this->collectChildrenComments($oldNode);

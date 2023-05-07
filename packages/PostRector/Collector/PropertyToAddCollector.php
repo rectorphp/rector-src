@@ -64,9 +64,6 @@ final class PropertyToAddCollector implements NodeCollectorInterface
         $this->rectorChangeCollector->notifyNodeFileInfo($class);
     }
 
-    /**
-     * @api
-     */
     public function addPropertyWithoutConstructorToClass(
         string $propertyName,
         ?Type $propertyType,
