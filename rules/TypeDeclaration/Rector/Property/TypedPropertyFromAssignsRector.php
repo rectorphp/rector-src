@@ -12,7 +12,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -20,13 +19,14 @@ use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\TypedPropertyFromAssignsRectorTest
  */
-final class TypedPropertyFromAssignsRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface
+final class TypedPropertyFromAssignsRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @api
@@ -49,7 +49,6 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements All
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly VarTagRemover $varTagRemover,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
-        private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -102,12 +101,22 @@ CODE_SAMPLE
         return [Property::class];
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
     /**
      * @param Property $node
      */
     public function refactor(Node $node): ?Node
     {
         if (! $this->makePropertyTypedGuard->isLegal($node, $this->inlinePublic)) {
+            return null;
+        }
+
+        // non-private property can be anything with not inline public configured
+        if (! $node->isPrivate() && ! $this->inlinePublic) {
             return null;
         }
 
@@ -121,23 +130,12 @@ CODE_SAMPLE
         }
 
         $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($node, $inferredType);
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY);
         if ($typeNode === null) {
             return null;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
-            return null;
-        }
-
-        // non-private property can be anything with not inline public configured
-        if (! $node->isPrivate() && ! $this->inlinePublic) {
-            return null;
-        }
-
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         if ($inferredType instanceof UnionType) {
             $this->propertyTypeDecorator->decoratePropertyUnionType(
                 $inferredType,
@@ -176,4 +174,5 @@ CODE_SAMPLE
 
         return TypeCombinator::addNull($inferredType);
     }
+
 }
