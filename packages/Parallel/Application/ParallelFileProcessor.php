@@ -46,7 +46,15 @@ final class ParallelFileProcessor
 
     private ProcessPool|null $processPool = null;
 
-    private $processSpawner = null;
+    /**
+     * @var \Closure():void|null
+     */
+    private \Closure|null $processSpawner = null;
+
+    /**
+     * @var int[]
+     */
+    private array $processRunCounter = [];
 
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,
@@ -112,7 +120,6 @@ final class ParallelFileProcessor
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
 
         $workerCommandLineFactory = $this->workerCommandLineFactory;
-        $processRunCounter = [];
         $this->processSpawner = function(
         ) use (
             $workerCommandLineFactory,
@@ -127,8 +134,7 @@ final class ParallelFileProcessor
             $serverPort,
             $streamSelectLoop,
             $timeoutInSeconds,
-            $handleErrorCallable,
-            &$processRunCounter
+            $handleErrorCallable
         ): void {
 
             $processIdentifier = Random::generate();
@@ -153,8 +159,7 @@ final class ParallelFileProcessor
                     $postFileCallback,
                     &$systemErrorsCount,
                     &$reachedInternalErrorsCountLimit,
-                    $processIdentifier,
-                    &$processRunCounter
+                    $processIdentifier
                 ): void {
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
@@ -182,14 +187,16 @@ final class ParallelFileProcessor
                         $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
-                    if (!isset($processRunCounter[$processIdentifier])) {
-                        $processRunCounter[$processIdentifier] = 0;
+                    if (!isset($this->processRunCounter[$processIdentifier])) {
+                        $this->processRunCounter[$processIdentifier] = 0;
                     }
-                    if ($processRunCounter[$processIdentifier] >= $this->maxProcessIterations) {
+                    if ($this->processRunCounter[$processIdentifier] >= $this->maxProcessIterations) {
                         $this->processPool->quitProcess($processIdentifier);
-                        ($this->processSpawner)();
+                        if (is_callable($this->processSpawner)){
+                            ($this->processSpawner)();
+                        }
                     }
-                    $processRunCounter[$processIdentifier]++;
+                    $this->processRunCounter[$processIdentifier] = $this->processRunCounter[$processIdentifier] + 1;
                     $job = array_pop($jobs);
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
@@ -218,13 +225,11 @@ final class ParallelFileProcessor
             $this->processPool->attachProcess($processIdentifier, $parallelProcess);
         };
 
-        $processRunCounter = [];
-
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs, &$processRunCounter): void {
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
             $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
             $outEncoder = new Encoder($connection);
 
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder, &$processRunCounter): void {
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
                 $action = $data[ReactCommand::ACTION];
                 if ($action !== Action::HELLO) {
                     return;
