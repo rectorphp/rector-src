@@ -42,6 +42,8 @@ final class ParallelFileProcessor
      */
     private const SYSTEM_ERROR_LIMIT = 50;
 
+    private int $maxProcessIterations = 10;
+
     private ProcessPool|null $processPool = null;
 
     private $processSpawner = null;
@@ -183,7 +185,7 @@ final class ParallelFileProcessor
                     if (!isset($processRunCounter[$processIdentifier])) {
                         $processRunCounter[$processIdentifier] = 0;
                     }
-                    if ($processRunCounter[$processIdentifier] >= 2) {
+                    if ($processRunCounter[$processIdentifier] >= $this->maxProcessIterations) {
                         $this->processPool->quitProcess($processIdentifier);
                         ($this->processSpawner)();
                     }
