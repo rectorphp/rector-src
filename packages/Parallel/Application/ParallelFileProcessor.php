@@ -111,7 +111,7 @@ final class ParallelFileProcessor
 
         $workerCommandLineFactory = $this->workerCommandLineFactory;
         $processRunCounter = [];
-        $spawnNewProcess = function(
+        $this->processSpawner = function(
         ) use (
             $workerCommandLineFactory,
             &$systemErrors,
@@ -126,7 +126,6 @@ final class ParallelFileProcessor
             $streamSelectLoop,
             $timeoutInSeconds,
             $handleErrorCallable,
-            &$spawnNewProcess,
             &$processRunCounter
         ): void {
 
@@ -153,7 +152,6 @@ final class ParallelFileProcessor
                     &$systemErrorsCount,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
-                    $spawnNewProcess,
                     &$processRunCounter
                 ): void {
                     // decode arrays to objects
@@ -199,7 +197,7 @@ final class ParallelFileProcessor
                     }
                     if ($processRunCounter[$processIdentifier] >= 2) {
                         $this->processPool->quitProcess($processIdentifier);
-                        $spawnNewProcess();
+                        ($this->processSpawner)();
                     }
                     $processRunCounter[$processIdentifier]++;
                     $job = array_pop($jobs);
@@ -232,11 +230,11 @@ final class ParallelFileProcessor
 
         $processRunCounter = [];
 
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs, $spawnNewProcess, &$processRunCounter): void {
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs, &$processRunCounter): void {
             $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
             $outEncoder = new Encoder($connection);
 
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder, $spawnNewProcess, &$processRunCounter): void {
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder, &$processRunCounter): void {
                 $action = $data[ReactCommand::ACTION];
                 if ($action !== Action::HELLO) {
                     return;
@@ -277,7 +275,7 @@ final class ParallelFileProcessor
                 break;
             }
 
-            $spawnNewProcess();
+            ($this->processSpawner)();
         }
 
         $streamSelectLoop->run();
