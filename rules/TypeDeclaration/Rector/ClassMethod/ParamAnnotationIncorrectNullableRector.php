@@ -12,7 +12,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -21,20 +20,20 @@ use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
 use Rector\TypeDeclaration\NodeAnalyzer\ParamAnalyzer;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector\ParamAnnotationIncorrectNullableRectorTest
  */
-final class ParamAnnotationIncorrectNullableRector extends AbstractRector
+final class ParamAnnotationIncorrectNullableRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly TypeComparator $typeComparator,
         private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
-        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly ParamAnalyzer $paramAnalyzer
     ) {
     }
@@ -88,16 +87,17 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class];
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
     /**
      * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
         if ($node->getParams() === []) {
-            return null;
-        }
-
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
             return null;
         }
 

@@ -9,25 +9,24 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpDocParser\PhpDocInfoAnalyzer;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\VarAnnotationIncorrectNullableRectorTest
  */
-final class VarAnnotationIncorrectNullableRector extends AbstractRector
+final class VarAnnotationIncorrectNullableRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocNullableTypeHelper $phpDocNullableTypeHelper,
         private readonly PhpDocNestedAnnotationGuard $phpDocNestedAnnotationGuard,
-        private readonly PhpVersionProvider $phpVersionProvider,
         private readonly PhpDocInfoAnalyzer $phpDocInfoAnalyzer,
     ) {
     }
@@ -71,16 +70,17 @@ CODE_SAMPLE
         return [Property::class];
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::TYPED_PROPERTIES;
+    }
+
     /**
      * @param Property $node
      */
     public function refactor(Node $node): ?Node
     {
         if (count($node->props) !== 1) {
-            return null;
-        }
-
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::TYPED_PROPERTIES)) {
             return null;
         }
 
