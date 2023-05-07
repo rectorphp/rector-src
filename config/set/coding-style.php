@@ -12,7 +12,6 @@ use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\ClassMethod\RemoveDoubleUnderscoreInMethodNameRector;
 use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
@@ -48,7 +47,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->rules([
         SeparateMultiUseImportsRector::class,
-        RemoveDoubleUnderscoreInMethodNameRector::class,
         PostIncDecToPreIncDecRector::class,
         UnSpreadOperatorRector::class,
         NewlineAfterStatementRector::class,
