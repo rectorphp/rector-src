@@ -139,6 +139,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if (!$foreach->stmts[0] instanceof If_) {
+            return true;
+        }
+
         $nextNode = $foreach->getAttribute(AttributeKey::NEXT_NODE);
         if (! $nextNode instanceof Node) {
             return true;
@@ -149,7 +153,6 @@ CODE_SAMPLE
         }
 
         $returnExpression = $nextNode->expr;
-
         if (! $returnExpression instanceof Expr) {
             return true;
         }
@@ -163,7 +166,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $foreach->stmts[0] instanceof If_;
+        return false;
     }
 
     private function shouldSkipIf(If_ $if): bool
