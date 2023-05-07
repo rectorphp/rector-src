@@ -110,7 +110,6 @@ final class ParallelFileProcessor
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
 
         $workerCommandLineFactory = $this->workerCommandLineFactory;
-        $processPool = $this->processPool;
         $processRunCounter = [];
         $spawnNewProcess = function(
         ) use (
@@ -127,7 +126,6 @@ final class ParallelFileProcessor
             $streamSelectLoop,
             $timeoutInSeconds,
             $handleErrorCallable,
-            $processPool,
             &$spawnNewProcess,
             &$processRunCounter
         ): void {
@@ -155,7 +153,6 @@ final class ParallelFileProcessor
                     &$systemErrorsCount,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
-                    $processPool,
                     $spawnNewProcess,
                     &$processRunCounter
                 ): void {
@@ -178,11 +175,11 @@ final class ParallelFileProcessor
                     $systemErrorsCount += $json[Bridge::SYSTEM_ERRORS_COUNT];
                     if ($systemErrorsCount >= self::SYSTEM_ERROR_LIMIT) {
                         $reachedInternalErrorsCountLimit = true;
-                        $processPool->quitAll();
+                        $this->processPool->quitAll();
                     }
 
                     if ($jobs === []) {
-                        $processPool->quitProcess($processIdentifier);
+                        $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
 //                    file_put_contents('/work/sandbox/test.log',
@@ -200,8 +197,8 @@ final class ParallelFileProcessor
                     if (!isset($processRunCounter[$processIdentifier])) {
                         $processRunCounter[$processIdentifier] = 0;
                     }
-                    if ($processRunCounter[$processIdentifier] > 10) {
-                        $processPool->quitProcess($processIdentifier);
+                    if ($processRunCounter[$processIdentifier] >= 2) {
+                        $this->processPool->quitProcess($processIdentifier);
                         $spawnNewProcess();
                     }
                     $processRunCounter[$processIdentifier]++;
@@ -216,8 +213,8 @@ final class ParallelFileProcessor
                 $handleErrorCallable,
 
                 // 3. callable on exit
-                function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier, $processPool): void {
-                    $processPool->tryQuitProcess($processIdentifier);
+                function ($exitCode, string $stdErr) use (&$systemErrors, $processIdentifier): void {
+                    $this->processPool->tryQuitProcess($processIdentifier);
                     if ($exitCode === Command::SUCCESS) {
                         return;
                     }
@@ -230,7 +227,7 @@ final class ParallelFileProcessor
                 }
             );
 
-            $processPool->attachProcess($processIdentifier, $parallelProcess);
+            $this->processPool->attachProcess($processIdentifier, $parallelProcess);
         };
 
         $processRunCounter = [];
