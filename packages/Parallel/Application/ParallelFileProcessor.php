@@ -180,18 +180,6 @@ final class ParallelFileProcessor
                         $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
-//                    file_put_contents('/work/sandbox/test.log',
-//                        PHP_EOL.`####`.var_export([
-//                            'call onData',
-//                            'getmypid()'=>getmypid(),
-//                            '$processIdentifier'=>
-//                                $processIdentifier,
-//                            '$processRunCounter[$processIdentifier]' => $processRunCounter[$processIdentifier],
-//                            'count($jobs)'=>
-//                                count($jobs),
-//                        ],true),
-//                        FILE_APPEND);
-
                     if (!isset($processRunCounter[$processIdentifier])) {
                         $processRunCounter[$processIdentifier] = 0;
                     }
@@ -241,18 +229,6 @@ final class ParallelFileProcessor
                 }
 
                 $processIdentifier = $data[Option::PARALLEL_IDENTIFIER];
-
-                //var_dump($jobs);
-
-//                file_put_contents('/work/sandbox/test.log',
-//                    PHP_EOL.`####`.var_export([
-//                        'onData',
-//                        'getmypid()'=>getmypid(),
-//                        '$processRunCounter[$processIdentifier]' => $processRunCounter[$processIdentifier],
-//                        '$processIdentifier'=>
-//                            $processIdentifier,
-//                    ],true),
-//                    FILE_APPEND);
                 $parallelProcess = $this->processPool->getProcess($processIdentifier);
                 $parallelProcess->bindConnection($inDecoder, $outEncoder);
 
