@@ -1,4 +1,4 @@
-# 419 Rules Overview
+# 418 Rules Overview
 
 <br>
 
@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (77)
 
-- [CodingStyle](#codingstyle) (39)
+- [CodingStyle](#codingstyle) (38)
 
 - [Compatibility](#compatibility) (1)
 
@@ -2121,51 +2121,6 @@ Refactor `func_get_args()` in to a variadic param
 +function run(...$args)
  {
 -    $args = \func_get_args();
- }
-```
-
-<br>
-
-### InlineSimplePropertyAnnotationRector
-
-Inline simple `@var` annotations (or other annotations) when they are the only thing in the phpdoc
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector`](../rules/CodingStyle/Rector/Property/InlineSimplePropertyAnnotationRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\CodingStyle\Rector\Property\InlineSimplePropertyAnnotationRector;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(InlineSimplePropertyAnnotationRector::class, [
-        'var',
-        'phpstan-var',
-    ]);
-};
-```
-
-↓
-
-```diff
- final class SomeClass
- {
--    /**
--     * @phpstan-var string
--     */
-+    /** @phpstan-var string */
-     private const TEXT = 'text';
-
--    /**
--     * @var DateTime[]
--     */
-+    /** @var DateTime[] */
-     private ?array $dateTimes;
  }
 ```
 
