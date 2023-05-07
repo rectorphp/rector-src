@@ -73,7 +73,6 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $leftStaticType = $this->getType($node->left);
-        $rightStaticType = $this->getType($node->right);
 
         // objects can be different by content
         if ($leftStaticType instanceof ObjectType) {
@@ -84,6 +83,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $rightStaticType = $this->getType($node->right);
         if ($rightStaticType instanceof MixedType) {
             return null;
         }
