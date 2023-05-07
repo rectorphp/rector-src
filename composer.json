@@ -42,6 +42,7 @@
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
+        "brianium/paratest": "^7.1",
         "cweagans/composer-patches": "^1.7.2",
         "icanhazstring/composer-unused": "^0.8.5",
         "myclabs/php-enum": "^1.8.4",
@@ -118,7 +119,7 @@
             "@check-cs",
             "@phpstan",
             "@docs",
-            "phpunit"
+            "paratest"
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
