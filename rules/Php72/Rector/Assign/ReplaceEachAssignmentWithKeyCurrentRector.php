@@ -12,11 +12,10 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
-use PhpParser\Node\Stmt\While_;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -31,11 +30,6 @@ final class ReplaceEachAssignmentWithKeyCurrentRector extends AbstractRector imp
      */
     private const KEY = 'key';
 
-    public function __construct(
-        private readonly NodesToAddCollector $nodesToAddCollector
-    ) {
-    }
-
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NO_EACH_OUTSIDE_LOOP;
@@ -47,15 +41,18 @@ final class ReplaceEachAssignmentWithKeyCurrentRector extends AbstractRector imp
             new CodeSample(
                 <<<'CODE_SAMPLE'
 $array = ['b' => 1, 'a' => 2];
+
 $eachedArray = each($array);
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 $array = ['b' => 1, 'a' => 2];
+
 $eachedArray[1] = current($array);
 $eachedArray['value'] = current($array);
 $eachedArray[0] = key($array);
 $eachedArray['key'] = key($array);
+
 next($array);
 CODE_SAMPLE
             ),
@@ -67,20 +64,26 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [Expression::class];
     }
 
     /**
-     * @param Assign $node
+     * @param Expression $node
+     * @return Stmt[]|null
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?array
     {
-        if ($this->shouldSkip($node)) {
+        if (! $node->expr instanceof Assign) {
+            return null;
+        }
+
+        $assign = $node->expr;
+        if ($this->shouldSkip($assign)) {
             return null;
         }
 
         /** @var FuncCall $eachFuncCall */
-        $eachFuncCall = $node->expr;
+        $eachFuncCall = $assign->expr;
 
         if (! isset($eachFuncCall->args[0])) {
             return null;
@@ -92,13 +95,9 @@ CODE_SAMPLE
 
         $eachedVariable = $eachFuncCall->args[0]->value;
 
-        $assignVariable = $node->var;
+        $assignVariable = $assign->var;
 
-        $newNodes = $this->createNewNodes($assignVariable, $eachedVariable);
-        $this->nodesToAddCollector->addNodesAfterNode($newNodes, $node);
-        $this->removeNode($node);
-
-        return null;
+        return $this->createNewStmts($assignVariable, $eachedVariable);
     }
 
     private function shouldSkip(Assign $assign): bool
@@ -111,31 +110,23 @@ CODE_SAMPLE
             return true;
         }
 
-        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof While_) {
-            return true;
-        }
-
-        // skip assign to List
-        if (! $parentNode instanceof Assign) {
-            return false;
-        }
-
-        return $parentNode->var instanceof List_;
+        return $assign->var instanceof List_;
     }
 
     /**
-     * @return array<Assign|FuncCall>
+     * @return Stmt[]
      */
-    private function createNewNodes(Expr $assignVariable, Expr $eachedVariable): array
+    private function createNewStmts(Expr $assignVariable, Expr $eachedVariable): array
     {
-        return [
+        $exprs = [
             $this->createDimFetchAssignWithFuncCall($assignVariable, $eachedVariable, 1, 'current'),
             $this->createDimFetchAssignWithFuncCall($assignVariable, $eachedVariable, 'value', 'current'),
             $this->createDimFetchAssignWithFuncCall($assignVariable, $eachedVariable, 0, self::KEY),
             $this->createDimFetchAssignWithFuncCall($assignVariable, $eachedVariable, self::KEY, self::KEY),
             $this->nodeFactory->createFuncCall('next', [new Arg($eachedVariable)]),
         ];
+
+        return array_map(static fn(Expr $expr): Expression => new Expression($expr), $exprs);
     }
 
     private function createDimFetchAssignWithFuncCall(
