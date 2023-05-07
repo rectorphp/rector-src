@@ -139,7 +139,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$foreach->stmts[0] instanceof If_) {
+        if (! $foreach->stmts[0] instanceof If_) {
             return true;
         }
 

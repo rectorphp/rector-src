@@ -174,5 +174,4 @@ CODE_SAMPLE
 
         return TypeCombinator::addNull($inferredType);
     }
-
 }

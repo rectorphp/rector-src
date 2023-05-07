@@ -1,4 +1,4 @@
-# 420 Rules Overview
+# 419 Rules Overview
 
 <br>
 
@@ -6,7 +6,7 @@
 
 - [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (78)
+- [CodeQuality](#codequality) (77)
 
 - [CodingStyle](#codingstyle) (39)
 
@@ -1400,23 +1400,6 @@ Changes if/else for same value as assign to ternary
 +        $this->arrayBuilt[][$key] = empty($value) ? true : $value;
      }
  }
-```
-
-<br>
-
-### SimplifyIfExactValueReturnValueRector
-
-Changes compared to value and return of expr to direct return
-
-- class: [`Rector\CodeQuality\Rector\If_\SimplifyIfExactValueReturnValueRector`](../rules/CodeQuality/Rector/If_/SimplifyIfExactValueReturnValueRector.php)
-
-```diff
- $value = 'something';
--if ($value === 52) {
--    return 52;
--}
--
- return $value;
 ```
 
 <br>
@@ -5398,11 +5381,13 @@ Replace `each()` assign outside loop
 
 ```diff
  $array = ['b' => 1, 'a' => 2];
+
 -$eachedArray = each($array);
 +$eachedArray[1] = current($array);
 +$eachedArray['value'] = current($array);
 +$eachedArray[0] = key($array);
 +$eachedArray['key'] = key($array);
++
 +next($array);
 ```
 
