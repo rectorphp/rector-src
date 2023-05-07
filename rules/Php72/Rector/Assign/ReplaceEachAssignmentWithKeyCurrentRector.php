@@ -126,9 +126,7 @@ CODE_SAMPLE
             $this->nodeFactory->createFuncCall('next', [new Arg($eachedVariable)]),
         ];
 
-        return array_map(static function (Expr $expr): Expression {
-            return new Expression($expr);
-        }, $exprs);
+        return array_map(static fn(Expr $expr): Expression => new Expression($expr), $exprs);
     }
 
     private function createDimFetchAssignWithFuncCall(
