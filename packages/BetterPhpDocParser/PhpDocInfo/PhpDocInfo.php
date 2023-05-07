@@ -330,11 +330,6 @@ final class PhpDocInfo
         return $this->betterTokenIterator->count() === 0;
     }
 
-    public function makeSingleLined(): void
-    {
-        $this->isSingleLine = true;
-    }
-
     public function isSingleLine(): bool
     {
         return $this->isSingleLine;

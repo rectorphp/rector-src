@@ -139,7 +139,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (!$foreach->stmts[0] instanceof If_) {
+        if (! $foreach->stmts[0] instanceof If_) {
             return true;
         }
 
@@ -162,11 +162,8 @@ CODE_SAMPLE
         }
 
         $foreachValueStaticType = $this->getType($foreach->expr);
-        if ($foreachValueStaticType instanceof ObjectType) {
-            return true;
-        }
 
-        return false;
+        return $foreachValueStaticType instanceof ObjectType;
     }
 
     private function shouldSkipIf(If_ $if): bool
