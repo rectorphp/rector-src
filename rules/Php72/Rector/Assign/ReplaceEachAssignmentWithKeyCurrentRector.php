@@ -12,10 +12,9 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
-use PhpParser\Node\Stmt\While_;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -67,20 +66,25 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [Expression::class];
     }
 
     /**
-     * @param Assign $node
+     * @param Expression $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        if (! $node->expr instanceof Assign) {
+            return null;
+        }
+
+        $assign = $node->expr;
+        if ($this->shouldSkip($assign)) {
             return null;
         }
 
         /** @var FuncCall $eachFuncCall */
-        $eachFuncCall = $node->expr;
+        $eachFuncCall = $assign->expr;
 
         if (! isset($eachFuncCall->args[0])) {
             return null;
@@ -92,11 +96,11 @@ CODE_SAMPLE
 
         $eachedVariable = $eachFuncCall->args[0]->value;
 
-        $assignVariable = $node->var;
+        $assignVariable = $assign->var;
 
         $newNodes = $this->createNewNodes($assignVariable, $eachedVariable);
-        $this->nodesToAddCollector->addNodesAfterNode($newNodes, $node);
-        $this->removeNode($node);
+        $this->nodesToAddCollector->addNodesAfterNode($newNodes, $assign);
+        $this->removeNode($assign);
 
         return null;
     }
@@ -111,17 +115,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof While_) {
-            return true;
-        }
-
-        // skip assign to List
-        if (! $parentNode instanceof Assign) {
-            return false;
-        }
-
-        return $parentNode->var instanceof List_;
+        return $assign->var instanceof List_;
     }
 
     /**
