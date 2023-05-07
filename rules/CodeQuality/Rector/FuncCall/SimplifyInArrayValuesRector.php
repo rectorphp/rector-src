@@ -59,15 +59,11 @@ final class SimplifyInArrayValuesRector extends AbstractRector
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg) {
-            return null;
-        }
-
-        $node->args[1] = $innerFunCall->args[0];
+        $node->args[1] = $innerFunCall->getArgs()[0];
 
         return $node;
     }

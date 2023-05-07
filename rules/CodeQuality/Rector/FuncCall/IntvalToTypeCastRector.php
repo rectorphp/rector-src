@@ -74,14 +74,10 @@ CODE_SAMPLE
             }
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg) {
-            return null;
-        }
-
-        return new Int_($node->args[0]->value);
+        return new Int_($node->getArgs()[0]->value);
     }
 }

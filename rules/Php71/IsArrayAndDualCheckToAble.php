@@ -55,15 +55,13 @@ final class IsArrayAndDualCheckToAble
             return null;
         }
 
-        if (! isset($funcCallExpr->args[0])) {
+        if (! isset($funcCallExpr->getArgs()[0])) {
             return null;
         }
 
-        if (! $funcCallExpr->args[0] instanceof Arg) {
-            return null;
-        }
+        $firstArg = $funcCallExpr->getArgs()[0];
 
-        $firstExprNode = $funcCallExpr->args[0]->value;
+        $firstExprNode = $firstArg->value;
         if (! $this->nodeComparator->areNodesEqual($instanceofExpr->expr, $firstExprNode)) {
             return null;
         }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php72\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Type\ObjectType;
@@ -66,11 +65,7 @@ CODE_SAMPLE
         }
 
         $incompleteClassObjectType = new ObjectType('__PHP_Incomplete_Class');
-        if (! isset($node->args[0])) {
-            return null;
-        }
-
-        if (! $node->args[0] instanceof Arg) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
@@ -78,7 +73,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isObjectType($node->args[0]->value, $incompleteClassObjectType)) {
+        $firstArg = $node->getArgs()[0];
+
+        if (! $this->isObjectType($firstArg->value, $incompleteClassObjectType)) {
             return null;
         }
 
