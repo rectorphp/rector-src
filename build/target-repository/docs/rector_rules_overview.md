@@ -1985,6 +1985,31 @@ Type and name of catch exception should match
 
 <br>
 
+### CleanupUnneededNullsafeOperatorRector
+
+Cleanup unneeded nullsafe operator
+
+- class: [`Rector\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodingStyle/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
+
+```diff
+ class HelloWorld {
+     public function getString(): string
+     {
+          return 'hello world';
+     }
+ }
+
+ public function get(): HelloWorld
+ {
+      return new HelloWorld();
+ }
+
+-echo $this->get()?->getHelloWorld();
++echo $this->get()->getHelloWorld();
+```
+
+<br>
+
 ### ConsistentImplodeRector
 
 Changes various implode forms to consistent one
@@ -2351,26 +2376,6 @@ return static function (RectorConfig $rectorConfig): void {
      {
 -        $this->assertEquals('a', 'a');
 +        self::assertEquals('a', 'a');
-     }
- }
-```
-
-<br>
-
-### RemoveDoubleUnderscoreInMethodNameRector
-
-Non-magic PHP object methods cannot start with "__"
-
-- class: [`Rector\CodingStyle\Rector\ClassMethod\RemoveDoubleUnderscoreInMethodNameRector`](../rules/CodingStyle/Rector/ClassMethod/RemoveDoubleUnderscoreInMethodNameRector.php)
-
-```diff
- class SomeClass
- {
--    public function __getName($anotherObject)
-+    public function getName($anotherObject)
-     {
--        $anotherObject->__getSurname();
-+        $anotherObject->getSurname();
      }
  }
 ```
