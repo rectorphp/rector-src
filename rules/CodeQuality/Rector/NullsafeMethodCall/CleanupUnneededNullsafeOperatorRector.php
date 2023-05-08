@@ -47,7 +47,7 @@ function get(): HelloWorld
      return new HelloWorld();
 }
 
-echo get()?->getHelloWorld();
+echo get()?->getString();
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
@@ -63,7 +63,7 @@ function get(): HelloWorld
      return new HelloWorld();
 }
 
-echo get()->getHelloWorld();
+echo get()->getString();
 CODE_SAMPLE
                 ),
             ]

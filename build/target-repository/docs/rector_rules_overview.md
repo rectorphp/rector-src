@@ -547,8 +547,8 @@ Cleanup unneeded nullsafe operator
       return new HelloWorld();
  }
 
--echo get()?->getHelloWorld();
-+echo get()->getHelloWorld();
+-echo get()?->getString();
++echo get()->getString();
 ```
 
 <br>
