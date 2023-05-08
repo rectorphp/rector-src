@@ -547,8 +547,8 @@ Cleanup unneeded nullsafe operator
       return new HelloWorld();
  }
 
--echo $this->get()?->getHelloWorld();
-+echo $this->get()->getHelloWorld();
+-echo get()?->getHelloWorld();
++echo get()->getHelloWorld();
 ```
 
 <br>
