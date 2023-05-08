@@ -45,7 +45,7 @@ public function get(): HelloWorld
      return new HelloWorld();
 }
 
-echo $this->get()?->getHelloWorld();
+echo get()?->getHelloWorld();
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
@@ -61,7 +61,7 @@ public function get(): HelloWorld
      return new HelloWorld();
 }
 
-echo $this->get()->getHelloWorld();
+echo get()->getHelloWorld();
 CODE_SAMPLE
                 ),
             ]
