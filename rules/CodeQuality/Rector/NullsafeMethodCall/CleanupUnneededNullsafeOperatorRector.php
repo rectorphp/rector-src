@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\NullsafeMethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Identifier;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
@@ -81,7 +82,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->var instanceof MethodCall) {
+        if (! $node->name instanceof Identifier) {
             return null;
         }
 
@@ -91,10 +92,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // Remove not needed Nullsafe for method call.
-        $node = $node->var;
-
-        return $node;
+        return new MethodCall($node->var, $node->name, $node->args);
     }
 
     public function provideMinPhpVersion(): int

@@ -12,9 +12,9 @@ class Skip
 
 function get(): ?Replace
 {
-    return new Replace();
+    return (rand(0, 1)) ? new Replace() : null;
 }
 
-echo get()?->getReplace();
+echo get()?->getString();
 
 ?>
