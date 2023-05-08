@@ -81,8 +81,9 @@ CODE_SAMPLE
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $node->if;
+
         $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
@@ -143,8 +144,7 @@ CODE_SAMPLE
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
 
-        $firstExpr = $isObjectFuncCall->getArgs()[0]
-->value;
+        $firstExpr = $isObjectFuncCall->getArgs()[0]->value;
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $ternary->if;

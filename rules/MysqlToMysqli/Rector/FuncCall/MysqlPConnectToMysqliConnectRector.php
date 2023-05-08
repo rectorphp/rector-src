@@ -71,10 +71,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $node->getArgs()[0];
+        $args = $node->getArgs();
+        $firstArg = $args[0];
 
         $node->name = new Name('mysqli_connect');
-        $node->args[0]->value = $this->joinStringWithNode('p:', $firstArg->value);
+
+        $args[0]->value = $this->joinStringWithNode('p:', $firstArg->value);
 
         return $node;
     }
