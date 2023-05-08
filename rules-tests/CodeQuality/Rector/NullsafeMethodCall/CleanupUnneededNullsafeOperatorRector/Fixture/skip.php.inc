@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
 
-class Skip
+class SkipNullable
 {
     public function getString(): string
     {
@@ -10,11 +10,11 @@ class Skip
     }
 }
 
-function get(): ?Replace
+function run(): ?SkipNullable
 {
-    return (rand(0, 1)) ? new Replace() : null;
+    return (rand(0, 1)) ? new SkipNullable() : null;
 }
 
-echo get()?->getString();
+echo run()?->getString();
 
 ?>
