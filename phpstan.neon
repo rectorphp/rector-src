@@ -215,9 +215,6 @@ parameters:
             message: '#Instead of abstract class, use specific service with composition#'
             path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
 
-
-        - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
-
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 
@@ -298,7 +295,6 @@ parameters:
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
                 - rules/CodeQuality/Rector/PropertyFetch/ExplicitMethodCallOverMagicGetSetRector.php
-                - rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php
                 - rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
 
