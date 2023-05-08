@@ -76,10 +76,6 @@ CODE_SAMPLE
             return null;
         }
 
-        //        if (! isset($node->getArgs[0])) {
-        //            return null;
-        //        }
-
         $firstArg = $node->getArgs()[0];
 
         $double = new Double($firstArg->value);
