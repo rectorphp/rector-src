@@ -87,7 +87,7 @@ final class MultiDirnameRector extends AbstractRector implements MinPhpVersionIn
             return null;
         }
 
-        $args = $funcCall->args;
+        $args = $funcCall->getArgs();
         if (count($args) >= 3) {
             return null;
         }

@@ -210,17 +210,10 @@ parameters:
             paths:
                 - rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php
 
-        # waits for phpstan upgrade to php-parser 4.13
-        - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
-        - '#(.*?), array<PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\> given#'
-
         # share configuration to avoid duplication in 5 rules
         -
             message: '#Instead of abstract class, use specific service with composition#'
             path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
-
-        # internal tag
-        - '#Unknown PHPDoc tag\: @phpstan\-rule#'
 
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'

@@ -64,8 +64,10 @@ final class ResourceReturnToObject
             return null;
         }
 
-        /** @var Expr $argResourceValue */
-        $argResourceValue = $funcCall->args[0]->value;
+        $firstArg = $funcCall->getArgs()[0];
+
+        $argResourceValue = $firstArg->value;
+
         return new Instanceof_($argResourceValue, new FullyQualified($objectInstanceCheck));
     }
 
@@ -74,8 +76,8 @@ final class ResourceReturnToObject
      */
     private function resolveArgValueType(FuncCall $funcCall, array $collectionFunctionToReturnObject): ?Type
     {
-        /** @var Expr $argResourceValue */
-        $argResourceValue = $funcCall->args[0]->value;
+        $argResourceValue = $funcCall->getArgs()[0]
+->value;
         $argValueType = $this->nodeTypeResolver->getType($argResourceValue);
 
         // if detected type is not FullyQualifiedObjectType, it still can be a resource to object, when:
@@ -194,8 +196,9 @@ final class ResourceReturnToObject
             return null;
         }
 
-        /** @var Expr $argResourceValue */
-        $argResourceValue = $funCall->args[0]->value;
+        $argResourceValue = $funCall->getArgs()[0]
+->value;
+
         /** @var Instanceof_ $instanceof */
         if (! $this->isInstanceOfObjectCheck($instanceof, $argResourceValue, $objectInstanceCheck)) {
             return null;
