@@ -18,7 +18,7 @@ function get(): ReplaceWithInvalidDoc
     return new ReplaceWithInvalidDoc();
 }
 
-echo get()?->getReplaceWithInvalidDoc();
+echo get()?->getString();
 
 ?>
 -----
@@ -42,6 +42,6 @@ function get(): ReplaceWithInvalidDoc
     return new ReplaceWithInvalidDoc();
 }
 
-echo get()->getReplaceWithInvalidDoc();
+echo get()->getString();
 
 ?>

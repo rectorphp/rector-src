@@ -15,7 +15,7 @@ function get(): Replace
     return new Replace();
 }
 
-echo get()?->getReplace();
+echo get()?->getString();
 
 ?>
 -----
@@ -36,6 +36,6 @@ function get(): Replace
     return new Replace();
 }
 
-echo get()->getReplace();
+echo get()->getString();
 
 ?>
