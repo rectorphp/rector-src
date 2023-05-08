@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Identifier;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -89,6 +90,11 @@ CODE_SAMPLE
         $returnNode = $this->returnStrictTypeAnalyzer->resolveMethodCallReturnNode($node->var);
 
         if (! $returnNode instanceof Node) {
+            return null;
+        }
+
+        $type = $this->getType($returnNode);
+        if (! $type instanceof FullyQualifiedObjectType) {
             return null;
         }
 
