@@ -83,7 +83,12 @@ CODE_SAMPLE
         $getClassFuncCallOrClassConstFetchClass = $node->if;
 
         $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
+<<<<<<< HEAD
             ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]->value
+=======
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
+->value
+>>>>>>> cad5fa0e7c ([cleanup] Make use of getArgs(), remove ignored from phpstan)
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
