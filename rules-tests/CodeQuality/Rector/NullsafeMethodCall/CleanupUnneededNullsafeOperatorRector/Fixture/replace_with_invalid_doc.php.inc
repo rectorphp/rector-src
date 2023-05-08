@@ -24,7 +24,7 @@ echo $this->get()?->getReplaceWithInvalidDoc();
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
 
 class ReplaceWithInvalidDoc
 {
