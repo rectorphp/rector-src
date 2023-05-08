@@ -211,15 +211,13 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return false;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
-            return false;
-        }
+        $firstArg = $funcCall->getArgs()[0];
 
-        return $this->nodeComparator->areNodesEqual($funcCall->args[0]->value, $needle);
+        return $this->nodeComparator->areNodesEqual($firstArg->value, $needle);
     }
 
     private function isHardCodedLNumberAndString(Expr $substrOffset, Expr $needle): bool

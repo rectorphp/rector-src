@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -76,16 +75,13 @@ CODE_SAMPLE
         }
 
         // change the node
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        $firstArg = $node->args[0];
-        if (! $firstArg instanceof Arg) {
-            return null;
-        }
-
+        $firstArg = $node->getArgs()[0];
         $firstArgValue = $firstArg->value;
+
         if ($firstArgValue instanceof ArrowFunction) {
             return $firstArgValue->expr;
         }

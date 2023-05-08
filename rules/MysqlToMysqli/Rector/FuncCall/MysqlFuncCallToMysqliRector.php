@@ -73,19 +73,16 @@ CODE_SAMPLE
             return $node;
         }
 
-        if ($this->isName(
-            $node,
-            'mysql_list_fields'
-        ) && $node->args[0] instanceof Arg && $node->args[1] instanceof Arg) {
+        if ($this->isName($node, 'mysql_list_fields')) {
             $node->name = new Name(self::MYSQLI_QUERY);
-            $node->args[0]->value = $this->joinStringWithNode('SHOW COLUMNS FROM', $node->args[1]->value);
+            $node->args[0]->value = $this->joinStringWithNode('SHOW COLUMNS FROM', $node->getArgs()[1]->value);
 
             unset($node->args[1]);
 
             return $node;
         }
 
-        if ($this->isName($node, 'mysql_list_tables') && $node->args[0] instanceof Arg) {
+        if ($this->isName($node, 'mysql_list_tables')) {
             $node->name = new Name(self::MYSQLI_QUERY);
             $node->args[0]->value = $this->joinStringWithNode('SHOW TABLES FROM', $node->args[0]->value);
 
@@ -97,32 +94,24 @@ CODE_SAMPLE
 
     private function processMysqlCreateDb(FuncCall $funcCall): ?FuncCall
     {
-        if (! isset($funcCall->args[0])) {
-            return null;
-        }
-
-        if (! $funcCall->args[0] instanceof Arg) {
+        if (! isset($funcCall->getArgs()[0])) {
             return null;
         }
 
         $funcCall->name = new Name(self::MYSQLI_QUERY);
-        $funcCall->args[0]->value = $this->joinStringWithNode('CREATE DATABASE', $funcCall->args[0]->value);
+        $funcCall->args[0]->value = $this->joinStringWithNode('CREATE DATABASE', $funcCall->getArgs()[0]->value);
 
         return $funcCall;
     }
 
     private function processMysqlDropDb(FuncCall $funcCall): ?FuncCall
     {
-        if (! isset($funcCall->args[0])) {
-            return null;
-        }
-
-        if (! $funcCall->args[0] instanceof Arg) {
+        if (! isset($funcCall->getArgs()[0])) {
             return null;
         }
 
         $funcCall->name = new Name(self::MYSQLI_QUERY);
-        $funcCall->args[0]->value = $this->joinStringWithNode('DROP DATABASE', $funcCall->args[0]->value);
+        $funcCall->args[0]->value = $this->joinStringWithNode('DROP DATABASE', $funcCall->getArgs()[0]->value);
 
         return $funcCall;
     }

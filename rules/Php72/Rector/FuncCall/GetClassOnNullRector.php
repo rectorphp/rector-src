@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php72\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
@@ -175,22 +174,19 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! isset($funcCall->args[0])) {
-            return false;
-        }
-
-        if (! $funcCall->args[0] instanceof Arg) {
+        if (! isset($funcCall->getArgs()[0])) {
             return false;
         }
 
         if ($this->nodeComparator->areNodesEqual(
             $ternary->cond->left,
-            $funcCall->args[0]->value
+            $funcCall->getArgs()[0]
+                ->value
         ) && $this->valueResolver->isNull($ternary->cond->right)) {
             return true;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->args[0]->value)) {
+        if (! $this->nodeComparator->areNodesEqual($ternary->cond->right, $funcCall->getArgs()[0]->value)) {
             return false;
         }
 

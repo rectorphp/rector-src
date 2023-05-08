@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\New_;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -75,15 +74,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->args[0])) {
+            if (! isset($node->getArgs()[0])) {
                 return null;
             }
 
-            if (! $node->args[0] instanceof Arg) {
-                return null;
-            }
+            $firstArgValue = $node->getArgs()[0]
+->value;
 
-            $firstArgValue = $node->args[0]->value;
             if (! $this->valueResolver->isValue($firstArgValue, $newArgToMethodCall->getValue())) {
                 continue;
             }

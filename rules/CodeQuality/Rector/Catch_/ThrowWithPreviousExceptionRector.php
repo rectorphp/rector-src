@@ -137,18 +137,18 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($new->args[0])) {
+        if (! isset($new->getArgs()[0])) {
             // get previous message
             $new->args[0] = new Arg(new MethodCall($catchedThrowableVariable, 'getMessage'));
         }
 
-        if (! isset($new->args[1])) {
+        if (! isset($new->getArgs()[1])) {
             // get previous code
             $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
         }
 
-        /** @var Arg $arg1 */
-        $arg1 = $new->args[1];
+        $arg1 = $new->getArgs()[1];
+
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
             $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
             $new->args[$exceptionArgumentPosition] = $arg1;

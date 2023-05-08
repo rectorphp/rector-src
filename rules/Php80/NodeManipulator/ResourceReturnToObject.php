@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\NodeManipulator;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
@@ -223,11 +222,6 @@ final class ResourceReturnToObject
             return true;
         }
 
-        if (! isset($funcCall->args[0])) {
-            return true;
-        }
-
-        $argResource = $funcCall->args[0];
-        return ! $argResource instanceof Arg;
+        return ! isset($funcCall->getArgs()[0]);
     }
 }

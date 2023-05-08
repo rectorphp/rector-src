@@ -82,7 +82,8 @@ CODE_SAMPLE
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $node->if;
         $firstExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
+->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
@@ -98,7 +99,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! isset($ternary->cond->args[0])) {
+        if (! isset($ternary->cond->getArgs()[0])) {
             return true;
         }
 
@@ -142,27 +143,20 @@ CODE_SAMPLE
     {
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
-        $firstExpr = $isObjectFuncCall->args[0]->value;
+        $firstExpr = $isObjectFuncCall->getArgs()[0]
+->value;
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $ternary->if;
 
-        if ($getClassFuncCallOrClassConstFetchClass instanceof FuncCall && ! $getClassFuncCallOrClassConstFetchClass->args[0] instanceof Arg) {
-            return false;
-        }
-
         $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         /** @var FuncCall $gettypeFuncCall */
         $gettypeFuncCall = $ternary->else;
 
-        if (! $gettypeFuncCall->args[0] instanceof Arg) {
-            return false;
-        }
-
-        $thirdExpr = $gettypeFuncCall->args[0]->value;
+        $thirdExpr = $gettypeFuncCall->getArgs()[0]->value;
 
         if (! $this->nodeComparator->areNodesEqual($firstExpr, $secondExpr)) {
             return false;
