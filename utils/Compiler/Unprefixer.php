@@ -31,7 +31,7 @@ final class Unprefixer
         return self::unPreSlashQuotedValues($content);
     }
 
-    private static function unPreSlashQuotedValues(string $content): string
+    private function unPreSlashQuotedValues(string $content): string
     {
         return Strings::replace($content, self::QUOTED_VALUE_REGEX, "'$1");
     }
