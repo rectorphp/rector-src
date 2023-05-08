@@ -246,16 +246,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isPropertyFetchCallerNode($assign->expr)) {
-            return null;
-        }
-
         // keep property fetch nesting
         if ($assign->expr->var instanceof PropertyFetch) {
             return null;
         }
 
         if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
+        if ($this->isPropertyFetchCallerNode($assign->expr)) {
             return null;
         }
 
