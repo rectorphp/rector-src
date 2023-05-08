@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
-use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
@@ -14,9 +13,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Core\Reflection\ReflectionResolver;
-use PHPStan\Reflection\ClassReflection;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\VariableTypeResolverTest
@@ -25,19 +21,10 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class VariableTypeResolver implements NodeTypeResolverInterface
 {
-    private readonly ReflectionResolver $reflectionResolver;
-
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
-    }
-
-    #[Required]
-    public function autowire(
-        ReflectionResolver $reflectionResolver,
-    ): void {
-        $this->reflectionResolver = $reflectionResolver;
     }
 
     /**
@@ -65,24 +52,7 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
 
         // get from annotation
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $varType = $phpDocInfo->getVarType();
-
-        if (! $varType instanceof MixedType) {
-            return $varType;
-        }
-
-        if ($variableName === 'this') {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            dump($classReflection);
-            if (! $classReflection instanceof ClassReflection) {
-                dump('here');
-                return $varType;
-            }
-
-            return new ThisType($classReflection);
-        }
-
-        return $varType;
+        return $phpDocInfo->getVarType();
     }
 
     private function resolveTypesFromScope(Variable $variable, string $variableName): Type

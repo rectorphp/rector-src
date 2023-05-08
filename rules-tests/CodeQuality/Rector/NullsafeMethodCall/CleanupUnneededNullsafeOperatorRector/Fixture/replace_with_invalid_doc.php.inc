@@ -18,7 +18,7 @@ function get(): ReplaceWithInvalidDoc
     return new ReplaceWithInvalidDoc();
 }
 
-echo $this->get()?->getReplaceWithInvalidDoc();
+echo get()?->getReplaceWithInvalidDoc();
 
 ?>
 -----
@@ -42,6 +42,6 @@ function get(): ReplaceWithInvalidDoc
     return new ReplaceWithInvalidDoc();
 }
 
-echo $this->get()->getReplaceWithInvalidDoc();
+echo get()->getReplaceWithInvalidDoc();
 
 ?>
