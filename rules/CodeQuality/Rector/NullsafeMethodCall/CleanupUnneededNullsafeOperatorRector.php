@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\CodingStyle\Rector\NullsafeMethodCall;
+namespace Rector\CodeQuality\Rector\NullsafeMethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see https://wiki.php.net/rfc/nullsafe_operator
  *
- * @see \Rector\Tests\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\CleanupUnneededNullsafeOperatorRectorTest
+ * @see \Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\CleanupUnneededNullsafeOperatorRectorTest
  */
 final class CleanupUnneededNullsafeOperatorRector extends AbstractRector implements MinPhpVersionInterface
 {

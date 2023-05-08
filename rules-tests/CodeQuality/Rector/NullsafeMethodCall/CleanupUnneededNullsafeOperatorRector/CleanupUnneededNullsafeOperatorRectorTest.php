@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
+namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

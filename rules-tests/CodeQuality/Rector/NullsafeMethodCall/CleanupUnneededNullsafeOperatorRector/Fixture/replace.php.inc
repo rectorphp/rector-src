@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
 
 class Replace
 {
@@ -21,7 +21,7 @@ echo $this->get()?->getReplace();
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector\Fixture;
 
 class Replace
 {
