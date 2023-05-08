@@ -215,6 +215,9 @@ parameters:
             message: '#Instead of abstract class, use specific service with composition#'
             path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
 
+
+        - '#Access to an undefined property PhpParser\\Node\\Arg\|PhpParser\\Node\\VariadicPlaceholder\:\:\$value#'
+
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 

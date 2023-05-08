@@ -154,7 +154,8 @@ CODE_SAMPLE
         }
 
         $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
+->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         /** @var FuncCall $gettypeFuncCall */
