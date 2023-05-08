@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Reflection\ReflectionResolver;
 use PHPStan\Reflection\ClassReflection;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -81,7 +79,7 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
                 return $varType;
             }
 
-            return new \PHPStan\Type\ThisType($classReflection);
+            return new ThisType($classReflection);
         }
 
         return $varType;
