@@ -6,13 +6,19 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\Reflection\ReflectionResolver;
+use PHPStan\Reflection\ClassReflection;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\VariableTypeResolver\VariableTypeResolverTest
@@ -21,10 +27,19 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class VariableTypeResolver implements NodeTypeResolverInterface
 {
+    private readonly ReflectionResolver $reflectionResolver;
+
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
+    }
+
+    #[Required]
+    public function autowire(
+        ReflectionResolver $reflectionResolver,
+    ): void {
+        $this->reflectionResolver = $reflectionResolver;
     }
 
     /**
@@ -52,7 +67,24 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
 
         // get from annotation
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        return $phpDocInfo->getVarType();
+        $varType = $phpDocInfo->getVarType();
+
+        if (! $varType instanceof MixedType) {
+            return $varType;
+        }
+
+        if ($variableName === 'this') {
+            $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            dump($classReflection);
+            if (! $classReflection instanceof ClassReflection) {
+                dump('here');
+                return $varType;
+            }
+
+            return new \PHPStan\Type\ThisType($classReflection);
+        }
+
+        return $varType;
     }
 
     private function resolveTypesFromScope(Variable $variable, string $variableName): Type
