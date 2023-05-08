@@ -12,9 +12,9 @@ class ReplaceOnMethodCall
     /**
      * @return InvalidReturn
      */
-    public function get2(): Replace
+    public function get2(): ReplaceOnMethodCall
     {
-        return new Replace();
+        return new ReplaceOnMethodCall();
     }
 }
 
@@ -36,9 +36,9 @@ class ReplaceOnMethodCall
     /**
      * @return InvalidReturn
      */
-    public function get2(): Replace
+    public function get2(): ReplaceOnMethodCall
     {
-        return new Replace();
+        return new ReplaceOnMethodCall();
     }
 }
 
