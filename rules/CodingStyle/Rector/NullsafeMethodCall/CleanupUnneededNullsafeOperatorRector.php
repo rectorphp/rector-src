@@ -88,7 +88,7 @@ CODE_SAMPLE
 
         $returnNode = $this->returnStrictTypeAnalyzer->resolveMethodCallReturnNode($node->var);
 
-        if (null === $returnNode) {
+        if (!$returnNode instanceof Node) {
             return null;
         }
 
