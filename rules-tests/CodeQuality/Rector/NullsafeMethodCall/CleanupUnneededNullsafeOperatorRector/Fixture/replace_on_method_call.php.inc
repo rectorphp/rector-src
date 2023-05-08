@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNull
 
 class ReplaceOnMethodCall
 {
-    public function getString(): string
+    public function getString2(): string
     {
         return 'hello world';
     }
@@ -12,13 +12,13 @@ class ReplaceOnMethodCall
     /**
      * @return InvalidReturn
      */
-    public function get(): Replace
+    public function get2(): Replace
     {
         return new Replace();
     }
 }
 
-(new ReplaceOnMethodCall())->get()?->getString();
+(new ReplaceOnMethodCall())->get2()?->getString2();
 
 ?>
 -----
@@ -28,7 +28,7 @@ namespace Rector\Tests\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNull
 
 class ReplaceOnMethodCall
 {
-    public function getString(): string
+    public function getString2(): string
     {
         return 'hello world';
     }
@@ -36,12 +36,12 @@ class ReplaceOnMethodCall
     /**
      * @return InvalidReturn
      */
-    public function get(): Replace
+    public function get2(): Replace
     {
         return new Replace();
     }
 }
 
-(new ReplaceOnMethodCall())->get()->getString();
+(new ReplaceOnMethodCall())->get2()?->getString2();
 
 ?>
