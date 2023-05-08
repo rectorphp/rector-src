@@ -142,7 +142,9 @@ CODE_SAMPLE
     {
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
-        $firstExpr = $isObjectFuncCall->args[0]->value;
+
+        $firstExpr = $isObjectFuncCall->getArgs()[0]
+->value;
 
         /** @var FuncCall|ClassConstFetch $getClassFuncCallOrClassConstFetchClass */
         $getClassFuncCallOrClassConstFetchClass = $ternary->if;
@@ -152,7 +154,8 @@ CODE_SAMPLE
         }
 
         $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->args[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
+->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         /** @var FuncCall $gettypeFuncCall */

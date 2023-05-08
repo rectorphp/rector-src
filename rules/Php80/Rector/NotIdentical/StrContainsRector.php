@@ -87,11 +87,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset($funcCall->args[2])) {
-            if ($this->isName($funcCall->name, 'strpos') && $this->isPositiveInteger($funcCall->args[2]->value)) {
+        if (isset($funcCall->getArgs()[2])) {
+            $secondArg = $funcCall->getArgs()[2];
+
+            if ($this->isName($funcCall->name, 'strpos') && $this->isPositiveInteger($secondArg->value)) {
                 $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall(
                     'substr',
-                    [$funcCall->args[0], $funcCall->args[2]]
+                    [$funcCall->args[0], $secondArg]
                 ));
             }
 

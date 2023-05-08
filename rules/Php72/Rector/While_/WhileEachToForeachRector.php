@@ -103,7 +103,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $firstArg = $eachFuncCall->args[0];
+        $firstArg = $eachFuncCall->getArgs()[0];
+
         $foreachedExpr = count($listNode->items) === 1 ? $this->nodeFactory->createFuncCall(
             'array_keys',
             [$firstArg]
