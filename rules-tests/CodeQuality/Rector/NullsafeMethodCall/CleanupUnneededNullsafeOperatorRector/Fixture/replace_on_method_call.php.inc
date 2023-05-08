@@ -9,6 +9,9 @@ class ReplaceOnMethodCall
         return 'hello world';
     }
 
+    /**
+     * @return InvalidReturn
+     */
     public function get(): Replace
     {
         return new Replace();
@@ -30,6 +33,9 @@ class ReplaceOnMethodCall
         return 'hello world';
     }
 
+    /**
+     * @return InvalidReturn
+     */
     public function get(): Replace
     {
         return new Replace();
