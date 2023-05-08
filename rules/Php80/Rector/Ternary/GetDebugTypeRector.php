@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Ternary;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
@@ -150,13 +149,15 @@ CODE_SAMPLE
         $getClassFuncCallOrClassConstFetchClass = $ternary->if;
 
         $secondExpr = $getClassFuncCallOrClassConstFetchClass instanceof FuncCall
-            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]->value
+            ? $getClassFuncCallOrClassConstFetchClass->getArgs()[0]
+->value
             : $getClassFuncCallOrClassConstFetchClass->class;
 
         /** @var FuncCall $gettypeFuncCall */
         $gettypeFuncCall = $ternary->else;
 
-        $thirdExpr = $gettypeFuncCall->getArgs()[0]->value;
+        $thirdExpr = $gettypeFuncCall->getArgs()[0]
+->value;
 
         if (! $this->nodeComparator->areNodesEqual($firstExpr, $secondExpr)) {
             return false;
