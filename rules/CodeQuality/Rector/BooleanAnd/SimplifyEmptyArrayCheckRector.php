@@ -97,7 +97,7 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                     return false;
                 }
 
-                return isset($node->args[0]);
+                return isset($node->getArgs()[0]);
             },
             // empty(...)
             function (Node $node): bool {
@@ -114,7 +114,7 @@ final class SimplifyEmptyArrayCheckRector extends AbstractRector
                         return false;
                     }
 
-                    return isset($node->expr->args[0]);
+                    return isset($node->expr->getArgs()[0]);
                 }
 
                 return true;

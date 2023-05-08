@@ -76,7 +76,7 @@ CODE_SAMPLE
         }
 
         // change the node
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 

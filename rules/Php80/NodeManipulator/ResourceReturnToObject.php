@@ -223,7 +223,7 @@ final class ResourceReturnToObject
             return true;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return true;
         }
 
