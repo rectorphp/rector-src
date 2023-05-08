@@ -40,7 +40,7 @@ class HelloWorld {
     }
 }
 
-public function get(): HelloWorld
+function get(): HelloWorld
 {
      return new HelloWorld();
 }
@@ -56,7 +56,7 @@ class HelloWorld {
     }
 }
 
-public function get(): HelloWorld
+function get(): HelloWorld
 {
      return new HelloWorld();
 }
