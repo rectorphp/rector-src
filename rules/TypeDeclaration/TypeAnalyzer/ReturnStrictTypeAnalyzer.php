@@ -60,7 +60,7 @@ final class ReturnStrictTypeAnalyzer
         return $this->typeNodeUnwrapper->uniquateNodes($returnedStrictTypeNodes);
     }
 
-    private function resolveMethodCallReturnNode(MethodCall | StaticCall | FuncCall $call): ?Node
+    public function resolveMethodCallReturnNode(MethodCall | StaticCall | FuncCall $call): ?Node
     {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($methodReflection === null) {
