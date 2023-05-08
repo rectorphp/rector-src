@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\NullsafeMethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -84,6 +86,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if (! $node->name instanceof Identifier) {
+            return null;
+        }
+
+        if (! $node->var instanceof FuncCall && ! $node->var instanceof MethodCall && ! $node->var instanceof StaticCall) {
             return null;
         }
 
