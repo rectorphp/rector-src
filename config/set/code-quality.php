@@ -86,6 +86,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
+use Rector\Restoration\Rector\Class_\RemoveFinalFromEntityRector;
 use Rector\Restoration\Rector\Property\MakeTypedPropertyNullableIfCheckedRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -200,5 +201,6 @@ return static function (RectorConfig $rectorConfig): void {
         SwitchTrueToIfRector::class,
         CleanupUnneededNullsafeOperatorRector::class,
         MakeTypedPropertyNullableIfCheckedRector::class,
+        RemoveFinalFromEntityRector::class,
     ]);
 };
