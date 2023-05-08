@@ -23,8 +23,7 @@ final class CleanupUnneededNullsafeOperatorRector extends AbstractRector impleme
 {
     public function __construct(
         private readonly ReturnStrictTypeAnalyzer $returnStrictTypeAnalyzer,
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -82,13 +81,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (!$node->var instanceof MethodCall) {
+        if (! $node->var instanceof MethodCall) {
             return null;
         }
 
         $returnNode = $this->returnStrictTypeAnalyzer->resolveMethodCallReturnNode($node->var);
 
-        if (!$returnNode instanceof Node) {
+        if (! $returnNode instanceof Node) {
             return null;
         }
 
