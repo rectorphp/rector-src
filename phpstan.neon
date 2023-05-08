@@ -81,7 +81,9 @@ parameters:
         - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
 
         # is nested expr
-        - '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
+        -
+            message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
+            path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
 
         # 3rd party package
         -
@@ -131,9 +133,8 @@ parameters:
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
         - '#Parameter \#1 \$stmts of method Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:collectIfs\(\) expects array<PhpParser\\Node\\Stmt\\If_\>, array<PhpParser\\Node\\Stmt\> given#'
-        - '#Access to an undefined property PhpParser\\Node\\FunctionLike\|PhpParser\\Node\\Stmt\\If_\:\:\$stmts#'
 
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 10#'
+#        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 10#'
 
         - '#(.*?) class\-string, string given#'
 
@@ -784,3 +785,7 @@ parameters:
                 - rules/Naming/Rector/Assign/RenameVariableToMatchMethodCallReturnTypeRector.php
                 - rules/Naming/Rector/ClassMethod/RenameVariableToMatchNewTypeRector.php
                 - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
+
+        # next to resolve
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 13, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:refactor\(\)" is 11, keep it under 10#'
