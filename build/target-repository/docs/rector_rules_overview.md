@@ -6,9 +6,9 @@
 
 - [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (77)
+- [CodeQuality](#codequality) (78)
 
-- [CodingStyle](#codingstyle) (38)
+- [CodingStyle](#codingstyle) (37)
 
 - [Compatibility](#compatibility) (1)
 
@@ -524,6 +524,31 @@ Change `array_push()` to direct variable assign
  $items = [];
 -array_push($items, $item);
 +$items[] = $item;
+```
+
+<br>
+
+### CleanupUnneededNullsafeOperatorRector
+
+Cleanup unneeded nullsafe operator
+
+- class: [`Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodeQuality/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
+
+```diff
+ class HelloWorld {
+     public function getString(): string
+     {
+          return 'hello world';
+     }
+ }
+
+ public function get(): HelloWorld
+ {
+      return new HelloWorld();
+ }
+
+-echo $this->get()?->getHelloWorld();
++echo $this->get()->getHelloWorld();
 ```
 
 <br>
@@ -1981,31 +2006,6 @@ Type and name of catch exception should match
          }
      }
  }
-```
-
-<br>
-
-### CleanupUnneededNullsafeOperatorRector
-
-Cleanup unneeded nullsafe operator
-
-- class: [`Rector\CodingStyle\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodingStyle/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
-
-```diff
- class HelloWorld {
-     public function getString(): string
-     {
-          return 'hello world';
-     }
- }
-
- public function get(): HelloWorld
- {
-      return new HelloWorld();
- }
-
--echo $this->get()?->getHelloWorld();
-+echo $this->get()->getHelloWorld();
 ```
 
 <br>
