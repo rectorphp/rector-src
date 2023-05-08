@@ -211,7 +211,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return false;
         }
 

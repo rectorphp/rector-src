@@ -75,7 +75,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! isset($node->args[0])) {
+            if (! isset($node->getArgs()[0])) {
                 return null;
             }
 

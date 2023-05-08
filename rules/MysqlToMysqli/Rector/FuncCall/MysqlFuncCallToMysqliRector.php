@@ -97,7 +97,7 @@ CODE_SAMPLE
 
     private function processMysqlCreateDb(FuncCall $funcCall): ?FuncCall
     {
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return null;
         }
 
@@ -113,7 +113,7 @@ CODE_SAMPLE
 
     private function processMysqlDropDb(FuncCall $funcCall): ?FuncCall
     {
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return null;
         }
 
