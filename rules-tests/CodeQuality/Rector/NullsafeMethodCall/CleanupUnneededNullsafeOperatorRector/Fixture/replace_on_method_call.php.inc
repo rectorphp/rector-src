@@ -42,6 +42,6 @@ class ReplaceOnMethodCall
     }
 }
 
-(new ReplaceOnMethodCall())->get2()?->getString2();
+(new ReplaceOnMethodCall())->get2()->getString2();
 
 ?>
