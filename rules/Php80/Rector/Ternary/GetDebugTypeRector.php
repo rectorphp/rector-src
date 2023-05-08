@@ -157,6 +157,7 @@ CODE_SAMPLE
 
         /** @var FuncCall $gettypeFuncCall */
         $gettypeFuncCall = $ternary->else;
+
         if (! $gettypeFuncCall->args[0] instanceof Arg) {
             return false;
         }

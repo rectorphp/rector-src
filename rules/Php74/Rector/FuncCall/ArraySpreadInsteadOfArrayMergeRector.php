@@ -204,10 +204,6 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! isset($expr->args[0])) {
-            return false;
-        }
-
-        return $expr->args[0] instanceof Arg;
+        return isset($expr->getArgs()[0]);
     }
 }

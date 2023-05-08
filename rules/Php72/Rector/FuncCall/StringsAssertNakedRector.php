@@ -76,11 +76,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg) {
-            return null;
-        }
+        $firstArg = $node->getArgs()[0];
 
-        $firstArgValue = $node->args[0]->value;
+        $firstArgValue = $firstArg->value;
         if (! $firstArgValue instanceof String_) {
             return null;
         }

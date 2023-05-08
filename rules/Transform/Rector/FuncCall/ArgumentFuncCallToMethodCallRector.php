@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -238,22 +237,18 @@ CODE_SAMPLE
         ArrayFuncCallToMethodCall $arrayFuncCallToMethodCall,
         PropertyFetch $propertyFetch
     ): ?Node {
-        if ($funcCall->args === []) {
+        if ($funcCall->getArgs() === []) {
             return $propertyFetch;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
-            return null;
-        }
-
-        if ($this->arrayTypeAnalyzer->isArrayType($funcCall->args[0]->value)) {
-            return new MethodCall($propertyFetch, $arrayFuncCallToMethodCall->getArrayMethod(), $funcCall->args);
+        if ($this->arrayTypeAnalyzer->isArrayType($funcCall->getArgs()[0]->value)) {
+            return new MethodCall($propertyFetch, $arrayFuncCallToMethodCall->getArrayMethod(), $funcCall->getArgs());
         }
 
         if ($arrayFuncCallToMethodCall->getNonArrayMethod() === '') {
             return null;
         }
 
-        return new MethodCall($propertyFetch, $arrayFuncCallToMethodCall->getNonArrayMethod(), $funcCall->args);
+        return new MethodCall($propertyFetch, $arrayFuncCallToMethodCall->getNonArrayMethod(), $funcCall->getArgs());
     }
 }

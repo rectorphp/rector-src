@@ -162,15 +162,13 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! isset($funcCall->args[0])) {
+        if (! isset($funcCall->getArgs()[0])) {
             return true;
         }
 
-        if (! $funcCall->args[0] instanceof Arg) {
-            return true;
-        }
+        $firstArg = $funcCall->getArgs()[0];
 
-        if ($funcCall->args[0]->value instanceof ClassConstFetch) {
+        if ($firstArg->value instanceof ClassConstFetch) {
             return true;
         }
 

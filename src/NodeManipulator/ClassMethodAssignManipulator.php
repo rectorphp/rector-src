@@ -327,11 +327,7 @@ final class ClassMethodAssignManipulator
             return false;
         }
 
-        if (! isset($node->args[0])) {
-            return false;
-        }
-
-        if (! $node->args[0] instanceof Arg) {
+        if (! isset($node->getArgs()[0])) {
             return false;
         }
 
@@ -340,7 +336,9 @@ final class ClassMethodAssignManipulator
         }
 
         // is 1st argument
-        return $node->args[0]->value !== $variable;
+        $firstArg = $node->getArgs()[0];
+
+        return $firstArg->value !== $variable;
     }
 
     private function isConstructorWithReference(Node $node, int $argumentPosition): bool

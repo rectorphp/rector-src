@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php53\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
@@ -68,16 +67,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($node->args[0])) {
+        if (! isset($node->getArgs()[0])) {
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg) {
-            return null;
-        }
+        $firstArg = $node->getArgs()[0];
 
-        $firstArgValue = $node->args[0]->value;
-        if (! $firstArgValue instanceof File) {
+        if (! $firstArg->value instanceof File) {
             return null;
         }
 
