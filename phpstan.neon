@@ -81,7 +81,9 @@ parameters:
         - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
 
         # is nested expr
-        - '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
+        -
+            message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
+            path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
 
         # 3rd party package
         -
