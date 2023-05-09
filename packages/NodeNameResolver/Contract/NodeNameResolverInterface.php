@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeNameResolver\Contract;
 
 use PhpParser\Node;
+use PHPStan\Analyser\Scope;
 
 /**
  * @template TNode as Node
@@ -19,5 +20,5 @@ interface NodeNameResolverInterface
     /**
      * @param TNode $node
      */
-    public function resolve(Node $node): ?string;
+    public function resolve(Node $node, ?Scope $scope): ?string;
 }

@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
+use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
@@ -130,7 +131,8 @@ final class NodeNameResolver
             $this->invalidNameNodeReporter->reportInvalidNodeForName($node);
         }
 
-        $resolvedName = $this->resolveNodeName($node);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $resolvedName = $this->resolveNodeName($node, $scope);
         if ($resolvedName !== null) {
             return $resolvedName;
         }
@@ -242,14 +244,14 @@ final class NodeNameResolver
         return $this->isStringName($resolvedName, $desiredName);
     }
 
-    private function resolveNodeName(Node $node): ?string
+    private function resolveNodeName(Node $node, ?Scope $scope): ?string
     {
         $nodeClass = $node::class;
         if (array_key_exists($nodeClass, $this->nodeNameResolversByClass)) {
             $resolver = $this->nodeNameResolversByClass[$nodeClass];
 
             if ($resolver instanceof NodeNameResolverInterface) {
-                return $resolver->resolve($node);
+                return $resolver->resolve($node, $scope);
             }
 
             return null;
@@ -262,7 +264,7 @@ final class NodeNameResolver
 
             $this->nodeNameResolversByClass[$nodeClass] = $nodeNameResolver;
 
-            return $nodeNameResolver->resolve($node);
+            return $nodeNameResolver->resolve($node, $scope);
         }
 
         $this->nodeNameResolversByClass[$nodeClass] = null;
