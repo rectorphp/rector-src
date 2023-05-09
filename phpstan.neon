@@ -789,3 +789,12 @@ parameters:
         # next to resolve
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 13, keep it under 10#'
         - '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:refactor\(\)" is 11, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\ForeachToInArrayRector\:\:refactor\(\)" is \d+, keep it under 10#'
+
+        # resolve continually
+        - '#(Matching|Fetching) deprecated class constant (NEXT_NODE|PREVIOUS_NODE) of class Rector\\NodeTypeResolver\\Node\\AttributeKey#'
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+
+        # make autoload of php-parser in rector first
+        - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'

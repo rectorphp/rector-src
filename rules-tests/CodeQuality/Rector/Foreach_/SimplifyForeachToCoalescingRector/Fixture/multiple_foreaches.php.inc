@@ -2,11 +2,13 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector\Fixture;
 
-class Fixture3
+final class MultipleForeaches
 {
     public function run()
     {
         $newValue = null;
+        $nextValue = null;
+
         $values = [];
         $input = '123';
 
@@ -18,7 +20,7 @@ class Fixture3
 
         foreach ($values as $key => $value) {
             if ($input === $key) {
-                $newValue = $value;
+                $nextValue = $value;
             }
         }
     }
@@ -30,17 +32,19 @@ class Fixture3
 
 namespace Rector\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector\Fixture;
 
-class Fixture3
+final class MultipleForeaches
 {
     public function run()
     {
         $newValue = null;
+        $nextValue = null;
+
         $values = [];
         $input = '123';
 
         $newValue = $values[$input] ?? $newValue;
 
-        $newValue = $values[$input] ?? $newValue;
+        $nextValue = $values[$input] ?? $nextValue;
     }
 }
 

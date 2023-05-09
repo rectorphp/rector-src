@@ -69,6 +69,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->stmts === null) {
+            return null;
+        }
+
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof Return_) {
                 continue;
@@ -118,8 +122,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $returnedExpr = $return->expr;
-            if (! $returnedExpr instanceof Expr) {
+            if (! $foreachReturn->expr instanceof Expr) {
                 return null;
             }
 
