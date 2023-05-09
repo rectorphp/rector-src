@@ -27,7 +27,6 @@ class SomeClass
 {
     public function foreachWithElseNullable($items)
     {
-        // some comment
         return in_array('something', $items);
     }
 }

@@ -78,6 +78,8 @@ final class AttributeKey
 
     /**
      * @internal of php-parser, do not change
+     * @deprecated Use StmtsAwareInterface instead
+     *
      * @see https://github.com/nikic/PHP-Parser/pull/681/files
      * @var string
      */
@@ -85,6 +87,8 @@ final class AttributeKey
 
     /**
      * @internal of php-parser, do not change
+     * @deprecated Use StmtsAwareInterface instead
+     *
      * @see https://github.com/nikic/PHP-Parser/pull/681/files
      * @var string
      */
