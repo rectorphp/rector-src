@@ -12,6 +12,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Type\ObjectType;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
@@ -79,65 +80,87 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Catch_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Catch_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (count($node->types) !== 1) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        if (! $node->var instanceof Variable) {
-            return null;
-        }
-
-        /** @var string $oldVariableName */
-        $oldVariableName = $this->getName($node->var);
-
-        $type = $node->types[0];
-        $typeShortName = $this->nodeNameResolver->getShortName($type);
-
-        $aliasName = $this->aliasNameResolver->resolveByName($type);
-        if (is_string($aliasName)) {
-            $typeShortName = $aliasName;
-        }
-
-        $newVariableName = Strings::replace(
-            lcfirst($typeShortName),
-            self::STARTS_WITH_ABBREVIATION_REGEX,
-            static function (array $matches): string {
-                $output = isset($matches[1]) ? strtolower((string) $matches[1]) : '';
-                $output .= $matches[2] ?? '';
-
-                return $output . ($matches[3] ?? '');
+        $hasChanged = false;
+        foreach ($node->stmts as $stmt) {
+            if (! $stmt instanceof TryCatch) {
+                continue;
             }
-        );
 
-        $objectType = new ObjectType($newVariableName);
-        $newVariableName = $this->propertyNaming->fqnToVariableName($objectType);
+            if (count($stmt->catches) !== 1) {
+                continue;
+            }
 
-        if ($oldVariableName === $newVariableName) {
-            return null;
+            if (count($stmt->catches[0]->types) !== 1) {
+                continue;
+            }
+
+            $catch = $stmt->catches[0];
+            if (! $catch->var instanceof Variable) {
+                continue;
+            }
+
+            /** @var string $oldVariableName */
+            $oldVariableName = $this->getName($catch->var);
+
+            $type = $catch->types[0];
+            $typeShortName = $this->nodeNameResolver->getShortName($type);
+
+            $aliasName = $this->aliasNameResolver->resolveByName($type);
+            if (is_string($aliasName)) {
+                $typeShortName = $aliasName;
+            }
+
+            $newVariableName = Strings::replace(
+                lcfirst($typeShortName),
+                self::STARTS_WITH_ABBREVIATION_REGEX,
+                static function (array $matches): string {
+                    $output = isset($matches[1]) ? strtolower((string) $matches[1]) : '';
+                    $output .= $matches[2] ?? '';
+
+                    return $output . ($matches[3] ?? '');
+                }
+            );
+
+            $objectType = new ObjectType($newVariableName);
+            $newVariableName = $this->propertyNaming->fqnToVariableName($objectType);
+
+            if ($oldVariableName === $newVariableName) {
+                continue;
+            }
+
+            $newVariable = new Variable($newVariableName);
+            $isFoundInPrevious = (bool) $this->betterNodeFinder->findFirstPrevious(
+                $catch,
+                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $newVariable)
+            );
+
+            if ($isFoundInPrevious) {
+                return null;
+            }
+
+            $catch->var->name = $newVariableName;
+            $this->renameVariableInStmts($catch, $oldVariableName, $newVariableName);
+
+            $hasChanged = true;
         }
 
-        $newVariable = new Variable($newVariableName);
-        $isFoundInPrevious = (bool) $this->betterNodeFinder->findFirstPrevious(
-            $node,
-            fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $newVariable)
-        );
-
-        if ($isFoundInPrevious) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $node->var->name = $newVariableName;
-        $this->renameVariableInStmts($node, $oldVariableName, $newVariableName);
-
-        return $node;
+        return null;
     }
 
     private function renameVariableInStmts(Catch_ $catch, string $oldVariableName, string $newVariableName): void
