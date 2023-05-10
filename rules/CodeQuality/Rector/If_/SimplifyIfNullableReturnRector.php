@@ -18,6 +18,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\CodeQuality\TypeResolver\AssignVariableTypeResolver;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -76,74 +77,87 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param If_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        /** @var BooleanNot|Instanceof_ $cond */
-        $cond = $node->cond;
-        /** @var Instanceof_ $instanceof */
-        $instanceof = $cond instanceof BooleanNot
-            ? $cond->expr
-            : $cond;
-        $variable = $instanceof->expr;
-        $class = $instanceof->class;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof If_) {
+                continue;
+            }
 
-        if (! $class instanceof Name) {
-            return null;
+            $if = $stmt;
+            if ($this->shouldSkip($if)) {
+                continue;
+            }
+
+            /** @var BooleanNot|Instanceof_ $cond */
+            $cond = $if->cond;
+            /** @var Instanceof_ $instanceof */
+
+            $instanceof = $cond instanceof BooleanNot ? $cond->expr : $cond;
+
+            $variable = $instanceof->expr;
+            $class = $instanceof->class;
+
+            if (! $class instanceof Name) {
+                return null;
+            }
+
+            /** @var Return_ $returnIfStmt */
+            $returnIfStmt = $if->stmts[0];
+
+            if ($this->isIfStmtReturnIncorrect($cond, $variable, $returnIfStmt)) {
+                return null;
+            }
+
+            $previous = $if->getAttribute(AttributeKey::PREVIOUS_NODE);
+            if (! $previous instanceof Expression) {
+                return null;
+            }
+
+            $previousAssign = $previous->expr;
+            if (! $previousAssign instanceof Assign) {
+                return null;
+            }
+
+            if (! $this->nodeComparator->areNodesEqual($previousAssign->var, $variable)) {
+                return null;
+            }
+
+            /** @var Return_ $nextNode */
+            $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
+            if ($this->isNextReturnIncorrect($cond, $variable, $nextNode)) {
+                return null;
+            }
+
+            $variableType = $this->assignVariableTypeResolver->resolve($previousAssign);
+            if (! $variableType instanceof UnionType) {
+                return null;
+            }
+
+            $className = $class->toString();
+            $types = $variableType->getTypes();
+
+            return $this->processSimplifyNullableReturn(
+                $variableType,
+                $types,
+                $className,
+                $nextNode,
+                $previous,
+                $previousAssign->expr
+            );
         }
 
-        /** @var Return_ $returnIfStmt */
-        $returnIfStmt = $node->stmts[0];
-
-        if ($this->isIfStmtReturnIncorrect($cond, $variable, $returnIfStmt)) {
-            return null;
-        }
-
-        $previous = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $previous instanceof Expression) {
-            return null;
-        }
-
-        $previousAssign = $previous->expr;
-        if (! $previousAssign instanceof Assign) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($previousAssign->var, $variable)) {
-            return null;
-        }
-
-        /** @var Return_ $nextNode */
-        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-        if ($this->isNextReturnIncorrect($cond, $variable, $nextNode)) {
-            return null;
-        }
-
-        $variableType = $this->assignVariableTypeResolver->resolve($previousAssign);
-        if (! $variableType instanceof UnionType) {
-            return null;
-        }
-
-        $className = $class->toString();
-        $types = $variableType->getTypes();
-
-        return $this->processSimplifyNullableReturn(
-            $variableType,
-            $types,
-            $className,
-            $nextNode,
-            $previous,
-            $previousAssign->expr
-        );
+        return null;
     }
 
     private function isIfStmtReturnIncorrect(BooleanNot|Instanceof_ $expr, Expr $variable, Return_ $return): bool

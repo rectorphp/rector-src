@@ -164,9 +164,9 @@ final class IfManipulator
     }
 
     /**
-     * @param class-string<Node> $className
+     * @param class-string<Stmt> $stmtClass
      */
-    public function isIfWithOnly(Node $node, string $className): bool
+    public function isIfWithOnly(Node $node, string $stmtClass): bool
     {
         if (! $node instanceof If_) {
             return false;
@@ -176,7 +176,7 @@ final class IfManipulator
             return false;
         }
 
-        return $this->hasOnlyStmtOfType($node, $className);
+        return $this->hasOnlyStmtOfType($node, $stmtClass);
     }
 
     public function isIfWithOnlyOneStmt(If_ $if): bool
@@ -236,15 +236,15 @@ final class IfManipulator
     }
 
     /**
-     * @param class-string<Node> $desiredType
+     * @param class-string<Stmt> $stmtClass
      */
-    private function hasOnlyStmtOfType(If_ $if, string $desiredType): bool
+    private function hasOnlyStmtOfType(If_ $if, string $stmtClass): bool
     {
         $stmts = $if->stmts;
         if (count($stmts) !== 1) {
             return false;
         }
 
-        return $stmts[0] instanceof $desiredType;
+        return $stmts[0] instanceof $stmtClass;
     }
 }
