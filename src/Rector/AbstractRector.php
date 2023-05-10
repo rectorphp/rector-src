@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
+use PHPStan\Internal\BytesHelper;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -208,7 +209,12 @@ CODE_SAMPLE;
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
+        $startTime = microtime(true);
+        $previousMemory = memory_get_peak_usage(true);
+
         $refactoredNode = $this->refactor($node);
+
+        $this->printDebugConsumptions($startTime, $previousMemory);
 
         // nothing to change or just removed via removeNode() → continue
         if ($refactoredNode === null) {
@@ -451,6 +457,18 @@ CODE_SAMPLE;
 
         $this->rectorOutputStyle->writeln('[file] ' . $relativeFilePath);
         $this->rectorOutputStyle->writeln('[rule] ' . static::class);
+    }
+
+    private function printDebugConsumptions(float $startTime, int $previousMemory): void
+    {
+        if (! $this->rectorOutputStyle->isDebug()) {
+            return;
+        }
+
+        $elapsedTime = microtime(true) - $startTime;
+        $currentTotalMemory = memory_get_peak_usage(true);
+
+        $this->rectorOutputStyle->writeln(sprintf('--- consumed %s, total %s, took %.2f s', BytesHelper::bytes($currentTotalMemory - $previousMemory), BytesHelper::bytes($currentTotalMemory), $elapsedTime));
         $this->rectorOutputStyle->newLine(1);
     }
 }
