@@ -19,6 +19,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -31,7 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector\ParamTypeFromStrictTypedPropertyRectorTest
  */
-final class ParamTypeFromStrictTypedPropertyRector extends AbstractRector implements MinPhpVersionInterface
+final class ParamTypeFromStrictTypedPropertyRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
@@ -82,14 +83,14 @@ CODE_SAMPLE
     /**
      * @param Param $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof ClassMethod) {
             return null;
         }
 
-        return $this->decorateParamWithType($parentNode, $node);
+        return $this->decorateParamWithType($parentNode, $node, $scope);
     }
 
     public function provideMinPhpVersion(): int
@@ -97,7 +98,7 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function decorateParamWithType(ClassMethod $classMethod, Param $param): ?Param
+    private function decorateParamWithType(ClassMethod $classMethod, Param $param, Scope $scope): ?Param
     {
         if ($param->type !== null) {
             return null;
@@ -111,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $originalParamType = $this->resolveParamOriginalType($param);
+        $originalParamType = $this->resolveParamOriginalType($param, $scope);
 
         $paramName = $this->getName($param);
 
@@ -126,7 +127,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasTypeChangedBeforeAssign($assign, $paramName, $originalParamType)) {
+            if ($this->hasTypeChangedBeforeAssign($assign, $paramName, $originalParamType, $scope)) {
                 return null;
             }
 
@@ -168,28 +169,18 @@ CODE_SAMPLE
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PROPERTY);
     }
 
-    private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType): bool
+    private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType, Scope $scope): bool
     {
-        $scope = $assign->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
-        if (! $scope->hasVariableType($paramName)->yes()) {
-            return false;
+        if (!$scope->hasVariableType($paramName)->yes()) {
+            return true;
         }
 
         $currentParamType = $scope->getVariableType($paramName);
         return ! $currentParamType->equals($originalType);
     }
 
-    private function resolveParamOriginalType(Param $param): Type
+    private function resolveParamOriginalType(Param $param, Scope $scope): Type
     {
-        $scope = $param->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return new MixedType();
-        }
-
         $paramName = $this->getName($param);
         if (! $scope->hasVariableType($paramName)->yes()) {
             return new MixedType();
