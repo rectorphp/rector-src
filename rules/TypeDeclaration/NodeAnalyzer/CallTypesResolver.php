@@ -46,6 +46,10 @@ final class CallTypesResolver
                     continue;
                 }
 
+                if ($arg->unpack) {
+                    continue;
+                }
+
                 $staticTypesByArgumentPosition[$position][] = $this->resolveStrictArgValueType($arg);
             }
         }
