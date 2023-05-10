@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -140,12 +141,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            $newVariable = new Variable($newVariableName);
-            $isFoundInPrevious = (bool) $this->betterNodeFinder->findFirstPrevious(
-                $catch,
-                fn (Node $subNode): bool => $this->nodeComparator->areNodesEqual($subNode, $newVariable)
-            );
+            // variable defined first only resolvable by Scope pulled from Stmt
+            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof  Scope) {
+                continue;
+            }
 
+            $isFoundInPrevious = $scope->hasVariableType($newVariableName)->yes();
             if ($isFoundInPrevious) {
                 return null;
             }
