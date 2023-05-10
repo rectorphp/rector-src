@@ -234,6 +234,14 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
+        return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
+    }
+
+    /**
+     * @param Node|Node[] $refactoredNode
+     */
+    private function postRefactorProcess(Node|null $originalNode, Node $node, Node|array $refactoredNode): Node
+    {
         $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */
