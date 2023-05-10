@@ -198,23 +198,31 @@ CODE_SAMPLE;
             return null;
         }
 
+        $isDebug = $this->rectorOutputStyle->isDebug();
+
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
 
-        $this->printDebugCurrentFileAndRule();
+        if ($isDebug) {
+            $this->printCurrentFileAndRule();
+        }
 
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         if ($originalNode instanceof Node) {
             $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
         }
 
-        $startTime = microtime(true);
-        $previousMemory = memory_get_peak_usage(true);
+        if ($isDebug) {
+            $startTime = microtime(true);
+            $previousMemory = memory_get_peak_usage(true);
+        }
 
         $refactoredNode = $this->refactor($node);
 
-        $this->printDebugConsumptions($startTime, $previousMemory);
+        if ($isDebug) {
+            $this->printConsumptions($startTime, $previousMemory);
+        }
 
         // nothing to change or just removed via removeNode() → continue
         if ($refactoredNode === null) {
@@ -447,24 +455,16 @@ CODE_SAMPLE;
         $this->nodeConnectingTraverser->traverse($nodes);
     }
 
-    private function printDebugCurrentFileAndRule(): void
+    private function printCurrentFileAndRule(): void
     {
-        if (! $this->rectorOutputStyle->isDebug()) {
-            return;
-        }
-
         $relativeFilePath = $this->filePathHelper->relativePath($this->file->getFilePath());
 
         $this->rectorOutputStyle->writeln('[file] ' . $relativeFilePath);
         $this->rectorOutputStyle->writeln('[rule] ' . static::class);
     }
 
-    private function printDebugConsumptions(float $startTime, int $previousMemory): void
+    private function printConsumptions(float $startTime, int $previousMemory): void
     {
-        if (! $this->rectorOutputStyle->isDebug()) {
-            return;
-        }
-
         $elapsedTime = microtime(true) - $startTime;
         $currentTotalMemory = memory_get_peak_usage(true);
 
