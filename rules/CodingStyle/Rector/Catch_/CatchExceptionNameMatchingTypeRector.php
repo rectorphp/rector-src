@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Catch_;
 
+use PhpParser\Node\Stmt;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -165,7 +166,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function renameVariableInStmts(Catch_ $catch, TryCatch $stmt, string $oldVariableName, string $newVariableName, ?Node\Stmt $nextNode): void
+    private function renameVariableInStmts(Catch_ $catch, TryCatch $tryCatch, string $oldVariableName, string $newVariableName, ?Stmt $stmt): void
     {
         $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
             $oldVariableName,
@@ -183,7 +184,7 @@ CODE_SAMPLE
             return null;
         });
 
-        $this->replaceNextUsageVariable($stmt, $nextNode, $oldVariableName, $newVariableName);
+        $this->replaceNextUsageVariable($tryCatch, $stmt, $oldVariableName, $newVariableName);
     }
 
     private function replaceNextUsageVariable(
