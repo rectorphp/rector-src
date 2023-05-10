@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# 414 Rules Overview
-=======
 # 413 Rules Overview
->>>>>>> 49d5821b3c ([CodeQuality] Remove SimplifyUselessLastVariableAssignRector as overly complex and should be handled individually)
 
 <br>
 
