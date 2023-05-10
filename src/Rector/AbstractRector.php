@@ -468,7 +468,12 @@ CODE_SAMPLE;
         $elapsedTime = microtime(true) - $startTime;
         $currentTotalMemory = memory_get_peak_usage(true);
 
-        $this->rectorOutputStyle->writeln(sprintf('--- consumed %s, total %s, took %.2f s', BytesHelper::bytes($currentTotalMemory - $previousMemory), BytesHelper::bytes($currentTotalMemory), $elapsedTime));
+        $consumed = sprintf(
+            '--- consumed %s, total %s, took %.2f s',
+            BytesHelper::bytes($currentTotalMemory - $previousMemory),
+            BytesHelper::bytes($currentTotalMemory), $elapsedTime
+        );
+        $this->rectorOutputStyle->writeln($consumed);
         $this->rectorOutputStyle->newLine(1);
     }
 }
