@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 414 Rules Overview
+=======
+# 413 Rules Overview
+>>>>>>> 49d5821b3c ([CodeQuality] Remove SimplifyUselessLastVariableAssignRector as overly complex and should be handled individually)
 
 <br>
 
@@ -6,7 +10,7 @@
 
 - [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (78)
+- [CodeQuality](#codequality) (77)
 
 - [CodingStyle](#codingstyle) (37)
 
@@ -1543,25 +1547,6 @@ Simplify tautology ternary to value
 ```diff
 -$value = ($fullyQualifiedTypeHint !== $typeHint) ? $fullyQualifiedTypeHint : $typeHint;
 +$value = $fullyQualifiedTypeHint;
-```
-
-<br>
-
-### SimplifyUselessLastVariableAssignRector
-
-Removes the latest useless variable assigns before a variable will return.
-
-- class: [`Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessLastVariableAssignRector`](../rules/CodeQuality/Rector/FunctionLike/SimplifyUselessLastVariableAssignRector.php)
-
-```diff
- function ($b) {
--    $a = true;
-     if ($b === 1) {
-         return $b;
-     }
--    return $a;
-+    return true;
- };
 ```
 
 <br>
