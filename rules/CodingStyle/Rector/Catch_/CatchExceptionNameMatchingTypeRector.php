@@ -94,7 +94,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        foreach ($node->stmts as $stmt) {
+        foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof TryCatch) {
                 continue;
             }
@@ -153,7 +153,7 @@ CODE_SAMPLE
             }
 
             $catch->var->name = $newVariableName;
-            $this->renameVariableInStmts($catch, $oldVariableName, $newVariableName);
+            $this->renameVariableInStmts($catch, $stmt, $oldVariableName, $newVariableName, $node->stmts[$key+1] ?? null);
 
             $hasChanged = true;
         }
@@ -165,7 +165,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function renameVariableInStmts(Catch_ $catch, string $oldVariableName, string $newVariableName): void
+    private function renameVariableInStmts(Catch_ $catch, TryCatch $stmt, string $oldVariableName, string $newVariableName, ?Node\Stmt $nextNode): void
     {
         $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
             $oldVariableName,
@@ -183,11 +183,7 @@ CODE_SAMPLE
             return null;
         });
 
-        /** @var TryCatch $tryCatch */
-        $tryCatch = $catch->getAttribute(AttributeKey::PARENT_NODE);
-        $nextNode = $tryCatch->getAttribute(AttributeKey::NEXT_NODE);
-
-        $this->replaceNextUsageVariable($tryCatch, $nextNode, $oldVariableName, $newVariableName);
+        $this->replaceNextUsageVariable($stmt, $nextNode, $oldVariableName, $newVariableName);
     }
 
     private function replaceNextUsageVariable(
