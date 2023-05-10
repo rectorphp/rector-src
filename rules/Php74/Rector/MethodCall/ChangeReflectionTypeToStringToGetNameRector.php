@@ -14,6 +14,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -28,7 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php74\Rector\MethodCall\ChangeReflectionTypeToStringToGetNameRector\ChangeReflectionTypeToStringToGetNameRectorTest
  */
-final class ChangeReflectionTypeToStringToGetNameRector extends AbstractRector implements MinPhpVersionInterface
+final class ChangeReflectionTypeToStringToGetNameRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     /**
      * @var string
@@ -98,10 +99,10 @@ CODE_SAMPLE
     /**
      * @param MethodCall|String_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof MethodCall) {
-            return $this->refactorMethodCall($node);
+            return $this->refactorMethodCall($node, $scope);
         }
 
         if ($node->expr instanceof MethodCall) {
@@ -145,11 +146,11 @@ CODE_SAMPLE
         return false;
     }
 
-    private function refactorMethodCall(MethodCall $methodCall): ?Node
+    private function refactorMethodCall(MethodCall $methodCall, Scope $scope): ?Node
     {
         $this->collectCallByVariable($methodCall);
 
-        if ($this->shouldSkipMethodCall($methodCall)) {
+        if ($this->shouldSkipMethodCall($methodCall, $scope)) {
             return null;
         }
 
@@ -200,14 +201,8 @@ CODE_SAMPLE
         }
     }
 
-    private function shouldSkipMethodCall(MethodCall $methodCall): bool
+    private function shouldSkipMethodCall(MethodCall $methodCall, Scope $scope): bool
     {
-        $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
-        // just added node → skip it
-        if (! $scope instanceof Scope) {
-            return true;
-        }
-
         // is to string retype?
         $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof String_) {
