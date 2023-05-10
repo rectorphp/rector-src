@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Rector\Catch_;
 
-use PhpParser\Node\Stmt;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\Scope;
@@ -144,17 +144,24 @@ CODE_SAMPLE
 
             // variable defined first only resolvable by Scope pulled from Stmt
             $scope = $stmt->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof  Scope) {
+            if (! $scope instanceof Scope) {
                 continue;
             }
 
-            $isFoundInPrevious = $scope->hasVariableType($newVariableName)->yes();
+            $isFoundInPrevious = $scope->hasVariableType($newVariableName)
+                ->yes();
             if ($isFoundInPrevious) {
                 return null;
             }
 
             $catch->var->name = $newVariableName;
-            $this->renameVariableInStmts($catch, $stmt, $oldVariableName, $newVariableName, $node->stmts[$key+1] ?? null);
+            $this->renameVariableInStmts(
+                $catch,
+                $stmt,
+                $oldVariableName,
+                $newVariableName,
+                $node->stmts[$key + 1] ?? null
+            );
 
             $hasChanged = true;
         }
@@ -166,8 +173,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function renameVariableInStmts(Catch_ $catch, TryCatch $tryCatch, string $oldVariableName, string $newVariableName, ?Stmt $stmt): void
-    {
+    private function renameVariableInStmts(
+        Catch_ $catch,
+        TryCatch $tryCatch,
+        string $oldVariableName,
+        string $newVariableName,
+        ?Stmt $stmt
+    ): void {
         $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
             $oldVariableName,
             $newVariableName
