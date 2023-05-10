@@ -7,12 +7,13 @@ namespace Rector\CodeQuality\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,16 +23,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ConsecutiveNullCompareReturnsToNullCoalesceQueueRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @var Node[]
-     */
-    private array $nodesToRemove = [];
-
-    /**
-     * @var Expr[]
-     */
-    private array $coalescingNodes = [];
-
     public function __construct(
         private readonly IfManipulator $ifManipulator
     ) {
@@ -46,11 +37,11 @@ class SomeClass
 {
     public function run()
     {
-        if (null !== $this->orderItem) {
+        if ($this->orderItem !== null) {
             return $this->orderItem;
         }
 
-        if (null !== $this->orderItemUnit) {
+        if ($this->orderItemUnit !== null) {
             return $this->orderItemUnit;
         }
 
@@ -77,47 +68,57 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param If_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        $this->reset();
-
-        $currentNode = $node;
-        while ($currentNode instanceof Node) {
-            if ($currentNode instanceof If_) {
-                $comparedNode = $this->ifManipulator->matchIfNotNullReturnValue($currentNode);
-                if ($comparedNode instanceof Expr) {
-                    $this->coalescingNodes[] = $comparedNode;
-                    $this->nodesToRemove[] = $currentNode;
-
-                    $currentNode = $currentNode->getAttribute(AttributeKey::NEXT_NODE);
-                    continue;
-                }
-
-                return null;
-            }
-
-            if ($this->isReturnNull($currentNode)) {
-                $this->nodesToRemove[] = $currentNode;
-                break;
-            }
-
+        if ($node->stmts === null) {
             return null;
+        }
+
+        $coalescingExprs = [];
+        $ifKeys = [];
+
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof If_) {
+                continue;
+            }
+
+            $comparedExpr = $this->ifManipulator->matchIfNotNullReturnValue($stmt);
+            if (! $comparedExpr instanceof Expr) {
+                continue;
+            }
+
+            $coalescingExprs[] = $comparedExpr;
+            $ifKeys[] = $key;
         }
 
         // at least 2 coalescing nodes are needed
-        if (count($this->coalescingNodes) < 2) {
+        if (count($coalescingExprs) < 2) {
             return null;
         }
 
-        $this->nodeRemover->removeNodes($this->nodesToRemove);
+        // remove last return null
+        foreach ($node->stmts as $key => $stmt) {
+            if (in_array($key, $ifKeys, true)) {
+                unset($node->stmts[$key]);
+                continue;
+            }
 
-        return $this->createReturnCoalesceNode($this->coalescingNodes);
+            if (! $this->isReturnNull($stmt)) {
+                continue;
+            }
+
+            unset($node->stmts[$key]);
+        }
+
+        $node->stmts[] = $this->createCealesceReturn($coalescingExprs);
+
+        return $node;
     }
 
     public function provideMinPhpVersion(): int
@@ -125,41 +126,36 @@ CODE_SAMPLE
         return PhpVersionFeature::NULL_COALESCE;
     }
 
-    private function reset(): void
+    private function isReturnNull(Stmt $stmt): bool
     {
-        $this->coalescingNodes = [];
-        $this->nodesToRemove = [];
-    }
-
-    private function isReturnNull(Node $node): bool
-    {
-        if (! $node instanceof Return_) {
+        if (! $stmt instanceof Return_) {
             return false;
         }
 
-        if (! $node->expr instanceof Expr) {
+        if (! $stmt->expr instanceof Expr) {
             return false;
         }
 
-        return $this->valueResolver->isNull($node->expr);
+        return $this->valueResolver->isNull($stmt->expr);
     }
 
     /**
-     * @param Expr[] $coalescingNodes
+     * @param Expr[] $coalescingExprs
      */
-    private function createReturnCoalesceNode(array $coalescingNodes): Return_
+    private function createCealesceReturn(array $coalescingExprs): Return_
     {
-        /** @var Expr $left */
-        $left = array_shift($coalescingNodes);
+        /** @var Expr $leftExpr */
+        $leftExpr = array_shift($coalescingExprs);
 
-        /** @var Expr $right */
-        $right = array_shift($coalescingNodes);
+        /** @var Expr $rightExpr */
+        $rightExpr = array_shift($coalescingExprs);
 
-        $coalesceNode = new Coalesce($left, $right);
-        foreach ($coalescingNodes as $coalescingNode) {
-            $coalesceNode = new Coalesce($coalesceNode, $coalescingNode);
+        $coalesce = new Coalesce($leftExpr, $rightExpr);
+
+        foreach ($coalescingExprs as $coalescingExpr) {
+            $coalesce = new Coalesce($coalesce, $coalescingExpr);
         }
 
-        return new Return_($coalesceNode);
+        return new Return_($coalesce);
     }
 }
