@@ -1343,13 +1343,16 @@ Simplify `is_array` and `empty` functions combination into a simple identical ch
 
 ### SimplifyEmptyCheckOnEmptyArrayRector
 
-Simplify `empty` functions calls on empty arrays
+Simplify `empty()` functions calls on empty arrays
 
 - class: [`Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector`](../rules/CodeQuality/Rector/Empty_/SimplifyEmptyCheckOnEmptyArrayRector.php)
 
 ```diff
--$array = []; if(empty($values))
-+$array = []; if([] === $values)
+ $array = [];
+
+-if (empty($values)) {
++if ([] === $values) {
+ }
 ```
 
 <br>

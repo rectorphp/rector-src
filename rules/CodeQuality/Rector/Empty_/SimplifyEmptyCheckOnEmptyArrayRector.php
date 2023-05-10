@@ -44,8 +44,22 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Simplify `empty` functions calls on empty arrays',
-            [new CodeSample('$array = []; if(empty($values))', '$array = []; if([] === $values)')]
+            'Simplify empty() functions calls on empty arrays',
+            [new CodeSample(
+                <<<'CODE_SAMPLE'
+$array = [];
+
+if (empty($values)) {
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+$array = [];
+
+if ([] === $values) {
+}
+CODE_SAMPLE
+            )]
         );
     }
 
