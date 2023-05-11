@@ -61,20 +61,28 @@ CODE_SAMPLE
     {
         return [
             Class_::class,
-            Property::class,
-            Param::class,
-            ClassMethod::class,
-            Function_::class,
-            Closure::class,
-            ArrowFunction::class,
+            //Property::class,
+            //Param::class,
+            //ClassMethod::class,
+            //Function_::class,
+            //Closure::class,
+            //ArrowFunction::class,
         ];
     }
 
     /**
-     * @param ClassMethod|Property|Function_|Closure|Param|Class_|ArrowFunction $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
+        foreach ($node->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                $name = $this->getName($attr->name);
+                $this->configuration;
+                // todo if $this->configuration contains
+                $t = 0;
+            }
+        }
         return $node;
     }
 

@@ -2,14 +2,11 @@
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Fixture;
 
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\FirstAttribute;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\SecondAttribute;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\ThirdAttribute;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 
-#[ThirdAttribute]
-#[FirstAttribute]
-#[SecondAttribute]
-class OneAround
+
+#[Groups(['b', 'a'])]
+class MyClass
 {
 }
 
@@ -19,14 +16,11 @@ class OneAround
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Fixture;
 
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\FirstAttribute;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\SecondAttribute;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderAttributesRector\SpecificOrder\Source\ThirdAttribute;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 
-#[FirstAttribute]
-#[SecondAttribute]
-#[ThirdAttribute]
-class OneAround
+
+#[Groups(['a', 'b'])]
+class MyClass
 {
 }
 

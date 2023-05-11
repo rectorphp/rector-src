@@ -12,4 +12,10 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(OrderArrayParamRector::class, [
             new OrderArrayParam(Groups::class),
         ]);
+    //$rectorConfig
+    //    ->ruleWithConfiguration(OrderArrayParamRector::class, [
+    //        new OrderArrayParam([Groups::class => static function() {
+    //
+    //        }]),
+    //    ]);
 };
