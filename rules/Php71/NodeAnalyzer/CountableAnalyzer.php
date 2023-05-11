@@ -39,7 +39,7 @@ final class CountableAnalyzer
     ) {
     }
 
-    public function isCastableArrayType(Expr $expr, ArrayType $arrayType): bool
+    public function isCastableArrayType(Expr $expr, ArrayType $arrayType, Scope $scope): bool
     {
         if (! $this->propertyFetchAnalyzer->isPropertyFetch($expr)) {
             return false;
@@ -82,7 +82,7 @@ final class CountableAnalyzer
             return false;
         }
 
-        $phpPropertyReflection = $this->resolveProperty($expr, $classReflection, $propertyName);
+        $phpPropertyReflection = $classReflection->getProperty($propertyName, $scope);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
             return false;
         }
@@ -124,18 +124,5 @@ final class CountableAnalyzer
 
         $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch->name);
         return $this->constructorAssignDetector->isPropertyAssigned($classLike, $propertyName);
-    }
-
-    private function resolveProperty(
-        StaticPropertyFetch|PropertyFetch $propertyFetch,
-        ClassReflection $classReflection,
-        string $propertyName
-    ): ?PropertyReflection {
-        $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        return $classReflection->getProperty($propertyName, $scope);
     }
 }
