@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -150,7 +149,7 @@ CODE_SAMPLE
     {
         $this->collectCallByVariable($methodCall);
 
-        if ($this->shouldSkipMethodCall($methodCall, $scope)) {
+        if ($this->shouldSkipMethodCall($methodCall)) {
             return null;
         }
 
@@ -201,7 +200,7 @@ CODE_SAMPLE
         }
     }
 
-    private function shouldSkipMethodCall(MethodCall $methodCall, Scope $scope): bool
+    private function shouldSkipMethodCall(MethodCall $methodCall): bool
     {
         // is to string retype?
         $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);

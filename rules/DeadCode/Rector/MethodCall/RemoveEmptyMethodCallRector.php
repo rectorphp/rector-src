@@ -24,7 +24,6 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -147,11 +146,7 @@ CODE_SAMPLE
         }
 
         $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
-        if ($parentArg instanceof Arg) {
-            return true;
-        }
-
-        return false;
+        return $parentArg instanceof Arg;
     }
 
     private function shouldSkipClassMethod(

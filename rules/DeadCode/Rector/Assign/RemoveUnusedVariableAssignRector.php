@@ -165,7 +165,8 @@ CODE_SAMPLE
 
     private function isUsed(Assign $assign, Variable $variable, Scope $scope): bool
     {
-        $isUsedPrev = $scope->hasVariableType((string) $this->getName($variable))->yes();
+        $isUsedPrev = $scope->hasVariableType((string) $this->getName($variable))
+            ->yes();
 
         if ($isUsedPrev) {
             return true;
@@ -239,7 +240,8 @@ CODE_SAMPLE
         if (! $if instanceof If_) {
             if (
                 $assign->var instanceof Variable &&
-                ! $scope->hasVariableType((string) $this->getName($assign->var))->yes() &&
+                ! $scope->hasVariableType((string) $this->getName($assign->var))
+                    ->yes() &&
                 ! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var)) {
                 return $this->cleanCastedExpr($assign->expr);
             }
