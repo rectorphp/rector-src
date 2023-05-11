@@ -118,11 +118,11 @@ CODE_SAMPLE
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstanceOf((array) $classMethod->getStmts(), Assign::class);
         foreach ($assigns as $assign) {
-            if (! $this->nodeComparator->areNodesEqual($assign->expr, $param->var)) {
+            if (! $assign->var instanceof PropertyFetch) {
                 continue;
             }
 
-            if (! $assign->var instanceof PropertyFetch) {
+            if (! $this->nodeComparator->areNodesEqual($assign->expr, $param->var)) {
                 continue;
             }
 
