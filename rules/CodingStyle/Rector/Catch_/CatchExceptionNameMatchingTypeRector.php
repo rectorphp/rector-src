@@ -11,10 +11,12 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
@@ -144,6 +146,8 @@ CODE_SAMPLE
                 $stmt,
                 $oldVariableName,
                 $newVariableName,
+                $key,
+                $node->stmts,
                 $node->stmts[$key + 1] ?? null
             );
 
@@ -186,14 +190,28 @@ CODE_SAMPLE
         }
 
         $catch = $stmt->catches[0];
-        return ! $catch->var instanceof Variable;
+        if (! $catch->var instanceof Variable) {
+            return true;
+        }
+
+        $parentNode = $stmt->getAttribute(AttributeKey::PARENT_NODE);
+        if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
+            return false;
+        }
+
+        return ! $parentNode instanceof FunctionLike;
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     private function renameVariableInStmts(
         Catch_ $catch,
         TryCatch $tryCatch,
         string $oldVariableName,
         string $newVariableName,
+        int $key,
+        array $stmts,
         ?Stmt $stmt
     ): void {
         $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
@@ -212,28 +230,21 @@ CODE_SAMPLE
             return null;
         });
 
-        $this->replaceNextUsageVariable($tryCatch, $stmt, $oldVariableName, $newVariableName);
+        $this->replaceNextUsageVariable($tryCatch, $oldVariableName, $newVariableName, $key, $stmts, $stmt);
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     private function replaceNextUsageVariable(
         Node $currentNode,
-        ?Node $nextNode,
         string $oldVariableName,
-        string $newVariableName
+        string $newVariableName,
+        int $key,
+        array $stmts,
+        ?Node $nextNode,
     ): void {
         if (! $nextNode instanceof Node) {
-            $parentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof Node) {
-                return;
-            }
-
-            if ($parentNode instanceof FunctionLike) {
-                return;
-            }
-
-            $nextNode = $parentNode->getAttribute(AttributeKey::NEXT_NODE);
-            $this->replaceNextUsageVariable($parentNode, $nextNode, $oldVariableName, $newVariableName);
-
             return;
         }
 
@@ -251,9 +262,20 @@ CODE_SAMPLE
             return;
         }
 
-        $currentNode = $nextNode;
-        $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
-        $this->replaceNextUsageVariable($currentNode, $nextNode, $oldVariableName, $newVariableName);
+        if (! isset($stmts[$key+1])) {
+            return;
+        }
+
+        $currentNode = $stmts[$key+1];
+
+        if (! isset($stmts[$key+2])) {
+            return;
+        }
+
+        $nextNode = $stmts[$key+2];
+        $key += 2;
+
+        $this->replaceNextUsageVariable($currentNode, $oldVariableName, $newVariableName, $key, $stmts, $nextNode);
     }
 
     /**
