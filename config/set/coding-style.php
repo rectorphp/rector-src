@@ -19,7 +19,6 @@ use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
-use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
 use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
@@ -57,7 +56,6 @@ return static function (RectorConfig $rectorConfig): void {
         TernaryConditionVariableAssignmentRector::class,
         SymplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
-        ConsistentPregDelimiterRector::class,
         CatchExceptionNameMatchingTypeRector::class,
         UseIncrementAssignRector::class,
         SplitDoubleAssignRector::class,
