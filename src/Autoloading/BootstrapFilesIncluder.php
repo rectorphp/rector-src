@@ -30,7 +30,7 @@ final class BootstrapFilesIncluder
     /**
      * @var array<string, mixed>
      */
-    private $configCache = [];
+    private array $configCache = [];
 
     public function includePHPStanExtensionsBoostrapFiles(?Container $container = null): void
     {
@@ -81,6 +81,7 @@ final class BootstrapFilesIncluder
             } else {
                 $extensionConfigContents = $this->configCache[$extensionConfigFile];
             }
+
             $configDirectory = dirname($extensionConfigFile);
 
             $bootstrapFiles = $extensionConfigContents['parameters']['bootstrapFiles'] ?? [];
