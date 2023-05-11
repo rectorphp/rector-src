@@ -96,25 +96,18 @@ CODE_SAMPLE
 
         $hasChanged = false;
         foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof TryCatch) {
+            if ($this->shouldSkip($stmt)) {
                 continue;
             }
 
-            if (count($stmt->catches) !== 1) {
-                continue;
-            }
-
-            if (count($stmt->catches[0]->types) !== 1) {
-                continue;
-            }
-
+            /** @var TryCatch $stmt */
             $catch = $stmt->catches[0];
-            if (! $catch->var instanceof Variable) {
-                continue;
-            }
+
+            /** @var Variable $catchVar */
+            $catchVar = $catch->var;
 
             /** @var string $oldVariableName */
-            $oldVariableName = $this->getName($catch->var);
+            $oldVariableName = (string) $this->getName($catchVar);
 
             $type = $catch->types[0];
             $typeShortName = $this->nodeNameResolver->getShortName($type);
@@ -124,16 +117,7 @@ CODE_SAMPLE
                 $typeShortName = $aliasName;
             }
 
-            $newVariableName = Strings::replace(
-                lcfirst($typeShortName),
-                self::STARTS_WITH_ABBREVIATION_REGEX,
-                static function (array $matches): string {
-                    $output = isset($matches[1]) ? strtolower((string) $matches[1]) : '';
-                    $output .= $matches[2] ?? '';
-
-                    return $output . ($matches[3] ?? '');
-                }
-            );
+            $newVariableName = $this->resolveNewVariableName($typeShortName);
 
             $objectType = new ObjectType($newVariableName);
             $newVariableName = $this->propertyNaming->fqnToVariableName($objectType);
@@ -154,7 +138,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $catch->var->name = $newVariableName;
+            $catch->var = new Variable($newVariableName);
             $this->renameVariableInStmts(
                 $catch,
                 $stmt,
@@ -171,6 +155,38 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function resolveNewVariableName(string $typeShortName): string
+    {
+        return Strings::replace(
+            lcfirst($typeShortName),
+            self::STARTS_WITH_ABBREVIATION_REGEX,
+            static function (array $matches): string {
+                $output = isset($matches[1]) ? strtolower((string) $matches[1]) : '';
+                $output .= $matches[2] ?? '';
+
+                return $output . ($matches[3] ?? '');
+            }
+        );
+    }
+
+    private function shouldSkip(Stmt $stmt): bool
+    {
+        if (! $stmt instanceof TryCatch) {
+            return true;
+        }
+
+        if (count($stmt->catches) !== 1) {
+            return true;
+        }
+
+        if (count($stmt->catches[0]->types) !== 1) {
+            return true;
+        }
+
+        $catch = $stmt->catches[0];
+        return ! $catch->var instanceof Variable;
     }
 
     private function renameVariableInStmts(
