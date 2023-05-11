@@ -101,7 +101,7 @@ CODE_SAMPLE
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof MethodCall) {
-            return $this->refactorMethodCall($node, $scope);
+            return $this->refactorMethodCall($node);
         }
 
         if ($node->expr instanceof MethodCall) {
@@ -145,7 +145,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function refactorMethodCall(MethodCall $methodCall, Scope $scope): ?Node
+    private function refactorMethodCall(MethodCall $methodCall): ?Node
     {
         $this->collectCallByVariable($methodCall);
 

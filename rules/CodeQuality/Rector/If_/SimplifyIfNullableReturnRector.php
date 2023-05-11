@@ -90,71 +90,89 @@ CODE_SAMPLE
         }
 
         foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof If_) {
+            if (! $stmt instanceof Return_) {
                 continue;
             }
 
-            $if = $stmt;
+            $previousStmt = $node->stmts[$key - 1] ?? null;
+            if (! $previousStmt instanceof If_) {
+                continue;
+            }
+
+            $if = $previousStmt;
             if ($this->shouldSkip($if)) {
                 continue;
             }
 
             /** @var BooleanNot|Instanceof_ $cond */
             $cond = $if->cond;
-            /** @var Instanceof_ $instanceof */
 
+            /** @var Instanceof_ $instanceof */
             $instanceof = $cond instanceof BooleanNot ? $cond->expr : $cond;
 
+            // @todo allow property as well
             $variable = $instanceof->expr;
+
             $class = $instanceof->class;
 
             if (! $class instanceof Name) {
-                return null;
+                continue;
             }
 
             /** @var Return_ $returnIfStmt */
             $returnIfStmt = $if->stmts[0];
 
             if ($this->isIfStmtReturnIncorrect($cond, $variable, $returnIfStmt)) {
-                return null;
+                continue;
             }
 
-            $previous = $if->getAttribute(AttributeKey::PREVIOUS_NODE);
-            if (! $previous instanceof Expression) {
-                return null;
+            $previousPreviousStmt = $node->stmts[$key - 2] ?? null;
+            if (! $previousPreviousStmt instanceof Expression) {
+                continue;
             }
 
-            $previousAssign = $previous->expr;
-            if (! $previousAssign instanceof Assign) {
-                return null;
+            if (! $previousPreviousStmt->expr instanceof Assign) {
+                continue;
             }
 
-            if (! $this->nodeComparator->areNodesEqual($previousAssign->var, $variable)) {
-                return null;
+            $previousPreviousAssign = $previousPreviousStmt->expr;
+            if (! $this->nodeComparator->areNodesEqual($previousPreviousAssign->var, $variable)) {
+                continue;
             }
 
-            /** @var Return_ $nextNode */
-            $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
-            if ($this->isNextReturnIncorrect($cond, $variable, $nextNode)) {
-                return null;
+            if ($this->isNextReturnIncorrect($cond, $variable, $stmt)) {
+                continue;
             }
 
-            $variableType = $this->assignVariableTypeResolver->resolve($previousAssign);
+            $variableType = $this->assignVariableTypeResolver->resolve($previousPreviousAssign);
             if (! $variableType instanceof UnionType) {
-                return null;
+                continue;
             }
 
             $className = $class->toString();
             $types = $variableType->getTypes();
 
-            return $this->processSimplifyNullableReturn(
+            $directReturn = $this->processSimplifyNullableReturn(
                 $variableType,
                 $types,
                 $className,
-                $nextNode,
-                $previous,
-                $previousAssign->expr
+                $previousPreviousStmt,
+                $previousPreviousAssign->expr
             );
+
+            if (! $directReturn instanceof Return_) {
+                continue;
+            }
+
+            // unset previous assign
+            unset($node->stmts[$key - 2]);
+
+            // unset previous if
+            unset($node->stmts[$key - 1]);
+
+            $node->stmts[$key] = $directReturn;
+
+            return $node;
         }
 
         return null;
@@ -193,7 +211,6 @@ CODE_SAMPLE
         UnionType $unionType,
         array $types,
         string $className,
-        Return_ $return,
         Expression $expression,
         Expr $expr
     ): ?Return_ {
@@ -202,18 +219,18 @@ CODE_SAMPLE
         }
 
         if ($types[0] instanceof FullyQualifiedObjectType && $types[1] instanceof NullType && $className === $types[0]->getClassName()) {
-            return $this->removeAndReturn($return, $expression, $expr, $unionType);
+            return $this->createDirectReturn($expression, $expr, $unionType);
         }
 
         if ($types[0] instanceof NullType && $types[1] instanceof FullyQualifiedObjectType && $className === $types[1]->getClassName()) {
-            return $this->removeAndReturn($return, $expression, $expr, $unionType);
+            return $this->createDirectReturn($expression, $expr, $unionType);
         }
 
         if ($this->isNotTypedNullable($types, $className)) {
             return null;
         }
 
-        return $this->removeAndReturn($return, $expression, $expr, $unionType);
+        return $this->createDirectReturn($expression, $expr, $unionType);
     }
 
     /**
@@ -232,12 +249,10 @@ CODE_SAMPLE
         return $className !== $types[0]->getClassName();
     }
 
-    private function removeAndReturn(Return_ $return, Expression $expression, Expr $expr, UnionType $unionType): Return_
+    private function createDirectReturn(Expression $expression, Expr $expr, UnionType $unionType): Return_
     {
-        $this->removeNode($return);
-        $this->removeNode($expression);
-
         $exprReturn = new Return_($expr);
+
         $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($expression, $unionType);
         $this->mirrorComments($exprReturn, $expression);
 
