@@ -6,7 +6,6 @@ namespace Rector\Testing\Fixture;
 
 use Iterator;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 final class FixtureFileFinder
 {
@@ -20,8 +19,7 @@ final class FixtureFileFinder
             ->files()
             ->name($suffix);
 
-        $fileInfos = iterator_to_array($finder);
-        foreach ($fileInfos as $fileInfo) {
+        foreach ($finder as $fileInfo) {
             yield [$fileInfo->getRealPath()];
         }
     }
