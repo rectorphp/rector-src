@@ -146,11 +146,7 @@ CODE_SAMPLE
         }
 
         $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
-        if ($parentArg instanceof Arg) {
-            return true;
-        }
-
-        return false;
+        return $parentArg instanceof Arg;
     }
 
     private function shouldSkipClassMethod(

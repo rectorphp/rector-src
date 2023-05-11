@@ -149,7 +149,7 @@ CODE_SAMPLE
     {
         $this->collectCallByVariable($methodCall);
 
-        if ($this->shouldSkipMethodCall($methodCall, $scope)) {
+        if ($this->shouldSkipMethodCall($methodCall)) {
             return null;
         }
 
@@ -200,7 +200,7 @@ CODE_SAMPLE
         }
     }
 
-    private function shouldSkipMethodCall(MethodCall $methodCall, Scope $scope): bool
+    private function shouldSkipMethodCall(MethodCall $methodCall): bool
     {
         // is to string retype?
         $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
