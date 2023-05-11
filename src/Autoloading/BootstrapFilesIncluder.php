@@ -30,12 +30,7 @@ final class BootstrapFilesIncluder
         private readonly ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
     ) {
-    }
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $configCache = [];
+    } 
 
     public function includePHPStanExtensionsBoostrapFiles(?Container $container = null): void
     {
