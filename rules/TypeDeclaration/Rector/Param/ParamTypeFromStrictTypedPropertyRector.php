@@ -172,7 +172,7 @@ CODE_SAMPLE
     private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType, Scope $scope): bool
     {
         if (!$scope->hasVariableType($paramName)->yes()) {
-            return true;
+            return false;
         }
 
         $currentParamType = $scope->getVariableType($paramName);
