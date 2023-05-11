@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Caching\Config;
 
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Util\Hashing;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Loader\LoaderResolver;
@@ -17,6 +18,10 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
  */
 final class FileHashComputer
 {
+    public function __construct(private readonly Hashing $hashing)
+    {
+    }
+
     public function compute(string $filePath): string
     {
         $this->ensureIsPhp($filePath);
@@ -69,6 +74,6 @@ final class FileHashComputer
     private function arrayToHash(array $array): string
     {
         $serializedArray = serialize($array);
-        return md5($serializedArray);
+        return $this->hashing->hash($serializedArray);
     }
 }
