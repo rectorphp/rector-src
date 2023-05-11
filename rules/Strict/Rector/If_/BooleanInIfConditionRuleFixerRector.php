@@ -82,13 +82,8 @@ CODE_SAMPLE
     /**
      * @param If_ $node
      */
-    public function refactor(Node $node): ?If_
+    public function refactorWithScope(Node $node, Scope $scope): ?If_
     {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         // 1. if
         $ifCondExprType = $scope->getType($node->cond);
         $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
