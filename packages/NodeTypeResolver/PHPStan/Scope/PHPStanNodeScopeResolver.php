@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
@@ -45,6 +46,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -75,6 +77,7 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
@@ -212,6 +215,10 @@ final class PHPStanNodeScopeResolver
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
             }
 
+            if ($node instanceof Stmt) {
+                $this->setChildOfUnreachableStatementNodeAttribute($node);
+            }
+
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
@@ -221,6 +228,30 @@ final class PHPStanNodeScopeResolver
         };
 
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
+    }
+
+    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
+    {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+            return;
+        }
+
+        $parentStmt = $stmt->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentStmt instanceof Node) {
+            return;
+        }
+
+        if ($parentStmt instanceof Closure) {
+            $parentStmt = $this->betterNodeFinder->resolveCurrentStatement($parentStmt);
+        }
+
+        if (! $parentStmt instanceof Stmt) {
+            return;
+        }
+
+        if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+            $stmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        }
     }
 
     private function processArray(Array_ $array, MutatingScope $mutatingScope): void
