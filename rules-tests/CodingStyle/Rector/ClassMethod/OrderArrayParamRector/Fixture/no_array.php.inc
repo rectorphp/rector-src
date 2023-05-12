@@ -5,13 +5,13 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Fixt
 use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 
 
-#[Groups(['b', 'a'])]
+#[Groups('a')]
 class MyClass
 {
 }
 
 ?>
------
+    -----
 <?php
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Fixture;
@@ -19,7 +19,7 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Fixt
 use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 
 
-#[Groups(['a', 'b'])]
+#[Groups('a')]
 class MyClass
 {
 }

@@ -1,4 +1,4 @@
-# 413 Rules Overview
+# 414 Rules Overview
 
 <br>
 
@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (77)
 
-- [CodingStyle](#codingstyle) (37)
+- [CodingStyle](#codingstyle) (38)
 
 - [Compatibility](#compatibility) (1)
 
@@ -2234,6 +2234,70 @@ Changes already typed Type|null to ?Type
 
 -    private null|stdClass $property;
 +    private ?stdClass $property;
+ }
+```
+
+<br>
+
+### OrderArrayParamRector
+
+Order attributes by asc or desc
+
+:wrench: **configure it!**
+
+- class: [`Rector\CodingStyle\Rector\ClassMethod\OrderArrayParamRector`](../rules/CodingStyle/Rector/ClassMethod/OrderArrayParamRector.php)
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Rector\CodingStyle\Rector\ClassMethod\OrderArrayParamRector;
+use Rector\Config\RectorConfig;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->ruleWithConfiguration(OrderArrayParamRector::class, [
+        Groups::class => 'ASC',
+    ]);
+};
+```
+
+↓
+
+```diff
+-#[Groups(['b', 'a'])]
++#[Groups(['a', 'b'])]
+ class MyClass
+ {
+ }
+```
+
+<br>
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Rector\CodingStyle\Rector\ClassMethod\OrderArrayParamRector;
+use Rector\Config\RectorConfig;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->ruleWithConfiguration(OrderArrayParamRector::class, [
+        Groups::class => 'DESC',
+    ]);
+};
+```
+
+↓
+
+```diff
+-#[Groups(['a', 'b'])]
++#[Groups(['b', 'a'])]
+ class MyClass
+ {
  }
 ```
 

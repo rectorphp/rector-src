@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -14,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\CodingStyle\ValueObject\OrderArray\OrderArrayParam;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -25,7 +25,6 @@ final class OrderArrayParamRector extends AbstractRector implements Configurable
 {
     public const ASC = 'ASC';
     public const DESC = 'DESC';
-    private const KEY = 'next';
 
     /**
      * @var OrderArrayParam[]
@@ -34,25 +33,44 @@ final class OrderArrayParamRector extends AbstractRector implements Configurable
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Order attributes by desired names', [
+        return new RuleDefinition('Order attributes by asc or desc', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-#[Second]
-#[First]
-class Someclass
+#[Groups(['b', 'a'])]
+class MyClass
 {
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-#[First]
-#[Second]
-class Someclass
+#[Groups(['a', 'b'])]
+class MyClass
 {
 }
 CODE_SAMPLE
                 ,
-                ['First', 'Second'],
+                [
+                    Groups::class => OrderArrayParamRector::ASC,
+                ],
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+#[Groups(['a', 'b'])]
+class MyClass
+{
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+#[Groups(['b', 'a'])]
+class MyClass
+{
+}
+CODE_SAMPLE
+                ,
+                [
+                    Groups::class => OrderArrayParamRector::DESC,
+                ],
             ),
         ]);
     }
@@ -87,7 +105,6 @@ CODE_SAMPLE
             foreach ($configuration->getConfig() as $className2 => $sortOrder) {
                 if ($className2 === $className) {
                     $this->sort($attr, $sortOrder);
-                    break;
                 }
             }
         }
@@ -95,24 +112,26 @@ CODE_SAMPLE
 
     private function sort(Attribute $attr, string $sortOrder): void
     {
-        /** @var Arg $arg */
-        $arg = $attr->name->getAttribute(self::KEY);
-        /** @var Array_ $value */
-        $value = $arg->value;
-        usort($value->items, static function (
-            ArrayItem $first,
-            ArrayItem $second
-        ) use ($sortOrder) {
-            /** @var String_ $firstValue */
-            $firstValue = $first->value;
-            /** @var String_ $secondValue */
-            $secondValue = $second->value;
-            if ($sortOrder === self::ASC) {
-                return strcmp($firstValue->value, $secondValue->value);
+        foreach ($attr->args as $index => $arg) {
+            /** @var Array_ $value */
+            $value = $arg->value;
+            if (isset($value->items) && is_array($value->items)) {
+                usort($value->items, static function (
+                    ArrayItem $first,
+                    ArrayItem $second
+                ) use ($sortOrder): int {
+                    /** @var String_ $firstValue */
+                    $firstValue = $first->value;
+                    /** @var String_ $secondValue */
+                    $secondValue = $second->value;
+                    if ($sortOrder === self::ASC) {
+                        return strcmp($firstValue->value, $secondValue->value);
+                    }
+                    return strcmp($secondValue->value, $firstValue->value);
+                });
             }
-            return strcmp($secondValue->value, $firstValue->value);
-        });
-        $attr->name->setAttribute(self::KEY, $value);
+            $attr->args[$index] = $arg;
+        }
     }
 
     public function configure(array $configuration): void
