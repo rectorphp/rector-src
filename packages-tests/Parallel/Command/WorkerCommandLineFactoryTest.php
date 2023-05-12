@@ -100,7 +100,8 @@ final class WorkerCommandLineFactoryTest extends TestCase
 
     private function prepareProcessCommandDefinition(): InputDefinition
     {
-        $inputDefinition = $this->processCommand->getDefinition();
+        // clone the object as we should not modify a object taken from the DI container
+        $inputDefinition = clone $this->processCommand->getDefinition();
 
         // not sure why, but the 1st argument "command" is missing; this is needed for a command name
         $arguments = $inputDefinition->getArguments();
