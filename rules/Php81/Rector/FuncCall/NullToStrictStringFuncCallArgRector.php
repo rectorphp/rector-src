@@ -27,7 +27,6 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -388,7 +387,7 @@ CODE_SAMPLE
         $args = $node->getArgs();
         $positions = $this->argsAnalyzer->hasNamedArg($args)
             ? $this->resolveNamedPositions($node, $args)
-            : $this->resolveOriginalPositions($node);
+            : $this->resolveOriginalPositions($node, $scope);
 
         if ($positions === []) {
             return null;
@@ -399,7 +398,7 @@ CODE_SAMPLE
 
         $isChanged = false;
         foreach ($positions as $position) {
-            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position, $isTrait);
+            $result = $this->processNullToStrictStringOnNodePosition($node, $args, $position, $isTrait, $scope);
             if ($result instanceof Node) {
                 $node = $result;
                 $isChanged = true;
@@ -450,7 +449,8 @@ CODE_SAMPLE
         FuncCall $funcCall,
         array $args,
         int|string $position,
-        bool $isTrait
+        bool $isTrait,
+        Scope $scope
     ): ?FuncCall {
         if (! isset($args[$position])) {
             return null;
@@ -478,7 +478,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isAnErrorTypeFromParentScope($argValue)) {
+        if ($this->isAnErrorTypeFromParentScope($argValue, $scope)) {
             return null;
         }
 
@@ -532,13 +532,8 @@ CODE_SAMPLE
         });
     }
 
-    private function isAnErrorTypeFromParentScope(Expr $expr): bool
+    private function isAnErrorTypeFromParentScope(Expr $expr, Scope $scope): bool
     {
-        $scope = $expr->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $parentScope = $scope->getParentScope();
         if ($parentScope instanceof Scope) {
             return $parentScope->getType($expr) instanceof ErrorType;
@@ -550,15 +545,10 @@ CODE_SAMPLE
     /**
      * @return int[]|string[]
      */
-    private function resolveOriginalPositions(FuncCall $funcCall): array
+    private function resolveOriginalPositions(FuncCall $funcCall, Scope $scope): array
     {
         $functionReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($funcCall);
         if (! $functionReflection instanceof NativeFunctionReflection) {
-            return [];
-        }
-
-        $scope = $funcCall->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
             return [];
         }
 

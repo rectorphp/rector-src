@@ -6,7 +6,7 @@
 
 - [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (77)
+- [CodeQuality](#codequality) (76)
 
 - [CodingStyle](#codingstyle) (38)
 
@@ -1612,26 +1612,6 @@ Change switch with only 1 check to if
 
 <br>
 
-### SplitListAssignToSeparateLineRector
-
-Splits `[$a, $b] = [5, 10]` scalar assign to standalone lines
-
-- class: [`Rector\CodeQuality\Rector\Assign\SplitListAssignToSeparateLineRector`](../rules/CodeQuality/Rector/Assign/SplitListAssignToSeparateLineRector.php)
-
-```diff
- final class SomeClass
- {
-     public function run(): void
-     {
--        [$a, $b] = [1, 2];
-+        $a = 1;
-+        $b = 2;
-     }
- }
-```
-
-<br>
-
 ### StrlenZeroToIdenticalEmptyStringRector
 
 Changes strlen comparison to 0 to direct empty string compare
@@ -2011,46 +1991,6 @@ Changes various implode forms to consistent one
 +        $itemsAsStrings = implode('|', $items);
 
          $itemsAsStrings = implode('|', $items);
-     }
- }
-```
-
-<br>
-
-### ConsistentPregDelimiterRector
-
-Replace PREG delimiter with configured one
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector`](../rules/CodingStyle/Rector/FuncCall/ConsistentPregDelimiterRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\CodingStyle\Rector\FuncCall\ConsistentPregDelimiterRector;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ConsistentPregDelimiterRector::class, [
-        ConsistentPregDelimiterRector::DELIMITER => '#',
-    ]);
-};
-```
-
-↓
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        preg_match('~value~', $value);
--        preg_match_all('~value~im', $value);
-+        preg_match('#value#', $value);
-+        preg_match_all('#value#im', $value);
      }
  }
 ```

@@ -24,7 +24,7 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -33,7 +33,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\MethodCall\RemoveEmptyMethodCallRector\RemoveEmptyMethodCallRectorTest
  */
-final class RemoveEmptyMethodCallRector extends AbstractRector
+final class RemoveEmptyMethodCallRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly AstResolver $reflectionAstResolver,
@@ -83,11 +83,9 @@ CODE_SAMPLE
     /**
      * @param MethodCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        $scope = $this->getScope($node);
-
-        if (! $scope instanceof Scope) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -141,18 +139,14 @@ CODE_SAMPLE
         return $this->reflectionAstResolver->resolveClassFromName($classReflection->getName());
     }
 
-    private function getScope(MethodCall $methodCall): ?Scope
+    private function shouldSkip(MethodCall $methodCall): bool
     {
         if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
-            return null;
+            return true;
         }
 
         $parentArg = $this->betterNodeFinder->findParentType($methodCall, Arg::class);
-        if ($parentArg instanceof Arg) {
-            return null;
-        }
-
-        return $methodCall->var->getAttribute(AttributeKey::SCOPE);
+        return $parentArg instanceof Arg;
     }
 
     private function shouldSkipClassMethod(

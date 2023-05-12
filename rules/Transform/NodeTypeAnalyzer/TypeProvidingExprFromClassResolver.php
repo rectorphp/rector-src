@@ -41,7 +41,8 @@ final class TypeProvidingExprFromClassResolver
     public function resolveTypeProvidingExprFromClass(
         Class_ $class,
         ClassMethod $classMethod,
-        ObjectType $objectType
+        ObjectType $objectType,
+        Scope $scope
     ): ?Expr {
         $className = (string) $this->nodeNameResolver->getName($class);
 
@@ -53,11 +54,6 @@ final class TypeProvidingExprFromClassResolver
         }
 
         // B. match existing property
-        $scope = $class->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         $propertyFetch = $this->resolvePropertyFetchProvidingType($classReflection, $scope, $objectType);
         if ($propertyFetch instanceof PropertyFetch) {
             return $propertyFetch;

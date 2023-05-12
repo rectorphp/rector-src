@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BooleanNot;
 use PHPStan\Analyser\Scope;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -81,13 +80,8 @@ CODE_SAMPLE
     /**
      * @param BooleanNot $node
      */
-    public function refactor(Node $node): ?Expr
+    public function refactorWithScope(Node $node, Scope $scope): ?Expr
     {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
         $exprType = $scope->getType($node->expr);
 
         return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $node->expr, $this->treatAsNonEmpty);

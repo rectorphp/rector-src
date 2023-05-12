@@ -791,6 +791,7 @@ parameters:
         - '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:refactor\(\)" is 11, keep it under 10#'
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 10#'
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\ForeachToInArrayRector\:\:refactor\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\If_\\SimplifyIfNullableReturnRector\:\:refactor\(\)" is 15, keep it under 10#'
 
         # resolve continually
         - '#(Matching|Fetching) deprecated class constant (NEXT_NODE|PREVIOUS_NODE) of class Rector\\NodeTypeResolver\\Node\\AttributeKey#'

@@ -19,7 +19,6 @@ final class AssignVariableTypeResolver
     public function resolve(Assign $assign): Type
     {
         $exprType = $this->nodeTypeResolver->getType($assign->expr);
-
         if ($exprType instanceof UnionType) {
             return $exprType;
         }
