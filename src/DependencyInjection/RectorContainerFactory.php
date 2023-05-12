@@ -10,6 +10,7 @@ use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class RectorContainerFactory
 {
@@ -42,9 +43,9 @@ final class RectorContainerFactory
      * @param string[] $configFiles
      * @api
      */
-    private function createFromConfigs(array $configFiles): ContainerInterface
+    private function createFromConfigs(array $configFiles): ContainerBuilder
     {
         $rectorKernel = new RectorKernel();
-        return $rectorKernel->createFromConfigs($configFiles);
+        return $rectorKernel->createBuilder($configFiles);
     }
 }

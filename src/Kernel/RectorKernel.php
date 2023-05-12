@@ -12,9 +12,14 @@ use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\Util\FileHasher;
+use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symplify\SmartFileSystem\SmartFileSystem;
+use Webmozart\Assert\Assert;
 
 final class RectorKernel
 {
@@ -22,44 +27,57 @@ final class RectorKernel
 
     private ContainerInterface|null $container = null;
 
+    private bool $dumpFileCache = false;
+
+    /**
+     * @var array<string, ContainerInterface>
+     */
+    private static array $containersByHash = [];
+
+    /**
+     * @var string|null
+     */
+    private static $defaultFilesHash;
+
     public function __construct()
     {
         $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
+
+        // while running tests we use different DI containers a lot,
+        // therefore make sure we don't compile them over and over again.
+        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            $this->dumpFileCache = true;
+        }
     }
 
     /**
      * @api used in tests
+     *
+     * @param string[] $configFiles
      */
-    public function create(): ContainerInterface
+    public function createBuilder(array $configFiles = []): ContainerBuilder
     {
-        return $this->createFromConfigs([]);
+        return $this->buildContainer($configFiles);
     }
 
     /**
+     * @api used in tests
+     *
      * @param string[] $configFiles
      */
-    public function createFromConfigs(array $configFiles): ContainerBuilder
+    public function createFromConfigs(array $configFiles): ContainerInterface
     {
-        $defaultConfigFiles = $this->createDefaultConfigFiles();
-        $configFiles = array_merge($defaultConfigFiles, $configFiles);
+        if ($configFiles === []) {
+            return $this->buildContainer([]);
+        }
 
-        $compilerPasses = $this->createCompilerPasses();
+        if ($this->dumpFileCache) {
+            $container = $this->buildCachedContainer($configFiles);
+        } else {
+            $container = $this->buildContainer($configFiles);
+        }
 
-        $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
-        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
-
-        $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses);
-
-        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
-        $containerBuilder->setParameter('container.dumper.inline_factories', true);
-        // to fix reincluding files again
-        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
-
-        $containerBuilder->compile();
-
-        $this->container = $containerBuilder;
-
-        return $containerBuilder;
+        return $this->container = $container;
     }
 
     /**
@@ -101,4 +119,85 @@ final class RectorKernel
     {
         return [__DIR__ . '/../../config/config.php'];
     }
+
+    /**
+     * @param string[] $configFiles
+     */
+    private function createConfigsHash(array $configFiles): string
+    {
+        $fileHasher = new FileHasher();
+
+        if (self::$defaultFilesHash === null) {
+            self::$defaultFilesHash = $fileHasher->hashFiles($this->createDefaultConfigFiles());
+        }
+
+        Assert::allString($configFiles);
+        $configHash = $fileHasher->hashFiles($configFiles);
+
+        return self::$defaultFilesHash . $configHash;
+    }
+
+    /**
+     * @param string[] $configFiles
+     */
+    private function buildContainer(array $configFiles, string $hash = null): ContainerBuilder
+    {
+        $defaultConfigFiles = $this->createDefaultConfigFiles();
+        $configFiles = array_merge($defaultConfigFiles, $configFiles);
+
+        $compilerPasses = $this->createCompilerPasses();
+
+        $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
+        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
+
+        $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses);
+
+        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
+        $containerBuilder->setParameter('container.dumper.inline_factories', true);
+        // to fix reincluding files again
+        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
+
+        $containerBuilder->compile();
+
+        return self::$containersByHash[$hash] = $this->container = $containerBuilder;
+    }
+
+    /**
+     * @param string[] $configFiles
+     */
+    private function buildCachedContainer(array $configFiles): ContainerInterface {
+        $hash = $this->createConfigsHash($configFiles);
+        if (isset(self::$containersByHash[$hash])) {
+            return self::$containersByHash[$hash];
+        }
+
+        $filesystem = new SmartFileSystem();
+        $className = 'RectorKernel'.$hash;
+        $file = sys_get_temp_dir() .'/rector/kernel-v3-'.$hash.'.php';
+
+        if (file_exists($file)) {
+            require_once $file;
+            $className = '\\'.__NAMESPACE__ .'\\'. $className;
+            $container = new $className();
+            if (!$container instanceof ContainerInterface) {
+                throw new ShouldNotHappenException();
+            }
+        } else {
+            $container = $this->buildContainer($configFiles, $hash);
+
+            $dumper = new PhpDumper($container);
+            $dumpedContainer = $dumper->dump([
+                'class' => $className,
+                'namespace' => __NAMESPACE__
+            ]);
+            if (!is_string($dumpedContainer)) {
+                throw new ShouldNotHappenException();
+            }
+
+            $filesystem->dumpFile($file, $dumpedContainer);
+        }
+
+        return self::$containersByHash[$hash] = $container;
+    }
+
 }

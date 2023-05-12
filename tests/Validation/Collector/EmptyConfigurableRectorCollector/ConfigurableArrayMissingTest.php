@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Validation\Collector\EmptyConfigurableRectorCollector;
 
+use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -16,8 +17,9 @@ final class ConfigurableArrayMissingTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->bootFromConfigFiles([__DIR__ . '/config/configurable_array_missing.php']);
-        $this->emptyConfigurableRectorCollector = $this->getService(EmptyConfigurableRectorCollector::class);
+        $rectorKernel = new RectorKernel();
+        $container = $rectorKernel->createBuilder([__DIR__ . '/config/configurable_array_missing.php']);
+        $this->emptyConfigurableRectorCollector = $container->get(EmptyConfigurableRectorCollector::class);
     }
 
     public function test(): void

@@ -17,7 +17,7 @@ final class FnMatchPathNormalizerTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $container = $rectorKernel->create();
+        $container = $rectorKernel->createBuilder();
 
         $this->fnMatchPathNormalizer = $container->get(FnMatchPathNormalizer::class);
     }

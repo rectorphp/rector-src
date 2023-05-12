@@ -794,3 +794,9 @@ parameters:
         # make autoload of php-parser in rector first
         - '#but class PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+        - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+
+        # statics are required in the kernel for performance reasons
+        -
+            message: '#Do not use static property#'
+            path: src/Kernel/RectorKernel.php
