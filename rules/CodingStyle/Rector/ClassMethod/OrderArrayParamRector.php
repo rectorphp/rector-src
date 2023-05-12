@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use Rector\CodingStyle\ValueObject\OrderArray\OrderArrayParam;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -85,11 +86,12 @@ CODE_SAMPLE
         return [
             Class_::class,
             Property::class,
+            ClassMethod::class,
         ];
     }
 
     /**
-     * @param Class_|Property $node
+     * @param Class_|Property|ClassMethod $node
      */
     public function refactor(Node $node): ?Node
     {

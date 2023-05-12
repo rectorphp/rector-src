@@ -2254,7 +2254,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassMethod\OrderArrayParamRector;
 use Rector\Config\RectorConfig;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\Source\Groups;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(OrderArrayParamRector::class, [
@@ -2282,7 +2282,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassMethod\OrderArrayParamRector;
 use Rector\Config\RectorConfig;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\Source\Groups;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(OrderArrayParamRector::class, [

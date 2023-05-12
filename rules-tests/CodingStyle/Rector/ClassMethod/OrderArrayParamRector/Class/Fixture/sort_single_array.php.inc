@@ -11,7 +11,7 @@ class MyClass
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\Fixture;
