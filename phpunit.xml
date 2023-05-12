@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" bootstrap="tests/bootstrap.php" colors="true" executionOrder="defects" cacheDirectory=".phpunit.cache">
-    <extensions>
-        <extension class="JohnKary\PHPUnit\Extension\SpeedTrap" />
-    </extensions>
+
   <testsuites>
     <testsuite name="main">
       <directory>tests</directory>
@@ -14,4 +12,8 @@
   <php>
     <ini name="memory_limit" value="-1"/>
   </php>
+
+    <extensions>
+               <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
+            </extensions>
 </phpunit>
