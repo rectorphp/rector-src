@@ -25,7 +25,6 @@ final class ContainerBuilderFactory
         Assert::allIsAOf($compilerPasses, CompilerPassInterface::class);
 
         Assert::allString($configFiles);
-        Assert::allFile($configFiles);
 
         $containerBuilder = new ContainerBuilder();
 
