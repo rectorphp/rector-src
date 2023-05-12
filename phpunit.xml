@@ -9,12 +9,12 @@
       <directory>utils-tests</directory>
     </testsuite>
     <!-- divide the rules-tests roughly in 2 equal sized groups -->
-    <testsuite name="first-letter-p-rules">
-        <directory>rules-tests/P*</directory>
+    <testsuite name="php-rules">
+        <directory>rules-tests/Php*</directory>
     </testsuite>
     <testsuite name="other-rules">
         <directory>rules-tests/</directory>
-        <exclude>rules-tests/P*</exclude>
+        <exclude>rules-tests/Php*</exclude>
     </testsuite>
   </testsuites>
   <php>
