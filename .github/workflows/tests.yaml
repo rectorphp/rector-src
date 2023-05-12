@@ -22,10 +22,11 @@ jobs:
             matrix:
                 php: ['8.1']
                 path:
-                    - tests
-                    - rules-tests
-                    - packages-tests
-                    - utils-tests
+                    - "tests/"
+                    - "rules-tests/"
+                    - "--test-suite php-rules"
+                    - "--test-suite other-rules"
+                    - "utils-tests/"
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
         steps:
