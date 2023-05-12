@@ -23,7 +23,6 @@ jobs:
                 php: ['8.1']
                 path:
                     - "tests/"
-                    - "rules-tests/"
                     - "--testsuite php-rules"
                     - "--testsuite other-rules"
                     - "utils-tests/"
