@@ -43,6 +43,7 @@
     },
     "require-dev": {
         "cweagans/composer-patches": "^1.7.2",
+        "ergebnis/phpunit-slow-test-detector": "^2.1",
         "icanhazstring/composer-unused": "^0.8.5",
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
