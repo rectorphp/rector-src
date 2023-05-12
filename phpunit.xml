@@ -8,7 +8,7 @@
       <directory>packages-tests</directory>
       <directory>utils-tests</directory>
     </testsuite>
-    <testsuite name="p-rules">
+    <testsuite name="first-letter-p-rules">
         <directory>rules-tests/P*</directory>
     </testsuite>
     <testsuite name="other-rules">
