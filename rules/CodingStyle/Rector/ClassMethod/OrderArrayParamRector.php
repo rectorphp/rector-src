@@ -10,16 +10,18 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use Rector\CodingStyle\ValueObject\OrderArray\OrderArrayParam;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
+use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\Source\Groups;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\OrderArrayParamRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\OrderArrayParamRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Property\OrderArrayParamRectorTest
  */
 final class OrderArrayParamRector extends AbstractRector implements ConfigurableRectorInterface
 {
@@ -82,11 +84,12 @@ CODE_SAMPLE
     {
         return [
             Class_::class,
+            Property::class,
         ];
     }
 
     /**
-     * @param Class_ $node
+     * @param Class_|Property $node
      */
     public function refactor(Node $node): ?Node
     {

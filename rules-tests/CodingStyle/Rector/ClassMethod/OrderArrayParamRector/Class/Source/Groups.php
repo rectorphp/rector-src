@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source;
+namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Class\Source;
 
 use Attribute;
 use InvalidArgumentException;
