@@ -44,6 +44,7 @@
     "require-dev": {
         "cweagans/composer-patches": "^1.7.2",
         "icanhazstring/composer-unused": "^0.8.5",
+        "johnkary/phpunit-speedtrap": "^1.0",
         "myclabs/php-enum": "^1.8.4",
         "nategood/httpful": "^0.3.2",
         "phpstan/extension-installer": "^1.2",
