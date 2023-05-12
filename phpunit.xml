@@ -8,12 +8,12 @@
       <directory>packages-tests</directory>
       <directory>utils-tests</directory>
     </testsuite>
-    <testsuite name="php-rules">
-        <directory>rules-tests/Php*</directory>
+    <testsuite name="p-rules">
+        <directory>rules-tests/P*</directory>
     </testsuite>
     <testsuite name="other-rules">
         <directory>rules-tests/</directory>
-        <exclude>rules-tests/Php*</exclude>
+        <exclude>rules-tests/P*</exclude>
     </testsuite>
   </testsuites>
   <php>
