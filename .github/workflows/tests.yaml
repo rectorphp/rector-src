@@ -24,8 +24,8 @@ jobs:
                 path:
                     - "tests/"
                     - "rules-tests/"
-                    - "--test-suite php-rules"
-                    - "--test-suite other-rules"
+                    - "--testsuite php-rules"
+                    - "--testsuite other-rules"
                     - "utils-tests/"
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
