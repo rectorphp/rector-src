@@ -7,7 +7,9 @@ namespace Rector\CodingStyle\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use Rector\CodingStyle\ValueObject\OrderArray\OrderArrayParam;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -95,15 +97,20 @@ CODE_SAMPLE
     {
         /** @var Arg $arg */
         $arg = $attr->name->getAttribute(self::KEY);
+        /** @var Array_ $value */
         $value = $arg->value;
         usort($value->items, static function (
             ArrayItem $first,
             ArrayItem $second
         ) use ($sortOrder) {
+            /** @var String_ $firstValue */
+            $firstValue = $first->value;
+            /** @var String_ $secondValue */
+            $secondValue = $second->value;
             if ($sortOrder === self::ASC) {
-                return strcmp($first->value->value, $second->value->value);
+                return strcmp($firstValue->value, $secondValue->value);
             }
-            return strcmp($second->value->value, $first->value->value);
+            return strcmp($secondValue->value, $firstValue->value);
         });
         $attr->name->setAttribute(self::KEY, $value);
     }
