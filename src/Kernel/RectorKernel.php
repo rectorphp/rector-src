@@ -63,18 +63,6 @@ final class RectorKernel
     }
 
     /**
-     * @api used in tests
-     */
-    public function getContainer(): ContainerInterface
-    {
-        if (! $this->container instanceof ContainerInterface) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $this->container;
-    }
-
-    /**
      * @return CompilerPassInterface[]
      */
     private function createCompilerPasses(): array
