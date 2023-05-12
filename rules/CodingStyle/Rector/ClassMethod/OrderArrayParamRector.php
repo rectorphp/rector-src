@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Param;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Property;
-use Rector\CodingStyle\ValueObject\OrderArrayParam;
+use Rector\CodingStyle\ValueObject\OrderArray\OrderArrayParam;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -24,6 +21,10 @@ use Webmozart\Assert\Assert;
  */
 final class OrderArrayParamRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    public const ASC = 'ASC';
+    public const DESC = 'DESC';
+    private const KEY = 'next';
+
     /**
      * @var OrderArrayParam[]
      */
@@ -61,12 +62,6 @@ CODE_SAMPLE
     {
         return [
             Class_::class,
-            //Property::class,
-            //Param::class,
-            //ClassMethod::class,
-            //Function_::class,
-            //Closure::class,
-            //ArrowFunction::class,
         ];
     }
 
@@ -77,18 +72,42 @@ CODE_SAMPLE
     {
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
-                $name = $this->getName($attr->name);
-                $this->configuration;
-                // todo if $this->configuration contains
-                $t = 0;
+                $this->sortClassName($attr);
             }
         }
         return $node;
     }
 
-    /**
-     * @param OrderArrayParam[] $configuration
-     */
+    private function sortClassName(Attribute $attr): void
+    {
+        $className = $this->getName($attr->name);
+        foreach ($this->configuration as $configuration) {
+            foreach ($configuration->getConfig() as $className2 => $sortOrder) {
+                if ($className2 === $className) {
+                    $this->sort($attr, $sortOrder);
+                    break;
+                }
+            }
+        }
+    }
+
+    private function sort(Attribute $attr, string $sortOrder): void
+    {
+        /** @var Arg $arg */
+        $arg = $attr->name->getAttribute(self::KEY);
+        $value = $arg->value;
+        usort($value->items, static function (
+            ArrayItem $first,
+            ArrayItem $second
+        ) use ($sortOrder) {
+            if ($sortOrder === self::ASC) {
+                return strcmp($first->value->value, $second->value->value);
+            }
+            return strcmp($second->value->value, $first->value->value);
+        });
+        $attr->name->setAttribute(self::KEY, $value);
+    }
+
     public function configure(array $configuration): void
     {
         Assert::minCount($configuration, 1);

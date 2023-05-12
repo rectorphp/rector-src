@@ -5,7 +5,7 @@ namespace Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Fixt
 use Rector\Tests\CodingStyle\Rector\ClassMethod\OrderArrayParamRector\Source\Groups;
 
 
-#[Groups(['b', 'a'])]
+#[Groups(['a', 'b'])]
 class MyClass
 {
 }
