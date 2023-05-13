@@ -39,6 +39,10 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof FunctionLike) {
+            if ($node instanceof AssignRef) {
+                $node->expr->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+            }
+
             return null;
         }
 
@@ -58,12 +62,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            static function (Node $subNode) use ($byRefVariableNames): AssignRef|null|Variable {
-                if ($subNode instanceof AssignRef) {
-                    $subNode->expr->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                    return $subNode;
-                }
-
+            static function (Node $subNode) use ($byRefVariableNames): null|Variable {
                 if (! $subNode instanceof Variable) {
                     return null;
                 }
