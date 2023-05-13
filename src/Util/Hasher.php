@@ -23,8 +23,9 @@ final class Hasher {
     public function hashFiles(array $files): string
     {
         $configHash = '';
+        $algo = $this->getAlgo();
         foreach ($files as $file) {
-            $hash = hash_file($this->getAlgo(), $file);
+            $hash = hash_file($algo, $file);
             if ($hash === false) {
                 throw new ShouldNotHappenException(sprintf('File %s is not readable', $file));
             }
