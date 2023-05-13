@@ -55,12 +55,12 @@ final class PregMatchTypeCorrector
                 continue;
             }
 
-            if (! $this->nodeNameResolver->isNames($funcCallNode, ['preg_match', 'preg_match_all'])) {
+            $thirdArg = $funcCallNode->getArgs()[2] ?? null;
+            if (! $thirdArg instanceof Arg) {
                 continue;
             }
 
-            $thirdArg = $funcCallNode->getArgs()[2] ?? null;
-            if (! $thirdArg instanceof Arg) {
+            if (! $this->nodeNameResolver->isNames($funcCallNode, ['preg_match', 'preg_match_all'])) {
                 continue;
             }
 
