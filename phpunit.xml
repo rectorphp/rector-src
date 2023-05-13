@@ -8,6 +8,14 @@
       <directory>packages-tests</directory>
       <directory>utils-tests</directory>
     </testsuite>
+    <!-- divide the rules-tests roughly in 2 equal sized groups -->
+    <testsuite name="php-rules">
+        <directory>rules-tests/Php*</directory>
+    </testsuite>
+    <testsuite name="other-rules">
+        <directory>rules-tests/</directory>
+        <exclude>rules-tests/Php*</exclude>
+    </testsuite>
   </testsuites>
   <php>
     <ini name="memory_limit" value="-1"/>
