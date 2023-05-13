@@ -80,6 +80,7 @@ abstract class AbstractTestCase extends TestCase
             if ($hash === false) {
                 throw new ShouldNotHappenException(sprintf('File %s is not readable', $configFile));
             }
+
             $configHash .= $hash;
         }
 

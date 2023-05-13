@@ -201,4 +201,9 @@ final class AttributeKey
      * @var string
      */
     public const ASSIGNED_TO = 'assigned_to';
+
+    /**
+     * @var string
+     */
+    public const IS_GLOBAL_VAR = 'is_global_var';
 }

@@ -51,6 +51,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
 use Webmozart\Assert\Assert;
 
@@ -74,6 +75,7 @@ final class PHPStanNodeScopeResolver
         private readonly ReflectionProvider $reflectionProvider,
         RemoveDeepChainMethodCallNodeVisitor $removeDeepChainMethodCallNodeVisitor,
         AssignedToNodeVisitor $assignedToNodeVisitor,
+        GlobalVariableNodeVisitor $globalVariableNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -83,6 +85,7 @@ final class PHPStanNodeScopeResolver
         $this->nodeTraverser = new NodeTraverser();
         $this->nodeTraverser->addVisitor($removeDeepChainMethodCallNodeVisitor);
         $this->nodeTraverser->addVisitor($assignedToNodeVisitor);
+        $this->nodeTraverser->addVisitor($globalVariableNodeVisitor);
     }
 
     /**
