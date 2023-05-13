@@ -21,14 +21,14 @@ jobs:
             fail-fast: false
             matrix:
                 php: ['8.1']
-                path:
-                    - "tests"
-                    - "--testsuite php-rules"
-                    - "--testsuite other-rules"
-                    - "packages-tests"
-                    - "utils-tests"
+                testsuite:
+                    - tests
+                    - php-rules
+                    - other-rules
+                    - packages-tests
+                    - utils-tests
 
-        name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
+        name: PHP ${{ matrix.php }} tests for ${{ matrix.testsuite }}
         steps:
             -   uses: actions/checkout@v3
 
@@ -40,4 +40,4 @@ jobs:
 
             -   uses: "ramsey/composer-install@v2"
 
-            -   run: vendor/bin/phpunit ${{ matrix.path }} --colors
+            -   run: vendor/bin/phpunit --testsuite ${{ matrix.testsuite }} --colors

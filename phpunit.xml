@@ -16,6 +16,9 @@
             <directory>packages-tests</directory>
             <directory>utils-tests</directory>
         </testsuite>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
         <!-- divide the rules-tests roughly in 2 equal sized groups -->
         <testsuite name="php-rules">
             <directory>rules-tests/Php*</directory>
@@ -23,6 +26,12 @@
         <testsuite name="other-rules">
             <directory>rules-tests/</directory>
             <exclude>rules-tests/Php*</exclude>
+        </testsuite>
+        <testsuite name="packages-tests">
+            <directory>packages-tests</directory>
+        </testsuite>
+        <testsuite name="utils-tests">
+            <directory>utils-tests</directory>
         </testsuite>
     </testsuites>
     <php>
