@@ -31,15 +31,19 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $stmts = (array) $node->getStmts();
+        $stmts = $node->getStmts();
 
         $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
 
         foreach ($node->getParams() as $param) {
-            if ($param->byRef && $param->var instanceof Variable && is_string($param->var->name)) {
+            if ($param->byRef && $param->var instanceof Variable) {
                 $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                 $byRefVariableNames[] = $param->var->name;
             }
+        }
+
+        if ($stmts === null) {
+            return null;
         }
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
