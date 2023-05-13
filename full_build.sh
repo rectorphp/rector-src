@@ -21,9 +21,6 @@ composer clear-cache
 
 composer install --ansi
 
-# ensure clear cache
-bin/rector --version --clear-cache
-
 # ensure remove cache directory
 php -r 'shell_exec("rm -rf " . sys_get_temp_dir() . "/rector_cached_files");';
 
