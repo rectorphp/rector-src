@@ -14,6 +14,7 @@ use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
 
 final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
 {

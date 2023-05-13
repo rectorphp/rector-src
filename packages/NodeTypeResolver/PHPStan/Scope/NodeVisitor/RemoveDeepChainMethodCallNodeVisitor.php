@@ -13,6 +13,7 @@ use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
 
 /**
  * Skips performance trap in PHPStan: https://github.com/phpstan/phpstan/issues/254

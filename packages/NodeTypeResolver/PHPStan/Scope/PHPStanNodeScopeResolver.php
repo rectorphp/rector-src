@@ -50,7 +50,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
 use Webmozart\Assert\Assert;
 
 /**

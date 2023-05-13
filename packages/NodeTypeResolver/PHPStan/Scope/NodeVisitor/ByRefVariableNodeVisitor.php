@@ -12,6 +12,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
 
 final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
 {
