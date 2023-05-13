@@ -23,7 +23,11 @@ final class ScalarTypeComparator
         }
 
         if ($firstType->isInteger()->yes() && $secondType->isInteger()->yes()) {
-            return true;
+            // prevents "int<min, max>" vs "int"
+            $firstTypeClass = $firstType::class;
+            $secondTypeClass = $secondType::class;
+
+            return $firstTypeClass === $secondTypeClass;
         }
 
         if ($firstType->isFloat()->yes() && $secondType->isFloat()->yes()) {
@@ -53,6 +57,10 @@ final class ScalarTypeComparator
 
         // treat class-string and string the same
         if ($firstType->isString()->yes() && $secondType->isString()->yes()) {
+            return false;
+        }
+
+        if ($firstType->isInteger()->yes() && $secondType->isInteger()->yes()) {
             return false;
         }
 
