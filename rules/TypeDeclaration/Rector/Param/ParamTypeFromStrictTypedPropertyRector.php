@@ -175,7 +175,7 @@ CODE_SAMPLE
         if (! $scope instanceof Scope) {
             return false;
         }
-        
+
         if (!$scope->hasVariableType($paramName)->yes()) {
             return false;
         }
