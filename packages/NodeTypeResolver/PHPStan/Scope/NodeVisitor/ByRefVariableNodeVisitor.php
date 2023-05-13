@@ -26,10 +26,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $stmts = $node->getStmts();
-        if ($stmts === null) {
-            return null;
-        }
+        $stmts = (array) $node->getStmts();
 
         $byRefVariableNames = [];
         if ($node instanceof Closure) {
