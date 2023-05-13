@@ -12,7 +12,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1.7.x/src/Parser/NewAssignedToPropertyVisitor.php
  */
-final class AssignedToNodeVisitor extends NodeVisitorAbstract
+final class AssignedToNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
 {
     public function enterNode(Node $node): ?Node
     {

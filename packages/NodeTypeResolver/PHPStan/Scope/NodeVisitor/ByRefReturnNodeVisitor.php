@@ -13,7 +13,7 @@ use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class ByRefReturnNodeVisitor extends NodeVisitorAbstract
+final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser

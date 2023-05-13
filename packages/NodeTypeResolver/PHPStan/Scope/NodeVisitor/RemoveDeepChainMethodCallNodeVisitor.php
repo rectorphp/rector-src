@@ -17,7 +17,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 /**
  * Skips performance trap in PHPStan: https://github.com/phpstan/phpstan/issues/254
  */
-final class RemoveDeepChainMethodCallNodeVisitor extends NodeVisitorAbstract
+final class RemoveDeepChainMethodCallNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
 {
     private readonly int $nestedChainMethodCallLimit;
 
