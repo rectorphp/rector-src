@@ -42,7 +42,9 @@ final class FullyQualifyStmtsAnalyzer
         }
 
         // FQNize all class names
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use ($scope): ?FullyQualified {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
+            $scope
+        ): ?FullyQualified {
             if (! $node instanceof Name) {
                 return null;
             }

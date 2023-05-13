@@ -111,6 +111,7 @@ CODE_SAMPLE
 
         $typeNode = strtolower($typeNode);
 
+<<<<<<< HEAD
         if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
             return null;
         }
@@ -118,6 +119,10 @@ CODE_SAMPLE
         /** @var Arg $firstArg */
         $firstArg = $node->args[0];
         $varNode = $firstArg->value;
+=======
+        $variable = $node->getArgs()[0]
+->value;
+>>>>>>> e15951403c (fixup! misc)
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
