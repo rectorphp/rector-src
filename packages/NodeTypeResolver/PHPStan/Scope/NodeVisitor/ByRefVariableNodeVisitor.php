@@ -42,11 +42,12 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof FunctionLike) {
-            if ($node instanceof AssignRef) {
-                $node->expr->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-            }
+        if ($node instanceof AssignRef) {
+            $node->expr->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+            return null;
+        }
 
+        if (! $node instanceof FunctionLike) {
             return null;
         }
 
