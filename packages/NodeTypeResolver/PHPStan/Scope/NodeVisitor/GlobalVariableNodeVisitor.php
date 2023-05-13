@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Global_;
 use PhpParser\NodeTraverser;
@@ -31,36 +32,12 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
+        /** @var string[] $globalVariableNames */
         $globalVariableNames = [];
 
         foreach ($node->stmts as $stmt) {
             if (! $stmt instanceof Global_) {
-                if ($globalVariableNames !== []) {
-                    $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                        $stmt,
-                        static function (Node $subNode) use ($globalVariableNames): int|null|Variable {
-                            if ($subNode instanceof Class_) {
-                                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                            }
-
-                            if (! $subNode instanceof Variable) {
-                                return null;
-                            }
-
-                            if (! is_string($subNode->name)) {
-                                return null;
-                            }
-
-                            if (! in_array($subNode->name, $globalVariableNames, true)) {
-                                return null;
-                            }
-
-                            $subNode->setAttribute(AttributeKey::IS_GLOBAL_VAR, true);
-                            return $subNode;
-                        }
-                    );
-                }
-
+                $this->setIsGlobalVarAttribute($stmt, $globalVariableNames);
                 continue;
             }
 
@@ -73,5 +50,39 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract
         }
 
         return null;
+    }
+
+    /**
+     * @param string[] $globalVariableNames
+     */
+    private function setIsGlobalVarAttribute(Stmt $stmt, array $globalVariableNames): void
+    {
+        if ($globalVariableNames === []) {
+            return;
+        }
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $stmt,
+            static function (Node $subNode) use ($globalVariableNames): int|null|Variable {
+                if ($subNode instanceof Class_) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $subNode instanceof Variable) {
+                    return null;
+                }
+
+                if (! is_string($subNode->name)) {
+                    return null;
+                }
+
+                if (! in_array($subNode->name, $globalVariableNames, true)) {
+                    return null;
+                }
+
+                $subNode->setAttribute(AttributeKey::IS_GLOBAL_VAR, true);
+                return $subNode;
+            }
+        );
     }
 }
