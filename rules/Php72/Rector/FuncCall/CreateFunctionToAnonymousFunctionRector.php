@@ -96,6 +96,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($node->getArgs()) < 2) {
             return null;
         }

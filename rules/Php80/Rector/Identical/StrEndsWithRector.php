@@ -131,6 +131,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($substrFuncCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($substrFuncCall->getArgs()) < 2) {
             return null;
         }

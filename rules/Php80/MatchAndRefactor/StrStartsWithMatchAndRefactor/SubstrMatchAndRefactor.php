@@ -109,6 +109,10 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
             return false;
         }
 
+        if ($substrFuncCall->isFirstClassCallable()) {
+            return false;
+        }
+
         if (count($substrFuncCall->getArgs()) < 3) {
             return false;
         }

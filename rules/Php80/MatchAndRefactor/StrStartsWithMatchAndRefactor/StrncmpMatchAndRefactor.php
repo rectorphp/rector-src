@@ -74,6 +74,10 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         $strncmpFuncCall = $strStartsWith->getFuncCall();
         $needleExpr = $strStartsWith->getNeedleExpr();
 
+        if ($strncmpFuncCall->isFirstClassCallable()) {
+            return false;
+        }
+
         if (count($strncmpFuncCall->getArgs()) < 2) {
             return false;
         }

@@ -72,7 +72,6 @@ CODE_SAMPLE
         }
 
         $args = $funcCall->getArgs();
-
         if ($args === []) {
             return null;
         }

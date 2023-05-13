@@ -75,6 +75,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstArgValue = $node->getArgs()[0]
 ->value;
         $secondArgValue = $node->getArgs()[1]
@@ -100,8 +104,7 @@ CODE_SAMPLE
 
     private function createFuncCall(Expr $expr, string $functionName): FuncCall
     {
-        $args = [];
-        $args[] = $this->createUnpackedArg($expr);
+        $args = [$this->createUnpackedArg($expr)];
 
         return $this->nodeFactory->createFuncCall($functionName, $args);
     }

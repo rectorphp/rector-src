@@ -43,6 +43,10 @@ final class PowToExpRector extends AbstractRector implements MinPhpVersionInterf
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         $firstExpr = $node->getArgs()[0]
 ->value;
         $secondExpr = $node->getArgs()[1]

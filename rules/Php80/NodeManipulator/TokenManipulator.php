@@ -191,6 +191,10 @@ final class TokenManipulator
                 return null;
             }
 
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
             $firstArg = $node->getArgs()[0];
             if (! $this->nodeComparator->areNodesEqual($firstArg->value, $singleTokenVariable)) {
                 return null;

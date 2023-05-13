@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Identical;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\FuncCall;
@@ -79,16 +78,16 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->valueResolver->isValue($expr, 0)) {
             return null;
         }
 
-        $firstArg = $funcCall->getArgs()[0] ?? null;
-        if (! $firstArg instanceof Arg) {
-            return null;
-        }
-
-        $variable = $firstArg->value;
+        $variable = $funcCall->getArgs()[0]
+->value;
 
         // Needs string cast if variable type is not string
         // see https://github.com/rectorphp/rector/issues/6700

@@ -66,6 +66,11 @@ final class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
 
         /** @var FuncCall $funcCall */
         $funcCall = $binaryOp->left;
+
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($funcCall->getArgs()) < 2) {
             return null;
         }

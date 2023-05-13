@@ -38,8 +38,6 @@ class SomeClass
     {
         $itemsAsStrings = implode($items);
         $itemsAsStrings = implode($items, '|');
-
-        $itemsAsStrings = implode('|', $items);
     }
 }
 CODE_SAMPLE
@@ -50,8 +48,6 @@ class SomeClass
     public function run(array $items)
     {
         $itemsAsStrings = implode('', $items);
-        $itemsAsStrings = implode('|', $items);
-
         $itemsAsStrings = implode('|', $items);
     }
 }

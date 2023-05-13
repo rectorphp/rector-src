@@ -101,32 +101,10 @@ CODE_SAMPLE
             return null;
         }
 
-<<<<<<< HEAD
-        $typeNode = strtolower($typeNode);
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
-            return null;
-        }
-
-        /** @var Arg $firstArg */
-        $firstArg = $node->args[0];
-        $varNode = $firstArg->value;
-=======
-        $variable = $node->getArgs()[0]
-->value;
->>>>>>> e15951403c (fixup! misc)
-=======
-        $firstArg = $node->getArgs()[0];
-        $varNode = $firstArg->value;
-
->>>>>>> 5a5303e8c3 (make use of getArgs() method)
-=======
         $typeValue = strtolower($typeValue);
 
-        $variable = $node->getArgs()[0]->value;
->>>>>>> 0691107a2f (misc)
+        $variable = $node->getArgs()[0]
+->value;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
