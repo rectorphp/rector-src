@@ -31,7 +31,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
         $byRefVariableNames = [];
         if ($node instanceof Closure) {
             foreach ($node->uses as $closureUse) {
-                if ($closureUse->byRef && is_string($closureUse->var)) {
+                if ($closureUse->byRef && is_string($closureUse->var->name)) {
                     $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                     $byRefVariableNames[] = $closureUse->var->name;
                 }
