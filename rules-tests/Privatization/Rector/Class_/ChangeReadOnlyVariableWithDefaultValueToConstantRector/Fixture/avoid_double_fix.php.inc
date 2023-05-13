@@ -50,11 +50,11 @@ final class AvoidDoubleFix
     ];
 
     public function __construct(int $timeout = 5) {
-        $options = [
+        $opts = [
             'connection_timeout' => $timeout,
         ];
         try {
-            $this->client = new \SOAPClient(self::WSDL, $options);
+            $this->client = new \SOAPClient(self::WSDL, $opts);
         } catch (\Exception $e) {
         }
     }
