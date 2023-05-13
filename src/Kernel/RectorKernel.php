@@ -26,8 +26,8 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'kernel-v4';
-    
+    private const CACHE_KEY = 'kernel-v5';
+
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
     private ContainerInterface|null $container = null;
