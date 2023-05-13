@@ -55,12 +55,15 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
                     $subNode->expr->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                     return $subNode;
                 }
+
                 if (! $subNode instanceof Variable) {
                     return null;
                 }
+
                 if (! in_array($subNode->name, $byRefVariableNames, true)) {
                     return null;
                 }
+
                 $subNode->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                 return $subNode;
             }
