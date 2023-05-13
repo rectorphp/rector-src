@@ -104,14 +104,10 @@ CODE_SAMPLE
             if (! $node instanceof Throw_) {
                 return null;
             }
+
             return $this->refactorThrow($node, $caughtThrowableVariable);
         });
-
-        if (! (bool) $isChanged) {
-            return null;
-        }
-
-        return $node;
+        return null;
     }
 
     private function refactorThrow(Throw_ $throw, Variable $catchedThrowableVariable): ?int
