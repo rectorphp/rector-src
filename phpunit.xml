@@ -29,7 +29,7 @@
     <ini name="memory_limit" value="-1"/>
   </php>
 
-    <extensions>
-               <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
-            </extensions>
+  <extensions>
+    <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
+  </extensions>
 </phpunit>
