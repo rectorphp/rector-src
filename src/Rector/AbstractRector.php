@@ -8,7 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeVisitorAbstract;
@@ -458,6 +462,20 @@ CODE_SAMPLE;
             $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
 
             $nodes = [...$nodes, $nextNode];
+        }
+
+        /**
+         * on refresh scope, the nodes inside single node are connected there
+         * with config in config/phpstan/static-reflection.neon
+         *
+         * conditionalTags:
+         *       PhpParser\NodeVisitor\NodeConnectingVisitor:
+         *           phpstan.parser.richParserNodeVisitor: true
+         *
+         * Except Else_, ElseIf_, Catch_, Finally_ which they are a didicated Stmt while inside If_ or TryCatch_
+         */
+        if (count($nodes) === 1 && ! in_array($nodes[0]::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true)) {
+            return;
         }
 
         $this->nodeConnectingTraverser->traverse($nodes);
