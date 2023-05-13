@@ -41,12 +41,10 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract
                 continue;
             }
 
-            foreach ($stmt->vars as $staticVars) {
-                foreach ($staticVars as $staticVar) {
-                    if (is_string($staticVar->var->name)) {
-                        $staticVar->var->setAttribute(AttributeKey::IS_STATIC_VAR, true);
-                        $staticVariableNames[] = $staticVar->var->name;
-                    }
+            foreach ($stmt->vars as $staticVar) {
+                if (is_string($staticVar->var->name)) {
+                    $staticVar->var->setAttribute(AttributeKey::IS_STATIC_VAR, true);
+                    $staticVariableNames[] = $staticVar->var->name;
                 }
             }
         }
