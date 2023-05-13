@@ -14,7 +14,7 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class GlobalVariableNodeVariableVisitor extends NodeVisitorAbstract
+final class GlobalVariableNodeVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
