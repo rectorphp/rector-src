@@ -474,7 +474,8 @@ CODE_SAMPLE;
          *
          * Except Else_, ElseIf_, Catch_, Finally_ which they are a didicated Stmt while inside If_ or TryCatch_
          */
-        if (count($nodes) === 1 && ! in_array($nodes[0]::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true)) {
+        if (count($nodes) === 1 &&
+            ! in_array($nodes[0]::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true)) {
             return;
         }
 
