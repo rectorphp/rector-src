@@ -86,7 +86,7 @@ CODE_SAMPLE;
 
     protected File $file;
 
-    protected ChangedNodeScopeRefresher $changedNodeScopeRefresher;
+    private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     private NodesToRemoveCollector $nodesToRemoveCollector;
 
