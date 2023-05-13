@@ -171,6 +171,11 @@ CODE_SAMPLE
 
     private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType, Scope $scope): bool
     {
+        $scope = $assign->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return false;
+        }
+        
         if (!$scope->hasVariableType($paramName)->yes()) {
             return false;
         }
