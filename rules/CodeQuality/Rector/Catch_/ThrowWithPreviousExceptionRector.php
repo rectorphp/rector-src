@@ -105,9 +105,15 @@ CODE_SAMPLE
                 return null;
             }
 
-            return $this->refactorThrow($node, $caughtThrowableVariable);
+            $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
+            return $isChanged;
         });
-        return null;
+
+        if (! (bool) $isChanged) {
+            return null;
+        }
+
+        return $node;
     }
 
     private function refactorThrow(Throw_ $throw, Variable $catchedThrowableVariable): ?int
