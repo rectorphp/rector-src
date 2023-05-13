@@ -24,8 +24,12 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
      * @param string[] $byRefVariableNames
      * @return string[]
      */
-    private function resolveClosureUseIsByRefAttribute(Closure $node, array $byRefVariableNames): array
+    private function resolveClosureUseIsByRefAttribute(FunctionLike $node, array $byRefVariableNames): array
     {
+        if (! $node instanceof Closure) {
+            return $byRefVariableNames;
+        }
+
         foreach ($node->uses as $closureUse) {
             if ($closureUse->byRef && is_string($closureUse->var->name)) {
                 $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
@@ -48,10 +52,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
 
         $stmts = (array) $node->getStmts();
 
-        $byRefVariableNames = [];
-        if ($node instanceof Closure) {
-            $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, $byRefVariableNames);
-        }
+        $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
 
         foreach ($node->getParams() as $param) {
             if ($param->byRef && $param->var instanceof Variable && is_string($param->var->name)) {
