@@ -33,7 +33,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor;
 use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
@@ -51,13 +50,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NodeVisitorInterface;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Webmozart\Assert\Assert;
 
 /**
@@ -81,7 +74,7 @@ final class PHPStanNodeScopeResolver
         private readonly DependencyResolver $dependencyResolver,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private array $nodeVisitors,
+        array $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
