@@ -211,4 +211,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_STATIC_VAR = 'is_static_var';
+
+    /**
+     * @var string
+     */
+    public const IS_BYREF_VAR = 'is_byref_var';
 }
