@@ -37,7 +37,7 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
             static function (Node $subNode) : int|null|Return_ {
-                if ($subNode instanceof CallLike || $subNode instanceof FunctionLike) {
+                if ($subNode instanceof Node\Stmt\Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
