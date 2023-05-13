@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp;
@@ -18,7 +17,6 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
 use Rector\CodingStyle\TypeAnalyzer\IterableTypeAnalyzer;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -35,7 +33,6 @@ final class AddArrayDefaultToArrayPropertyRector extends AbstractRector
     public function __construct(
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly IterableTypeAnalyzer $iterableTypeAnalyzer,
-        private readonly ArgsAnalyzer $argsAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator
     ) {
     }
@@ -195,13 +192,8 @@ CODE_SAMPLE
                     return false;
                 }
 
-                if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
-                    return false;
-                }
-
-                /** @var Arg $firstArg */
-                $firstArg = $node->args[0];
-                $countedArgument = $firstArg->value;
+                $countedArgument = $node->getArgs()[0]
+->value;
                 if (! $countedArgument instanceof PropertyFetch) {
                     return false;
                 }

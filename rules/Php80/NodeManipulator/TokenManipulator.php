@@ -20,7 +20,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
@@ -43,7 +42,6 @@ final class TokenManipulator
         private readonly NodesToRemoveCollector $nodesToRemoveCollector,
         private readonly ValueResolver $valueResolver,
         private readonly NodeComparator $nodeComparator,
-        private readonly ArgsAnalyzer $argsAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
@@ -193,12 +191,11 @@ final class TokenManipulator
                 return null;
             }
 
-            if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
+            if ($node->isFirstClassCallable()) {
                 return null;
             }
 
-            /** @var Arg $firstArg */
-            $firstArg = $node->args[0];
+            $firstArg = $node->getArgs()[0];
             if (! $this->nodeComparator->areNodesEqual($firstArg->value, $singleTokenVariable)) {
                 return null;
             }
@@ -209,7 +206,6 @@ final class TokenManipulator
 
             // remove correct node
             $nodeToRemove = $this->matchParentNodeInCaseOfIdenticalTrue($node);
-
             $parentNode = $nodeToRemove->getAttribute(AttributeKey::PARENT_NODE);
 
             if ($parentNode instanceof Ternary) {
@@ -272,12 +268,11 @@ final class TokenManipulator
                 return null;
             }
 
-            if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
+            $firstArg = $node->getArgs()[0] ?? null;
+            if (! $firstArg instanceof Arg) {
                 return null;
             }
 
-            /** @var Arg $firstArg */
-            $firstArg = $node->args[0];
             $possibleTokenArray = $firstArg->value;
             if (! $possibleTokenArray instanceof ArrayDimFetch) {
                 return null;

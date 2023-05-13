@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\NodeAnalyzer\BinaryOpAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\FuncCallAndExpr;
@@ -35,7 +34,6 @@ final class StrEndsWithRector extends AbstractRector implements MinPhpVersionInt
 {
     public function __construct(
         private readonly BinaryOpAnalyzer $binaryOpAnalyzer,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -133,22 +131,26 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($substrFuncCall->args, [0, 1])) {
+        if ($substrFuncCall->isFirstClassCallable()) {
             return null;
         }
 
-        /** @var Arg $secondArg */
-        $secondArg = $substrFuncCall->args[1];
+        if (count($substrFuncCall->getArgs()) < 2) {
+            return null;
+        }
+
+        $needle = $substrFuncCall->getArgs()[1]
+->value;
         if (
-            ! $this->isUnaryMinusStrlenFuncCallArgValue($secondArg->value, $comparedNeedleExpr) &&
-            ! $this->isHardCodedLNumberAndString($secondArg->value, $comparedNeedleExpr)
+            ! $this->isUnaryMinusStrlenFuncCallArgValue($needle, $comparedNeedleExpr) &&
+            ! $this->isHardCodedLNumberAndString($needle, $comparedNeedleExpr)
         ) {
             return null;
         }
 
-        /** @var Arg $firstArg */
-        $firstArg = $substrFuncCall->args[0];
-        $haystack = $firstArg->value;
+        $haystack = $substrFuncCall->getArgs()[0]
+->value;
+
         $isPositive = $binaryOp instanceof Identical || $binaryOp instanceof Equal;
 
         return $this->buildReturnNode($haystack, $comparedNeedleExpr, $isPositive);
@@ -167,21 +169,17 @@ CODE_SAMPLE
         }
 
         $substrCompareFuncCall = $funcCallAndExpr->getFuncCall();
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($substrCompareFuncCall->args, [0, 1, 2])) {
+
+        if (count($substrCompareFuncCall->getArgs()) < 2) {
             return null;
         }
 
-        /** @var Arg $firstArg */
-        $firstArg = $substrCompareFuncCall->args[0];
-        $haystack = $firstArg->value;
-
-        /** @var Arg $secondArg */
-        $secondArg = $substrCompareFuncCall->args[1];
-        $needle = $secondArg->value;
-
-        /** @var Arg $thirdArg */
-        $thirdArg = $substrCompareFuncCall->args[2];
-        $thirdArgValue = $thirdArg->value;
+        $haystack = $substrCompareFuncCall->getArgs()[0]
+->value;
+        $needle = $substrCompareFuncCall->getArgs()[1]
+->value;
+        $thirdArgValue = $substrCompareFuncCall->getArgs()[2]
+->value;
 
         if (
             ! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&

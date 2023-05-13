@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,11 +16,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveSoleValueSprintfRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove sprintf() wrapper if not needed', [
@@ -32,8 +25,6 @@ class SomeClass
 {
     public function run()
     {
-        $value = sprintf('%s', 'hi');
-
         $welcome = 'hello';
         $value = sprintf('%s', $welcome);
     }
@@ -45,8 +36,6 @@ class SomeClass
 {
     public function run()
     {
-        $value = 'hi';
-
         $welcome = 'hello';
         $value = $welcome;
     }
@@ -73,16 +62,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->args) !== 2) {
+        if (count($node->getArgs()) !== 2) {
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1])) {
-            return null;
-        }
-
-        /** @var Arg $firstArg */
-        $firstArg = $node->args[0];
+        $firstArg = $node->getArgs()[0];
         $maskArgument = $firstArg->value;
         if (! $maskArgument instanceof String_) {
             return null;
@@ -92,8 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Arg $secondArg */
-        $secondArg = $node->args[1];
+        $secondArg = $node->getArgs()[1];
         $valueArgument = $secondArg->value;
 
         $valueType = $this->getType($valueArgument);

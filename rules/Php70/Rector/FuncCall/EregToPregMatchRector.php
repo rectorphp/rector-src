@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -45,7 +44,6 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
     public function __construct(
         private readonly EregToPcreTransformer $eregToPcreTransformer,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -81,8 +79,8 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
         /** @var string $functionName */
         $functionName = $this->getName($node);
-        /** @var Arg $firstArg */
-        $firstArg = $node->args[0];
+
+        $firstArg = $node->getArgs()[0];
         $patternNode = $firstArg->value;
         if ($patternNode instanceof String_) {
             $this->processStringPattern($node, $patternNode, $functionName);
@@ -120,7 +118,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
             return true;
         }
 
-        return ! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCall->args, 0);
+        return ! isset($funcCall->getArgs()[0]);
     }
 
     private function processStringPattern(FuncCall $funcCall, String_ $string, string $functionName): void
@@ -128,9 +126,8 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         $pattern = $string->value;
         $pattern = $this->eregToPcreTransformer->transform($pattern, $this->isCaseInsensitiveFunction($functionName));
 
-        /** @var Arg $arg */
-        $arg = $funcCall->args[0];
-        $arg->value = new String_($pattern);
+        $firstArg = $funcCall->getArgs()[0];
+        $firstArg->value = new String_($pattern);
     }
 
     private function processVariablePattern(FuncCall $funcCall, Variable $variable, string $functionName): void

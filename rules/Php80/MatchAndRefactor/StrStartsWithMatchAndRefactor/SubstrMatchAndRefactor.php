@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\MatchAndRefactor\StrStartsWithMatchAndRefactor;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
@@ -13,7 +12,6 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -28,7 +26,6 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
         private readonly ValueResolver $valueResolver,
         private readonly NodeComparator $nodeComparator,
         private readonly StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -40,13 +37,8 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
             /** @var FuncCall $funcCall */
             $funcCall = $binaryOp->left;
 
-            if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCall->args, 0)) {
-                return null;
-            }
-
-            /** @var Arg $arg */
-            $arg = $funcCall->args[0];
-            $haystack = $arg->value;
+            $haystack = $funcCall->getArgs()[0]
+->value;
 
             return new StrStartsWith($funcCall, $haystack, $binaryOp->right, $isPositive);
         }
@@ -55,14 +47,8 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
             /** @var FuncCall $funcCall */
             $funcCall = $binaryOp->right;
 
-            if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCall->args, 0)) {
-                return null;
-            }
-
-            /** @var Arg $arg */
-            $arg = $funcCall->args[0];
-            $haystack = $arg->value;
-
+            $haystack = $funcCall->getArgs()[0]
+->value;
             return new StrStartsWith($funcCall, $haystack, $binaryOp->left, $isPositive);
         }
 
@@ -85,23 +71,14 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
     private function isStrlenWithNeedleExpr(StrStartsWith $strStartsWith): bool
     {
         $substrFuncCall = $strStartsWith->getFuncCall();
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($substrFuncCall->args, 1)) {
+
+        $firstArg = $substrFuncCall->getArgs()[1];
+        if (! $this->valueResolver->isValue($firstArg->value, 0)) {
             return false;
         }
 
-        /** @var Arg $arg1 */
-        $arg1 = $substrFuncCall->args[1];
-        if (! $this->valueResolver->isValue($arg1->value, 0)) {
-            return false;
-        }
-
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($substrFuncCall->args, 2)) {
-            return false;
-        }
-
-        /** @var Arg $arg2 */
-        $arg2 = $substrFuncCall->args[2];
-        $secondFuncCallArgValue = $arg2->value;
+        $secondFuncCallArgValue = $substrFuncCall->getArgs()[2]
+->value;
         if (! $secondFuncCallArgValue instanceof FuncCall) {
             return false;
         }
@@ -110,16 +87,9 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
             return false;
         }
 
-        /** @var FuncCall $strlenFuncCall */
-        $strlenFuncCall = $arg2->value;
-
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strlenFuncCall->args, 0)) {
-            return false;
-        }
-
-        /** @var Arg $arg0 */
-        $arg0 = $strlenFuncCall->args[0];
-        $needleExpr = $arg0->value;
+        $strlenFuncCall = $secondFuncCallArgValue;
+        $needleExpr = $strlenFuncCall->getArgs()[0]
+->value;
 
         $comparedNeedleExpr = $strStartsWith->getNeedleExpr();
         return $this->nodeComparator->areNodesEqual($needleExpr, $comparedNeedleExpr);
@@ -128,13 +98,9 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
     private function isHardcodedStringWithLNumberLength(StrStartsWith $strStartsWith): bool
     {
         $substrFuncCall = $strStartsWith->getFuncCall();
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($substrFuncCall->args, 1)) {
-            return false;
-        }
 
-        /** @var Arg $arg1 */
-        $arg1 = $substrFuncCall->args[1];
-        if (! $this->valueResolver->isValue($arg1->value, 0)) {
+        $secondArg = $substrFuncCall->getArgs()[1];
+        if (! $this->valueResolver->isValue($secondArg->value, 0)) {
             return false;
         }
 
@@ -143,13 +109,16 @@ final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterf
             return false;
         }
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($substrFuncCall->args, 2)) {
+        if ($substrFuncCall->isFirstClassCallable()) {
             return false;
         }
 
-        /** @var Arg $arg2 */
-        $arg2 = $substrFuncCall->args[2];
-        $lNumberLength = $arg2->value;
+        if (count($substrFuncCall->getArgs()) < 3) {
+            return false;
+        }
+
+        $lNumberLength = $substrFuncCall->getArgs()[2]
+->value;
         if (! $lNumberLength instanceof LNumber) {
             return false;
         }

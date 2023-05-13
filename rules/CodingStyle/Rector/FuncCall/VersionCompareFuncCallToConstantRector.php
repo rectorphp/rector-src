@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -19,7 +18,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\PhpVersionFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -52,7 +50,6 @@ final class VersionCompareFuncCallToConstantRector extends AbstractRector
 
     public function __construct(
         private readonly PhpVersionFactory $phpVersionFactory,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -103,27 +100,27 @@ CODE_SAMPLE
             return null;
         }
 
-        if (count($node->args) !== 3) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1, 2])) {
+        if (count($node->getArgs()) !== 3) {
             return null;
         }
 
-        /** @var Arg[] $args */
-        $args = $node->args;
+        $args = $node->getArgs();
         if (! $this->isPhpVersionConstant($args[0]->value) && ! $this->isPhpVersionConstant($args[1]->value)) {
             return null;
         }
 
         $left = $this->getNewNodeForArg($args[0]->value);
         $right = $this->getNewNodeForArg($args[1]->value);
-        if ($left === null) {
+
+        if (! $left instanceof Expr) {
             return null;
         }
 
-        if ($right === null) {
+        if (! $right instanceof Expr) {
             return null;
         }
 

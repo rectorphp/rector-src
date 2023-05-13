@@ -262,17 +262,17 @@ CODE_SAMPLE
             return;
         }
 
-        if (! isset($stmts[$key+1])) {
+        if (! isset($stmts[$key + 1])) {
             return;
         }
 
-        $currentNode = $stmts[$key+1];
+        $currentNode = $stmts[$key + 1];
 
-        if (! isset($stmts[$key+2])) {
+        if (! isset($stmts[$key + 2])) {
             return;
         }
 
-        $nextNode = $stmts[$key+2];
+        $nextNode = $stmts[$key + 2];
         $key += 2;
 
         $this->replaceNextUsageVariable($currentNode, $oldVariableName, $newVariableName, $key, $stmts, $nextNode);

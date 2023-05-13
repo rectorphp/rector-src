@@ -18,7 +18,6 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -176,7 +175,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (!$scope->hasVariableType($paramName)->yes()) {
+        if (! $scope->hasVariableType($paramName)->yes()) {
             return false;
         }
 

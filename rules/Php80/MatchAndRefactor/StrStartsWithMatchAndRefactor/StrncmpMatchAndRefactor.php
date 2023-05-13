@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Php80\MatchAndRefactor\StrStartsWithMatchAndRefactor;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
@@ -13,7 +12,6 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
@@ -33,7 +31,6 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         private readonly StrStartsWithFactory $strStartsWithFactory,
         private readonly NodeComparator $nodeComparator,
         private readonly StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -77,52 +74,48 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
         $strncmpFuncCall = $strStartsWith->getFuncCall();
         $needleExpr = $strStartsWith->getNeedleExpr();
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strncmpFuncCall->args, 2)) {
+        if ($strncmpFuncCall->isFirstClassCallable()) {
             return false;
         }
 
-        /** @var Arg $thirdArg */
-        $thirdArg = $strncmpFuncCall->args[2];
-        $secondArgumentValue = $thirdArg->value;
-        if (! $secondArgumentValue instanceof FuncCall) {
+        if (count($strncmpFuncCall->getArgs()) < 2) {
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($secondArgumentValue, 'strlen')) {
+        $thirdArg = $strncmpFuncCall->getArgs()[2];
+
+        $thirdArgExpr = $thirdArg->value;
+        if (! $thirdArgExpr instanceof FuncCall) {
             return false;
         }
 
-        /** @var FuncCall $strlenFuncCall */
-        $strlenFuncCall = $thirdArg->value;
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($strlenFuncCall->args, 0)) {
+        if (! $this->nodeNameResolver->isName($thirdArgExpr, 'strlen')) {
             return false;
         }
 
-        /** @var Arg $firstArg */
-        $firstArg = $strlenFuncCall->args[0];
-        $strlenArgumentValue = $firstArg->value;
+        $strlenFuncCall = $thirdArgExpr;
+        $strlenExpr = $strlenFuncCall->getArgs()[0]
+->value;
 
-        return $this->nodeComparator->areNodesEqual($needleExpr, $strlenArgumentValue);
+        return $this->nodeComparator->areNodesEqual($needleExpr, $strlenExpr);
     }
 
     private function isHardcodedStringWithLNumberLength(StrStartsWith $strStartsWith): bool
     {
         $strncmpFuncCall = $strStartsWith->getFuncCall();
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($strncmpFuncCall->args, [1, 2])) {
+        if (count($strncmpFuncCall->getArgs()) < 2) {
             return false;
         }
 
-        /** @var Arg $secondArg */
-        $secondArg = $strncmpFuncCall->args[1];
-        $hardcodedStringNeedle = $secondArg->value;
+        $hardcodedStringNeedle = $strncmpFuncCall->getArgs()[1]
+->value;
         if (! $hardcodedStringNeedle instanceof String_) {
             return false;
         }
 
-        /** @var Arg $thirdArg */
-        $thirdArg = $strncmpFuncCall->args[2];
-        $lNumberLength = $thirdArg->value;
+        $lNumberLength = $strncmpFuncCall->getArgs()[2]
+->value;
         if (! $lNumberLength instanceof LNumber) {
             return false;
         }

@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -44,11 +43,6 @@ final class SetTypeToCastRector extends AbstractRector
         'object' => Object_::class,
         'string' => String_::class,
     ];
-
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -98,26 +92,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 1)) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        /** @var Arg $secondArg */
-        $secondArg = $node->args[1];
-        $typeNode = $this->valueResolver->getValue($secondArg->value);
-        if (! is_string($typeNode)) {
+        $typeValue = $this->valueResolver->getValue($node->getArgs()[1]->value);
+        if (! is_string($typeValue)) {
             return null;
         }
 
-        $typeNode = strtolower($typeNode);
+        $typeValue = strtolower($typeValue);
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
-            return null;
-        }
-
-        /** @var Arg $firstArg */
-        $firstArg = $node->args[0];
-        $varNode = $firstArg->value;
+        $variable = $node->getArgs()[0]
+->value;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
@@ -125,20 +112,20 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset(self::TYPE_TO_CAST[$typeNode])) {
-            $castClass = self::TYPE_TO_CAST[$typeNode];
-            $castNode = new $castClass($varNode);
+        if (isset(self::TYPE_TO_CAST[$typeValue])) {
+            $castClass = self::TYPE_TO_CAST[$typeValue];
+            $castNode = new $castClass($variable);
 
             if ($parentNode instanceof Expression) {
                 // bare expression? → assign
-                return new Assign($varNode, $castNode);
+                return new Assign($variable, $castNode);
             }
 
             return $castNode;
         }
 
-        if ($typeNode === 'null') {
-            return new Assign($varNode, $this->nodeFactory->createNull());
+        if ($typeValue === 'null') {
+            return new Assign($variable, $this->nodeFactory->createNull());
         }
 
         return $node;
