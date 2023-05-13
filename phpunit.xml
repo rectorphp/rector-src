@@ -1,5 +1,13 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" bootstrap="tests/bootstrap.php" colors="true" executionOrder="defects" cacheDirectory=".phpunit.cache">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    executionOrder="defects"
+    cacheDirectory=".phpunit.cache"
+    defaultTestSuite="main"
+>
 
   <testsuites>
     <testsuite name="main">
@@ -21,7 +29,7 @@
     <ini name="memory_limit" value="-1"/>
   </php>
 
-    <extensions>
-               <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
-            </extensions>
+  <extensions>
+    <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
+  </extensions>
 </phpunit>
