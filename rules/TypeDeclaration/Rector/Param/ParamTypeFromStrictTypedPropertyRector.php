@@ -169,7 +169,7 @@ CODE_SAMPLE
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PROPERTY);
     }
 
-    private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType, Scope $scope): bool
+    private function hasTypeChangedBeforeAssign(Assign $assign, string $paramName, Type $originalType): bool
     {
         $scope = $assign->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
