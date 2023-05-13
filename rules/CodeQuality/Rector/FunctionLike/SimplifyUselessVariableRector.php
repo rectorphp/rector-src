@@ -89,6 +89,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($this->hasSomeComment($previousStmt)) {
+                return null;
+            }
+
             if ($this->isReturnWithVarAnnotation($stmt)) {
                 return null;
             }
@@ -125,10 +129,6 @@ CODE_SAMPLE
 
     private function shouldSkipStmt(Return_ $return, Stmt $previousStmt, Scope $scope): bool
     {
-        if ($this->hasSomeComment($previousStmt)) {
-            return true;
-        }
-
         if (! $return->expr instanceof Variable) {
             return true;
         }
