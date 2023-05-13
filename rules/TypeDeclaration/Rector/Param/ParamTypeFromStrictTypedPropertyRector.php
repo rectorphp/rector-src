@@ -127,7 +127,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasTypeChangedBeforeAssign($assign, $paramName, $originalParamType) {
+            if ($this->hasTypeChangedBeforeAssign($assign, $paramName, $originalParamType)) {
                 return null;
             }
 
