@@ -24,7 +24,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\NodeTypeCorrector\PregMatchTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ArrayTypeAnalyzer
@@ -32,7 +31,6 @@ final class ArrayTypeAnalyzer
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PregMatchTypeCorrector $pregMatchTypeCorrector,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionResolver $reflectionResolver,
@@ -43,7 +41,6 @@ final class ArrayTypeAnalyzer
     {
         $nodeType = $this->nodeTypeResolver->getType($expr);
 
-        $nodeType = $this->pregMatchTypeCorrector->correct($expr, $nodeType);
         if ($this->isIntersectionArrayType($nodeType)) {
             return true;
         }
