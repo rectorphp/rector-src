@@ -6,7 +6,7 @@ namespace Rector\Core\Util;
 
 use Rector\Core\Exception\ShouldNotHappenException;
 
-final class Hasher {
+final class FileHasher {
     /**
      * cryptographic insecure hasing of a string
      */

@@ -12,7 +12,7 @@ use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\Util\Hasher;
+use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Config\Resource\GlobResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -126,7 +126,7 @@ final class RectorKernel
      */
     private function createConfigsHash(array $configFiles): string
     {
-        $fileHasher = new Hasher();
+        $fileHasher = new FileHasher();
 
         if (self::$defaultFilesHash === null) {
             self::$defaultFilesHash = $fileHasher->hashFiles($this->createDefaultConfigFiles());

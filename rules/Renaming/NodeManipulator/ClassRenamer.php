@@ -28,7 +28,7 @@ use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Util\Hasher;
+use Rector\Core\Util\FileHasher;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeRemoval\NodeRemover;
@@ -451,7 +451,7 @@ final class ClassRenamer
     {
         $oldToNewClasses = $this->resolveOldToNewClassCallbacks($node, $oldToNewClasses);
 
-        $hasher = new Hasher();
+        $hasher = new FileHasher();
         $serialized = \serialize($oldToNewClasses);
         $cacheKey = $hasher->hash($serialized);
 

@@ -7,7 +7,7 @@ namespace Rector\Caching\Detector;
 use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
-use Rector\Core\Util\Hasher;
+use Rector\Core\Util\FileHasher;
 
 /**
  * Inspired by https://github.com/symplify/symplify/pull/90/files#diff-72041b2e1029a08930e13d79d298ef11
@@ -145,13 +145,13 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
-        $hasher = new Hasher();
+        $hasher = new FileHasher();
         return $hasher->hash($this->resolvePath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        $hasher = new Hasher();
+        $hasher = new FileHasher();
         return $hasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
