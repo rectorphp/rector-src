@@ -31,10 +31,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $stmts = $node->getStmts();
-
         $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
-
         foreach ($node->getParams() as $param) {
             if ($param->byRef && $param->var instanceof Variable) {
                 $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
@@ -42,6 +39,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
             }
         }
 
+        $stmts = $node->getStmts();
         if ($stmts === null) {
             return null;
         }
