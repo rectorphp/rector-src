@@ -104,9 +104,7 @@ CODE_SAMPLE
             if (! $node instanceof Throw_) {
                 return null;
             }
-
-            $isChanged = $this->refactorThrow($node, $caughtThrowableVariable);
-            return $isChanged;
+            return $this->refactorThrow($node, $caughtThrowableVariable);
         });
 
         if (! (bool) $isChanged) {
