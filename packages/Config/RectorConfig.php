@@ -127,7 +127,7 @@ final class RectorConfig extends ContainerConfigurator
         // decorate with value object inliner so Symfony understands, see https://getrector.org/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
         array_walk_recursive($configuration, static function (&$value) {
             if (is_object($value)) {
-                ValueObjectInliner::inline($value);
+                $value = ValueObjectInliner::inline($value);
             }
 
             return $value;
