@@ -20,26 +20,6 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
     ) {
     }
 
-    /**
-     * @param string[] $byRefVariableNames
-     * @return string[]
-     */
-    private function resolveClosureUseIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
-    {
-        if (! $functionLike instanceof Closure) {
-            return $byRefVariableNames;
-        }
-
-        foreach ($functionLike->uses as $closureUse) {
-            if ($closureUse->byRef && is_string($closureUse->var->name)) {
-                $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                $byRefVariableNames[] = $closureUse->var->name;
-            }
-        }
-
-        return $byRefVariableNames;
-    }
-
     public function enterNode(Node $node): ?Node
     {
         if ($node instanceof AssignRef) {
@@ -79,5 +59,25 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
         );
 
         return null;
+    }
+
+    /**
+     * @param string[] $byRefVariableNames
+     * @return string[]
+     */
+    private function resolveClosureUseIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
+    {
+        if (! $functionLike instanceof Closure) {
+            return $byRefVariableNames;
+        }
+
+        foreach ($functionLike->uses as $closureUse) {
+            if ($closureUse->byRef && is_string($closureUse->var->name)) {
+                $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+                $byRefVariableNames[] = $closureUse->var->name;
+            }
+        }
+
+        return $byRefVariableNames;
     }
 }
