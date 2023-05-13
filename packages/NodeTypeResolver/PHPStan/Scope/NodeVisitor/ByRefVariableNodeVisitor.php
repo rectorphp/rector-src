@@ -41,7 +41,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract
         foreach ($node->getParams() as $param) {
             if ($param->byRef && $param->var instanceof Variable && is_string($param->var->name)) {
                 $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                $byRefVariableNames[] = $closureUse->var->name;
+                $byRefVariableNames[] = $param->var->name;
             }
         }
 
