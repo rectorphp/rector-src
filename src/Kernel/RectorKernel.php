@@ -14,6 +14,7 @@ use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPas
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\Hasher;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Symfony\Component\Config\Resource\GlobResource;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -195,6 +196,20 @@ final class RectorKernel
         }
 
         return $container;
+    }
+
+    static public function clearCache(): void {
+        $dir = sys_get_temp_dir();
+        if (is_writable($dir)) {
+            $cacheFiles = glob($dir .'/rector/kernel-*.php');
+
+            if ($cacheFiles === false) {
+                return;
+            }
+
+            $smartFileSystem = new SmartFileSystem();
+            $smartFileSystem->remove($cacheFiles);
+        }
     }
 
 }
