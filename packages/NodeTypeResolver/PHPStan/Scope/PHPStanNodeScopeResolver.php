@@ -51,6 +51,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
@@ -80,6 +81,7 @@ final class PHPStanNodeScopeResolver
         GlobalVariableNodeVisitor $globalVariableNodeVisitor,
         StaticVariableNodeVisitor $staticVariableNodeVisitor,
         ByRefVariableNodeVisitor $byRefVariableNodeVisitor,
+        ByRefReturnNodeVisitor $byRefReturnNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -92,6 +94,7 @@ final class PHPStanNodeScopeResolver
         $this->nodeTraverser->addVisitor($globalVariableNodeVisitor);
         $this->nodeTraverser->addVisitor($staticVariableNodeVisitor);
         $this->nodeTraverser->addVisitor($byRefVariableNodeVisitor);
+        $this->nodeTraverser->addVisitor($byRefReturnNodeVisitor);
     }
 
     /**

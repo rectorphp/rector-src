@@ -20,6 +20,7 @@ use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -134,6 +135,10 @@ CODE_SAMPLE
 
         $functionReflection = $scope->getFunction();
         if ($functionReflection instanceof FunctionReflection && $functionReflection->returnsByReference()->yes()) {
+            return true;
+        }
+
+        if ($return->getAttribute(AttributeKey::IS_BYREF_RETURN) === true) {
             return true;
         }
 
