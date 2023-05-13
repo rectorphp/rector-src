@@ -37,6 +37,8 @@ jobs:
                 with:
                     php-version: ${{ matrix.php }}
                     coverage: none
+                    # to display warning when assert() is called, eg: on direct getArgs() on CallLike
+                    # and check against first class callable strlen(...)
                     ini-values: zend.assertions=1
 
             -   uses: "ramsey/composer-install@v2"
