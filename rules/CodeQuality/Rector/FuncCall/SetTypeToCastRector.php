@@ -92,13 +92,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $secondArg = $node->getArgs()[1];
-
-        $typeNode = $this->valueResolver->getValue($secondArg->value);
-        if (! is_string($typeNode)) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
+        $typeValue = $this->valueResolver->getValue($node->getArgs()[1]->value);
+        if (! is_string($typeValue)) {
+            return null;
+        }
+
+<<<<<<< HEAD
         $typeNode = strtolower($typeNode);
 
 <<<<<<< HEAD
@@ -119,6 +122,11 @@ CODE_SAMPLE
         $varNode = $firstArg->value;
 
 >>>>>>> 5a5303e8c3 (make use of getArgs() method)
+=======
+        $typeValue = strtolower($typeValue);
+
+        $variable = $node->getArgs()[0]->value;
+>>>>>>> 0691107a2f (misc)
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
@@ -126,20 +134,20 @@ CODE_SAMPLE
             return null;
         }
 
-        if (isset(self::TYPE_TO_CAST[$typeNode])) {
-            $castClass = self::TYPE_TO_CAST[$typeNode];
-            $castNode = new $castClass($varNode);
+        if (isset(self::TYPE_TO_CAST[$typeValue])) {
+            $castClass = self::TYPE_TO_CAST[$typeValue];
+            $castNode = new $castClass($variable);
 
             if ($parentNode instanceof Expression) {
                 // bare expression? → assign
-                return new Assign($varNode, $castNode);
+                return new Assign($variable, $castNode);
             }
 
             return $castNode;
         }
 
-        if ($typeNode === 'null') {
-            return new Assign($varNode, $this->nodeFactory->createNull());
+        if ($typeValue === 'null') {
+            return new Assign($variable, $this->nodeFactory->createNull());
         }
 
         return $node;
