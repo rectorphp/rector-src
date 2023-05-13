@@ -38,7 +38,7 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract
                 if ($globalVariableNames !== []) {
                     $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
                         $stmt,
-                        static function (Node $subNode) use ($globalVariableNames) {
+                        static function (Node $subNode) use ($globalVariableNames): int|null|Variable {
                             if ($subNode instanceof Class_) {
                                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                             }
