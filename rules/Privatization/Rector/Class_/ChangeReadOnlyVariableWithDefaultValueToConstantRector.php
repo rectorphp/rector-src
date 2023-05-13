@@ -131,13 +131,11 @@ CODE_SAMPLE
 
             $variableName = $this->getName($variable);
             if ($variableName === null) {
-                throw new ShouldNotHappenException();
+                continue;
             }
 
-            foreach ($classMethod->getParams() as $param) {
-                if ($this->nodeNameResolver->isName($param->var, $variableName)) {
-                    continue 2;
-                }
+            if ($this->isVariableParamName($classMethod, $variableName)) {
+                continue;
             }
 
             $parentAssign = $readOnlyVariableAssign->getAttribute(AttributeKey::PARENT_NODE);
@@ -146,6 +144,9 @@ CODE_SAMPLE
             }
 
             $constantName = $this->constantNaming->createFromVariable($variable);
+            if ($constantName === null) {
+                continue;
+            }
 
             if (in_array($constantName, $this->addedConstantNames, true)) {
                 continue;
@@ -208,5 +209,16 @@ CODE_SAMPLE
             // replace with constant fetch
             return new ClassConstFetch(new Name('self'), new Identifier($constantName));
         });
+    }
+
+    private function isVariableParamName(ClassMethod $classMethod, string $variableName): bool
+    {
+        foreach ($classMethod->getParams() as $param) {
+            if ($this->nodeNameResolver->isName($param->var, $variableName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
