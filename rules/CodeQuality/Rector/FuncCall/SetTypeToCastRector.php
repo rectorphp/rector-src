@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -44,11 +43,6 @@ final class SetTypeToCastRector extends AbstractRector
         'object' => Object_::class,
         'string' => String_::class,
     ];
-
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -98,12 +92,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 1)) {
-            return null;
-        }
+        $secondArg = $node->getArgs()[1];
 
-        /** @var Arg $secondArg */
-        $secondArg = $node->args[1];
         $typeNode = $this->valueResolver->getValue($secondArg->value);
         if (! is_string($typeNode)) {
             return null;
@@ -111,6 +101,7 @@ CODE_SAMPLE
 
         $typeNode = strtolower($typeNode);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($node->args, 0)) {
             return null;
@@ -123,6 +114,11 @@ CODE_SAMPLE
         $variable = $node->getArgs()[0]
 ->value;
 >>>>>>> e15951403c (fixup! misc)
+=======
+        $firstArg = $node->getArgs()[0];
+        $varNode = $firstArg->value;
+
+>>>>>>> 5a5303e8c3 (make use of getArgs() method)
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used

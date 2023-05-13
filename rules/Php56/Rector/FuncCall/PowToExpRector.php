@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\Php56\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BinaryOp\Pow;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -20,11 +18,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class PowToExpRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -50,20 +43,12 @@ final class PowToExpRector extends AbstractRector implements MinPhpVersionInterf
             return null;
         }
 
-        if (count($node->args) !== 2) {
-            return null;
-        }
+        $firstExpr = $node->getArgs()[0]
+->value;
+        $secondExpr = $node->getArgs()[1]
+->value;
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1])) {
-            return null;
-        }
-
-        /** @var Arg $firstArgument */
-        $firstArgument = $node->args[0];
-        /** @var Arg $secondArgument */
-        $secondArgument = $node->args[1];
-
-        return new Pow($firstArgument->value, $secondArgument->value);
+        return new Pow($firstExpr, $secondExpr);
     }
 
     public function provideMinPhpVersion(): int

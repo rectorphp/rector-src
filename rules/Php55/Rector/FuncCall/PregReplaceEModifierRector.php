@@ -9,7 +9,6 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php55\RegexMatcher;
@@ -28,7 +27,6 @@ final class PregReplaceEModifierRector extends AbstractRector implements MinPhpV
     public function __construct(
         private readonly AnonymousFunctionFactory $anonymousFunctionFactory,
         private readonly RegexMatcher $regexMatcher,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -86,12 +84,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgsInstanceInArgsPositions($node->args, [0, 1])) {
+        if (count($node->getArgs()) < 2) {
             return null;
         }
 
-        /** @var Arg $firstArgument */
-        $firstArgument = $node->args[0];
+        $firstArgument = $node->getArgs()[0];
         $firstArgumentValue = $firstArgument->value;
 
         $patternWithoutEExpr = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);

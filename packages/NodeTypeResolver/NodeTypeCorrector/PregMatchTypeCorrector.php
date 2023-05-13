@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -26,7 +25,6 @@ final class PregMatchTypeCorrector
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ParentScopeFinder $parentScopeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -61,12 +59,10 @@ final class PregMatchTypeCorrector
                 continue;
             }
 
-            if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCallNode->args, 2)) {
+            $thirdArg = $funcCallNode->getArgs()[2] ?? null;
+            if (! $thirdArg instanceof Arg) {
                 continue;
             }
-
-            /** @var Arg $thirdArg */
-            $thirdArg = $funcCallNode->args[2];
 
             // are the same variables
             if (! $this->nodeComparator->areNodesEqual($thirdArg->value, $expr)) {

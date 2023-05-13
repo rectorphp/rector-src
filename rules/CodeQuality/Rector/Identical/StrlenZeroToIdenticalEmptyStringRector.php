@@ -10,7 +10,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,11 +19,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StrlenZeroToIdenticalEmptyStringRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ArgsAnalyzer $argsAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -89,13 +83,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->argsAnalyzer->isArgInstanceInArgsPosition($funcCall->args, 0)) {
+        $firstArg = $funcCall->getArgs()[0] ?? null;
+        if (! $firstArg instanceof Arg) {
             return null;
         }
 
-        /** @var Arg $firstArg */
-        $firstArg = $funcCall->args[0];
-        /** @var Expr $variable */
         $variable = $firstArg->value;
 
         // Needs string cast if variable type is not string
@@ -103,6 +95,7 @@ CODE_SAMPLE
         $isStringType = $this->nodeTypeResolver->getNativeType($variable)
             ->isString()
             ->yes();
+
         if (! $isStringType) {
             return new Identical(new Expr\Cast\String_($variable), new String_(''));
         }

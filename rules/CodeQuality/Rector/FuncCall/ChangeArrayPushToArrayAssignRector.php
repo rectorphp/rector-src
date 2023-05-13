@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
@@ -78,9 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Arg $firstArg */
         $firstArg = array_shift($args);
-
         if ($args === []) {
             return null;
         }
