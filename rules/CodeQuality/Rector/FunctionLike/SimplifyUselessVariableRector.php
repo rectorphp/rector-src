@@ -12,27 +12,27 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Type\MixedType;
-use Rector\CodeQuality\NodeAnalyzer\ReturnAnalyzer;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see Based on https://github.com/slevomat/coding-standard/blob/master/SlevomatCodingStandard/Sniffs/Variables/UselessVariableSniff.php
  * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\SimplifyUselessVariableRectorTest
  */
-final class SimplifyUselessVariableRector extends AbstractRector
+final class SimplifyUselessVariableRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
         private readonly VariableAnalyzer $variableAnalyzer,
         private readonly CallAnalyzer $callAnalyzer,
-        private readonly ReturnAnalyzer $returnAnalyzer,
     ) {
     }
 
@@ -67,7 +67,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $stmts = $node->stmts;
         if ($stmts === null) {
@@ -75,6 +75,7 @@ CODE_SAMPLE
         }
 
         foreach ($stmts as $key => $stmt) {
+            // has previous node?
             if (! isset($stmts[$key - 1])) {
                 continue;
             }
@@ -84,7 +85,11 @@ CODE_SAMPLE
             }
 
             $previousStmt = $stmts[$key - 1];
-            if ($this->shouldSkipStmt($stmt, $previousStmt)) {
+            if ($this->shouldSkipStmt($stmt, $previousStmt, $scope)) {
+                return null;
+            }
+
+            if ($this->hasSomeComment($previousStmt)) {
                 return null;
             }
 
@@ -92,11 +97,9 @@ CODE_SAMPLE
                 return null;
             }
 
-            /**
-             * @var Expression $previousStmt
-             * @var Assign|AssignOp $assign
-             */
+            /** @var Expression<Assign|AssignOp> $previousStmt */
             $assign = $previousStmt->expr;
+
             return $this->processSimplifyUselessVariable($node, $stmt, $assign, $key);
         }
 
@@ -124,17 +127,18 @@ CODE_SAMPLE
         return $stmtsAware;
     }
 
-    private function shouldSkipStmt(Return_ $return, Stmt $previousStmt): bool
+    private function shouldSkipStmt(Return_ $return, Stmt $previousStmt, Scope $scope): bool
     {
-        if ($this->hasSomeComment($previousStmt)) {
-            return true;
-        }
-
         if (! $return->expr instanceof Variable) {
             return true;
         }
 
-        if ($this->returnAnalyzer->hasByRefReturn($return)) {
+        $functionReflection = $scope->getFunction();
+        if ($functionReflection instanceof FunctionReflection && $functionReflection->returnsByReference()->yes()) {
+            return true;
+        }
+
+        if ($return->getAttribute(AttributeKey::IS_BYREF_RETURN) === true) {
             return true;
         }
 
