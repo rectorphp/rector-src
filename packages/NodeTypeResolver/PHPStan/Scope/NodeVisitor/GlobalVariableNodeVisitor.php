@@ -71,5 +71,7 @@ final class GlobalVariableNodeVisitor extends NodeVisitorAbstract
                 }
             }
         }
+
+        return null;
     }
 }
