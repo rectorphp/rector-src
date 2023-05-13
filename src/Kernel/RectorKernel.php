@@ -23,6 +23,11 @@ use Webmozart\Assert\Assert;
 
 final class RectorKernel
 {
+    /**
+     * @var string
+     */
+    private const CACHE_KEY = 'kernel-v4';
+    
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
     private ContainerInterface|null $container = null;
@@ -165,7 +170,7 @@ final class RectorKernel
 
         $filesystem = new SmartFileSystem();
         $className = 'RectorKernel'.$hash;
-        $file = sys_get_temp_dir() .'/rector/kernel-v3-'.$hash.'.php';
+        $file = sys_get_temp_dir() .'/rector/'. self::CACHE_KEY .'-'.$hash.'.php';
 
         if (file_exists($file)) {
             require_once $file;
