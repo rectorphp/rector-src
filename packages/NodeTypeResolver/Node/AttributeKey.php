@@ -206,4 +206,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_GLOBAL_VAR = 'is_global_var';
+
+    /**
+     * @var string
+     */
+    public const IS_STATIC_VAR = 'is_static_var';
 }
