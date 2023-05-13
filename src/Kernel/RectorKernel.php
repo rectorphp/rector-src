@@ -30,11 +30,6 @@ final class RectorKernel
     private bool $dumpFileCache = false;
 
     /**
-     * @var array<string, ContainerInterface>
-     */
-    private static array $containersByHash = [];
-
-    /**
      * @var string|null
      */
     private static $defaultFilesHash;
@@ -159,7 +154,7 @@ final class RectorKernel
 
         $containerBuilder->compile();
 
-        return self::$containersByHash[$hash] = $this->container = $containerBuilder;
+        return $this->container = $containerBuilder;
     }
 
     /**
@@ -167,9 +162,6 @@ final class RectorKernel
      */
     private function buildCachedContainer(array $configFiles): ContainerInterface {
         $hash = $this->createConfigsHash($configFiles);
-        if (isset(self::$containersByHash[$hash])) {
-            return self::$containersByHash[$hash];
-        }
 
         $filesystem = new SmartFileSystem();
         $className = 'RectorKernel'.$hash;
@@ -197,7 +189,7 @@ final class RectorKernel
             $filesystem->dumpFile($file, $dumpedContainer);
         }
 
-        return self::$containersByHash[$hash] = $container;
+        return $container;
     }
 
 }
