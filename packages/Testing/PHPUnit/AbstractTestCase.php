@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
-use Rector\Core\Util\FileHasher;
+use Rector\Core\Util\Hasher;
 use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
@@ -30,7 +30,7 @@ abstract class AbstractTestCase extends TestCase
      */
     protected function bootFromConfigFiles(array $configFiles): void
     {
-        $fileHasher = new FileHasher();
+        $fileHasher = new Hasher();
         $configsHash = $fileHasher->hashFiles($configFiles);
 
         if (isset(self::$kernelsByHash[$configsHash])) {
