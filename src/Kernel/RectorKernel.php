@@ -4,21 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Core\Kernel;
 
-use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
-use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;
-use Rector\Core\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPass;
-use Rector\Core\DependencyInjection\CompilerPass\AutowireRectorCompilerPass;
-use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
-use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
-use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symplify\SmartFileSystem\SmartFileSystem;
 use Webmozart\Assert\Assert;
 
 final class RectorKernel
@@ -26,7 +16,7 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'kernel-v6';
+    private const CACHE_KEY = 'v6';
 
     private ContainerInterface|null $container = null;
 
@@ -44,12 +34,13 @@ final class RectorKernel
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
             $this->dumpFileCache = true;
         }
+
     }
 
     /**
+     * @param string[] $configFiles
      * @api used in tests
      *
-     * @param string[] $configFiles
      */
     public function createBuilder(array $configFiles = []): ContainerBuilder
     {
@@ -57,9 +48,9 @@ final class RectorKernel
     }
 
     /**
+     * @param string[] $configFiles
      * @api used in tests
      *
-     * @param string[] $configFiles
      */
     public function createFromConfigs(array $configFiles): ContainerInterface
     {
@@ -81,7 +72,7 @@ final class RectorKernel
      */
     public function getContainer(): ContainerInterface
     {
-        if (! $this->container instanceof ContainerInterface) {
+        if (!$this->container instanceof ContainerInterface) {
             throw new ShouldNotHappenException();
         }
 
@@ -128,51 +119,20 @@ final class RectorKernel
     /**
      * @param string[] $configFiles
      */
-    private function buildCachedContainer(array $configFiles): ContainerInterface {
+    private function buildCachedContainer(array $configFiles): ContainerInterface
+    {
         $hash = $this->createConfigsHash($configFiles);
 
-        $filesystem = new SmartFileSystem();
-        $className = 'RectorKernel'.$hash;
-        $file = sys_get_temp_dir() .'/rector/'. self::CACHE_KEY .'-'.$hash.'.php';
+        $builder = new CachedContainerBuilder(self::CACHE_KEY);
 
-        if (file_exists($file)) {
-            require_once $file;
-            $className = '\\'.__NAMESPACE__ .'\\'. $className;
-            $container = new $className();
-            if (!$container instanceof ContainerInterface) {
-                throw new ShouldNotHappenException();
-            }
-        } else {
-            $container = $this->buildContainer($configFiles);
-
-            $dumper = new PhpDumper($container);
-            $dumpedContainer = $dumper->dump([
-                'class' => $className,
-                'namespace' => __NAMESPACE__
-            ]);
-            if (!is_string($dumpedContainer)) {
-                throw new ShouldNotHappenException();
-            }
-
-            $filesystem->dumpFile($file, $dumpedContainer);
-        }
-
-        return $container;
+        return $builder->build($configFiles, $hash, function (array $configFiles) {
+            return $this->buildContainer($configFiles);
+        });
     }
 
-    static public function clearCache(): void {
-        $dir = sys_get_temp_dir();
-        if (!is_writable($dir)) {
-            return;
-        }
-
-        $cacheFiles = glob($dir .'/rector/kernel-*.php');
-        if ($cacheFiles === false) {
-            return;
-        }
-
-        $smartFileSystem = new SmartFileSystem();
-        $smartFileSystem->remove($cacheFiles);
+    static public function clearCache(): void
+    {
+        $builder = new CachedContainerBuilder(self::CACHE_KEY);
+        $builder->clearCache();
     }
-
 }
