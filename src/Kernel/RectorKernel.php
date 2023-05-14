@@ -28,8 +28,6 @@ final class RectorKernel
      */
     private const CACHE_KEY = 'kernel-v6';
 
-    private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
-
     private ContainerInterface|null $container = null;
 
     private bool $dumpFileCache = false;
@@ -41,8 +39,6 @@ final class RectorKernel
 
     public function __construct()
     {
-        $this->configureCallValuesCollector = new ConfigureCallValuesCollector();
-
         // while running tests we use different DI containers a lot,
         // therefore make sure we don't compile them over and over again.
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
@@ -93,26 +89,6 @@ final class RectorKernel
     }
 
     /**
-     * @return CompilerPassInterface[]
-     */
-    private function createCompilerPasses(): array
-    {
-        return [
-
-            // must run before AutowireArrayParameterCompilerPass, as the autowired array cannot contain removed services
-            new RemoveSkippedRectorsCompilerPass(),
-
-            // autowire Rectors by default (mainly for tests)
-            new AutowireRectorCompilerPass(),
-            new MakeRectorsPublicCompilerPass(),
-
-            // add all merged arguments of Rector services
-            new MergeImportedRectorConfigureCallValuesCompilerPass($this->configureCallValuesCollector),
-            new AutowireArrayParameterCompilerPass(),
-        ];
-    }
-
-    /**
      * @return string[]
      */
     private function createDefaultConfigFiles(): array
@@ -145,21 +121,8 @@ final class RectorKernel
         $defaultConfigFiles = $this->createDefaultConfigFiles();
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
 
-        $compilerPasses = $this->createCompilerPasses();
-
-        $configureCallMergingLoaderFactory = new ConfigureCallMergingLoaderFactory($this->configureCallValuesCollector);
-        $containerBuilderFactory = new ContainerBuilderFactory($configureCallMergingLoaderFactory);
-
-        $containerBuilder = $containerBuilderFactory->create($configFiles, $compilerPasses);
-
-        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
-        $containerBuilder->setParameter('container.dumper.inline_factories', true);
-        // to fix reincluding files again
-        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
-
-        $containerBuilder->compile();
-
-        return $this->container = $containerBuilder;
+        $builder = new ContainerBuilderBuilder();
+        return $this->container = $builder->build($configFiles);
     }
 
     /**
@@ -180,7 +143,7 @@ final class RectorKernel
                 throw new ShouldNotHappenException();
             }
         } else {
-            $container = $this->buildContainer($configFiles, $hash);
+            $container = $this->buildContainer($configFiles);
 
             $dumper = new PhpDumper($container);
             $dumpedContainer = $dumper->dump([
