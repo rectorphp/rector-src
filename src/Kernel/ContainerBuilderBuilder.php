@@ -11,14 +11,11 @@ use Rector\Core\DependencyInjection\CompilerPass\AutowireRectorCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
-use Rector\Core\Util\FileHasher;
-use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Webmozart\Assert\Assert;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class ContainerBuilderBuilder {
-
+final class ContainerBuilderBuilder
+{
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
     public function __construct()
@@ -29,7 +26,7 @@ final class ContainerBuilderBuilder {
     /**
      * @param string[] $configFiles
      */
-    public function build(array $configFiles): \Symfony\Component\DependencyInjection\ContainerBuilder
+    public function build(array $configFiles): ContainerBuilder
     {
         $compilerPasses = $this->createCompilerPasses();
 
@@ -67,5 +64,4 @@ final class ContainerBuilderBuilder {
             new AutowireArrayParameterCompilerPass(),
         ];
     }
-
 }

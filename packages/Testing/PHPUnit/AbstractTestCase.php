@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\FileHasher;
-use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
 {
@@ -68,5 +67,4 @@ abstract class AbstractTestCase extends TestCase
 
         return $object;
     }
-
 }

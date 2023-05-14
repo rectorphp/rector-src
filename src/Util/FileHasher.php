@@ -6,7 +6,8 @@ namespace Rector\Core\Util;
 
 use Rector\Core\Exception\ShouldNotHappenException;
 
-final class FileHasher {
+final class FileHasher
+{
     /**
      * cryptographic insecure hasing of a string
      */
@@ -34,7 +35,8 @@ final class FileHasher {
         return $configHash;
     }
 
-    private function getAlgo(): string {
+    private function getAlgo(): string
+    {
         //see https://php.watch/articles/php-hash-benchmark
         if (\PHP_VERSION_ID >= 80100) {
             // if xxh128 is available use it, as it is way faster

@@ -34,13 +34,11 @@ final class RectorKernel
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
             $this->dumpFileCache = true;
         }
-
     }
 
     /**
      * @param string[] $configFiles
      * @api used in tests
-     *
      */
     public function createBuilder(array $configFiles = []): ContainerBuilder
     {
@@ -50,7 +48,6 @@ final class RectorKernel
     /**
      * @param string[] $configFiles
      * @api used in tests
-     *
      */
     public function createFromConfigs(array $configFiles): ContainerInterface
     {
@@ -72,11 +69,17 @@ final class RectorKernel
      */
     public function getContainer(): ContainerInterface
     {
-        if (!$this->container instanceof ContainerInterface) {
+        if (! $this->container instanceof ContainerInterface) {
             throw new ShouldNotHappenException();
         }
 
         return $this->container;
+    }
+
+    public static function clearCache(): void
+    {
+        $builder = new CachedContainerBuilder(self::CACHE_KEY);
+        $builder->clearCache();
     }
 
     /**
@@ -128,11 +131,5 @@ final class RectorKernel
         return $builder->build($configFiles, $hash, function (array $configFiles) {
             return $this->buildContainer($configFiles);
         });
-    }
-
-    static public function clearCache(): void
-    {
-        $builder = new CachedContainerBuilder(self::CACHE_KEY);
-        $builder->clearCache();
     }
 }
