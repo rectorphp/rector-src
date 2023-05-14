@@ -20,7 +20,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -246,17 +245,6 @@ final class TypeComparator
         $secondArrayType = $this->normalizeSingleUnionType($secondType->getItemType());
 
         return $this->areTypesEqual($firstArrayType, $secondArrayType);
-    }
-
-    private function normalizeConstantBooleanType(Type $type): Type
-    {
-        return TypeTraverser::map($type, static function (Type $type, callable $callable): Type {
-            if ($type instanceof ConstantBooleanType) {
-                return new BooleanType();
-            }
-
-            return $callable($type);
-        });
     }
 
     private function isTypeSelfAndDocParamTypeStatic(
