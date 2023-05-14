@@ -10,42 +10,41 @@ use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 final class RectorContainerFactory
 {
     public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
     {
-        $containerBuilder = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
+        $container = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
 
         $mainConfigFile = $bootstrapConfigs->getMainConfigFile();
 
         if ($mainConfigFile !== null) {
             /** @var ChangedFilesDetector $changedFilesDetector */
-            $changedFilesDetector = $containerBuilder->get(ChangedFilesDetector::class);
+            $changedFilesDetector = $container->get(ChangedFilesDetector::class);
             $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFile);
         }
 
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
-        $bootstrapFilesIncluder = $containerBuilder->get(BootstrapFilesIncluder::class);
+        $bootstrapFilesIncluder = $container->get(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
 
-        $phpStanServicesFactory = $containerBuilder->get(PHPStanServicesFactory::class);
+        $phpStanServicesFactory = $container->get(PHPStanServicesFactory::class);
 
         /** @var PHPStanServicesFactory $phpStanServicesFactory */
         $phpStanContainer = $phpStanServicesFactory->provideContainer();
         $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles($phpStanContainer);
 
-        return $containerBuilder;
+        return $container;
     }
 
     /**
      * @param string[] $configFiles
      * @api
      */
-    private function createFromConfigs(array $configFiles): ContainerBuilder
+    private function createFromConfigs(array $configFiles): ContainerInterface
     {
         $rectorKernel = new RectorKernel();
-        return $rectorKernel->createBuilder($configFiles);
+        return $rectorKernel->createFromConfigs($configFiles);
     }
 }
