@@ -36,7 +36,7 @@ final class ArrayTypeComparator
 
         $checkedItemType = $checkedType->getItemType();
         if ($checkedItemType instanceof UnionType) {
-            $checkedItemType = $this->unionTypeCommonTypeNarrower->narrowToGenericClassStringType($checkedItemType);
+            // $checkedItemType = $this->unionTypeCommonTypeNarrower->narrowToGenericClassStringType($checkedItemType);
         }
 
         $mainItemType = $mainType->getItemType();
