@@ -45,6 +45,6 @@ final class FileHasher
             return 'xxh128';
         }
 
-        return 'crc32b';
+        return 'md4';
     }
 }
