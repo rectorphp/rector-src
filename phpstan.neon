@@ -328,7 +328,7 @@ parameters:
             path: packages/Config/RectorConfig.php
 
         # stmts refactoring
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactor\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 10#'
 
         # empty parent construct
         - '#Rector\\Core\\PhpParser\\NodeTraverser\\FileWithoutNamespaceNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
@@ -794,6 +794,10 @@ parameters:
         # make autoload of php-parser in rector first
         - '#but class PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+
+        # deprecated
+        - '#Register "Rector\\Php80\\Rector\\FunctionLike\\UnionTypesRector" service to "php80\.php" config set#'
+        - '#Fetching class constant class of deprecated class Rector\\CodeQuality\\Rector\\ClassMethod\\NarrowUnionTypeDocRector#'
 
         # statics are required in the kernel for performance reasons
         -

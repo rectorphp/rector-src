@@ -15,10 +15,11 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\Core\NodeManipulator\PropertyManipulator;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Core\ValueObject\Visibility;
@@ -33,7 +34,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\ReadOnlyPropertyRectorTest
  */
-final class ReadOnlyPropertyRector extends AbstractRector implements MinPhpVersionInterface
+final class ReadOnlyPropertyRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly PropertyManipulator $propertyManipulator,
@@ -92,13 +93,13 @@ CODE_SAMPLE
     /**
      * @param Property|Param $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof Param) {
-            return $this->refactorParam($node);
+            return $this->refactorParam($node, $scope);
         }
 
-        return $this->refactorProperty($node);
+        return $this->refactorProperty($node, $scope);
     }
 
     public function provideMinPhpVersion(): int
@@ -116,7 +117,7 @@ CODE_SAMPLE
         return $class->isReadonly();
     }
 
-    private function refactorProperty(Property $property): ?Property
+    private function refactorProperty(Property $property, Scope $scope): ?Property
     {
         // 1. is property read-only?
         if ($property->isReadonly()) {
@@ -139,7 +140,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($property)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($property, $scope)) {
             return null;
         }
 
@@ -161,7 +162,7 @@ CODE_SAMPLE
         return $property;
     }
 
-    private function refactorParam(Param $param): Param | null
+    private function refactorParam(Param $param, Scope $scope): Param | null
     {
         if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
             return null;
@@ -172,7 +173,7 @@ CODE_SAMPLE
         }
 
         // promoted property?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($param)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($param, $scope)) {
             return null;
         }
 

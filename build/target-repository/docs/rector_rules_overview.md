@@ -1,4 +1,4 @@
-# 411 Rules Overview
+# 406 Rules Overview
 
 <br>
 
@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (76)
 
-- [CodingStyle](#codingstyle) (36)
+- [CodingStyle](#codingstyle) (35)
 
 - [Compatibility](#compatibility) (1)
 
@@ -57,8 +57,6 @@
 - [RemovingStatic](#removingstatic) (1)
 
 - [Renaming](#renaming) (11)
-
-- [Restoration](#restoration) (4)
 
 - [Strict](#strict) (6)
 
@@ -2169,71 +2167,6 @@ Changes already typed Type|null to ?Type
 
 -    private null|stdClass $property;
 +    private ?stdClass $property;
- }
-```
-
-<br>
-
-### OrderAttributesRector
-
-Order attributes by desired names
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\ClassMethod\OrderAttributesRector`](../rules/CodingStyle/Rector/ClassMethod/OrderAttributesRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\CodingStyle\Rector\ClassMethod\OrderAttributesRector;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(OrderAttributesRector::class, [
-        'First',
-        'Second',
-    ]);
-};
-```
-
-↓
-
-```diff
-+#[First]
- #[Second]
--#[First]
- class Someclass
- {
- }
-```
-
-<br>
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\CodingStyle\Rector\ClassMethod\OrderAttributesRector;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(OrderAttributesRector::class, [
-        'alphabetically',
-    ]);
-};
-```
-
-↓
-
-```diff
-+#[AAttribute]
- #[BAttribute]
--#[AAttribute]
- class Someclass
- {
  }
 ```
 
@@ -7405,86 +7338,6 @@ return static function (RectorConfig $rectorConfig): void {
 -        return 'ROLE_PREVIOUS_ADMIN';
 +        return 'IS_IMPERSONATOR';
      }
- }
-```
-
-<br>
-
-## Restoration
-
-### MakeTypedPropertyNullableIfCheckedRector
-
-Make typed property nullable if checked
-
-- class: [`Rector\Restoration\Rector\Property\MakeTypedPropertyNullableIfCheckedRector`](../rules/Restoration/Rector/Property/MakeTypedPropertyNullableIfCheckedRector.php)
-
-```diff
- final class SomeClass
- {
--    private AnotherClass $anotherClass;
-+    private ?AnotherClass $anotherClass = null;
-
-     public function run()
-     {
-         if ($this->anotherClass === null) {
-             $this->anotherClass = new AnotherClass;
-         }
-     }
- }
-```
-
-<br>
-
-### MissingClassConstantReferenceToStringRector
-
-Convert missing class reference to string
-
-- class: [`Rector\Restoration\Rector\ClassConstFetch\MissingClassConstantReferenceToStringRector`](../rules/Restoration/Rector/ClassConstFetch/MissingClassConstantReferenceToStringRector.php)
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        return NonExistingClass::class;
-+        return 'NonExistingClass';
-     }
- }
-```
-
-<br>
-
-### RemoveFinalFromEntityRector
-
-Remove final from Doctrine entities
-
-- class: [`Rector\Restoration\Rector\Class_\RemoveFinalFromEntityRector`](../rules/Restoration/Rector/Class_/RemoveFinalFromEntityRector.php)
-
-```diff
- use Doctrine\ORM\Mapping as ORM;
-
- /**
-  * @ORM\Entity
-  */
--final class SomeClass
-+class SomeClass
- {
- }
-```
-
-<br>
-
-### UpdateFileNameByClassNameFileSystemRector
-
-Rename file to respect class name
-
-- class: [`Rector\Restoration\Rector\ClassLike\UpdateFileNameByClassNameFileSystemRector`](../rules/Restoration/Rector/ClassLike/UpdateFileNameByClassNameFileSystemRector.php)
-
-```diff
--// app/SomeClass.php
-+// app/AnotherClass.php
- class AnotherClass
- {
  }
 ```
 

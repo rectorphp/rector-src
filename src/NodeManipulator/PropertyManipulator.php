@@ -94,8 +94,11 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isPropertyUsedInReadContext(Class_ $class, Property | Param $propertyOrPromotedParam): bool
-    {
+    public function isPropertyUsedInReadContext(
+        Class_ $class,
+        Property | Param $propertyOrPromotedParam,
+        Scope $scope
+    ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
 
         if ($this->isAllowedReadOnly($propertyOrPromotedParam, $phpDocInfo)) {
@@ -108,7 +111,7 @@ final class PropertyManipulator
         );
 
         foreach ($privatePropertyFetches as $privatePropertyFetch) {
-            if ($this->readWritePropertyAnalyzer->isRead($privatePropertyFetch)) {
+            if ($this->readWritePropertyAnalyzer->isRead($privatePropertyFetch, $scope)) {
                 return true;
             }
         }
@@ -119,12 +122,12 @@ final class PropertyManipulator
             return false;
         }
 
-        return (bool) $this->betterNodeFinder->findFirst($classLike->stmts, function (Node $node): bool {
+        return (bool) $this->betterNodeFinder->findFirst($classLike->stmts, function (Node $node) use ($scope): bool {
             if (! $node instanceof PropertyFetch) {
                 return false;
             }
 
-            if (! $this->readWritePropertyAnalyzer->isRead($node)) {
+            if (! $this->readWritePropertyAnalyzer->isRead($node, $scope)) {
                 return false;
             }
 
@@ -132,7 +135,7 @@ final class PropertyManipulator
         });
     }
 
-    public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam): bool
+    public function isPropertyChangeableExceptConstructor(Property | Param $propertyOrParam, Scope $scope): bool
     {
         $class = $this->betterNodeFinder->findParentType($propertyOrParam, Class_::class);
 
@@ -156,7 +159,7 @@ final class PropertyManipulator
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam);
 
         foreach ($propertyFetches as $propertyFetch) {
-            if ($this->isChangeableContext($propertyFetch)) {
+            if ($this->isChangeableContext($propertyFetch, $scope)) {
                 return true;
             }
 
@@ -181,12 +184,12 @@ final class PropertyManipulator
         return false;
     }
 
-    public function isPropertyChangeable(Class_ $class, Property $property): bool
+    public function isPropertyChangeable(Class_ $class, Property $property, Scope $scope): bool
     {
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $property);
 
         foreach ($propertyFetches as $propertyFetch) {
-            if ($this->isChangeableContext($propertyFetch)) {
+            if ($this->isChangeableContext($propertyFetch, $scope)) {
                 return true;
             }
 
@@ -267,7 +270,7 @@ final class PropertyManipulator
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
     }
 
-    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
+    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch, Scope $scope): bool
     {
         $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Node) {
@@ -298,7 +301,7 @@ final class PropertyManipulator
         }
 
         if ($parentNode instanceof ArrayDimFetch) {
-            return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch);
+            return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $scope);
         }
 
         return $parentNode instanceof Unset_;

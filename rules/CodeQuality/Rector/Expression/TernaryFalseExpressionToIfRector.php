@@ -9,7 +9,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\Rector\AbstractRector;
+use PHPStan\Analyser\Scope;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -17,7 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector\TernaryFalseExpressionToIfRectorTest
  */
-final class TernaryFalseExpressionToIfRector extends AbstractRector
+final class TernaryFalseExpressionToIfRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly SideEffectNodeDetector $sideEffectNodeDetector
@@ -65,7 +66,7 @@ CODE_SAMPLE
     /**
      * @param Expression $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if (! $node->expr instanceof Ternary) {
             return null;
@@ -76,7 +77,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->sideEffectNodeDetector->detect($ternary->else)) {
+        if ($this->sideEffectNodeDetector->detect($ternary->else, $scope)) {
             return null;
         }
 

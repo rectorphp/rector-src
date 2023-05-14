@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Unset_;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -38,7 +39,7 @@ final class ReadWritePropertyAnalyzer
     ) {
     }
 
-    public function isRead(PropertyFetch | StaticPropertyFetch $node): bool
+    public function isRead(PropertyFetch | StaticPropertyFetch $node, Scope $scope): bool
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Node) {
@@ -67,14 +68,14 @@ final class ReadWritePropertyAnalyzer
             return false;
         }
 
-        if (! $this->isArrayDimFetchInImpureFunction($parentNode, $node)) {
+        if (! $this->isArrayDimFetchInImpureFunction($parentNode, $node, $scope)) {
             return $this->isNotInsideIssetUnset($parentNode);
         }
 
         return false;
     }
 
-    private function isArrayDimFetchInImpureFunction(ArrayDimFetch $arrayDimFetch, Node $node): bool
+    private function isArrayDimFetchInImpureFunction(ArrayDimFetch $arrayDimFetch, Node $node, Scope $scope): bool
     {
         if ($arrayDimFetch->var === $node) {
             $arg = $this->betterNodeFinder->findParentType($arrayDimFetch, Arg::class);
@@ -84,7 +85,7 @@ final class ReadWritePropertyAnalyzer
                     return false;
                 }
 
-                return ! $this->pureFunctionDetector->detect($parentArg);
+                return ! $this->pureFunctionDetector->detect($parentArg, $scope);
             }
         }
 

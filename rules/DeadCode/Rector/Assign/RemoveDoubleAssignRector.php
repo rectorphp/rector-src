@@ -16,8 +16,9 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
+use PHPStan\Analyser\Scope;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,7 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\DeadCode\Rector\Assign\RemoveDoubleAssignRector\RemoveDoubleAssignRectorTest
  */
-final class RemoveDoubleAssignRector extends AbstractRector
+final class RemoveDoubleAssignRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
@@ -65,7 +66,7 @@ CODE_SAMPLE
     /**
      * @param Foreach_|FileWithoutNamespace|If_|Namespace_|ClassMethod|Function_|Closure $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $stmts = $node->stmts;
         if ($stmts === null) {
@@ -107,7 +108,7 @@ CODE_SAMPLE
 
             // detect call expression has side effect
             // no calls on right, could hide e.g. array_pop()|array_shift()
-            if ($this->sideEffectNodeDetector->detectCallExpr($stmt->expr->expr)) {
+            if ($this->sideEffectNodeDetector->detectCallExpr($stmt->expr->expr, $scope)) {
                 continue;
             }
 

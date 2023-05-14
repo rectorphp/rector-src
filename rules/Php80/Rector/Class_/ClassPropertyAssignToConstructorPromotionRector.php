@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -150,6 +151,7 @@ CODE_SAMPLE
 
             // rename also following calls
             $propertyName = $this->getName($property->props[0]);
+
             /** @var string $oldName */
             $oldName = $this->getName($param->var);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
@@ -187,6 +189,11 @@ CODE_SAMPLE
         if ($this->nodeTypeResolver->isNullableType($property)) {
             $objectType = $this->getType($property);
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
+        }
+
+        if ($param->default instanceof Expr && $this->valueResolver->isNull($param->default)) {
+            $paramType = $this->getType($param);
+            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
         }
     }
 
