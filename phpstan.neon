@@ -106,8 +106,6 @@ parameters:
 
         - '#PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable given#'
 
-        - '#Method Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:matchReturnOrAssignNode\(\) should return PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Stmt\\Return_\|null but returns PhpParser\\Node\|null#'
-
         -
             message: '#There should be no empty class#'
             paths:
@@ -132,7 +130,6 @@ parameters:
 
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
-        - '#Parameter \#1 \$stmts of method Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:collectIfs\(\) expects array<PhpParser\\Node\\Stmt\\If_\>, array<PhpParser\\Node\\Stmt\> given#'
 
 #        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is \d+, keep it under 10#'
 
@@ -329,9 +326,6 @@ parameters:
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
             path: packages/Config/RectorConfig.php
-
-        - '#Method "processStmt\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Method "refactorReturnAndAssign\(\)" returns bool type, so the name should start with is/has/was#'
 
         # stmts refactoring
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactor\(\)" is \d+, keep it under 10#'
@@ -686,7 +680,7 @@ parameters:
             message: '#Class (.*?) not found#'
             paths:
                 - rules-tests/*/config/*
-                - packages-tests/*/*Test.php
+
         -
             message: '#Value object "(.*?)" should be named "(.*?)" instead to respect used service#'
             paths:

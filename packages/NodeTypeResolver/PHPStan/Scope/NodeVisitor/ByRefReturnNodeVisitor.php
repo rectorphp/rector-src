@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -15,8 +15,9 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ByRefReturnNodeVisitor extends NodeVisitorAbstract
 {
-    public function __construct(private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser)
-    {
+    public function __construct(
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+    ) {
     }
 
     public function enterNode(Node $node): ?Node
@@ -36,7 +37,7 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            static function (Node $subNode) : int|null|Return_ {
+            static function (Node $subNode): int|null|Return_ {
                 if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
