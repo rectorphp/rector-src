@@ -15,7 +15,7 @@ namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
 
 final readonly class OnlyReadonlyProperty
 {
-   private string $property;
+    private string $property;
 }
 
 ?>
