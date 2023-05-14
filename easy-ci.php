@@ -96,6 +96,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         NamedVariableFactory::class,
         BinaryOpTreeRootLocator::class,
 
-        NodeVisitorInterface::class,
+        ScopeResolverNodeVisitorInterface::class,
     ]);
 };
