@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
@@ -30,7 +31,7 @@ final class DeadReturnTagValueNodeAnalyzer
     ) {
     }
 
-    public function isDead(ReturnTagValueNode $returnTagValueNode, Node\Stmt\ClassMethod $classMethod): bool
+    public function isDead(ReturnTagValueNode $returnTagValueNode, ClassMethod $classMethod): bool
     {
         $returnType = $classMethod->getReturnType();
         if ($returnType === null) {
