@@ -49,7 +49,7 @@ final class ArrayCallableMethodMatcher
      * @see https://github.com/rectorphp/rector-src/pull/908
      * @see https://github.com/rectorphp/rector-src/pull/909
      */
-    public function match(Array_ $array): null | ArrayCallableDynamicMethod | ArrayCallable
+    public function match(Array_ $array, Scope $scope): null | ArrayCallableDynamicMethod | ArrayCallable
     {
         if (count($array->items) !== 2) {
             return null;
@@ -65,7 +65,7 @@ final class ArrayCallableMethodMatcher
         // $this, self, static, FQN
         $firstItemValue = $items[0]->value;
 
-        $callerType = $this->resolveCallerType($firstItemValue);
+        $callerType = $this->resolveCallerType($firstItemValue, $scope);
         if (! $callerType instanceof TypeWithClassName) {
             return null;
         }
@@ -145,7 +145,7 @@ final class ArrayCallableMethodMatcher
         return $this->nodeNameResolver->isNames($parentParentNode, $functionNames);
     }
 
-    private function resolveClassConstFetchType(ClassConstFetch $classConstFetch): MixedType | ObjectType
+    private function resolveClassConstFetchType(ClassConstFetch $classConstFetch, Scope $scope): MixedType | ObjectType
     {
         $classConstantReference = $this->valueResolver->getValue($classConstFetch);
 
@@ -164,11 +164,6 @@ final class ArrayCallableMethodMatcher
         }
 
         if (! $this->reflectionProvider->hasClass($classConstantReference)) {
-            return new MixedType();
-        }
-
-        $scope = $classConstFetch->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
             return new MixedType();
         }
 
@@ -193,11 +188,11 @@ final class ArrayCallableMethodMatcher
         return new ObjectType($classConstantReference, null, $classReflection);
     }
 
-    private function resolveCallerType(Expr $expr): Type
+    private function resolveCallerType(Expr $expr, Scope $scope): Type
     {
         if ($expr instanceof ClassConstFetch) {
             // static ::class reference?
-            $callerType = $this->resolveClassConstFetchType($expr);
+            $callerType = $this->resolveClassConstFetchType($expr, $scope);
         } else {
             $callerType = $this->nodeTypeResolver->getType($expr);
         }

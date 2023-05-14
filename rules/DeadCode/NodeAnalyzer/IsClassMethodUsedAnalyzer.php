@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -34,7 +35,7 @@ final class IsClassMethodUsedAnalyzer
     ) {
     }
 
-    public function isClassMethodUsed(ClassMethod $classMethod): bool
+    public function isClassMethodUsed(ClassMethod $classMethod, Scope $scope): bool
     {
         $class = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
         if (! $class instanceof Class_) {
@@ -54,7 +55,7 @@ final class IsClassMethodUsedAnalyzer
         }
 
         // 3. magic array calls!
-        if ($this->isClassMethodCalledInLocalArrayCall($class, $classMethod)) {
+        if ($this->isClassMethodCalledInLocalArrayCall($class, $classMethod, $scope)) {
             return true;
         }
 
@@ -108,7 +109,7 @@ final class IsClassMethodUsedAnalyzer
         return $class->getMethod($value) instanceof ClassMethod;
     }
 
-    private function isClassMethodCalledInLocalArrayCall(Class_ $class, ClassMethod $classMethod): bool
+    private function isClassMethodCalledInLocalArrayCall(Class_ $class, ClassMethod $classMethod, Scope $scope): bool
     {
         /** @var Array_[] $arrays */
         $arrays = $this->betterNodeFinder->findInstanceOf($class, Array_::class);
@@ -118,7 +119,7 @@ final class IsClassMethodUsedAnalyzer
                 return true;
             }
 
-            $arrayCallable = $this->arrayCallableMethodMatcher->match($array);
+            $arrayCallable = $this->arrayCallableMethodMatcher->match($array, $scope);
             if ($arrayCallable instanceof ArrayCallableDynamicMethod) {
                 return true;
             }
