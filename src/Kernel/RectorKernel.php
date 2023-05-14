@@ -126,9 +126,9 @@ final class RectorKernel
     {
         $hash = $this->createConfigsHash($configFiles);
 
-        $builder = new CachedContainerBuilder(self::CACHE_KEY);
+        $cachedContainerBuilder = new CachedContainerBuilder(self::CACHE_KEY);
 
-        return $builder->build($configFiles, $hash, function (array $configFiles) {
+        return $cachedContainerBuilder->build($configFiles, $hash, function (array $configFiles) {
             return $this->buildContainer($configFiles);
         });
     }
