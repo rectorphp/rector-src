@@ -16,8 +16,12 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 final class CachedContainerBuilder
 {
     public function __construct(
+        private readonly string $cacheDir,
         private readonly string $cacheKey,
     ) {
+        if (!str_ends_with($cacheDir, '/')) {
+            throw new ShouldNotHappenException(sprintf('Cache dir "%s" must end with "/"', $cacheDir));
+        }
     }
 
     /**
@@ -28,7 +32,7 @@ final class CachedContainerBuilder
     {
         $filesystem = new SmartFileSystem();
         $className = 'RectorKernel' . $hash;
-        $file = sys_get_temp_dir() . '/rector/kernel-' . $this->cacheKey . '-' . $hash . '.php';
+        $file = $this->cacheDir .'kernel-' . $this->cacheKey . '-' . $hash . '.php';
 
         if (file_exists($file)) {
             require_once $file;
@@ -57,12 +61,11 @@ final class CachedContainerBuilder
 
     public function clearCache(): void
     {
-        $dir = sys_get_temp_dir();
-        if (! is_writable($dir)) {
+        if (! is_writable($this->cacheDir)) {
             return;
         }
 
-        $cacheFiles = glob($dir . '/rector/kernel-*.php');
+        $cacheFiles = glob($this->cacheDir . 'rector/kernel-*.php');
         if ($cacheFiles === false) {
             return;
         }
