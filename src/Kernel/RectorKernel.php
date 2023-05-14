@@ -140,7 +140,7 @@ final class RectorKernel
     /**
      * @param string[] $configFiles
      */
-    private function buildContainer(array $configFiles, string $hash = null): ContainerBuilder
+    private function buildContainer(array $configFiles): ContainerBuilder
     {
         $defaultConfigFiles = $this->createDefaultConfigFiles();
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
