@@ -55,11 +55,11 @@ final class ClassMethodAssignManipulator
     /**
      * @return Assign[]
      */
-    public function collectReadyOnlyAssignScalarVariables(ClassMethod $classMethod, Class_ $class_): array
+    public function collectReadyOnlyAssignScalarVariables(ClassMethod $classMethod, Class_ $class): array
     {
         $assignsOfScalarOrArrayToVariable = $this->variableManipulator->collectScalarOrArrayAssignsOfVariable(
             $classMethod,
-            $class_
+            $class
         );
 
         // filter out [$value] = $array, array destructing
