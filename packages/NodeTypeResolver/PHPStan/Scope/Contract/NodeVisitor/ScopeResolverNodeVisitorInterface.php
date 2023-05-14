@@ -6,6 +6,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor;
 
 use PhpParser\NodeVisitor;
 
-interface NodeVisitorInterface extends NodeVisitor
+interface ScopeResolverNodeVisitorInterface extends NodeVisitor
 {
 }

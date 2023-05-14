@@ -50,7 +50,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -67,7 +67,7 @@ final class PHPStanNodeScopeResolver
     private readonly NodeTraverser $nodeTraverser;
 
     /**
-     * @param NodeVisitorInterface[] $nodeVisitors
+     * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
      */
     public function __construct(
         private readonly ChangedFilesDetector $changedFilesDetector,

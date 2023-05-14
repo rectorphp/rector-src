@@ -8,12 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\NodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
 /**
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1.7.x/src/Parser/NewAssignedToPropertyVisitor.php
  */
-final class AssignedToNodeVisitor extends NodeVisitorAbstract implements NodeVisitorInterface
+final class AssignedToNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
     public function enterNode(Node $node): ?Node
     {
