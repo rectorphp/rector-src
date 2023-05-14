@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
+use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -20,7 +21,7 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 final class ClassInsertManipulator
 {
     /**
-     * @var array<class-string<Stmt>>
+     * @var array<class-string<Node>>
      */
     private const BEFORE_TRAIT_TYPES = [TraitUse::class, Property::class, ClassMethod::class];
 
