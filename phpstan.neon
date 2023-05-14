@@ -794,3 +794,6 @@ parameters:
         # make autoload of php-parser in rector first
         - '#but class PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+
+        # deprecated
+        - '#Register "Rector\\Php80\\Rector\\FunctionLike\\UnionTypesRector" service to "php80\.php" config set#'

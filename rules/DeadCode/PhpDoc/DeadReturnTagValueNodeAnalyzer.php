@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -31,14 +31,14 @@ final class DeadReturnTagValueNodeAnalyzer
     ) {
     }
 
-    public function isDead(ReturnTagValueNode $returnTagValueNode, FunctionLike $functionLike): bool
+    public function isDead(ReturnTagValueNode $returnTagValueNode, ClassMethod $classMethod): bool
     {
-        $returnType = $functionLike->getReturnType();
+        $returnType = $classMethod->getReturnType();
         if ($returnType === null) {
             return false;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
+        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
         if ($classLike instanceof Trait_ && $returnTagValueNode->type instanceof ThisTypeNode) {
             return false;
         }
@@ -46,7 +46,7 @@ final class DeadReturnTagValueNodeAnalyzer
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
             $returnType,
             $returnTagValueNode->type,
-            $functionLike,
+            $classMethod,
         )) {
             return false;
         }
