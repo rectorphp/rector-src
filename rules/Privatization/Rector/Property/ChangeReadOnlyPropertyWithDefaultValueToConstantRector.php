@@ -9,9 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Privatization\NodeFactory\ClassConstantFactory;
 use Rector\Privatization\NodeReplacer\PropertyFetchWithConstFetchReplacer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Privatization\Rector\Property\ChangeReadOnlyPropertyWithDefaultValueToConstantRector\ChangeReadOnlyPropertyWithDefaultValueToConstantRectorTest
  */
-final class ChangeReadOnlyPropertyWithDefaultValueToConstantRector extends AbstractRector
+final class ChangeReadOnlyPropertyWithDefaultValueToConstantRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly PropertyManipulator $propertyManipulator,
@@ -90,7 +92,7 @@ CODE_SAMPLE
     /**
      * @param Property $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($this->shouldSkip($node)) {
             return null;
@@ -114,7 +116,7 @@ CODE_SAMPLE
         }
 
         // is property read only?
-        if ($this->propertyManipulator->isPropertyChangeable($class, $node)) {
+        if ($this->propertyManipulator->isPropertyChangeable($class, $node, $scope)) {
             return null;
         }
 
