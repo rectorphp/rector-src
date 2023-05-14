@@ -12,6 +12,8 @@ use Symplify\SmartFileSystem\SmartFileSystem;
 final class FileHasherTest extends AbstractTestCase {
         private FileHasher $fileHasher;
 
+        private SmartFileSystem $smartFileSystem;
+
         protected function setUp(): void
         {
             $this->boot();
