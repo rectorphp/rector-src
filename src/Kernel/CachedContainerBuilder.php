@@ -30,7 +30,7 @@ final class CachedContainerBuilder
      */
     public function build(array $configFiles, string $hash, callable $containerBuilderCallback): ContainerInterface
     {
-        $filesystem = new SmartFileSystem();
+        $smartFileSystem = new SmartFileSystem();
         $className = 'RectorKernel' . $hash;
         $file = $this->cacheDir .'kernel-' . $this->cacheKey . '-' . $hash . '.php';
 
@@ -44,8 +44,8 @@ final class CachedContainerBuilder
         } else {
             $container = ($containerBuilderCallback)($configFiles);
 
-            $dumper = new PhpDumper($container);
-            $dumpedContainer = $dumper->dump([
+            $phpDumper = new PhpDumper($container);
+            $dumpedContainer = $phpDumper->dump([
                 'class' => $className,
                 'namespace' => __NAMESPACE__,
             ]);
@@ -53,7 +53,7 @@ final class CachedContainerBuilder
                 throw new ShouldNotHappenException();
             }
 
-            $filesystem->dumpFile($file, $dumpedContainer);
+            $smartFileSystem->dumpFile($file, $dumpedContainer);
         }
 
         return $container;

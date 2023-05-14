@@ -30,8 +30,10 @@ final class FileHasher
             if ($hash === false) {
                 throw new ShouldNotHappenException(sprintf('File %s is not readable', $file));
             }
+
             $configHash .= $hash;
         }
+
         return $configHash;
     }
 

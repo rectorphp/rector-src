@@ -78,8 +78,8 @@ final class RectorKernel
 
     public static function clearCache(): void
     {
-        $builder = new CachedContainerBuilder(self::getCacheDir(), self::CACHE_KEY);
-        $builder->clearCache();
+        $cachedContainerBuilder = new CachedContainerBuilder(self::getCacheDir(), self::CACHE_KEY);
+        $cachedContainerBuilder->clearCache();
     }
 
     /**
@@ -115,8 +115,8 @@ final class RectorKernel
         $defaultConfigFiles = $this->createDefaultConfigFiles();
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
 
-        $builder = new ContainerBuilderBuilder();
-        return $this->container = $builder->build($configFiles);
+        $containerBuilderBuilder = new ContainerBuilderBuilder();
+        return $this->container = $containerBuilderBuilder->build($configFiles);
     }
 
     /**
@@ -128,9 +128,7 @@ final class RectorKernel
 
         $cachedContainerBuilder = new CachedContainerBuilder(self::getCacheDir(), self::CACHE_KEY);
 
-        return $cachedContainerBuilder->build($configFiles, $hash, function (array $configFiles) {
-            return $this->buildContainer($configFiles);
-        });
+        return $cachedContainerBuilder->build($configFiles, $hash, fn(array $configFiles): ContainerBuilder => $this->buildContainer($configFiles));
     }
 
     private static function getCacheDir(): string {

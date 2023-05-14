@@ -451,9 +451,9 @@ final class ClassRenamer
     {
         $oldToNewClasses = $this->resolveOldToNewClassCallbacks($node, $oldToNewClasses);
 
-        $hasher = new FileHasher();
+        $fileHasher = new FileHasher();
         $serialized = \serialize($oldToNewClasses);
-        $cacheKey = $hasher->hash($serialized);
+        $cacheKey = $fileHasher->hash($serialized);
 
         if (isset($this->oldToNewTypesByCacheKey[$cacheKey])) {
             return $this->oldToNewTypesByCacheKey[$cacheKey];

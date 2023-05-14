@@ -16,27 +16,27 @@ final class RectorContainerFactory
 {
     public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
     {
-        $container = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
+        $containerBuilder = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
 
         $mainConfigFile = $bootstrapConfigs->getMainConfigFile();
 
         if ($mainConfigFile !== null) {
             /** @var ChangedFilesDetector $changedFilesDetector */
-            $changedFilesDetector = $container->get(ChangedFilesDetector::class);
+            $changedFilesDetector = $containerBuilder->get(ChangedFilesDetector::class);
             $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFile);
         }
 
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
-        $bootstrapFilesIncluder = $container->get(BootstrapFilesIncluder::class);
+        $bootstrapFilesIncluder = $containerBuilder->get(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
 
-        $phpStanServicesFactory = $container->get(PHPStanServicesFactory::class);
+        $phpStanServicesFactory = $containerBuilder->get(PHPStanServicesFactory::class);
 
         /** @var PHPStanServicesFactory $phpStanServicesFactory */
         $phpStanContainer = $phpStanServicesFactory->provideContainer();
         $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles($phpStanContainer);
 
-        return $container;
+        return $containerBuilder;
     }
 
     /**
