@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeNestingScope;
 
+use PhpParser\Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -72,7 +73,7 @@ final class ContextAnalyzer
         return $previousNode instanceof If_;
     }
 
-    public function hasAssignWithIndirectReturn(Node\Stmt $stmt, If_ $if): bool
+    public function hasAssignWithIndirectReturn(Stmt $stmt, If_ $if): bool
     {
         foreach (ControlStructure::LOOP_NODES as $loopNode) {
             $loopObjectType = new ObjectType($loopNode);
