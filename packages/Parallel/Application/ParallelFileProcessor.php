@@ -10,6 +10,7 @@ use Nette\Utils\Random;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
+use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Console\Command\ProcessCommand;
@@ -24,6 +25,7 @@ use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\Content;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
+use Symplify\EasyParallel\ValueObject\ChildProcessTimeoutException;
 use Symplify\EasyParallel\ValueObject\ParallelProcess;
 use Symplify\EasyParallel\ValueObject\ProcessPool;
 use Symplify\EasyParallel\ValueObject\Schedule;
@@ -46,7 +48,8 @@ final class ParallelFileProcessor
 
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,
-        private readonly ParameterProvider $parameterProvider
+        private readonly ParameterProvider $parameterProvider,
+        private readonly ChangedFilesDetector $changedFilesDetector,
     ) {
     }
 
@@ -125,6 +128,18 @@ final class ParallelFileProcessor
             ++$systemErrorsCount;
             $reachedSystemErrorsCountLimit = true;
             $this->processPool->quitAll();
+
+            // This sleep has to be here, because event though we have called $this->processPool->quitAll(),
+            // it takes some time for the child processes to actually die, and if we would delete the offending cache
+            // files right away, they could still write them "back" before they die
+            sleep(1);
+            if ($throwable instanceof ChildProcessTimeoutException) {
+                $context = $throwable->getContext();
+
+                foreach ($context[Bridge::FILES] as $file) {
+                    $this->changedFilesDetector->invalidateFile($file);
+                }
+            }
         };
 
         $timeoutInSeconds = $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
