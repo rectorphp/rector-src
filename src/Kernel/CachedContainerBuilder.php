@@ -10,6 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
+/**
+ * see https://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
+ */
 final class CachedContainerBuilder {
 
     public function __construct(
