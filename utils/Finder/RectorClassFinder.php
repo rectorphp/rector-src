@@ -18,6 +18,7 @@ final class RectorClassFinder
         $robotLoader = new RobotLoader();
         $robotLoader->setTempDirectory(sys_get_temp_dir() . '/rector-missing-in-set');
         $robotLoader->addDirectory(...$directories);
+
         $robotLoader->acceptFiles = ['*Rector.php'];
         $robotLoader->rebuild();
 
