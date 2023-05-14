@@ -88,8 +88,8 @@ final class TypeComparator
         );
 
         // normalize bool union types
-        $phpParserNodeType = $this->normalizeConstantBooleanType($phpParserNodeType);
-        $phpStanDocType = $this->normalizeConstantBooleanType($phpStanDocType);
+        //$phpParserNodeType = $this->normalizeConstantBooleanType($phpParserNodeType);
+        //$phpStanDocType = $this->normalizeConstantBooleanType($phpStanDocType);
 
         // is scalar replace by another - remove it?
         $areDifferentScalarTypes = $this->scalarTypeComparator->areDifferentScalarTypes(
