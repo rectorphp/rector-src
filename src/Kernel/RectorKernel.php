@@ -128,10 +128,15 @@ final class RectorKernel
 
         $cachedContainerBuilder = new CachedContainerBuilder(self::getCacheDir(), self::CACHE_KEY);
 
-        return $cachedContainerBuilder->build($configFiles, $hash, fn(array $configFiles): ContainerBuilder => $this->buildContainer($configFiles));
+        return $cachedContainerBuilder->build(
+            $configFiles,
+            $hash,
+            fn (array $configFiles): ContainerBuilder => $this->buildContainer($configFiles)
+        );
     }
 
-    private static function getCacheDir(): string {
+    private static function getCacheDir(): string
+    {
         // we use the system temp dir only in our test-suite as we cannot reliably use it anywhere
         // see https://github.com/rectorphp/rector/issues/7700
         return sys_get_temp_dir() . '/rector/';

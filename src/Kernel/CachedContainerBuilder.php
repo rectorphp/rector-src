@@ -19,7 +19,7 @@ final class CachedContainerBuilder
         private readonly string $cacheDir,
         private readonly string $cacheKey,
     ) {
-        if (!str_ends_with($cacheDir, '/')) {
+        if (! str_ends_with($cacheDir, '/')) {
             throw new ShouldNotHappenException(sprintf('Cache dir "%s" must end with "/"', $cacheDir));
         }
     }
@@ -32,7 +32,7 @@ final class CachedContainerBuilder
     {
         $smartFileSystem = new SmartFileSystem();
         $className = 'RectorKernel' . $hash;
-        $file = $this->cacheDir .'kernel-' . $this->cacheKey . '-' . $hash . '.php';
+        $file = $this->cacheDir . 'kernel-' . $this->cacheKey . '-' . $hash . '.php';
 
         if (file_exists($file)) {
             require_once $file;
