@@ -38,7 +38,6 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
-use Rector\NodeTypeResolver\NodeTypeCorrector\HasOffsetTypeCorrector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
@@ -58,7 +57,6 @@ final class NodeTypeResolver
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly GenericClassStringTypeCorrector $genericClassStringTypeCorrector,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly HasOffsetTypeCorrector $hasOffsetTypeCorrector,
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         array $nodeTypeResolvers
@@ -157,7 +155,7 @@ final class NodeTypeResolver
                 $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $type, $scope);
             }
 
-            return $this->hasOffsetTypeCorrector->correct($type);
+            return $type;
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
