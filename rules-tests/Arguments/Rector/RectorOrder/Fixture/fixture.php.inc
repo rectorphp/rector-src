@@ -27,10 +27,10 @@ class SomeTest extends TestCase
 {
     public function test()
     {
-        $this->assertContains('f', 'foo');
-        $this->assertContains('f', 'foo');
+        $this->assertStringContainsString('f', 'foo');
+        $this->assertStringContainsString('f', 'foo');
 
-        $this->assertContains('oauth_body_hash', $headers['Authorization'][0]);
+        $this->assertStringContainsString('oauth_body_hash', $headers['Authorization'][0]);
     }
 }
 
