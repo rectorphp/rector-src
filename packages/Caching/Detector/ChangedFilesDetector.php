@@ -145,14 +145,14 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
-        $hasher = new FileHasher();
-        return $hasher->hash($this->resolvePath($filePath));
+        $fileHasher = new FileHasher();
+        return $fileHasher->hash($this->resolvePath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        $hasher = new FileHasher();
-        return $hasher->hashFiles([$this->resolvePath($filePath)]);
+        $fileHasher = new FileHasher();
+        return $fileHasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
     private function storeConfigurationDataHash(string $filePath, string $configurationHash): void
