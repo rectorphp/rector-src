@@ -7370,17 +7370,20 @@ Make typed property nullable if checked
 
 <br>
 
-### UpdateFileNameByClassNameFileSystemRector
+### MissingClassConstantReferenceToStringRector
 
-Rename file to respect class name
+Convert missing class reference to string
 
-- class: [`Rector\Restoration\Rector\ClassLike\UpdateFileNameByClassNameFileSystemRector`](../rules/Restoration/Rector/ClassLike/UpdateFileNameByClassNameFileSystemRector.php)
+- class: [`Rector\Restoration\Rector\ClassConstFetch\MissingClassConstantReferenceToStringRector`](../rules/Restoration/Rector/ClassConstFetch/MissingClassConstantReferenceToStringRector.php)
 
 ```diff
--// app/SomeClass.php
-+// app/AnotherClass.php
- class AnotherClass
+ class SomeClass
  {
+     public function run()
+     {
+-        return NonExistingClass::class;
++        return 'NonExistingClass';
+     }
  }
 ```
 
