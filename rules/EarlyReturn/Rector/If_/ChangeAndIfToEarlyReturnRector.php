@@ -284,7 +284,7 @@ CODE_SAMPLE
         }
 
         $parentNode = $if->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
+        if (! $parentNode instanceof Stmt) {
             return false;
         }
 
