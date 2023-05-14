@@ -32,7 +32,7 @@ final class ArrayTypeComparator
         $checkedKeyType = $checkedType->getKeyType();
         $mainKeyType = $mainType->getKeyType();
 
-        $mainKeyType = $this->narrowArrayKeysUnionType($mainKeyType);
+        //        $mainKeyType = $this->narrowArrayKeysUnionType($mainKeyType);
 
         $checkedKeyType = $this->narrowArrayKeysUnionType($checkedKeyType);
         if (! $mainKeyType instanceof MixedType && $mainKeyType->isSuperTypeOf($checkedKeyType)->yes()) {
