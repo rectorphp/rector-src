@@ -94,8 +94,11 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isPropertyUsedInReadContext(Class_ $class, Property | Param $propertyOrPromotedParam, Scope $scope): bool
-    {
+    public function isPropertyUsedInReadContext(
+        Class_ $class,
+        Property | Param $propertyOrPromotedParam,
+        Scope $scope
+    ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
 
         if ($this->isAllowedReadOnly($propertyOrPromotedParam, $phpDocInfo)) {
