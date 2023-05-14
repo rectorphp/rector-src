@@ -14,10 +14,6 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
-use PHPStan\Type\NullType;
-use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\TypehintHelper;
-use PHPStan\Type\TypeUtils;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
@@ -194,18 +190,9 @@ CODE_SAMPLE
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
         }
 
-        if ($param->default instanceof Node\Expr) {
-            if ($this->valueResolver->isNull($param->default)) {
-                $propertyType = $this->getType($property);
-                if (! TypeCombinator::containsNull($propertyType)) {
-                    $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PARAM);
-
-                    dd($propertyTypeNode);
-                    die;
-
-                    $param->type = new NullableType($propertyTypeNode);
-                }
-            }
+        if ($param->default instanceof Node\Expr && $this->valueResolver->isNull($param->default)) {
+            $paramType = $this->getType($param);
+            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
         }
     }
 
