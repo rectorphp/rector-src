@@ -16,10 +16,8 @@ final class ReturnTagRemover
     ) {
     }
 
-    public function removeReturnTagIfUseless(
-        PhpDocInfo $phpDocInfo,
-        ClassMethod $classMethod
-    ): bool {
+    public function removeReturnTagIfUseless(PhpDocInfo $phpDocInfo, ClassMethod $classMethod): bool
+    {
         // remove existing type
         $returnTagValueNode = $phpDocInfo->getReturnTagValue();
         if (! $returnTagValueNode instanceof ReturnTagValueNode) {
