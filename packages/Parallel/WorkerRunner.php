@@ -20,6 +20,7 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\Parallel\ValueObject\ProcessFileResult;
 use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
@@ -93,11 +94,12 @@ final class WorkerRunner
                     $file = new File($filePath, FileSystem::read($filePath));
                     $this->currentFileProvider->setFile($file);
 
-                    $errorAndFileDiffs = $this->processFile($file, $configuration, $errorAndFileDiffs);
+                    $processFileResult = $this->processFile($file, $configuration, $errorAndFileDiffs);
+                    $errorAndFileDiffs = $processFileResult->getErrorAndFileDiffs();
 
                     if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
                         $this->invalidateFile($file);
-                    } elseif (! $configuration->isDryRun()) {
+                    } elseif (! $configuration->isDryRun() || $processFileResult->isFileChanged()) {
                         $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
                     }
                 } catch (Throwable $throwable) {
@@ -129,23 +131,24 @@ final class WorkerRunner
 
     /**
      * @param array{system_errors: SystemError[], file_diffs: FileDiff[]}|mixed[] $errorAndFileDiffs
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    private function processFile(File $file, Configuration $configuration, array $errorAndFileDiffs): array
+    private function processFile(File $file, Configuration $configuration, array $errorAndFileDiffs): ProcessFileResult
     {
+        $wasFileChanged = false;
         foreach ($this->fileProcessors as $fileProcessor) {
             if (! $fileProcessor->supports($file, $configuration)) {
                 continue;
             }
 
             $currentErrorsAndFileDiffs = $fileProcessor->process($file, $configuration);
+            $wasFileChanged = $wasFileChanged || $currentErrorsAndFileDiffs[Bridge::FILE_DIFFS] !== [];
             $errorAndFileDiffs = $this->arrayParametersMerger->merge(
                 $errorAndFileDiffs,
                 $currentErrorsAndFileDiffs
             );
         }
 
-        return $errorAndFileDiffs;
+        return new ProcessFileResult($wasFileChanged, $errorAndFileDiffs);
     }
 
     /**
