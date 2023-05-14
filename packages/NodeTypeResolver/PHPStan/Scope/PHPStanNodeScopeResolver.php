@@ -50,12 +50,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\RemoveDeepChainMethodCallNodeVisitor;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -71,17 +66,15 @@ final class PHPStanNodeScopeResolver
 
     private readonly NodeTraverser $nodeTraverser;
 
+    /**
+     * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
+     */
     public function __construct(
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly DependencyResolver $dependencyResolver,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        RemoveDeepChainMethodCallNodeVisitor $removeDeepChainMethodCallNodeVisitor,
-        AssignedToNodeVisitor $assignedToNodeVisitor,
-        GlobalVariableNodeVisitor $globalVariableNodeVisitor,
-        StaticVariableNodeVisitor $staticVariableNodeVisitor,
-        ByRefVariableNodeVisitor $byRefVariableNodeVisitor,
-        ByRefReturnNodeVisitor $byRefReturnNodeVisitor,
+        array $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -89,12 +82,10 @@ final class PHPStanNodeScopeResolver
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
-        $this->nodeTraverser->addVisitor($removeDeepChainMethodCallNodeVisitor);
-        $this->nodeTraverser->addVisitor($assignedToNodeVisitor);
-        $this->nodeTraverser->addVisitor($globalVariableNodeVisitor);
-        $this->nodeTraverser->addVisitor($staticVariableNodeVisitor);
-        $this->nodeTraverser->addVisitor($byRefVariableNodeVisitor);
-        $this->nodeTraverser->addVisitor($byRefReturnNodeVisitor);
+
+        foreach ($nodeVisitors as $nodeVisitor) {
+            $this->nodeTraverser->addVisitor($nodeVisitor);
+        }
     }
 
     /**

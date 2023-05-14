@@ -25,6 +25,7 @@ use Rector\NodeCollector\BinaryOpTreeRootLocator;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
 use Rector\NodeTypeResolver\TypeAnalyzer\MethodTypeAnalyzer;
 use Rector\Php80\Contract\AttributeDecoratorInterface;
@@ -94,5 +95,7 @@ return static function (EasyCIConfig $easyCiConfig): void {
         NamespacedNameDecorator::class,
         NamedVariableFactory::class,
         BinaryOpTreeRootLocator::class,
+
+        ScopeResolverNodeVisitorInterface::class,
     ]);
 };
