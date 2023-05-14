@@ -11,7 +11,6 @@ use Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector;
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
-use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
@@ -179,7 +178,6 @@ return static function (RectorConfig $rectorConfig): void {
         SwitchNegatedTernaryRector::class,
         SingularSwitchToIfRector::class,
         SimplifyIfNullableReturnRector::class,
-        NarrowUnionTypeDocRector::class,
         FuncGetArgsToVariadicParamRector::class,
         CallUserFuncToMethodCallRector::class,
         CallUserFuncWithArrowFunctionToInlineRector::class,
