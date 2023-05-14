@@ -104,7 +104,7 @@ CODE_SAMPLE
             return $this->refactorUsedVariable($node, $scope);
         }
 
-        if ($this->hasCallLikeInAssignExpr($node->expr)) {
+        if ($this->hasCallLikeInAssignExpr($node->expr, $scope)) {
             // keep the expr, can have side effect
             return $this->cleanCastedExpr($node->expr);
         }
@@ -123,11 +123,11 @@ CODE_SAMPLE
         return $this->cleanCastedExpr($castedExpr);
     }
 
-    private function hasCallLikeInAssignExpr(Expr $expr): bool
+    private function hasCallLikeInAssignExpr(Expr $expr, Scope $scope): bool
     {
         return (bool) $this->betterNodeFinder->findFirst(
             $expr,
-            fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode)
+            fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode, $scope)
         );
     }
 
@@ -178,7 +178,7 @@ CODE_SAMPLE
 
         /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $expr */
         $expr = $assign->expr;
-        if (! $this->sideEffectNodeDetector->detectCallExpr($expr)) {
+        if (! $this->sideEffectNodeDetector->detectCallExpr($expr, $scope)) {
             return false;
         }
 

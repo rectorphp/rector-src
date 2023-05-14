@@ -328,7 +328,7 @@ parameters:
             path: packages/Config/RectorConfig.php
 
         # stmts refactoring
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactor\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 10#'
 
         # empty parent construct
         - '#Rector\\Core\\PhpParser\\NodeTraverser\\FileWithoutNamespaceNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
