@@ -35,6 +35,7 @@ use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector;
+use Rector\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
@@ -75,5 +76,6 @@ return static function (RectorConfig $rectorConfig): void {
         UseClassKeywordForClassNameResolutionRector::class,
         SplitGroupedPropertiesRector::class,
         SplitGroupedClassConstantsRector::class,
+        ExplicitPublicClassMethodRector::class,
     ]);
 };
