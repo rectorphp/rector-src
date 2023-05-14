@@ -44,6 +44,7 @@ use Rector\PhpDocParser\PhpParser\SmartPhpParserFactory;
 use Rector\PSR4\Composer\PSR4NamespaceMatcher;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
 use Rector\Utils\Command\MissingInSetCommand;
+use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -129,9 +130,6 @@ return static function (RectorConfig $rectorConfig): void {
         $rectorConfig->import($extensionConfigFile);
     }
 
-    // require only in dev
-    $rectorConfig->import(__DIR__ . '/../utils/compiler/config/config.php', null, 'not_found');
-
     $services->load('Rector\Core\\', __DIR__ . '/../src')
         ->exclude([
             __DIR__ . '/../src/Rector',
@@ -214,6 +212,7 @@ return static function (RectorConfig $rectorConfig): void {
         ->factory([service(PHPStanServicesFactory::class), 'createDynamicSourceLocatorProvider']);
 
     $services->set(MissingInSetCommand::class);
+    $services->set(OutsideAnySetCommand::class);
 
     // phpdoc parser
     $services->set(SmartPhpParser::class)
