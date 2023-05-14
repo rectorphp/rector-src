@@ -1,4 +1,4 @@
-# 409 Rules Overview
+# 408 Rules Overview
 
 <br>
 
@@ -58,7 +58,7 @@
 
 - [Renaming](#renaming) (11)
 
-- [Restoration](#restoration) (3)
+- [Restoration](#restoration) (2)
 
 - [Strict](#strict) (6)
 
@@ -7364,25 +7364,6 @@ Make typed property nullable if checked
          if ($this->anotherClass === null) {
              $this->anotherClass = new AnotherClass;
          }
-     }
- }
-```
-
-<br>
-
-### MissingClassConstantReferenceToStringRector
-
-Convert missing class reference to string
-
-- class: [`Rector\Restoration\Rector\ClassConstFetch\MissingClassConstantReferenceToStringRector`](../rules/Restoration/Rector/ClassConstFetch/MissingClassConstantReferenceToStringRector.php)
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        return NonExistingClass::class;
-+        return 'NonExistingClass';
      }
  }
 ```
