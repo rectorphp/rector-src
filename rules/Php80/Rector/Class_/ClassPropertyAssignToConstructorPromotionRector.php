@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
@@ -190,7 +191,7 @@ CODE_SAMPLE
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
         }
 
-        if ($param->default instanceof Node\Expr && $this->valueResolver->isNull($param->default)) {
+        if ($param->default instanceof Expr && $this->valueResolver->isNull($param->default)) {
             $paramType = $this->getType($param);
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
         }
