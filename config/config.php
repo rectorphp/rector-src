@@ -229,4 +229,5 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
     $services->set(TypeParser::class);
     $services->set(ConstExprParser::class);
+    $services->set(\Rector\Core\Util\FileHasher::class);
 };

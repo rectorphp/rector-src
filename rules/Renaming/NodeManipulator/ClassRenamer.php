@@ -64,6 +64,7 @@ final class ClassRenamer
         private readonly ParameterProvider $parameterProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
+        private readonly FileHasher $fileHasher
     ) {
     }
 
@@ -451,9 +452,8 @@ final class ClassRenamer
     {
         $oldToNewClasses = $this->resolveOldToNewClassCallbacks($node, $oldToNewClasses);
 
-        $fileHasher = new FileHasher();
         $serialized = \serialize($oldToNewClasses);
-        $cacheKey = $fileHasher->hash($serialized);
+        $cacheKey = $this->fileHasher->hash($serialized);
 
         if (isset($this->oldToNewTypesByCacheKey[$cacheKey])) {
             return $this->oldToNewTypesByCacheKey[$cacheKey];

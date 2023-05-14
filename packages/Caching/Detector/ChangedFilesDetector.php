@@ -28,7 +28,8 @@ final class ChangedFilesDetector
 
     public function __construct(
         private readonly FileHashComputer $fileHashComputer,
-        private readonly Cache $cache
+        private readonly Cache $cache,
+        private readonly FileHasher $fileHasher
     ) {
     }
 
@@ -145,14 +146,12 @@ final class ChangedFilesDetector
 
     private function getFilePathCacheKey(string $filePath): string
     {
-        $fileHasher = new FileHasher();
-        return $fileHasher->hash($this->resolvePath($filePath));
+        return $this->fileHasher->hash($this->resolvePath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        $fileHasher = new FileHasher();
-        return $fileHasher->hashFiles([$this->resolvePath($filePath)]);
+        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
     }
 
     private function storeConfigurationDataHash(string $filePath, string $configurationHash): void
