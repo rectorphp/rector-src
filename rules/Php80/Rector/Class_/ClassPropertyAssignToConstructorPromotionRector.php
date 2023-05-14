@@ -14,6 +14,10 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\Type\NullType;
+use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypehintHelper;
+use PHPStan\Type\TypeUtils;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
@@ -150,6 +154,7 @@ CODE_SAMPLE
 
             // rename also following calls
             $propertyName = $this->getName($property->props[0]);
+
             /** @var string $oldName */
             $oldName = $this->getName($param->var);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
@@ -187,6 +192,20 @@ CODE_SAMPLE
         if ($this->nodeTypeResolver->isNullableType($property)) {
             $objectType = $this->getType($property);
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
+        }
+
+        if ($param->default instanceof Node\Expr) {
+            if ($this->valueResolver->isNull($param->default)) {
+                $propertyType = $this->getType($property);
+                if (! TypeCombinator::containsNull($propertyType)) {
+                    $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PARAM);
+
+                    dd($propertyTypeNode);
+                    die;
+
+                    $param->type = new NullableType($propertyTypeNode);
+                }
+            }
         }
     }
 
