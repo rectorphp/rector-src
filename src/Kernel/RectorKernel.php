@@ -26,7 +26,7 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'kernel-v5';
+    private const CACHE_KEY = 'kernel-v6';
 
     private readonly ConfigureCallValuesCollector $configureCallValuesCollector;
 
