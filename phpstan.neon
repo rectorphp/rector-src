@@ -797,3 +797,4 @@ parameters:
 
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\UnionTypesRector" service to "php80\.php" config set#'
+        - '#Fetching class constant class of deprecated class Rector\\CodeQuality\\Rector\\ClassMethod\\NarrowUnionTypeDocRector#'
