@@ -8,6 +8,7 @@ function() {
 -----
 <?php
 
-fn() => // @psalm-suppress UndefinedFunction
+fn() =>
+    // @psalm-suppress UndefinedFunction
     ff();
 ?>

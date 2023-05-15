@@ -12,7 +12,8 @@ function() {
 -----
 <?php
 
-fn() => /**
+fn() =>
+    /**
      * comment
      */
     // something
