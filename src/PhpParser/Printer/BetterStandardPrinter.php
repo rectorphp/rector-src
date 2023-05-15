@@ -193,7 +193,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return parent::pExpr_ArrowFunction($arrowFunction);
         }
 
-        $indent = str_repeat(' ', $this->indentLevel) . str_repeat($this->tabOrSpaceIndentCharacter, $this->rectorConfigProvider->getIndentSize());
+        $indent = str_repeat($this->tabOrSpaceIndentCharacter, $this->indentLevel) .
+            str_repeat($this->tabOrSpaceIndentCharacter, $this->rectorConfigProvider->getIndentSize());
 
         $text = "\n" . $indent;
         foreach ($comments as $key => $comment) {
