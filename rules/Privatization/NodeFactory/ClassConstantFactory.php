@@ -32,11 +32,8 @@ final class ClassConstantFactory
         $classConst = new ClassConst([$const]);
         $classConst->flags = $property->flags & ~Class_::MODIFIER_STATIC;
 
-        $const->setAttribute(AttributeKey::PARENT_NODE, $classConst);
-
         $classConst->setAttribute(AttributeKey::PHP_DOC_INFO, $property->getAttribute(AttributeKey::PHP_DOC_INFO));
         $classConst->setAttribute(AttributeKey::COMMENTS, $property->getAttribute(AttributeKey::COMMENTS));
-        $classConst->setAttribute(AttributeKey::PARENT_NODE, $property->getAttribute(AttributeKey::PARENT_NODE));
 
         return $classConst;
     }
