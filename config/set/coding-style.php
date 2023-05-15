@@ -25,7 +25,6 @@ use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
-use Rector\CodingStyle\Rector\Property\AddFalseDefaultToBoolPropertyRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
@@ -64,7 +63,6 @@ return static function (RectorConfig $rectorConfig): void {
         WrapEncapsedVariableInCurlyBracesRector::class,
         NewlineBeforeNewAssignSetRector::class,
         AddArrayDefaultToArrayPropertyRector::class,
-        AddFalseDefaultToBoolPropertyRector::class,
         MakeInheritedMethodVisibilitySameAsParentRector::class,
         CallUserFuncArrayToVariadicRector::class,
         VersionCompareFuncCallToConstantRector::class,
