@@ -70,7 +70,6 @@ abstract class AbstractTestCase extends TestCase
         }
 
         if ($object === null) {
-
             $message = sprintf('Service "%s" was not found', $type);
             throw new ShouldNotHappenException($message);
         }

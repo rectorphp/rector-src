@@ -59,7 +59,9 @@ final class RectorKernel
             return $this->buildContainer([]);
         }
 
-        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer($configFiles);
+        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer(
+            $configFiles
+        );
 
         return $this->container = $container;
     }
