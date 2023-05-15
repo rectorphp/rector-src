@@ -7,6 +7,7 @@ namespace Rector\NodeNestingScope\ValueObject;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Do_;
@@ -54,7 +55,7 @@ final class ControlStructure
     ];
 
     /**
-     * @var array<class-string<Node>>
+     * @var array<class-string<Stmt>>
      */
     public const LOOP_NODES = [For_::class, Foreach_::class, While_::class, Do_::class];
 }
