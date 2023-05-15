@@ -13,7 +13,6 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
@@ -46,7 +45,6 @@ final class MissingInSetCommand extends Command
         DeprecatedRectorInterface::class,
         ConvertStaticPrivateConstantToSelfRector::class,
         RemoveJustPropertyFetchRector::class,
-        FalseReturnClassMethodToNullableRector::class,
         NullifyUnionNullableRector::class,
         DeclareStrictTypesRector::class,
         // optional
