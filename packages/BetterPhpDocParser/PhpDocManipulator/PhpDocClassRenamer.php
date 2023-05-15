@@ -62,7 +62,6 @@ final class PhpDocClassRenamer
         $classNameArrayItemNode = $callableCallbackArrayItems[0];
         $classNameStringNode = $classNameArrayItemNode->value;
 
-        // array is needed for callable
         if (! $classNameStringNode instanceof StringNode) {
             return;
         }
@@ -75,7 +74,6 @@ final class PhpDocClassRenamer
             $classNameStringNode->value = $newClass;
 
             // trigger reprint
-//            $classNameStringNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             $classNameArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             break;
         }
@@ -130,7 +128,6 @@ final class PhpDocClassRenamer
                 );
 
                 $classNameArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
-//                $classNameStringNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             }
 
             $currentTypeArrayItemNode = $doctrineAnnotationTagValueNode->getValue('type');
@@ -182,7 +179,6 @@ final class PhpDocClassRenamer
             }
 
             $targetEntityStringNode->value = $newClass;
-//            $targetEntityStringNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
             $targetEntityArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
         }
     }
