@@ -169,6 +169,15 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         return ltrim($content);
     }
 
+    protected function p(Node $node, $parentFormatPreserved = false): string
+    {
+        $content = parent::p($node, $parentFormatPreserved);
+
+        return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
+            ? ('(' . $content . ')')
+            : $content;
+    }
+
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction): string
     {
         if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
@@ -193,19 +202,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($arrowFunction->static ? 'static ' : '')
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
             . '(' . $this->pCommaSeparated($arrowFunction->params) . ')'
-            . (null !== $arrowFunction->returnType ? ': ' . $this->p($arrowFunction->returnType) : '')
+            . ($arrowFunction->returnType !== null ? ': ' . $this->p($arrowFunction->returnType) : '')
             . ' => '
             . $text
             . $this->p($arrowFunction->expr);
-    }
-
-    protected function p(Node $node, $parentFormatPreserved = false): string
-    {
-        $content = parent::p($node, $parentFormatPreserved);
-
-        return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
-            ? ('(' . $content . ')')
-            : $content;
     }
 
     /**
