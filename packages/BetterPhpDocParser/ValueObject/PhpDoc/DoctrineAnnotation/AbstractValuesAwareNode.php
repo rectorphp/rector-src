@@ -7,6 +7,7 @@ namespace Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation;
 use PHPStan\PhpDocParser\Ast\NodeAttributes;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 
 abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
@@ -31,7 +32,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     public function removeValue(string $desiredKey): void
     {
         foreach ($this->values as $key => $value) {
-            if ($value->key !== $desiredKey) {
+            if (! $this->isValueKeyEquals($value, $desiredKey)) {
                 continue;
             }
 
@@ -75,7 +76,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
     public function getValue(string $desiredKey): ?ArrayItemNode
     {
         foreach ($this->values as $value) {
-            if ($value->key === $desiredKey) {
+            if ($this->isValueKeyEquals($value, $desiredKey)) {
                 return $value;
             }
         }
@@ -120,6 +121,15 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         }
 
         return $itemContents;
+    }
+
+    private function isValueKeyEquals(ArrayItemNode $value, string $desiredKey): bool
+    {
+        if ($value->key instanceof StringNode) {
+            return $value->key->value === $desiredKey;
+        }
+
+        return $value->key === $desiredKey;
     }
 
     private function stringifyValue(mixed $value): string
