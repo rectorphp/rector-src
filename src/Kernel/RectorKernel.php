@@ -22,10 +22,7 @@ final class RectorKernel
 
     private bool $dumpFileCache = false;
 
-    /**
-     * @var string|null
-     */
-    private static $defaultFilesHash;
+    private static ?string $defaultFilesHash = null;
 
     public function __construct()
     {
@@ -55,11 +52,7 @@ final class RectorKernel
             return $this->buildContainer([]);
         }
 
-        if ($this->dumpFileCache) {
-            $container = $this->buildCachedContainer($configFiles);
-        } else {
-            $container = $this->buildContainer($configFiles);
-        }
+        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer($configFiles);
 
         return $this->container = $container;
     }

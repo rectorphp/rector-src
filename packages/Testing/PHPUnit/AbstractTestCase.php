@@ -62,11 +62,11 @@ abstract class AbstractTestCase extends TestCase
 
         try {
             $object = self::$currentContainer->get($type);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             // clear compiled container cache, to trigger re-discovery
             RectorKernel::clearCache();
 
-            throw $e;
+            throw $throwable;
         }
 
         if ($object === null) {
