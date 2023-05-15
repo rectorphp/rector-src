@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\FunctionLike;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -133,15 +132,17 @@ CODE_SAMPLE
             return false;
         }
 
-        /** @var Expr $cond */
         $cond = $ifWithOnlyReturns[0]->cond;
         if (! in_array($cond::class, [Variable::class, PropertyFetch::class, StaticPropertyFetch::class], true)) {
             return false;
         }
 
         $type = $this->nodeTypeResolver->getType($cond);
-        return $type->isBoolean()
-            ->yes();
+        if (! $type->isBoolean()->yes()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
