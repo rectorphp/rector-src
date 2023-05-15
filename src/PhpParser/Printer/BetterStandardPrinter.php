@@ -10,10 +10,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
@@ -325,29 +323,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         }
 
         return Strings::replace($closureContent, self::USE_REGEX, '$1 (');
-    }
-
-    /**
-     * Do not add "()" on Expressions
-     * @see https://github.com/rectorphp/rector/pull/401#discussion_r181487199
-     */
-    protected function pExpr_Yield(Yield_ $yield): string
-    {
-        if (! $yield->value instanceof Expr) {
-            return 'yield';
-        }
-
-        $parentNode = $yield->getAttribute(AttributeKey::PARENT_NODE);
-        // brackets are needed only in case of assign, @see https://www.php.net/manual/en/language.generators.syntax.php
-        $shouldAddBrackets = $parentNode instanceof Assign;
-
-        return sprintf(
-            '%syield %s%s%s',
-            $shouldAddBrackets ? '(' : '',
-            $yield->key instanceof Expr ? $this->p($yield->key) . ' => ' : '',
-            $this->p($yield->value),
-            $shouldAddBrackets ? ')' : ''
-        );
     }
 
     /**
