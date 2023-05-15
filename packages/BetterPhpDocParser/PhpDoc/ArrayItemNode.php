@@ -13,16 +13,6 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
 {
     use NodeAttributes;
 
-    /**
-     * @deprecated
-     */
-    public int|null $kindValueQuoted = String_::KIND_DOUBLE_QUOTED;
-
-    /**
-     * @deprecated
-     */
-    public int|null $kindKeyQuoted = String_::KIND_DOUBLE_QUOTED;
-
     public function __construct(
         public mixed $value,
         public mixed $key = null,
