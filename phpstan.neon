@@ -795,3 +795,8 @@ parameters:
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\UnionTypesRector" service to "php80\.php" config set#'
         - '#Fetching class constant class of deprecated class Rector\\CodeQuality\\Rector\\ClassMethod\\NarrowUnionTypeDocRector#'
+
+        # statics are required in the kernel for performance reasons
+        -
+            message: '#Do not use static property#'
+            path: src/Kernel/RectorKernel.php

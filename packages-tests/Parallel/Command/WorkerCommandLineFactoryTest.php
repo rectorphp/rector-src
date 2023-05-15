@@ -35,10 +35,10 @@ final class WorkerCommandLineFactoryTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $container = $rectorKernel->create();
+        $containerBuilder = $rectorKernel->createBuilder();
 
-        $this->workerCommandLineFactory = $container->get(WorkerCommandLineFactory::class);
-        $this->processCommand = $container->get(ProcessCommand::class);
+        $this->workerCommandLineFactory = $containerBuilder->get(WorkerCommandLineFactory::class);
+        $this->processCommand = $containerBuilder->get(ProcessCommand::class);
     }
 
     /**
