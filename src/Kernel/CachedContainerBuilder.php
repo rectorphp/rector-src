@@ -65,7 +65,7 @@ final class CachedContainerBuilder
             return;
         }
 
-        $cacheFiles = glob($this->cacheDir . 'rector/kernel-*.php');
+        $cacheFiles = glob($this->cacheDir . 'kernel-*.php');
         if ($cacheFiles === false) {
             return;
         }

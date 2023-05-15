@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\FileHasher;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
@@ -60,8 +61,17 @@ abstract class AbstractTestCase extends TestCase
             );
         }
 
-        $object = self::$currentContainer->get($type);
+        try {
+            $object = self::$currentContainer->get($type);
+        } catch (Throwable $e) {
+            // clear compiled container cache, to trigger re-discovery
+            RectorKernel::clearCache();
+
+            throw $e;
+        }
+
         if ($object === null) {
+
             $message = sprintf('Service "%s" was not found', $type);
             throw new ShouldNotHappenException($message);
         }
