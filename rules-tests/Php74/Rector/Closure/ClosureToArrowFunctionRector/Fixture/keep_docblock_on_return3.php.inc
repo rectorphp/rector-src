@@ -15,7 +15,7 @@ function() {
 fn() => /**
      * comment
      */
-// something
-// @psalm-suppress UndefinedFunction
-ff();
+    // something
+    // @psalm-suppress UndefinedFunction
+    ff();
 ?>

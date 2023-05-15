@@ -193,9 +193,12 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             return parent::pExpr_ArrowFunction($arrowFunction);
         }
 
+        $indent = str_repeat($this->tabOrSpaceIndentCharacter, $this->rectorConfigProvider->getIndentSize());
+
         $text = '';
-        foreach ($comments as $comment) {
-            $text .= $comment->getText() . "\n";
+        foreach ($comments as $key => $comment) {
+            $commentText = $key > 0 ? $indent . $comment->getText() : $comment->getText();
+            $text .= $commentText . "\n";
         }
 
         return $this->pAttrGroups($arrowFunction->attrGroups, true)
@@ -205,6 +208,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
             . ($arrowFunction->returnType !== null ? ': ' . $this->p($arrowFunction->returnType) : '')
             . ' => '
             . $text
+            . $indent
             . $this->p($arrowFunction->expr);
     }
 

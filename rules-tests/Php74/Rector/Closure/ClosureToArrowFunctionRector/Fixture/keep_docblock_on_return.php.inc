@@ -9,5 +9,5 @@ function() {
 <?php
 
 fn() => /** @psalm-suppress UndefinedFunction */
-ff();
+    ff();
 ?>
