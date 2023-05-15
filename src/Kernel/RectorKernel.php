@@ -16,16 +16,13 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'v7';
+    private const CACHE_KEY = 'v8';
 
     private ContainerInterface|null $container = null;
 
     private bool $dumpFileCache = false;
 
-    /**
-     * @var string|null
-     */
-    private static $defaultFilesHash;
+    private static ?string $defaultFilesHash = null;
 
     public function __construct()
     {
@@ -55,11 +52,7 @@ final class RectorKernel
             return $this->buildContainer([]);
         }
 
-        if ($this->dumpFileCache) {
-            $container = $this->buildCachedContainer($configFiles);
-        } else {
-            $container = $this->buildContainer($configFiles);
-        }
+        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer($configFiles);
 
         return $this->container = $container;
     }

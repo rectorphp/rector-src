@@ -18,8 +18,8 @@ final class ConfigurableArrayMissingTest extends AbstractTestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $container = $rectorKernel->createBuilder([__DIR__ . '/config/configurable_array_missing.php']);
-        $this->emptyConfigurableRectorCollector = $container->get(EmptyConfigurableRectorCollector::class);
+        $containerBuilder = $rectorKernel->createBuilder([__DIR__ . '/config/configurable_array_missing.php']);
+        $this->emptyConfigurableRectorCollector = $containerBuilder->get(EmptyConfigurableRectorCollector::class);
     }
 
     public function test(): void
