@@ -10,7 +10,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\FileHasher;
 use Throwable;
-use Webmozart\Assert\Assert;
 
 abstract class AbstractTestCase extends TestCase
 {

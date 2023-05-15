@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Utils\Command;
 
-use Nette\Loaders\RobotLoader;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
 use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
@@ -19,6 +17,8 @@ use Rector\TypeDeclaration\Rector\ClassMethod\FalseReturnClassMethodToNullableRe
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
+use Rector\Utils\Finder\RectorClassFinder;
+use Rector\Utils\Finder\SetRectorClassesResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,12 +58,6 @@ final class MissingInSetCommand extends Command
         NarrowUnionTypeDocRector::class,
     ];
 
-    /**
-     * @see https://regex101.com/r/HtsmKC/1
-     * @var string
-     */
-    private const RECTOR_CLASS_REGEX = '#use (?<class_name>[\\\\\w]+Rector)#m';
-
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle
     ) {
@@ -81,8 +75,8 @@ final class MissingInSetCommand extends Command
         $hasError = false;
 
         foreach (self::RULES_DIRECTORY_TO_SET_CONFIG as $rulesDirectory => $setFile) {
-            $classesInSetFile = $this->resolveClassesFromSetFiles($setFile);
-            $existingRectorClasses = $this->findRectorClasses($rulesDirectory);
+            $classesInSetFile = SetRectorClassesResolver::resolve($setFile);
+            $existingRectorClasses = RectorClassFinder::find([$rulesDirectory]);
 
             $rectorClassesNotInSetConfig = array_diff($existingRectorClasses, $classesInSetFile);
 
@@ -124,35 +118,5 @@ final class MissingInSetCommand extends Command
         $this->symfonyStyle->success('All sets contains the rules from their category');
 
         return self::SUCCESS;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function resolveClassesFromSetFiles(string $setFile): array
-    {
-        $rectorClasses = [];
-
-        $setFileContents = FileSystem::read($setFile);
-        $matches = Strings::matchAll($setFileContents, self::RECTOR_CLASS_REGEX);
-
-        foreach ($matches as $match) {
-            $rectorClasses[] = $match['class_name'];
-        }
-
-        return $rectorClasses;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function findRectorClasses(string $rulesDirectory): array
-    {
-        $robotLoader = new RobotLoader();
-        $robotLoader->setTempDirectory(sys_get_temp_dir() . '/rector-missing-in-set');
-        $robotLoader->addDirectory($rulesDirectory);
-        $robotLoader->rebuild();
-
-        return array_keys($robotLoader->getIndexedClasses());
     }
 }
