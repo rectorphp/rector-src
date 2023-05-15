@@ -53,7 +53,8 @@ final class BreakingVariableRenameGuard
         string $currentName,
         string $expectedName,
         ClassMethod | Function_ | Closure $functionLike,
-        Variable $variable
+        Variable $variable,
+        Scope $scope
     ): bool {
         // is the suffix? → also accepted
         $expectedNameCamelCase = ucfirst($expectedName);
@@ -69,7 +70,7 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->isVariableAlreadyDefined($variable, $currentName)) {
+        if ($this->isVariableAlreadyDefined($variable, $currentName, $scope)) {
             return true;
         }
 
@@ -92,7 +93,8 @@ final class BreakingVariableRenameGuard
         string $currentName,
         string $expectedName,
         ClassMethod|Function_|Closure|ArrowFunction $classMethod,
-        Param $param
+        Param $param,
+        Scope $scope
     ): bool {
         // is the suffix? → also accepted
         $expectedNameCamelCase = ucfirst($expectedName);
@@ -113,7 +115,7 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->isVariableAlreadyDefined($param->var, $currentName)) {
+        if ($this->isVariableAlreadyDefined($param->var, $currentName, $scope)) {
             return true;
         }
 
@@ -136,13 +138,8 @@ final class BreakingVariableRenameGuard
         });
     }
 
-    private function isVariableAlreadyDefined(Variable $variable, string $currentVariableName): bool
+    private function isVariableAlreadyDefined(Variable $variable, string $currentVariableName, Scope $scope): bool
     {
-        $scope = $variable->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $trinaryLogic = $scope->hasVariableType($currentVariableName);
         if ($trinaryLogic->yes()) {
             return true;

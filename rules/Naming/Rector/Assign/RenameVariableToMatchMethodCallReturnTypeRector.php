@@ -10,7 +10,9 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\VariableAndCallAssignMatcher;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -25,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector\RenameVariableToMatchMethodCallReturnTypeRectorTest
  */
-final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRector
+final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractScopeAwareRector
 {
     /**
      * @var string
@@ -91,7 +93,7 @@ CODE_SAMPLE
     /**
      * @param Assign $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $variableAndCallAssign = $this->variableAndCallAssignMatcher->match($node);
         if (! $variableAndCallAssign instanceof VariableAndCallAssign) {
@@ -112,7 +114,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($variableAndCallAssign, $expectedName)) {
+        if ($this->shouldSkip($variableAndCallAssign, $expectedName, $scope)) {
             return null;
         }
 
@@ -172,7 +174,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function shouldSkip(VariableAndCallAssign $variableAndCallAssign, string $expectedName): bool
+    private function shouldSkip(VariableAndCallAssign $variableAndCallAssign, string $expectedName, Scope $scope): bool
     {
         if ($this->namingConventionAnalyzer->isCallMatchingVariableName(
             $variableAndCallAssign->getCall(),
@@ -191,7 +193,8 @@ CODE_SAMPLE
             $variableAndCallAssign->getVariableName(),
             $expectedName,
             $variableAndCallAssign->getFunctionLike(),
-            $variableAndCallAssign->getVariable()
+            $variableAndCallAssign->getVariable(),
+            $scope
         );
     }
 

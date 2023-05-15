@@ -6,7 +6,9 @@ namespace Rector\Naming\Rector\Foreach_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Foreach_;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\ForeachMatcher;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -19,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector\RenameForeachValueVariableToMatchMethodCallReturnTypeRectorTest
  */
-final class RenameForeachValueVariableToMatchMethodCallReturnTypeRector extends AbstractRector
+final class RenameForeachValueVariableToMatchMethodCallReturnTypeRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
@@ -78,7 +80,7 @@ CODE_SAMPLE
     /**
      * @param Foreach_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $variableAndCallForeach = $this->foreachMatcher->match($node);
         if (! $variableAndCallForeach instanceof VariableAndCallForeach) {
@@ -94,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($variableAndCallForeach, $expectedName)) {
+        if ($this->shouldSkip($variableAndCallForeach, $expectedName, $scope)) {
             return null;
         }
 
@@ -112,7 +114,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(VariableAndCallForeach $variableAndCallForeach, string $expectedName): bool
+    private function shouldSkip(VariableAndCallForeach $variableAndCallForeach, string $expectedName, Scope $scope): bool
     {
         if ($this->namingConventionAnalyzer->isCallMatchingVariableName(
             $variableAndCallForeach->getCall(),
@@ -126,7 +128,8 @@ CODE_SAMPLE
             $variableAndCallForeach->getVariableName(),
             $expectedName,
             $variableAndCallForeach->getFunctionLike(),
-            $variableAndCallForeach->getVariable()
+            $variableAndCallForeach->getVariable(),
+            $scope
         );
     }
 }

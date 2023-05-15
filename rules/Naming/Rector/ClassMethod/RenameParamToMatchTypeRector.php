@@ -10,7 +10,9 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
@@ -24,7 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\RenameParamToMatchTypeRectorTest
  */
-final class RenameParamToMatchTypeRector extends AbstractRector
+final class RenameParamToMatchTypeRector extends AbstractScopeAwareRector
 {
     private bool $hasChanged = false;
 
@@ -75,7 +77,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $this->hasChanged = false;
 
@@ -85,7 +87,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkipParam($param, $expectedName, $node)) {
+            if ($this->shouldSkipParam($param, $expectedName, $node, $scope)) {
                 continue;
             }
 
@@ -113,12 +115,13 @@ CODE_SAMPLE
     private function shouldSkipParam(
         Param $param,
         string $expectedName,
-        ClassMethod|Function_|Closure|ArrowFunction $classMethod
+        ClassMethod|Function_|Closure|ArrowFunction $classMethod,
+        Scope $scope
     ): bool {
         /** @var string $paramName */
         $paramName = $this->getName($param);
 
-        if ($this->breakingVariableRenameGuard->shouldSkipParam($paramName, $expectedName, $classMethod, $param)) {
+        if ($this->breakingVariableRenameGuard->shouldSkipParam($paramName, $expectedName, $classMethod, $param, $scope)) {
             return true;
         }
 
