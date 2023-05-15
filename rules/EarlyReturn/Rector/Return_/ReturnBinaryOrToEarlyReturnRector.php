@@ -13,14 +13,14 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\ReturnBinaryOrToEarlyReturnRectorTest
  */
-final class ReturnBinaryOrToEarlyReturnRector extends AbstractRector
+final class ReturnBinaryOrToEarlyReturnRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
@@ -72,7 +72,7 @@ CODE_SAMPLE
      * @param Return_ $node
      * @return null|Node[]
      */
-    public function refactor(Node $node): ?array
+    public function refactorWithScope(Node $node, \PHPStan\Analyser\Scope $scope): ?array
     {
         if (! $node->expr instanceof BooleanOr) {
             return null;
@@ -95,7 +95,7 @@ CODE_SAMPLE
 
         $this->mirrorComments($ifs[0], $node);
 
-        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanOr->right);
+        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanOr->right, $scope);
         return array_merge($ifs, [new Return_($lastReturnExpr)]);
     }
 
