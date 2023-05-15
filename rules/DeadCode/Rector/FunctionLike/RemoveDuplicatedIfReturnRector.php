@@ -101,7 +101,8 @@ CODE_SAMPLE
 
         foreach ($ifWithOnlyReturnsByHash as $ifWithOnlyReturns) {
             $isBool = $this->isBoolVarIfCondReturnTrueNextReturnBoolVar($ifWithOnlyReturns);
-            if (! $isBool && count($ifWithOnlyReturns) < 2) {
+
+            if (count($ifWithOnlyReturns) < 2) {
                 continue;
             }
 
@@ -160,6 +161,7 @@ CODE_SAMPLE
                     $modifiedVariableNames,
                     $this->modifiedVariableNamesCollector->collectModifiedVariableNames($stmt)
                 );
+
                 continue;
             }
 
