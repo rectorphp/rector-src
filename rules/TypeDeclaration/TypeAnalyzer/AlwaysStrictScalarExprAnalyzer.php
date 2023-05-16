@@ -41,7 +41,7 @@ final class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeComparator $nodeComparator,
+//        private readonly NodeComparator $nodeComparator,
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
@@ -77,7 +77,8 @@ final class AlwaysStrictScalarExprAnalyzer
             return $this->resolveFuncCallType($expr);
         }
 
-        return $this->resolveIndirectReturnType($expr);
+        return null;
+        // return $this->resolveIndirectReturnType($expr);
     }
 
     private function resolveCastType(Cast $cast): ?Type
@@ -90,32 +91,32 @@ final class AlwaysStrictScalarExprAnalyzer
         return null;
     }
 
-    private function resolveIndirectReturnType(Expr $expr): ?Type
-    {
-        if (! $expr instanceof Variable && ! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
-            return null;
-        }
-
-        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Return_) {
-            return null;
-        }
-
-        $node = $parentNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $node instanceof Expression) {
-            return null;
-        }
-
-        if (! $node->expr instanceof Assign) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($node->expr->var, $expr)) {
-            return null;
-        }
-
-        return $this->matchStrictScalarExpr($node->expr->expr);
-    }
+//    private function resolveIndirectReturnType(Expr $expr): ?Type
+//    {
+//        if (! $expr instanceof Variable && ! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
+//            return null;
+//        }
+//
+//        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
+//        if (! $parentNode instanceof Return_) {
+//            return null;
+//        }
+//
+//        $node = $parentNode->getAttribute(AttributeKey::PREVIOUS_NODE);
+//        if (! $node instanceof Expression) {
+//            return null;
+//        }
+//
+//        if (! $node->expr instanceof Assign) {
+//            return null;
+//        }
+//
+//        if (! $this->nodeComparator->areNodesEqual($node->expr->var, $expr)) {
+//            return null;
+//        }
+//
+//        return $this->matchStrictScalarExpr($node->expr->expr);
+//    }
 
     private function isScalarType(Type $type): bool
     {
