@@ -7,8 +7,10 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
@@ -17,7 +19,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     public function enterNode(Node $node): ?Node
     {
         // need direct Stmt instance check to got every Stmt
-        if (! $node instanceof Stmt) {
+        if (! $node instanceof Stmt || $node instanceof ClassLike) {
             return null;
         }
 
@@ -40,7 +42,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     private function setStmtKeyAttribute(Stmt|Closure $stmt): void
     {
         if (! $stmt instanceof StmtsAwareInterface) {
-            return;
+            throw new ShouldNotHappenException();
         }
 
         if ($stmt->stmts === null) {
