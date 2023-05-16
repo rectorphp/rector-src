@@ -543,8 +543,8 @@ final class BetterNodeFinder
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             } else {
                 $previousNode = $parentNode instanceof StmtsAwareInterface
-                    ? $parentNode->stmts[$currentStmtKey - 1] ?? null
-                    : null;
+                    ? $parentNode->stmts[$currentStmtKey - 1] ?? $node->getAttribute(AttributeKey::PREVIOUS_NODE)
+                    : $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             }
         } else {
             // next todo: grab from key - 1
