@@ -534,6 +534,7 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, ?Node $parentNode): ?Node
     {
+        $previousNode = null;
         if (! $parentNode instanceof StmtsAwareInterface) {
             return null;
         }

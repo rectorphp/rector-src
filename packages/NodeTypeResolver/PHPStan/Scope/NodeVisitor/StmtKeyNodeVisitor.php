@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeVisitorAbstract;
@@ -38,7 +37,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         return null;
     }
 
-    private function setStmtKeyAttribute(Stmt|Closure $stmt): void
+    private function setStmtKeyAttribute(Stmt|StmtsAwareInterface $stmt): void
     {
         if (! $stmt instanceof StmtsAwareInterface) {
             return;
