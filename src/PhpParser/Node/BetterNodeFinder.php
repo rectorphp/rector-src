@@ -23,8 +23,10 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -532,7 +534,23 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
     {
-        $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+        if ($node instanceof Stmt) {
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+            if ($parentNode instanceof FileWithoutNamespace) {
+                // next todo: grab from key - 1
+                $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            } else {
+                $previousNode = $parentNode instanceof StmtsAwareInterface
+                    ? $parentNode->stmts[$currentStmtKey - 1] ?? null
+                    : null;
+            }
+        } else {
+            // next todo: grab from key - 1
+            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+        }
+
         if (! $previousNode instanceof Node) {
             return null;
         }

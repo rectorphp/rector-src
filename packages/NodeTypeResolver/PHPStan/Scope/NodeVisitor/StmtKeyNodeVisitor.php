@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -14,7 +16,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 {
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface) {
+        // need direct Stmt instance check to got every Stmt
+        if (! $node instanceof Stmt) {
             return null;
         }
 
@@ -34,14 +37,18 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         return null;
     }
 
-    private function setStmtKeyAttribute(StmtsAwareInterface $stmtsAware): void
+    private function setStmtKeyAttribute(Stmt|Closure $stmt): void
     {
-        if ($stmtsAware->stmts === null) {
+        if (! $stmt instanceof StmtsAwareInterface) {
             return;
         }
 
-        foreach ($stmtsAware->stmts as $key => $stmt) {
-            $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
+        if ($stmt->stmts === null) {
+            return;
+        }
+
+        foreach ($stmt->stmts as $key => $childStmt) {
+            $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
         }
     }
 }
