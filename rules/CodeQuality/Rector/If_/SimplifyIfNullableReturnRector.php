@@ -259,7 +259,7 @@ CODE_SAMPLE
         return $exprReturn;
     }
 
-    private function shouldSkip(If_ $if, ?Stmt $nextNode): bool
+    private function shouldSkip(If_ $if, Stmt $nextNode): bool
     {
         if (! $this->ifManipulator->isIfWithOnly($if, Return_::class)) {
             return true;
