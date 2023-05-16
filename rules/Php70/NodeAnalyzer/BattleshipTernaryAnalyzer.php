@@ -56,15 +56,13 @@ final class BattleshipTernaryAnalyzer
         ) {
             return $this->evaluateTernaryDesc($ternary);
         }
-
-        if (
-            $this->nodeComparator->areNodesEqual($greater->right, $comparedExprs->getFirstExpr()) &&
-            $this->nodeComparator->areNodesEqual($greater->left, $comparedExprs->getSecondExpr())
-        ) {
-            return $this->evaluateTernaryAsc($ternary);
+        if (!$this->nodeComparator->areNodesEqual($greater->right, $comparedExprs->getFirstExpr())) {
+            return null;
         }
-
-        return null;
+        if (!$this->nodeComparator->areNodesEqual($greater->left, $comparedExprs->getSecondExpr())) {
+            return null;
+        }
+        return $this->evaluateTernaryAsc($ternary);
     }
 
     /**
@@ -86,15 +84,13 @@ final class BattleshipTernaryAnalyzer
         ) {
             return $this->evaluateTernaryAsc($ternary);
         }
-
-        if (
-            $this->nodeComparator->areNodesEqual($smaller->right, $comparedExprs->getFirstExpr()) &&
-            $this->nodeComparator->areNodesEqual($smaller->left, $comparedExprs->getSecondExpr())
-        ) {
-            return $this->evaluateTernaryDesc($ternary);
+        if (!$this->nodeComparator->areNodesEqual($smaller->right, $comparedExprs->getFirstExpr())) {
+            return null;
         }
-
-        return null;
+        if (!$this->nodeComparator->areNodesEqual($smaller->left, $comparedExprs->getSecondExpr())) {
+            return null;
+        }
+        return $this->evaluateTernaryDesc($ternary);
     }
 
     private function isValueOneAndMinusOne(Expr $firstExpr, Expr $seconcExpr): bool
