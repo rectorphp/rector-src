@@ -465,7 +465,6 @@ CODE_SAMPLE;
 
     private function printCurrentFileAndRule(): void
     {
-        return;
         $relativeFilePath = $this->filePathHelper->relativePath($this->file->getFilePath());
 
         $this->rectorOutputStyle->writeln('[file] ' . $relativeFilePath);
@@ -474,7 +473,6 @@ CODE_SAMPLE;
 
     private function printConsumptions(float $startTime, int $previousMemory): void
     {
-        return;
         $elapsedTime = microtime(true) - $startTime;
         $currentTotalMemory = memory_get_peak_usage(true);
 
