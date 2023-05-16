@@ -32,9 +32,11 @@ final class RectorKernel
         if (!StaticPHPUnitEnvironment::isPHPUnitRun()) {
             return;
         }
+
         if (VersionResolver::PACKAGE_VERSION !== '@package_version@') {
             return;
         }
+
         $this->dumpFileCache = true;
     }
 
