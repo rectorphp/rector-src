@@ -24,27 +24,27 @@ final class MethodParameterTypeResolver
     /**
      * @return Type[]
      */
-    public function provideParameterTypesByStaticCall(StaticCall $staticCall): array
+    public function provideParameterTypesByStaticCall(StaticCall $staticCall, Scope $scope): array
     {
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromStaticCall($staticCall);
         if (! $methodReflection instanceof MethodReflection) {
             return [];
         }
 
-        return $this->provideParameterTypesFromMethodReflection($methodReflection, $staticCall);
+        return $this->provideParameterTypesFromMethodReflection($methodReflection, $staticCall, $scope);
     }
 
     /**
      * @return Type[]
      */
-    public function provideParameterTypesByClassMethod(ClassMethod $classMethod): array
+    public function provideParameterTypesByClassMethod(ClassMethod $classMethod, Scope $scope): array
     {
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod);
         if (! $methodReflection instanceof MethodReflection) {
             return [];
         }
 
-        return $this->provideParameterTypesFromMethodReflection($methodReflection, $classMethod);
+        return $this->provideParameterTypesFromMethodReflection($methodReflection, $classMethod, $scope);
     }
 
     /**
@@ -52,7 +52,8 @@ final class MethodParameterTypeResolver
      */
     private function provideParameterTypesFromMethodReflection(
         MethodReflection $methodReflection,
-        ClassMethod|StaticCall $node
+        ClassMethod|StaticCall $node,
+        Scope $scope
     ): array {
         if ($methodReflection instanceof NativeMethodReflection) {
             // method "getParameters()" does not exist there
@@ -60,12 +61,6 @@ final class MethodParameterTypeResolver
         }
 
         $parameterTypes = [];
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-
-        if (! $scope instanceof Scope) {
-            return [];
-        }
-
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($methodReflection, $node, $scope);
 
         foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
