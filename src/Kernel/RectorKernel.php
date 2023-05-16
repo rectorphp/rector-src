@@ -17,7 +17,7 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'v8';
+    private const CACHE_KEY = 'v9';
 
     private ContainerInterface|null $container = null;
 
@@ -59,7 +59,9 @@ final class RectorKernel
             return $this->buildContainer([]);
         }
 
-        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer($configFiles);
+        $container = $this->dumpFileCache ? $this->buildCachedContainer($configFiles) : $this->buildContainer(
+            $configFiles
+        );
 
         return $this->container = $container;
     }

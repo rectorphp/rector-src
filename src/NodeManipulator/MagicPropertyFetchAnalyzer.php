@@ -51,8 +51,11 @@ final class MagicPropertyFetchAnalyzer
         return ! $this->hasPublicProperty($propertyFetch, $nodeName, $scope);
     }
 
-    private function hasPublicProperty(PropertyFetch | StaticPropertyFetch $expr, string $propertyName, Scope $scope): bool
-    {
+    private function hasPublicProperty(
+        PropertyFetch | StaticPropertyFetch $expr,
+        string $propertyName,
+        Scope $scope
+    ): bool {
         if ($expr instanceof PropertyFetch) {
             $propertyFetchType = $scope->getType($expr->var);
         } else {

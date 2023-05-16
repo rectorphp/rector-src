@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Reverse;
+namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
 
 class Reverse2
 {
@@ -21,7 +21,7 @@ class Reverse2
 -----
 <?php
 
-namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Reverse;
+namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
 
 class Reverse2
 {

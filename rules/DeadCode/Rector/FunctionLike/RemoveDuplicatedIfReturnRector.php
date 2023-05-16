@@ -139,7 +139,8 @@ CODE_SAMPLE
         }
 
         $type = $this->nodeTypeResolver->getType($cond);
-        return $type->isBoolean()->yes();
+        return $type->isBoolean()
+            ->yes();
     }
 
     /**
