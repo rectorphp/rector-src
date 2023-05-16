@@ -801,7 +801,12 @@ parameters:
             message: '#Do not use static property#'
             path: src/Kernel/RectorKernel.php
 
-        # on rector/rector:dev-main, it will be a generated version
+        # this is due to compare VersionResolver::PACKAGE_VERSION to verify on rector-src
         -
-            message: "#Strict comparison using \=\=\= between '@package_version@' and '@package_version@' will always evaluate to true#"
+            message: '#Public method "Rector\\Core\\Kernel\\RectorKernel\:\:clearCache\(\)" is never used#'
+            path: src/Kernel/RectorKernel.php
+
+        # '@package_version@' compare with '@package_version@' to verify on rector-src
+        -
+            message: '#Strict comparison using \!\=\= between .* and .* will always evaluate to false#'
             path: src/Kernel/RectorKernel.php
