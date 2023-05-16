@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\DNumber;
@@ -20,8 +16,6 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\MagicConst\Line;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -32,7 +26,6 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
@@ -41,7 +34,6 @@ final class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeComparator $nodeComparator,
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
@@ -77,7 +69,7 @@ final class AlwaysStrictScalarExprAnalyzer
             return $this->resolveFuncCallType($expr);
         }
 
-        return $this->resolveIndirectReturnType($expr);
+        return null;
     }
 
     private function resolveCastType(Cast $cast): ?Type
@@ -88,33 +80,6 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         return null;
-    }
-
-    private function resolveIndirectReturnType(Expr $expr): ?Type
-    {
-        if (! $expr instanceof Variable && ! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
-            return null;
-        }
-
-        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Return_) {
-            return null;
-        }
-
-        $node = $parentNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-        if (! $node instanceof Expression) {
-            return null;
-        }
-
-        if (! $node->expr instanceof Assign) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($node->expr->var, $expr)) {
-            return null;
-        }
-
-        return $this->matchStrictScalarExpr($node->expr->expr);
     }
 
     private function isScalarType(Type $type): bool
