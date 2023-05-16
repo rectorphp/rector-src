@@ -57,11 +57,11 @@ final class BattleshipTernaryAnalyzer
             return $this->evaluateTernaryDesc($ternary);
         }
 
-        if (!$this->nodeComparator->areNodesEqual($greater->right, $comparedExprs->getFirstExpr())) {
+        if (! $this->nodeComparator->areNodesEqual($greater->right, $comparedExprs->getFirstExpr())) {
             return null;
         }
 
-        if (!$this->nodeComparator->areNodesEqual($greater->left, $comparedExprs->getSecondExpr())) {
+        if (! $this->nodeComparator->areNodesEqual($greater->left, $comparedExprs->getSecondExpr())) {
             return null;
         }
 
@@ -88,11 +88,11 @@ final class BattleshipTernaryAnalyzer
             return $this->evaluateTernaryAsc($ternary);
         }
 
-        if (!$this->nodeComparator->areNodesEqual($smaller->right, $comparedExprs->getFirstExpr())) {
+        if (! $this->nodeComparator->areNodesEqual($smaller->right, $comparedExprs->getFirstExpr())) {
             return null;
         }
 
-        if (!$this->nodeComparator->areNodesEqual($smaller->left, $comparedExprs->getSecondExpr())) {
+        if (! $this->nodeComparator->areNodesEqual($smaller->left, $comparedExprs->getSecondExpr())) {
             return null;
         }
 
