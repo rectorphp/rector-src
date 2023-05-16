@@ -33,7 +33,7 @@ final class RectorKernel
             return;
         }
 
-        if (VersionResolver::PACKAGE_VERSION !== '@package_version@') {
+        if ($this->isPrefixedBuild()) {
             return;
         }
 
@@ -140,5 +140,10 @@ final class RectorKernel
         // we use the system temp dir only in our test-suite as we cannot reliably use it anywhere
         // see https://github.com/rectorphp/rector/issues/7700
         return sys_get_temp_dir() . '/rector/';
+    }
+
+    private function isPrefixedBuild(): bool
+    {
+        return VersionResolver::PACKAGE_VERSION !== '@package_version@';
     }
 }
