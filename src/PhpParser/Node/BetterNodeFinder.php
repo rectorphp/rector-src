@@ -552,7 +552,7 @@ final class BetterNodeFinder
             } else {
                 $previousNode = $parentNode instanceof StmtsAwareInterface
                     ? $parentNode->stmts[$currentStmtKey - 1] ?? $node->getAttribute(AttributeKey::PREVIOUS_NODE)
-                    : null;
+                    : $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             }
         }
 
