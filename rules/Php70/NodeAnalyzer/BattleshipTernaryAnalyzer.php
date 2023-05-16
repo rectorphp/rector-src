@@ -46,7 +46,7 @@ final class BattleshipTernaryAnalyzer
      *
      * $firstValue > $secondValue ? 1 : -1
      *
-     * @return BattleshipCompareOrder::*
+     * @return BattleshipCompareOrder::*|null
      */
     private function evaluateGreater(Greater $greater, Ternary $ternary, ComparedExprs $comparedExprs): ?string
     {
@@ -78,7 +78,7 @@ final class BattleshipTernaryAnalyzer
      *
      * $firstValue < $secondValue ? -1 : 1
      *
-     * @return BattleshipCompareOrder::*
+     * @return BattleshipCompareOrder::*|null
      */
     private function evaluateSmaller(Smaller $smaller, Ternary $ternary, ComparedExprs $comparedExprs): ?string
     {
