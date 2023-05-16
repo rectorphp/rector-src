@@ -221,4 +221,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_BYREF_RETURN = 'is_byref_return';
+
+    /**
+     * @var string
+     */
+    public const STMT_KEY = 'stmt_key';
 }
