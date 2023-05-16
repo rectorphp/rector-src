@@ -534,10 +534,6 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, ?Node $parentNode): ?Node
     {
-        if (! $parentNode instanceof StmtsAwareInterface) {
-            return null;
-        }
-
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             if ($parentNode instanceof FileWithoutNamespace) {
