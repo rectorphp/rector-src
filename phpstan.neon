@@ -800,3 +800,8 @@ parameters:
         -
             message: '#Do not use static property#'
             path: src/Kernel/RectorKernel.php
+
+        # on rector/rector:dev-main, it will be a generated version
+        -
+            message: "#Strict comparison using \=\=\= between '@package_version@' and '@package_version@' will always evaluate to true#"
+            path: src/Kernel/RectorKernel.php
