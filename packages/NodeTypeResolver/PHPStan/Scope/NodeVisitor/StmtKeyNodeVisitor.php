@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
@@ -42,7 +41,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     private function setStmtKeyAttribute(Stmt|Closure $stmt): void
     {
         if (! $stmt instanceof StmtsAwareInterface) {
-            throw new ShouldNotHappenException();
+            return;
         }
 
         if ($stmt->stmts === null) {
