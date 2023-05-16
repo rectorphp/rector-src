@@ -22,11 +22,13 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof Stmt) {
+        if (! $node instanceof StmtsAwareInterface) {
             return null;
         }
 
+        // re-index stmt key under current node
         if ($node->getAttribute(AttributeKey::STMT_KEY) !== null) {
+            $this->setStmtKeyAttribute($node);
             return null;
         }
 
@@ -35,14 +37,19 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             return null;
         }
 
-        if ($parentNode->stmts === null) {
-            throw new ShouldNotHappenException();
+        // re-index stmt key under parent node
+        $this->setStmtKeyAttribute($parentNode);
+        return null;
+    }
+
+    private function setStmtKeyAttribute(StmtsAwareInterface $node): void
+    {
+        if ($node->stmts === null) {
+            return;
         }
 
-        foreach ($parentNode->stmts as $key => $stmt) {
+        foreach ($node->stmts as $key => $stmt) {
             $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
         }
-
-        return null;
     }
 }
