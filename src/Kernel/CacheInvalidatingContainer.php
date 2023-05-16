@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Kernel;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Rector\Core\Exception\Cache\StaleContainerCacheException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CacheInvalidatingContainer implements ContainerInterface {

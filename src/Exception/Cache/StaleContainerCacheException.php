@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Kernel;
+namespace Rector\Core\Exception\Cache;
 
 final class StaleContainerCacheException extends \RuntimeException {}
