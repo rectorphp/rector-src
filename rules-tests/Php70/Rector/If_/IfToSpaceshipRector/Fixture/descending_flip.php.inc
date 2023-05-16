@@ -18,3 +18,20 @@ final class DescendingFlip
 
 ?>
 
+-----
+<?php
+
+namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
+
+final class DescendingFlip
+{
+    public function run(array $languages)
+    {
+        usort($languages, function ($firstLanguage, $secondLanguage) {
+            return $secondLanguage[0] <=> $firstLanguage[0];
+        });
+    }
+}
+
+?>
+
