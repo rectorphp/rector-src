@@ -29,7 +29,7 @@ final class RectorKernel
     {
         // while running tests we use different DI containers a lot,
         // therefore make sure we don't compile them over and over again on rector-src.
-        if (!StaticPHPUnitEnvironment::isPHPUnitRun()) {
+        if (! StaticPHPUnitEnvironment::isPHPUnitRun()) {
             return;
         }
 
