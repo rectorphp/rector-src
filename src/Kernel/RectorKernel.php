@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Kernel;
 
+use Rector\Core\Application\VersionResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -27,8 +28,8 @@ final class RectorKernel
     public function __construct()
     {
         // while running tests we use different DI containers a lot,
-        // therefore make sure we don't compile them over and over again.
-        if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+        // therefore make sure we don't compile them over and over again on rector-src.
+        if (StaticPHPUnitEnvironment::isPHPUnitRun() && VersionResolver::PACKAGE_VERSION === '@package_version@') {
             $this->dumpFileCache = true;
         }
     }
