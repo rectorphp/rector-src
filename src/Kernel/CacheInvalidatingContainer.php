@@ -26,7 +26,11 @@ final class CacheInvalidatingContainer implements ContainerInterface {
             // clear compiled container cache, to trigger re-discovery
             RectorKernel::clearCache();
 
-            throw $throwable;
+            throw new \RuntimeException(
+                'Container cache is outdated and was cleared. please re-run the command.',
+                0,
+                $throwable
+            );
         }
     }
 
