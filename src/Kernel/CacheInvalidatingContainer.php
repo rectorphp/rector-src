@@ -8,22 +8,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class CacheInvalidatingContainer implements ContainerInterface {
-    /**
-     * @var callable(string[] $configFiles):ContainerBuilder $containerBuilderCallback
-     */
-    private $containerBuilderCallback;
-
-    /**
-     * @param callable(string[] $configFiles):ContainerBuilder $containerBuilderCallback
-     */
     public function __construct(
-        private readonly ContainerInterface $wrapped,
-        private readonly array $configFiles,
-        callable $containerBuilderCallback
+        private readonly ContainerInterface $wrapped
     )
-    {
-        $this->containerBuilderCallback = $containerBuilderCallback;
-    }
+    {}
 
     public function set(string $id, ?object $service)
     {
@@ -36,6 +24,8 @@ final class CacheInvalidatingContainer implements ContainerInterface {
             return $this->wrapped->get($id, $invalidBehavior);
         } catch (\Throwable $e) {
             RectorKernel::clearCache();
+
+            throw $e;
         }
     }
 
