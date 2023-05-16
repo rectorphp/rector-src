@@ -13,7 +13,7 @@ final class CacheInvalidatingContainer implements ContainerInterface {
     )
     {}
 
-    public function set(string $id, ?object $service)
+    public function set(string $id, ?object $service): void
     {
         $this->wrapped->set($id, $service);
     }
@@ -22,10 +22,10 @@ final class CacheInvalidatingContainer implements ContainerInterface {
     {
         try {
             return $this->wrapped->get($id, $invalidBehavior);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $throwable) {
             RectorKernel::clearCache();
 
-            throw $e;
+            throw $throwable;
         }
     }
 
@@ -39,6 +39,9 @@ final class CacheInvalidatingContainer implements ContainerInterface {
         return $this->wrapped->initialized($id);
     }
 
+    /**
+     * @return array<mixed>|bool|float|int|string|\UnitEnum|null
+     */
     public function getParameter(string $name)
     {
         return $this->wrapped->getParameter($name);
@@ -49,8 +52,11 @@ final class CacheInvalidatingContainer implements ContainerInterface {
         return $this->wrapped->hasParameter($name);
     }
 
-    public function setParameter(string $name, \UnitEnum|float|array|bool|int|string|null $value)
+    /**
+     * @param \UnitEnum|float|array<mixed>|bool|int|string|null $value
+     */
+    public function setParameter(string $name, \UnitEnum|float|array|bool|int|string|null $value): void
     {
-        return $this->wrapped->setParameter($name, $value);
+        $this->wrapped->setParameter($name, $value);
     }
 }
