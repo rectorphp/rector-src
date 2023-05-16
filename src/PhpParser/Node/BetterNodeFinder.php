@@ -17,11 +17,17 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Do_;
+use PhpParser\Node\Stmt\ElseIf_;
+use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -300,11 +306,6 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         $foundNode = $this->findFirstInlinedPrevious($node, $filter, $parentNode);
 
-        // find node is a parent itself, stop
-        if ($parentNode instanceof FunctionLike && $foundNode === $parentNode) {
-            return null;
-        }
-
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
@@ -533,6 +534,43 @@ final class BetterNodeFinder
     }
 
     /**
+     * @param callable(Node $node): bool $filter
+     */
+    private function findFirstInTopLevelStmtsAware(StmtsAwareInterface $stmtsAware, callable $filter): ?Node
+    {
+        $nodes = [];
+
+        if ($stmtsAware instanceof Foreach_) {
+            $nodes = [$stmtsAware->valueVar, $stmtsAware->keyVar, $stmtsAware->expr];
+        }
+
+        if ($stmtsAware instanceof For_) {
+            $nodes = [$stmtsAware->loop, $stmtsAware->cond, $stmtsAware->init];
+        }
+
+        if ($this->multiInstanceofChecker->isInstanceOf($stmtsAware, [
+            If_::class,
+            While_::class,
+            Do_::class,
+            Switch_::class,
+            ElseIf_::class,
+            Case_::class
+        ])) {
+            /** @var If_|While_|Do_|Switch_|ElseIf_|Case_ $stmtsAware */
+            $nodes = [$stmtsAware->cond];
+        }
+
+        foreach ($nodes as $node) {
+            $foundNode = $this->findFirst($node, $filter);
+            if ($foundNode instanceof Node) {
+                return $foundNode;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Only search in previous Node/Stmt
      * @api
      *
@@ -551,7 +589,7 @@ final class BetterNodeFinder
                 }
 
                 if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
-                    return $parentNode;
+                    return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
                 }
 
                 $previousNode = $parentNode->stmts[$currentStmtKey - 1];
