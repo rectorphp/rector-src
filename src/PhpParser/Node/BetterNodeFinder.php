@@ -296,14 +296,14 @@ final class BetterNodeFinder
      */
     public function findFirstPrevious(Node $node, callable $filter): ?Node
     {
-        $foundNode = $this->findFirstInlinedPrevious($node, $filter);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $foundNode = $this->findFirstInlinedPrevious($node, $filter, $parentNode);
 
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof FunctionLike) {
             return null;
         }
@@ -532,12 +532,10 @@ final class BetterNodeFinder
      *
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInlinedPrevious(Node $node, callable $filter): ?Node
+    private function findFirstInlinedPrevious(Node $node, callable $filter, ?Node $parentNode): ?Node
     {
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
             if ($parentNode instanceof FileWithoutNamespace) {
                 // next todo: grab from key - 1
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
@@ -566,7 +564,7 @@ final class BetterNodeFinder
             return $foundNode;
         }
 
-        return $this->findFirstInlinedPrevious($previousNode, $filter);
+        return $this->findFirstInlinedPrevious($previousNode, $filter, $parentNode);
     }
 
     /**
