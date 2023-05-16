@@ -5,21 +5,13 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
-    public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
-    ) {
-    }
-
     public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof StmtsAwareInterface) {
@@ -42,13 +34,13 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         return null;
     }
 
-    private function setStmtKeyAttribute(StmtsAwareInterface $node): void
+    private function setStmtKeyAttribute(StmtsAwareInterface $stmtsAware): void
     {
-        if ($node->stmts === null) {
+        if ($stmtsAware->stmts === null) {
             return;
         }
 
-        foreach ($node->stmts as $key => $stmt) {
+        foreach ($stmtsAware->stmts as $key => $stmt) {
             $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
         }
     }
