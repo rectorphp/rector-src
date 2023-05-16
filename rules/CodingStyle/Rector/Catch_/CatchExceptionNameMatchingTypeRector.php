@@ -17,7 +17,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector\CatchExceptionNameMatchingTypeRectorTest
  */
-final class CatchExceptionNameMatchingTypeRector extends AbstractRector
+final class CatchExceptionNameMatchingTypeRector extends AbstractScopeAwareRector
 {
     /**
      * @var string
@@ -90,7 +90,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node->stmts === null) {
             return null;
@@ -125,12 +125,6 @@ CODE_SAMPLE
             $newVariableName = $this->propertyNaming->fqnToVariableName($objectType);
 
             if ($oldVariableName === $newVariableName) {
-                continue;
-            }
-
-            // variable defined first only resolvable by Scope pulled from Stmt
-            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof Scope) {
                 continue;
             }
 
