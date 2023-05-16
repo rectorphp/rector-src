@@ -534,14 +534,8 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, ?Node $parentNode): ?Node
     {
-        $previousNode = null;
         if (! $parentNode instanceof StmtsAwareInterface) {
             return null;
-        }
-
-        if ($node instanceof Expr) {
-            // next todo: grab from end token pos > start token pos
-            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
         }
 
         if ($node instanceof Stmt) {
@@ -554,6 +548,9 @@ final class BetterNodeFinder
                     ? $parentNode->stmts[$currentStmtKey - 1] ?? $node->getAttribute(AttributeKey::PREVIOUS_NODE)
                     : $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             }
+        } else {
+            // next todo: grab from end token pos > start token pos
+            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
         }
 
         if (! $previousNode instanceof Node) {
