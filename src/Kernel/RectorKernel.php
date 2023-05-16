@@ -29,9 +29,13 @@ final class RectorKernel
     {
         // while running tests we use different DI containers a lot,
         // therefore make sure we don't compile them over and over again on rector-src.
-        if (StaticPHPUnitEnvironment::isPHPUnitRun() && VersionResolver::PACKAGE_VERSION === '@package_version@') {
-            $this->dumpFileCache = true;
+        if (!StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            return;
         }
+        if (VersionResolver::PACKAGE_VERSION !== '@package_version@') {
+            return;
+        }
+        $this->dumpFileCache = true;
     }
 
     /**
