@@ -301,7 +301,7 @@ final class BetterNodeFinder
         $foundNode = $this->findFirstInlinedPrevious($node, $filter, $parentNode);
 
         // find node is a parent itself, stop
-        if ($parentNode instanceof StmtsAwareInterface && $foundNode === $parentNode) {
+        if ($parentNode instanceof FunctionLike && $foundNode === $parentNode) {
             return null;
         }
 
