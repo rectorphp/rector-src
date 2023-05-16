@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
@@ -299,6 +300,11 @@ final class BetterNodeFinder
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         $foundNode = $this->findFirstInlinedPrevious($node, $filter, $parentNode);
 
+        // find node is a parent itself, stop
+        if ($parentNode instanceof StmtsAwareInterface && $foundNode === $parentNode) {
+            return null;
+        }
+
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
@@ -540,9 +546,15 @@ final class BetterNodeFinder
                 // next todo: grab from key - 1
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             } else {
-                $previousNode = $parentNode instanceof StmtsAwareInterface
-                    ? $parentNode->stmts[$currentStmtKey - 1] ?? $node->getAttribute(AttributeKey::PREVIOUS_NODE)
-                    : $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+                if (! $parentNode instanceof StmtsAwareInterface) {
+                    return null;
+                }
+
+                if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
+                    return $parentNode;
+                }
+
+                $previousNode = $parentNode->stmts[$currentStmtKey - 1];
             }
         } else {
             // next todo: grab from end token pos > start token pos
