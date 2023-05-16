@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -22,7 +23,6 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -100,7 +100,7 @@ CODE_SAMPLE
             }
 
             $if = $previousStmt;
-            if ($this->shouldSkip($if)) {
+            if ($this->shouldSkip($if, $stmt)) {
                 continue;
             }
 
@@ -259,14 +259,13 @@ CODE_SAMPLE
         return $exprReturn;
     }
 
-    private function shouldSkip(If_ $if): bool
+    private function shouldSkip(If_ $if, Stmt $stmt): bool
     {
         if (! $this->ifManipulator->isIfWithOnly($if, Return_::class)) {
             return true;
         }
 
-        $nextNode = $if->getAttribute(AttributeKey::NEXT_NODE);
-        if (! $nextNode instanceof Return_) {
+        if (! $stmt instanceof Return_) {
             return true;
         }
 
