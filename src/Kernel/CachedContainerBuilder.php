@@ -37,7 +37,7 @@ final class CachedContainerBuilder
         if (file_exists($file)) {
             require_once $file;
             $className = '\\' . __NAMESPACE__ . '\\' . $className;
-            $container = new  $className();
+            $container = new $className();
             if (! $container instanceof ContainerInterface) {
                 throw new ShouldNotHappenException();
             }
