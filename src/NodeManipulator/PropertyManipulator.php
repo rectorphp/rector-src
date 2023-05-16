@@ -296,7 +296,7 @@ final class PropertyManipulator
 
             $caller = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
             if ($caller instanceof MethodCall || $caller instanceof StaticCall) {
-                return $this->isFoundByRefParam($caller);
+                return $this->isFoundByRefParam($caller, $scope);
             }
         }
 
@@ -307,15 +307,10 @@ final class PropertyManipulator
         return $parentNode instanceof Unset_;
     }
 
-    private function isFoundByRefParam(MethodCall | StaticCall $node): bool
+    private function isFoundByRefParam(MethodCall | StaticCall $node, Scope $scope): bool
     {
         $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         if ($functionLikeReflection === null) {
-            return false;
-        }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
             return false;
         }
 
