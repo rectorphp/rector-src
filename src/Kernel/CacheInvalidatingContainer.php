@@ -23,6 +23,7 @@ final class CacheInvalidatingContainer implements ContainerInterface {
         try {
             return $this->wrapped->get($id, $invalidBehavior);
         } catch (\Throwable $throwable) {
+            // clear compiled container cache, to trigger re-discovery
             RectorKernel::clearCache();
 
             throw $throwable;
