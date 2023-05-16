@@ -12,9 +12,7 @@ use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 /**
@@ -30,7 +28,7 @@ final class MagicPropertyFetchAnalyzer
     ) {
     }
 
-    public function isMagicOnType(PropertyFetch $propertyFetch, ObjectType $objectType): bool
+    public function isMagicOnType(PropertyFetch $propertyFetch, ObjectType $objectType, Scope $scope): bool
     {
         $varNodeType = $this->nodeTypeResolver->getType($propertyFetch);
         if ($varNodeType instanceof ErrorType) {
@@ -50,16 +48,11 @@ final class MagicPropertyFetchAnalyzer
             return false;
         }
 
-        return ! $this->hasPublicProperty($propertyFetch, $nodeName);
+        return ! $this->hasPublicProperty($propertyFetch, $nodeName, $scope);
     }
 
-    private function hasPublicProperty(PropertyFetch | StaticPropertyFetch $expr, string $propertyName): bool
+    private function hasPublicProperty(PropertyFetch | StaticPropertyFetch $expr, string $propertyName, Scope $scope): bool
     {
-        $scope = $expr->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            throw new ShouldNotHappenException();
-        }
-
         if ($expr instanceof PropertyFetch) {
             $propertyFetchType = $scope->getType($expr->var);
         } else {

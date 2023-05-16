@@ -10,11 +10,13 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\MagicPropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Transform\ValueObject\GetAndSetToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -24,7 +26,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Transform\Rector\Assign\GetAndSetToMethodCallRector\GetAndSetToMethodCallRectorTest
  */
-final class GetAndSetToMethodCallRector extends AbstractRector implements ConfigurableRectorInterface
+final class GetAndSetToMethodCallRector extends AbstractScopeAwareRector implements ConfigurableRectorInterface
 {
     /**
      * @var GetAndSetToMethodCall[]
@@ -67,17 +69,17 @@ CODE_SAMPLE
     /**
      * @param Assign|PropertyFetch $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof Assign) {
             if ($node->var instanceof PropertyFetch) {
-                return $this->processMagicSet($node->expr, $node->var);
+                return $this->processMagicSet($node->expr, $node->var, $scope);
             }
 
             return null;
         }
 
-        return $this->processPropertyFetch($node);
+        return $this->processPropertyFetch($node, $scope);
     }
 
     /**
@@ -90,11 +92,11 @@ CODE_SAMPLE
         $this->getAndSetToMethodCalls = $configuration;
     }
 
-    private function processMagicSet(Expr $expr, PropertyFetch $propertyFetch): ?Node
+    private function processMagicSet(Expr $expr, PropertyFetch $propertyFetch, Scope $scope): ?Node
     {
         foreach ($this->getAndSetToMethodCalls as $getAndSetToMethodCall) {
             $objectType = $getAndSetToMethodCall->getObjectType();
-            if ($this->shouldSkipPropertyFetch($propertyFetch, $objectType)) {
+            if ($this->shouldSkipPropertyFetch($propertyFetch, $objectType, $scope)) {
                 continue;
             }
 
@@ -108,12 +110,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processPropertyFetch(PropertyFetch $propertyFetch): ?MethodCall
+    private function processPropertyFetch(PropertyFetch $propertyFetch, Scope $scope): ?MethodCall
     {
         $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
 
         foreach ($this->getAndSetToMethodCalls as $getAndSetToMethodCall) {
-            if ($this->shouldSkipPropertyFetch($propertyFetch, $getAndSetToMethodCall->getObjectType())) {
+            if ($this->shouldSkipPropertyFetch($propertyFetch, $getAndSetToMethodCall->getObjectType(), $scope)) {
                 continue;
             }
 
@@ -136,13 +138,13 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch, ObjectType $objectType): bool
+    private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch, ObjectType $objectType, Scope $scope): bool
     {
         if (! $this->isObjectType($propertyFetch->var, $objectType)) {
             return true;
         }
 
-        if (! $this->magicPropertyFetchAnalyzer->isMagicOnType($propertyFetch, $objectType)) {
+        if (! $this->magicPropertyFetchAnalyzer->isMagicOnType($propertyFetch, $objectType, $scope)) {
             return true;
         }
 
