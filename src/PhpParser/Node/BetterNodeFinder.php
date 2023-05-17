@@ -604,10 +604,7 @@ final class BetterNodeFinder
         return $this->findFirst($currentStmt, $filter);
     }
 
-    /**
-     * @param callable(Node $node): bool $filter
-     */
-    private function resolvePreviousNodeFromExpr(Expr $expr, callable $filter): null|Stmt|Expr
+    private function resolvePreviousNodeFromExpr(Expr $expr): null|Stmt|Expr
     {
         $currentStmt = $this->resolveCurrentStatement($expr);
 
@@ -630,8 +627,12 @@ final class BetterNodeFinder
                 return null;
             }
 
-            /** @var StmtsAwareInterface $parentNode */
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
+            /** @var StmtsAwareInterface $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
@@ -655,6 +656,10 @@ final class BetterNodeFinder
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             if ($currentStmtKey === null) {
+                return null;
+            }
+
+            if (! $parentNode instanceof StmtsAwareInterface) {
                 return null;
             }
 
