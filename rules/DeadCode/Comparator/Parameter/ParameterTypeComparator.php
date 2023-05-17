@@ -21,8 +21,14 @@ final class ParameterTypeComparator
         StaticCall $staticCall,
         Scope $scope
     ): bool {
-        $currentParameterTypes = $this->methodParameterTypeResolver->provideParameterTypesByClassMethod($classMethod, $scope);
-        $parentParameterTypes = $this->methodParameterTypeResolver->provideParameterTypesByStaticCall($staticCall, $scope);
+        $currentParameterTypes = $this->methodParameterTypeResolver->provideParameterTypesByClassMethod(
+            $classMethod,
+            $scope
+        );
+        $parentParameterTypes = $this->methodParameterTypeResolver->provideParameterTypesByStaticCall(
+            $staticCall,
+            $scope
+        );
 
         foreach ($currentParameterTypes as $key => $currentParameterType) {
             if (! isset($parentParameterTypes[$key])) {

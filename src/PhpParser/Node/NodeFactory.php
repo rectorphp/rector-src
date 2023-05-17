@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -363,7 +364,7 @@ final class NodeFactory
     }
 
     /**
-     * @param array<NotIdentical|BooleanAnd> $newNodes
+     * @param array<NotIdentical|BooleanAnd|Identical> $newNodes
      */
     public function createReturnBooleanAnd(array $newNodes): ?Expr
     {
@@ -434,18 +435,18 @@ final class NodeFactory
     }
 
     /**
-     * @param NotIdentical[]|BooleanAnd[] $exprs
+     * @param Expr\BinaryOp[] $binaryOps
      */
-    private function createBooleanAndFromNodes(array $exprs): BooleanAnd
+    private function createBooleanAndFromNodes(array $binaryOps): BooleanAnd
     {
-        /** @var NotIdentical|BooleanAnd $booleanAnd */
-        $booleanAnd = array_shift($exprs);
-        foreach ($exprs as $expr) {
-            $booleanAnd = new BooleanAnd($booleanAnd, $expr);
+        /** @var NotIdentical|BooleanAnd $mainBooleanAnd */
+        $mainBooleanAnd = array_shift($binaryOps);
+        foreach ($binaryOps as $binaryOp) {
+            $mainBooleanAnd = new BooleanAnd($mainBooleanAnd, $binaryOp);
         }
 
-        /** @var BooleanAnd $booleanAnd */
-        return $booleanAnd;
+        /** @var BooleanAnd $mainBooleanAnd */
+        return $mainBooleanAnd;
     }
 
     /**
