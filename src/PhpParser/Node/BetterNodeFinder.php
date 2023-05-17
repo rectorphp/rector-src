@@ -568,6 +568,10 @@ final class BetterNodeFinder
         }
 
         foreach ($nodes as $node) {
+            if (! $node instanceof Node) {
+                continue;
+            }
+
             $foundNode = $this->findFirst($node, $filter);
             if ($foundNode instanceof Node) {
                 return $foundNode;
@@ -578,6 +582,7 @@ final class BetterNodeFinder
     }
 
     /**
+     * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
      */
     private function findFirstInDeclare(array $newStmts, Node $node, callable $filter): ?Node
@@ -603,22 +608,17 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
+        if (! $parentNode instanceof StmtsAwareInterface) {
+            return $this->findFirstInDeclare($newStmts, $node, $filter);
+        }
+
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            if ($parentNode instanceof FileWithoutNamespace) {
-                // next todo: grab from key - 1
-                $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-            } else {
-                if (! $parentNode instanceof StmtsAwareInterface) {
-                    return $this->findFirstInDeclare($newStmts, $node, $filter);
-                }
-
-                if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
-                    return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
-                }
-
-                $previousNode = $parentNode->stmts[$currentStmtKey - 1];
+            if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
+                return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
+
+            $previousNode = $parentNode->stmts[$currentStmtKey - 1];
         } else {
             // next todo: grab from end token pos > start token pos
             $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
