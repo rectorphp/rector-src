@@ -5,9 +5,14 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
@@ -109,15 +114,17 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyTypeDclaration = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+            $propertyTypeDeclaration = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                 $getterSetterPropertyType,
                 TypeKind::PROPERTY
             );
-            if (! $propertyTypeDclaration instanceof Node) {
+            if (! $propertyTypeDeclaration instanceof Node) {
                 continue;
             }
 
-            $property->type = $propertyTypeDclaration;
+            $this->decorateDefaultExpr($getterSetterPropertyType, $property);
+
+            $property->type = $propertyTypeDeclaration;
             $hasChanged = true;
         }
 
@@ -141,16 +148,22 @@ CODE_SAMPLE
         }
 
         $setterBasedStrictType = $this->setterTypeDeclarationPropertyTypeInferer->inferProperty($property, $class);
-
         if (! $setterBasedStrictType instanceof Type) {
             return null;
         }
 
-        if (! $getterBasedStrictType->equals($setterBasedStrictType)) {
-            return null;
+        // single type
+        if ($setterBasedStrictType->equals($getterBasedStrictType)) {
+            return $setterBasedStrictType;
         }
 
-        return $getterBasedStrictType;
+        if ($getterBasedStrictType instanceof UnionType) {
+            $getterBasedStrictTypes = $getterBasedStrictType->getTypes();
+        } else {
+            $getterBasedStrictTypes = [$getterBasedStrictType];
+        }
+
+        return new UnionType([$setterBasedStrictType, ...$getterBasedStrictTypes]);
     }
 
     private function isDefaultExprTypeCompatible(Property $property, Type $getterSetterPropertyType): bool
@@ -165,5 +178,21 @@ CODE_SAMPLE
 
         $defaultExprType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($defaultExpr);
         return $defaultExprType->equals($getterSetterPropertyType);
+    }
+
+    private function decorateDefaultExpr(Type $getterSetterPropertyType, Property $property): void
+    {
+        if (! TypeCombinator::containsNull($getterSetterPropertyType)) {
+            return;
+        }
+
+        $propertyProperty = $property->props[0];
+
+        // already set → skip it
+        if ($propertyProperty->default instanceof Expr) {
+            return;
+        }
+
+        $propertyProperty->default = new ConstFetch(new Name('null'));
     }
 }
