@@ -309,9 +309,12 @@ final class BetterNodeFinder
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
-        // on __construct(), $file not yet a File object
-        $file = $this->currentFileProvider->getFile();
-        $newStmts = $file instanceof File ? $file->getNewStmts() : [];
+        $newStmts = [];
+        if (! $parentNode instanceof Node) {
+            // on __construct(), $file not yet a File object
+            $file = $this->currentFileProvider->getFile();
+            $newStmts = $file instanceof File ? $file->getNewStmts() : [];
+        }
 
         $foundNode = $this->findFirstInlinedPrevious($node, $filter, $newStmts, $parentNode);
 
