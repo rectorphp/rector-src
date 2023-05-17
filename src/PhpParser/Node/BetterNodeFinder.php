@@ -605,6 +605,41 @@ final class BetterNodeFinder
     }
 
     /**
+     * @param callable(Node $node): bool $filter
+     */
+    private function resolvePreviousNodeFromExpr(Expr $expr, callable $filter): null|Stmt|Expr
+    {
+        $currentStmt = $this->resolveCurrentStatement($expr);
+
+        if (! $currentStmt instanceof Stmt) {
+            return null;
+        }
+
+        $startTokenPos = $expr->getStartTokenPos();
+        if ($startTokenPos < 0) {
+            return null;
+        }
+
+        $nodes = $this->find($currentStmt, function (Node $subNode) use ($startTokenPos): bool {
+            return $subNode->getEndTokenPos() < $startTokenPos;
+        });
+
+        if ($nodes === []) {
+            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            if ($currentStmtKey === null) {
+                return null;
+            }
+
+            /** @var StmtsAwareInterface $parentNode */
+            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
+        }
+
+        $nodes = array_reverse($nodes);
+        return current($nodes);
+    }
+
+    /**
      * Only search in previous Node/Stmt
      * @api
      *
@@ -630,15 +665,10 @@ final class BetterNodeFinder
 
             $previousNode = $parentNode->stmts[$currentStmtKey - 1];
         } else {
-            // next todo: grab from end token pos > start token pos
-            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
+            $previousNode = $this->resolvePreviousNodeFromExpr($node, $filter);
         }
 
         if (! $previousNode instanceof Node) {
-            return null;
-        }
-
-        if ($previousNode === $node) {
             return null;
         }
 
