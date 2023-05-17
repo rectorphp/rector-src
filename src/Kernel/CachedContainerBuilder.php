@@ -9,7 +9,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\Filesystem\Filesystem;
-use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
  * see https://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
@@ -31,7 +30,7 @@ final class CachedContainerBuilder
      */
     public function build(array $configFiles, string $hash, callable $containerBuilderCallback): ContainerInterface
     {
-        $smartFileSystem = new Filesystem();
+        $filesystem = new Filesystem();
         $className = 'RectorKernel' . $hash;
         $file = $this->cacheDir . 'kernel-' . $this->cacheKey . '-' . $hash . '.php';
 
@@ -56,7 +55,7 @@ final class CachedContainerBuilder
                 throw new ShouldNotHappenException();
             }
 
-            $smartFileSystem->dumpFile($file, $dumpedContainer);
+            $filesystem->dumpFile($file, $dumpedContainer);
         }
 
         return $container;
