@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\FileHasher;
-use Throwable;
 
 abstract class AbstractTestCase extends TestCase
 {

@@ -41,6 +41,7 @@ final class CachedContainerBuilder
             if (! $cachedContainer instanceof ContainerInterface) {
                 throw new ShouldNotHappenException();
             }
+
             $container = new CacheInvalidatingContainer($cachedContainer);
         } else {
             $container = ($containerBuilderCallback)($configFiles);
