@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\For_;
@@ -566,7 +565,7 @@ final class BetterNodeFinder
             Do_::class,
             Switch_::class,
             ElseIf_::class,
-            Case_::class
+            Case_::class,
         ])) {
             /** @var If_|While_|Do_|Switch_|ElseIf_|Case_ $stmtsAware */
             $nodes = [$stmtsAware->cond];
@@ -604,22 +603,23 @@ final class BetterNodeFinder
         return $this->findFirst($currentStmt, $filter);
     }
 
-    private function resolvePreviousNodeFromExpr(Expr $expr): ?Node
+    private function resolvePreviousNodeFromExpr(Node $node): ?Node
     {
-        $currentStmt = $this->resolveCurrentStatement($expr);
+        $currentStmt = $this->resolveCurrentStatement($node);
 
         if (! $currentStmt instanceof Stmt) {
             return null;
         }
 
-        $startTokenPos = $expr->getStartTokenPos();
+        $startTokenPos = $node->getStartTokenPos();
         if ($startTokenPos < 0) {
             return null;
         }
 
-        $nodes = $this->find($currentStmt, function (Node $subNode) use ($startTokenPos): bool {
-            return $subNode->getEndTokenPos() < $startTokenPos;
-        });
+        $nodes = $this->find(
+            $currentStmt,
+            static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+        );
 
         if ($nodes === []) {
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
@@ -670,7 +670,7 @@ final class BetterNodeFinder
 
             $previousNode = $parentNode->stmts[$currentStmtKey - 1];
         } else {
-            $previousNode = $this->resolvePreviousNodeFromExpr($node, $filter);
+            $previousNode = $this->resolvePreviousNodeFromExpr($node);
         }
 
         if (! $previousNode instanceof Node) {
