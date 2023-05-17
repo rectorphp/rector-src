@@ -595,11 +595,6 @@ final class BetterNodeFinder
             return null;
         }
 
-        $currentStmt = current($newStmts);
-        if ($currentStmt === false) {
-            return null;
-        }
-
         $newStmts = array_reverse($newStmts);
         foreach ($newStmts as $key => $newStmt) {
             if ($newStmt === $node && isset($newStmts[$key+1])) {
