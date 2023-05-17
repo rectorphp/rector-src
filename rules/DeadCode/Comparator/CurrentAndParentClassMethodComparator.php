@@ -42,7 +42,11 @@ final class CurrentAndParentClassMethodComparator
             return false;
         }
 
-        if (! $this->parameterTypeComparator->isClassMethodIdenticalToParentStaticCall($classMethod, $staticCall, $scope)) {
+        if (! $this->parameterTypeComparator->isClassMethodIdenticalToParentStaticCall(
+            $classMethod,
+            $staticCall,
+            $scope
+        )) {
             return false;
         }
 
