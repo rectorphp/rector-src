@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\For_;
@@ -34,7 +35,9 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\MultiInstanceofChecker;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -51,7 +54,8 @@ final class BetterNodeFinder
         private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -304,7 +308,10 @@ final class BetterNodeFinder
     public function findFirstPrevious(Node $node, callable $filter): ?Node
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        $foundNode = $this->findFirstInlinedPrevious($node, $filter, $parentNode);
+        $file = $this->currentFileProvider->getFile();
+        $newStmts = $file instanceof File ? $file->getNewStmts() : [];
+
+        $foundNode = $this->findFirstInlinedPrevious($node, $filter, $newStmts, $parentNode);
 
         // we found what we need
         if ($foundNode instanceof Node) {
@@ -571,12 +578,30 @@ final class BetterNodeFinder
     }
 
     /**
+     * @param callable(Node $node): bool $filter
+     */
+    private function findFirstInDeclare(array $newStmts, Node $node, callable $filter): ?Node
+    {
+        if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
+            return null;
+        }
+
+        $currentStmt = current($newStmts);
+        if (! $currentStmt instanceof Declare_) {
+            return null;
+        }
+
+        return $this->findFirst($currentStmt, $filter);
+    }
+
+    /**
      * Only search in previous Node/Stmt
      * @api
      *
+     * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInlinedPrevious(Node $node, callable $filter, ?Node $parentNode): ?Node
+    private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
@@ -585,7 +610,7 @@ final class BetterNodeFinder
                 $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
             } else {
                 if (! $parentNode instanceof StmtsAwareInterface) {
-                    return null;
+                    return $this->findFirstInDeclare($newStmts, $node, $filter);
                 }
 
                 if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
@@ -614,7 +639,7 @@ final class BetterNodeFinder
             return $foundNode;
         }
 
-        return $this->findFirstInlinedPrevious($previousNode, $filter, $parentNode);
+        return $this->findFirstInlinedPrevious($previousNode, $filter, $newStmts, $parentNode);
     }
 
     /**
