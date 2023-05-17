@@ -48,15 +48,6 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof StmtsAwareInterface) {
-            // on __construct(), $file not yet a File object
-            $file = $this->currentFileProvider->getFile();
-            if ($file instanceof File) {
-                $newStmts = $file->getNewStmts();
-                foreach ($newStmts as $key => $childStmt) {
-                    $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
-                }
-            }
-
             return null;
         }
 
