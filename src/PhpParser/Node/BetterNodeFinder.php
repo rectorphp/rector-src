@@ -595,16 +595,17 @@ final class BetterNodeFinder
         }
 
         $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-        $newStmts = array_reverse($newStmts);
+        $previousStmt = null;
 
         foreach ($newStmts as $newStmt) {
             $stmtKey = $newStmt->getAttribute(AttributeKey::STMT_KEY);
             if ($stmtKey < $currentStmtKey) {
-                return $newStmt;
+                // continue fill until last previous stmt
+                $previousStmt = $newStmt;
             }
         }
 
-        return null;
+        return $previousStmt;
     }
 
     private function resolvePreviousNodeFromExpr(Node $node): ?Node
