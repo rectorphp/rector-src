@@ -6,20 +6,20 @@ namespace Rector\Core\Tests\Util;
 
 use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\AbstractTestCase;
-use Symplify\SmartFileSystem\SmartFileSystem;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class FileHasherTest extends AbstractTestCase
 {
     private FileHasher $fileHasher;
 
-    private SmartFileSystem $smartFileSystem;
+    private Filesystem $filesystem;
 
     protected function setUp(): void
     {
         $this->boot();
 
         $this->fileHasher = $this->getService(FileHasher::class);
-        $this->smartFileSystem = new SmartFileSystem();
+        $this->filesystem = new Filesystem();
     }
 
     public function testHash(): void
@@ -34,12 +34,12 @@ final class FileHasherTest extends AbstractTestCase
         $file = $dir . '/FileHasherTest-fixture.txt';
 
         try {
-            $this->smartFileSystem->dumpFile($file, 'some string');
+            $this->filesystem->dumpFile($file, 'some string');
 
             $hash = $this->fileHasher->hashFiles([$file]);
             $this->assertSame('8df638f91bacc826bf50c04efd7df1b1', $hash);
         } finally {
-            $this->smartFileSystem->remove($file);
+            $this->filesystem->remove($file);
         }
     }
 
