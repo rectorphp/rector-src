@@ -367,10 +367,8 @@ final class BetterNodeFinder
         $nextNode = $this->resolveNextNode($node, $parentNode);
 
         if ($nextNode instanceof Node) {
-            if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
-                if (! $parentNode instanceof Case_) {
-                    return null;
-                }
+            if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr && ! $parentNode instanceof Case_) {
+                return null;
             }
 
             $found = $this->findFirst($nextNode, $filter);
