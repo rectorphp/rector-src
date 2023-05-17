@@ -7,8 +7,10 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -18,6 +20,17 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 {
     public function __construct(private readonly CurrentFileProvider $currentFileProvider)
     {
+    }
+
+    public function beforeTraverse(array $nodes): array
+    {
+        foreach ($nodes as $key => $node) {
+            if ($node instanceof Namespace_ || $node instanceof FileWithoutNamespace) {
+                $node->setAttribute(AttributeKey::STMT_KEY, $key);
+            }
+        }
+
+        return $nodes;
     }
 
     public function enterNode(Node $node): ?Node

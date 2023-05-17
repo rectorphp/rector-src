@@ -595,10 +595,13 @@ final class BetterNodeFinder
             return null;
         }
 
+        $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
         $newStmts = array_reverse($newStmts);
+
         foreach ($newStmts as $key => $newStmt) {
-            if ($newStmt === $node && isset($newStmts[$key+1])) {
-                return $newStmts[$key+1];
+            $stmtKey = $newStmt->getAttribute(AttributeKey::STMT_KEY);
+            if ($stmtKey < $currentStmtKey) {
+                return $newStmt;
             }
         }
 
