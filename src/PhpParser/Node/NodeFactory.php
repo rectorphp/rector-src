@@ -435,18 +435,18 @@ final class NodeFactory
     }
 
     /**
-     * @param NotIdentical[]|BooleanAnd[] $exprs
+     * @param Expr\BinaryOp[] $binaryOps
      */
-    private function createBooleanAndFromNodes(array $exprs): BooleanAnd
+    private function createBooleanAndFromNodes(array $binaryOps): BooleanAnd
     {
-        /** @var NotIdentical|BooleanAnd $booleanAnd */
-        $booleanAnd = array_shift($exprs);
-        foreach ($exprs as $expr) {
-            $booleanAnd = new BooleanAnd($booleanAnd, $expr);
+        /** @var NotIdentical|BooleanAnd $mainBooleanAnd */
+        $mainBooleanAnd = array_shift($binaryOps);
+        foreach ($binaryOps as $binaryOp) {
+            $mainBooleanAnd = new BooleanAnd($mainBooleanAnd, $binaryOp);
         }
 
-        /** @var BooleanAnd $booleanAnd */
-        return $booleanAnd;
+        /** @var BooleanAnd $mainBooleanAnd */
+        return $mainBooleanAnd;
     }
 
     /**

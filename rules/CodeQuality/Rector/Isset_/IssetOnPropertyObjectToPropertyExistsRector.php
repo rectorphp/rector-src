@@ -13,11 +13,12 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -101,35 +102,21 @@ CODE_SAMPLE
                 continue;
             }
 
-            // Ignore dynamically accessed properties ($o->$p)
-            if ($issetExpr->name instanceof Variable) {
-                continue;
-            }
-
             // has property PHP 7.4 type?
-            if ($this->hasPropertyTypeDeclaration($issetExpr)) {
+            if ($this->shouldSkipForPropertyTypeDeclaration($issetExpr)) {
                 continue;
             }
 
+            // Ignore dynamically accessed properties ($o->$p)
             $propertyFetchName = $this->getName($issetExpr->name);
-            if ($propertyFetchName === null) {
+            if (! is_string($propertyFetchName)) {
                 continue;
             }
 
-            $propertyFetchVarType = $this->getType($issetExpr->var);
-            if (! $propertyFetchVarType instanceof TypeWithClassName) {
+            $classReflection = $this->matchPropertyTypeClassReflection($issetExpr);
+            if (! $classReflection instanceof ClassReflection) {
                 continue;
             }
-
-            if ($propertyFetchVarType->getClassName() === 'stdClass') {
-                continue;
-            }
-
-            if (! $this->reflectionProvider->hasClass($propertyFetchVarType->getClassName())) {
-                continue;
-            }
-
-            $classReflection = $this->reflectionProvider->getClass($propertyFetchVarType->getClassName());
 
             if (! $classReflection->hasProperty($propertyFetchName) || $classReflection->isBuiltin()) {
                 $newNodes[] = $this->replaceToPropertyExistsWithNullCheck(
@@ -137,12 +124,10 @@ CODE_SAMPLE
                     $propertyFetchName,
                     $issetExpr
                 );
+            } elseif ($isNegated) {
+                $newNodes[] = $this->createIdenticalToNull($issetExpr);
             } else {
-                if ($isNegated) {
-                    $newNodes[] = $this->createIdenticalToNull($issetExpr);
-                } else {
-                    $newNodes[] = $this->createNotIdenticalToNull($issetExpr);
-                }
+                $newNodes[] = $this->createNotIdenticalToNull($issetExpr);
             }
         }
 
@@ -165,18 +150,51 @@ CODE_SAMPLE
         return new NotIdentical($propertyFetch, $this->nodeFactory->createNull());
     }
 
-    private function hasPropertyTypeDeclaration(PropertyFetch $propertyFetch): bool
+    private function shouldSkipForPropertyTypeDeclaration(PropertyFetch $propertyFetch): bool
     {
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($propertyFetch);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
             return false;
         }
 
-        return ! $phpPropertyReflection->getNativeType() instanceof MixedType;
+        $propertyType = $phpPropertyReflection->getNativeType();
+        if ($propertyType instanceof MixedType) {
+            return false;
+        }
+
+        if (! TypeCombinator::containsNull($propertyType)) {
+            return true;
+        }
+
+        $nativeReflectionProperty = $phpPropertyReflection->getNativeReflection();
+        if (! $nativeReflectionProperty->hasDefaultValue()) {
+            return true;
+        }
+
+        $defaultValueExpr = $nativeReflectionProperty->getDefaultValueExpression();
+        return ! $this->valueResolver->isNull($defaultValueExpr);
     }
 
     private function createIdenticalToNull(PropertyFetch $propertyFetch): Identical
     {
         return new Identical($propertyFetch, $this->nodeFactory->createNull());
+    }
+
+    private function matchPropertyTypeClassReflection(PropertyFetch $propertyFetch): ?ClassReflection
+    {
+        $propertyFetchVarType = $this->getType($propertyFetch->var);
+        if (! $propertyFetchVarType instanceof TypeWithClassName) {
+            return null;
+        }
+
+        if ($propertyFetchVarType->getClassName() === 'stdClass') {
+            return null;
+        }
+
+        if (! $this->reflectionProvider->hasClass($propertyFetchVarType->getClassName())) {
+            return null;
+        }
+
+        return $this->reflectionProvider->getClass($propertyFetchVarType->getClassName());
     }
 }
