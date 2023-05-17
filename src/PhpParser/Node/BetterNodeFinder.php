@@ -594,7 +594,7 @@ final class BetterNodeFinder
         }
 
         $currentStmt = current($newStmts);
-        if (! $currentStmt instanceof Declare_) {
+        if ($currentStmt === false) {
             return null;
         }
 
