@@ -614,6 +614,11 @@ final class BetterNodeFinder
 
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            if ($currentStmtKey === null) {
+                return null;
+            }
+
+            /** @var StmtsAwareInterface $parentNode */
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
