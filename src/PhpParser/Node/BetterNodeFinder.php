@@ -667,7 +667,6 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
@@ -704,7 +703,6 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface $parentNode */
             return $parentNode->stmts[$currentStmtKey + 1] ?? null;
         }
 
@@ -728,7 +726,6 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface $parentNode */
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
