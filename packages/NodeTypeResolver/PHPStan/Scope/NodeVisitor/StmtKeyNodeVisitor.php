@@ -18,8 +18,9 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
-    public function __construct(private readonly CurrentFileProvider $currentFileProvider)
-    {
+    public function __construct(
+        private readonly CurrentFileProvider $currentFileProvider
+    ) {
     }
 
     /**
