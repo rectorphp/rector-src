@@ -9,7 +9,6 @@ use Psr\Container\ContainerInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\FileHasher;
-use Throwable;
 
 abstract class AbstractTestCase extends TestCase
 {
@@ -60,15 +59,7 @@ abstract class AbstractTestCase extends TestCase
             );
         }
 
-        try {
-            $object = self::$currentContainer->get($type);
-        } catch (Throwable $throwable) {
-            // clear compiled container cache, to trigger re-discovery
-            RectorKernel::clearCache();
-
-            throw $throwable;
-        }
-
+        $object = self::$currentContainer->get($type);
         if ($object === null) {
             $message = sprintf('Service "%s" was not found', $type);
             throw new ShouldNotHappenException($message);
