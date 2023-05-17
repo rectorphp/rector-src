@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -363,7 +364,7 @@ final class NodeFactory
     }
 
     /**
-     * @param array<NotIdentical|BooleanAnd> $newNodes
+     * @param array<NotIdentical|BooleanAnd|Identical> $newNodes
      */
     public function createReturnBooleanAnd(array $newNodes): ?Expr
     {
