@@ -599,7 +599,7 @@ final class BetterNodeFinder
 
         foreach ($newStmts as $key => $newStmt) {
             $stmtKey = $newStmt->getAttribute(AttributeKey::STMT_KEY);
-            if ($stmtKey >= $currentStmtKey) {
+            if ($stmtKey === $currentStmtKey) {
                 $previousStmt = $newStmts[$key - 1] ?? null;
                 break;
             }
