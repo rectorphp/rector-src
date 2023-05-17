@@ -617,8 +617,7 @@ final class BetterNodeFinder
         if ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             if ($currentStmtKey === null) {
-                //dump_node($node);
-               // return null;
+                return null;
             }
 
             /** @var StmtsAwareInterface $parentNode */
