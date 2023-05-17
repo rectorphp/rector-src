@@ -632,16 +632,12 @@ final class BetterNodeFinder
         );
 
         if ($nodes === []) {
-            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            if ($currentStmtKey === null) {
-                return null;
-            }
-
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
             if (! $parentNode instanceof StmtsAwareInterface) {
                 return null;
             }
 
+            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
             /** @var StmtsAwareInterface $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
@@ -661,15 +657,11 @@ final class BetterNodeFinder
         if (! $parentNode instanceof Node) {
             $previousNode = $this->resolvePreviousNodeFromFile($newStmts, $node);
         } elseif ($node instanceof Stmt) {
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            if ($currentStmtKey === null) {
-                return null;
-            }
-
             if (! $parentNode instanceof StmtsAwareInterface) {
                 return null;
             }
 
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             /** @var StmtsAwareInterface $parentNode */
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
