@@ -8,6 +8,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 /**
@@ -30,7 +31,7 @@ final class CachedContainerBuilder
      */
     public function build(array $configFiles, string $hash, callable $containerBuilderCallback): ContainerInterface
     {
-        $smartFileSystem = new SmartFileSystem();
+        $smartFileSystem = new Filesystem();
         $className = 'RectorKernel' . $hash;
         $file = $this->cacheDir . 'kernel-' . $this->cacheKey . '-' . $hash . '.php';
 
@@ -72,7 +73,7 @@ final class CachedContainerBuilder
             return;
         }
 
-        $smartFileSystem = new SmartFileSystem();
-        $smartFileSystem->remove($cacheFiles);
+        $filesystem = new Filesystem();
+        $filesystem->remove($cacheFiles);
     }
 }

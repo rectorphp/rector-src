@@ -6,6 +6,7 @@ namespace Rector\Core\Tests\Util;
 
 use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\AbstractTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symplify\SmartFileSystem\SmartFileSystem;
 
 final class FileHasherTest extends AbstractTestCase
@@ -19,7 +20,7 @@ final class FileHasherTest extends AbstractTestCase
         $this->boot();
 
         $this->fileHasher = $this->getService(FileHasher::class);
-        $this->smartFileSystem = new SmartFileSystem();
+        $this->smartFileSystem = new Filesystem();
     }
 
     public function testHash(): void
