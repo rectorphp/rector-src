@@ -38,6 +38,7 @@
         "symfony/string": "^6.2.2",
         "symplify/easy-parallel": "^11.1",
         "symplify/rule-doc-generator-contracts": "^11.1",
+        "symplify/smart-file-system": "^11.2",
         "tracy/tracy": "^2.9",
         "webmozart/assert": "^1.11"
     },
