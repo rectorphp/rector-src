@@ -26,6 +26,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     /**
      * @param Node[] $nodes
      * @return Node[]
+     *
+     * It used on namespace renaming
      */
     public function beforeTraverse(array $nodes): array
     {
@@ -52,6 +54,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+
+        // parent node of Stmt must be StmtsAwareInterface, except on top level namespace or file without namespace
         if (! $parentNode instanceof StmtsAwareInterface) {
             // on __construct(), $file not yet a File object
             $file = $this->currentFileProvider->getFile();
