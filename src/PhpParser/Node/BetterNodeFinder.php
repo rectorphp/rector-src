@@ -615,10 +615,12 @@ final class BetterNodeFinder
     {
         $currentStmt = $this->resolveCurrentStatement($node);
 
+        // just added
         if (! $currentStmt instanceof Stmt) {
             return null;
         }
 
+        // just added
         $startTokenPos = $node->getStartTokenPos();
         if ($startTokenPos < 0) {
             return null;
@@ -644,8 +646,7 @@ final class BetterNodeFinder
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
-        $nodes = array_reverse($nodes);
-        return current($nodes);
+        return end($nodes);
     }
 
     /**
