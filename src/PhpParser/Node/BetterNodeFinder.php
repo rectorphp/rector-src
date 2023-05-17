@@ -624,9 +624,11 @@ final class BetterNodeFinder
             if ($stmtKey !== $currentStmtKey) {
                 continue;
             }
+
             if ($key !== $currentStmtKey) {
                 continue;
             }
+
             return $isPrevious
                 ? ($newStmts[$key - 1] ?? null)
                 : ($newStmts[$key + 1] ?? null);
