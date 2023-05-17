@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
