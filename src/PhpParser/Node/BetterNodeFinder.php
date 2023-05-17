@@ -604,7 +604,7 @@ final class BetterNodeFinder
         return $this->findFirst($currentStmt, $filter);
     }
 
-    private function resolvePreviousNodeFromExpr(Expr $expr): null|Stmt|Expr
+    private function resolvePreviousNodeFromExpr(Expr $expr): null|Stmt|Node
     {
         $currentStmt = $this->resolveCurrentStatement($expr);
 
