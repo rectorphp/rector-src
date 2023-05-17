@@ -589,7 +589,7 @@ final class BetterNodeFinder
      * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstFromFileNewStmts(array $newStmts, Node $node, callable $filter): ?Node
+    private function resolvePreviousNodeFromFile(array $newStmts, Node $node, callable $filter): ?Node
     {
         if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
             return null;
@@ -600,7 +600,14 @@ final class BetterNodeFinder
             return null;
         }
 
-        return $this->findFirst($currentStmt, $filter);
+        $newStmts = array_reverse($newStmts);
+        foreach ($newStmts as $key => $newStmt) {
+            if ($newStmt === $node && isset($newStmts[$key+1])) {
+                return $newStmts[$key+1];
+            }
+        }
+
+        return null;
     }
 
     private function resolvePreviousNodeFromExpr(Node $node): ?Node
@@ -650,10 +657,8 @@ final class BetterNodeFinder
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
         if (! $parentNode instanceof Node) {
-            return $this->findFirstFromFileNewStmts($newStmts, $node, $filter);
-        }
-
-        if ($node instanceof Stmt) {
+            $previousNode = $this->resolvePreviousNodeFromFile($newStmts, $node, $filter);
+        } elseif ($node instanceof Stmt) {
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             if ($currentStmtKey === null) {
                 return null;
