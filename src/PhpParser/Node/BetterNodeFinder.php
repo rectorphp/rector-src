@@ -342,8 +342,8 @@ final class BetterNodeFinder
     private function resolveNextNode(Node $node, ?Node $parentNode): ?Node
     {
         if (! $parentNode instanceof Node) {
-            $newStmts = $this->resolveNewStmts($parentNode);
-            return $this->resolveNodeFromFile($newStmts, $node, false);
+            // todo: update to use key +1
+            return $node->getAttribute(AttributeKey::NEXT_NODE);
         }
 
         if ($node instanceof Stmt) {
@@ -351,8 +351,8 @@ final class BetterNodeFinder
                 return null;
             }
 
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            return $parentNode->stmts[$currentStmtKey + 1] ?? null;
+            // todo: update to use key +1
+            return $node->getAttribute(AttributeKey::NEXT_NODE);
         }
 
         return $this->resolveNextNodeFromOtherNode($node);
