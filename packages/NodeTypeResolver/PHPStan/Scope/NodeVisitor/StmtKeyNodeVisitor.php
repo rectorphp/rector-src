@@ -42,6 +42,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof StmtsAwareInterface) {
+            // handle on beforeTraverse()
             return null;
         }
 
