@@ -587,7 +587,7 @@ final class BetterNodeFinder
      * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInDeclare(array $newStmts, Node $node, callable $filter): ?Node
+    private function findFirstFromFileNewStmts(array $newStmts, Node $node, callable $filter): ?Node
     {
         if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
             return null;
@@ -611,7 +611,7 @@ final class BetterNodeFinder
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
         if (! $parentNode instanceof Node) {
-            return $this->findFirstInDeclare($newStmts, $node, $filter);
+            return $this->findFirstFromFileNewStmts($newStmts, $node, $filter);
         }
 
         if ($node instanceof Stmt) {
