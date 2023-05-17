@@ -608,7 +608,10 @@ final class BetterNodeFinder
         return $previousStmt;
     }
 
-    private function resolvePreviousNodeFromExpr(Node $node): ?Node
+    /**
+     * Resolve node from not an Stmt, eg: Expr, Identifier, Name, etc
+     */
+    private function resolvePreviousNodeFromOtherNode(Node $node): ?Node
     {
         $currentStmt = $this->resolveCurrentStatement($node);
 
@@ -673,7 +676,7 @@ final class BetterNodeFinder
 
             $previousNode = $parentNode->stmts[$currentStmtKey - 1];
         } else {
-            $previousNode = $this->resolvePreviousNodeFromExpr($node);
+            $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
         }
 
         if (! $previousNode instanceof Node) {
