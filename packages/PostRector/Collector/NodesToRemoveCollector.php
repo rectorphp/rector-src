@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\ChangesReporting\Collector\AffectedFilesCollector;
-use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -36,8 +35,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
         private readonly BreakingRemovalGuard $breakingRemovalGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly ChangedNodeScopeRefresher $changedNodeScopeRefresher
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -93,13 +91,7 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
 
     public function unset(int $key): void
     {
-        $parentNode = $this->nodesToRemove[$key]->getAttribute(AttributeKey::PARENT_NODE);
-
         unset($this->nodesToRemove[$key]);
-
-        if ($parentNode instanceof Node) {
-            $this->changedNodeScopeRefresher->reIndexNodeAttributes($parentNode);
-        }
     }
 
     private function isUsedInArg(Node $node, Node $parentNode): bool
