@@ -608,7 +608,7 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
-        if (! $parentNode instanceof StmtsAwareInterface) {
+        if (! $parentNode instanceof Node) {
             return $this->findFirstInDeclare($newStmts, $node, $filter);
         }
 
