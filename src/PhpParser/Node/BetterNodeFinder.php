@@ -714,7 +714,6 @@ final class BetterNodeFinder
 
     /**
      * Only search in previous Node/Stmt
-     * @api
      *
      * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
