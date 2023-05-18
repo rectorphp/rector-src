@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -23,7 +21,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function beforeTraverse(array $nodes): array
     {
-        if (count($nodes) == 1) {
+        if (count($nodes) === 1) {
             $currentNode = current($nodes);
             if (! $currentNode instanceof Namespace_ && ! $currentNode instanceof FileWithoutNamespace) {
                 return $nodes;
