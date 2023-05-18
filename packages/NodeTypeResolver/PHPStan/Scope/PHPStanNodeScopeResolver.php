@@ -44,6 +44,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -325,12 +326,22 @@ final class PHPStanNodeScopeResolver
 
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
 
-        $nextNode = $originalStmt->getAttribute(AttributeKey::NEXT_NODE);
-        while ($nextNode instanceof Stmt) {
-            $nextNode->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
 
-            $this->processNodes([$nextNode], $filePath, $mutatingScope);
-            $nextNode = $nextNode->getAttribute(AttributeKey::NEXT_NODE);
+        if (! $parentNode instanceof StmtsAwareInterface) {
+            return;
+        }
+
+        $stmtKey = $unreachableStatementNode->getAttribute(AttributeKey::STMT_KEY);
+        $totalKeys = $parentNode->stmts === null ? 0 : count($parentNode->stmts);
+
+        for ($key = $stmtKey + 1; $key < $totalKeys; ++$key) {
+            if (! isset($parentNode->stmts[$key])) {
+                continue;
+            }
+
+            $parentNode->stmts[$key]->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+            $this->processNodes([$parentNode->stmts[$key]], $filePath, $mutatingScope);
         }
     }
 
