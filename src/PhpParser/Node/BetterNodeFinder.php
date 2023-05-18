@@ -551,11 +551,6 @@ final class BetterNodeFinder
                 return null;
             }
 
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            if (isset($parentNode->stmts[$currentStmtKey + 1])) {
-                return $parentNode->stmts[$currentStmtKey + 1];
-            }
-
             $endTokenPos = $node->getEndTokenPos();
             foreach ($parentNode->stmts as $stmt) {
                 if ($stmt->getStartTokenPos() > $endTokenPos) {
