@@ -351,8 +351,23 @@ final class BetterNodeFinder
                 return null;
             }
 
-            // todo: update to use key +1
-            return $node->getAttribute(AttributeKey::NEXT_NODE);
+            if ($parentNode->stmts === null) {
+                return null;
+            }
+
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            if (isset($parentNode->stmts[$currentStmtKey + 1])) {
+                return $parentNode->stmts[$currentStmtKey + 1];
+            }
+
+            $endTokenPos = $node->getEndTokenPos();
+            foreach ($parentNode->stmts as $stmt) {
+                if ($stmt->getStartTokenPos() > $endTokenPos) {
+                    return $stmt;
+                }
+            }
+
+            return null;
         }
 
         return $this->resolveNextNodeFromOtherNode($node);
