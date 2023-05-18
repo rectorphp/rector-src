@@ -339,40 +339,6 @@ final class BetterNodeFinder
         );
     }
 
-    private function resolveNextNode(Node $node, ?Node $parentNode): ?Node
-    {
-        if (! $parentNode instanceof Node) {
-            $newStmts = $this->resolveNewStmts($parentNode);
-            return $this->resolveNodeFromFile($newStmts, $node, false);
-        }
-
-        if ($node instanceof Stmt) {
-            if (! $parentNode instanceof StmtsAwareInterface) {
-                return null;
-            }
-
-            if ($parentNode->stmts === null) {
-                return null;
-            }
-
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            if (isset($parentNode->stmts[$currentStmtKey + 1])) {
-                return $parentNode->stmts[$currentStmtKey + 1];
-            }
-
-            $endTokenPos = $node->getEndTokenPos();
-            foreach ($parentNode->stmts as $stmt) {
-                if ($stmt->getStartTokenPos() > $endTokenPos) {
-                    return $stmt;
-                }
-            }
-
-            return null;
-        }
-
-        return $this->resolveNextNodeFromOtherNode($node);
-    }
-
     /**
      * @param callable(Node $node): bool $filter
      */
@@ -567,6 +533,40 @@ final class BetterNodeFinder
         }
 
         return null;
+    }
+
+    private function resolveNextNode(Node $node, ?Node $parentNode): ?Node
+    {
+        if (! $parentNode instanceof Node) {
+            $newStmts = $this->resolveNewStmts($parentNode);
+            return $this->resolveNodeFromFile($newStmts, $node, false);
+        }
+
+        if ($node instanceof Stmt) {
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
+            if ($parentNode->stmts === null) {
+                return null;
+            }
+
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            if (isset($parentNode->stmts[$currentStmtKey + 1])) {
+                return $parentNode->stmts[$currentStmtKey + 1];
+            }
+
+            $endTokenPos = $node->getEndTokenPos();
+            foreach ($parentNode->stmts as $stmt) {
+                if ($stmt->getStartTokenPos() > $endTokenPos) {
+                    return $stmt;
+                }
+            }
+
+            return null;
+        }
+
+        return $this->resolveNextNodeFromOtherNode($node);
     }
 
     /**
