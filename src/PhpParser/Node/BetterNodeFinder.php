@@ -307,14 +307,7 @@ final class BetterNodeFinder
     public function findFirstPrevious(Node $node, callable $filter): ?Node
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        $newStmts = [];
-        if (! $parentNode instanceof Node) {
-            // on __construct(), $file not yet a File object
-            $file = $this->currentFileProvider->getFile();
-            $newStmts = $file instanceof File ? $file->getNewStmts() : [];
-        }
-
+        $newStmts = $this->resolveNewStmts($parentNode);
         $foundNode = $this->findFirstInlinedPrevious($node, $filter, $newStmts, $parentNode);
 
         // we found what we need
@@ -351,13 +344,12 @@ final class BetterNodeFinder
      */
     public function findFirstNext(Node $node, callable $filter): ?Node
     {
-        $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $nextNode = $this->resolveNextNode($node, $parentNode);
+
         if ($nextNode instanceof Node) {
-            if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
-                $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-                if (! $parentNode instanceof Case_) {
-                    return null;
-                }
+            if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr && ! $parentNode instanceof Case_) {
+                return null;
             }
 
             $found = $this->findFirst($nextNode, $filter);
@@ -368,7 +360,6 @@ final class BetterNodeFinder
             return $this->findFirstNext($nextNode, $filter);
         }
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof Return_ || $parentNode instanceof FunctionLike) {
             return null;
         }
@@ -544,6 +535,44 @@ final class BetterNodeFinder
         return null;
     }
 
+    private function resolveNextNode(Node $node, ?Node $parentNode): ?Node
+    {
+        if (! $parentNode instanceof Node) {
+            $newStmts = $this->resolveNewStmts($parentNode);
+            return $this->resolveNodeFromFile($newStmts, $node, false);
+        }
+
+        if ($node instanceof Stmt) {
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
+            if ($parentNode->stmts === null) {
+                return null;
+            }
+
+            // todo: use +1 key once all next node attribute reference and NodeConnectingVisitor removed
+            // left with add SlimNodeConnectingVisitor for only lookup parent
+            return $node->getAttribute(AttributeKey::NEXT_NODE);
+        }
+
+        return $this->resolveNextNodeFromOtherNode($node);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function resolveNewStmts(?Node $parentNode): array
+    {
+        if (! $parentNode instanceof Node) {
+            // on __construct(), $file not yet a File object
+            $file = $this->currentFileProvider->getFile();
+            return $file instanceof File ? $file->getNewStmts() : [];
+        }
+
+        return [];
+    }
+
     /**
      * @param callable(Node $node): bool $filter
      */
@@ -588,7 +617,7 @@ final class BetterNodeFinder
     /**
      * @param Stmt[] $newStmts
      */
-    private function resolvePreviousNodeFromFile(array $newStmts, Node $node): ?Node
+    private function resolveNodeFromFile(array $newStmts, Node $node, bool $isPrevious = true): ?Node
     {
         if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
             return null;
@@ -605,14 +634,16 @@ final class BetterNodeFinder
                 continue;
             }
 
-            return $newStmts[$key - 1] ?? null;
+            return $isPrevious
+                ? ($newStmts[$key - 1] ?? null)
+                : ($newStmts[$key + 1] ?? null);
         }
 
         return null;
     }
 
     /**
-     * Resolve node from not an Stmt, eg: Expr, Identifier, Name, etc
+     * Resolve previous node from not an Stmt, eg: Expr, Identifier, Name, etc
      */
     private function resolvePreviousNodeFromOtherNode(Node $node): ?Node
     {
@@ -641,7 +672,6 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
@@ -649,8 +679,43 @@ final class BetterNodeFinder
     }
 
     /**
+     * Resolve next node from not an Stmt, eg: Expr, Identifier, Name, etc
+     */
+    private function resolveNextNodeFromOtherNode(Node $node): ?Node
+    {
+        $currentStmt = $this->resolveCurrentStatement($node);
+
+        // just added
+        if (! $currentStmt instanceof Stmt) {
+            return null;
+        }
+
+        // just added
+        $endTokenPos = $node->getEndTokenPos();
+        if ($endTokenPos < 0) {
+            return null;
+        }
+
+        $nextNode = $this->findFirst(
+            $currentStmt,
+            static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
+        );
+
+        if (! $nextNode instanceof Node) {
+            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
+            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            return $parentNode->stmts[$currentStmtKey + 1] ?? null;
+        }
+
+        return $nextNode;
+    }
+
+    /**
      * Only search in previous Node/Stmt
-     * @api
      *
      * @param Stmt[] $newStmts
      * @param callable(Node $node): bool $filter
@@ -658,14 +723,13 @@ final class BetterNodeFinder
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
         if (! $parentNode instanceof Node) {
-            $previousNode = $this->resolvePreviousNodeFromFile($newStmts, $node);
+            $previousNode = $this->resolveNodeFromFile($newStmts, $node);
         } elseif ($node instanceof Stmt) {
             if (! $parentNode instanceof StmtsAwareInterface) {
                 return null;
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface $parentNode */
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
