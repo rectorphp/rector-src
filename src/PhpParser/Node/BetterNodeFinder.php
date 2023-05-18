@@ -551,14 +551,7 @@ final class BetterNodeFinder
                 return null;
             }
 
-            $endTokenPos = $node->getEndTokenPos();
-            foreach ($parentNode->stmts as $stmt) {
-                if ($stmt->getStartTokenPos() > $endTokenPos) {
-                    return $stmt;
-                }
-            }
-
-            return null;
+            return $node->getAttribute(AttributeKey::NEXT_NODE);
         }
 
         return $this->resolveNextNodeFromOtherNode($node);
