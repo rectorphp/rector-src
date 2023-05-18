@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -551,11 +552,6 @@ final class BetterNodeFinder
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             $nextNode = $parentNode->stmts[$currentStmtKey + 1] ?? null;
-
-            // node just removed
-            if ($nextNode instanceof Node && $nextNode->getAttribute(AttributeKey::STMT_KEY) === $currentStmtKey) {
-                $nextNode = $node;
-            }
         } else {
             $nextNode = $this->resolveNextNodeFromOtherNode($node);
         }
