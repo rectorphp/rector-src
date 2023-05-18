@@ -551,6 +551,8 @@ final class BetterNodeFinder
                 return null;
             }
 
+            // todo: use +1 key once all next node attribute reference and NodeConnectingVisitor removed
+            // left with add SlimNodeConnectingVisitor for only lookup parent
             return $node->getAttribute(AttributeKey::NEXT_NODE);
         }
 
