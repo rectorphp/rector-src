@@ -549,9 +549,13 @@ final class BetterNodeFinder
                 return null;
             }
 
-            // todo: use +1 key once all next node attribute reference and NodeConnectingVisitor removed
-            // left with add SlimNodeConnectingVisitor for only lookup parent
-            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            $nextNode = $parentNode->stmts[$currentStmtKey + 1] ?? null;
+
+            // node just removed
+            if ($nextNode instanceof Node && $nextNode->getAttribute(AttributeKey::STMT_KEY) === $currentStmtKey) {
+                $nextNode = $node;
+            }
         } else {
             $nextNode = $this->resolveNextNodeFromOtherNode($node);
         }
