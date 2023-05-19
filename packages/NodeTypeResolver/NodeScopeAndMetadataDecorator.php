@@ -27,9 +27,7 @@ final class NodeScopeAndMetadataDecorator
         // needed also for format preserving printing
         $this->nodeTraverser->addVisitor($cloningVisitor);
 
-        // this one has to be run again to re-connect nodes with new attributes
-
-        // parent attribute is needed to resolve Scope
+        // this one has to be run again to re-connect parent nodes with new attributes
         $this->nodeTraverser->addVisitor($parentConnectingVisitor);
 
         $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
