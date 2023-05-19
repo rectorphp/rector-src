@@ -534,8 +534,12 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $node, int $key, bool $isPrevious = true): ?Node
+    private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $node, ?int $key, bool $isPrevious = true): ?Node
     {
+        if ($key === null) {
+            return null;
+        }
+
         if ($isPrevious) {
             if (isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1]->getStartTokenPos() === $node->getStartTokenPos()) {
                 return $node;
