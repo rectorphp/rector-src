@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
+use PhpParser\Node\Expr\BinaryOp\Equal;
+use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -178,23 +184,26 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($expr instanceof Expr\BinaryOp\BooleanOr) {
+        if ($expr instanceof BooleanOr) {
             return true;
         }
 
-        if ($expr instanceof Expr\BinaryOp\BooleanAnd) {
-            return true;
-        }
-        if ($expr instanceof Expr\BinaryOp\Identical) {
-            return true;
-        }
-        if ($expr instanceof Expr\BinaryOp\NotIdentical) {
+        if ($expr instanceof BooleanAnd) {
             return true;
         }
 
-        if ($expr instanceof Expr\BinaryOp\Equal) {
+        if ($expr instanceof Identical) {
             return true;
         }
-        return $expr instanceof Expr\BinaryOp\NotEqual;
+
+        if ($expr instanceof NotIdentical) {
+            return true;
+        }
+
+        if ($expr instanceof Equal) {
+            return true;
+        }
+
+        return $expr instanceof NotEqual;
     }
 }
