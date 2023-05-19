@@ -17,7 +17,7 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'v14';
+    private const CACHE_KEY = 'v15';
 
     private ContainerInterface|null $container = null;
 
