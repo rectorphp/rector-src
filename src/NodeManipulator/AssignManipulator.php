@@ -21,6 +21,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\FunctionLike;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -44,7 +45,8 @@ final class AssignManipulator
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly MultiInstanceofChecker $multiInstanceofChecker
+        private readonly MultiInstanceofChecker $multiInstanceofChecker,
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -72,8 +74,16 @@ final class AssignManipulator
             $parentNode,
             self::MODIFYING_NODE_TYPES
         )) {
-            /** @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode */
-            return $parentNode->var === $node;
+            /**
+             * @var Assign|AssignOp|PreDec|PostDec|PreInc|PostInc $parentNode
+             *
+             * Compare start token pos to ensure php_doc_info info not be checked
+             */
+            if ($parentNode->var->getStartTokenPos() !== $node->getStartTokenPos()) {
+                return false;
+            }
+
+            return $this->nodeComparator->areNodesEqual($parentNode->var, $node);
         }
 
         if ($this->isOnArrayDestructuring($parentNode)) {
