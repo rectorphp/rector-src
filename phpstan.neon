@@ -763,3 +763,6 @@ parameters:
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
         - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key \- 1\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
         - '#Anonymous variable in a `\$parentNode\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+        - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\BoolReturnTypeFromStrictScalarReturnsRector\:\:hasOnlyBoolScalarReturnExprs\(\)" is 11, keep it under 10#'
