@@ -548,7 +548,7 @@ final class BetterNodeFinder
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
-        return $stmtsAware->stmts[$key];
+        return $stmtsAware->stmts[$key] ?? null;
     }
 
     /**
