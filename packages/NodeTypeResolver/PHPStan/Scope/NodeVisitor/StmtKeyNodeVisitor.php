@@ -34,9 +34,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         foreach ($nodes as $key => $node) {
-            if ($node instanceof Stmt) {
-                $node->setAttribute(AttributeKey::STMT_KEY, $key);
-            }
+            $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
 
         return $nodes;
