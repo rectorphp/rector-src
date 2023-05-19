@@ -551,23 +551,6 @@ final class BetterNodeFinder
         return $stmt;
     }
 
-    private function resolveNeighborPreviousStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key): ?Node
-    {
-        if ($key === null) {
-            $key = 0;
-        }
-
-        if (! isset($stmtsAware->stmts[$key + 1])) {
-            return $stmtsAware->stmts[$key - 1] ?? null;
-        }
-
-        if ($stmtsAware->stmts[$key + 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
-            return $stmtsAware->stmts[$key - 1] ?? null;
-        }
-
-        return $stmt;
-    }
-
     /**
      * Only search in next Node/Stmt
      *
@@ -757,13 +740,17 @@ final class BetterNodeFinder
     {
         if (! $parentNode instanceof Node) {
             $previousNode = $this->resolveNodeFromFile($newStmts, $node);
-        } elseif ($node instanceof Stmt && $parentNode instanceof StmtsAwareInterface) {
+        } elseif ($node instanceof Stmt) {
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
 
-            $previousNode = $this->resolveNeighborPreviousStmt($parentNode, $node, $currentStmtKey);
+            $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
         } else {
             $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
         }
@@ -777,10 +764,6 @@ final class BetterNodeFinder
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
-        }
-
-        if ($previousNode->getStartTokenPos() === $node->getStartTokenPos()) {
-            return null;
         }
 
         return $this->findFirstInlinedPrevious($previousNode, $filter, $newStmts, $parentNode);
