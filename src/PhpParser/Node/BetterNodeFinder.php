@@ -534,6 +534,23 @@ final class BetterNodeFinder
         return null;
     }
 
+    private function resolveNeighborNextStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key): ?Node
+    {
+        if ($key === null) {
+            $key = 0;
+        }
+
+        if (!isset($stmtsAware->stmts[$key - 1])) {
+            return $stmtsAware->stmts[$key + 1] ?? null;
+        }
+
+        if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
+            return $stmtsAware->stmts[$key + 1] ?? null;
+        }
+
+        return $stmt;
+    }
+
     /**
      * Only search in next Node/Stmt
      *
@@ -549,9 +566,8 @@ final class BetterNodeFinder
                 return null;
             }
 
-            // todo: use +1 key once all next node attribute reference and NodeConnectingVisitor removed
-            // left with add SlimNodeConnectingVisitor for only lookup parent
-            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            $nextNode = $this->resolveNeighborNextStmt($parentNode, $node, $currentStmtKey);
         } else {
             $nextNode = $this->resolveNextNodeFromOtherNode($node);
         }
@@ -734,7 +750,7 @@ final class BetterNodeFinder
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
 
-            $previousNode = $parentNode->stmts[$currentStmtKey - 1];
+            $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
         } else {
             $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
         }
