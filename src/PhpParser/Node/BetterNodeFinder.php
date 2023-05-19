@@ -584,6 +584,10 @@ final class BetterNodeFinder
         if ($found instanceof Node) {
             return $found;
         }
+        
+        if ($nextNode->getStartTokenPos() === $node->getStartTokenPos()) {
+            return null; 
+        }
 
         return $this->findFirstInlinedNext($nextNode, $filter, $newStmts, $parentNode);
     }
