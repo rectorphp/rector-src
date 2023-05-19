@@ -89,6 +89,7 @@ parameters:
         -
             message: '#Array (with keys|destruct) is not allowed\. Use value object to pass data instead#'
             path: rules/Php70/EregToPcreTransformer.php
+
         -
             message: '#Use explicit return value over magic &reference#'
             path: rules/Php70/EregToPcreTransformer.php
@@ -101,10 +102,6 @@ parameters:
                 - packages/NodeNestingScope/NodeFinder/ScopeAwareNodeFinder.php
 
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
-
-        - '#Access to an undefined property PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable\:\:\$name#'
-
-        - '#PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable given#'
 
         -
             message: '#There should be no empty class#'
@@ -759,3 +756,10 @@ parameters:
         -
             message: '#Strict comparison using \!\=\= between .* and .* will always evaluate to false#'
             path: src/Kernel/RectorKernel.php
+
+        # expression generics
+        - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#PHPDoc tag @var for variable \$previousStmt contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+        - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key \- 1\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+        - '#Anonymous variable in a `\$parentNode\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
