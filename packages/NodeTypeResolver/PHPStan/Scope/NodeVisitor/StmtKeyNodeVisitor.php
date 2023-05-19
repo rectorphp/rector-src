@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -16,8 +15,8 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
     /**
-     * @param Stmt[] $nodes
-     * @return Stmt[]
+     * @param Node[] $nodes
+     * @return Node[]
      */
     public function beforeTraverse(array $nodes): array
     {
@@ -41,8 +40,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     }
 
     /**
-     * @param Stmt[] $nodes
-     * @return Stmt[]
+     * @param Node[] $nodes
+     * @return Node[]
      */
     public function afterTraverse(array $nodes): array
     {
