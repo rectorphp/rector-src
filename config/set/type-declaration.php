@@ -13,6 +13,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
@@ -72,5 +73,6 @@ return static function (RectorConfig $rectorConfig): void {
         EmptyOnNullableObjectToInstanceOfRector::class,
         PropertyTypeFromStrictSetterGetterRector::class,
         ReturnTypeFromStrictTernaryRector::class,
+        BoolReturnTypeFromStrictScalarReturnsRector::class,
     ]);
 };

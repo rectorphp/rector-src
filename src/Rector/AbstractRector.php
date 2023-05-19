@@ -184,10 +184,7 @@ CODE_SAMPLE;
         return parent::beforeTraverse($nodes);
     }
 
-    /**
-     * @return Node|null
-     */
-    final public function enterNode(Node $node)
+    final public function enterNode(Node $node): ?Node
     {
         $nodeClass = $node::class;
         if (! $this->isMatchingNodeType($nodeClass)) {
