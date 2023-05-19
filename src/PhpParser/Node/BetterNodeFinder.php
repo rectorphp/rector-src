@@ -540,12 +540,29 @@ final class BetterNodeFinder
             $key = 0;
         }
 
-        if (!isset($stmtsAware->stmts[$key - 1])) {
+        if (! isset($stmtsAware->stmts[$key - 1])) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
         if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
             return $stmtsAware->stmts[$key + 1] ?? null;
+        }
+
+        return $stmt;
+    }
+
+    private function resolveNeighborPreviousStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key): ?Node
+    {
+        if ($key === null) {
+            $key = 0;
+        }
+
+        if (! isset($stmtsAware->stmts[$key + 1])) {
+            return $stmtsAware->stmts[$key - 1] ?? null;
+        }
+
+        if ($stmtsAware->stmts[$key + 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
+            return $stmtsAware->stmts[$key - 1] ?? null;
         }
 
         return $stmt;
@@ -584,9 +601,9 @@ final class BetterNodeFinder
         if ($found instanceof Node) {
             return $found;
         }
-        
+
         if ($nextNode->getStartTokenPos() === $node->getStartTokenPos()) {
-            return null; 
+            return null;
         }
 
         return $this->findFirstInlinedNext($nextNode, $filter, $newStmts, $parentNode);
@@ -754,7 +771,7 @@ final class BetterNodeFinder
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
 
-            $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
+            $previousNode = $this->resolveNeighborPreviousStmt($parentNode, $node, $currentStmtKey);
         } else {
             $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
         }
@@ -768,6 +785,10 @@ final class BetterNodeFinder
         // we found what we need
         if ($foundNode instanceof Node) {
             return $foundNode;
+        }
+
+        if ($previousNode->getStartTokenPos() === $node->getStartTokenPos()) {
+            return null;
         }
 
         return $this->findFirstInlinedPrevious($previousNode, $filter, $newStmts, $parentNode);
