@@ -544,11 +544,20 @@ final class BetterNodeFinder
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
-        if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
+        $startTokenPos = $stmt->getStartTokenPos();
+        if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $startTokenPos) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
-        return $stmtsAware->stmts[$key] ?? null;
+        if (! isset($stmtsAware->stmts[$key])) {
+            return null;
+        }
+
+        if ($stmtsAware->stmts[$key]->getStartTokenPos() === $startTokenPos) {
+            return null;
+        }
+
+        return $stmtsAware->stmts[$key];
     }
 
     /**
@@ -724,7 +733,7 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            return $parentNode->stmts[$currentStmtKey + 1] ?? null;
+            return $this->resolveNeighborNextStmt($parentNode, $currentStmt, $currentStmtKey);
         }
 
         return $nextNode;
