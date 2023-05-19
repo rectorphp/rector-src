@@ -716,11 +716,7 @@ final class BetterNodeFinder
     /**
      * @api
      *
-<<<<<<< HEAD
-     * Resolve previous node from not an Stmt, eg: Expr, Identifier, Name, etc
-=======
      * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
->>>>>>> 17608b3d75 (comment)
      */
     public function resolvePreviousNode(Node $node): ?Node
     {
