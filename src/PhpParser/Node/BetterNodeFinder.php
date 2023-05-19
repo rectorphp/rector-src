@@ -540,7 +540,7 @@ final class BetterNodeFinder
             $key = 0;
         }
 
-        if (!isset($stmtsAware->stmts[$key - 1])) {
+        if (! isset($stmtsAware->stmts[$key - 1])) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
@@ -548,7 +548,7 @@ final class BetterNodeFinder
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
-        return $stmt;
+        return $stmtsAware->stmts[$key] ?? null;
     }
 
     /**
