@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Naming\PropertyRenamer;
 
+use PhpParser\Node\Expr\Error;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -85,6 +87,10 @@ final class PropertyPromotionRenamer
         string $desiredPropertyName,
         Param $param
     ): void {
+        if ($param->var instanceof Error) {
+            return;
+        }
+
         $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 
         $currentParamName = $this->nodeNameResolver->getName($param);
@@ -98,7 +104,7 @@ final class PropertyPromotionRenamer
         /** @var string $paramVarName */
         $paramVarName = $param->var->name;
         $this->renameParamDoc($classMethodPhpDocInfo, $param, $paramVarName, $desiredPropertyName);
-        $param->var->name = $desiredPropertyName;
+        $param->var = new Variable($desiredPropertyName);
 
         $this->variableRenamer->renameVariableInFunctionLike($classMethod, $paramVarName, $desiredPropertyName);
     }

@@ -89,6 +89,7 @@ parameters:
         -
             message: '#Array (with keys|destruct) is not allowed\. Use value object to pass data instead#'
             path: rules/Php70/EregToPcreTransformer.php
+
         -
             message: '#Use explicit return value over magic &reference#'
             path: rules/Php70/EregToPcreTransformer.php
@@ -101,10 +102,6 @@ parameters:
                 - packages/NodeNestingScope/NodeFinder/ScopeAwareNodeFinder.php
 
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
-
-        - '#Access to an undefined property PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable\:\:\$name#'
-
-        - '#PhpParser\\Node\\Expr\\Error\|PhpParser\\Node\\Expr\\Variable given#'
 
         -
             message: '#There should be no empty class#'
@@ -168,7 +165,6 @@ parameters:
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
 
         # resolve later
-        - '#Method "(.*?)\(\)" only calling another method call and has no added value\. Use the inlined call instead#'
         - '#Method "processRenameVariable\(\)" returns bool type, so the name should start with is/has/was#'
 
         - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
@@ -373,11 +369,6 @@ parameters:
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface>> will always evaluate to true#'
             path: packages/Config/RectorConfig.php
 
-        # hash key
-        -
-            path: rules/Renaming/NodeManipulator/ClassRenamer.php
-            message: '#Use separate function calls with readable variable names#'
-
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 10#'
 
         # depends on falsy docs
@@ -487,24 +478,6 @@ parameters:
 
         # part of tests
         - '#Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 will always evaluate to true#'
-
-        -
-            message: '#Method call return value that should be used, but is not#'
-            paths:
-                - src/Console/Output/RectorOutputStyle.php
-                - rules/Compatibility/NodeFactory/ConstructorClassMethodFactory.php
-                - src/Application/ChangedNodeScopeRefresher.php
-                - rules/TypeDeclaration/TypeNormalizer.php
-                - rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php
-                - rules/Removing/NodeManipulator/ComplexNodeRemover.php
-                - rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php
-                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
-                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-
-        -
-            message: '#Method call return value that should be used, but is not#'
-            path: src/PhpParser/Node/NodeFactory.php
-            count: 1
 
         # false postive, on trait use in multiple classes
         -
@@ -650,10 +623,6 @@ parameters:
 
         # changelog generator
         -
-            message: '#Do not use chained method calls\. Put each on separated lines#'
-            path: utils/ChangelogGenerator/GithubApiCaller.php
-
-        -
             message: '#Anonymous (variable|variables) in#'
             path: utils/ChangelogGenerator
 
@@ -698,10 +667,6 @@ parameters:
         -
             message: '#Method call return value that should be used, but is not#'
             path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
-
-        -
-            message: '#"Tests" namespace cannot be used outside of "tests" directory#'
-            path: utils-tests
 
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
@@ -766,15 +731,6 @@ parameters:
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Naming/VariableRenamer.php
 
-        -
-            message: '#Method call return value that should be used, but is not#'
-            paths:
-                - rules/Naming/ParamRenamer/ParamRenamer.php
-                - rules/Naming/PropertyRenamer/PropertyPromotionRenamer.php
-                - rules/Naming/Rector/Assign/RenameVariableToMatchMethodCallReturnTypeRector.php
-                - rules/Naming/Rector/ClassMethod/RenameVariableToMatchNewTypeRector.php
-                - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
-
         # next to resolve
         - '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:refactor\(\)" is 11, keep it under 10#'
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 10#'
@@ -786,10 +742,6 @@ parameters:
         - '#(Matching|Fetching) deprecated class constant (NEXT_NODE|PREVIOUS_NODE) of class Rector\\NodeTypeResolver\\Node\\AttributeKey#'
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
 
-        # make autoload of php-parser in rector first
-        - '#but class PhpParser\\Node\\Stmt\\Expression is not generic#'
-        - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
-
         # deprecated
         - '#Register "Rector\\Php80\\Rector\\FunctionLike\\UnionTypesRector" service to "php80\.php" config set#'
         - '#Fetching class constant class of deprecated class Rector\\CodeQuality\\Rector\\ClassMethod\\NarrowUnionTypeDocRector#'
@@ -800,12 +752,14 @@ parameters:
             message: '#Do not use static property#'
             path: src/Kernel/RectorKernel.php
 
-        # this is due to compare VersionResolver::PACKAGE_VERSION to verify on rector-src
-        -
-            message: '#Public method "Rector\\Core\\Kernel\\RectorKernel\:\:clearCache\(\)" is never used#'
-            path: src/Kernel/RectorKernel.php
-
         # '@package_version@' compare with '@package_version@' to verify on rector-src
         -
             message: '#Strict comparison using \!\=\= between .* and .* will always evaluate to false#'
             path: src/Kernel/RectorKernel.php
+
+        # expression generics
+        - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#PHPDoc tag @var for variable \$previousStmt contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
+        - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key \- 1\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+        - '#Anonymous variable in a `\$parentNode\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'

@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Core\Kernel;
 
-use Throwable;
-use UnitEnum;
 use Rector\Core\Exception\Cache\StaleContainerCacheException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Throwable;
+use UnitEnum;
 
-final class CacheInvalidatingContainer implements ContainerInterface {
+final class CacheInvalidatingContainer implements ContainerInterface
+{
     public function __construct(
         private readonly ContainerInterface $container
-    )
-    {}
+    ) {
+    }
 
     public function set(string $id, ?object $service): void
     {

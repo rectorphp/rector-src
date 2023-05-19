@@ -79,7 +79,7 @@ final class AssignManipulator
              *
              * Compare same node to ensure php_doc_info info not be checked
              */
-             return $this->nodeComparator->areSameNode($parentNode->var, $node);
+            return $this->nodeComparator->areSameNode($parentNode->var, $node);
         }
 
         if ($this->isOnArrayDestructuring($parentNode)) {
