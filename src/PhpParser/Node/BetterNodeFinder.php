@@ -537,7 +537,7 @@ final class BetterNodeFinder
     private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $node, ?int $key, bool $isPrevious = true): ?Node
     {
         if ($key === null) {
-            return null;
+            $key = 0;
         }
 
         if ($isPrevious) {
