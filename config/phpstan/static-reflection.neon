@@ -4,7 +4,7 @@ parameters:
         disableRuntimeReflectionProvider: false
 
 conditionalTags:
-    PhpParser\NodeVisitor\NodeConnectingVisitor:
+    PhpParser\NodeVisitor\ParentConnectingVisitor:
         phpstan.parser.richParserNodeVisitor: true
 
 services:

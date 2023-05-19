@@ -348,7 +348,7 @@ CODE_SAMPLE;
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateParentNodes($refactoredNode, $parentNode);
-            $this->connectNodes($refactoredNode, $node);
+            $this->nodeConnectingTraverser->traverse($refactoredNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -362,7 +362,7 @@ CODE_SAMPLE;
             : $refactoredNode;
 
         $this->updateParentNodes($refactoredNode, $parentNode);
-        $this->connectNodes([$refactoredNode], $node);
+        $this->nodeConnectingTraverser->traverse([$refactoredNode]);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -430,34 +430,6 @@ CODE_SAMPLE;
             // update parents relations
             $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
         }
-    }
-
-    /**
-     * @param non-empty-array<Node> $nodes
-     */
-    private function connectNodes(array $nodes, Node $node): void
-    {
-        $firstNode = current($nodes);
-        $firstNodePreviousNode = $firstNode->getAttribute(AttributeKey::PREVIOUS_NODE);
-
-        if (! $firstNodePreviousNode instanceof Node && $node->hasAttribute(AttributeKey::PREVIOUS_NODE)) {
-            /** @var Node $previousNode */
-            $previousNode = $node->getAttribute(AttributeKey::PREVIOUS_NODE);
-
-            $nodes = [$previousNode, ...$nodes];
-        }
-
-        $lastNode = end($nodes);
-        $lastNodeNextNode = $lastNode->getAttribute(AttributeKey::NEXT_NODE);
-
-        if (! $lastNodeNextNode instanceof Node && $node->hasAttribute(AttributeKey::NEXT_NODE)) {
-            /** @var Node $nextNode */
-            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-
-            $nodes = [...$nodes, $nextNode];
-        }
-
-        $this->nodeConnectingTraverser->traverse($nodes);
     }
 
     private function printCurrentFileAndRule(): void

@@ -7,7 +7,7 @@ namespace Rector\NodeTypeResolver;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitor\NodeConnectingVisitor;
+use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -19,7 +19,7 @@ final class NodeScopeAndMetadataDecorator
     public function __construct(
         CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        NodeConnectingVisitor $nodeConnectingVisitor,
+        ParentConnectingVisitor $parentConnectingVisitor,
         FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
     ) {
         $this->nodeTraverser = new NodeTraverser();
@@ -28,7 +28,10 @@ final class NodeScopeAndMetadataDecorator
         $this->nodeTraverser->addVisitor($cloningVisitor);
 
         // this one has to be run again to re-connect nodes with new attributes
-        $this->nodeTraverser->addVisitor($nodeConnectingVisitor);
+
+        // parent attribute is needed to resolve Scope
+        $this->nodeTraverser->addVisitor($parentConnectingVisitor);
+
         $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
     }
 
