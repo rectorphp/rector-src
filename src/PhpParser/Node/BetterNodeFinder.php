@@ -548,7 +548,7 @@ final class BetterNodeFinder
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
 
-        return $stmt;
+        return $stmtsAware->stmts[$key];
     }
 
     /**
@@ -561,7 +561,11 @@ final class BetterNodeFinder
     {
         if (! $parentNode instanceof Node) {
             $nextNode = $this->resolveNodeFromFile($newStmts, $node, false);
-        } elseif ($node instanceof Stmt && $parentNode instanceof StmtsAwareInterface) {
+        } elseif ($node instanceof Stmt) {
+            if (! $parentNode instanceof StmtsAwareInterface) {
+                return null;
+            }
+
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
             $nextNode = $this->resolveNeighborNextStmt($parentNode, $node, $currentStmtKey);
         } else {
@@ -579,10 +583,6 @@ final class BetterNodeFinder
         $found = $this->findFirst($nextNode, $filter);
         if ($found instanceof Node) {
             return $found;
-        }
-
-        if ($nextNode->getStartTokenPos() === $node->getStartTokenPos()) {
-            return null;
         }
 
         return $this->findFirstInlinedNext($nextNode, $filter, $newStmts, $parentNode);
