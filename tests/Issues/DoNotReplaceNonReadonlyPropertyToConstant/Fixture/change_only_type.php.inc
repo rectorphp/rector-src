@@ -26,6 +26,10 @@ final class ChangeOnlyType
 -----
 <?php
 
+declare(strict_types=1);
+
+namespace Rector\Core\Tests\Issues\DoNotReplaceNonReadonlyPropertyToConstant\Fixture;
+
 final class ChangeOnlyType
 {
     private static ?string $defaultFilesHash = null;
