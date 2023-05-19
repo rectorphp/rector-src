@@ -21,6 +21,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function beforeTraverse(array $nodes): array
     {
+        // count = 1 is essential here as FileWithoutNamespace can merge with other Stmt
         if (count($nodes) === 1) {
             $currentNode = current($nodes);
             if ($currentNode instanceof FileWithoutNamespace) {
@@ -47,11 +48,13 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function afterTraverse(array $nodes): array
     {
+        $currentNode = current($nodes);
+        if (! $currentNode instanceof Namespace_) {
+            return $nodes;
+        }
+
         foreach ($nodes as $key => $node) {
-            // multiple namespace is allowed
-            if ($node instanceof Namespace_) {
-                $node->setAttribute(AttributeKey::STMT_KEY, $key);
-            }
+            $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
 
         return $nodes;
