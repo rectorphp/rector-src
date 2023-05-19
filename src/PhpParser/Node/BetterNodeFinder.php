@@ -534,25 +534,26 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $node, ?int $key, bool $isPrevious = true): ?Node
+    private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key, bool $isPrevious = true): ?Node
     {
         if ($key === null) {
             $key = 0;
         }
 
         if ($isPrevious) {
-            if (isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1]->getStartTokenPos() === $node->getStartTokenPos()) {
-                return $node;
+            if (isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1]->getStartTokenPos() === $stmt->getStartTokenPos()) {
+                return $stmt;
             }
 
             return $stmtsAware->stmts[$key - 1] ?? null;
         }
-
-        if (isset($stmtsAware->stmts[$key - 1]) && $stmtsAware->stmts[$key - 1]->getStartTokenPos() === $node->getStartTokenPos()) {
-            return $node;
+        if (!isset($stmtsAware->stmts[$key - 1])) {
+            return $stmtsAware->stmts[$key + 1] ?? null;
         }
-
-        return $stmtsAware->stmts[$key + 1] ?? null;
+        if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
+            return $stmtsAware->stmts[$key + 1] ?? null;
+        }
+        return $stmt;
     }
 
     /**
