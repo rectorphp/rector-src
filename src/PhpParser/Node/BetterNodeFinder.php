@@ -547,12 +547,15 @@ final class BetterNodeFinder
 
             return $stmtsAware->stmts[$key - 1] ?? null;
         }
+
         if (!isset($stmtsAware->stmts[$key - 1])) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
+
         if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $stmt->getStartTokenPos()) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
+
         return $stmt;
     }
 
