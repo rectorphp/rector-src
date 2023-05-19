@@ -534,18 +534,10 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function resolveNeigborStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key, bool $isPrevious = true): ?Node
+    private function resolveNeighborNextStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, ?int $key): ?Node
     {
         if ($key === null) {
             $key = 0;
-        }
-
-        if ($isPrevious) {
-            if (isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1]->getStartTokenPos() === $stmt->getStartTokenPos()) {
-                return $stmt;
-            }
-
-            return $stmtsAware->stmts[$key - 1] ?? null;
         }
 
         if (!isset($stmtsAware->stmts[$key - 1])) {
@@ -575,7 +567,7 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            $nextNode = $this->resolveNeigborStmt($parentNode, $node, $currentStmtKey, false);
+            $nextNode = $this->resolveNeighborNextStmt($parentNode, $node, $currentStmtKey);
         } else {
             $nextNode = $this->resolveNextNodeFromOtherNode($node);
         }
@@ -758,7 +750,7 @@ final class BetterNodeFinder
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
 
-            $previousNode = $this->resolveNeigborStmt($parentNode, $node, $currentStmtKey, true);
+            $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
         } else {
             $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
         }
