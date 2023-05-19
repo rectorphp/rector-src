@@ -16,8 +16,8 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
     /**
-     * @param Node[] $nodes
-     * @return Node[]
+     * @param Stmt[] $nodes
+     * @return Stmt[]
      */
     public function beforeTraverse(array $nodes): array
     {
@@ -41,8 +41,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     }
 
     /**
-     * @param Node[] $nodes
-     * @return Node[]
+     * @param Stmt[] $nodes
+     * @return Stmt[]
      */
     public function afterTraverse(array $nodes): array
     {
