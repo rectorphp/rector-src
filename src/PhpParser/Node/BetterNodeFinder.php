@@ -548,12 +548,15 @@ final class BetterNodeFinder
         if ($stmtsAware->stmts[$key - 1]->getStartTokenPos() !== $startTokenPos) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
-        if (!isset($stmtsAware->stmts[$key])) {
+
+        if (! isset($stmtsAware->stmts[$key])) {
             return null;
         }
+
         if ($stmtsAware->stmts[$key]->getStartTokenPos() === $startTokenPos) {
             return null;
         }
+
         return $stmtsAware->stmts[$key];
     }
 
