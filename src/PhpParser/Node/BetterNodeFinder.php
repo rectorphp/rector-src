@@ -662,9 +662,28 @@ final class BetterNodeFinder
         }
 
         $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-        $stmtKey = $isPrevious ? $currentStmtKey - 1 : $currentStmtKey + 1;
+        if ($isPrevious) {
+            return $newStmts[$currentStmtKey - 1] ?? null;
+        }
 
-        return $newStmts[$stmtKey] ?? null;
+        if (! isset($newStmts[$currentStmtKey - 1])) {
+            return $newStmts[$currentStmtKey + 1] ?? null;
+        }
+
+        $startTokenPos = $node->getStartTokenPos();
+        if ($newStmts[$currentStmtKey - 1]->getStartTokenPos() !== $startTokenPos) {
+            return $newStmts[$currentStmtKey + 1] ?? null;
+        }
+
+        if (! isset($newStmts[$currentStmtKey])) {
+            return null;
+        }
+
+        if ($newStmts[$currentStmtKey]->getStartTokenPos() === $startTokenPos) {
+            return null;
+        }
+
+        return $newStmts[$currentStmtKey];
     }
 
     /**
