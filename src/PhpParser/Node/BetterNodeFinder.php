@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
