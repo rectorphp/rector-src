@@ -21,7 +21,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function beforeTraverse(array $nodes): array
     {
-        if ($nodes !== []) {
+        if (count($nodes) === 1) {
             $currentNode = current($nodes);
             if (! $currentNode instanceof Namespace_ && ! $currentNode instanceof FileWithoutNamespace) {
                 return $nodes;
