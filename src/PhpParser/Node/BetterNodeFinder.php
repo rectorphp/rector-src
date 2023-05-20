@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\For_;
@@ -534,8 +535,16 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function resolveNeighborNextStmt(StmtsAwareInterface $stmtsAware, Stmt $stmt, int $key): ?Node
+    private function isAllowedParentNode(?Node $node): bool
     {
+        return $node instanceof StmtsAwareInterface || $node instanceof ClassLike || $node instanceof Declare_;
+    }
+
+    private function resolveNeighborNextStmt(
+        StmtsAwareInterface|ClassLike|Declare_ $stmtsAware,
+        Stmt $stmt,
+        int $key
+    ): ?Node {
         if (! isset($stmtsAware->stmts[$key - 1])) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
@@ -567,11 +576,12 @@ final class BetterNodeFinder
         if (! $parentNode instanceof Node) {
             $nextNode = $this->resolveNextNodeFromFile($newStmts, $node);
         } elseif ($node instanceof Stmt) {
-            if (! $parentNode instanceof StmtsAwareInterface) {
+            if (! $this->isAllowedParentNode($parentNode)) {
                 return null;
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             $nextNode = $this->resolveNeighborNextStmt($parentNode, $node, $currentStmtKey);
         } else {
             $nextNode = $this->resolveNextNodeFromOtherNode($node);
@@ -610,8 +620,10 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInTopLevelStmtsAware(StmtsAwareInterface $stmtsAware, callable $filter): ?Node
-    {
+    private function findFirstInTopLevelStmtsAware(
+        StmtsAwareInterface|ClassLike|Declare_ $stmtsAware,
+        callable $filter
+    ): ?Node {
         $nodes = [];
 
         if ($stmtsAware instanceof Foreach_) {
@@ -721,18 +733,18 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nodes = $this->find(
-            $currentStmt,
-            static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-        );
+        $nodes = $node instanceof Stmt
+            ? []
+            : $this->find($currentStmt, static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos);
 
         if ($nodes === []) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof StmtsAwareInterface) {
+            if (! $this->isAllowedParentNode($parentNode)) {
                 return null;
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
@@ -757,18 +769,18 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nextNode = $this->findFirst(
-            $currentStmt,
-            static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
-        );
+        $nextNode = $node instanceof Stmt
+            ? null
+            : $this->findFirst($currentStmt, static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos);
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof StmtsAwareInterface) {
+            if (! $this->isAllowedParentNode($parentNode)) {
                 return null;
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             return $this->resolveNeighborNextStmt($parentNode, $currentStmt, $currentStmtKey);
         }
 
@@ -786,11 +798,12 @@ final class BetterNodeFinder
         if (! $parentNode instanceof Node) {
             $previousNode = $this->resolvePreviousNodeFromFile($newStmts, $node);
         } elseif ($node instanceof Stmt) {
-            if (! $parentNode instanceof StmtsAwareInterface) {
+            if (! $this->isAllowedParentNode($parentNode)) {
                 return null;
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
