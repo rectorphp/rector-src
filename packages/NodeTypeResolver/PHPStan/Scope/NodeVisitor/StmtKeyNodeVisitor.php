@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -33,23 +32,6 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         foreach ($nodes as $key => $node) {
-            $node->setAttribute(AttributeKey::STMT_KEY, $key);
-        }
-
-        return $nodes;
-    }
-
-    /**
-     * @param Node[] $nodes
-     * @return Node[]
-     */
-    public function afterTraverse(array $nodes): array
-    {
-        foreach ($nodes as $key => $node) {
-            if (! $node instanceof Namespace_) {
-                return $nodes;
-            }
-
             $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
 
