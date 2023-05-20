@@ -39,23 +39,6 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         return $nodes;
     }
 
-    /**
-     * @param Node[] $nodes
-     * @return Node[]
-     */
-    public function afterTraverse(array $nodes): array
-    {
-        foreach ($nodes as $key => $node) {
-            if (! $node instanceof Namespace_) {
-                return $nodes;
-            }
-
-            $node->setAttribute(AttributeKey::STMT_KEY, $key);
-        }
-
-        return $nodes;
-    }
-
     public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof StmtsAwareInterface) {
