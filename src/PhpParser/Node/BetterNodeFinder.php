@@ -620,10 +620,8 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInTopLevelStmtsAware(
-        StmtsAwareInterface|ClassLike|Declare_ $stmtsAware,
-        callable $filter
-    ): ?Node {
+    private function findFirstInTopLevelStmtsAware(StmtsAwareInterface $stmtsAware, callable $filter): ?Node
+    {
         $nodes = [];
 
         if ($stmtsAware instanceof Foreach_) {
@@ -771,7 +769,10 @@ final class BetterNodeFinder
 
         $nextNode = $node instanceof Stmt
             ? null
-            : $this->findFirst($currentStmt, static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos);
+            : $this->findFirst(
+                $currentStmt,
+                static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
+            );
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
@@ -803,11 +804,11 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            if (! isset($parentNode->stmts[$currentStmtKey - 1])) {
+            if ($parentNode instanceof StmtsAwareInterface && ! isset($parentNode->stmts[$currentStmtKey - 1])) {
                 return $this->findFirstInTopLevelStmtsAware($parentNode, $filter);
             }
 
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
         } else {
             $previousNode = $this->resolvePreviousNodeFromOtherNode($node);
