@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
+use Attribute;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -49,7 +50,10 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                 }
             }
 
-            $currentNode->setAttribute(AttributeKey::STMT_KEY, 0);
+            if ($currentNode->getAttribute(AttributeKey::STMT_KEY) === null) {
+                $currentNode->setAttribute(AttributeKey::STMT_KEY, 0);
+            }
+
             return $nodes;
         }
 
