@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -60,7 +61,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike) {
+        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
         }
 
