@@ -740,6 +740,7 @@ final class BetterNodeFinder
             }
 
             $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             return $parentNode->stmts[$currentStmtKey - 1] ?? null;
         }
 
