@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
-use Attribute;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -22,7 +21,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
     /**
-     * @var Stmt[]
+     * @var array<class-string<Node>>
      */
     private const INDIRECT_NEXT_NODES = [
         Else_::class,
