@@ -371,11 +371,6 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function isAllowedParentNode(?Node $node): bool
-    {
-        return $node instanceof StmtsAwareInterface || $node instanceof ClassLike  || $node instanceof Declare_;
-    }
-
     /**
      * @api
      * @return Expr[]
@@ -540,8 +535,16 @@ final class BetterNodeFinder
         return null;
     }
 
-    private function resolveNeighborNextStmt(StmtsAwareInterface|ClassLike|Declare_ $stmtsAware, Stmt $stmt, int $key): ?Node
+    private function isAllowedParentNode(?Node $node): bool
     {
+        return $node instanceof StmtsAwareInterface || $node instanceof ClassLike || $node instanceof Declare_;
+    }
+
+    private function resolveNeighborNextStmt(
+        StmtsAwareInterface|ClassLike|Declare_ $stmtsAware,
+        Stmt $stmt,
+        int $key
+    ): ?Node {
         if (! isset($stmtsAware->stmts[$key - 1])) {
             return $stmtsAware->stmts[$key + 1] ?? null;
         }
@@ -617,8 +620,10 @@ final class BetterNodeFinder
     /**
      * @param callable(Node $node): bool $filter
      */
-    private function findFirstInTopLevelStmtsAware(StmtsAwareInterface|ClassLike|Declare_ $stmtsAware, callable $filter): ?Node
-    {
+    private function findFirstInTopLevelStmtsAware(
+        StmtsAwareInterface|ClassLike|Declare_ $stmtsAware,
+        callable $filter
+    ): ?Node {
         $nodes = [];
 
         if ($stmtsAware instanceof Foreach_) {
@@ -728,10 +733,9 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nodes = $this->find(
-            $currentStmt,
-            static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-        );
+        $nodes = $node instanceof Stmt
+            ? []
+            : $this->find($currentStmt, static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos);
 
         if ($nodes === []) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
@@ -765,10 +769,9 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nextNode = $this->findFirst(
-            $currentStmt,
-            static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
-        );
+        $nextNode = $node instanceof Stmt
+            ? null
+            : $this->findFirst($currentStmt, static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos);
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
