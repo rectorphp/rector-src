@@ -29,6 +29,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                 }
             }
 
+            $currentNode->setAttribute(AttributeKey::STMT_KEY, 0);
             return $nodes;
         }
 
@@ -60,7 +61,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     {
         if (! $node instanceof StmtsAwareInterface) {
             return null;
-        } 
+        }
 
         if ($node->stmts === null) {
             return null;
