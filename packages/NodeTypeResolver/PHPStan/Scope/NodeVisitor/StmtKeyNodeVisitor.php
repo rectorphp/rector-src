@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
@@ -19,19 +21,12 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function beforeTraverse(array $nodes): array
     {
-        // count = 1 is essential here as FileWithoutNamespace can merge with other Stmt
-        if (count($nodes) === 1) {
-            $currentNode = current($nodes);
-            if ($currentNode instanceof FileWithoutNamespace) {
-                foreach ($currentNode->stmts as $key => $stmt) {
-                    $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
-                }
+        foreach ($nodes as $key => $node) {
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            if ($currentStmtKey !== null) {
+                continue;
             }
 
-            return $nodes;
-        }
-
-        foreach ($nodes as $key => $node) {
             $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
 
@@ -40,9 +35,9 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface) {
+        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
             return null;
-        } 
+        }
 
         if ($node->stmts === null) {
             return null;
@@ -51,6 +46,13 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         // re-index stmt key under current node
         foreach ($node->stmts as $key => $childStmt) {
             $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
+        }
+
+        if ($node instanceof Stmt) {
+            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
+            if ($currentStmtKey === null) {
+                $node->setAttribute(AttributeKey::STMT_KEY, 0);
+            }
         }
 
         return null;
