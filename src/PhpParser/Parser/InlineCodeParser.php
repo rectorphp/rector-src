@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Parser;
 
+use PhpParser\Node\Expr\Variable;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
@@ -12,10 +13,9 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\Application\File;
 
 final class InlineCodeParser
 {
@@ -65,7 +65,7 @@ final class InlineCodeParser
         private readonly NodePrinterInterface $nodePrinter,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly ValueResolver $valueResolver,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -147,14 +147,9 @@ final class InlineCodeParser
             $concat->right->value = '.' . $concat->right->value;
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if ($concat->right instanceof String_ &&
-            str_starts_with($concat->right->value, '($')
-            && $file instanceof File) {
-            $oldTokens = $file->getOldTokens();
-            $endTokenPos = $concat->right->getEndTokenPos();
-
-            if (isset($oldTokens[$endTokenPos][1]) && str_starts_with((string) $oldTokens[$endTokenPos][1], "'($")) {
+        if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
+            $node = $this->betterNodeFinder->resolveNextNode($concat);
+            if ($node instanceof Variable) {
                 $concat->right->value .= '.';
             }
         }
