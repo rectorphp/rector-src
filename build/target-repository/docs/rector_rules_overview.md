@@ -9086,7 +9086,7 @@ Change && and || between nullable objects to instanceof compares
 
 ### BoolReturnTypeFromStrictScalarReturnsRector
 
-Change funcCall type based on strict returns type operations
+Change return type based on strict returns type operations
 
 - class: [`Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/BoolReturnTypeFromStrictScalarReturnsRector.php)
 
@@ -9097,10 +9097,10 @@ Change funcCall type based on strict returns type operations
 +    public function resolve($first, $second): bool
      {
          if ($first) {
-             funcCall false;
+             return false;
          }
 
-         funcCall $first > $second;
+         return $first > $second;
      }
  }
 ```
