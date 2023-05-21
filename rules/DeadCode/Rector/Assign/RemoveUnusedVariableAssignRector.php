@@ -234,10 +234,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $if = $parentNode->getAttribute(AttributeKey::NEXT_NODE);
+        $node = $this->betterNodeFinder->resolveNextNode($parentNode);
 
         // check if next node is if
-        if (! $if instanceof If_) {
+        if (! $node instanceof If_) {
             if (
                 $assign->var instanceof Variable &&
                 ! $scope->hasVariableType((string) $this->getName($assign->var))
@@ -249,7 +249,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->conditionSearcher->hasIfAndElseForVariableRedeclaration($assign, $if)) {
+        if ($this->conditionSearcher->hasIfAndElseForVariableRedeclaration($assign, $node)) {
             $this->removeNode($assign);
             return $assign;
         }
