@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Parser;
 
+use PhpParser\Node\Expr\Variable;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
@@ -14,9 +15,7 @@ use PhpParser\Node\Stmt;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\Application\File;
 
 final class InlineCodeParser
 {
@@ -150,7 +149,7 @@ final class InlineCodeParser
 
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
             $node = $this->betterNodeFinder->resolveNextNode($concat);
-            if ($node instanceof Expr\Variable) {
+            if ($node instanceof Variable) {
                 $concat->right->value .= '.';
             }
         }
