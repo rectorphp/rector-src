@@ -80,7 +80,7 @@ CODE_SAMPLE
         }
 
         $assignedTo = $node->getAttribute(AttributeKey::ASSIGNED_TO);
-        if ($assignedTo instanceof Node) {
+        if ($assignedTo === true) {
             return null;
         }
 
