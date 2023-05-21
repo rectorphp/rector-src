@@ -5,18 +5,12 @@ declare(strict_types=1);
 namespace Rector\NodeNestingScope;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ContextAnalyzer
 {
@@ -28,7 +22,6 @@ final class ContextAnalyzer
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -70,34 +63,5 @@ final class ContextAnalyzer
         }
 
         return $previousNode instanceof If_;
-    }
-
-    public function hasAssignWithIndirectReturn(Node $node, If_ $if): bool
-    {
-        foreach (ControlStructure::LOOP_NODES as $loopNode) {
-            $loopObjectType = new ObjectType($loopNode);
-            $parentType = $this->nodeTypeResolver->getType($node);
-
-            $superType = $parentType->isSuperTypeOf($loopObjectType);
-            if (! $superType->yes()) {
-                continue;
-            }
-
-            $nextNode = $node->getAttribute(AttributeKey::NEXT_NODE);
-            if ($nextNode instanceof Node) {
-                if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr) {
-                    continue;
-                }
-
-                $hasAssign = (bool) $this->betterNodeFinder->findFirstInstanceOf($if->stmts, Assign::class);
-                if (! $hasAssign) {
-                    continue;
-                }
-
-                return true;
-            }
-        }
-
-        return false;
     }
 }
