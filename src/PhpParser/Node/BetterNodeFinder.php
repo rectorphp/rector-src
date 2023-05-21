@@ -731,9 +731,10 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nodes = $node->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find($currentStmt, static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos);
+        $nodes = $this->find(
+            $currentStmt,
+            static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+        );
 
         if ($nodes === []) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
@@ -767,12 +768,10 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nextNode = $node->getEndTokenPos() === $endTokenPos
-            ? null
-            : $this->findFirst(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
-            );
+        $nextNode = $this->findFirst(
+            $currentStmt,
+            static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
+        );
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
