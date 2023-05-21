@@ -40,7 +40,7 @@ final class SwitchExprsResolver
                 continue;
             }
 
-            if (!$case->cond instanceof Expr) {
+            if (! $case->cond instanceof Expr) {
                 continue;
             }
 

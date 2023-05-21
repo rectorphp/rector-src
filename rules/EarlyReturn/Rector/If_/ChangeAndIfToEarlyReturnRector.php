@@ -12,14 +12,11 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
-use PhpParser\Node\Stmt\Else_;
-use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
@@ -123,7 +120,7 @@ CODE_SAMPLE
 
             $nextStmt = $stmts[$key + 1] ?? null;
 
-            if ($this->shouldSkip($node, $stmt, $nextStmt)) {
+            if ($this->shouldSkip($stmt, $nextStmt)) {
                 $newStmts[] = $stmt;
                 continue;
             }
@@ -228,7 +225,7 @@ CODE_SAMPLE
         return array_merge($result, [$ifNextReturnClone]);
     }
 
-    private function shouldSkip(StmtsAwareInterface $stmtsAware, If_ $if, ?Stmt $nexStmt): bool
+    private function shouldSkip(If_ $if, ?Stmt $nexStmt): bool
     {
         if (! $this->ifManipulator->isIfWithOnlyOneStmt($if)) {
             return true;
@@ -239,10 +236,6 @@ CODE_SAMPLE
         }
 
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($if)) {
-            return true;
-        }
-
-        if ($this->isNestedIfInLoop($if, $stmtsAware)) {
             return true;
         }
 
@@ -259,15 +252,6 @@ CODE_SAMPLE
         }
 
         return ! $this->isLastIfOrBeforeLastReturn($if, $nexStmt);
-    }
-
-    private function isNestedIfInLoop(If_ $if, StmtsAwareInterface $stmtsAware): bool
-    {
-        if (! $this->contextAnalyzer->isInLoop($if)) {
-            return false;
-        }
-
-        return $stmtsAware instanceof If_ || $stmtsAware instanceof Else_ || $stmtsAware instanceof ElseIf_;
     }
 
     private function isLastIfOrBeforeLastReturn(If_ $if, ?Stmt $nextStmt): bool
