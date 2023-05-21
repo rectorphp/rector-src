@@ -234,7 +234,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $if = $parentNode->getAttribute(AttributeKey::NEXT_NODE);
+        $if = $this->betterNodeFinder->resolveNextNode($parentNode);
 
         // check if next node is if
         if (! $if instanceof If_) {
