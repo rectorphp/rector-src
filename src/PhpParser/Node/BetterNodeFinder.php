@@ -731,7 +731,7 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nodes = $node->getStartTokenPos() === $startTokenPos
+        $nodes = $currentStmt->getStartTokenPos() === $startTokenPos
             ? []
             : $this->find($currentStmt, static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos);
 
@@ -767,7 +767,7 @@ final class BetterNodeFinder
             return null;
         }
 
-        $nextNode = $node->getEndTokenPos() === $endTokenPos
+        $nextNode = $currentStmt->getEndTokenPos() === $endTokenPos
             ? null
             : $this->findFirst(
                 $currentStmt,
