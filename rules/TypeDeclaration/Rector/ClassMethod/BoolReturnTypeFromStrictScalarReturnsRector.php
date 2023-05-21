@@ -44,7 +44,7 @@ final class BoolReturnTypeFromStrictScalarReturnsRector extends AbstractRector i
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change funcCall type based on strict returns type operations', [
+        return new RuleDefinition('Change return type based on strict returns type operations', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
@@ -52,10 +52,10 @@ class SomeClass
     public function resolve($first, $second)
     {
         if ($first) {
-            funcCall false;
+            return false;
         }
 
-        funcCall $first > $second;
+        return $first > $second;
     }
 }
 CODE_SAMPLE
@@ -67,10 +67,10 @@ class SomeClass
     public function resolve($first, $second): bool
     {
         if ($first) {
-            funcCall false;
+            return false;
         }
 
-        funcCall $first > $second;
+        return $first > $second;
     }
 }
 CODE_SAMPLE
