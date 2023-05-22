@@ -10,11 +10,14 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\CodingStyle\NodeAnalyzer\SpreadVariablesCollector;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,7 +26,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector\UnSpreadOperatorRectorTest
  */
-final class UnSpreadOperatorRector extends AbstractRector
+final class UnSpreadOperatorRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly SpreadVariablesCollector $spreadVariablesCollector,
@@ -79,13 +82,13 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|MethodCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node instanceof ClassMethod) {
             return $this->refactorClassMethod($node);
         }
 
-        return $this->refactorMethodCall($node);
+        return $this->refactorMethodCall($node, $scope);
     }
 
     private function refactorClassMethod(ClassMethod $classMethod): ?ClassMethod
@@ -118,7 +121,7 @@ CODE_SAMPLE
         return $classMethod;
     }
 
-    private function refactorMethodCall(MethodCall $methodCall): ?MethodCall
+    private function refactorMethodCall(MethodCall $methodCall, Scope $scope): ?MethodCall
     {
         $methodReflection = $this->reflectionResolver->resolveMethodReflectionFromMethodCall($methodCall);
         if (! $methodReflection instanceof MethodReflection) {
@@ -130,8 +133,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $spreadParameterReflections = $this->spreadVariablesCollector->resolveFromMethodReflection(
-            $methodReflection
+        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs($scope, $methodCall->getArgs(), $methodReflection->getVariants());
+        $spreadParameterReflections = $this->spreadVariablesCollector->resolveFromParametersAcceptor(
+            $parametersAcceptor
         );
 
         if ($spreadParameterReflections === []) {
