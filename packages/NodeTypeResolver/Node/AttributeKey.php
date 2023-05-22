@@ -200,7 +200,7 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const ASSIGNED_TO = 'assigned_to';
+    public const IS_ASSIGNED_TO = 'is_assigned_to';
 
     /**
      * @var string

@@ -48,8 +48,8 @@ final class NodeUsageFinder
                 return false;
             }
 
-            $assignedTo = $node->getAttribute(AttributeKey::ASSIGNED_TO);
-            return ! $assignedTo instanceof Node;
+            $assignedTo = $node->getAttribute(AttributeKey::IS_ASSIGNED_TO);
+            return $assignedTo === null;
         });
     }
 
