@@ -80,13 +80,26 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [FuncCall::class, Expression::class];
     }
 
     /**
      * @param FuncCall $node
      */
     public function refactor(Node $node): ?Node
+    {
+        if ($node instanceof Expression) {
+            if (! $node->expr instanceof FuncCall) {
+                return null;
+            }
+
+            return $this->refactorFuncCall($node->expr, true);
+        }
+
+        return $this->refactorFuncCall($node, false);
+    }
+
+    private function refactorFuncCall(FuncCall $node, bool $isStandaloneExpression): Assign|null|Cast
     {
         if (! $this->isName($node, 'settype')) {
             return null;
@@ -104,7 +117,7 @@ CODE_SAMPLE
         $typeValue = strtolower($typeValue);
 
         $variable = $node->getArgs()[0]
-->value;
+            ->value;
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
@@ -116,7 +129,7 @@ CODE_SAMPLE
             $castClass = self::TYPE_TO_CAST[$typeValue];
             $castNode = new $castClass($variable);
 
-            if ($parentNode instanceof Expression) {
+            if ($isStandaloneExpression === true) {
                 // bare expression? → assign
                 return new Assign($variable, $castNode);
             }
@@ -128,6 +141,6 @@ CODE_SAMPLE
             return new Assign($variable, $this->nodeFactory->createNull());
         }
 
-        return $node;
+        return null;
     }
 }
