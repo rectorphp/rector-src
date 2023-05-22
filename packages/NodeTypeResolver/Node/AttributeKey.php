@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\Node;
 
+use PHPStan\Analyser\Scope;
+
 /**
  * @enum
  */
@@ -21,6 +23,7 @@ final class AttributeKey
     public const VIRTUAL_NODE = 'virtual_node';
 
     /**
+     * Contains @see Scope
      * @var string
      */
     public const SCOPE = 'scope';
