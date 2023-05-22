@@ -8,10 +8,8 @@ use Iterator;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
-use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class ValueResolverTest extends AbstractTestCase
@@ -39,12 +37,7 @@ final class ValueResolverTest extends AbstractTestCase
         $builderFactory = new BuilderFactory();
 
         $classConstFetchNode = $builderFactory->classConstFetch('SomeClass', 'SOME_CONSTANT');
-        $classConstFetchNode->class->setAttribute(
-            AttributeKey::RESOLVED_NAME,
-            new FullyQualified('SomeClassResolveName')
-        );
-
-        yield [$classConstFetchNode, 'SomeClassResolveName::SOME_CONSTANT'];
+        yield [$classConstFetchNode, 'SomeClass::SOME_CONSTANT'];
         yield [$builderFactory->val(true), true];
         yield [$builderFactory->val(1), 1];
         yield [$builderFactory->val(1.0), 1.0];
