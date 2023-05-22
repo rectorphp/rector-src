@@ -102,10 +102,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->stmts !== 1) {
-            return null;
-        }
-
         $ternaryIf = $this->resolveOnlyStmtAssignExpr($node->stmts);
         $ternaryElse = $this->resolveOnlyStmtAssignExpr($node->else->stmts);
         if (! $ternaryIf instanceof Expr) {
