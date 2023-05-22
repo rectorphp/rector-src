@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\For_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
+use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -76,44 +79,40 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?array
     {
-        $countInCond = null;
         $variableName = null;
+        $countInCond = null;
 
-        $this->traverseNodesWithCallable($node->cond, function (Node $node) use (
-            &$countInCond,
-            &$variableName,
-            $scope
-        ): ?Variable {
-            if (! $node instanceof FuncCall) {
-                return null;
+        foreach ($node->cond as $condExpr) {
+            if (! $condExpr instanceof Smaller && ! $condExpr instanceof SmallerOrEqual) {
+                continue;
             }
 
-            if (! $this->isName($node, 'count')) {
-                return null;
+            if (! $condExpr->right instanceof FuncCall) {
+                continue;
             }
 
-            $countInCond = $node;
+            $funcCall = $condExpr->right;
+            if (! $this->isName($funcCall, 'count')) {
+                continue;
+            }
 
             $variableName = $this->variableNaming->resolveFromFuncCallFirstArgumentWithSuffix(
-                $node,
+                $funcCall,
                 'Count',
                 'itemsCount',
                 $scope
             );
 
-            return new Variable($variableName);
-        });
+            $countInCond = $condExpr->right;
 
-        if (! $countInCond instanceof FuncCall) {
-            return null;
+            $condExpr->right = new Variable($variableName);
         }
 
-        if ($variableName === null) {
+        if (! is_string($variableName) || ! $countInCond instanceof Expr) {
             return null;
         }
 
         $countAssign = new Assign(new Variable($variableName), $countInCond);
-
         return [new Expression($countAssign), $node];
     }
 }

@@ -13,7 +13,10 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(RenameFunctionRector::class, [
             'sizeof' => 'count',
         ]);
-    $rectorConfig->rule(ForRepeatedCountToOwnVariableRector::class);
-    $rectorConfig->rule(CountOnNullRector::class);
-    $rectorConfig->rule(NullToStrictStringFuncCallArgRector::class);
+
+    $rectorConfig->rules([
+        CountOnNullRector::class,
+        NullToStrictStringFuncCallArgRector::class,
+        ForRepeatedCountToOwnVariableRector::class,
+    ]);
 };

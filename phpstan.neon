@@ -154,11 +154,6 @@ parameters:
 
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
 
-        # deserves better architecture
-        -
-            message: '#Do not use chained method calls#'
-            path: packages/BetterPhpDocParser/Printer/PhpDocInfoPrinter.php
-
         - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
 
         # array_index on generic types
@@ -351,11 +346,6 @@ parameters:
 
         -
             message: '#PHPDoc tag @param for parameter \$node with type array<PhpParser\\Node\\Stmt\\Expression>\|null is incompatible with native type PhpParser\\Node#'
-            paths:
-                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
-
-        -
-            message: '#Method Rector\\CodeQuality\\Rector\\FuncCall\\ChangeArrayPushToArrayAssignRector\:\:refactor\(\) return type has no value type specified in iterable type array#'
             paths:
                 - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
 
@@ -664,10 +654,6 @@ parameters:
         - '#Relative file path "mearie\\\.org" is not allowed, use absolute one with __DIR__#'
         - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
 
-        -
-            message: '#Method call return value that should be used, but is not#'
-            path: packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfo/PhpDocInfoTest.php
-
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
 
@@ -739,7 +725,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 14, keep it under 10#'
 
         # resolve continually
-        - '#(Matching|Fetching) deprecated class constant (NEXT_NODE|PREVIOUS_NODE) of class Rector\\NodeTypeResolver\\Node\\AttributeKey#'
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
 
         # deprecated
@@ -761,12 +746,11 @@ parameters:
         - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#PHPDoc tag @var for variable \$previousStmt contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
-        - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key \- 1\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
-        - '#Anonymous variable in a `\$parentNode\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
-        - '#Anonymous variable in a `\$stmtsAware\->stmts\[\$key\]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
 
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\BoolReturnTypeFromStrictScalarReturnsRector\:\:hasOnlyBoolScalarReturnExprs\(\)" is 11, keep it under 10#'
+        - '#Anonymous variable in a (.*?)->stmts\[(.*?)]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
+
         - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         # WIP
         - '#Fetching deprecated class constant PARENT_NODE#'
+        - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'

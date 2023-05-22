@@ -2,12 +2,10 @@
 
 namespace Rector\Core\Tests\Issues\IndentationCrash\Fixture;
 
-$s  = new Sessions();
-
-$psychiatry        = $s->getPtNextSession($patient_id, 3, Util::ROLE_PRESCRIBER);
+$psychiatry = [1, 2, 3];
 
 for ($i = 0; $i < sizeof($psychiatry); $i++) {
-    $psychiatry[$i]["sufficient_cancellation_notice"] = $s->isSufficientNoticeToCancel($psychiatry[$i]) ? 1 : 0;
+    $psychiatry[$i]["sufficient_cancellation_notice"] = mt_rand(1, 3) ? 1 : 0;
 }
 
 ?>
@@ -16,13 +14,11 @@ for ($i = 0; $i < sizeof($psychiatry); $i++) {
 
 namespace Rector\Core\Tests\Issues\IndentationCrash\Fixture;
 
-$s  = new Sessions();
-
-$psychiatry        = $s->getPtNextSession($patient_id, 3, Util::ROLE_PRESCRIBER);
+$psychiatry = [1, 2, 3];
 $psychiatryCount = count($psychiatry);
 
 for ($i = 0; $i < $psychiatryCount; $i++) {
-    $psychiatry[$i]["sufficient_cancellation_notice"] = $s->isSufficientNoticeToCancel($psychiatry[$i]) ? 1 : 0;
+    $psychiatry[$i]["sufficient_cancellation_notice"] = mt_rand(1, 3) ? 1 : 0;
 }
 
 ?>
