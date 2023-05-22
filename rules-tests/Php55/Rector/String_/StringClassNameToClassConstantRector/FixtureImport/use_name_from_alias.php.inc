@@ -26,7 +26,7 @@ class UseNameFromAlias
 {
     public function run()
     {
-        return SomeAlias::class;
+        return \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass::class;
     }
 }
 

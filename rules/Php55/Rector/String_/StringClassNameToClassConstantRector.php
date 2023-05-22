@@ -13,9 +13,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -29,7 +30,7 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\StringClassNameToClassConstantRectorTest
  */
-final class StringClassNameToClassConstantRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
+final class StringClassNameToClassConstantRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @var string[]
@@ -38,7 +39,6 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly AliasNameResolver $aliasNameResolver
     ) {
     }
 
@@ -90,7 +90,7 @@ CODE_SAMPLE
     /**
      * @param String_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $classLikeName = $node->value;
 
@@ -105,15 +105,7 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
-
-        $name = clone $fullyQualified;
-        $name->setAttribute(AttributeKey::PARENT_NODE, $node->getAttribute(AttributeKey::PARENT_NODE));
-
-        $aliasName = $this->aliasNameResolver->resolveByName($name);
-
-        $fullyQualifiedOrAliasName = is_string($aliasName)
-            ? new Name($aliasName)
-            : $fullyQualified;
+        $fullyQualifiedOrAliasName = new FullyQualified($scope->resolveName($fullyQualified));
 
         if ($classLikeName !== $node->value) {
             $preSlashCount = strlen($node->value) - strlen($classLikeName);
