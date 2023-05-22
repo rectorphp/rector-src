@@ -97,7 +97,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|FileWithoutNamespace|Namespace_ $node
+     * @param ClassMethod|Function_|Closure|FileWithoutNamespace|Namespace_ $node
      */
     public function refactor(Node $node): ?Node
     {
