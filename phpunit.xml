@@ -5,31 +5,43 @@
     bootstrap="tests/bootstrap.php"
     colors="true"
     executionOrder="defects"
-    cacheDirectory=".phpunit.cache"
     defaultTestSuite="main"
 >
+    <testsuites>
+        <testsuite name="main">
+            <directory>tests</directory>
+            <directory>rules-tests</directory>
+            <directory>packages-tests</directory>
+            <directory>utils-tests</directory>
+        </testsuite>
 
-  <testsuites>
-    <testsuite name="main">
-      <directory>tests</directory>
-      <directory>rules-tests</directory>
-      <directory>packages-tests</directory>
-      <directory>utils-tests</directory>
-    </testsuite>
-    <!-- divide the rules-tests roughly in 2 equal sized groups -->
-    <testsuite name="php-rules">
-        <directory>rules-tests/Php*</directory>
-    </testsuite>
-    <testsuite name="other-rules">
-        <directory>rules-tests/</directory>
-        <exclude>rules-tests/Php*</exclude>
-    </testsuite>
-  </testsuites>
-  <php>
-    <ini name="memory_limit" value="-1"/>
-  </php>
+        <!-- divide the rules-tests roughly in 3 equal sized groups -->
+        <testsuite name="php-rules">
+            <directory>rules-tests/Php*</directory>
+        </testsuite>
+        <testsuite name="type-declaration-rules">
+            <directory>rules-tests/TypeDeclaration</directory>
+        </testsuite>
+        <testsuite name="code-quality-rules">
+            <directory>rules-tests/CodeQuality</directory>
+        </testsuite>
+        <testsuite name="dead-code-rules">
+            <directory>rules-tests/DeadCode</directory>
+        </testsuite>
+        <testsuite name="other-rules">
+            <directory>rules-tests/</directory>
+            <exclude>rules-tests/Php*</exclude>
+            <exclude>rules-tests/TypeDeclaration</exclude>
+            <exclude>rules-tests/CodeQuality</exclude>
+            <exclude>rules-tests/DeadCode</exclude>
+        </testsuite>
+    </testsuites>
 
-  <extensions>
-    <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
-  </extensions>
+    <php>
+        <ini name="memory_limit" value="-1"/>
+    </php>
+
+    <extensions>
+        <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension"/>
+    </extensions>
 </phpunit>
