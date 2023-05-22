@@ -8,15 +8,12 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
@@ -102,6 +99,12 @@ CODE_SAMPLE
                 continue;
             }
 
+            // variable defined first only resolvable by Scope pulled from Stmt
+            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                continue;
+            }
+
             /** @var TryCatch $stmt */
             $catch = $stmt->catches[0];
 
@@ -125,12 +128,6 @@ CODE_SAMPLE
             $newVariableName = $this->propertyNaming->fqnToVariableName($objectType);
 
             if ($oldVariableName === $newVariableName) {
-                continue;
-            }
-
-            // variable defined first only resolvable by Scope pulled from Stmt
-            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
-            if (! $scope instanceof Scope) {
                 continue;
             }
 
@@ -190,16 +187,7 @@ CODE_SAMPLE
         }
 
         $catch = $stmt->catches[0];
-        if (! $catch->var instanceof Variable) {
-            return true;
-        }
-
-        $parentNode = $stmt->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
-            return false;
-        }
-
-        return ! $parentNode instanceof FunctionLike;
+        return ! $catch->var instanceof Variable;
     }
 
     /**
