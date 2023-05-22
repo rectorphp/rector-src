@@ -626,7 +626,7 @@ final class BetterNodeFinder
     ): ?Node {
         if (! isset($stmtsAware->stmts[$key - 1])) {
             $nextNode = $stmtsAware->stmts[$key + 1] ?? null;
-            if ($nextNode instanceof Node && $nextNode->getStartTokenPos() < 0) {
+            if ($nextNode instanceof Stmt && $nextNode->getStartTokenPos() < 0) {
                 return $this->resolveNeighborNextStmt($stmtsAware, $nextNode, $key + 1);
             }
 
