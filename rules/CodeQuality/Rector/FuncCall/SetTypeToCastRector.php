@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\FuncCall;
 
+use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Arg;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -79,7 +81,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, Expression::class, Assign::class, Expr\ArrayItem::class, Node\Arg::class];
+        return [FuncCall::class, Expression::class, Assign::class, ArrayItem::class, Arg::class];
     }
 
     /**
@@ -87,7 +89,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node)
     {
-        if ($node instanceof Node\Arg || $node instanceof Expr\ArrayItem) {
+        if ($node instanceof Arg || $node instanceof ArrayItem) {
             if ($this->isSetTypeFuncCall($node->value)) {
                 return NodeTraverser::STOP_TRAVERSAL;
             }
