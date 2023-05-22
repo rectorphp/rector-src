@@ -28,7 +28,6 @@ use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeAnalyzer\CountableTypeAnalyzer;
 use Rector\Php71\NodeAnalyzer\CountableAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -171,11 +170,6 @@ CODE_SAMPLE
             return true;
         }
 
-        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Ternary) {
-            return true;
-        }
-
         // skip node in trait, as impossible to analyse
         $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
         if ($trait instanceof Trait_) {
@@ -185,14 +179,6 @@ CODE_SAMPLE
         $firstArg = $funcCall->getArgs()[0];
         if (! $firstArg->value instanceof Variable) {
             return false;
-        }
-
-        if ($parentNode instanceof Node) {
-            $originalParentNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-            if (! $this->nodeComparator->areNodesEqual($parentNode, $originalParentNode)) {
-                return true;
-            }
         }
 
         return $this->variableAnalyzer->isStaticOrGlobal($firstArg->value);
