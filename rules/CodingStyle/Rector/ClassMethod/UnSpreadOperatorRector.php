@@ -16,7 +16,6 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use Rector\CodingStyle\NodeAnalyzer\SpreadVariablesCollector;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
@@ -133,7 +132,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs($scope, $methodCall->getArgs(), $methodReflection->getVariants());
+        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+            $scope,
+            $methodCall->getArgs(),
+            $methodReflection->getVariants()
+        );
         $spreadParameterReflections = $this->spreadVariablesCollector->resolveFromParametersAcceptor(
             $parametersAcceptor
         );
