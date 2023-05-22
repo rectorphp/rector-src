@@ -166,7 +166,7 @@ CODE_SAMPLE
 
         // just added node, lets skip it to be sure we're not using mixing
         $origNode = $firstArg->value->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $origNode instanceof \PhpParser\Node) {
+        if (! $origNode instanceof Node) {
             return true;
         }
 
