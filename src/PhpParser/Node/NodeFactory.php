@@ -350,15 +350,15 @@ final class NodeFactory
     {
         $classConstFetch = $this->builderFactory->classConstFetch($className, $constantName);
 
-        $classNameString = $className->toString();
-        if (in_array($classNameString, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
-            $currentNode = $this->currentNodeProvider->getNode();
-            if ($currentNode instanceof Node) {
-                $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $className);
-            }
-        } else {
-            $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $classNameString);
-        }
+        return $className->toString();
+//        if (in_array($classNameString, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
+//            $currentNode = $this->currentNodeProvider->getNode();
+//            if ($currentNode instanceof Node) {
+//                $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $className);
+//            }
+//        } else {
+//            $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $classNameString);
+//        }
 
         return $classConstFetch;
     }

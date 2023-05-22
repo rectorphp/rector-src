@@ -38,10 +38,10 @@ final class NameNameResolver implements NodeNameResolverInterface
             return $this->funcCallNameResolver->resolve($parentNode, $scope);
         }
 
-        $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);
-        if ($resolvedName instanceof FullyQualified) {
-            return $resolvedName->toString();
-        }
+//        $resolvedName = $node->getAttribute(AttributeKey::RESOLVED_NAME);
+//        if ($resolvedName instanceof FullyQualified) {
+//            return $resolvedName->toString();
+//        }
 
         return $node->toString();
     }

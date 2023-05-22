@@ -108,11 +108,11 @@ final class NameTypeResolver implements NodeTypeResolverInterface
             return (string) $this->nodeNameResolver->getName($classLike);
         }
 
-        /** @var Name|null $resolvedNameNode */
-        $resolvedNameNode = $name->getAttribute(AttributeKey::RESOLVED_NAME);
-        if ($resolvedNameNode instanceof Name) {
-            return $resolvedNameNode->toString();
-        }
+//        /** @var Name|null $resolvedNameNode */
+//        $resolvedNameNode = $name->getAttribute(AttributeKey::RESOLVED_NAME);
+//        if ($resolvedNameNode instanceof Name) {
+//            return $resolvedNameNode->toString();
+//        }
 
         return $nameValue;
     }
