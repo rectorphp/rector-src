@@ -10,7 +10,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Cast\Array_;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Ternary;
@@ -100,35 +99,35 @@ CODE_SAMPLE
 
         $firstArg = $node->getArgs()[0];
 
-        $countedNode = $firstArg->value;
-        if ($this->countableTypeAnalyzer->isCountableType($countedNode)) {
+        $countedExpr = $firstArg->value;
+        if ($this->countableTypeAnalyzer->isCountableType($countedExpr)) {
             return null;
         }
 
         // this can lead to false positive by PHPStan
-        $onlyValueType = $this->getType($countedNode);
+        $onlyValueType = $this->getType($countedExpr);
         if ($onlyValueType instanceof ArrayType) {
-            if (! $this->countableAnalyzer->isCastableArrayType($countedNode, $onlyValueType, $scope)) {
+            if (! $this->countableAnalyzer->isCastableArrayType($countedExpr, $onlyValueType, $scope)) {
                 return null;
             }
 
-            return $this->castToArray($countedNode, $node);
+            return $this->castToArray($countedExpr, $node);
         }
 
-        if ($this->nodeTypeResolver->isNullableTypeOfSpecificType($countedNode, ArrayType::class)) {
-            return $this->castToArray($countedNode, $node);
+        if ($this->nodeTypeResolver->isNullableTypeOfSpecificType($countedExpr, ArrayType::class)) {
+            return $this->castToArray($countedExpr, $node);
         }
 
         if ($this->isAlwaysIterableType($onlyValueType)) {
             return null;
         }
 
-        if ($this->nodeTypeResolver->isNullableType($countedNode) || $onlyValueType instanceof NullType) {
-            $identical = new Identical($countedNode, $this->nodeFactory->createNull());
+        if ($this->nodeTypeResolver->isNullableType($countedExpr) || $onlyValueType instanceof NullType) {
+            $identical = new Identical($countedExpr, $this->nodeFactory->createNull());
             return new Ternary($identical, new LNumber(0), $node);
         }
 
-        $conditionExpr = $this->createConditionExpr($countedNode);
+        $conditionExpr = $this->createConditionExpr($countedExpr);
 
         return new Ternary($conditionExpr, $node, new LNumber(0));
     }
@@ -160,11 +159,6 @@ CODE_SAMPLE
             return true;
         }
 
-        $firstArg = $funcCall->getArgs()[0];
-        if ($firstArg->value instanceof ClassConstFetch) {
-            return true;
-        }
-
         // skip ternary in trait, as impossible to analyse
         $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
         if ($trait instanceof Trait_) {
@@ -187,15 +181,15 @@ CODE_SAMPLE
         return $funcCall;
     }
 
-    private function createConditionExpr(Expr $countedNode): BooleanOr|FuncCall
+    private function createConditionExpr(Expr $countedExpr): BooleanOr|FuncCall
     {
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::IS_COUNTABLE)) {
-            return new FuncCall(new Name('is_countable'), [new Arg($countedNode)]);
+            return new FuncCall(new Name('is_countable'), [new Arg($countedExpr)]);
         }
 
-        $instanceof = new Instanceof_($countedNode, new FullyQualified('Countable'));
+        $instanceof = new Instanceof_($countedExpr, new FullyQualified('Countable'));
 
-        $isArrayFuncCall = $this->nodeFactory->createFuncCall('is_array', [new Arg($countedNode)]);
+        $isArrayFuncCall = $this->nodeFactory->createFuncCall('is_array', [new Arg($countedExpr)]);
         return new BooleanOr($isArrayFuncCall, $instanceof);
     }
 

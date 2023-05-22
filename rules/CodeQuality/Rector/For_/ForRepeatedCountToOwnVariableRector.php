@@ -6,6 +6,8 @@ namespace Rector\CodeQuality\Rector\For_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Smaller;
+use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -76,6 +78,21 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?array
     {
+        foreach ($node->cond as $condExpr) {
+            if (! $condExpr instanceof Smaller && ! $condExpr instanceof SmallerOrEqual) {
+                continue;
+            }
+
+            if (! $condExpr->right instanceof FuncCall) {
+                continue;
+            }
+
+
+            print_node($condExpr);
+        }
+
+        die;
+
         $countInCond = null;
         $variableName = null;
 
