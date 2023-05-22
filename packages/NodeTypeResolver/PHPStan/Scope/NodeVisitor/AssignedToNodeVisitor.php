@@ -21,7 +21,9 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements ScopeRe
             return null;
         }
 
-        $node->expr->setAttribute(AttributeKey::IS_ASSIGNED_TO, true);
+        $node->var->setAttribute(AttributeKey::IS_ASSIGNED_TO, true);
+        $node->expr->setAttribute(AttributeKey::IS_BEING_ASSIGNED, true);
+
         return null;
     }
 }

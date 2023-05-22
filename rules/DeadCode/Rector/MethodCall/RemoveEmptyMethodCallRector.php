@@ -6,9 +6,7 @@ namespace Rector\DeadCode\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
@@ -18,6 +16,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ThisType;
@@ -77,53 +76,55 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class];
+        return [Expression::class, Assign::class, If_::class];
     }
 
     /**
-     * @param MethodCall $node
+     * @param Expression|Assign|If_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope)
     {
-        if ($this->shouldSkip($node)) {
-            return null;
+        if ($node instanceof Expression) {
+            if (! $node->expr instanceof MethodCall) {
+                return null;
+            }
+
+            $methodCall = $node->expr;
+            if ($this->shouldSkipMethodCall($methodCall)) {
+                return null;
+            }
+
+            $type = $scope->getType($methodCall->var);
+            if (! $type instanceof TypeWithClassName) {
+                return null;
+            }
+
+            $classLike = $this->resolveClassLike($methodCall);
+            if (! $classLike instanceof ClassLike) {
+                return null;
+            }
+
+            /** @var Class_|Trait_|Interface_|Enum_ $classLike */
+            if ($this->shouldSkipClassMethod($classLike, $methodCall, $type)) {
+                return null;
+            }
+
+            // if->cond cannot removed, it has to be replaced with false, see https://3v4l.org/U9S9i
+            $parentNode = $methodCall->getAttribute(AttributeKey::PARENT_NODE);
+            if ($parentNode instanceof If_ && $parentNode->cond === $methodCall) {
+                return $this->nodeFactory->createFalse();
+            }
+
+            if ($parentNode instanceof Assign) {
+                return $this->nodeFactory->createFalse();
+            }
+
+            //            if ($parentNode instanceof ArrowFunction && $this->nodeComparator->areNodesEqual($parentNode->expr, $methodCall)) {
+            //                return $this->processArrowFunction($parentNode, $methodCall);
+            //            }
+
+            return NodeTraverser::REMOVE_NODE;
         }
-
-        $type = $scope->getType($node->var);
-        if (! $type instanceof TypeWithClassName) {
-            return null;
-        }
-
-        $classLike = $this->resolveClassLike($node);
-
-        if (! $classLike instanceof ClassLike) {
-            return null;
-        }
-
-        /** @var Class_|Trait_|Interface_|Enum_ $classLike */
-        if ($this->shouldSkipClassMethod($classLike, $node, $type)) {
-            return null;
-        }
-
-        // if->cond cannot removed, it has to be replaced with false, see https://3v4l.org/U9S9i
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof If_ && $parentNode->cond === $node) {
-            return $this->nodeFactory->createFalse();
-        }
-
-        if ($parentNode instanceof Assign) {
-            return $this->nodeFactory->createFalse();
-        }
-
-        if ($parentNode instanceof ArrowFunction && $this->nodeComparator->areNodesEqual($parentNode->expr, $node)) {
-            return $this->processArrowFunction($parentNode, $node);
-        }
-
-        if (! $parentNode instanceof Expression) {
-            return null;
-        }
-
-        $this->removeNode($node);
 
         return null;
     }
@@ -131,7 +132,6 @@ CODE_SAMPLE
     private function resolveClassLike(MethodCall $methodCall): ?ClassLike
     {
         $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($methodCall);
-
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
@@ -139,7 +139,7 @@ CODE_SAMPLE
         return $this->reflectionAstResolver->resolveClassFromName($classReflection->getName());
     }
 
-    private function shouldSkip(MethodCall $methodCall): bool
+    private function shouldSkipMethodCall(MethodCall $methodCall): bool
     {
         if ($this->callAnalyzer->isObjectCall($methodCall->var)) {
             return true;
@@ -190,16 +190,5 @@ CODE_SAMPLE
         }
 
         return ! $classMethod->isPrivate();
-    }
-
-    private function processArrowFunction(ArrowFunction $arrowFunction, MethodCall $methodCall): MethodCall | ConstFetch
-    {
-        $parentParentNode = $arrowFunction->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentParentNode instanceof Expression) {
-            $this->removeNode($arrowFunction);
-            return $methodCall;
-        }
-
-        return $this->nodeFactory->createFalse();
     }
 }

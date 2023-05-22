@@ -79,8 +79,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $assignedTo = $node->getAttribute(AttributeKey::IS_ASSIGNED_TO);
-        if ($assignedTo === true) {
+        $isBeingAssigned = $node->getAttribute(AttributeKey::IS_BEING_ASSIGNED, false);
+        if ($isBeingAssigned === true) {
             return null;
         }
 

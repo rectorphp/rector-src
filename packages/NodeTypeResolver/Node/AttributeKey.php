@@ -234,4 +234,9 @@ final class AttributeKey
      * @var string
      */
     public const STMT_KEY = 'stmt_key';
+
+    /**
+     * @var string
+     */
+    public const IS_BEING_ASSIGNED = 'is_being_assigned';
 }

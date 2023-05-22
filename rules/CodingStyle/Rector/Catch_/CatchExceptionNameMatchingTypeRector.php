@@ -97,6 +97,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+
         foreach ($node->stmts as $key => $stmt) {
             if ($this->shouldSkip($stmt)) {
                 continue;
