@@ -41,13 +41,11 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\PropertyTypeDecorator;
 use Rector\Core\ValueObject\MethodName;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -66,7 +64,6 @@ final class NodeFactory
         private readonly BuilderFactory $builderFactory,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly PropertyTypeDecorator $propertyTypeDecorator
     ) {
     }
@@ -348,19 +345,7 @@ final class NodeFactory
      */
     public function createClassConstFetchFromName(Name $className, string $constantName): ClassConstFetch
     {
-        $classConstFetch = $this->builderFactory->classConstFetch($className, $constantName);
-
-        $classNameString = $className->toString();
-        if (in_array($classNameString, [ObjectReference::SELF, ObjectReference::STATIC], true)) {
-            $currentNode = $this->currentNodeProvider->getNode();
-            if ($currentNode instanceof Node) {
-                $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $className);
-            }
-        } else {
-            $classConstFetch->class->setAttribute(AttributeKey::RESOLVED_NAME, $classNameString);
-        }
-
-        return $classConstFetch;
+        return $this->builderFactory->classConstFetch($className, $constantName);
     }
 
     /**

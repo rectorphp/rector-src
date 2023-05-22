@@ -19,7 +19,6 @@ use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NameTypeResolver\NameTypeResolverTest
@@ -106,12 +105,6 @@ final class NameTypeResolver implements NodeTypeResolverInterface
             }
 
             return (string) $this->nodeNameResolver->getName($classLike);
-        }
-
-        /** @var Name|null $resolvedNameNode */
-        $resolvedNameNode = $name->getAttribute(AttributeKey::RESOLVED_NAME);
-        if ($resolvedNameNode instanceof Name) {
-            return $resolvedNameNode->toString();
         }
 
         return $nameValue;
