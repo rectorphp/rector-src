@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast;
@@ -19,7 +18,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -81,14 +79,22 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, Expression::class, Assign::class];
+        return [FuncCall::class, Expression::class, Assign::class, Expr\ArrayItem::class, Node\Arg::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param FuncCall|Expression|Assign|Expr\ArrayItem|Node\Arg $node
      */
     public function refactor(Node $node)
     {
+        if ($node instanceof Node\Arg || $node instanceof Expr\ArrayItem) {
+            if ($this->isSetTypeFuncCall($node->value)) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
+            return null;
+        }
+
         if ($node instanceof Assign) {
             if (! $this->isSetTypeFuncCall($node->expr)) {
                 return null;
@@ -108,40 +114,36 @@ CODE_SAMPLE
         return $this->refactorFuncCall($node, false);
     }
 
-    private function refactorFuncCall(FuncCall $node, bool $isStandaloneExpression): Assign|null|Cast
+    private function refactorFuncCall(FuncCall $funcCall, bool $isStandaloneExpression): Assign|null|Cast
     {
-        if (! $this->isName($node, 'settype')) {
+        if (! $this->isSetTypeFuncCall($funcCall)) {
             return null;
         }
 
-        if ($node->isFirstClassCallable()) {
+        if ($funcCall->isFirstClassCallable()) {
             return null;
         }
 
-        $typeValue = $this->valueResolver->getValue($node->getArgs()[1]->value);
+        $typeValue = $this->valueResolver->getValue($funcCall->getArgs()[1]->value);
         if (! is_string($typeValue)) {
             return null;
         }
 
         $typeValue = strtolower($typeValue);
 
-        $variable = $node->getArgs()[0]
+        $variable = $funcCall->getArgs()[0]
             ->value;
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
-        // result of function or probably used
-//        skip_assign.php.inc
         if (isset(self::TYPE_TO_CAST[$typeValue])) {
             $castClass = self::TYPE_TO_CAST[$typeValue];
             $castNode = new $castClass($variable);
 
-            if ($isStandaloneExpression === true) {
-                // bare expression? → assign
-                return new Assign($variable, $castNode);
+            if (! $isStandaloneExpression) {
+                return $castNode;
             }
 
-            return $castNode;
+            // bare expression? → assign
+            return new Assign($variable, $castNode);
         }
 
         if ($typeValue === 'null') {
