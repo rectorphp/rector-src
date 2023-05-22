@@ -24,8 +24,7 @@ final class CrashIndentationInFor
 {
     public function search($rates, $type, $cpt)
     {
-        $ratesCount = count($rates);
-        for ($i = 0; $i < $ratesCount; $i++) {
+        for ($i = 0; $i < (is_countable($rates) ? count($rates) : 0); $i++) {
             // one two three
         }
 

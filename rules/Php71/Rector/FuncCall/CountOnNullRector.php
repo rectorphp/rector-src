@@ -28,6 +28,7 @@ use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeAnalyzer\CountableTypeAnalyzer;
 use Rector\Php71\NodeAnalyzer\CountableAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -107,11 +108,7 @@ CODE_SAMPLE
         // this can lead to false positive by PHPStan
         $onlyValueType = $this->getType($countedExpr);
         if ($onlyValueType instanceof ArrayType) {
-            if (! $this->countableAnalyzer->isCastableArrayType($countedExpr, $onlyValueType, $scope)) {
-                return null;
-            }
-
-            return $this->castToArray($countedExpr, $node);
+            return $this->refactorArrayType($countedExpr, $onlyValueType, $scope, $node);
         }
 
         if ($this->nodeTypeResolver->isNullableTypeOfSpecificType($countedExpr, ArrayType::class)) {
@@ -166,6 +163,13 @@ CODE_SAMPLE
         }
 
         $firstArg = $funcCall->getArgs()[0];
+
+        // just added node, lets skip it to be sure we're not using mixing
+        $origNode = $firstArg->value->getAttribute(AttributeKey::ORIGINAL_NODE);
+        if (! $origNode instanceof \PhpParser\Node) {
+            return true;
+        }
+
         if (! $firstArg->value instanceof Variable) {
             return false;
         }
@@ -203,5 +207,18 @@ CODE_SAMPLE
         }
 
         return $ternary->else instanceof FuncCall && $this->isName($ternary->else, 'count');
+    }
+
+    private function refactorArrayType(
+        Expr $countedExpr,
+        ArrayType $arrayType,
+        Scope $scope,
+        FuncCall $funcCall
+    ): ?FuncCall {
+        if (! $this->countableAnalyzer->isCastableArrayType($countedExpr, $arrayType, $scope)) {
+            return null;
+        }
+
+        return $this->castToArray($countedExpr, $funcCall);
     }
 }
