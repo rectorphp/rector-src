@@ -131,10 +131,7 @@ CODE_SAMPLE
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
-        if ($parentNode instanceof Expr || $parentNode instanceof Arg) {
-            return null;
-        }
-
+//        skip_assign.php.inc
         if (isset(self::TYPE_TO_CAST[$typeValue])) {
             $castClass = self::TYPE_TO_CAST[$typeValue];
             $castNode = new $castClass($variable);

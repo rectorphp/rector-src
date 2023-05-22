@@ -2,10 +2,12 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\SetTypeToCastRector\Fixture;
 
-class SkipAssign
+final class SkipArgs
 {
     public function run($foo)
     {
-        $result = settype($foo, 'string');
+        is_bool(settype($foo, 'string'));
+
+        settype($foo, settype($foo, 'string'));
     }
 }
