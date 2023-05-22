@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -80,14 +81,22 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, Expression::class];
+        return [FuncCall::class, Expression::class, Assign::class];
     }
 
     /**
      * @param FuncCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node)
     {
+        if ($node instanceof Assign) {
+            if (! $this->isSetTypeFuncCall($node->expr)) {
+                return null;
+            }
+
+            return NodeTraverser::DONT_TRAVERSE_CHILDREN;
+        }
+
         if ($node instanceof Expression) {
             if (! $node->expr instanceof FuncCall) {
                 return null;
@@ -118,6 +127,7 @@ CODE_SAMPLE
 
         $variable = $node->getArgs()[0]
             ->value;
+
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         // result of function or probably used
@@ -142,5 +152,15 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isSetTypeFuncCall(Expr $expr): bool
+    {
+        // skip assign of settype() calls
+        if (! $expr instanceof FuncCall) {
+            return false;
+        }
+
+        return $this->isName($expr, 'settype');
     }
 }
