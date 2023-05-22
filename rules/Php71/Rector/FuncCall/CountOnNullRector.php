@@ -90,9 +90,9 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Arg $arg0 */
-        $arg0 = $node->args[0];
-        $countedNode = $arg0->value;
+        $firstArg = $node->getArgs()[0];
+
+        $countedNode = $firstArg->value;
         if ($this->countableTypeAnalyzer->isCountableType($countedNode)) {
             return null;
         }
@@ -111,13 +111,11 @@ CODE_SAMPLE
             return $this->castToArray($countedNode, $node);
         }
 
-        $countedType = $this->getType($countedNode);
-
-        if ($this->isAlwaysIterableType($countedType)) {
+        if ($this->isAlwaysIterableType($onlyValueType)) {
             return null;
         }
 
-        if ($this->nodeTypeResolver->isNullableType($countedNode) || $countedType instanceof NullType) {
+        if ($this->nodeTypeResolver->isNullableType($countedNode) || $onlyValueType instanceof NullType) {
             $identical = new Identical($countedNode, $this->nodeFactory->createNull());
 
             return new Ternary($identical, new LNumber(0), $node);
@@ -189,7 +187,6 @@ CODE_SAMPLE
             return false;
         }
 
-        $parentNode = $funcCall->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof Node) {
             $originalParentNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
 
