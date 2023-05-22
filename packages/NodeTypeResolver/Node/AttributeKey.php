@@ -77,6 +77,7 @@ final class AttributeKey
     public const PARENT_NODE = 'parent';
 
     /**
+     * @api
      * @internal of php-parser, do not change
      * @deprecated Use StmtsAwareInterface instead
      *
@@ -86,6 +87,7 @@ final class AttributeKey
     public const PREVIOUS_NODE = 'previous';
 
     /**
+     * @api
      * @internal of php-parser, do not change
      * @deprecated Use StmtsAwareInterface instead
      *
