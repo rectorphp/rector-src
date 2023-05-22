@@ -24,7 +24,6 @@ use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToArrayFilterRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
-use Rector\CodeQuality\Rector\FuncCall\AddPregQuoteDelimiterRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
 use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
@@ -155,7 +154,6 @@ return static function (RectorConfig $rectorConfig): void {
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ShortenElseIfRector::class,
-        AddPregQuoteDelimiterRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
         IntvalToTypeCastRector::class,
         BoolvalToTypeCastRector::class,
