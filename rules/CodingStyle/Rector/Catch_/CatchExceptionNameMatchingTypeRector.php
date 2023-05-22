@@ -90,6 +90,7 @@ CODE_SAMPLE
         return [
             ClassMethod::class,
             Function_::class,
+            Closure::class,
             FileWithoutNamespace::class,
             Namespace_::class,
         ];
