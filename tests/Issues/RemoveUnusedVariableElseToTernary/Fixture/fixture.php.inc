@@ -48,11 +48,7 @@ class Fixture
     {
         $srcImg = $this->createImage();
 
-        if (function_exists('imagecreatetruecolor')) {
-            $create = 'imagecreatetruecolor';
-        } else {
-            $create = 'imagecreate';
-        }
+        $create = function_exists('imagecreatetruecolor') ? 'imagecreatetruecolor' : 'imagecreate';
         $dest = $create($this->width, $this->height);
 
         $matte = imagecolorallocate($dest, $red, $green, $blue);
