@@ -576,8 +576,6 @@ final class BetterNodeFinder
     /**
      * @api
      *
-     * @deprecated Use StmtsAwareInterface instead
-     *
      * Resolve next node from any Node, eg: Expr, Identifier, Name, etc
      */
     public function resolveNextNode(Node $node): ?Node
