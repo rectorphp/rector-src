@@ -7,25 +7,18 @@ namespace Rector\DeadCode\Rector\Assign;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\NullsafeMethodCall;
-use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
-use Rector\Core\PhpParser\Comparing\ConditionSearcher;
 use Rector\Core\Rector\AbstractScopeAwareRector;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
-use Rector\DeadCode\NodeAnalyzer\UsedVariableNameAnalyzer;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
-use Rector\Php74\Tokenizer\FollowedByCurlyBracketAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -36,11 +29,7 @@ final class RemoveUnusedVariableAssignRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
-        private readonly ConditionSearcher $conditionSearcher,
-        private readonly UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
-        private readonly ExprUsedInNextNodeAnalyzer $exprUsedInNextNodeAnalyzer,
-        private readonly FollowedByCurlyBracketAnalyzer $followedByCurlyBracketAnalyzer
     ) {
     }
 
@@ -83,58 +72,50 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?ClassMethod
     {
-        if ($node->stmts === null) {
+        $classMethodStmts = $node->stmts;
+        if ($classMethodStmts === null) {
             return null;
         }
 
-        foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof Expression) {
+        // we cannot be sure here
+        if ($this->containsCompactFuncCall($node)) {
+            return null;
+        }
+
+        if ($this->containsFileIncludes($node)) {
+            return null;
+        }
+
+        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($classMethodStmts);
+
+        $hasChanged = false;
+
+        foreach ($assignedVariableNamesByStmtPosition as $stmtPosition => $variableName) {
+            if ($this->isVariableUsedInFollowingStmts($node, $stmtPosition, $variableName)) {
                 continue;
             }
 
-            if (! $stmt->expr instanceof Assign) {
-                continue;
+            /** @var Expression<Assign> $currentStmt */
+            $currentStmt = $classMethodStmts[$stmtPosition];
+
+            /** @var Assign $assign */
+            $assign = $currentStmt->expr;
+
+            /** @var Scope $assignScope */
+            $assignScope = $assign->getAttribute(AttributeKey::SCOPE);
+
+            if ($this->hasCallLikeInAssignExpr($assign, $assignScope)) {
+                // clean safely
+                $cleanAssignedExpr = $this->cleanCastedExpr($assign->expr);
+                $node->stmts[$stmtPosition] = new Expression($cleanAssignedExpr);
+            } else {
+                unset($node->stmts[$stmtPosition]);
             }
 
-            $assign = $stmt->expr;
-            if ($this->shouldSkipAssign($assign)) {
-                continue;
-            }
+            $hasChanged = true;
+        }
 
-            if (! $assign->var instanceof Variable) {
-                return null;
-            }
-
-            $nextStmt = $node->stmts[$key + 1] ?? null;
-
-            $variableName = $this->getName($assign->var);
-            if ($variableName !== null && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
-                return null;
-            }
-
-            // variable is used
-            if ($this->isUsed($assign, $assign->var, $scope)) {
-                $shouldRemove = $this->refactorUsedVariable($assign, $scope, $nextStmt);
-                if ($shouldRemove === true) {
-                    unset($node->stmts[$key]);
-                    return $node;
-                }
-
-                if ($shouldRemove instanceof \PhpParser\Node) {
-                    $node->stmts[$key] = new Expression($shouldRemove);
-                    return $node;
-                }
-            }
-
-            if ($this->hasCallLikeInAssignExpr($assign->expr, $scope)) {
-                // keep the expr, can have side effect
-                $cleanedExpr = $this->cleanCastedExpr($assign->expr);
-                $node->stmts[$key] = new Expression($cleanedExpr);
-
-                return $node;
-            }
-
-            unset($node->stmts[$key]);
+        if ($hasChanged) {
             return $node;
         }
 
@@ -147,8 +128,7 @@ CODE_SAMPLE
             return $expr;
         }
 
-        $castedExpr = $expr->expr;
-        return $this->cleanCastedExpr($castedExpr);
+        return $this->cleanCastedExpr($expr->expr);
     }
 
     private function hasCallLikeInAssignExpr(Expr $expr, Scope $scope): bool
@@ -159,59 +139,28 @@ CODE_SAMPLE
         );
     }
 
-    private function shouldSkipAssign(Assign $assign): bool
-    {
-        $variable = $assign->var;
-        if (! $variable instanceof Variable) {
-            return true;
-        }
-
-        if (! $variable->name instanceof Variable) {
-            return $this->followedByCurlyBracketAnalyzer->isFollowed($this->file, $variable);
-        }
-
-        return (bool) $this->betterNodeFinder->findFirstNext(
-            $assign,
-            static fn (Node $node): bool => $node instanceof Variable
-        );
-    }
-
-    private function isUsed(Assign $assign, Variable $variable, Scope $scope): bool
-    {
-        $isUsedPrev = $scope->hasVariableType((string) $this->getName($variable))
-            ->yes();
-
-        if ($isUsedPrev) {
-            return true;
-        }
-
-        if ($this->exprUsedInNextNodeAnalyzer->isUsed($variable)) {
-            return true;
-        }
-
-        /** @var FuncCall|MethodCall|New_|NullsafeMethodCall|StaticCall $expr */
-        $expr = $assign->expr;
-        if (! $this->sideEffectNodeDetector->detectCallExpr($expr, $scope)) {
+    private function isVariableUsedInFollowingStmts(
+        ClassMethod $classMethod,
+        int $assignStmtPosition,
+        string $variableName
+    ): bool {
+        if ($classMethod->stmts === null) {
             return false;
         }
 
-        return $this->isUsedInAssignExpr($expr, $assign, $scope);
-    }
+        foreach ($classMethod->stmts as $key => $stmt) {
+            // do not look yet
+            if ($key <= $assignStmtPosition) {
+                continue;
+            }
 
-    private function isUsedInAssignExpr(CallLike | Expr $expr, Assign $assign, Scope $scope): bool
-    {
-        if (! $expr instanceof CallLike) {
-            return $this->isUsedInPreviousAssign($assign, $expr, $scope);
-        }
+            $stmtScope = $stmt->getAttribute(AttributeKey::SCOPE);
+            if (! $stmtScope instanceof Scope) {
+                continue;
+            }
 
-        if ($expr->isFirstClassCallable()) {
-            return false;
-        }
-
-        foreach ($expr->getArgs() as $arg) {
-            $variable = $arg->value;
-
-            if ($this->isUsedInPreviousAssign($assign, $variable, $scope)) {
+            $foundVariable = $this->betterNodeFinder->findVariableOfName($stmt, $variableName);
+            if ($foundVariable instanceof Variable) {
                 return true;
             }
         }
@@ -219,46 +168,58 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isUsedInPreviousAssign(Assign $assign, Expr $expr, Scope $scope): bool
+    private function containsCompactFuncCall(ClassMethod|Node $node): bool
     {
-        if (! $expr instanceof Variable) {
-            return false;
-        }
-
-        $previousAssign = $this->betterNodeFinder->findFirstPrevious(
-            $assign,
-            fn (Node $node): bool => $node instanceof Assign && $this->usedVariableNameAnalyzer->isVariableNamed(
-                $node->var,
-                $expr
-            )
-        );
-
-        if ($previousAssign instanceof Assign) {
-            return $this->isUsed($assign, $expr, $scope);
-        }
-
-        return false;
-    }
-
-    private function refactorUsedVariable(Assign $assign, Scope $scope, ?Node\Stmt $nextStmt): bool|null|Expr
-    {
-        // check if next node is if
-        if (! $nextStmt instanceof If_) {
-            if (
-                $assign->var instanceof Variable &&
-                ! $scope->hasVariableType((string) $this->getName($assign->var))
-                    ->yes() &&
-                ! $this->exprUsedInNextNodeAnalyzer->isUsed($assign->var)) {
-                return $this->cleanCastedExpr($assign->expr);
+        $compactFuncCall = $this->betterNodeFinder->findFirst($node, function (Node $node): bool {
+            if (! $node instanceof FuncCall) {
+                return false;
             }
 
-            return null;
+            return $this->isName($node, 'compact');
+        });
+
+        return $compactFuncCall instanceof FuncCall;
+    }
+
+    private function containsFileIncludes(ClassMethod $classMethod): bool
+    {
+        return (bool) $this->betterNodeFinder->findInstancesOf($classMethod, [Include_::class]);
+    }
+
+    /**
+     * @param array<int, Stmt> $stmts
+     * @return array<int, string>
+     */
+    private function resolvedAssignedVariablesByStmtPosition(array $stmts): array
+    {
+        $assignedVariableNamesByStmtPosition = [];
+
+        foreach ($stmts as $key => $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            $assign = $stmt->expr;
+            if (! $assign->var instanceof Variable) {
+                continue;
+            }
+
+            $variableName = $this->getName($assign->var);
+            if (! is_string($variableName)) {
+                continue;
+            }
+
+            if ($this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
+                continue;
+            }
+
+            $assignedVariableNamesByStmtPosition[$key] = $variableName;
         }
 
-        if ($this->conditionSearcher->hasIfAndElseForVariableRedeclaration($assign, $nextStmt)) {
-            return true;
-        }
-
-        return null;
+        return $assignedVariableNamesByStmtPosition;
     }
 }

@@ -1,0 +1,11 @@
+<?php
+
+namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
+
+final class SkipVariableName
+{
+    public function run($abcdef = 'foo')
+    {
+        $$abcdef = 'test';
+    }
+}
