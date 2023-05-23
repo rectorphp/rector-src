@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -26,7 +25,6 @@ use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNextNodeAnalyzer;
 use Rector\DeadCode\NodeAnalyzer\UsedVariableNameAnalyzer;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php74\Tokenizer\FollowedByCurlyBracketAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -77,39 +75,69 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [ClassMethod::class];
     }
 
     /**
-     * @param Assign $node
+     * @param ClassMethod $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?ClassMethod
     {
-        if ($this->shouldSkip($node)) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $variable = $node->var;
-        if (! $variable instanceof Variable) {
-            return null;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            $assign = $stmt->expr;
+            if ($this->shouldSkipAssign($assign)) {
+                continue;
+            }
+
+            if (! $assign->var instanceof Variable) {
+                return null;
+            }
+
+            $nextStmt = $node->stmts[$key + 1] ?? null;
+
+            $variableName = $this->getName($assign->var);
+            if ($variableName !== null && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
+                return null;
+            }
+
+            // variable is used
+            if ($this->isUsed($assign, $assign->var, $scope)) {
+                $shouldRemove = $this->refactorUsedVariable($assign, $scope, $nextStmt);
+                if ($shouldRemove === true) {
+                    unset($node->stmts[$key]);
+                    return $node;
+                }
+
+                if ($shouldRemove instanceof \PhpParser\Node) {
+                    $node->stmts[$key] = new Expression($shouldRemove);
+                    return $node;
+                }
+            }
+
+            if ($this->hasCallLikeInAssignExpr($assign->expr, $scope)) {
+                // keep the expr, can have side effect
+                $cleanedExpr = $this->cleanCastedExpr($assign->expr);
+                $node->stmts[$key] = new Expression($cleanedExpr);
+
+                return $node;
+            }
+
+            unset($node->stmts[$key]);
+            return $node;
         }
 
-        $variableName = $this->getName($variable);
-        if ($variableName !== null && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
-            return null;
-        }
-
-        // variable is used
-        if ($this->isUsed($node, $variable, $scope)) {
-            return $this->refactorUsedVariable($node, $scope);
-        }
-
-        if ($this->hasCallLikeInAssignExpr($node->expr, $scope)) {
-            // keep the expr, can have side effect
-            return $this->cleanCastedExpr($node->expr);
-        }
-
-        $this->removeNode($node);
         return null;
     }
 
@@ -131,25 +159,10 @@ CODE_SAMPLE
         );
     }
 
-    private function shouldSkip(Assign $assign): bool
+    private function shouldSkipAssign(Assign $assign): bool
     {
-        $classMethod = $this->betterNodeFinder->findParentType($assign, ClassMethod::class);
-        if (! $classMethod instanceof FunctionLike) {
-            return true;
-        }
-
         $variable = $assign->var;
         if (! $variable instanceof Variable) {
-            return true;
-        }
-
-        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Expression) {
-            return true;
-        }
-
-        $originalNode = $parentNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalNode instanceof Node) {
             return true;
         }
 
@@ -227,17 +240,10 @@ CODE_SAMPLE
         return false;
     }
 
-    private function refactorUsedVariable(Assign $assign, Scope $scope): null|Expr
+    private function refactorUsedVariable(Assign $assign, Scope $scope, ?Node\Stmt $nextStmt): bool|null|Expr
     {
-        $parentNode = $assign->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Expression) {
-            return null;
-        }
-
-        $node = $this->betterNodeFinder->resolveNextNode($parentNode);
-
         // check if next node is if
-        if (! $node instanceof If_) {
+        if (! $nextStmt instanceof If_) {
             if (
                 $assign->var instanceof Variable &&
                 ! $scope->hasVariableType((string) $this->getName($assign->var))
@@ -249,9 +255,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->conditionSearcher->hasIfAndElseForVariableRedeclaration($assign, $node)) {
-            $this->removeNode($assign);
-            return $assign;
+        if ($this->conditionSearcher->hasIfAndElseForVariableRedeclaration($assign, $nextStmt)) {
+            return true;
         }
 
         return null;
