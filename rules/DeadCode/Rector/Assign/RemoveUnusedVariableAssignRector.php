@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\Analyser\Scope;
+use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
@@ -30,6 +31,7 @@ final class RemoveUnusedVariableAssignRector extends AbstractScopeAwareRector
     public function __construct(
         private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
+        private readonly VariableAnalyzer $variableAnalyzer
     ) {
     }
 
@@ -100,10 +102,6 @@ CODE_SAMPLE
 
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
-
-            if ($assign->var->getAttribute(AttributeKey::IS_STATIC_VAR) === true) {
-                continue;
-            }
 
             /** @var Scope $assignScope */
             $assignScope = $assign->getAttribute(AttributeKey::SCOPE);
@@ -218,6 +216,14 @@ CODE_SAMPLE
             }
 
             if ($this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
+                continue;
+            }
+
+            if ($this->variableAnalyzer->isStaticOrGlobal($assign->var)) {
+                continue;
+            }
+
+            if ($this->variableAnalyzer->isUsedByReference($assign->var)) {
                 continue;
             }
 
