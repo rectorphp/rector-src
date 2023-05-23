@@ -178,11 +178,6 @@ CODE_SAMPLE
             return false;
         }
 
-        $node = $classMethod->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $node instanceof Class_) {
-            return false;
-        }
-
-        return $node->isFinal();
+        return $classReflection->isFinalByKeyword();
     }
 }
