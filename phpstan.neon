@@ -345,11 +345,6 @@ parameters:
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
 
         -
-            message: '#PHPDoc tag @param for parameter \$node with type array<PhpParser\\Node\\Stmt\\Expression>\|null is incompatible with native type PhpParser\\Node#'
-            paths:
-                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
-
-        -
             message: '#Access to an undefined property PhpParser\\Node\:\:\$expr#'
             paths:
                 - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
@@ -743,8 +738,8 @@ parameters:
             path: src/Kernel/RectorKernel.php
 
         # expression generics
-        - '#PHPDoc tag @return contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
-        - '#PHPDoc tag @var for variable \$previousStmt contains generic type PhpParser\\Node\\Stmt\\Expression<PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp> but class PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
+
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
         - '#Anonymous variable in a (.*?)->stmts\[(.*?)]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
@@ -754,3 +749,6 @@ parameters:
         # WIP
         - '#Fetching deprecated class constant PARENT_NODE#'
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
+
+        # resolve before 1.0
+        - '#Call to deprecated method resolveNextNode\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder\:#'
