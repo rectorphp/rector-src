@@ -101,6 +101,10 @@ CODE_SAMPLE
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
 
+            if ($assign->var->getAttribute(AttributeKey::IS_STATIC_VAR) === true) {
+                continue;
+            }
+
             /** @var Scope $assignScope */
             $assignScope = $assign->getAttribute(AttributeKey::SCOPE);
 
