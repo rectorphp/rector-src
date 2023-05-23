@@ -549,16 +549,12 @@ final class BetterNodeFinder
         }
 
         $startTokenPos = $node->getStartTokenPos();
-        if ($startTokenPos < 0) {
-            $nodes = [];
-        } else {
-            $nodes = $currentStmt->getStartTokenPos() === $startTokenPos
-                ? []
-                : $this->find(
-                    $currentStmt,
-                    static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-                );
-        }
+        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
+            ? []
+            : $this->find(
+                $currentStmt,
+                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+            );
 
         if ($nodes === []) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
@@ -586,18 +582,13 @@ final class BetterNodeFinder
             return null;
         }
 
-        // just added
         $endTokenPos = $node->getEndTokenPos();
-        if ($endTokenPos < 0) {
-            $nextNode = null;
-        } else {
-            $nextNode = $currentStmt->getEndTokenPos() === $endTokenPos
-                ? null
-                : $this->findFirst(
-                    $currentStmt,
-                    static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
-                );
-        }
+        $nextNode = $endTokenPos < 0 || $currentStmt->getEndTokenPos() === $endTokenPos
+            ? null
+            : $this->findFirst(
+                $currentStmt,
+                static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
+            );
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
