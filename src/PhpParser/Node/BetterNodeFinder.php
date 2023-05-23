@@ -544,20 +544,21 @@ final class BetterNodeFinder
     {
         $currentStmt = $this->resolveCurrentStatement($node);
 
-        // just added
         if (! $currentStmt instanceof Stmt) {
             return null;
         }
 
-        // just added
         $startTokenPos = $node->getStartTokenPos();
         if ($startTokenPos < 0) {
-            return null;
+            $nodes = [];
+        } else {
+            $nodes = $currentStmt->getStartTokenPos() === $startTokenPos
+                ? []
+                : $this->find(
+                    $currentStmt,
+                    static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+                );
         }
-
-        $nodes = $currentStmt->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find($currentStmt, static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos);
 
         if ($nodes === []) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
@@ -581,8 +582,6 @@ final class BetterNodeFinder
     public function resolveNextNode(Node $node): ?Node
     {
         $currentStmt = $this->resolveCurrentStatement($node);
-
-        // just added
         if (! $currentStmt instanceof Stmt) {
             return null;
         }
@@ -590,15 +589,15 @@ final class BetterNodeFinder
         // just added
         $endTokenPos = $node->getEndTokenPos();
         if ($endTokenPos < 0) {
-            return null;
+            $nextNode = null;
+        } else {
+            $nextNode = $currentStmt->getEndTokenPos() === $endTokenPos
+                ? null
+                : $this->findFirst(
+                    $currentStmt,
+                    static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
+                );
         }
-
-        $nextNode = $currentStmt->getEndTokenPos() === $endTokenPos
-            ? null
-            : $this->findFirst(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getStartTokenPos() > $endTokenPos
-            );
 
         if (! $nextNode instanceof Node) {
             $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
