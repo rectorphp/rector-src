@@ -8,8 +8,6 @@ final class ReUsedAssign
 {
     public function testCastAsJSONErrorDepth()
     {
-        $entity = $this->getCastEntity();
-
         // Create array with depth 513 to get depth error
         $array   = [];
         $value   = 'test value';
@@ -35,8 +33,6 @@ final class ReUsedAssign
 {
     public function testCastAsJSONErrorDepth()
     {
-        $entity = $this->getCastEntity();
-
         // Create array with depth 513 to get depth error
         $array   = [];
         $keys    = rtrim(str_repeat('test.', 513), '.');

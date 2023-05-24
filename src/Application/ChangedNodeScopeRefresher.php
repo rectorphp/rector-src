@@ -100,6 +100,10 @@ final class ChangedNodeScopeRefresher
     {
         if (($node instanceof ClassLike || $node instanceof StmtsAwareInterface || $node instanceof Declare_) && $node->stmts !== null) {
             $node->stmts = array_values($node->stmts);
+
+            foreach ($node->stmts as $key => $stmt) {
+                $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
+            }
         }
 
         if ($node instanceof FunctionLike) {

@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
@@ -25,9 +26,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     public function beforeTraverse(array $nodes): array
     {
         foreach ($nodes as $key => $node) {
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            if ($currentStmtKey !== null) {
-                continue;
+            if ($node instanceof FileWithoutNamespace) {
+                return $nodes;
             }
 
             $node->setAttribute(AttributeKey::STMT_KEY, $key);
