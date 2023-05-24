@@ -53,7 +53,7 @@ final class ClassMethodAssignManipulator
     }
 
     /**
-     * @return Assign[]
+     * @return array<Expression<Assign>>
      */
     public function collectReadyOnlyAssignScalarVariables(ClassMethod $classMethod, Class_ $class): array
     {

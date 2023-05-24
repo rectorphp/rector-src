@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
+use mysql_xdevapi\Expression;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -41,7 +42,7 @@ final class VariableManipulator
     }
 
     /**
-     * @return Assign[]
+     * @return array<Expression<Assign>>
      */
     public function collectScalarOrArrayAssignsOfVariable(ClassMethod $classMethod, Class_ $class): array
     {

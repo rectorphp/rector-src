@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
+use mysql_xdevapi\Expression;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -23,10 +24,10 @@ final class ArrayDestructVariableFilter
     }
 
     /**
-     * @param Assign[] $variableAssigns
-     * @return Assign[]
+     * @param Expression<Assign> $variableAssignExpressions
+     * @return Expression<Assign>
      */
-    public function filterOut(array $variableAssigns, ClassMethod $classMethod): array
+    public function filterOut(array $variableAssignExpressions, ClassMethod $classMethod): array
     {
         $arrayDestructionCreatedVariables = [];
 
@@ -58,7 +59,7 @@ final class ArrayDestructVariableFilter
         });
 
         return array_filter(
-            $variableAssigns,
+            $variableAssignExpressions,
             fn (Assign $assign): bool => ! $this->nodeNameResolver->isNames(
                 $assign->var,
                 $arrayDestructionCreatedVariables
