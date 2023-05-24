@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Symfony\Component\Yaml\Yaml;
 
 use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
@@ -15,7 +16,7 @@ return static function (RectorConfig $rectorConfig): void {
                 'some_function',
                 0,
                 true,
-                'Symfony\Component\Yaml\Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE'
+                Yaml::class . '::DUMP_EXCEPTION_ON_INVALID_TYPE'
             ),
         ]);
 };
