@@ -30,8 +30,6 @@ final class JoinStringConcatRector extends AbstractRector
      */
     private const ASCII_REGEX = '#[^\x00-\x7F]#';
 
-    private bool $nodeReplacementIsRestricted = false;
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
