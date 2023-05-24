@@ -2,10 +2,7 @@
 
 $a = true;
 $b = true;
-if (!$a) {
-    return;
+
+if ($a && $b) {
+    return true;
 }
-if (!$b) {
-    return;
-}
-return true;
