@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\ValueObject\PropertyMetadata;
 
 final class ClassInsertManipulator
 {
@@ -69,20 +68,6 @@ final class ClassInsertManipulator
         }
 
         $property = $this->nodeFactory->createPrivatePropertyFromNameAndType($name, $type);
-        $this->addAsFirstMethod($class, $property);
-    }
-
-    public function addInjectPropertyToClass(Class_ $class, PropertyMetadata $propertyMetadata): void
-    {
-        $existingProperty = $class->getProperty($propertyMetadata->getName());
-        if ($existingProperty instanceof Property) {
-            return;
-        }
-
-        $property = $this->nodeFactory->createPublicInjectPropertyFromNameAndType(
-            $propertyMetadata->getName(),
-            $propertyMetadata->getType()
-        );
         $this->addAsFirstMethod($class, $property);
     }
 
