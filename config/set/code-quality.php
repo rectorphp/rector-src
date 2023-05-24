@@ -67,7 +67,6 @@ use Rector\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector;
 use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector;
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
-use Rector\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector;
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
 use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
@@ -180,7 +179,6 @@ return static function (RectorConfig $rectorConfig): void {
         CallUserFuncWithArrowFunctionToInlineRector::class,
         CountArrayToEmptyArrayComparisonRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
-        ExplicitMethodCallOverMagicGetSetRector::class,
         InlineArrayReturnAssignRector::class,
         InlineIsAInstanceOfRector::class,
         TernaryFalseExpressionToIfRector::class,
