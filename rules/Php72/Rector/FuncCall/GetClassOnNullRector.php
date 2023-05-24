@@ -76,7 +76,7 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): int|null|Ternary {
             if ($node instanceof Ternary) {
                 return NodeTraverser::STOP_TRAVERSAL;
             }
