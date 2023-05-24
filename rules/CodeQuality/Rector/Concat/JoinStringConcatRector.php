@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\StringUtils;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -76,73 +75,35 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $this->nodeReplacementIsRestricted = false;
-
-        if (! $this->isTopMostConcatNode($node)) {
+        if (! $node->left instanceof String_) {
             return null;
         }
 
-        $joinedNode = $this->joinConcatIfStrings($node);
-        if (! $joinedNode instanceof String_) {
+        if (! $node->right instanceof String_) {
             return null;
         }
 
-        if ($this->nodeReplacementIsRestricted) {
-            return null;
-        }
-
-        return $joinedNode;
+        return $this->joinConcatIfStrings($node->left, $node->right);
     }
 
-    private function isTopMostConcatNode(Concat $concat): bool
+    private function joinConcatIfStrings(String_ $leftString, String_ $rightString): ?String_
     {
-        $parentNode = $concat->getAttribute(AttributeKey::PARENT_NODE);
-        return ! $parentNode instanceof Concat;
-    }
+        $leftValue = $leftString->value;
+        $rightValue = $rightString->value;
 
-    private function joinConcatIfStrings(Concat $node): Concat | String_
-    {
-        $concat = clone $node;
-
-        if ($concat->left instanceof Concat) {
-            $concat->left = $this->joinConcatIfStrings($concat->left);
+        if ($leftValue === "\n" || $rightValue === "\n") {
+            return null;
         }
 
-        if ($concat->right instanceof Concat) {
-            $concat->right = $this->joinConcatIfStrings($concat->right);
+        $joinedStringValue = $leftValue . $rightValue;
+        if (StringUtils::isMatch($joinedStringValue, self::ASCII_REGEX)) {
+            return null;
         }
 
-        if (! $concat->left instanceof String_) {
-            return $node;
+        if (Strings::length($joinedStringValue) >= self::LINE_BREAK_POINT) {
+            return null;
         }
 
-        if (! $concat->right instanceof String_) {
-            return $node;
-        }
-
-        $leftValue = $concat->left->value;
-        $rightValue = $concat->right->value;
-
-        if ($leftValue === "\n") {
-            $this->nodeReplacementIsRestricted = true;
-            return $node;
-        }
-
-        if ($rightValue === "\n") {
-            $this->nodeReplacementIsRestricted = true;
-            return $node;
-        }
-
-        $resultString = new String_($leftValue . $rightValue);
-        if (StringUtils::isMatch($resultString->value, self::ASCII_REGEX)) {
-            return $node;
-        }
-
-        if (Strings::length($resultString->value) >= self::LINE_BREAK_POINT) {
-            $this->nodeReplacementIsRestricted = true;
-            return $node;
-        }
-
-        return $resultString;
+        return new String_($joinedStringValue);
     }
 }
