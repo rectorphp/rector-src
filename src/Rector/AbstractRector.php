@@ -182,6 +182,11 @@ CODE_SAMPLE;
 
         $this->file = $file;
 
+        $filePath = $this->file->getFilePath();
+        if ($this->skipper->shouldSkipElementAndFilePath($this, $filePath)) {
+            return null;
+        }
+
         foreach ($nodes as $key => $childStmt) {
             if (! $childStmt instanceof FileWithoutNamespace) {
                 $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
@@ -420,11 +425,6 @@ CODE_SAMPLE;
     private function shouldSkipCurrentNode(Node $node): bool
     {
         if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
-            return true;
-        }
-
-        $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipElementAndFilePath($this, $filePath)) {
             return true;
         }
 
