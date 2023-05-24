@@ -49,15 +49,6 @@ final class ClassInsertManipulator
         $class->stmts[] = $stmt;
     }
 
-    public function addConstantToClass(Class_ $class, string $constantName, ClassConst $classConst): void
-    {
-        if ($this->hasClassConstant($class, $constantName)) {
-            return;
-        }
-
-        $this->addAsFirstMethod($class, $classConst);
-    }
-
     /**
      * @api
      * @param Property[] $properties
