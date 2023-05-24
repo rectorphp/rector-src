@@ -48,6 +48,8 @@ final class ClassInsertManipulator
 
     /**
      * @api
+     *
+     * @deprecated Add properties directly instead
      * @param Property[] $properties
      */
     public function addPropertiesToClass(Class_ $class, array $properties): void
