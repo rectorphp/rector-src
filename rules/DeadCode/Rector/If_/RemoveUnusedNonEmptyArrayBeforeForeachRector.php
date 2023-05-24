@@ -162,24 +162,24 @@ CODE_SAMPLE
         return $this->countManipulator->isCounterHigherThanOne($booleanAnd->right, $foreachExpr);
     }
 
-    private function refactorStmtsAware(StmtsAwareInterface $stmtsAware): ?StmtsAwareInterface
+    private function refactorStmtsAware(Node $node): ?StmtsAwareInterface
     {
-        if ($stmtsAware->stmts === null) {
+        if ($node->stmts === null) {
             return null;
         }
 
         /** @var int $lastKey */
-        $lastKey = array_key_last($stmtsAware->stmts);
-        if (! isset($stmtsAware->stmts[$lastKey], $stmtsAware->stmts[$lastKey - 1])) {
+        $lastKey = array_key_last($node->stmts);
+        if (! isset($node->stmts[$lastKey], $node->stmts[$lastKey - 1])) {
             return null;
         }
 
-        $stmt = $stmtsAware->stmts[$lastKey - 1];
+        $stmt = $node->stmts[$lastKey - 1];
         if (! $stmt instanceof If_) {
             return null;
         }
 
-        $nextStmt = $stmtsAware->stmts[$lastKey];
+        $nextStmt = $node->stmts[$lastKey];
         if (! $nextStmt instanceof Foreach_) {
             return null;
         }
@@ -188,7 +188,7 @@ CODE_SAMPLE
             return null;
         }
 
-        unset($stmtsAware->stmts[$lastKey - 1]);
-        return $stmtsAware;
+        unset($node->stmts[$lastKey - 1]);
+        return $node;
     }
 }
