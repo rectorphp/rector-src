@@ -737,8 +737,9 @@ parameters:
             message: '#Strict comparison using \!\=\= between .* and .* will always evaluate to false#'
             path: src/Kernel/RectorKernel.php
 
-        # expression generics
+        # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
+        - '#Access to an undefined property PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
