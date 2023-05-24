@@ -27,11 +27,9 @@ final class ListEachNext
     public function run()
     {
         $parentArray = ['a' => 1, 'b' => 2];
-
         $key = key($parentArray);
         $value = current($parentArray);
         next($parentArray);
-
         $key2 = key($parentArray);
         $value2 = current($parentArray);
         next($parentArray);
