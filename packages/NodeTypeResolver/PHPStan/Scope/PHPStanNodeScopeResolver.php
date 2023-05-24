@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Cast;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
@@ -47,7 +46,6 @@ use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -79,7 +77,6 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
@@ -236,25 +233,20 @@ final class PHPStanNodeScopeResolver
 
     private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
     {
-        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
             return;
         }
 
-        $parentStmt = $stmt->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentStmt instanceof Node) {
+        if (! $stmt instanceof StmtsAwareInterface) {
             return;
         }
 
-        if ($parentStmt instanceof Closure) {
-            $parentStmt = $this->betterNodeFinder->resolveCurrentStatement($parentStmt);
-        }
-
-        if (! $parentStmt instanceof Stmt) {
+        if ($stmt->stmts === null) {
             return;
         }
 
-        if ($parentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-            $stmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        foreach ($stmt->stmts as $childStmt) {
+            $childStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
         }
     }
 
