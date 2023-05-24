@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 
@@ -26,7 +25,6 @@ final class ClassInsertManipulator
 
     public function __construct(
         private readonly NodeFactory $nodeFactory,
-        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -131,17 +129,6 @@ final class ClassInsertManipulator
             }
 
             $previousElement = $classStmt;
-        }
-
-        return false;
-    }
-
-    private function hasClassConstant(Class_ $class, string $constantName): bool
-    {
-        foreach ($class->getConstants() as $classConst) {
-            if ($this->nodeNameResolver->isName($classConst, $constantName)) {
-                return true;
-            }
         }
 
         return false;

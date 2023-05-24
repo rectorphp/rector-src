@@ -10,12 +10,10 @@ use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 
 final class ExprUsedInNodeAnalyzer
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
         private readonly UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private readonly CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
         private readonly NodePrinterInterface $nodePrinter
@@ -36,14 +34,10 @@ final class ExprUsedInNodeAnalyzer
             }
         }
 
-        if ($node instanceof FuncCall && $variable instanceof Variable) {
+        if ($node instanceof FuncCall) {
             return $this->compactFuncCallAnalyzer->isInCompact($node, $variable);
         }
 
-        if ($variable instanceof Variable) {
-            return $this->usedVariableNameAnalyzer->isVariableNamed($node, $variable);
-        }
-
-        return $this->nodeComparator->areNodesEqual($node, $variable);
+        return $this->usedVariableNameAnalyzer->isVariableNamed($node, $variable);
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PostRector\Collector;
 
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Type\Type;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
@@ -13,11 +12,6 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 
 final class PropertyToAddCollector implements NodeCollectorInterface
 {
-    /**
-     * @var array<string, array<string, ClassConst>>
-     */
-    private array $constantsByClass = [];
-
     /**
      * @var array<string, PropertyMetadata[]>
      */
