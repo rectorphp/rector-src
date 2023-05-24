@@ -8,9 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeManipulator\ClassDependencyManipulator;
-use Rector\Core\NodeManipulator\ClassInsertManipulator;
 use Rector\PostRector\Collector\PropertyToAddCollector;
-use Rector\PostRector\NodeAnalyzer\NetteInjectDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,8 +19,6 @@ final class PropertyAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly ClassDependencyManipulator $classDependencyManipulator,
-        private readonly ClassInsertManipulator $classInsertManipulator,
-        private readonly NetteInjectDetector $netteInjectDetector,
         private readonly PropertyToAddCollector $propertyToAddCollector,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
@@ -44,7 +40,6 @@ final class PropertyAddingPostRector extends AbstractPostRector
         }
 
         $this->addProperties($node);
-        $this->addPropertiesWithoutConstructor($node);
 
         return $node;
     }
@@ -83,25 +78,8 @@ CODE_SAMPLE
     {
         $propertiesMetadatas = $this->propertyToAddCollector->getPropertiesByClass($class);
 
-        $isNetteInjectPreferred = $this->netteInjectDetector->isNetteInjectPreferred($class);
-
         foreach ($propertiesMetadatas as $propertyMetadata) {
-            if (! $isNetteInjectPreferred) {
-                $this->classDependencyManipulator->addConstructorDependency($class, $propertyMetadata);
-            } else {
-                $this->classDependencyManipulator->addInjectProperty($class, $propertyMetadata);
-            }
-        }
-    }
-
-    private function addPropertiesWithoutConstructor(Class_ $class): void
-    {
-        $propertiesWithoutConstructor = $this->propertyToAddCollector->getPropertiesWithoutConstructorByClass(
-            $class
-        );
-
-        foreach ($propertiesWithoutConstructor as $propertyName => $propertyType) {
-            $this->classInsertManipulator->addPropertyToClass($class, $propertyName, $propertyType);
+            $this->classDependencyManipulator->addConstructorDependency($class, $propertyMetadata);
         }
     }
 }

@@ -11,9 +11,10 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Global_;
+use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
-use Rector\PostRector\Collector\PropertyToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,11 +30,6 @@ final class ChangeGlobalVariablesToPropertiesRector extends AbstractRector
      * @var string[]
      */
     private array $globalVariableNames = [];
-
-    public function __construct(
-        private readonly PropertyToAddCollector $propertyToAddCollector
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -99,9 +95,15 @@ CODE_SAMPLE
             return null;
         }
 
+        // @todo find ideal property position
+        $globalProperties = [];
         foreach ($this->globalVariableNames as $globalVariableName) {
-            $this->propertyToAddCollector->addPropertyWithoutConstructorToClass($globalVariableName, null, $node);
+            $globalProperties[] = new Property(Class_::MODIFIER_PRIVATE, [
+                new PropertyProperty($globalVariableName),
+            ]);
         }
+
+        array_splice($node->stmts, 0, 0, $globalProperties);
 
         return $node;
     }
