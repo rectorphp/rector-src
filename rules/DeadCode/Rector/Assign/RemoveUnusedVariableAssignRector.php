@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\Assign;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
@@ -195,10 +196,15 @@ CODE_SAMPLE
     private function resolvedAssignedVariablesByStmtPosition(array $stmts): array
     {
         $assignedVariableNamesByStmtPosition = [];
+        $refVariableNames = [];
 
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
+            }
+
+            if ($stmt->expr instanceof AssignRef && $stmt->expr->var instanceof Variable) {
+                $refVariableNames[] = (string) $this->getName($stmt->expr->var);
             }
 
             if (! $stmt->expr instanceof Assign) {
@@ -219,11 +225,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->variableAnalyzer->isStaticOrGlobal($assign->var)) {
-                continue;
-            }
-
-            if ($this->variableAnalyzer->isUsedByReference($assign->var)) {
+            if ($this->shouldSkipVariable($assign->var, $variableName, $refVariableNames)) {
                 continue;
             }
 
@@ -231,5 +233,21 @@ CODE_SAMPLE
         }
 
         return $assignedVariableNamesByStmtPosition;
+    }
+
+    /**
+     * @param string[] $refVariableNames
+     */
+    private function shouldSkipVariable(Variable $variable, string $variableName, array $refVariableNames): bool
+    {
+        if ($this->variableAnalyzer->isStaticOrGlobal($variable)) {
+            return true;
+        }
+
+        if ($this->variableAnalyzer->isUsedByReference($variable)) {
+            return true;
+        }
+
+        return in_array($variableName, $refVariableNames, true);
     }
 }
