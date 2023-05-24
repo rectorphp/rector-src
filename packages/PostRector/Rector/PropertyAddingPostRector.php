@@ -21,7 +21,7 @@ final class PropertyAddingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly ClassDependencyManipulator $classDependencyManipulator,
-        private readonly ClassInsertManipulator $classInsertManipulator,
+        //        private readonly ClassInsertManipulator $classInsertManipulator,
         private readonly NetteInjectDetector $netteInjectDetector,
         private readonly PropertyToAddCollector $propertyToAddCollector,
         private readonly ClassAnalyzer $classAnalyzer
@@ -44,7 +44,7 @@ final class PropertyAddingPostRector extends AbstractPostRector
         }
 
         $this->addProperties($node);
-        $this->addPropertiesWithoutConstructor($node);
+        //        $this->addPropertiesWithoutConstructor($node);
 
         return $node;
     }
@@ -91,17 +91,6 @@ CODE_SAMPLE
             } else {
                 $this->classDependencyManipulator->addInjectProperty($class, $propertyMetadata);
             }
-        }
-    }
-
-    private function addPropertiesWithoutConstructor(Class_ $class): void
-    {
-        $propertiesWithoutConstructor = $this->propertyToAddCollector->getPropertiesWithoutConstructorByClass(
-            $class
-        );
-
-        foreach ($propertiesWithoutConstructor as $propertyName => $propertyType) {
-            $this->classInsertManipulator->addPropertyToClass($class, $propertyName, $propertyType);
         }
     }
 }
