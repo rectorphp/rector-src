@@ -225,6 +225,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return in_array($nextStmt::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true);
+        return false;
     }
 }
