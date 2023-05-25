@@ -17,7 +17,6 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -53,72 +52,60 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, BooleanNot::class];
+        return [
+            Identical::class,
+            NotIdentical::class,
+            BooleanNot::class,
+            Greater::class,
+            Smaller::class,
+            If_::class,
+            ElseIf_::class,
+        ];
     }
 
     /**
-     * @param FuncCall|BooleanNot $node
+     * @param Identical|NotIdentical|BooleanNot|Greater|Smaller|If_|ElseIf_ $node
      */
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof BooleanNot) {
-            return $this->processMarkTruthyNegation($node);
+            return $this->refactorBooleanNot($node);
         }
 
-        if (! $this->isName($node, 'count')) {
-            return null;
+        if ($node instanceof Identical || $node instanceof NotIdentical) {
+            if ($node->left instanceof FuncCall) {
+                $expr = $this->matchCountFuncCallArgExpr($node->left);
+            } elseif ($node->right instanceof FuncCall) {
+                $expr = $this->matchCountFuncCallArgExpr($node->right);
+            } else {
+                return null;
+            }
+
+            if (! $expr instanceof Expr) {
+                return null;
+            }
+
+            // not pass array type, skip
+            if (! $this->isArray($expr)) {
+                return null;
+            }
+
+            return $this->refactorIdenticalOrNotIdentical($node, $expr);
         }
 
-        if (! isset($node->getArgs()[0])) {
-            return null;
+        if ($node instanceof Smaller || $node instanceof Greater) {
+            return $this->refactorGreaterOrSmaller($node);
         }
 
-        /** @var Expr $expr */
-        $expr = $node->getArgs()[0]
-->value;
-
-        // not pass array type, skip
-        if (! $this->isArray($expr)) {
-            return null;
-        }
-
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            return null;
-        }
-
-        $processIdentical = $this->processIdenticalOrNotIdentical($parentNode, $node, $expr);
-        if ($processIdentical instanceof Expr) {
-            return $processIdentical;
-        }
-
-        $processGreaterOrSmaller = $this->processGreaterOrSmaller($parentNode, $node, $expr);
-        if ($processGreaterOrSmaller instanceof NotIdentical) {
-            return $processGreaterOrSmaller;
-        }
-
-        return $this->processMarkTruthy($parentNode, $node, $expr);
+        return $this->refactorIfElseIf($node);
     }
 
-    private function processMarkTruthyNegation(BooleanNot $booleanNot): ?Identical
+    private function refactorBooleanNot(BooleanNot $booleanNot): ?Identical
     {
-        if (! $booleanNot->expr instanceof FuncCall) {
+        $expr = $this->matchCountFuncCallArgExpr($booleanNot->expr);
+        if (! $expr instanceof Expr) {
             return null;
         }
-
-        $funcCall = $booleanNot->expr;
-
-        if (! $this->isName($funcCall, 'count')) {
-            return null;
-        }
-
-        if (! isset($funcCall->getArgs()[0])) {
-            return null;
-        }
-
-        /** @var Expr $expr */
-        $expr = $funcCall->getArgs()[0]
-->value;
 
         // not pass array type, skip
         if (! $this->isArray($expr)) {
@@ -135,55 +122,86 @@ CODE_SAMPLE
             ->yes();
     }
 
-    private function processIdenticalOrNotIdentical(Node $node, FuncCall $funcCall, Expr $expr): ?Expr
-    {
-        if (($node instanceof Identical || $node instanceof NotIdentical) && $node->right instanceof LNumber && $node->right->value === 0) {
-            $this->removeNode($funcCall);
-            $node->right = new Array_([]);
+    private function refactorIdenticalOrNotIdentical(
+        Identical|NotIdentical $binaryOp,
+        Expr $expr
+    ): Identical|NotIdentical|null {
+        if ($this->isZeroLNumber($binaryOp->right)) {
+            $binaryOp->left = $expr;
+            $binaryOp->right = new Array_([]);
 
-            return $expr;
+            return $binaryOp;
         }
 
-        if (($node instanceof Identical || $node instanceof NotIdentical) && $node->left instanceof LNumber && $node->left->value === 0) {
-            $this->removeNode($funcCall);
-            $node->left = new Array_([]);
+        if ($this->isZeroLNumber($binaryOp->left)) {
+            $binaryOp->left = new Array_([]);
+            $binaryOp->right = $expr;
 
-            return $expr;
-        }
-
-        return null;
-    }
-
-    private function processGreaterOrSmaller(Node $node, FuncCall $funcCall, Expr $expr): ?NotIdentical
-    {
-        if ($node instanceof Greater && $node->right instanceof LNumber && $node->right->value === 0) {
-            $this->removeNode($funcCall);
-            $this->removeNode($node->right);
-
-            return new NotIdentical($expr, new Array_([]));
-        }
-
-        if ($node instanceof Smaller && $node->left instanceof LNumber && $node->left->value === 0) {
-            $this->removeNode($funcCall);
-            $this->removeNode($node->left);
-
-            return new NotIdentical(new Array_([]), $expr);
+            return $binaryOp;
         }
 
         return null;
     }
 
-    private function processMarkTruthy(Node $node, FuncCall $funcCall, Expr $expr): ?Expr
+    private function refactorGreaterOrSmaller(Greater | Smaller $binaryOp): NotIdentical | null
     {
-        if (! $node instanceof If_ && ! $node instanceof ElseIf_) {
+        if ($binaryOp instanceof Greater) {
+            $leftExpr = $this->matchCountFuncCallArgExpr($binaryOp->left);
+            if (! $leftExpr instanceof Expr) {
+                return null;
+            }
+
+            if (! $this->isZeroLNumber($binaryOp->right)) {
+                return null;
+            }
+
+            return new NotIdentical($leftExpr, new Array_([]));
+        }
+
+        $rightExpr = $this->matchCountFuncCallArgExpr($binaryOp->right);
+        if (! $rightExpr instanceof Expr) {
             return null;
         }
 
-        if ($node->cond === $funcCall) {
-            $node->cond = new NotIdentical($expr, new Array_([]));
-            return $node->cond;
+        if (! $this->isZeroLNumber($binaryOp->left)) {
+            return null;
         }
 
-        return null;
+        return new NotIdentical(new Array_([]), $rightExpr);
+    }
+
+    private function refactorIfElseIf(If_ | ElseIf_ $ifElseIf): If_ | ElseIf_ | null
+    {
+        $expr = $this->matchCountFuncCallArgExpr($ifElseIf->cond);
+        if (! $expr instanceof Expr) {
+            return null;
+        }
+
+        $ifElseIf->cond = new NotIdentical($expr, new Array_([]));
+
+        return $ifElseIf;
+    }
+
+    private function matchCountFuncCallArgExpr(Expr $expr): ?Expr
+    {
+        if (! $expr instanceof FuncCall) {
+            return null;
+        }
+
+        if (! $this->isName($expr, 'count')) {
+            return null;
+        }
+
+        $firstArg = $expr->getArgs()[0];
+        return $firstArg->value;
+    }
+
+    private function isZeroLNumber(Expr $expr): bool
+    {
+        if (! $expr instanceof LNumber) {
+            return false;
+        }
+
+        return $expr->value === 0;
     }
 }
