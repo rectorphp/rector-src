@@ -45,6 +45,9 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
      */
     public function beforeTraverse(array $nodes): array
     {
+        // ensure reset early on every run to avoid reuse existing value
+        $this->rootNode = null;
+
         foreach ($nodes as $node) {
             if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
                 $this->rootNode = $node;
