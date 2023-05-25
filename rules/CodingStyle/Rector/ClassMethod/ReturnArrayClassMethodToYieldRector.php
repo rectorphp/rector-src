@@ -13,10 +13,8 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTransformer;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -87,6 +85,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
+
         foreach ($this->methodsToYields as $methodToYield) {
             if (! $this->isName($node, $methodToYield->getMethod())) {
                 continue;
@@ -146,12 +145,6 @@ CODE_SAMPLE
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
     {
         $yieldNodes = $this->nodeTransformer->transformArrayToYields($array);
-
-        // remove whole return node
-        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            throw new ShouldNotHappenException();
-        }
 
         $this->removeReturnTag($classMethod);
 
