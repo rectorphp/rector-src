@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Foreach_;
 
+use PhpParser\Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -93,7 +94,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkip($stmt, $scope, $emptyArrayVariables)) {
+            if ($this->shouldSkip($stmt, $emptyArrayVariables)) {
                 continue;
             }
 
@@ -114,7 +115,7 @@ CODE_SAMPLE
     /**
      * @param string[] $emptyArrayVariables
      */
-    private function shouldSkip(Foreach_ $foreach, Scope $scope, array $emptyArrayVariables): bool
+    private function shouldSkip(Foreach_ $foreach, array $emptyArrayVariables): bool
     {
         $assignVariable = $this->foreachAnalyzer->matchAssignItemsOnlyForeachArrayVariable($foreach);
         if (! $assignVariable instanceof Expr) {
@@ -141,7 +142,7 @@ CODE_SAMPLE
         return $foreachParent instanceof Node;
     }
 
-    private function matchEmptyArrayVariableAssign(Node\Stmt $stmt): ?string
+    private function matchEmptyArrayVariableAssign(Stmt $stmt): ?string
     {
         if (! $stmt instanceof Expression) {
             return null;
