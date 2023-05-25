@@ -97,24 +97,6 @@ CODE_SAMPLE
 
     private function shouldSkip(Encapsed $encapsed): bool
     {
-        $parentNode = $encapsed->getAttribute(AttributeKey::PARENT_NODE);
-
-        if ($parentNode instanceof Arg) {
-            $node = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-
-            if ($node instanceof FuncCall && $this->isNames($node, [
-                '_',
-                'dcgettext',
-                'dcngettext',
-                'dgettext',
-                'dngettext',
-                'gettext',
-                'ngettext',
-            ])) {
-                return true;
-            }
-        }
-
         return $encapsed->hasAttribute(AttributeKey::DOC_LABEL);
     }
 
