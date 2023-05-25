@@ -99,7 +99,6 @@ parameters:
             message: '#If condition is always false#'
             paths:
                 - rules/CodeQuality/Rector/Concat/JoinStringConcatRector.php
-                - packages/NodeNestingScope/NodeFinder/ScopeAwareNodeFinder.php
 
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 

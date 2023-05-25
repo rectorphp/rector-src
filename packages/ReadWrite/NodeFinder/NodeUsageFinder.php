@@ -5,13 +5,9 @@ declare(strict_types=1);
 namespace Rector\ReadWrite\NodeFinder;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\Foreach_;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeNestingScope\NodeFinder\ScopeAwareNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeUsageFinder
@@ -19,8 +15,6 @@ final class NodeUsageFinder
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ScopeAwareNodeFinder $scopeAwareNodeFinder,
-        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -51,17 +45,5 @@ final class NodeUsageFinder
             $assignedTo = $node->getAttribute(AttributeKey::IS_ASSIGNED_TO);
             return $assignedTo === null;
         });
-    }
-
-    public function findPreviousForeachNodeUsage(Foreach_ $foreach, Expr $expr): ?Node
-    {
-        return $this->scopeAwareNodeFinder->findParent($foreach, function (Node $node) use ($expr): bool {
-            // skip itself
-            if ($node === $expr) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node, $expr);
-        }, [Foreach_::class]);
     }
 }
