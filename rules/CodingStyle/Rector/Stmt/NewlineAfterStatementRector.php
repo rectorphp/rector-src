@@ -151,7 +151,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->isRemoved($nextStmt, $stmt)) {
+            if ($this->isRemoved($stmt)) {
                 continue;
             }
 
@@ -204,18 +204,9 @@ CODE_SAMPLE
         return ! isset($comments[0]);
     }
 
-    private function isRemoved(Stmt $nextStmt, Stmt $stmt): bool
+    private function isRemoved(Stmt $stmt): bool
     {
-        if ($this->nodesToRemoveCollector->isNodeRemoved($stmt)) {
-            return true;
-        }
-        
-        return false;
-        
-        $parentCurrentNode = $stmt->getAttribute(AttributeKey::PARENT_NODE);
-        $parentnextStmt = $nextStmt->getAttribute(AttributeKey::PARENT_NODE);
-
-        return $parentnextStmt !== $parentCurrentNode;
+        return $this->nodesToRemoveCollector->isNodeRemoved($stmt);
     }
 
     private function shouldSkip(Stmt $stmt): bool
