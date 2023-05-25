@@ -7,15 +7,12 @@ namespace Rector\CodingStyle\Rector\Stmt;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Do_;
-use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
@@ -133,7 +130,7 @@ CODE_SAMPLE
             $stmt = $node->stmts[$key];
             $nextStmt = $node->stmts[$key + 1];
 
-            if ($this->shouldSkip($nextStmt, $stmt)) {
+            if ($this->shouldSkip($stmt)) {
                 continue;
             }
 
@@ -219,12 +216,8 @@ CODE_SAMPLE
         return $parentnextStmt !== $parentCurrentNode;
     }
 
-    private function shouldSkip(Stmt $nextStmt, Stmt $stmt): bool
+    private function shouldSkip(Stmt $stmt): bool
     {
-        if (! in_array($stmt::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true)) {
-            return true;
-        }
-
-        return in_array($nextStmt::class, [Else_::class, ElseIf_::class, Catch_::class, Finally_::class], true);
+        return ! in_array($stmt::class, self::STMTS_TO_HAVE_NEXT_NEWLINE, true);
     }
 }
