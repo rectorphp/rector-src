@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
@@ -38,7 +39,11 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
         return 650;
     }
 
-    public function beforeTraverse(array $nodes): void
+    /**
+     * @param Stmt[] $nodes
+     * @return Stmt[]
+     */
+    public function beforeTraverse(array $nodes): array
     {
         foreach ($nodes as $node) {
             if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
@@ -46,6 +51,8 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
                 break;
             }
         }
+
+        return $nodes;
     }
 
     /**
