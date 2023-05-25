@@ -12,7 +12,6 @@ use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
@@ -29,7 +28,6 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly UseImportsRemover $useImportsRemover
     ) {
     }
@@ -40,7 +38,7 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
         return 650;
     }
 
-    public function beforeTraverse(array $nodes)
+    public function beforeTraverse(array $nodes): void
     {
         foreach ($nodes as $node) {
             if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
