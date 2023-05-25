@@ -45,12 +45,15 @@ final class NodeComparator
         if (is_array($firstNode) && ! is_array($secondNode)) {
             return false;
         }
+
         if (! is_array($secondNode)) {
             return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
         }
+
         if (is_array($firstNode)) {
             return $this->printWithoutComments($firstNode) === $this->printWithoutComments($secondNode);
         }
+
         return false;
     }
 
