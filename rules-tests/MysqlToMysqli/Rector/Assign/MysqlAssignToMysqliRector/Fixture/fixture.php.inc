@@ -18,7 +18,6 @@ function mysql_to_mysqli_assign() {
     mysqli_data_seek($result, $row);
     $fetch = mysqli_fetch_row($result);
     $data = $fetch[0];
-
     mysqli_select_db('database');
     $result = mysqli_query('query');
 }
