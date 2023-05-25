@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
@@ -12,7 +13,6 @@ use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
@@ -23,11 +23,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class ClassRenamingPostRector extends AbstractPostRector implements PostRectorDependencyInterface
 {
+    private FileWithoutNamespace|Namespace_|null $rootNode = null;
+
     public function __construct(
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly UseImportsRemover $useImportsRemover
     ) {
     }
@@ -36,6 +37,25 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
     {
         // must be run before name importing, so new names are imported
         return 650;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @return Stmt[]
+     */
+    public function beforeTraverse(array $nodes): array
+    {
+        // ensure reset early on every run to avoid reuse existing value
+        $this->rootNode = null;
+
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                $this->rootNode = $node;
+                break;
+            }
+        }
+
+        return $nodes;
     }
 
     /**
@@ -64,13 +84,12 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
             return $result;
         }
 
-        $rootNode = $this->betterNodeFinder->findParentByTypes($node, [Namespace_::class, FileWithoutNamespace::class]);
-        if (! $rootNode instanceof Node) {
+        if (! $this->rootNode instanceof FileWithoutNamespace && ! $this->rootNode instanceof Namespace_) {
             return $result;
         }
 
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-        $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
+        $this->useImportsRemover->removeImportsFromStmts($this->rootNode->stmts, $removedUses);
 
         return $result;
     }
