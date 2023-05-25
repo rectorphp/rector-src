@@ -209,7 +209,9 @@ CODE_SAMPLE
         if ($this->nodesToRemoveCollector->isNodeRemoved($stmt)) {
             return true;
         }
-
+        
+        return false;
+        
         $parentCurrentNode = $stmt->getAttribute(AttributeKey::PARENT_NODE);
         $parentnextStmt = $nextStmt->getAttribute(AttributeKey::PARENT_NODE);
 
