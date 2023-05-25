@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\For_;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -58,41 +57,35 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [PostInc::class, PostDec::class];
+        return [For_::class, Expression::class];
     }
 
     /**
-     * @param PostInc|PostDec $node
+     * @param For_|Expression $node
      */
     public function refactor(Node $node): ?Node
     {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if ($this->isAnExpression($parentNode)) {
-            return $this->processPrePost($node);
+        if ($node instanceof Expression) {
+            return $this->refactorExpression($node);
         }
 
-        if (! $parentNode instanceof For_) {
-            return null;
-        }
-
-        if (count($parentNode->loop) !== 1) {
-            return null;
-        }
-
-        if (! $this->nodeComparator->areNodesEqual($parentNode->loop[0], $node)) {
-            return null;
-        }
-
-        return $this->processPreFor($node, $parentNode);
+        return $this->refactorFor($node);
     }
 
-    private function isAnExpression(?Node $node = null): bool
+    private function refactorFor(For_ $for): For_|null
     {
-        if (! $node instanceof Node) {
-            return false;
+        if (count($for->loop) !== 1) {
+            return null;
         }
 
-        return $node instanceof Expression;
+        $singleLoopExpr = $for->loop[0];
+        if (! $singleLoopExpr instanceof PostInc && ! $singleLoopExpr instanceof PostDec) {
+            return null;
+        }
+
+        $for->loop = [$this->processPrePost($singleLoopExpr)];
+
+        return $for;
     }
 
     private function processPrePost(PostInc | PostDec $node): PreInc | PreDec
@@ -104,9 +97,13 @@ CODE_SAMPLE
         return new PreDec($node->var);
     }
 
-    private function processPreFor(PostInc | PostDec $node, For_ $for): PreDec | PreInc
+    private function refactorExpression(Expression $node): ?Expression
     {
-        $for->loop = [$this->processPrePost($node)];
-        return $for->loop[0];
+        if ($node->expr instanceof PostInc || $node->expr instanceof PostDec) {
+            $node->expr = $this->processPrePost($node->expr);
+            return $node;
+        }
+
+        return null;
     }
 }
