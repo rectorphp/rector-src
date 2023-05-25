@@ -23,6 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class ClassRenamingPostRector extends AbstractPostRector implements PostRectorDependencyInterface
 {
+    private FileWithoutNamespace|Namespace_|null $rootNode = null;
+
     public function __construct(
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
@@ -36,6 +38,16 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
     {
         // must be run before name importing, so new names are imported
         return 650;
+    }
+
+    public function beforeTraverse(array $nodes)
+    {
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                $this->rootNode = $node;
+                break;
+            }
+        }
     }
 
     /**
@@ -64,13 +76,12 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
             return $result;
         }
 
-        $rootNode = $this->betterNodeFinder->findParentByTypes($node, [Namespace_::class, FileWithoutNamespace::class]);
-        if (! $rootNode instanceof Node) {
+        if (! $this->rootNode instanceof FileWithoutNamespace && ! $this->rootNode instanceof Namespace_) {
             return $result;
         }
 
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-        $this->useImportsRemover->removeImportsFromStmts($rootNode->stmts, $removedUses);
+        $this->useImportsRemover->removeImportsFromStmts($this->rootNode->stmts, $removedUses);
 
         return $result;
     }
