@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToAddCollector;
@@ -70,81 +71,96 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [Expression::class];
     }
 
     /**
-     * @param Assign $node
+     * @param Expression $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node)
     {
-        if (! $node->expr instanceof FuncCall) {
+        if (! $node->expr instanceof Assign) {
             return null;
         }
 
-        /** @var FuncCall $funcCallNode */
-        $funcCallNode = $node->expr;
+        $assign = $node->expr;
+        if (! $assign->expr instanceof FuncCall) {
+            return null;
+        }
+
+        $funcCallNode = $assign->expr;
 
         if ($this->isName($funcCallNode, 'mysql_tablename')) {
-            return $this->processMysqlTableName($node, $funcCallNode);
+            return $this->processMysqlTableName($node, $assign, $funcCallNode);
         }
 
         if ($this->isName($funcCallNode, 'mysql_db_name')) {
-            return $this->processMysqlDbName($node, $funcCallNode);
+            return $this->processMysqlDbName($node, $assign, $funcCallNode);
         }
 
         if ($this->isName($funcCallNode, 'mysql_db_query')) {
-            return $this->processMysqliSelectDb($node, $funcCallNode);
+            return $this->processMysqliSelectDb($node, $assign, $funcCallNode);
         }
 
         if ($this->isName($funcCallNode, 'mysql_fetch_field')) {
-            return $this->processMysqlFetchField($node, $funcCallNode);
+            return $this->processMysqlFetchField($assign, $funcCallNode);
         }
 
         if ($this->isName($funcCallNode, 'mysql_result')) {
-            return $this->processMysqlResult($node, $funcCallNode);
+            return $this->processMysqlResult($node, $assign, $funcCallNode);
         }
 
-        return $this->processFieldToFieldDirect($node, $funcCallNode);
+        return $this->processFieldToFieldDirect($assign, $funcCallNode);
     }
 
-    private function processMysqlTableName(Assign $assign, FuncCall $funcCall): FuncCall
+    private function processMysqlTableName(Expression $expression, Assign $assign, FuncCall $funcCall): array
     {
         $funcCall->name = new Name(self::MYSQLI_DATA_SEEK);
 
         $newFuncCall = new FuncCall(new Name('mysql_fetch_array'), [$funcCall->args[0]]);
-        $newAssignNode = new Assign($assign->var, new ArrayDimFetch($newFuncCall, new LNumber(0)));
+        $newAssign = new Assign($assign->var, new ArrayDimFetch($newFuncCall, new LNumber(0)));
 
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
+        return [new Expression($newAssign), $expression];
 
-        return $funcCall;
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
+        //
+        //        return $mysqliDataSeekFuncCall;
     }
 
-    private function processMysqlDbName(Assign $assign, FuncCall $funcCall): FuncCall
+    /**
+     * @return Node\Stmt[]
+     */
+    private function processMysqlDbName(Expression $expression, Assign $assign, FuncCall $mysqliDataSeekFuncCall): array
     {
-        $funcCall->name = new Name(self::MYSQLI_DATA_SEEK);
+        $mysqliDataSeekFuncCall->name = new Name(self::MYSQLI_DATA_SEEK);
 
-        $mysqlFetchRowFuncCall = new FuncCall(new Name('mysqli_fetch_row'), [$funcCall->args[0]]);
+        $mysqliFetchRowFuncCall = new FuncCall(new Name('mysqli_fetch_row'), [$mysqliDataSeekFuncCall->args[0]]);
         $fetchVariable = new Variable('fetch');
-        $newAssignNode = new Assign($fetchVariable, $mysqlFetchRowFuncCall);
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
+
+        $mysqliFetchRowAssign = new Assign($fetchVariable, $mysqliFetchRowFuncCall);
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
 
         $newAssignNodeAfter = new Assign($assign->var, new ArrayDimFetch($fetchVariable, new LNumber(0)));
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNodeAfter, $assign);
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNodeAfter, $assign);
 
-        return $funcCall;
+        return [
+            new Expression($mysqliFetchRowAssign),
+            //            $expression,
+            new Expression($newAssignNodeAfter),
+            new Expression($mysqliDataSeekFuncCall),
+        ];
     }
 
-    private function processMysqliSelectDb(Assign $assign, FuncCall $funcCall): FuncCall
+    private function processMysqliSelectDb(Expression $expression, Assign $assign, FuncCall $funcCall): array
     {
         $funcCall->name = new Name('mysqli_select_db');
 
-        $newAssignNode = new Assign($assign->var, new FuncCall(new Name('mysqli_query'), [$funcCall->args[1]]));
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
+        $newAssign = new Assign($assign->var, new FuncCall(new Name('mysqli_query'), [$funcCall->args[1]]));
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
 
         unset($funcCall->args[1]);
 
-        return $funcCall;
+        return [new Expression($funcCall), new Expression($newAssign)];
     }
 
     private function processMysqlFetchField(Assign $assign, FuncCall $funcCall): Assign
@@ -156,7 +172,10 @@ CODE_SAMPLE
         return $assign;
     }
 
-    private function processMysqlResult(Assign $assign, FuncCall $funcCall): FuncCall
+    /**
+     * @return Node\Stmt[]
+     */
+    private function processMysqlResult(Expression $expression, Assign $assign, FuncCall $funcCall): array
     {
         $fetchField = null;
         if (isset($funcCall->args[2]) && $funcCall->args[2] instanceof Arg) {
@@ -169,14 +188,15 @@ CODE_SAMPLE
         $mysqlFetchArrayFuncCall = new FuncCall(new Name('mysqli_fetch_array'), [$funcCall->args[0]]);
         $fetchVariable = new Variable('fetch');
         $newAssignNode = new Assign($fetchVariable, $mysqlFetchArrayFuncCall);
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNode, $assign);
 
         $newAssignNodeAfter = new Assign($assign->var, new ArrayDimFetch($fetchVariable, $fetchField ?? new LNumber(
             0
         )));
-        $this->nodesToAddCollector->addNodeAfterNode($newAssignNodeAfter, $assign);
+        //        $this->nodesToAddCollector->addNodeAfterNode($newAssignNodeAfter, $assign);
 
-        return $funcCall;
+        return [new Expression($newAssignNodeAfter), new Expression($newAssignNodeAfter)];
+        //        return $funcCall;
     }
 
     private function processFieldToFieldDirect(Assign $assign, FuncCall $funcCall): ?Assign
