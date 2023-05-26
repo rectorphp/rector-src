@@ -33,8 +33,8 @@ final class BreakingRemovalGuardNodeVisitor extends NodeVisitorAbstract implemen
         if ($node instanceof While_) {
             $node->cond->setAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE, true);
             $node->cond->setAttribute(AttributeKey::CHILD_OF, While_::class);
-
-            return null;
         }
+
+        return null;
     }
 }
