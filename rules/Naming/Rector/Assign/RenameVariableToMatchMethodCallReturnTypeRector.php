@@ -7,9 +7,6 @@ namespace Rector\Naming\Rector\Assign;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -20,7 +17,6 @@ use Rector\Naming\NamingConvention\NamingConventionAnalyzer;
 use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\Naming\ValueObject\VariableAndCallAssign;
 use Rector\Naming\VariableRenamer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -52,30 +48,30 @@ final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRect
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-public function run()
-{
-    $a = $this->getRunner();
-}
+    public function run()
+    {
+        $a = $this->getRunner();
+    }
 
-public function getRunner(): Runner
-{
-    return new Runner();
-}
+    public function getRunner(): Runner
+    {
+        return new Runner();
+    }
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-public function run()
-{
-    $runner = $this->getRunner();
-}
+    public function run()
+    {
+        $runner = $this->getRunner();
+    }
 
-public function getRunner(): Runner
-{
-    return new Runner();
-}
+    public function getRunner(): Runner
+    {
+        return new Runner();
+    }
 }
 CODE_SAMPLE
             ),
@@ -116,9 +112,6 @@ CODE_SAMPLE
             }
 
             $call = $variableAndCallAssign->getCall();
-            if ($this->isMultipleCall($call)) {
-                continue;
-            }
 
             $expectedName = $this->expectedNameResolver->resolveForCall($call);
             if ($expectedName === null) {
@@ -139,57 +132,6 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function isMultipleCall(FuncCall | StaticCall | MethodCall $callNode): bool
-    {
-        $parentNode = $callNode->getAttribute(AttributeKey::PARENT_NODE);
-
-        $callNodeClass = $callNode::class;
-
-        while ($parentNode instanceof Node) {
-            $usedNodes = $this->betterNodeFinder->find($parentNode, function (Node $node) use (
-                $callNodeClass,
-                $callNode
-            ): bool {
-                $nodeClass = $node::class;
-                if ($callNodeClass !== $nodeClass) {
-                    return false;
-                }
-
-                $usedNodeOriginalNode = $callNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-
-                if (! $usedNodeOriginalNode instanceof Node) {
-                    return false;
-                }
-
-                if ($usedNodeOriginalNode::class !== $callNode::class) {
-                    return false;
-                }
-
-                /** @var FuncCall|StaticCall|MethodCall $node */
-                $passedNode = clone $node;
-
-                /** @var FuncCall|StaticCall|MethodCall $usedNodeOriginalNode */
-                $usedNode = clone $usedNodeOriginalNode;
-
-                /** @var FuncCall|StaticCall|MethodCall $passedNode */
-                $passedNode->args = [];
-
-                /** @var FuncCall|StaticCall|MethodCall $usedNode */
-                $usedNode->args = [];
-
-                return $this->nodeComparator->areNodesEqual($passedNode, $usedNode);
-            });
-
-            if (count($usedNodes) > 1) {
-                return true;
-            }
-
-            $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-        }
-
-        return false;
     }
 
     private function shouldSkip(VariableAndCallAssign $variableAndCallAssign, string $expectedName): bool
