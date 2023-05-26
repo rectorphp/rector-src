@@ -7,5 +7,5 @@ function skipParenthesizeTernaryElse(string $message): string
     $jsonParser = new JsonParser();
     return ! $jsonParser->lint($message) instanceof ParsingException
         ? 'application/problem+json'
-        ? (strip_tags($message) === $message ? 'text/plain' : 'text/html');
+        : (strip_tags($message) === $message ? 'text/plain' : 'text/html');
 }
