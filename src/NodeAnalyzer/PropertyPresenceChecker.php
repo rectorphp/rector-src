@@ -107,8 +107,8 @@ final class PropertyPresenceChecker
             return null;
         }
 
-        $propertyObjectType = $propertyMetadata->getType();
-        if (! $propertyObjectType->equals($phpPropertyReflection->getWritableType())) {
+        $propertyObjectTypeWithClassName = $propertyMetadata->getType();
+        if (! $propertyObjectTypeWithClassName->equals($phpPropertyReflection->getWritableType())) {
             return null;
         }
 

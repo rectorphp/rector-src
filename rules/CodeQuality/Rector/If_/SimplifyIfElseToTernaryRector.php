@@ -88,17 +88,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $ifAssignVar = $this->resolveOnlyStmtAssignVar($node->stmts);
-        if (! $ifAssignVar instanceof Expr) {
+        $ifAssignVarExpr = $this->resolveOnlyStmtAssignVar($node->stmts);
+        if (! $ifAssignVarExpr instanceof Expr) {
             return null;
         }
 
-        $elseAssignVar = $this->resolveOnlyStmtAssignVar($node->else->stmts);
-        if (! $elseAssignVar instanceof Expr) {
+        $elseAssignExpr = $this->resolveOnlyStmtAssignVar($node->else->stmts);
+        if (! $elseAssignExpr instanceof Expr) {
             return null;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($ifAssignVar, $elseAssignVar)) {
+        if (! $this->nodeComparator->areNodesEqual($ifAssignVarExpr, $elseAssignExpr)) {
             return null;
         }
 
@@ -118,7 +118,7 @@ CODE_SAMPLE
         }
 
         $ternary = new Ternary($node->cond, $ternaryIf, $ternaryElse);
-        $assign = new Assign($ifAssignVar, $ternary);
+        $assign = new Assign($ifAssignVarExpr, $ternary);
 
         // do not create super long lines
         if ($this->isNodeTooLong($assign)) {

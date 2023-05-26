@@ -38,14 +38,14 @@ final class SelfStaticParentTypeSpecifier implements TypeWithClassTypeSpecifierI
             throw new ShouldNotHappenException();
         }
 
-        $classReference = $objectType->getClassName();
+        $className = $objectType->getClassName();
 
-        if ($classReference === ObjectReference::STATIC) {
+        if ($className === ObjectReference::STATIC) {
             return new StaticType($classReflection);
         }
 
-        if ($classReference === ObjectReference::SELF) {
-            return new SelfObjectType($classReference, null, $classReflection);
+        if ($className === ObjectReference::SELF) {
+            return new SelfObjectType($className, null, $classReflection);
         }
 
         $parentClassReflection = $classReflection->getParentClass();

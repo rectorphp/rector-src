@@ -95,7 +95,7 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($node->stmts as $key => $stmt) {
+        foreach ($node->stmts as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
             }

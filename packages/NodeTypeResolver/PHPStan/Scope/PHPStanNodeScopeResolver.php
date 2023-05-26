@@ -178,7 +178,7 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Trait_) {
                 $traitName = $this->resolveClassName($node);
 
-                $traitReflectionClass = $this->reflectionProvider->getClass($traitName);
+                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
 
                 $traitScope = clone $mutatingScope;
 
@@ -194,7 +194,7 @@ final class PHPStanNodeScopeResolver
                 $this->privatesAccessor->setPrivatePropertyOfClass(
                     $traitContext,
                     'classReflection',
-                    $traitReflectionClass,
+                    $traitClassReflection,
                     ClassReflection::class
                 );
                 $this->privatesAccessor->setPrivatePropertyOfClass(

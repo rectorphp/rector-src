@@ -94,25 +94,25 @@ final class IfManipulator
             return false;
         }
 
-        $lastIfStmt = $this->stmtsManipulator->getUnwrappedLastStmt($if->stmts);
-        if (! $lastIfStmt instanceof Assign) {
+        $lastIfNode = $this->stmtsManipulator->getUnwrappedLastStmt($if->stmts);
+        if (! $lastIfNode instanceof Assign) {
             return false;
         }
 
-        $lastElseStmt = $this->stmtsManipulator->getUnwrappedLastStmt($if->else->stmts);
-        if (! $lastElseStmt instanceof Assign) {
+        $lastElseNode = $this->stmtsManipulator->getUnwrappedLastStmt($if->else->stmts);
+        if (! $lastElseNode instanceof Assign) {
             return false;
         }
 
-        if (! $lastIfStmt->var instanceof Variable) {
+        if (! $lastIfNode->var instanceof Variable) {
             return false;
         }
 
-        if (! $this->nodeComparator->areNodesEqual($lastIfStmt->var, $lastElseStmt->var)) {
+        if (! $this->nodeComparator->areNodesEqual($lastIfNode->var, $lastElseNode->var)) {
             return false;
         }
 
-        return $this->nodeComparator->areNodesEqual($desiredExpr, $lastElseStmt->var);
+        return $this->nodeComparator->areNodesEqual($desiredExpr, $lastElseNode->var);
     }
 
     /**

@@ -133,13 +133,12 @@ CODE_SAMPLE
 
     private function isUsedInPrivateMethod(ClassConstFetch $classConstFetch): bool
     {
-        $method = $this->betterNodeFinder->findParentType($classConstFetch, ClassMethod::class);
-
-        if (! $method instanceof ClassMethod) {
+        $classMethod = $this->betterNodeFinder->findParentType($classConstFetch, ClassMethod::class);
+        if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
-        return $method->flags === Class_::MODIFIER_PRIVATE;
+        return $classMethod->flags === Class_::MODIFIER_PRIVATE;
     }
 
     private function shouldBeSkipped(Class_ $class, ClassConstFetch $classConstFetch): bool
