@@ -242,4 +242,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_BREAKING_REMOVAL_NODE = 'is_breaking_removal_node';
+
+    /**
+     * @var string
+     */
+    public const CHILD_OF = 'child_of';
 }
