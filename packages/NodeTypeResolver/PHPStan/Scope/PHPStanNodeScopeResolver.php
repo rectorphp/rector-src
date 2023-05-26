@@ -267,7 +267,6 @@ final class PHPStanNodeScopeResolver
         }
     }
 
-
     private function processArray(Array_ $array, MutatingScope $mutatingScope): void
     {
         foreach ($array->items as $arrayItem) {
