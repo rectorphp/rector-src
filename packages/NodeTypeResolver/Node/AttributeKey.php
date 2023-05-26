@@ -246,5 +246,5 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const CHILD_OF_NODE = 'child_of_node';
+    public const CHILD_OF_NODE_TYPE = 'child_of_node_type';
 }

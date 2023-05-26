@@ -16,7 +16,7 @@ final class BreakingRemovalGuard
             return;
         }
 
-        $childOfNode = $node->getAttribute(AttributeKey::CHILD_OF_NODE);
+        $childOfNode = $node->getAttribute(AttributeKey::CHILD_OF_NODE_TYPE);
         throw new ShouldNotHappenException(sprintf(
             'Node "%s" on line %d is child of "%s", so it cannot be removed as it would break PHP code. Change or remove the parent node instead.',
             $node::class,
