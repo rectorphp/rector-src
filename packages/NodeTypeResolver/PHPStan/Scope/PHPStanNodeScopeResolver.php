@@ -219,7 +219,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Stmt) {
-                $this->setChildOfUnreachableStatementNodeAttribute($node);
+                $this->setChildOfUnreachableStatementNodeAttribute($node, $mutatingScope);
             }
 
             // special case for unreachable nodes
@@ -233,7 +233,7 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
     }
 
-    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
+    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt, MutatingScope $mutatingScope): void
     {
         if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
             return;
@@ -249,6 +249,7 @@ final class PHPStanNodeScopeResolver
 
         foreach ($stmt->stmts as $childStmt) {
             $childStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+            $childStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
@@ -321,8 +322,7 @@ final class PHPStanNodeScopeResolver
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
 
         $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $parentNode instanceof StmtsAwareInterface) {
+        if (! $parentNode instanceof StmtsAwareInterface && ! $parentNode instanceof ClassLike && ! $parentNode instanceof Declare_) {
             return;
         }
 
