@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Stmt\Expression;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\VariableAndCallAssignMatcher;
@@ -85,40 +87,58 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Assign $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        $variableAndCallAssign = $this->variableAndCallAssignMatcher->match($node);
-        if (! $variableAndCallAssign instanceof VariableAndCallAssign) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $call = $variableAndCallAssign->getCall();
-        if ($this->isMultipleCall($call)) {
-            return null;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Expression) {
+                continue;
+            }
+
+            if (! $stmt->expr instanceof Assign) {
+                continue;
+            }
+
+            $assign = $stmt->expr;
+
+            $variableAndCallAssign = $this->variableAndCallAssignMatcher->match($assign);
+            if (! $variableAndCallAssign instanceof VariableAndCallAssign) {
+                return null;
+            }
+
+            $call = $variableAndCallAssign->getCall();
+            if ($this->isMultipleCall($call)) {
+                continue;
+            }
+
+            $expectedName = $this->expectedNameResolver->resolveForCall($call);
+            if ($expectedName === null) {
+                continue;
+            }
+
+            if ($this->isName($assign->var, $expectedName)) {
+                continue;
+            }
+
+            if ($this->shouldSkip($variableAndCallAssign, $expectedName)) {
+                continue;
+            }
+
+            $this->renameVariable($variableAndCallAssign, $expectedName);
+
+            return $node;
         }
 
-        $expectedName = $this->expectedNameResolver->resolveForCall($call);
-        if ($expectedName === null) {
-            return null;
-        }
-
-        if ($this->isName($node->var, $expectedName)) {
-            return null;
-        }
-
-        if ($this->shouldSkip($variableAndCallAssign, $expectedName)) {
-            return null;
-        }
-
-        $this->renameVariable($variableAndCallAssign, $expectedName);
-
-        return $node;
+        return null;
     }
 
     private function isMultipleCall(FuncCall | StaticCall | MethodCall $callNode): bool
