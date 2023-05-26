@@ -18,21 +18,21 @@ final class BreakingRemovalGuardNodeVisitor extends NodeVisitorAbstract implemen
     {
         if ($node instanceof If_) {
             $node->cond->setAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE, true);
-            $node->cond->setAttribute(AttributeKey::CHILD_OF, If_::class);
+            $node->cond->setAttribute(AttributeKey::CHILD_OF_NODE, If_::class);
 
             return null;
         }
 
         if ($node instanceof BooleanNot) {
             $node->expr->setAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE, true);
-            $node->expr->setAttribute(AttributeKey::CHILD_OF, BooleanNot::class);
+            $node->expr->setAttribute(AttributeKey::CHILD_OF_NODE, BooleanNot::class);
 
             return null;
         }
 
         if ($node instanceof While_) {
             $node->cond->setAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE, true);
-            $node->cond->setAttribute(AttributeKey::CHILD_OF, While_::class);
+            $node->cond->setAttribute(AttributeKey::CHILD_OF_NODE, While_::class);
         }
 
         return null;
