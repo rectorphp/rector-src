@@ -237,6 +237,10 @@ final class PHPStanNodeScopeResolver
                 }
             }
 
+            if ($node instanceof Stmt) {
+                $this->setChildOfUnreachableStatementNodeAttribute($node);
+            }
+
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
