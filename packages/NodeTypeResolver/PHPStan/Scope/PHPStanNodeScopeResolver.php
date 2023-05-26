@@ -231,7 +231,6 @@ final class PHPStanNodeScopeResolver
                     }
 
                     if ($isUnreachable) {
-                        $stmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
                         $this->processUnreachableStatementNode($stmt, $filePath, $mutatingScope);
                     }
                 }
