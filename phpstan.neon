@@ -744,6 +744,7 @@ parameters:
         - '#Anonymous variable in a (.*?)->stmts\[(.*?)]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
 
         - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
 
         # WIP
         - '#Fetching deprecated class constant PARENT_NODE#'

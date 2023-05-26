@@ -6,6 +6,7 @@ namespace Rector\Php70\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Concat;
@@ -17,7 +18,6 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php70\EregToPcreTransformer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -65,49 +65,31 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [FuncCall::class, Assign::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param FuncCall|Assign $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        if ($node instanceof FuncCall) {
+            return $this->refactorFuncCall($node);
+        }
+
+        if (! $this->isEregFuncCallWithThreeArgs($node->expr)) {
             return null;
         }
 
-        /** @var string $functionName */
-        $functionName = $this->getName($node);
+        /** @var FuncCall $funcCall */
+        $funcCall = $node->expr;
 
-        $firstArg = $node->getArgs()[0];
-        $patternNode = $firstArg->value;
-        if ($patternNode instanceof String_) {
-            $this->processStringPattern($node, $patternNode, $functionName);
-        } elseif ($patternNode instanceof Variable) {
-            $this->processVariablePattern($node, $patternNode, $functionName);
-        }
-
-        $this->processSplitLimitArgument($node, $functionName);
-
-        $node->name = new Name(self::OLD_NAMES_TO_NEW_ONES[$functionName]);
-
-        // ereg|eregi 3rd argument return value fix
-        if (in_array(
-            $functionName,
-            ['ereg', 'eregi'],
-            true
-        ) && isset($node->args[2]) && $node->args[2] instanceof Arg) {
-            $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Assign) {
-                return $this->createTernaryWithStrlenOfFirstMatch($node);
-            }
-        }
+        $node->expr = $this->createTernaryWithStrlenOfFirstMatch($funcCall);
 
         return $node;
     }
 
-    private function shouldSkip(FuncCall $funcCall): bool
+    private function shouldSkipFuncCall(FuncCall $funcCall): bool
     {
         $functionName = $this->getName($funcCall);
         if ($functionName === null) {
@@ -183,8 +165,8 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
 
     private function createTernaryWithStrlenOfFirstMatch(FuncCall $funcCall): Ternary
     {
-        /** @var Arg $thirdArg */
-        $thirdArg = $funcCall->args[2];
+        $thirdArg = $funcCall->getArgs()[2];
+
         $arrayDimFetch = new ArrayDimFetch($thirdArg->value, new LNumber(0));
         $strlenFuncCall = $this->nodeFactory->createFuncCall('strlen', [$arrayDimFetch]);
 
@@ -198,5 +180,47 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         }
 
         return \str_contains($functionName, 'spliti');
+    }
+
+    private function isEregFuncCallWithThreeArgs(Expr $expr): bool
+    {
+        if (! $expr instanceof FuncCall) {
+            return false;
+        }
+
+        $functionName = $this->getName($expr);
+        if (! is_string($functionName)) {
+            return false;
+        }
+
+        if (! in_array($functionName, ['ereg', 'eregi'], true)) {
+            return false;
+        }
+
+        return isset($expr->getArgs()[2]);
+    }
+
+    private function refactorFuncCall(FuncCall $funcCall): ?FuncCall
+    {
+        if ($this->shouldSkipFuncCall($funcCall)) {
+            return null;
+        }
+
+        /** @var string $functionName */
+        $functionName = $this->getName($funcCall);
+
+        $firstArg = $funcCall->getArgs()[0];
+        $patternExpr = $firstArg->value;
+
+        if ($patternExpr instanceof String_) {
+            $this->processStringPattern($funcCall, $patternExpr, $functionName);
+        } elseif ($patternExpr instanceof Variable) {
+            $this->processVariablePattern($funcCall, $patternExpr, $functionName);
+        }
+
+        $this->processSplitLimitArgument($funcCall, $functionName);
+
+        $funcCall->name = new Name(self::OLD_NAMES_TO_NEW_ONES[$functionName]);
+        return $funcCall;
     }
 }
