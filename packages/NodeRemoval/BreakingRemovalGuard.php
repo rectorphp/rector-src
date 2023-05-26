@@ -29,6 +29,6 @@ final class BreakingRemovalGuard
      */
     public function isLegalNodeRemoval(Node $node): bool
     {
-        return $node->getAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE) === true;
+        return $node->getAttribute(AttributeKey::IS_BREAKING_REMOVAL_NODE) !== true;
     }
 }
