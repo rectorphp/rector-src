@@ -248,6 +248,26 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
     }
 
+    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
+    {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
+            return;
+        }
+
+        if (! $stmt instanceof StmtsAwareInterface && ! $stmt instanceof ClassLike && ! $stmt instanceof Declare_) {
+            return;
+        }
+
+        if ($stmt->stmts === null) {
+            return;
+        }
+
+        foreach ($stmt->stmts as $childStmt) {
+            $childStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
+        }
+    }
+
+
     private function processArray(Array_ $array, MutatingScope $mutatingScope): void
     {
         foreach ($array->items as $arrayItem) {
@@ -302,25 +322,6 @@ final class PHPStanNodeScopeResolver
 
         if ($tryCatch->finally instanceof Finally_) {
             $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-        }
-    }
-
-    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt): void
-    {
-        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
-            return;
-        }
-
-        if (! $stmt instanceof StmtsAwareInterface && ! $stmt instanceof ClassLike && ! $stmt instanceof Declare_) {
-            return;
-        }
-
-        if ($stmt->stmts === null) {
-            return;
-        }
-
-        foreach ($stmt->stmts as $childStmt) {
-            $childStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
         }
     }
 
