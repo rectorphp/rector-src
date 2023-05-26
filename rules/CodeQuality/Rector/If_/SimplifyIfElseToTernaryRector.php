@@ -102,9 +102,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $ternaryIf = $this->resolveOnlyStmtAssignExpr($node->stmts);
+        $ternaryIfExpr = $this->resolveOnlyStmtAssignExpr($node->stmts);
         $ternaryElse = $this->resolveOnlyStmtAssignExpr($node->else->stmts);
-        if (! $ternaryIf instanceof Expr) {
+        if (! $ternaryIfExpr instanceof Expr) {
             return null;
         }
 
@@ -113,11 +113,11 @@ CODE_SAMPLE
         }
 
         // has nested ternary → skip, it's super hard to read
-        if ($this->haveNestedTernary([$node->cond, $ternaryIf, $ternaryElse])) {
+        if ($this->haveNestedTernary([$node->cond, $ternaryIfExpr, $ternaryElse])) {
             return null;
         }
 
-        $ternary = new Ternary($node->cond, $ternaryIf, $ternaryElse);
+        $ternary = new Ternary($node->cond, $ternaryIfExpr, $ternaryElse);
         $assign = new Assign($ifAssignVarExpr, $ternary);
 
         // do not create super long lines
