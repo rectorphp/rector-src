@@ -13,10 +13,6 @@ final class SkipAfterInfiniteLoop
 
         if ($b = $yes) {
             $a[] = 'test';
-
-            if ($x = 'true') {
-                $yyy = 'test';
-            }
         }
 
         return $a;
