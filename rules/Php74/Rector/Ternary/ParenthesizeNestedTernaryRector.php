@@ -62,7 +62,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->if instanceof Ternary && $this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $node->if)) {
+        if ($node->if instanceof Ternary
+            && ! $this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $node)
+            && $this->parenthesizedNestedTernaryAnalyzer->isParenthesized($this->file, $node->if)) {
             return null;
         }
 
