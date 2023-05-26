@@ -294,9 +294,9 @@ final class PropertyManipulator
                 return true;
             }
 
-            $caller = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($caller instanceof MethodCall || $caller instanceof StaticCall) {
-                return $this->isFoundByRefParam($caller, $scope);
+            $callerNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
+            if ($callerNode instanceof MethodCall || $callerNode instanceof StaticCall) {
+                return $this->isFoundByRefParam($callerNode, $scope);
             }
         }
 

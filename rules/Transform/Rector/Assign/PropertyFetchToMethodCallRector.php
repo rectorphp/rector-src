@@ -109,20 +109,20 @@ CODE_SAMPLE
 
     private function processGetter(PropertyFetch $propertyFetch): ?Node
     {
-        $propertyToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);
-        if (! $propertyToMethodCall instanceof PropertyFetchToMethodCall) {
+        $propertyFetchToMethodCall = $this->matchPropertyFetchCandidate($propertyFetch);
+        if (! $propertyFetchToMethodCall instanceof PropertyFetchToMethodCall) {
             return null;
         }
 
         // simple method name
-        if ($propertyToMethodCall->getNewGetMethod() !== '') {
+        if ($propertyFetchToMethodCall->getNewGetMethod() !== '') {
             $methodCall = $this->nodeFactory->createMethodCall(
                 $propertyFetch->var,
-                $propertyToMethodCall->getNewGetMethod()
+                $propertyFetchToMethodCall->getNewGetMethod()
             );
 
-            if ($propertyToMethodCall->getNewGetArguments() !== []) {
-                $methodCall->args = $this->nodeFactory->createArgs($propertyToMethodCall->getNewGetArguments());
+            if ($propertyFetchToMethodCall->getNewGetArguments() !== []) {
+                $methodCall->args = $this->nodeFactory->createArgs($propertyFetchToMethodCall->getNewGetArguments());
             }
 
             return $methodCall;

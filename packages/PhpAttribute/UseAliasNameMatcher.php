@@ -29,21 +29,24 @@ final class UseAliasNameMatcher
         foreach ($uses as $use) {
             foreach ($use->uses as $useUse) {
                 // we need to use original use statement
-                $originalUseUse = $useUse->getAttribute(AttributeKey::ORIGINAL_NODE);
-                if (! $originalUseUse instanceof UseUse) {
+                $originalUseUseNode = $useUse->getAttribute(AttributeKey::ORIGINAL_NODE);
+                if (! $originalUseUseNode instanceof UseUse) {
                     continue;
                 }
 
-                if (! $originalUseUse->alias instanceof Identifier) {
+                if (! $originalUseUseNode->alias instanceof Identifier) {
                     continue;
                 }
 
-                $alias = $originalUseUse->alias->toString();
+                $alias = $originalUseUseNode->alias->toString();
                 if (! str_starts_with($shortAnnotationName, $alias)) {
                     continue;
                 }
 
-                $fullyQualifiedAnnotationName = $originalUseUse->name->toString() . ltrim($shortAnnotationName, $alias);
+                $fullyQualifiedAnnotationName = $originalUseUseNode->name->toString() . ltrim(
+                    $shortAnnotationName,
+                    $alias
+                );
                 if ($fullyQualifiedAnnotationName !== $annotationToAttribute->getTag()) {
                     continue;
                 }
@@ -57,7 +60,7 @@ final class UseAliasNameMatcher
                 }
 
                 // now we now we are matching correct contanct and old and new have the same number of parts
-                $useImportPartCount = substr_count($originalUseUse->name->toString(), '\\') + 1;
+                $useImportPartCount = substr_count($originalUseUseNode->name->toString(), '\\') + 1;
                 $newAttributeImportPart = array_slice($attributeParts, 0, $useImportPartCount);
                 $newAttributeImport = implode('\\', $newAttributeImportPart);
 

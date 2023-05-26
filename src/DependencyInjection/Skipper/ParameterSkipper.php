@@ -91,11 +91,11 @@ final class ParameterSkipper
             return false;
         }
 
-        $reflectionParameterType = $reflectionParameter->getType();
-        if (! $reflectionParameterType instanceof ReflectionNamedType) {
+        $parameterReflectionType = $reflectionParameter->getType();
+        if (! $parameterReflectionType instanceof ReflectionNamedType) {
             return false;
         }
 
-        return $reflectionParameterType->getName() === 'array';
+        return $parameterReflectionType->getName() === 'array';
     }
 }

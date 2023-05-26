@@ -70,10 +70,10 @@ final class BinaryOpManipulator
             return null;
         }
 
-        $firstInversedNode = $this->inverseNode($booleanOr->left);
-        $secondInversedNode = $this->inverseNode($booleanOr->right);
+        $firstInversedExpr = $this->inverseNode($booleanOr->left);
+        $secondInversedExpr = $this->inverseNode($booleanOr->right);
 
-        return new $inversedNodeClass($firstInversedNode, $secondInversedNode);
+        return new $inversedNodeClass($firstInversedExpr, $secondInversedExpr);
     }
 
     public function invertCondition(BinaryOp $binaryOp): ?BinaryOp

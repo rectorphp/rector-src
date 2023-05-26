@@ -86,7 +86,7 @@ final class PhpDocTypeChanger
         }
 
         // override existing type
-        $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
+        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
             TypeKind::PROPERTY
         );
@@ -94,11 +94,11 @@ final class PhpDocTypeChanger
         $currentVarTagValueNode = $phpDocInfo->getVarTagValueNode();
         if ($currentVarTagValueNode instanceof VarTagValueNode) {
             // only change type
-            $currentVarTagValueNode->type = $newPHPStanPhpDocType;
+            $currentVarTagValueNode->type = $newPHPStanPhpDocTypeNode;
             $phpDocInfo->markAsChanged();
         } else {
             // add completely new one
-            $varTagValueNode = new VarTagValueNode($newPHPStanPhpDocType, '', '');
+            $varTagValueNode = new VarTagValueNode($newPHPStanPhpDocTypeNode, '', '');
 
             $phpDocInfo->addTagValueNode($varTagValueNode);
         }
@@ -121,7 +121,7 @@ final class PhpDocTypeChanger
         }
 
         // override existing type
-        $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
+        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
             $newType,
             TypeKind::RETURN
         );
@@ -130,11 +130,11 @@ final class PhpDocTypeChanger
 
         if ($currentReturnTagValueNode instanceof ReturnTagValueNode) {
             // only change type
-            $currentReturnTagValueNode->type = $newPHPStanPhpDocType;
+            $currentReturnTagValueNode->type = $newPHPStanPhpDocTypeNode;
             $phpDocInfo->markAsChanged();
         } else {
             // add completely new one
-            $returnTagValueNode = new ReturnTagValueNode($newPHPStanPhpDocType, '');
+            $returnTagValueNode = new ReturnTagValueNode($newPHPStanPhpDocTypeNode, '');
             $phpDocInfo->addTagValueNode($returnTagValueNode);
         }
 
@@ -152,7 +152,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $phpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM);
+        $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM);
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
         // override existing type
@@ -172,10 +172,10 @@ final class PhpDocTypeChanger
                 return;
             }
 
-            $paramTagValueNode->type = $phpDocType;
+            $paramTagValueNode->type = $phpDocTypeNode;
             $phpDocInfo->markAsChanged();
         } else {
-            $paramTagValueNode = $this->paramPhpDocNodeFactory->create($phpDocType, $param);
+            $paramTagValueNode = $this->paramPhpDocNodeFactory->create($phpDocTypeNode, $param);
             $phpDocInfo->addTagValueNode($paramTagValueNode);
         }
     }
@@ -212,13 +212,13 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $varTag = $phpDocInfo->getVarTagValueNode();
-        if (! $varTag instanceof VarTagValueNode) {
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        if (! $varTagValueNode instanceof VarTagValueNode) {
             $this->processKeepComments($property, $param);
             return;
         }
 
-        if ($varTag->description !== '') {
+        if ($varTagValueNode->description !== '') {
             return;
         }
 
@@ -229,7 +229,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        if (! $this->isAllowed($varTag->type)) {
+        if (! $this->isAllowed($varTagValueNode->type)) {
             return;
         }
 
@@ -241,7 +241,7 @@ final class PhpDocTypeChanger
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
         $phpDocInfo = $parentNode->getAttribute(AttributeKey::PHP_DOC_INFO);
-        $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTag, $property);
+        $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
 
         $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);
         $this->processKeepComments($property, $param);
@@ -260,22 +260,22 @@ final class PhpDocTypeChanger
     private function processKeepComments(Property $property, Param $param): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
-        $varTag = $phpDocInfo->getVarTagValueNode();
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
 
-        $toBeRemoved = ! $varTag instanceof VarTagValueNode;
+        $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
         $this->commentsMerger->keepComments($param, [$property]);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
-        $varTag = $phpDocInfo->getVarTagValueNode();
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $toBeRemoved) {
             return;
         }
 
-        if (! $varTag instanceof VarTagValueNode) {
+        if (! $varTagValueNode instanceof VarTagValueNode) {
             return;
         }
 
-        if ($varTag->description !== '') {
+        if ($varTagValueNode->description !== '') {
             return;
         }
 

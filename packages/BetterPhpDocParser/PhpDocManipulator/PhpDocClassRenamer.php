@@ -38,14 +38,14 @@ final class PhpDocClassRenamer
      */
     private function processAssertChoiceTagValueNode(array $oldToNewClasses, PhpDocInfo $phpDocInfo): void
     {
-        $assertChoiceTagValueNode = $phpDocInfo->findOneByAnnotationClass(
+        $assertChoiceDoctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
             'Symfony\Component\Validator\Constraints\Choice'
         );
-        if (! $assertChoiceTagValueNode instanceof DoctrineAnnotationTagValueNode) {
+        if (! $assertChoiceDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
         }
 
-        $callbackArrayItemNode = $assertChoiceTagValueNode->getValue('callback');
+        $callbackArrayItemNode = $assertChoiceDoctrineAnnotationTagValueNode->getValue('callback');
         if (! $callbackArrayItemNode instanceof ArrayItemNode) {
             return;
         }
