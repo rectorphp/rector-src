@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Guard;
 
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
-use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
@@ -21,8 +19,7 @@ final class PropertyTypeChangeGuard
         private readonly PropertyAnalyzer $propertyAnalyzer,
         private readonly PropertyManipulator $propertyManipulator,
         private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
