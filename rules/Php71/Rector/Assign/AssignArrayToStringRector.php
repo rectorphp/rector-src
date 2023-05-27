@@ -13,7 +13,9 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -28,6 +30,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AssignArrayToStringRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly PropertyFetchFinder $propertyFetchFinder,
+    ) {
+    }
+
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NO_ASSIGN_ARRAY_TO_STRING;
@@ -56,30 +63,32 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class, Property::class];
+        return [Assign::class, Class_::class];
     }
 
     /**
-     * @param Assign|Property $node
+     * @param Assign|Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        $defaultExpr = $this->resolveDefaultValueExpr($node);
-        if (! $defaultExpr instanceof Expr) {
+        if ($node instanceof Class_) {
+            return $this->refactorClass($node);
+        }
+
+        if (! $this->isEmptyString($node->expr)) {
             return null;
         }
 
-        if (! $this->isEmptyString($defaultExpr)) {
+        $assignedVar = $node->var;
+        if (! $assignedVar instanceof Variable) {
             return null;
         }
-
-        $assignedVar = $this->resolveAssignedVar($node);
 
         // 1. variable!
         $shouldRetype = false;
 
         /** @var array<Variable|PropertyFetch|StaticPropertyFetch> $exprUsages */
-        $exprUsages = $this->betterNodeFinder->findSameNamedExprs($assignedVar);
+        $exprUsages = $this->betterNodeFinder->findSameNamedVariables($assignedVar);
 
         // detect if is part of variable assign?
         foreach ($exprUsages as $exprUsage) {
@@ -106,22 +115,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof Property) {
-            $node->props[0]->default = new Array_();
-            return $node;
-        }
-
         $node->expr = new Array_();
         return $node;
-    }
-
-    private function resolveDefaultValueExpr(Assign | Property $node): ?Expr
-    {
-        if ($node instanceof Property) {
-            return $node->props[0]->default;
-        }
-
-        return $node->expr;
     }
 
     private function isEmptyString(Expr $expr): bool
@@ -133,12 +128,44 @@ CODE_SAMPLE
         return $expr->value === '';
     }
 
-    private function resolveAssignedVar(Assign | Property $node): Expr | Property
+    private function refactorClass(Class_ $class): ?Class_
     {
-        if ($node instanceof Assign) {
-            return $node->var;
+        $hasChanged = false;
+
+        foreach ($class->getProperties() as $property) {
+            if (! $this->hasPropertyDefaultEmptyString($property)) {
+                continue;
+            }
+
+            $arrayDimFetches = $this->propertyFetchFinder->findLocalPropertyArrayDimFetchesAssignsByName(
+                $class,
+                $property
+            );
+
+            foreach ($arrayDimFetches as $arrayDimFetch) {
+                if ($arrayDimFetch->dim instanceof Expr) {
+                    continue;
+                }
+
+                $property->props[0]->default = new Array_();
+                $hasChanged = true;
+            }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $class;
+        }
+
+        return null;
+    }
+
+    private function hasPropertyDefaultEmptyString(Property $property): bool
+    {
+        $defaultExpr = $property->props[0]->default;
+        if (! $defaultExpr instanceof Expr) {
+            return false;
+        }
+
+        return $this->isEmptyString($defaultExpr);
     }
 }

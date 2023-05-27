@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
@@ -76,6 +78,38 @@ final class PropertyFetchFinder
         }
 
         return $foundPropertyFetches;
+    }
+
+    /**
+     * @return ArrayDimFetch[]
+     */
+    public function findLocalPropertyArrayDimFetchesAssignsByName(Class_ $class, Property $property): array
+    {
+        $propertyName = $this->nodeNameResolver->getName($property);
+
+        /** @var Assign[] $assigns */
+        $assigns = $this->betterNodeFinder->findInstanceOf($class, Assign::class);
+
+        $propertyArrayDimFetches = [];
+        foreach ($assigns as $assign) {
+            if (! $assign->var instanceof ArrayDimFetch) {
+                continue;
+            }
+
+            $dimFetchVar = $assign->var;
+
+            if (! $dimFetchVar->var instanceof PropertyFetch && ! $dimFetchVar->var instanceof StaticPropertyFetch) {
+                continue;
+            }
+
+            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($dimFetchVar->var, $propertyName)) {
+                continue;
+            }
+
+            $propertyArrayDimFetches[] = $dimFetchVar;
+        }
+
+        return $propertyArrayDimFetches;
     }
 
     /**

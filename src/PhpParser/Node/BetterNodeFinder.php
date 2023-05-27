@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
@@ -25,7 +24,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
@@ -374,48 +372,26 @@ final class BetterNodeFinder
     }
 
     /**
-     * @api
-     * @return Expr[]
+     * @return Variable[]
      */
-    public function findSameNamedExprs(Expr | Variable | Property | PropertyFetch | StaticPropertyFetch $expr): array
+    public function findSameNamedVariables(Variable $variable): array
     {
         // assign of empty string to something
-        $scopeNode = $this->findParentScope($expr);
+        $scopeNode = $this->findParentScope($variable);
         if (! $scopeNode instanceof Node) {
             return [];
         }
 
-        if ($expr instanceof Variable) {
-            $exprName = $this->nodeNameResolver->getName($expr);
-            if ($exprName === null) {
-                return [];
-            }
-
-            /** @var Variable[] $variables */
-            $variables = $this->find($scopeNode, fn (Node $node): bool =>
-                $node instanceof Variable && $this->nodeNameResolver->isName($node, $exprName));
-            return $variables;
-        }
-
-        if ($expr instanceof Property) {
-            $singleProperty = $expr->props[0];
-            $exprName = $this->nodeNameResolver->getName($singleProperty->name);
-        } elseif ($expr instanceof StaticPropertyFetch || $expr instanceof PropertyFetch) {
-            $exprName = $this->nodeNameResolver->getName($expr->name);
-        } else {
-            return [];
-        }
-
+        $exprName = $this->nodeNameResolver->getName($variable);
         if ($exprName === null) {
             return [];
         }
 
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->find($scopeNode, fn (Node $node): bool =>
-            ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch)
-                && $this->nodeNameResolver->isName($node->name, $exprName));
+        /** @var Variable[] $variables */
+        $variables = $this->find($scopeNode, fn (Node $node): bool =>
+            $node instanceof Variable && $this->nodeNameResolver->isName($node, $exprName));
 
-        return $propertyFetches;
+        return $variables;
     }
 
     /**
@@ -792,9 +768,9 @@ final class BetterNodeFinder
     /**
      * @return Closure|Function_|ClassMethod|Class_|Namespace_|null
      */
-    private function findParentScope(Node $node): Node|null
+    private function findParentScope(Variable $variable): Node|null
     {
-        return $this->findParentByTypes($node, [
+        return $this->findParentByTypes($variable, [
             Closure::class,
             Function_::class,
             ClassMethod::class,
