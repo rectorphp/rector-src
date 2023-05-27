@@ -90,7 +90,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        foreach ($node->params as $param) {
+        foreach ($params as $param) {
             /** @var string $paramName */
             $paramName = $this->getName($param->var);
 
