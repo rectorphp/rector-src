@@ -47,7 +47,7 @@ final class ParentPropertyLookupGuard
 
         $nativeReflection = $classReflection->getNativeReflection();
         if (! $nativeReflection->getParentClass()) {
-            return false;
+            return true;
         }
 
         $className = $classReflection->getName();
