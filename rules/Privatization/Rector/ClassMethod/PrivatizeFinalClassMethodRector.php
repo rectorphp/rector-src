@@ -7,8 +7,10 @@ namespace Rector\Privatization\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -22,7 +24,6 @@ final class PrivatizeFinalClassMethodRector extends AbstractRector
     public function __construct(
         private readonly ClassMethodVisibilityGuard $classMethodVisibilityGuard,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -71,7 +72,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($node);
+        $classScope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $classScope instanceof Scope) {
+            return null;
+        }
+
+        $classReflection = $classScope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {

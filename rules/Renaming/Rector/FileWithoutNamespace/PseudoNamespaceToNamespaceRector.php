@@ -10,14 +10,12 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\PhpDocTypeRenamer;
 use Rector\Renaming\ValueObject\PseudoNamespaceToNamespace;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -85,24 +83,10 @@ CODE_SAMPLE
         $this->newNamespace = null;
 
         if ($node instanceof FileWithoutNamespace) {
-            $changedStmts = $this->refactorStmts($node->stmts);
-            if ($changedStmts === null) {
-                return null;
-            }
-
-            $node->stmts = $changedStmts;
-
-            // add a new namespace?
-            if ($this->newNamespace !== null) {
-                return new Namespace_(new Name($this->newNamespace), $changedStmts);
-            }
+            return $this->refactorFileWithoutNamespace($node);
         }
 
-        if ($node instanceof Namespace_) {
-            return $this->refactorNamespace($node);
-        }
-
-        return null;
+        return $this->refactorNamespace($node);
     }
 
     /**
@@ -191,11 +175,6 @@ CODE_SAMPLE
 
     private function processIdentifier(Identifier $identifier): ?Identifier
     {
-        $parentNode = $identifier->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof ClassLike) {
-            return null;
-        }
-
         $name = $this->getName($identifier);
         if ($name === null) {
             return null;
@@ -248,5 +227,22 @@ CODE_SAMPLE
         }
 
         return $hasChanged;
+    }
+
+    private function refactorFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): ?Namespace_
+    {
+        $changedStmts = $this->refactorStmts($fileWithoutNamespace->stmts);
+        if ($changedStmts === null) {
+            return null;
+        }
+
+        $fileWithoutNamespace->stmts = $changedStmts;
+
+        // add a new namespace?
+        if ($this->newNamespace !== null) {
+            return new Namespace_(new Name($this->newNamespace), $changedStmts);
+        }
+
+        return null;
     }
 }
