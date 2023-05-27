@@ -147,7 +147,7 @@ CODE_SAMPLE
 
         $assignedArrayDimFetches = [];
 
-        $this->traverseNodesWithCallable($scopeStmt, function (\PhpParser\Node $node) use (
+        $this->traverseNodesWithCallable($scopeStmt, function (Node $node) use (
             $variableName,
             &$assignedArrayDimFetches
         ) {
