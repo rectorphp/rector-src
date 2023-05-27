@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -243,18 +244,30 @@ CODE_SAMPLE
             return;
         }
 
-        /** @var Variable[] $variables */
-        $variables = $this->betterNodeFinder->find($nextNode, function (Node $node) use ($oldVariableName): bool {
-            if (! $node instanceof Variable) {
-                return false;
+        $nonAssignedVariables = [];
+
+        $this->traverseNodesWithCallable($nextNode, function (Node $node) use (
+            $oldVariableName,
+            &$nonAssignedVariables
+        ): ?int {
+            if ($node instanceof Assign && $node->var instanceof Variable) {
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            return $this->nodeNameResolver->isName($node, $oldVariableName);
+            if (! $node instanceof Variable) {
+                return null;
+            }
+
+            if (! $this->nodeNameResolver->isName($node, $oldVariableName)) {
+                return null;
+            }
+
+            $nonAssignedVariables[] = $node;
+            return null;
         });
 
-        $processRenameVariables = $this->processRenameVariable($variables, $oldVariableName, $newVariableName);
-        if (! $processRenameVariables) {
-            return;
+        foreach ($nonAssignedVariables as $nonAssignedVariable) {
+            $nonAssignedVariable->name = $newVariableName;
         }
 
         if (! isset($stmts[$key + 1])) {
@@ -269,27 +282,5 @@ CODE_SAMPLE
         $key += 2;
 
         $this->replaceNextUsageVariable($oldVariableName, $newVariableName, $key, $stmts, $nextNode);
-    }
-
-    /**
-     * @param Variable[] $variables
-     */
-    private function processRenameVariable(array $variables, string $oldVariableName, string $newVariableName): bool
-    {
-        foreach ($variables as $variable) {
-            $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $parentNode->var,
-                $variable
-            ) && $this->nodeNameResolver->isName($parentNode->var, $oldVariableName)
-                && ! $this->nodeComparator->areNodesEqual($parentNode->expr, $variable)
-            ) {
-                return false;
-            }
-
-            $variable->name = $newVariableName;
-        }
-
-        return true;
     }
 }
