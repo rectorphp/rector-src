@@ -18,6 +18,7 @@ use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass;
 
 final class ParentPropertyLookupGuard
 {
@@ -46,7 +47,7 @@ final class ParentPropertyLookupGuard
         }
 
         $nativeReflection = $classReflection->getNativeReflection();
-        if (! $nativeReflection->getParentClass()) {
+        if (! $nativeReflection->getParentClass() instanceof ReflectionClass) {
             return true;
         }
 
