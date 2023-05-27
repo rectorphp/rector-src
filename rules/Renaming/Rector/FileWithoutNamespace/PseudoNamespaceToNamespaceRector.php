@@ -85,24 +85,10 @@ CODE_SAMPLE
         $this->newNamespace = null;
 
         if ($node instanceof FileWithoutNamespace) {
-            $changedStmts = $this->refactorStmts($node->stmts);
-            if ($changedStmts === null) {
-                return null;
-            }
-
-            $node->stmts = $changedStmts;
-
-            // add a new namespace?
-            if ($this->newNamespace !== null) {
-                return new Namespace_(new Name($this->newNamespace), $changedStmts);
-            }
+            return $this->refactorFileWithoutNamespace($node);
         }
 
-        if ($node instanceof Namespace_) {
-            return $this->refactorNamespace($node);
-        }
-
-        return null;
+        return $this->refactorNamespace($node);
     }
 
     /**
@@ -248,5 +234,22 @@ CODE_SAMPLE
         }
 
         return $hasChanged;
+    }
+
+    private function refactorFileWithoutNamespace(FileWithoutNamespace $fileWithoutNamespace): ?Namespace_
+    {
+        $changedStmts = $this->refactorStmts($fileWithoutNamespace->stmts);
+        if ($changedStmts === null) {
+            return null;
+        }
+
+        $fileWithoutNamespace->stmts = $changedStmts;
+
+        // add a new namespace?
+        if ($this->newNamespace !== null) {
+            return new Namespace_(new Name($this->newNamespace), $changedStmts);
+        }
+
+        return null;
     }
 }
