@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -61,29 +60,33 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [List_::class];
+        return [Assign::class, Foreach_::class];
     }
 
     /**
-     * @param List_ $node
+     * @param Assign|Foreach_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        if ($node instanceof Assign) {
+            if (! $node->var instanceof List_) {
+                return null;
+            }
 
-        if ($parentNode instanceof Assign && $parentNode->var === $node) {
-            return new Array_($node->items);
+            $list = $node->var;
+
+            $node->var = new Array_($list->items);
+            return $node;
         }
 
-        if (! $parentNode instanceof Foreach_) {
+        if (! $node->valueVar instanceof List_) {
             return null;
         }
 
-        if ($parentNode->valueVar !== $node) {
-            return null;
-        }
+        $list = $node->valueVar;
+        $node->valueVar = new Array_($list->items);
 
-        return new Array_($node->items);
+        return $node;
     }
 
     public function provideMinPhpVersion(): int

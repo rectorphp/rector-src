@@ -2,11 +2,12 @@
 
 namespace Rector\Tests\Php71\Rector\List_\ListToArrayDestructRector\Fixture;
 
-class Fixture
+final class PartOfForeach
 {
     public function run()
     {
-        list($id1, $name1) = $data;
+        foreach ($data as list($id, $name)) {
+        }
     }
 }
 
@@ -16,11 +17,12 @@ class Fixture
 
 namespace Rector\Tests\Php71\Rector\List_\ListToArrayDestructRector\Fixture;
 
-class Fixture
+final class PartOfForeach
 {
     public function run()
     {
-        [$id1, $name1] = $data;
+        foreach ($data as [$id, $name]) {
+        }
     }
 }
 
