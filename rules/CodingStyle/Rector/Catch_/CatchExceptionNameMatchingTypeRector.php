@@ -150,7 +150,6 @@ CODE_SAMPLE
             $catch->var = new Variable($newVariableName);
             $this->renameVariableInStmts(
                 $catch,
-                $stmt,
                 $oldVariableName,
                 $newVariableName,
                 $key,
@@ -205,7 +204,6 @@ CODE_SAMPLE
      */
     private function renameVariableInStmts(
         Catch_ $catch,
-        TryCatch $tryCatch,
         string $oldVariableName,
         string $newVariableName,
         int $key,
