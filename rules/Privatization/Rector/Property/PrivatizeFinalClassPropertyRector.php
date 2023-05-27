@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Rector\Property;
 
+use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
@@ -65,11 +66,15 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
             if ($this->shouldSkipProperty($property)) {
                 continue;
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
 
             if (! $this->parentPropertyLookupGuard->isLegal($property, $classReflection)) {
