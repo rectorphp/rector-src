@@ -97,6 +97,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         foreach ($params as $param) {
             /** @var string $paramName */
             $paramName = $this->getName($param->var);
@@ -126,10 +127,16 @@ CODE_SAMPLE
 
                 $this->removeNode($toPropertyAssign);
                 $this->processPropertyPromotion($node, $param, $paramName);
+
+                $hasChanged = true;
             }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
