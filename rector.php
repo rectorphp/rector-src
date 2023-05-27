@@ -63,7 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         StringClassNameToClassConstantRector::class,
-
+        __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
         '**/Fixture*',
         '**/Fixture/*',
