@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Guard;
 
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
@@ -76,6 +77,10 @@ final class PropertyTypeChangeGuard
         }
 
         $class = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+        if (! $class instanceof Class_) {
+            return false;
+        }
+
         if (! $class->isFinal()) {
             return false;
         }
