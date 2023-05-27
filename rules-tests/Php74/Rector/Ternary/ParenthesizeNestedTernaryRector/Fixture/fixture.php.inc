@@ -9,7 +9,9 @@ function nestedTernaryNoParentheses()
   $c = 3;
 
   $value = $a ? $b : $a ?: null;
+  $value = ($a ? $b : $a ?: null);
   $value = $a ? $b : $a ? $c : null;
+  $value = ($a ? $b : $a ? $c : null);
 }
 
 ?>
@@ -25,7 +27,9 @@ function nestedTernaryNoParentheses()
   $c = 3;
 
   $value = ($a ? $b : $a) ?: null;
+  $value = (($a ? $b : $a) ?: null);
   $value = ($a ? $b : $a) ? $c : null;
+  $value = (($a ? $b : $a) ? $c : null);
 }
 
 ?>
