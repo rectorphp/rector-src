@@ -228,14 +228,13 @@ CODE_SAMPLE
             return null;
         });
 
-        $this->replaceNextUsageVariable($tryCatch, $oldVariableName, $newVariableName, $key, $stmts, $stmt);
+        $this->replaceNextUsageVariable($oldVariableName, $newVariableName, $key, $stmts, $stmt);
     }
 
     /**
      * @param Stmt[] $stmts
      */
     private function replaceNextUsageVariable(
-        Node $currentNode,
         string $oldVariableName,
         string $newVariableName,
         int $key,
@@ -264,8 +263,6 @@ CODE_SAMPLE
             return;
         }
 
-        $currentNode = $stmts[$key + 1];
-
         if (! isset($stmts[$key + 2])) {
             return;
         }
@@ -273,7 +270,7 @@ CODE_SAMPLE
         $nextNode = $stmts[$key + 2];
         $key += 2;
 
-        $this->replaceNextUsageVariable($currentNode, $oldVariableName, $newVariableName, $key, $stmts, $nextNode);
+        $this->replaceNextUsageVariable($oldVariableName, $newVariableName, $key, $stmts, $nextNode);
     }
 
     /**
