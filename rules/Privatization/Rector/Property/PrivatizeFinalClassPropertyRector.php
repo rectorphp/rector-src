@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,6 +22,7 @@ final class PrivatizeFinalClassPropertyRector extends AbstractRector
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -63,12 +65,14 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+
         foreach ($node->getProperties() as $property) {
             if ($this->shouldSkipProperty($property)) {
                 continue;
             }
 
-            if (! $this->parentPropertyLookupGuard->isLegal($property, $node)) {
+            if (! $this->parentPropertyLookupGuard->isLegal($property, $classReflection)) {
                 continue;
             }
 

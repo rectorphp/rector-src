@@ -76,15 +76,10 @@ final class PropertyTypeChangeGuard
             return false;
         }
 
-        $class = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
-        if (! $class instanceof Class_) {
+        if (! $classReflection->isFinalByKeyword()) {
             return false;
         }
 
-        if (! $class->isFinal()) {
-            return false;
-        }
-
-        return $this->parentPropertyLookupGuard->isLegal($property, $class);
+        return $this->parentPropertyLookupGuard->isLegal($property, $classReflection);
     }
 }

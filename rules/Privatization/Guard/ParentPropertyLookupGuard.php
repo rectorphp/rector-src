@@ -35,14 +35,13 @@ final class ParentPropertyLookupGuard
     ) {
     }
 
-    public function isLegal(Property $property, Class_ $class): bool
+    public function isLegal(Property $property, ?ClassReflection $classReflection): bool
     {
-        if ($this->classAnalyzer->isAnonymousClass($class)) {
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
-        if (! $classReflection instanceof ClassReflection) {
+        if ($classReflection->isAnonymous()) {
             return false;
         }
 
@@ -51,8 +50,9 @@ final class ParentPropertyLookupGuard
             return false;
         }
 
-        if (! $class->extends instanceof Name) {
-            return true;
+        $nativeReflection = $classReflection->getNativeReflection();
+        if (! $nativeReflection->getParentClass()) {
+            return false;
         }
 
         $className = $classReflection->getName();
