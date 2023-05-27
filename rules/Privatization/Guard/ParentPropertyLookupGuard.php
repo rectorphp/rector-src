@@ -17,8 +17,8 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
-use PHPStan\BetterReflection\Reflection\Adapter\ReflectionClass;
 
 final class ParentPropertyLookupGuard
 {
@@ -28,6 +28,7 @@ final class ParentPropertyLookupGuard
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly AstResolver $astResolver,
         private readonly PropertyManipulator $propertyManipulator,
+        private readonly PrivatesAccessor $privatesAccessor
     ) {
     }
 
@@ -47,7 +48,12 @@ final class ParentPropertyLookupGuard
         }
 
         $nativeReflection = $classReflection->getNativeReflection();
-        if (! $nativeReflection->getParentClass() instanceof ReflectionClass) {
+        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
+            $nativeReflection,
+            'betterReflectionClass'
+        );
+
+        if ($betterReflectionClass->getParentClassNames() !== []) {
             return true;
         }
 
