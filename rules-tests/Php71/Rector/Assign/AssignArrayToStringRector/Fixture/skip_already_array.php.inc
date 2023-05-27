@@ -2,15 +2,15 @@
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-class SkipCastUndefinedVar
+final class SkipAlreadyArray
 {
     public function fun()
     {
+        $array = [];
+
         $array[] = 'foo';
         $array[] = 'bar';
 
         return $array;
     }
 }
-
-?>
