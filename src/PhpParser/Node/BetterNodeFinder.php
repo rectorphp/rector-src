@@ -372,29 +372,6 @@ final class BetterNodeFinder
     }
 
     /**
-     * @return Variable[]
-     */
-    public function findSameNamedVariables(Variable $variable): array
-    {
-        // assign of empty string to something
-        $scopeNode = $this->findParentScope($variable);
-        if (! $scopeNode instanceof Node) {
-            return [];
-        }
-
-        $exprName = $this->nodeNameResolver->getName($variable);
-        if ($exprName === null) {
-            return [];
-        }
-
-        /** @var Variable[] $variables */
-        $variables = $this->find($scopeNode, fn (Node $node): bool =>
-            $node instanceof Variable && $this->nodeNameResolver->isName($node, $exprName));
-
-        return $variables;
-    }
-
-    /**
      * @template T of Node
      * @param array<class-string<T>>|class-string<T> $types
      */
@@ -763,19 +740,5 @@ final class BetterNodeFinder
 
         return $this->nodeFinder->findFirst($nodes, fn (Node $node): bool =>
             $node instanceof $type && $this->nodeNameResolver->isName($node, $name));
-    }
-
-    /**
-     * @return Closure|Function_|ClassMethod|Class_|Namespace_|null
-     */
-    private function findParentScope(Variable $variable): Node|null
-    {
-        return $this->findParentByTypes($variable, [
-            Closure::class,
-            Function_::class,
-            ClassMethod::class,
-            Class_::class,
-            Namespace_::class,
-        ]);
     }
 }

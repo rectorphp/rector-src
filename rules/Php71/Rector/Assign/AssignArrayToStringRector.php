@@ -9,16 +9,17 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -75,48 +76,7 @@ CODE_SAMPLE
             return $this->refactorClass($node);
         }
 
-        if (! $this->isEmptyString($node->expr)) {
-            return null;
-        }
-
-        $assignedVar = $node->var;
-        if (! $assignedVar instanceof Variable) {
-            return null;
-        }
-
-        // 1. variable!
-        $shouldRetype = false;
-
-        /** @var array<Variable|PropertyFetch|StaticPropertyFetch> $exprUsages */
-        $exprUsages = $this->betterNodeFinder->findSameNamedVariables($assignedVar);
-
-        // detect if is part of variable assign?
-        foreach ($exprUsages as $exprUsage) {
-            $parentNode = $exprUsage->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $parentNode instanceof ArrayDimFetch) {
-                continue;
-            }
-
-            $firstAssign = $this->betterNodeFinder->findParentType($parentNode, Assign::class);
-            if (! $firstAssign instanceof Assign) {
-                continue;
-            }
-
-            // skip explicit assigns
-            if ($parentNode->dim instanceof Expr) {
-                continue;
-            }
-
-            $shouldRetype = true;
-            break;
-        }
-
-        if (! $shouldRetype) {
-            return null;
-        }
-
-        $node->expr = new Array_();
-        return $node;
+        return $this->refactorAssign($node);
     }
 
     private function isEmptyString(Expr $expr): bool
@@ -167,5 +127,95 @@ CODE_SAMPLE
         }
 
         return $this->isEmptyString($defaultExpr);
+    }
+
+    /**
+     * @return ArrayDimFetch[]
+     */
+    private function findSameNamedVariableAssigns(Variable $variable): array
+    {
+        // assign of empty string to something
+        $scopeStmt = $this->findParentScope($variable);
+        if (! $scopeStmt instanceof Stmt) {
+            return [];
+        }
+
+        $variableName = $this->nodeNameResolver->getName($variable);
+        if ($variableName === null) {
+            return [];
+        }
+
+        $assignedArrayDimFetches = [];
+
+        $this->traverseNodesWithCallable($scopeStmt, function (\PhpParser\Node $node) use (
+            $variableName,
+            &$assignedArrayDimFetches
+        ) {
+            if (! $node instanceof Assign) {
+                return null;
+            }
+
+            if (! $node->var instanceof ArrayDimFetch) {
+                return null;
+            }
+
+            $arrayDimFetch = $node->var;
+            if (! $arrayDimFetch->var instanceof Variable) {
+                return null;
+            }
+
+            if (! $this->isName($arrayDimFetch->var, $variableName)) {
+                return null;
+            }
+
+            $assignedArrayDimFetches[] = $arrayDimFetch;
+        });
+
+        return $assignedArrayDimFetches;
+    }
+
+    /**
+     * @return Function_|ClassMethod|Class_|Namespace_|null
+     */
+    private function findParentScope(Variable $variable): Stmt|null
+    {
+        return $this->betterNodeFinder->findParentByTypes($variable, [
+            Function_::class,
+            ClassMethod::class,
+            Class_::class,
+            Namespace_::class,
+        ]);
+    }
+
+    private function refactorAssign(Assign $assign): ?Assign
+    {
+        if (! $this->isEmptyString($assign->expr)) {
+            return null;
+        }
+
+        if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
+        $variableAssignArrayDimFetches = $this->findSameNamedVariableAssigns($assign->var);
+
+        $shouldRetype = false;
+
+        // detect if is part of variable assign?
+        foreach ($variableAssignArrayDimFetches as $variableAssignArrayDimFetch) {
+            if ($variableAssignArrayDimFetch->dim instanceof Expr) {
+                continue;
+            }
+
+            $shouldRetype = true;
+            break;
+        }
+
+        if (! $shouldRetype) {
+            return null;
+        }
+
+        $assign->expr = new Array_();
+        return $assign;
     }
 }
