@@ -73,7 +73,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!$classReflection instanceof ClassReflection) {
+            if (! $classReflection instanceof ClassReflection) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
 
