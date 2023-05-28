@@ -26,6 +26,9 @@ final class NodeRemover
     ) {
     }
 
+    /**
+     * @deprecated Return NodeTraverser::* to remove node directly instead
+     */
     public function removeNode(Node $node): void
     {
         // this make sure to keep just added nodes, e.g. added class constant, that doesn't have analysis of full code in this run

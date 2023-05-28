@@ -755,3 +755,4 @@ parameters:
         - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
 
         - '#Call to deprecated method addNodeToRemove\(\) of class Rector\\PostRector\\Collector\\NodesToRemoveCollector\:#'
+        - '#Call to deprecated method removeNode\(\) of class Rector\\NodeRemoval\\NodeRemover#'
