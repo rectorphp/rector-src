@@ -18,7 +18,6 @@ use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
 use Rector\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
-use Rector\Php80\Rector\FuncCall\TokenGetAllToObjectRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
@@ -41,13 +40,14 @@ return static function (RectorConfig $rectorConfig): void {
             new StaticCallToFuncCall('Nette\Utils\Strings', 'contains', 'str_contains'),
         ]);
 
-    $rectorConfig->rule(StringableForToStringRector::class);
-    $rectorConfig->rule(ClassOnObjectRector::class);
-    $rectorConfig->rule(GetDebugTypeRector::class);
-    $rectorConfig->rule(TokenGetAllToObjectRector::class);
-    $rectorConfig->rule(RemoveUnusedVariableInCatchRector::class);
-    $rectorConfig->rule(ClassPropertyAssignToConstructorPromotionRector::class);
-    $rectorConfig->rule(ChangeSwitchToMatchRector::class);
+    $rectorConfig->rules([
+        StringableForToStringRector::class,
+        ClassOnObjectRector::class,
+        GetDebugTypeRector::class,
+        RemoveUnusedVariableInCatchRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        ChangeSwitchToMatchRector::class,
+    ]);
 
     // nette\utils and Strings::replace()
     $rectorConfig

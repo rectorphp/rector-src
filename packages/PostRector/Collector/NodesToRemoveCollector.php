@@ -39,6 +39,9 @@ final class NodesToRemoveCollector implements NodeCollectorInterface
     ) {
     }
 
+    /**
+     * @deprecated Use direct return of changes Stmt instead
+     */
     public function addNodeToRemove(Node $node): void
     {
         /** Node|null $parentNode */

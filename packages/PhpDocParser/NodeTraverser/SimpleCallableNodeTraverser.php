@@ -19,15 +19,12 @@ final class SimpleCallableNodeTraverser
      */
     public function traverseNodesWithCallable(Node | array | null $node, callable $callable): void
     {
-        if ($node === null) {
-            return;
-        }
-
-        if ($node === []) {
+        if ($node === null || $node === []) {
             return;
         }
 
         $nodeTraverser = new NodeTraverser();
+
         $callableNodeVisitor = new CallableNodeVisitor($callable);
         $nodeTraverser->addVisitor($callableNodeVisitor);
 
