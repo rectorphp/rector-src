@@ -39,9 +39,6 @@ final class TestingParser
      */
     public function parseFileToDecoratedNodes(string $filePath): array
     {
-        // autoload file
-        require_once $filePath;
-
         $this->parameterProvider->changeParameter(Option::SOURCE, [$filePath]);
 
         $nodes = $this->rectorParser->parseFile($filePath);
