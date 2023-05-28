@@ -82,7 +82,7 @@ CODE_SAMPLE
         $classReflection = null;
 
         foreach ($node->getMethods() as $classMethod) {
-            if ($classReflection === null) {
+            if (! $classReflection instanceof ClassReflection) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
             }
 
