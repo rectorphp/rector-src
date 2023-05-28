@@ -114,14 +114,8 @@ final class ParamAnalyzer
         return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
     }
 
-    public function isParamReassign(Param $param): bool
+    public function isParamReassign(ClassMethod $classMethod, Param $param): bool
     {
-        $classMethod = $param->getAttribute(AttributeKey::PARENT_NODE);
-
-        if (! $classMethod instanceof ClassMethod) {
-            return false;
-        }
-
         $paramName = (string) $this->nodeNameResolver->getName($param->var);
         return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped($classMethod, function (Node $node) use (
             $paramName
