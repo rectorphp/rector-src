@@ -52,10 +52,7 @@ final class ParentPropertyLookupGuard
             $nativeReflection,
             'betterReflectionClass'
         );
-        $parentClassName = $this->privatesAccessor->getPrivateProperty(
-            $betterReflectionClass,
-            'parentClassName'
-        );
+        $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
 
         if ($parentClassName === null) {
             return true;
