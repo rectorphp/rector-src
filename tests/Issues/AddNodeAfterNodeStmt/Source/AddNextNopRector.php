@@ -14,14 +14,8 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class AddNextNopRector extends AbstractRector
+final class AddNextNopRector extends AbstractRector
 {
-    private array $justAdded = [];
-
-    public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('uff', []);
@@ -36,10 +30,6 @@ class AddNextNopRector extends AbstractRector
 
     public function refactor(Node $node)
     {
-        if (isset($this->justAdded[$this->file->getFilePath()])) {
-            return null;
-        }
-
         $echo = new Echo_([new String_("this is new stmt after Nop")]);
 
         $phpDocInfo = $this->phpDocInfoFactory->createEmpty($echo);
@@ -51,13 +41,9 @@ class AddNextNopRector extends AbstractRector
             )
         );
 
-        $this->nodesToAddCollector->addNodeAfterNode(
+        return [
+            $node,
             $echo,
-            $node
-        );
-
-        $this->justAdded[$this->file->getFilePath()] = true;
-
-        return $node;
+        ];
     }
 }
