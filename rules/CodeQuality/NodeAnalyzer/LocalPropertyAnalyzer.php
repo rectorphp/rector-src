@@ -12,14 +12,13 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\CodeQuality\TypeResolver\ArrayDimFetchTypeResolver;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -37,7 +36,6 @@ final class LocalPropertyAnalyzer
 
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly ClassAnalyzer $classAnalyzer,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ArrayDimFetchTypeResolver $arrayDimFetchTypeResolver,
@@ -54,12 +52,16 @@ final class LocalPropertyAnalyzer
     {
         $fetchedLocalPropertyNameToTypes = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->stmts, function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->getMethods(), function (Node $node) use (
             &$fetchedLocalPropertyNameToTypes
         ): ?int {
-            // skip anonymous class scope
-            $isAnonymousClass = $this->classAnalyzer->isAnonymousClass($node);
-            if ($isAnonymousClass) {
+            // skip anonymous classes and inner function
+            if ($node instanceof Class_ || $node instanceof Function_) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            // skip closure call
+            if ($node instanceof MethodCall && $node->var instanceof Closure) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
@@ -77,11 +79,6 @@ final class LocalPropertyAnalyzer
 
             $propertyName = $this->nodeNameResolver->getName($node->name);
             if ($propertyName === null) {
-                return null;
-            }
-
-            $parentFunctionLike = $this->betterNodeFinder->findParentType($node, FunctionLike::class);
-            if (! $parentFunctionLike instanceof ClassMethod) {
                 return null;
             }
 
