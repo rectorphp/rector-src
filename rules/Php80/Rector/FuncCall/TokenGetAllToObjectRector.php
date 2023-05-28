@@ -9,18 +9,14 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
-use PhpToken;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeManipulator\TokenManipulator;
-use Rector\PostRector\Collector\NodesToAddCollector;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -34,7 +30,6 @@ final class TokenGetAllToObjectRector extends AbstractRector implements MinPhpVe
 {
     public function __construct(
         private readonly TokenManipulator $tokenManipulator,
-        private readonly NodesToAddCollector $nodesToAddCollector,
     ) {
     }
 
@@ -46,7 +41,7 @@ final class TokenGetAllToObjectRector extends AbstractRector implements MinPhpVe
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Convert `token_get_all` to `' . PhpToken::class . '::tokenize`',
+            'Convert `token_get_all()` to `PhpToken::tokenize()`',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
@@ -55,6 +50,7 @@ final class SomeClass
     public function run()
     {
         $tokens = token_get_all($code);
+
         foreach ($tokens as $token) {
             if (is_array($token)) {
                $name = token_name($token[0]);
@@ -74,9 +70,10 @@ final class SomeClass
     public function run()
     {
         $tokens = \PhpToken::tokenize($code);
+
         foreach ($tokens as $phpToken) {
-           $name = $phpToken->getTokenName();
-           $text = $phpToken->text;
+            $name = $phpToken->getTokenName();
+            $text = $phpToken->text;
         }
     }
 }
@@ -91,49 +88,45 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Assign::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param Assign $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->expr instanceof FuncCall) {
+        $tokensVariable = null;
+
+        $this->traverseNodesWithCallable($node, function (Node $node) use (&$tokensVariable) {
+            if ($node instanceof Assign && $node->expr instanceof FuncCall) {
+                $funcCall = $node->expr;
+                if (! $this->nodeNameResolver->isName($funcCall, 'token_get_all')) {
+                    return null;
+                }
+
+                $tokensVariable = $node->var;
+
+                $node->expr = $this->nodeFactory->createStaticCall('PhpToken', 'tokenize', $funcCall->getArgs());
+
+                return $node;
+            }
+
+            return null;
+        });
+
+        if (! $tokensVariable instanceof Variable) {
             return null;
         }
 
-        $funcCall = $node->expr;
-        if (! $this->nodeNameResolver->isName($funcCall, 'token_get_all')) {
-            return null;
-        }
-
-        $this->refactorTokensVariable($funcCall, $node->var);
-
-        $node->expr = $this->nodeFactory->createStaticCall('PhpToken', 'tokenize', $funcCall->getArgs());
-
+        $this->replaceGetNameOrGetValue($node, $tokensVariable);
         return $node;
-    }
-
-    private function refactorTokensVariable(FuncCall $funcCall, Expr $assignedToExpr): void
-    {
-        /** @var ClassMethod|Function_|null $classMethodOrFunction */
-        $classMethodOrFunction = $this->betterNodeFinder->findParentByTypes(
-            $funcCall,
-            [ClassMethod::class, Function_::class]
-        );
-
-        if ($classMethodOrFunction === null) {
-            return;
-        }
-
-        // dummy approach, improve when needed
-        $this->replaceGetNameOrGetValue($classMethodOrFunction, $assignedToExpr);
     }
 
     private function replaceGetNameOrGetValue(ClassMethod | Function_ $functionLike, Expr $assignedExpr): void
     {
         $tokensForeaches = $this->findForeachesOverTokenVariable($functionLike, $assignedExpr);
+
         foreach ($tokensForeaches as $tokenForeach) {
             $this->refactorTokenInForeach($tokenForeach);
         }
@@ -166,7 +159,6 @@ CODE_SAMPLE
             $this->tokenManipulator->refactorArrayToken([$node], $singleToken);
             $this->tokenManipulator->refactorNonArrayToken([$node], $singleToken);
             $this->tokenManipulator->refactorTokenIsKind([$node], $singleToken);
-
             $this->tokenManipulator->removeIsArray([$node], $singleToken);
 
             // drop if "If_" node not needed
@@ -175,29 +167,9 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $this->unwrapStmts($node->stmts, $node);
-                $this->removeNode($node);
+                return $node->stmts;
             }
+            return null;
         });
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     */
-    private function unwrapStmts(array $stmts, If_ $if): void
-    {
-        // move /* */ doc block from if to first element to keep it
-        $currentPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($if);
-
-        foreach ($stmts as $key => $stmt) {
-            if ($key === 0) {
-                $stmt->setAttribute(AttributeKey::PHP_DOC_INFO, $currentPhpDocInfo);
-
-                // move // comments
-                $stmt->setAttribute(AttributeKey::COMMENTS, $if->getComments());
-            }
-
-            $this->nodesToAddCollector->addNodeAfterNode($stmt, $if);
-        }
     }
 }

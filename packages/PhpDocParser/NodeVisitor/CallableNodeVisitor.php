@@ -18,26 +18,61 @@ final class CallableNodeVisitor extends NodeVisitorAbstract
     private $callable;
 
     /**
-     * @param callable(Node $node): (int|Node|null) $callable
+     * @var \PhpParser\Node[]
+     */
+    private ?array $newArrayStmts = null;
+
+    /**
+     * @param callable(Node $node): (int|Node|null|array) $callable
      */
     public function __construct(callable $callable)
     {
         $this->callable = $callable;
     }
 
-    public function enterNode(Node $node): int|Node|null
+    public function enterNode(Node $node)
     {
         $originalNode = $node;
 
         $callable = $this->callable;
 
-        /** @var int|Node|null $newNode */
+        /** @var int|Node|null|Stmt[] $newNode */
         $newNode = $callable($node);
 
-        if ($originalNode instanceof Stmt && $newNode instanceof Expr) {
-            return new Expression($newNode);
+        if (is_array($newNode)) {
+            $this->newArrayStmts = $newNode;
+
+            return $node;
         }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        // @todo remove
+>>>>>>> 55e0d49081 (misc)
+//        if ($originalNode instanceof Stmt && $newNode instanceof Expr) {
+//            return new Expression($newNode);
+//        }
+=======
+        // @todo remove
+        //        if ($originalNode instanceof Stmt && $newNode instanceof Expr) {
+        //            return new Expression($newNode);
+        //        }
+>>>>>>> 38ed2fd606 (fixup! misc)
+
         return $newNode;
+    }
+
+    public function leaveNode(Node $node)
+    {
+        if ($this->newArrayStmts !== null) {
+            $newArrayStmts = $this->newArrayStmts;
+            $this->newArrayStmts = null;
+
+            return $newArrayStmts;
+        }
+
+        return $node;
+        //return parent::leaveNode($node);
     }
 }

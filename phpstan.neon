@@ -753,3 +753,5 @@ parameters:
         # resolve before 1.0
         - '#Call to deprecated method resolveNextNode\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder\:#'
         - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
+
+        - '#Call to deprecated method addNodeToRemove\(\) of class Rector\\PostRector\\Collector\\NodesToRemoveCollector\:#'
