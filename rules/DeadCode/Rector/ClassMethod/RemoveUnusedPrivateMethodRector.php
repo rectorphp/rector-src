@@ -79,8 +79,14 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $classReflection = null;
+
         foreach ($node->getMethods() as $classMethod) {
-            if ($this->shouldSkip($classMethod)) {
+            if ($classReflection === null) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+            }
+
+            if ($this->shouldSkip($classMethod, $classReflection)) {
                 continue;
             }
 
@@ -99,9 +105,8 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(ClassMethod $classMethod): bool
+    private function shouldSkip(ClassMethod $classMethod, ?ClassReflection $classReflection): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return true;
         }
