@@ -295,7 +295,7 @@ CODE_SAMPLE;
 
     /**
      * @param Node|Node[] $nodes
-     * @param callable(Node $node): (Node|null|int|array) $callable
+     * @param callable(Node $node): (Node|null|int) $callable
      */
     protected function traverseNodesWithCallable(Node | array $nodes, callable $callable): void
     {
