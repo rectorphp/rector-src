@@ -92,8 +92,6 @@ CODE_SAMPLE
         // only value: list(, $value) = each($values);
         if ($listNode->items[1] instanceof ArrayItem && ! $listNode->items[0] instanceof ArrayItem) {
             $nextFuncCall = $this->nodeFactory->createFuncCall('next', $eachFuncCall->args);
-            //            $this->nodesToAddCollector->addNodeAfterNode($nextFuncCall, $assign);
-
             $currentFuncCall = $this->nodeFactory->createFuncCall('current', $eachFuncCall->args);
 
             $secondArrayItem = $listNode->items[1];
@@ -111,11 +109,8 @@ CODE_SAMPLE
         }
 
         $currentAssign = new Assign($secondArrayItem->value, $currentFuncCall);
-        //        $this->nodesToAddCollector->addNodeAfterNode($assign, $assign);
 
         $nextFuncCall = $this->nodeFactory->createFuncCall('next', $eachFuncCall->args);
-        //        $this->nodesToAddCollector->addNodeAfterNode($nextFuncCall, $node);
-
         $keyFuncCall = $this->nodeFactory->createFuncCall('key', $eachFuncCall->args);
 
         $firstArrayItem = $listNode->items[0];
