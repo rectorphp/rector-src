@@ -98,8 +98,6 @@ CODE_SAMPLE
     private function processRemoveParams(ClassMethod $classMethod): ?ClassMethod
     {
         $paramKeysToBeRemoved = [];
-        $totalParams = $classMethod->params;
-
         foreach ($classMethod->params as $key => $param) {
             if ($this->paramAnalyzer->isParamUsedInClassMethod($classMethod, $param)) {
                 continue;
@@ -108,14 +106,17 @@ CODE_SAMPLE
             $paramKeysToBeRemoved[] = $key;
         }
 
-        $this->complexNodeRemover
-            ->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
-        $newTotalParams = $classMethod->params;
-
-        if ($totalParams === $newTotalParams) {
+        if ($paramKeysToBeRemoved === []) {
             return null;
         }
 
-        return $classMethod;
+        $hasRemoved = $this->complexNodeRemover
+            ->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
+
+        if ($hasRemoved) {
+            return $classMethod;
+        }
+
+        return null;
     }
 }
