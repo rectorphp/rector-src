@@ -2,14 +2,15 @@
 
 namespace Rector\Tests\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector\Fixture;
 
-class Fixture
+class VariableKey
 {
     public function lists()
     {
+        $key = 1;
+
         $items = [
-            1 => 'A',
-            1 => 'B',
-            1 => 'A'
+            $key => 'A',
+            $key => 'A',
         ];
     }
 }
@@ -20,12 +21,14 @@ class Fixture
 
 namespace Rector\Tests\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector\Fixture;
 
-class Fixture
+class VariableKey
 {
     public function lists()
     {
+        $key = 1;
+
         $items = [
-            1 => 'A'
+            $key => 'A',
         ];
     }
 }
