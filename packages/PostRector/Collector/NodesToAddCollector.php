@@ -47,6 +47,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * @internal Return created nodes right in refactor() method to keep context instead.
      */
     public function addNodeBeforeNode(Node $addedNode, Node $positionNode): void
@@ -67,6 +68,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * @api
      * @param Node[] $addedNodes
      * @internal Return created nodes right in refactor() method to keep context instead.
@@ -83,6 +85,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * Better return created nodes right in refactor() method to keep context
      * @internal
      */
@@ -135,6 +138,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * @api downgrade
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      * @param Node[] $newNodes
