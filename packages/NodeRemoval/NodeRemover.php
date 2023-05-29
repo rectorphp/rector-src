@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeRemoval;
 
 use PhpParser\Node;
-use PhpParser\Node\Param;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\NodesToRemoveCollector;
