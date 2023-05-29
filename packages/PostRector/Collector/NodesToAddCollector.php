@@ -68,6 +68,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @api Used in downgrade still
      * @deprecated
      * Better return created nodes right in refactor() method to keep context
      * @internal

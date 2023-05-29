@@ -739,4 +739,3 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
-        - '#Method Rector\\PostRector\\Collector\\NodesToAddCollector\:\:addNodesAfterNode\(\) is unused#'
