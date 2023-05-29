@@ -120,15 +120,12 @@ final class MixPhpHtmlDecorator
             return;
         }
 
-        $node = $originalNode->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $node instanceof Stmt) {
+        if ($inlineHTML->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
             return;
         }
 
-        $parentInlineHTML = $inlineHTML->getAttribute(AttributeKey::PARENT_NODE);
-
-        // last Stmt that connected to InlineHTML just removed detected by different start token pos
-        if ($parentInlineHTML instanceof Stmt && $parentInlineHTML->getStartTokenPos() !== $node->getStartTokenPos()) {
+        // last Stmt that connected to InlineHTML just removed detected by start token pos is lower than InlineHTML
+        if ($stmt->getStartTokenPos() < $inlineHTML->getStartTokenPos()) {
             $inlineHTML->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             $this->isRequireReprintInlineHTML = true;
         }
