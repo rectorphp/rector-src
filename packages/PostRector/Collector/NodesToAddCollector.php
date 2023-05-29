@@ -68,7 +68,17 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+<<<<<<< HEAD
      * @api Used in downgrade still
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+     * @api Used in downgrade still
+=======
+=======
+     * @api Used in downgrade still
+>>>>>>> bfdb11024b (remove phpstan error)
+>>>>>>> efb872ffc7 (remove phpstan error)
      * @deprecated
      * Better return created nodes right in refactor() method to keep context
      * @internal
