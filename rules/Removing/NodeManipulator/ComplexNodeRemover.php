@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -167,7 +166,7 @@ final class ComplexNodeRemover
             return;
         }
 
-        foreach ($classMethod->params as $key => $param) {
+        foreach (array_keys($classMethod->params) as $key) {
             if (! in_array($key, $paramKeysToBeRemoved, true)) {
                 continue;
             }
