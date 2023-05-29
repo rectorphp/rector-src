@@ -11,7 +11,7 @@ final class SkipMethodCallRenameBelow
         $assign = $this->getAssign();
 
         $jsonDataAssign = new Assign(1, 2);
-        $this->addNodeBeforeNode($jsonDataAssign, $assign);
+        $this->someMethod($jsonDataAssign, $assign);
     }
 
     private function getAssign()

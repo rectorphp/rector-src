@@ -47,6 +47,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * @internal Return created nodes right in refactor() method to keep context instead.
      */
     public function addNodeBeforeNode(Node $addedNode, Node $positionNode): void
@@ -67,22 +68,8 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-     * @api
-     * @param Node[] $addedNodes
-     * @internal Return created nodes right in refactor() method to keep context instead.
-     */
-    public function addNodesAfterNode(array $addedNodes, Node $positionNode): void
-    {
-        foreach ($addedNodes as $addedNode) {
-            // prevent fluent method weird indent
-            $addedNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $this->addNodeAfterNode($addedNode, $positionNode);
-        }
-
-        $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
-    }
-
-    /**
+     * @api Used in downgrade still
+     * @deprecated
      * Better return created nodes right in refactor() method to keep context
      * @internal
      */
@@ -135,6 +122,7 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
+     * @deprecated
      * @api downgrade
      * @deprecated Return created nodes right in refactor() method to keep context instead.
      * @param Node[] $newNodes
