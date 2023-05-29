@@ -182,7 +182,7 @@ final class ComplexNodeRemover
                 if (! isset($classMethod->params[$nextKey])) {
                     // no next param, break the inner loop, remove the param
                     unset($classMethod->params[$paramKeyToBeRemoved]);
-                    break;
+                    return;
                 }
 
                 if (in_array($nextKey, $paramKeysToBeRemoved, true)) {
