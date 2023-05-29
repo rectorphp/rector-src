@@ -111,7 +111,10 @@ final class ComplexNodeRemover
 
         $this->removeConstructorDependency($class, $propertyName);
 
-        $this->nodeRemover->removeNodes($expressions);
+        foreach ($expressions as $expression) {
+            $this->nodeRemover->removeNode($expression);
+        }
+
         $this->nodeRemover->removeNode($property);
 
         return true;
