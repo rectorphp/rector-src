@@ -732,6 +732,7 @@ parameters:
 
         # resolve before 1.0
         - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
+        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removeConstructorDependency\(\)" is 13, keep it under 10#'
 
         - '#Call to deprecated method addNodeToRemove\(\) of class Rector\\PostRector\\Collector\\NodesToRemoveCollector\:#'
         - '#Call to deprecated method removeNode\(\) of class Rector\\NodeRemoval\\NodeRemover#'

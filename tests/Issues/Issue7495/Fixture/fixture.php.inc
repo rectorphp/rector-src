@@ -44,7 +44,6 @@ class Fixture
     private Registry $coreRegistry;
 
     public function __construct(
-        UrlInterface $urlInterface,
         Template\Context $context,
         GetInvoicesHelper $invoicesHelper,
         Registry $registry,
