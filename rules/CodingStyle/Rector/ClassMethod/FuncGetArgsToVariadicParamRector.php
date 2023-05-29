@@ -61,7 +61,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->params !== []) {
+        if ($node->params !== [] || $node->stmts === null) {
             return null;
         }
 
@@ -85,18 +85,19 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $assign->var instanceof Variable) {
-                continue;
+            if ($assign->var instanceof Variable) {
+                /** @var string $variableName */
+                $variableName = $this->getName($assign->var);
+                unset($node->stmts[$key]);
+
+                return $this->applyVariadicParams($node, $variableName);
             }
 
-            $variableName = $this->getName($assign->var);
-            unset($node->stmts[$key]);
-
-            return $this->applyVariadicParams($node, $variableName);
+            $assign->expr = new Variable('args');
+            return $this->applyVariadicParams($node, 'args');
         }
 
-        $assign->expr = new Variable('args');
-        return $this->applyVariadicParams($node, 'args');
+        return null;
     }
 
     public function provideMinPhpVersion(): int
