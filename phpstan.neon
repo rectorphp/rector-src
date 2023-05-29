@@ -739,7 +739,3 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
-
-        -
-            message: '#Method "processRemoveParamWithKeys\(\)" returns bool type, so the name should start with is/has/was#'
-            path: rules/Removing/NodeManipulator/ComplexNodeRemover.php
