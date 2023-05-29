@@ -116,7 +116,7 @@ final class UseImportsAdder
             return;
         }
 
-        if ($stmts[$indexStmt] instanceof Use_) {
+        if (isset($stmts[$indexStmt]) && $stmts[$indexStmt] instanceof Use_) {
             $comments = (array) $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS);
 
             if ($comments !== []) {
