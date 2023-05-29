@@ -135,23 +135,6 @@ final class NodesToAddCollector implements NodeCollectorInterface
         $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
     }
 
-    /**
-     * @deprecated
-     * @api
-     * @param Node[] $addedNodes
-     * @internal Return created nodes right in refactor() method to keep context instead.
-     */
-    private function addNodesAfterNode(array $addedNodes, Node $positionNode): void
-    {
-        foreach ($addedNodes as $addedNode) {
-            // prevent fluent method weird indent
-            $addedNode->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $this->addNodeAfterNode($addedNode, $positionNode);
-        }
-
-        $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
-    }
-
     private function resolveNearestStmtPosition(Node $node): string
     {
         if ($node instanceof Stmt) {
