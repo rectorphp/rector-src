@@ -171,7 +171,6 @@ final class ComplexNodeRemover
 
     /**
      * @param int[] $paramKeysToBeRemoved
-     * @return int[]
      */
     public function processRemoveParamWithKeys(ClassMethod $classMethod, array $paramKeysToBeRemoved): void
     {
