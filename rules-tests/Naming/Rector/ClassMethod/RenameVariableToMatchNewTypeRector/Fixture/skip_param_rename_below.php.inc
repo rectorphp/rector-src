@@ -9,6 +9,6 @@ final class SkipParamRenameBelow
     public function run($assign)
     {
         $jsonDataAssign = new Assign(1, 2);
-        $this->addNodeBeforeNode($jsonDataAssign, $assign);
+        $this->someMethod($jsonDataAssign, $assign);
     }
 }

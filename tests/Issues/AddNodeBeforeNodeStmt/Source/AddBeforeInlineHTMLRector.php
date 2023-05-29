@@ -16,13 +16,9 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\Collector\NodesToAddCollector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class AddBeforeInlineHTMLRector extends AbstractRector
+final class AddBeforeInlineHTMLRector extends AbstractRector
 {
     private array $justAdded = [];
-
-    public function __construct(private readonly NodesToAddCollector $nodesToAddCollector)
-    {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -45,8 +41,6 @@ class AddBeforeInlineHTMLRector extends AbstractRector
             return null;
         }
 
-        $firstStmt = current($node->stmts);
-
         $expression1 = new Expression(
             new Assign(
                 new Variable('test'), new String_('test')
@@ -60,11 +54,6 @@ class AddBeforeInlineHTMLRector extends AbstractRector
                 '$container',
                 ''
             )
-        );
-
-        $this->nodesToAddCollector->addNodeBeforeNode(
-            $expression1,
-            $firstStmt
         );
 
         $expression2 = new Expression(
@@ -82,10 +71,7 @@ class AddBeforeInlineHTMLRector extends AbstractRector
             )
         );
 
-        $this->nodesToAddCollector->addNodeBeforeNode(
-            $expression2,
-            $firstStmt
-        );
+        $node->stmts = array_merge([$expression1, $expression2], $node->stmts);
 
         $this->justAdded[$this->file->getFilePath()] = true;
 
