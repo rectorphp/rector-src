@@ -6,6 +6,7 @@
     colors="true"
     executionOrder="defects"
     defaultTestSuite="main"
+    displayDetailsOnTestsThatTriggerWarnings="true"
 >
     <testsuites>
         <testsuite name="main">
