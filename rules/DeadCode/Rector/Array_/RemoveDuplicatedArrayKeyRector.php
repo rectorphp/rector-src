@@ -145,12 +145,6 @@ CODE_SAMPLE
      */
     private function isArrayItemDuplicated(array $duplicatedKeysArrayItems, ArrayItem $arrayItem): bool
     {
-        foreach ($duplicatedKeysArrayItems as $duplicatedKeysArrayItem) {
-            if ($arrayItem === $duplicatedKeysArrayItem) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($arrayItem, $duplicatedKeysArrayItems, true);
     }
 }
