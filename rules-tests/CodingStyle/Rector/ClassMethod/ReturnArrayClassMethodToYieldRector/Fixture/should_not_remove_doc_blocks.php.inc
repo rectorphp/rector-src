@@ -36,13 +36,13 @@ use Rector\Tests\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRec
 
 final class ShouldNotRemoveComment extends ParentTestCase
 {
-    /**
-     * @doto Let's pretend that this comment is extremely important and meaningful.
-     *
-     * It should not be removed by Rector.
-     */
     public function provideData(): \Iterator
     {
+        /**
+         * @doto Let's pretend that this comment is extremely important and meaningful.
+         *
+         * It should not be removed by Rector.
+         */
         /**
          * @doto Yet another important comment
          */

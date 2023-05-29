@@ -94,12 +94,6 @@ parameters:
             message: '#Use explicit return value over magic &reference#'
             path: rules/Php70/EregToPcreTransformer.php
 
-        # false positives checked in another method
-        -
-            message: '#If condition is always false#'
-            paths:
-                - rules/CodeQuality/Rector/Concat/JoinStringConcatRector.php
-
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
         -
@@ -157,9 +151,6 @@ parameters:
 
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
-
-        # resolve later
-        - '#Method "processRenameVariable\(\)" returns bool type, so the name should start with is/has/was#'
 
         - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
 
@@ -232,10 +223,6 @@ parameters:
 
         # strict - resolve later
         - '#Foreach overwrites \$(.*?) with its value variable#'
-
-        -
-            message: '#Strict comparison using \!\=\= between null and null will always evaluate to false#'
-            path: rules/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector.php
 
         # stricter child type on purpose
         - '#Parameter \#1 \$nodes \(array<PhpParser\\Node\\Stmt\>\) of method Rector\\PostRector\\Rector\\(.*?)\:\:beforeTraverse\(\) should be contravariant with parameter \$nodes \(array<PhpParser\\Node\>\) of method PhpParser\\NodeVisitor\:\:beforeTraverse\(\)#'
@@ -341,11 +328,6 @@ parameters:
         -
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
-
-        -
-            message: '#Access to an undefined property PhpParser\\Node\:\:\$expr#'
-            paths:
-                - rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php
 
         # doc arrays cannot be trusted
         -
@@ -741,8 +723,6 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        - '#Anonymous variable in a (.*?)->stmts\[(.*?)]\->\.\.\.\(\)` method call can lead to false dead methods\. Make sure the variable type is known#'
-
         - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
         - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
 
@@ -751,8 +731,10 @@ parameters:
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         # resolve before 1.0
-        - '#Call to deprecated method resolveNextNode\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder\:#'
         - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
 
         - '#Call to deprecated method addNodeToRemove\(\) of class Rector\\PostRector\\Collector\\NodesToRemoveCollector\:#'
         - '#Call to deprecated method removeNode\(\) of class Rector\\NodeRemoval\\NodeRemover#'
+        -
+            message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
+            path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php

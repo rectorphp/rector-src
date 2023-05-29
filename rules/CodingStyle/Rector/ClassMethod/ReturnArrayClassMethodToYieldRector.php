@@ -10,11 +10,11 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
-use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\PhpParser\NodeTransformer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -34,7 +34,6 @@ final class ReturnArrayClassMethodToYieldRector extends AbstractRector implement
 
     public function __construct(
         private readonly NodeTransformer $nodeTransformer,
-        private readonly CommentsMerger $commentsMerger
     ) {
     }
 
@@ -49,7 +48,9 @@ final class SomeTest implements TestCase
 {
     public static function provideData()
     {
-        return [['some text']];
+        return [
+            ['some text']
+        ];
     }
 }
 CODE_SAMPLE
@@ -84,6 +85,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $hasChanged = false;
 
         foreach ($this->methodsToYields as $methodToYield) {
@@ -100,9 +105,18 @@ CODE_SAMPLE
                 continue;
             }
 
+            // keep comments of 1st array item
+            $firstComment = $node->stmts[0]->getAttribute(AttributeKey::COMMENTS);
+
             $this->transformArrayToYieldsOnMethodNode($node, $arrayNode);
 
-            $this->commentsMerger->keepParent($node, $arrayNode);
+            if (is_array($firstComment)) {
+                $node->stmts[0]->setAttribute(
+                    AttributeKey::COMMENTS,
+                    array_merge($firstComment, (array) $node->stmts[0]->getAttribute(AttributeKey::COMMENTS))
+                );
+            }
+
             $hasChanged = true;
         }
 
@@ -144,7 +158,7 @@ CODE_SAMPLE
 
     private function transformArrayToYieldsOnMethodNode(ClassMethod $classMethod, Array_ $array): void
     {
-        $yieldNodes = $this->nodeTransformer->transformArrayToYields($array);
+        $yields = $this->nodeTransformer->transformArrayToYields($array);
 
         $this->removeReturnTag($classMethod);
 
@@ -159,7 +173,7 @@ CODE_SAMPLE
             unset($classMethod->stmts[$key]);
         }
 
-        $classMethod->stmts = array_merge((array) $classMethod->stmts, $yieldNodes);
+        $classMethod->stmts = array_merge((array) $classMethod->stmts, $yields);
     }
 
     private function removeReturnTag(ClassMethod $classMethod): void
