@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
-use Rector\Removing\NodeManipulator\ComplexNodeRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,7 +20,6 @@ final class RemoveUnusedConstructorParamRector extends AbstractRector
 {
     public function __construct(
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly ComplexNodeRemover $complexNodeRemover
     ) {
     }
 
@@ -62,57 +60,56 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isName($node, MethodName::CONSTRUCT)) {
+        $constructorClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if (! $constructorClassMethod instanceof ClassMethod) {
             return null;
         }
 
-        if ($node->params === []) {
+        if ($constructorClassMethod->params === []) {
             return null;
         }
 
-        if ($this->paramAnalyzer->hasPropertyPromotion($node->params)) {
+        if ($this->paramAnalyzer->hasPropertyPromotion($constructorClassMethod->params)) {
             return null;
         }
 
-        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if (! $class instanceof Class_) {
+        if ($constructorClassMethod->isAbstract()) {
             return null;
         }
 
-        if ($node->isAbstract()) {
+        $changedConstructorClassMethod = $this->processRemoveParams($constructorClassMethod);
+        if (! $changedConstructorClassMethod instanceof ClassMethod) {
             return null;
         }
 
-        return $this->processRemoveParams($node);
+        return $node;
     }
 
     private function processRemoveParams(ClassMethod $classMethod): ?ClassMethod
     {
-        $paramKeysToBeRemoved = [];
+        $hasChanged = false;
 
         foreach ($classMethod->params as $key => $param) {
             if ($this->paramAnalyzer->isParamUsedInClassMethod($classMethod, $param)) {
                 continue;
             }
 
-            $paramKeysToBeRemoved[] = $key;
+            unset($classMethod->params[$key]);
+            $hasChanged = true;
         }
 
-        $removedParamKeys = $this->complexNodeRemover
-            ->processRemoveParamWithKeys($classMethod->params, $paramKeysToBeRemoved);
-
-        if ($removedParamKeys === []) {
-            return null;
+        if ($hasChanged) {
+            return $classMethod;
         }
 
-        return $classMethod;
+        return null;
     }
 }

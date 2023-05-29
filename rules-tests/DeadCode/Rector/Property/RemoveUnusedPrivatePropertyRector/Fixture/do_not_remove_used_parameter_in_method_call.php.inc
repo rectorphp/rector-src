@@ -9,7 +9,7 @@ final class DemoSetting extends AbstractSetting
     private PageInterface $page;
     private SectionInterface $section;
 
-	public function __construct(PageInterface $page, SectionInterface $section)
+    public function __construct(PageInterface $page, SectionInterface $section)
     {
         $this->page = $page;
         $this->section = $section;
@@ -35,7 +35,7 @@ final class DemoSetting extends AbstractSetting
 {
     private PageInterface $page;
 
-	public function __construct(PageInterface $page, SectionInterface $section)
+    public function __construct(PageInterface $page, SectionInterface $section)
     {
         $this->page = $page;
 

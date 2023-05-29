@@ -119,10 +119,7 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Class_ $classLike */
-        $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
-        $this->propertyFetchWithConstFetchReplacer->replace($classLike, $node);
-
+        $this->propertyFetchWithConstFetchReplacer->replace($class, $node);
         return $this->classConstantFactory->createFromProperty($node);
     }
 
