@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\ChangesReporting\Collector\RectorChangeCollector;
@@ -40,24 +39,6 @@ final class NodeRemover
 
         $this->nodesToRemoveCollector->addNodeToRemove($node);
         $this->rectorChangeCollector->notifyNodeFileInfo($node);
-    }
-
-    /**
-     * @api used in rector-doctrine
-     */
-    public function removeNodeFromStatements(
-        Class_ | ClassMethod | Function_ $nodeWithStatements,
-        Node $toBeRemovedNode
-    ): void {
-        foreach ((array) $nodeWithStatements->stmts as $key => $stmt) {
-            if ($toBeRemovedNode !== $stmt) {
-                continue;
-            }
-
-            $this->removeNode($stmt);
-            unset($nodeWithStatements->stmts[$key]);
-            break;
-        }
     }
 
     /**
