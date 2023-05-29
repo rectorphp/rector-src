@@ -169,8 +169,7 @@ final class ComplexNodeRemover
         $this->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
     }
 
-        /**
-     * @param Param[] $params
+    /**
      * @param int[] $paramKeysToBeRemoved
      * @return int[]
      */
