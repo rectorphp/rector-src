@@ -105,7 +105,7 @@ CODE_SAMPLE
             if ($node instanceof MethodCall || $node instanceof StaticCall) {
                 $this->nodeRemover->removeArg($node, $argumentRemover->getPosition());
             } else {
-                $this->nodeRemover->removeParam($node, $argumentRemover->getPosition());
+                unset($node->params[$argumentRemover->getPosition()]);
             }
 
             return;
@@ -146,7 +146,7 @@ CODE_SAMPLE
             return;
         }
 
-        $this->nodeRemover->removeParam($node, $position);
+        unset($node->params[$position]);
     }
 
     /**

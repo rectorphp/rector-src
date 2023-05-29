@@ -51,23 +51,6 @@ final class NodeRemover
         }
     }
 
-    public function removeParam(ClassMethod $classMethod, int | Param $keyOrParam): void
-    {
-        $key = $keyOrParam instanceof Param ? $keyOrParam->getAttribute(AttributeKey::PARAMETER_POSITION) : $keyOrParam;
-
-        if ($classMethod->params === null) {
-            throw new ShouldNotHappenException();
-        }
-
-        // already removed
-        if (! isset($classMethod->params[$key])) {
-            return;
-        }
-
-        $this->removeNode($classMethod->params[$key]);
-        unset($classMethod->params[$key]);
-    }
-
     public function removeArg(FuncCall | MethodCall | StaticCall $node, int $key): void
     {
         if ($node->getArgs() === []) {
