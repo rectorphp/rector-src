@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
+use Rector\Removing\NodeManipulator\ComplexNodeRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -20,6 +21,7 @@ final class RemoveUnusedConstructorParamRector extends AbstractRector
 {
     public function __construct(
         private readonly ParamAnalyzer $paramAnalyzer,
+        private readonly ComplexNodeRemover $complexNodeRemover
     ) {
     }
 
@@ -95,21 +97,25 @@ CODE_SAMPLE
 
     private function processRemoveParams(ClassMethod $classMethod): ?ClassMethod
     {
-        $hasChanged = false;
+        $paramKeysToBeRemoved = [];
+        $totalParams = $classMethod->params;
 
         foreach ($classMethod->params as $key => $param) {
             if ($this->paramAnalyzer->isParamUsedInClassMethod($classMethod, $param)) {
                 continue;
             }
 
-            unset($classMethod->params[$key]);
-            $hasChanged = true;
+            $paramKeysToBeRemoved[] = $key;
         }
 
-        if ($hasChanged) {
-            return $classMethod;
+        $this->complexNodeRemover
+            ->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
+        $newTotalParams = $classMethod->params;
+
+        if ($totalParams === $newTotalParams) {
+            return null;
         }
 
-        return null;
+        return $classMethod;
     }
 }
