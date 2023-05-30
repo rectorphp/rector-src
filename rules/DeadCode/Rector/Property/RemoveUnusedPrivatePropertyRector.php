@@ -86,7 +86,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        $hasRemoved = false;
+        $hasChanged = false;
 
         foreach ($node->stmts as $key => $property) {
             if (! $property instanceof Property) {
@@ -112,11 +112,11 @@ CODE_SAMPLE
 
             if ($isRemoved) {
                 $this->processRemoveSameLineComment($node, $property, $key);
-                $hasRemoved = true;
+                $hasChanged = true;
             }
         }
 
-        return $hasRemoved ? $node : null;
+        return $hasChanged ? $node : null;
     }
 
     private function processRemoveSameLineComment(Class_ $class, Property $property, int $key): void
