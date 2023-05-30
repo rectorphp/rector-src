@@ -90,6 +90,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($this->classAnalyzer->isAnonymousClass($node)) {
+            return null;
+        }
+
         $toStringClassMethod = $node->getMethod(MethodName::TO_STRING);
         if (! $toStringClassMethod instanceof ClassMethod) {
             return null;
@@ -103,10 +107,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->classAnalyzer->isAnonymousClass($node)) {
-            return null;
-        }
-
         $returnType = $this->returnTypeInferer->inferFunctionLike($toStringClassMethod);
         if (! $returnType->isString()->yes()) {
             $this->processNotStringType($toStringClassMethod);
@@ -116,7 +116,6 @@ CODE_SAMPLE
         $node->implements[] = new FullyQualified(self::STRINGABLE);
 
         // add return type
-
         if ($toStringClassMethod->returnType === null) {
             $toStringClassMethod->returnType = new Identifier('string');
         }
@@ -131,14 +130,9 @@ CODE_SAMPLE
         }
 
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($toStringClassMethod, Return_::class);
-
         if (! $hasReturn) {
-            $lastKey = array_key_last((array) $toStringClassMethod->stmts);
-            $lastKey = $lastKey === null
-                ? 0
-                : (int) $lastKey + 1;
-
-            $toStringClassMethod->stmts[$lastKey] = new Return_(new String_(''));
+            $emptyStringReturn = new Return_(new String_(''));
+            $toStringClassMethod->stmts[] = $emptyStringReturn;
 
             return;
         }
