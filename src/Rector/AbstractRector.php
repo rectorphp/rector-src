@@ -217,10 +217,7 @@ CODE_SAMPLE;
             $this->printCurrentFileAndRule();
         }
 
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if ($originalNode instanceof Node) {
-            $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
-        }
+        $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         if ($isDebug) {
             $startTime = microtime(true);
@@ -247,6 +244,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
     }
 
