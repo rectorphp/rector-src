@@ -90,19 +90,7 @@ CODE_SAMPLE
     public function refactorWithScope(Node $node, Scope $scope): array|Node|null
     {
         if ($node instanceof If_) {
-            if (! $this->isUselessBeforeForeachCheck($node, $scope)) {
-                return null;
-            }
-
-            /** @var Foreach_ $stmt */
-            $stmt = $node->stmts[0];
-            $ifComments = $node->getAttribute(AttributeKey::COMMENTS) ?? [];
-            $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
-
-            $comments = array_merge($ifComments, $stmtComments);
-            $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
-
-            return $stmt;
+            return $this->refactorIf($node, $scope);
         }
 
         return $this->refactorStmtsAware($node);
@@ -168,27 +156,51 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var int $lastKey */
-        $lastKey = array_key_last($stmtsAware->stmts);
-        if (! isset($stmtsAware->stmts[$lastKey], $stmtsAware->stmts[$lastKey - 1])) {
+        foreach ($stmtsAware->stmts as $key => $stmt) {
+            if (! $stmt instanceof Foreach_) {
+                continue;
+            }
+
+            $previousStmt = $stmtsAware->stmts[$key - 1] ?? null;
+            if (! $previousStmt instanceof If_) {
+                continue;
+            }
+
+            // not followed by any stmts
+            $nextStmt = $stmtsAware->stmts[$key + 1] ?? null;
+            if ($nextStmt instanceof Stmt) {
+                continue;
+            }
+
+            if (! $this->uselessIfCondBeforeForeachDetector->isMatchingEmptyAndForeachedExpr(
+                $previousStmt,
+                $stmt->expr
+            )) {
+                continue;
+            }
+
+            unset($stmtsAware->stmts[$key - 1]);
+            return $stmtsAware;
+        }
+
+        return null;
+    }
+
+    private function refactorIf(If_ $if, Scope $scope): ?Foreach_
+    {
+        if (! $this->isUselessBeforeForeachCheck($if, $scope)) {
             return null;
         }
 
-        $stmt = $stmtsAware->stmts[$lastKey - 1];
-        if (! $stmt instanceof If_) {
-            return null;
-        }
+        /** @var Foreach_ $stmt */
+        $stmt = $if->stmts[0];
 
-        $nextStmt = $stmtsAware->stmts[$lastKey];
-        if (! $nextStmt instanceof Foreach_) {
-            return null;
-        }
+        $ifComments = $if->getAttribute(AttributeKey::COMMENTS) ?? [];
+        $stmtComments = $stmt->getAttribute(AttributeKey::COMMENTS) ?? [];
+        $comments = array_merge($ifComments, $stmtComments);
 
-        if (! $this->uselessIfCondBeforeForeachDetector->isMatchingEmptyAndForeachedExpr($stmt, $nextStmt->expr)) {
-            return null;
-        }
+        $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
 
-        unset($stmtsAware->stmts[$lastKey - 1]);
-        return $stmtsAware;
+        return $stmt;
     }
 }
