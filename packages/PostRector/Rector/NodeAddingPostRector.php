@@ -39,12 +39,6 @@ final class NodeAddingPostRector extends AbstractPostRector
     {
         $newNodes = [$node];
 
-        $nodesToAddAfter = $this->nodesToAddCollector->getNodesToAddAfterNode($node);
-        if ($nodesToAddAfter !== []) {
-            $this->nodesToAddCollector->clearNodesToAddAfter($node);
-            $newNodes = array_merge($newNodes, $nodesToAddAfter);
-        }
-
         $nodesToAddBefore = $this->nodesToAddCollector->getNodesToAddBeforeNode($node);
         if ($nodesToAddBefore !== []) {
             $this->nodesToAddCollector->clearNodesToAddBefore($node);
