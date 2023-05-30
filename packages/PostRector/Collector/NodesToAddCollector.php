@@ -24,7 +24,7 @@ use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
 final class NodesToAddCollector implements NodeCollectorInterface
 {
     /**
-     * @var Stmt[][]
+     * @var array<string, Stmt[]>
      */
     private array $nodesToAddBefore = [];
 
