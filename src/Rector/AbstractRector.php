@@ -224,7 +224,10 @@ CODE_SAMPLE;
             $previousMemory = memory_get_peak_usage(true);
         }
 
+        // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
+        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         $refactoredNode = $this->refactor($node);
+
         if ($isDebug) {
             $this->printConsumptions($startTime, $previousMemory);
         }
@@ -244,7 +247,6 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
         return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
     }
 
