@@ -87,7 +87,7 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        foreach ($node->stmts as $key => $property) {
+        foreach ($node->stmts as $property) {
             if (! $property instanceof Property) {
                 continue;
             }
