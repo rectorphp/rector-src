@@ -43,7 +43,8 @@ final class ComplexNodeRemover
         Class_ $class,
         Property $property,
         bool $removeAssignSideEffect,
-        Scope $scope
+        Scope $scope,
+        int $propertyStmtKey,
     ): bool {
         $propertyName = $this->nodeNameResolver->getName($property);
         $totalPropertyFetch = $this->propertyFetchAnalyzer->countLocalPropertyFetchName($class, $propertyName);
@@ -114,7 +115,7 @@ final class ComplexNodeRemover
             $this->nodeRemover->removeNode($expression);
         }
 
-        $this->nodeRemover->removeNode($property);
+        unset($class->stmts[$propertyStmtKey]);
 
         return true;
     }

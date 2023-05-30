@@ -87,16 +87,16 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        foreach ($node->stmts as $property) {
-            if (! $property instanceof Property) {
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Property) {
                 continue;
             }
 
-            if ($this->shouldSkipProperty($property)) {
+            if ($this->shouldSkipProperty($stmt)) {
                 continue;
             }
 
-            if ($this->propertyManipulator->isPropertyUsedInReadContext($node, $property, $scope)) {
+            if ($this->propertyManipulator->isPropertyUsedInReadContext($node, $stmt, $scope)) {
                 continue;
             }
 
@@ -104,9 +104,10 @@ CODE_SAMPLE
             // when already asssigned to true
             $isRemoved = $this->complexNodeRemover->removePropertyAndUsages(
                 $node,
-                $property,
+                $stmt,
                 $this->removeAssignSideEffect,
-                $scope
+                $scope,
+                $key
             );
 
             if ($isRemoved) {
