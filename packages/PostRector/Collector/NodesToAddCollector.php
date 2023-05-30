@@ -68,40 +68,6 @@ final class NodesToAddCollector implements NodeCollectorInterface
     }
 
     /**
-<<<<<<< HEAD
-     * @api Used in downgrade still
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-     * @api Used in downgrade still
-=======
-=======
-     * @api Used in downgrade still
->>>>>>> bfdb11024b (remove phpstan error)
->>>>>>> efb872ffc7 (remove phpstan error)
-     * @deprecated
-     * Better return created nodes right in refactor() method to keep context
-     * @internal
-     */
-    public function addNodeAfterNode(Node $addedNode, Node $positionNode): void
-    {
-        if ($positionNode->getAttributes() === []) {
-            $message = sprintf('Switch arguments in "%s()" method', __METHOD__);
-            throw new ShouldNotHappenException($message);
-        }
-
-        /** @var MutatingScope|null $currentScope */
-        $currentScope = $positionNode->getAttribute(AttributeKey::SCOPE);
-
-        $this->changedNodeScopeRefresher->refresh($addedNode, $currentScope);
-
-        $position = $this->resolveNearestStmtPosition($positionNode);
-        $this->nodesToAddAfter[$position][] = $this->wrapToExpression($addedNode);
-
-        $this->rectorChangeCollector->notifyNodeFileInfo($positionNode);
-    }
-
-    /**
      * @return Stmt[]
      */
     public function getNodesToAddAfterNode(Node $node): array
