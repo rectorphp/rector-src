@@ -6,7 +6,6 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
@@ -86,9 +85,9 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        $hasRemoved = false;
+        $hasChanged = false;
 
-        foreach ($node->stmts as $key => $property) {
+        foreach ($node->stmts as $property) {
             if (! $property instanceof Property) {
                 continue;
             }
@@ -111,29 +110,11 @@ CODE_SAMPLE
             );
 
             if ($isRemoved) {
-                $this->processRemoveSameLineComment($node, $property, $key);
-                $hasRemoved = true;
+                $hasChanged = true;
             }
         }
 
-        return $hasRemoved ? $node : null;
-    }
-
-    private function processRemoveSameLineComment(Class_ $class, Property $property, int $key): void
-    {
-        if (! isset($class->stmts[$key + 1])) {
-            return;
-        }
-
-        if (! $class->stmts[$key + 1] instanceof Nop) {
-            return;
-        }
-
-        if ($class->stmts[$key + 1]->getEndLine() !== $property->getStartLine()) {
-            return;
-        }
-
-        unset($class->stmts[$key + 1]);
+        return $hasChanged ? $node : null;
     }
 
     private function shouldSkipProperty(Property $property): bool
