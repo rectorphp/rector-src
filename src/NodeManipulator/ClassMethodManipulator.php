@@ -26,7 +26,7 @@ final class ClassMethodManipulator
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-        if ($classReflection === null) {
+        if (!$classReflection instanceof ClassReflection) {
             return false;
         }
 
