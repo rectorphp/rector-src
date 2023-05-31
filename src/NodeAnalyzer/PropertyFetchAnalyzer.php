@@ -95,7 +95,7 @@ final class PropertyFetchAnalyzer
             $class,
             $propertyName,
             &$total
-        ): ?Node {
+        ): int|null|Node {
             // skip anonymous classes and inner function
             if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
