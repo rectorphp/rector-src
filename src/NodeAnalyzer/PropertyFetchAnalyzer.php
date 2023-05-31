@@ -92,7 +92,6 @@ final class PropertyFetchAnalyzer
         $total = 0;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->getMethods(), function (Node $subNode) use (
-            $class,
             $propertyName,
             &$total
         ): int|null|Node {
