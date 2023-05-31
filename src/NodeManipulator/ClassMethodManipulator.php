@@ -7,7 +7,6 @@ namespace Rector\Core\NodeManipulator;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -15,7 +14,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class ClassMethodManipulator
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionResolver $reflectionResolver
     ) {
@@ -27,8 +25,8 @@ final class ClassMethodManipulator
             return false;
         }
 
-        $class = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
-        if (! $class instanceof Class_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
+        if (!$classReflection instanceof ClassReflection) {
             return false;
         }
 
@@ -36,7 +34,7 @@ final class ClassMethodManipulator
             return true;
         }
 
-        if ($class->isFinal()) {
+        if ($classReflection->isFinalByKeyword()) {
             return false;
         }
 
