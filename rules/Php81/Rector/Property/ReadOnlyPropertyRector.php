@@ -163,7 +163,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->propertyFetchAssignManipulator->isAssignedMultipleTimesInConstructor($property)) {
+        if ($this->propertyFetchAssignManipulator->isAssignedMultipleTimesInConstructor($class, $property)) {
             return null;
         }
 

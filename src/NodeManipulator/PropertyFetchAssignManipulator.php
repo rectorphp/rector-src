@@ -7,13 +7,11 @@ namespace Rector\Core\NodeManipulator;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -23,18 +21,12 @@ final class PropertyFetchAssignManipulator
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 
-    public function isAssignedMultipleTimesInConstructor(Property $property): bool
+    public function isAssignedMultipleTimesInConstructor(Class_ $classLike, Property $property): bool
     {
-        $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
-
         $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
         if (! $classMethod instanceof ClassMethod) {
             return false;
