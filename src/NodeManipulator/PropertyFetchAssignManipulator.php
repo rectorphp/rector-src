@@ -25,9 +25,9 @@ final class PropertyFetchAssignManipulator
     ) {
     }
 
-    public function isAssignedMultipleTimesInConstructor(Class_ $classLike, Property $property): bool
+    public function isAssignedMultipleTimesInConstructor(Class_ $class, Property $property): bool
     {
-        $classMethod = $classLike->getMethod(MethodName::CONSTRUCT);
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $classMethod instanceof ClassMethod) {
             return false;
         }
