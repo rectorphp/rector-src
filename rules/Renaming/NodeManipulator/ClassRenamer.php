@@ -25,13 +25,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocClassRenamer;
 use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\CodingStyle\Naming\ClassNaming;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\FileHasher;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
@@ -60,8 +57,6 @@ final class ClassRenamer
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeRemover $nodeRemover,
-        private readonly ParameterProvider $parameterProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
         private readonly FileHasher $fileHasher
@@ -181,41 +176,7 @@ final class ClassRenamer
             return null;
         }
 
-        $last = $name->getLast();
-        $newFullyQualified = new FullyQualified($newName);
-        $newNameLastName = $newFullyQualified->getLast();
-
-        $importNames = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-
-        if ($this->shouldRemoveUseName($last, $newNameLastName, $importNames)) {
-            $this->removeUseName($name);
-        }
-
         return new FullyQualified($newName);
-    }
-
-    private function removeUseName(Name $oldName): void
-    {
-        $uses = $this->betterNodeFinder->findFirstPrevious(
-            $oldName,
-            fn (Node $node): bool => $node instanceof UseUse && $this->nodeNameResolver->areNamesEqual($node, $oldName)
-        );
-
-        if (! $uses instanceof UseUse) {
-            return;
-        }
-
-        if ($uses->alias instanceof Identifier) {
-            return;
-        }
-
-        // ios the only one? Remove whole use instead to avoid "use ;" constructions
-        $parentUse = $uses->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentUse instanceof Use_ && count($parentUse->uses) === 1) {
-            $this->nodeRemover->removeNode($parentUse);
-        } else {
-            $this->nodeRemover->removeNode($uses);
-        }
     }
 
     /**
@@ -435,11 +396,6 @@ final class ClassRenamer
         }
 
         return true;
-    }
-
-    private function shouldRemoveUseName(string $last, string $newNameLastName, bool $importNames): bool
-    {
-        return $last === $newNameLastName && $importNames;
     }
 
     /**
