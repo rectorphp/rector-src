@@ -32,7 +32,7 @@ class Fixture
 
         $value = intval($value, 8);
 
-        $value = array_map(intval(...), [$value]));
+        $value = array_map(intval(...), [$value]);
     }
 }
 
