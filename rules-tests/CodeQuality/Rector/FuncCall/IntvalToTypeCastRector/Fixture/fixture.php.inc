@@ -11,6 +11,8 @@ class Fixture
         $value = intval($value, 10);
 
         $value = intval($value, 8);
+
+        $value = array_map(intval(...), [$value]);
     }
 }
 
@@ -29,6 +31,8 @@ class Fixture
         $value = (int) $value;
 
         $value = intval($value, 8);
+
+        $value = array_map(intval(...), [$value]);
     }
 }
 
