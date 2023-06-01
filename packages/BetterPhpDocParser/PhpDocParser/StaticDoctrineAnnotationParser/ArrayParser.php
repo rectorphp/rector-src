@@ -177,18 +177,22 @@ final class ArrayParser
         return null;
     }
 
-    private function createArrayItemFromKeyAndValue(mixed $key, mixed $value): ArrayItemNode
+    private function createArrayItemFromKeyAndValue(mixed $rawKey, mixed $rawValue): ArrayItemNode
     {
-        $valueQuoteKind = $this->resolveQuoteKind($value);
-        if (is_string($value) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+        $valueQuoteKind = $this->resolveQuoteKind($rawValue);
+        if (is_string($rawValue) && $valueQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
-            $value = new StringNode(substr($value, 1, strlen($value) - 2));
+            $value = new StringNode(substr($rawValue, 1, strlen($rawValue) - 2));
+        } else {
+            $value = $rawValue;
         }
 
-        $keyQuoteKind = $this->resolveQuoteKind($key);
-        if (is_string($key) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
+        $keyQuoteKind = $this->resolveQuoteKind($rawKey);
+        if (is_string($rawKey) && $keyQuoteKind === String_::KIND_DOUBLE_QUOTED) {
             // give raw value
-            $key = new StringNode(substr($key, 1, strlen($key) - 2));
+            $key = new StringNode(substr($rawKey, 1, strlen($rawKey) - 2));
+        } else {
+            $key = $rawKey;
         }
 
         if ($key !== null) {
