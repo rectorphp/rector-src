@@ -739,3 +739,8 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
+
+        # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
+        -
+            message: '#Method name "(get|has|set)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'
+            path: packages/BetterPhpDocParser/PhpDoc/StringNode.php
