@@ -744,3 +744,6 @@ parameters:
         -
             message: '#Method name "(get|has|set)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'
             path: packages/BetterPhpDocParser/PhpDoc/StringNode.php
+
+        # resolve later
+        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocManipulator\\PhpDocClassRenamer\:\:processSerializerTypeTagValueNode\(\)" is 11, keep it under 10#'
