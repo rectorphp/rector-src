@@ -1,8 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\Fixture;
-
-use DateTimeImmutable;
+namespace Rector\Tests\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector\Fixture;
 
 final class SkipFirstClassCallable
 {
