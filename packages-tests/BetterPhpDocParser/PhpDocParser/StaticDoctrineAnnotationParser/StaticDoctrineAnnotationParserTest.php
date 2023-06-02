@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
 use Iterator;
-use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;

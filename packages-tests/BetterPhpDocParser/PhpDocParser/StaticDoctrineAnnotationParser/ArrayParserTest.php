@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
 use Iterator;
-use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
@@ -43,9 +42,7 @@ final class ArrayParserTest extends AbstractTestCase
     {
         yield ['{key: "value"}', [new ArrayItemNode(new StringNode('value'), 'key')]];
 
-        yield ['{"key": "value"}', [
-            new ArrayItemNode(new StringNode('value'), new StringNode('key')),
-        ]];
+        yield ['{"key": "value"}', [new ArrayItemNode(new StringNode('value'), new StringNode('key'))]];
 
         yield ['{"value", "value2"}', [
             new ArrayItemNode(new StringNode('value')),
