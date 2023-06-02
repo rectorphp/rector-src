@@ -185,7 +185,7 @@ CODE_SAMPLE
                 }
 
                 if ($node->isFirstClassCallable()) {
-                    return null;
+                    return false;
                 }
 
                 if (! $this->isName($node, 'count')) {

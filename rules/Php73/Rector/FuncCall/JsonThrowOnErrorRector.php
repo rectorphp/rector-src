@@ -84,7 +84,7 @@ CODE_SAMPLE
         }
 
         if ($funcCall->isFirstClassCallable()) {
-            return null;
+            return true;
         }
 
         if ($funcCall->args === null) {

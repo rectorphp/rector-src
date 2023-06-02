@@ -205,7 +205,7 @@ CODE_SAMPLE
         }
 
         if ($expr->isFirstClassCallable()) {
-            return null;
+            return false;
         }
 
         return isset($expr->getArgs()[0]);

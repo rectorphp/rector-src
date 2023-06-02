@@ -103,7 +103,7 @@ final class CountManipulator
         }
 
         if ($node->isFirstClassCallable()) {
-            return null;
+            return false;
         }
 
         if (! isset($node->getArgs()[0])) {

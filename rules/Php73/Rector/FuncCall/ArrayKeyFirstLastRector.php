@@ -176,7 +176,7 @@ CODE_SAMPLE
             }
 
             if ($subNode->isFirstClassCallable()) {
-                return null;
+                return false;
             }
 
             return $this->nodeComparator->areNodesEqual($resetOrEndFuncCall->getArgs()[0], $subNode->getArgs()[0]);

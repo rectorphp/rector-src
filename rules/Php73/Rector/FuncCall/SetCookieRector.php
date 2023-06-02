@@ -99,7 +99,7 @@ CODE_SAMPLE
         }
 
         if ($funcCall->isFirstClassCallable()) {
-            return null;
+            return true;
         }
 
         $argsCount = count($funcCall->args);

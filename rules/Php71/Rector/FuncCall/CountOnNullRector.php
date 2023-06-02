@@ -157,7 +157,7 @@ CODE_SAMPLE
         }
 
         if ($funcCall->isFirstClassCallable()) {
-            return null;
+            return true;
         }
 
         // skip ternary in trait, as impossible to analyse

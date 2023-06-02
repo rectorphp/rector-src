@@ -187,7 +187,7 @@ final class VariableNaming
         string $suffix
     ): string {
         if ($funcCall->isFirstClassCallable()) {
-            return null;
+            return '';
         }
 
         if (! isset($funcCall->getArgs()[0])) {
