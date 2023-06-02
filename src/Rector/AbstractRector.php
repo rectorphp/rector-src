@@ -216,9 +216,11 @@ CODE_SAMPLE;
         if ($isDebug) {
             $this->printCurrentFileAndRule();
         }
-
-        $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
-
+        
+        if (! $node instanceof FileWithoutNamespace) {
+            $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
+        }
+        
         if ($isDebug) {
             $startTime = microtime(true);
             $previousMemory = memory_get_peak_usage(true);
