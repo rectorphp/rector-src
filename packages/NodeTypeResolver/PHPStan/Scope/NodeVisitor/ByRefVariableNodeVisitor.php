@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -22,6 +23,22 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
     ) {
     }
 
+    /**
+     * @param string[] $byRefVariableNames
+     * @return string[]
+     */
+    private function resolveParamIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
+    {
+        foreach ($functionLike->getParams() as $param) {
+            if ($param->byRef && $param->var instanceof Variable && ! $param->var->name instanceof Expr) {
+                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+                $byRefVariableNames[] = $param->var->name;
+            }
+        }
+
+        return $byRefVariableNames;
+    }
+
     public function enterNode(Node $node): ?Node
     {
         if ($node instanceof AssignRef) {
@@ -34,12 +51,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
         }
 
         $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
-        foreach ($node->getParams() as $param) {
-            if ($param->byRef && $param->var instanceof Variable) {
-                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                $byRefVariableNames[] = $param->var->name;
-            }
-        }
+        $byRefVariableNames = $this->resolveParamIsByRefAttribute($node, $byRefVariableNames);
 
         $stmts = $node->getStmts();
         if ($stmts === null) {
@@ -81,7 +93,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
         }
 
         foreach ($functionLike->uses as $closureUse) {
-            if ($closureUse->byRef && is_string($closureUse->var->name)) {
+            if ($closureUse->byRef && ! $closureUse->var->name instanceof Expr) {
                 $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                 $byRefVariableNames[] = $closureUse->var->name;
             }
