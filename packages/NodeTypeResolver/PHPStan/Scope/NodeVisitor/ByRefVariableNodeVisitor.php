@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\NodeVisitorAbstract;
@@ -21,22 +20,6 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
-    }
-
-    /**
-     * @param string[] $byRefVariableNames
-     * @return string[]
-     */
-    private function resolveParamIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
-    {
-        foreach ($functionLike->getParams() as $param) {
-            if ($param->byRef && $param->var instanceof Variable && ! $param->var->name instanceof Expr) {
-                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                $byRefVariableNames[] = $param->var->name;
-            }
-        }
-
-        return $byRefVariableNames;
     }
 
     public function enterNode(Node $node): ?Node
@@ -80,6 +63,22 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
         );
 
         return null;
+    }
+
+    /**
+     * @param string[] $byRefVariableNames
+     * @return string[]
+     */
+    private function resolveParamIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
+    {
+        foreach ($functionLike->getParams() as $param) {
+            if ($param->byRef && $param->var instanceof Variable && ! $param->var->name instanceof Expr) {
+                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+                $byRefVariableNames[] = $param->var->name;
+            }
+        }
+
+        return $byRefVariableNames;
     }
 
     /**
