@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AutoImportDocInUse\Fixture;
+namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class SkipAutoImportDocInUseNamespace3 extends AbstractController
+final class SkipAutoImportNamespace3 extends AbstractController
 {
     /**
      * @Annotation\SomeEnum2()

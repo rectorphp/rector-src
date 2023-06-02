@@ -1,10 +1,8 @@
-
-
 <?php
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AutoImportBeforeDocblock\Source\Annotation;
+namespace Rector\Core\Tests\Issues\AutoImport\Source\Annotation;
 
 use Doctrine\Common\Annotations\Annotation\Target;
 
@@ -12,8 +10,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD"})
  */
-class
-SomeEnum
+class SomeEnum2
 {
 
 }

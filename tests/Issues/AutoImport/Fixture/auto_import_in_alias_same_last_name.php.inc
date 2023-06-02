@@ -1,11 +1,11 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportInAlias\Fixture;
+namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
 
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Plus as AssignPlus;
 
-final class AutoImportInAliasSameLastName
+final class AutoImportSameLastName
 {
     public function run(\PhpParser\Node\Expr\BinaryOp\Plus $plus)
     {
@@ -20,12 +20,12 @@ final class AutoImportInAliasSameLastName
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportInAlias\Fixture;
+namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
 
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Plus as AssignPlus;
 
-final class AutoImportInAliasSameLastName
+final class AutoImportSameLastName
 {
     public function run(Plus $plus)
     {
