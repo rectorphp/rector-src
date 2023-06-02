@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\NodeVisitorAbstract;
@@ -47,7 +48,12 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            static function (Node $subNode) use ($byRefVariableNames): null|Variable {
+            function (Node $subNode) use (&$byRefVariableNames): null|Variable {
+                if ($subNode instanceof Closure) {
+                    $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($subNode, $byRefVariableNames);
+                    return null;
+                }
+
                 if (! $subNode instanceof Variable) {
                     return null;
                 }
