@@ -204,6 +204,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($expr->isFirstClassCallable()) {
+            return null;
+        }
+
         return isset($expr->getArgs()[0]);
     }
 }

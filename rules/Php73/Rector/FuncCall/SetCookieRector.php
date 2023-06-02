@@ -98,6 +98,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         $argsCount = count($funcCall->args);
         if ($argsCount <= 2) {
             return true;

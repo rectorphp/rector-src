@@ -78,6 +78,10 @@ final class GetClassToInstanceOfRector extends AbstractRector
         /** @var FuncCall $secondExpr */
         $secondExpr = $twoNodeMatch->getSecondExpr();
 
+        if ($secondExpr->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($secondExpr->getArgs()[0])) {
             return null;
         }

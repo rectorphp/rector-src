@@ -70,6 +70,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         foreach ($this->newArgsToMethodCalls as $newArgToMethodCall) {
             if (! $this->isObjectType($node->class, $newArgToMethodCall->getObjectType())) {
                 continue;

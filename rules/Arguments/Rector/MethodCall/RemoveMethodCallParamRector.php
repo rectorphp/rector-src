@@ -68,6 +68,10 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         foreach ($this->removeMethodCallParams as $removeMethodCallParam) {
             if (! $this->isName($node->name, $removeMethodCallParam->getMethodName())) {
                 continue;

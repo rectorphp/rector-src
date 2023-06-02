@@ -156,6 +156,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         // skip ternary in trait, as impossible to analyse
         $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
         if ($trait instanceof Trait_) {

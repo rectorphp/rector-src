@@ -70,6 +70,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($node->getArgs()[0])) {
             return null;
         }

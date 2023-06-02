@@ -68,6 +68,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($node->getArgs()[0])) {
             return new ClassConstFetch(new Name('self'), 'class');
         }

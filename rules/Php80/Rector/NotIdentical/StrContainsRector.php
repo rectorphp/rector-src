@@ -87,6 +87,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (isset($funcCall->getArgs()[2])) {
             $secondArg = $funcCall->getArgs()[2];
 

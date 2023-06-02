@@ -100,6 +100,10 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
             return true;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         return ! isset($funcCall->getArgs()[0]);
     }
 

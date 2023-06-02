@@ -55,6 +55,10 @@ final class IsArrayAndDualCheckToAble
             return null;
         }
 
+        if ($funcCallExpr->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($funcCallExpr->getArgs()[0])) {
             return null;
         }

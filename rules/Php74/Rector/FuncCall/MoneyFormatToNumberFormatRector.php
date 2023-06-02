@@ -86,6 +86,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         $args = $funcCall->getArgs();
         if ($this->argsAnalyzer->hasNamedArg($args)) {
             return null;
