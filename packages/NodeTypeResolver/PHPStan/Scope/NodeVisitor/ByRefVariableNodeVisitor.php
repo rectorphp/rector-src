@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -33,12 +34,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
         }
 
         $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($node, []);
-        foreach ($node->getParams() as $param) {
-            if ($param->byRef && $param->var instanceof Variable) {
-                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
-                $byRefVariableNames[] = $param->var->name;
-            }
-        }
+        $byRefVariableNames = $this->resolveParamIsByRefAttribute($node, $byRefVariableNames);
 
         $stmts = $node->getStmts();
         if ($stmts === null) {
@@ -47,7 +43,12 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            static function (Node $subNode) use ($byRefVariableNames): null|Variable {
+            function (Node $subNode) use (&$byRefVariableNames): null|Variable {
+                if ($subNode instanceof Closure) {
+                    $byRefVariableNames = $this->resolveClosureUseIsByRefAttribute($subNode, $byRefVariableNames);
+                    return null;
+                }
+
                 if (! $subNode instanceof Variable) {
                     return null;
                 }
@@ -68,6 +69,22 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
      * @param string[] $byRefVariableNames
      * @return string[]
      */
+    private function resolveParamIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
+    {
+        foreach ($functionLike->getParams() as $param) {
+            if ($param->byRef && $param->var instanceof Variable && ! $param->var->name instanceof Expr) {
+                $param->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
+                $byRefVariableNames[] = $param->var->name;
+            }
+        }
+
+        return $byRefVariableNames;
+    }
+
+    /**
+     * @param string[] $byRefVariableNames
+     * @return string[]
+     */
     private function resolveClosureUseIsByRefAttribute(FunctionLike $functionLike, array $byRefVariableNames): array
     {
         if (! $functionLike instanceof Closure) {
@@ -75,7 +92,7 @@ final class ByRefVariableNodeVisitor extends NodeVisitorAbstract implements Scop
         }
 
         foreach ($functionLike->uses as $closureUse) {
-            if ($closureUse->byRef && is_string($closureUse->var->name)) {
+            if ($closureUse->byRef && ! $closureUse->var->name instanceof Expr) {
                 $closureUse->var->setAttribute(AttributeKey::IS_BYREF_VAR, true);
                 $byRefVariableNames[] = $closureUse->var->name;
             }
