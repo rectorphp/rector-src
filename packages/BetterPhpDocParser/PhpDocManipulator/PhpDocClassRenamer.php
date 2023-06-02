@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
@@ -59,13 +60,18 @@ final class PhpDocClassRenamer
 
         $callableCallbackArrayItems = $callbackClass->getValues();
         $classNameArrayItemNode = $callableCallbackArrayItems[0];
+        $classNameStringNode = $classNameArrayItemNode->value;
+
+        if (! $classNameStringNode instanceof StringNode) {
+            return;
+        }
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
-            if ($classNameArrayItemNode->value !== $oldClass) {
+            if ($classNameStringNode->value !== $oldClass) {
                 continue;
             }
 
-            $classNameArrayItemNode->value = $newClass;
+            $classNameStringNode->value = $newClass;
 
             // trigger reprint
             $classNameArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
@@ -107,14 +113,16 @@ final class PhpDocClassRenamer
         $classNameArrayItemNode = $doctrineAnnotationTagValueNode->getSilentValue();
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
-            if ($classNameArrayItemNode instanceof ArrayItemNode) {
-                if ($classNameArrayItemNode->value === $oldClass) {
-                    $classNameArrayItemNode->value = $newClass;
+            if ($classNameArrayItemNode instanceof ArrayItemNode && $classNameArrayItemNode->value instanceof StringNode) {
+                $classNameStringNode = $classNameArrayItemNode->value;
+
+                if ($classNameStringNode->value === $oldClass) {
+                    $classNameStringNode->value = $newClass;
                     continue;
                 }
 
-                $classNameArrayItemNode->value = Strings::replace(
-                    $classNameArrayItemNode->value,
+                $classNameStringNode->value = Strings::replace(
+                    $classNameStringNode->value,
                     '#\b' . preg_quote($oldClass, '#') . '\b#',
                     $newClass
                 );
@@ -127,8 +135,13 @@ final class PhpDocClassRenamer
                 continue;
             }
 
-            if ($currentTypeArrayItemNode->value === $oldClass) {
-                $currentTypeArrayItemNode->value = $newClass;
+            $currentTypeStringNode = $currentTypeArrayItemNode->value;
+            if (! $currentTypeStringNode instanceof StringNode) {
+                continue;
+            }
+
+            if ($currentTypeStringNode->value === $oldClass) {
+                $currentTypeStringNode->value = $newClass;
             }
         }
     }
@@ -150,7 +163,12 @@ final class PhpDocClassRenamer
             return;
         }
 
-        $targetEntityClass = $targetEntityArrayItemNode->value;
+        $targetEntityStringNode = $targetEntityArrayItemNode->value;
+        if (! $targetEntityStringNode instanceof StringNode) {
+            return;
+        }
+
+        $targetEntityClass = $targetEntityStringNode->value;
 
         // resolve to FQN
         $tagFullyQualifiedName = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($targetEntityClass, $node);
@@ -160,7 +178,7 @@ final class PhpDocClassRenamer
                 continue;
             }
 
-            $targetEntityArrayItemNode->value = $newClass;
+            $targetEntityStringNode->value = $newClass;
             $targetEntityArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
         }
     }

@@ -35,6 +35,7 @@ return static function (RectorConfig $rectorConfig): void {
 
             // validation
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\All'),
+            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
 
             // JMS + Symfony

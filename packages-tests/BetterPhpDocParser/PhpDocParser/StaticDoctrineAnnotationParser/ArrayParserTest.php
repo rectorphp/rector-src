@@ -8,6 +8,7 @@ use Iterator;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
+use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -40,15 +41,15 @@ final class ArrayParserTest extends AbstractTestCase
 
     public static function provideData(): Iterator
     {
-        yield ['{key: "value"}', [new ArrayItemNode('value', 'key', String_::KIND_DOUBLE_QUOTED)]];
+        yield ['{key: "value"}', [new ArrayItemNode(new StringNode('value'), 'key')]];
 
         yield ['{"key": "value"}', [
-            new ArrayItemNode('value', 'key', String_::KIND_DOUBLE_QUOTED, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode(new StringNode('value'), new StringNode('key')),
         ]];
 
         yield ['{"value", "value2"}', [
-            new ArrayItemNode('value', null, String_::KIND_DOUBLE_QUOTED),
-            new ArrayItemNode('value2', null, String_::KIND_DOUBLE_QUOTED),
+            new ArrayItemNode(new StringNode('value')),
+            new ArrayItemNode(new StringNode('value2')),
         ]];
     }
 }
