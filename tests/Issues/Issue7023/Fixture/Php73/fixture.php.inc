@@ -3,7 +3,7 @@
 namespace Rector\Core\Tests\Issues\Issue7023\Fixture\Php73;
 
 use Doctrine\ORM\Mapping as ORM;
-use Acme\Entity\User;
+use Rector\Core\Tests\Issues\Issue7023\Source\SomeUser;
 
 /**
  * @ORM\Entity
@@ -12,12 +12,13 @@ class Fixture
 {
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Acme\Entity\User", inversedBy="images")
+     * @ORM\ManyToOne(targetEntity="\Rector\Core\Tests\Issues\Issue7023\Source\SomeUser", inversedBy="images")
      * @ORM\JoinColumn(name="data_id", nullable=true)
-     * @var User
+     * @var SomeUser
      */
     private $user;
 }
+
 ?>
 -----
 <?php
@@ -34,10 +35,11 @@ class Fixture
 {
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Acme\Entity\User", inversedBy="images")
+     * @ORM\ManyToOne(targetEntity="\Rector\Core\Tests\Issues\Issue7023\Source\SomeUser", inversedBy="images")
      * @ORM\JoinColumn(name="data_id", nullable=true)
-     * @var \Acme\Entity\User|null
+     * @var \Rector\Core\Tests\Issues\Issue7023\Source\SomeUser|null
      */
     private $user;
 }
+
 ?>
