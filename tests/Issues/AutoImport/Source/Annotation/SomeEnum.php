@@ -1,5 +1,3 @@
-
-
 <?php
 
 declare(strict_types=1);
@@ -12,8 +10,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD"})
  */
-class
-SomeEnum
+class SomeEnum
 {
 
 }
