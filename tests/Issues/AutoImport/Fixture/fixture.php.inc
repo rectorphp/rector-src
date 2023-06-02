@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
+
 /**
  * License
  */
@@ -9,7 +11,7 @@ use Foobar\A;
 /**
  * Docblock
  */
-final class NoNamespace
+final class DemoFile
 {
     public function run()
     {
@@ -22,6 +24,8 @@ final class NoNamespace
 -----
 <?php
 
+namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
+
 /**
  * License
  */
@@ -31,7 +35,7 @@ use Foobar\A;
 /**
  * Docblock
  */
-final class NoNamespace
+final class DemoFile
 {
     public function run()
     {

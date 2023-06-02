@@ -2,16 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AnnotationImport;
+namespace Rector\Core\Tests\Issues\AutoImport;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-/**
- * @see https://github.com/rectorphp/rector/issues/6420
- */
-final class AnnotationImportTest extends AbstractRectorTestCase
+final class AutoImportTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
