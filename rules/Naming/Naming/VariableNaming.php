@@ -186,6 +186,10 @@ final class VariableNaming
         string $fallbackName,
         string $suffix
     ): string {
+        if ($funcCall->isFirstClassCallable()) {
+            return '';
+        }
+
         if (! isset($funcCall->getArgs()[0])) {
             return '';
         }

@@ -97,6 +97,10 @@ CODE_SAMPLE
 
     private function processMysqlCreateDb(FuncCall $funcCall): ?FuncCall
     {
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($funcCall->getArgs()[0])) {
             return null;
         }
@@ -113,6 +117,10 @@ CODE_SAMPLE
 
     private function processMysqlDropDb(FuncCall $funcCall): ?FuncCall
     {
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($funcCall->getArgs()[0])) {
             return null;
         }

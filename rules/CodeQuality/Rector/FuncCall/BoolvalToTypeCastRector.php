@@ -59,6 +59,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! $this->isName($node, 'boolval')) {
             return null;
         }

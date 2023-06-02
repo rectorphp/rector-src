@@ -85,6 +85,10 @@ CODE_SAMPLE
         /** @var FuncCall $eachFuncCall */
         $eachFuncCall = $assign->expr;
 
+        if ($eachFuncCall->isFirstClassCallable()) {
+            return null;
+        }
+
         if (! isset($eachFuncCall->getArgs()[0])) {
             return null;
         }

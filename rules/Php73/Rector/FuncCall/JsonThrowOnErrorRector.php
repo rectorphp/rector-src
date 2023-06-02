@@ -83,6 +83,10 @@ CODE_SAMPLE
             return true;
         }
 
+        if ($funcCall->isFirstClassCallable()) {
+            return true;
+        }
+
         if ($funcCall->args === null) {
             return true;
         }

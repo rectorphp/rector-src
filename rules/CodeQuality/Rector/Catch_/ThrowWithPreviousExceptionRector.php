@@ -132,6 +132,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($new->isFirstClassCallable()) {
+            return null;
+        }
+
         // exception is bundled
         if (isset($new->getArgs()[$exceptionArgumentPosition])) {
             return null;

@@ -26,6 +26,10 @@ final class ComplexNewAnalyzer
             return true;
         }
 
+        if ($new->isFirstClassCallable()) {
+            return false;
+        }
+
         $args = $new->getArgs();
 
         foreach ($args as $arg) {

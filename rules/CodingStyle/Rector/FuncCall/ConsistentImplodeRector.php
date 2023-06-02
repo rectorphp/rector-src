@@ -74,6 +74,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($node->getArgs()) === 1) {
             // complete default value ''
             $node->args[1] = $node->getArgs()[0];

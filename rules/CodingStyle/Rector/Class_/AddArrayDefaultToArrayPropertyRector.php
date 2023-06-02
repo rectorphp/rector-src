@@ -184,6 +184,10 @@ CODE_SAMPLE
                     return false;
                 }
 
+                if ($node->isFirstClassCallable()) {
+                    return false;
+                }
+
                 if (! $this->isName($node, 'count')) {
                     return false;
                 }

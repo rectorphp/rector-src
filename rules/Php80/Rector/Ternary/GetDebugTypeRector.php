@@ -145,6 +145,10 @@ CODE_SAMPLE
         /** @var FuncCall $isObjectFuncCall */
         $isObjectFuncCall = $ternary->cond;
 
+        if ($isObjectFuncCall->isFirstClassCallable()) {
+            return false;
+        }
+
         $firstExpr = $isObjectFuncCall->getArgs()[0]
 ->value;
 

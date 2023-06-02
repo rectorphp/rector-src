@@ -63,6 +63,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if (count($node->args) !== 1) {
             return null;
         }
