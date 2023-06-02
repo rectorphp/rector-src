@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use PhpParser\Node;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;

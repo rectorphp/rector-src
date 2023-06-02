@@ -123,13 +123,13 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
         return $itemContents;
     }
 
-    private function isValueKeyEquals(ArrayItemNode $value, string $desiredKey): bool
+    private function isValueKeyEquals(ArrayItemNode $arrayItemNode, string $desiredKey): bool
     {
-        if ($value->key instanceof StringNode) {
-            return $value->key->value === $desiredKey;
+        if ($arrayItemNode->key instanceof StringNode) {
+            return $arrayItemNode->key->value === $desiredKey;
         }
 
-        return $value->key === $desiredKey;
+        return $arrayItemNode->key === $desiredKey;
     }
 
     private function stringifyValue(mixed $value): string
