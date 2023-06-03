@@ -67,6 +67,11 @@ final class PhpFileProcessor implements FileProcessorInterface
             return $systemErrorsAndFileDiffs;
         }
 
+        // skip HTML nodes, as unexpected
+        if ($file->hasInlineHTMLNode()) {
+            return [];
+        }
+
         $fileHasChanged = false;
 
         // 2. change nodes with Rectors
