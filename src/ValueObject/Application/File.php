@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\ValueObject\Application;
 
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\NodeFinder;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -161,6 +162,6 @@ final class File
         }
 
         $nodeFinder = new NodeFinder();
-        return (bool) $nodeFinder->findFirstInstanceOf($this->newStmts, Stmt\InlineHTML::class);
+        return (bool) $nodeFinder->findFirstInstanceOf($this->newStmts, InlineHTML::class);
     }
 }

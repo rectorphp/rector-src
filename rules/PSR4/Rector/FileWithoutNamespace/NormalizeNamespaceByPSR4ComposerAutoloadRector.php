@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\NodeAnalyzer\InlineHTMLAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\PSR4\Contract\PSR4AutoloadNamespaceMatcherInterface;
@@ -27,7 +26,6 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRector extends AbstractScope
     public function __construct(
         private readonly PSR4AutoloadNamespaceMatcherInterface $psr4AutoloadNamespaceMatcher,
         private readonly FullyQualifyStmtsAnalyzer $fullyQualifyStmtsAnalyzer,
-        private readonly InlineHTMLAnalyzer $inlineHTMLAnalyzer
     ) {
     }
 
@@ -85,10 +83,6 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): Node|null|array
     {
-        if ($this->inlineHTMLAnalyzer->hasInlineHTML($node)) {
-            return null;
-        }
-
         $expectedNamespace = $this->psr4AutoloadNamespaceMatcher->getExpectedNamespace($this->file, $node);
         if ($expectedNamespace === null) {
             return null;
