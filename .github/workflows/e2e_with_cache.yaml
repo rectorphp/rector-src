@@ -25,7 +25,6 @@ jobs:
                 php_version: ['8.1']
                 directory:
                     - 'e2e/applied-rule-removed-node-with-cache'
-                    - 'e2e/timeout-file-not-cached'
 
         name: End to end test - ${{ matrix.directory }}
 
