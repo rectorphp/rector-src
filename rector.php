@@ -73,6 +73,9 @@ return static function (RectorConfig $rectorConfig): void {
         '**/Expected*',
         __DIR__ . '/tests/PhpUnit/MultipleFilesChangedTrait/MultipleFilesChangedTraitTest.php',
 
+        // ignore for now, as printer cleans duplicate string of itself
+        __DIR__ . '/src/PhpParser/Printer/BetterStandardPrinter.php',
+
         // to keep original API from PHPStan untouched
         __DIR__ . '/packages/Caching/ValueObject/Storage/FileCacheStorage.php',
 
