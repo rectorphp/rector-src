@@ -31,10 +31,7 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -86,7 +83,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     public function __construct(
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly CurrentFileProvider $currentFileProvider,
         array $options = []
     ) {
         parent::__construct($options);
@@ -576,11 +572,8 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     private function decorateInlineHTMLOrNopAndUpdatePhpdocInfo(array $nodes): void
     {
-        $file = $this->currentFileProvider->getFile();
-        $hasDiff = $file instanceof File && $file->getFileDiff() instanceof FileDiff;
-
         // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $key => $node) {
+        foreach ($nodes as $node) {
             if (! $node instanceof Node) {
                 continue;
             }
