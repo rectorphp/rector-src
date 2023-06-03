@@ -24,19 +24,14 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
-use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Contract\PhpParser\NodePrinterInterface;
-use Rector\Core\NodeDecorator\MixPhpHtmlDecorator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -88,8 +83,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     public function __construct(
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly RectorConfigProvider $rectorConfigProvider,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly MixPhpHtmlDecorator $mixPhpHtmlDecorator,
         array $options = []
     ) {
         parent::__construct($options);
@@ -120,13 +113,6 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         if (count($newStmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
             $content .= $this->nl;
         }
-
-        if (! $this->mixPhpHtmlDecorator->isRequireReprintInlineHTML()) {
-            return $content;
-        }
-
-        // ensure disable flag isRequireReprintInlineHTML on change file
-        $this->mixPhpHtmlDecorator->disableIsRequireReprintInlineHTML();
 
         $content = $this->cleanSurplusTag($content);
         return $this->cleanEndWithPHPOpenTag($content);
@@ -586,21 +572,10 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     private function decorateInlineHTMLOrNopAndUpdatePhpdocInfo(array $nodes): void
     {
-        $file = $this->currentFileProvider->getFile();
-        $hasDiff = $file instanceof File && $file->getFileDiff() instanceof FileDiff;
-
         // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $key => $node) {
+        foreach ($nodes as $node) {
             if (! $node instanceof Node) {
                 continue;
-            }
-
-            if ($node instanceof InlineHTML && $hasDiff) {
-                $this->mixPhpHtmlDecorator->decorateInlineHTML($node, $key, $nodes);
-            }
-
-            if ($node instanceof Nop && $hasDiff) {
-                $this->mixPhpHtmlDecorator->decorateAfterNop($node, $key, $nodes);
             }
 
             $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
