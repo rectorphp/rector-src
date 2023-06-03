@@ -23,6 +23,6 @@ final class NormalizeNamespaceByPSR4ComposerAutoloadRectorTest extends AbstractR
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/normalize_namespace_without_namespace_config.php';
+        return __DIR__ . '/config/configured_rule.php';
     }
 }
