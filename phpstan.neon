@@ -267,7 +267,6 @@ parameters:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
-                - rules/PSR4/Rector/FileWithoutNamespace/NormalizeNamespaceByPSR4ComposerAutoloadRector.php
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
 
         - '#Method Rector\\Core\\Application\\ApplicationFileProcessor\:\:runParallel\(\) should return array\{system_errors\: array<Rector\\Core\\ValueObject\\Error\\SystemError\>, file_diffs\: array<Rector\\Core\\ValueObject\\Reporting\\FileDiff\>\} but returns array#'
