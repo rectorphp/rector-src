@@ -69,7 +69,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         // skip HTML nodes, as unexpected
         if ($file->hasInlineHTMLNode()) {
-            return [];
+            return $systemErrorsAndFileDiffs;
         }
 
         $fileHasChanged = false;

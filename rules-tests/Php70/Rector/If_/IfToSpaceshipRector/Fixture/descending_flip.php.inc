@@ -17,7 +17,6 @@ final class DescendingFlip
 }
 
 ?>
-
 -----
 <?php
 
@@ -34,4 +33,3 @@ final class DescendingFlip
 }
 
 ?>
-
