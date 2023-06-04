@@ -114,6 +114,7 @@ CODE_SAMPLE
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
      * @return null|Stmt[]|int
      */
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
@@ -122,6 +123,11 @@ CODE_SAMPLE
      */
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|If_|int
 >>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
+=======
+     * @return null|Stmt[]|int
+     */
+    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
+>>>>>>> c99396da76 (deprecate NodeRemovingPostRector)
     {
         if (! $instanceof->class instanceof Name) {
             return null;
