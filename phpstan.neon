@@ -735,4 +735,5 @@ parameters:
 
         # resolve later
         - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Class_\\InlineConstructorDefaultToPropertyRector\:\:refactor\(\)" is 20, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\For_\\RemoveDeadIfForeachForRector\:\:refactor\(\)" is 18, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\For_\\RemoveDeadIfForeachForRector\:\:refactor\(\)" is 16, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\MethodCall\\RemoveEmptyMethodCallRector\:\:refactor\(\)" is 18, keep it under 11#'
