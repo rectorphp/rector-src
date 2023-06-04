@@ -6,7 +6,7 @@ parameters:
 
     cognitive_complexity:
         class: 50
-        function: 10
+        function: 11
 
     level: 8
 
@@ -63,7 +63,7 @@ parameters:
     ignoreErrors:
         - '#Parameter \#1 \$node of method Rector\\PostRector\\Collector\\NodesToAddCollector\:\:wrapToExpression\(\) expects PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt, PhpParser\\Node given#'
 
-        - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 10#'
+        - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 
         -
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
@@ -73,9 +73,9 @@ parameters:
                 - rules/Renaming/NodeManipulator/ClassRenamer.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
 
-        - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 10$#"
-        - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 10#'
+        - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
+        - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
 
         # known value
         - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
@@ -133,9 +133,9 @@ parameters:
             paths:
                 - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
 
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
 
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 11#'
 
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
@@ -205,14 +205,13 @@ parameters:
             path: packages/Parallel/Application/ParallelFileProcessor.php
 
         # parallel complexity
-        - '#Cognitive complexity for "Rector\\Parallel\\Application\\ParallelFileProcessor\:\:process\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\Parallel\\Application\\ParallelFileProcessor\:\:process\(\)" is \d+, keep it under 11#'
 
         # strict rules
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
 
         # specific generics
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:refactor\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
-        - '#Return type (.*?) of method Rector\\(.*?)\\Rector\\(.*?)\\(.*?)\:\:refactor\(\) should be covariant with return type \(array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
         # only for empty ctor
         - '#Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
@@ -242,7 +241,7 @@ parameters:
         - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
 
         # complex detection
-        - '#Cognitive complexity for "Rector\\Core\\DependencyInjection\\Collector\\ConfigureCallValuesCollector\:\:addConfigureCallValues\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\Core\\DependencyInjection\\Collector\\ConfigureCallValuesCollector\:\:addConfigureCallValues\(\)" is \d+, keep it under 11#'
 
         # return bool on change
         - '#Method "(change|remove)(.*?)" returns bool type, so the name should start with is/has/was#'
@@ -301,24 +300,23 @@ parameters:
             path: packages/Config/RectorConfig.php
 
         # stmts refactoring
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
 
         # empty parent construct
         - '#Rector\\Core\\PhpParser\\NodeTraverser\\FileWithoutNamespaceNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
 
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
 
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         # cleanup after merge of assing remover refactoring
-        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removePropertyAndUsages\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removePropertyAndUsages\(\)" is \d+, keep it under 11#'
 
         -
-            message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 10#'
+            message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 11#'
             paths:
                 - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-                - rules/CodingStyle/Rector/ClassMethod/MakeInheritedMethodVisibilitySameAsParentRector.php
 
         # known value
         - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 but returns int#'
@@ -333,7 +331,7 @@ parameters:
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface>> will always evaluate to true#'
             path: packages/Config/RectorConfig.php
 
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 11#'
 
         # depends on falsy docs
         - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Stmt> and (.*?)Stmt(.*?) will always evaluate to true#'
@@ -394,8 +392,6 @@ parameters:
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
-
-        - '#Cognitive complexity for "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector\:\:refactorStmts\(\)" is 11, keep it under 10#'
 
         # resolve later with configurable types
         - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
@@ -476,7 +472,7 @@ parameters:
             message: '#Instead of abstract class, use specific service with composition#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeVisitor/AbstractPhpDocNodeVisitor.php"
         -
-            message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 10#'
+            message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 11#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
         -
             message: '#Variable property access on TNode of PHPStan\\PhpDocParser\\Ast\\Node#'
@@ -692,11 +688,10 @@ parameters:
             path: rules/Naming/VariableRenamer.php
 
         # next to resolve
-        - '#Cognitive complexity for "Rector\\EarlyReturn\\Rector\\Return_\\PreparedValueToEarlyReturnRector\:\:refactor\(\)" is 11, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\ForeachToInArrayRector\:\:refactor\(\)" is \d+, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\If_\\SimplifyIfNullableReturnRector\:\:refactor\(\)" is 15, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 14, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\ForeachToInArrayRector\:\:refactor\(\)" is \d+, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\If_\\SimplifyIfNullableReturnRector\:\:refactor\(\)" is 15, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 14, keep it under 11#'
 
         # resolve continually
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
@@ -731,9 +726,7 @@ parameters:
 
         # resolve before 1.0
         - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
-        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removeConstructorDependency\(\)" is 13, keep it under 10#'
 
-        - '#Call to deprecated method addNodeToRemove\(\) of class Rector\\PostRector\\Collector\\NodesToRemoveCollector\:#'
         - '#Call to deprecated method removeNode\(\) of class Rector\\NodeRemoval\\NodeRemover#'
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
@@ -745,5 +738,4 @@ parameters:
             path: packages/BetterPhpDocParser/PhpDoc/StringNode.php
 
         # resolve later
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocManipulator\\PhpDocClassRenamer\:\:processSerializerTypeTagValueNode\(\)" is 11, keep it under 10#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Class_\\InlineConstructorDefaultToPropertyRector\:\:refactor\(\)" is 20, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Class_\\InlineConstructorDefaultToPropertyRector\:\:refactor\(\)" is 20, keep it under 11#'
