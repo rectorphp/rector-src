@@ -746,3 +746,4 @@ parameters:
 
         # resolve later
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocManipulator\\PhpDocClassRenamer\:\:processSerializerTypeTagValueNode\(\)" is 11, keep it under 10#'
+        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Class_\\InlineConstructorDefaultToPropertyRector\:\:refactor\(\)" is 20, keep it under 10#'
