@@ -1,4 +1,4 @@
-# 389 Rules Overview
+# 387 Rules Overview
 
 <br>
 
@@ -42,7 +42,7 @@
 
 - [Php74](#php74) (13)
 
-- [Php80](#php80) (19)
+- [Php80](#php80) (18)
 
 - [Php81](#php81) (12)
 
@@ -5888,28 +5888,6 @@ Add `Stringable` interface to classes with `__toString()` method
 +    public function __toString(): string
      {
          return 'I can stringz';
-     }
- }
-```
-
-<br>
-
-### UnionTypesRector
-
-Change docs types to union types, where possible (properties are covered by TypedPropertiesRector)
-
-- class: [`Rector\Php80\Rector\FunctionLike\UnionTypesRector`](../rules/Php80/Rector/FunctionLike/UnionTypesRector.php)
-
-```diff
- class SomeClass
- {
--    /**
--     * @param array|int $number
--     * @return bool|float
--     */
--    public function go($number)
-+    public function go(array|int $number): bool|float
-     {
      }
  }
 ```
