@@ -75,26 +75,6 @@ final class AttributeKey
     public const PARENT_NODE = 'parent';
 
     /**
-     * @api
-     * @internal of php-parser, do not change
-     * @deprecated Use StmtsAwareInterface instead
-     *
-     * @see https://github.com/nikic/PHP-Parser/pull/681/files
-     * @var string
-     */
-    public const PREVIOUS_NODE = 'previous';
-
-    /**
-     * @api
-     * @internal of php-parser, do not change
-     * @deprecated Use StmtsAwareInterface instead
-     *
-     * @see https://github.com/nikic/PHP-Parser/pull/681/files
-     * @var string
-     */
-    public const NEXT_NODE = 'next';
-
-    /**
      * Internal php-parser name.
      * Do not change this even if you want!
      *
