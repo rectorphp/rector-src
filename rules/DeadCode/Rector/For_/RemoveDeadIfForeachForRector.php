@@ -114,12 +114,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt instanceof For_ || $stmt instanceof Foreach_) {
-                // nothing to "for"
-                if ($stmt->stmts === []) {
-                    unset($node->stmts[$key]);
-                    $hasChanged = true;
-                }
+            // nothing to "for"
+            if (($stmt instanceof For_ || $stmt instanceof Foreach_) && $stmt->stmts === []) {
+                unset($node->stmts[$key]);
+                $hasChanged = true;
             }
         }
 
