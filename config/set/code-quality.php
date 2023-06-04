@@ -43,7 +43,6 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
-use Rector\CodeQuality\Rector\FunctionLike\RemoveAlwaysTrueConditionSetInConstructorRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
@@ -149,7 +148,6 @@ return static function (RectorConfig $rectorConfig): void {
         CompleteDynamicPropertiesRector::class,
         IsAWithStringWithThirdArgumentRector::class,
         StrlenZeroToIdenticalEmptyStringRector::class,
-        RemoveAlwaysTrueConditionSetInConstructorRector::class,
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ShortenElseIfRector::class,
