@@ -56,15 +56,10 @@ final class ReflectionResolver
     /**
      * @api
      */
-    public function resolveClassAndAnonymousClass(ClassLike $classLike): ClassReflection
+    public function resolveClassAndAnonymousClass(ClassLike $classLike, Scope $scope): ClassReflection
     {
         if ($classLike instanceof Class_ && $this->classAnalyzer->isAnonymousClass($classLike)) {
-            $classLikeScope = $classLike->getAttribute(AttributeKey::SCOPE);
-            if (! $classLikeScope instanceof Scope) {
-                throw new ShouldNotHappenException();
-            }
-
-            return $this->reflectionProvider->getAnonymousClassReflection($classLike, $classLikeScope);
+            return $this->reflectionProvider->getAnonymousClassReflection($classLike, $scope);
         }
 
         $className = (string) $this->nodeNameResolver->getName($classLike);

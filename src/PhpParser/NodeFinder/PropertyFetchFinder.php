@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -42,14 +43,14 @@ final class PropertyFetchFinder
     /**
      * @return array<PropertyFetch|StaticPropertyFetch>
      */
-    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam): array
+    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam, Scope $scope): array
     {
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
             return [];
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($class);
+        $classReflection = $this->reflectionResolver->resolveClassAndAnonymousClass($class, $scope);
 
         $nodes = [$class];
         $nodesTrait = $this->astResolver->parseClassReflectionTraits($classReflection);

@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -59,7 +60,7 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isPropertyChangeableExceptConstructor(Class_ $class, Property | Param $propertyOrParam): bool
+    public function isPropertyChangeableExceptConstructor(Class_ $class, Property | Param $propertyOrParam, Scope $scope): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
 
@@ -67,7 +68,7 @@ final class PropertyManipulator
             return true;
         }
 
-        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam);
+        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam, $scope);
         $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
