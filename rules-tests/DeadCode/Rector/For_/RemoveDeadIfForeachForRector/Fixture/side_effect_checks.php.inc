@@ -27,8 +27,6 @@ class SideEffectChecks
 {
     public function run()
     {
-        if (5 + 10) {
-        }
     }
 }
 
