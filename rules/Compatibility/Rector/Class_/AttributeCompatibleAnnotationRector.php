@@ -17,6 +17,7 @@ use Rector\Compatibility\NodeAnalyzer\RequiredAnnotationPropertyAnalyzer;
 use Rector\Compatibility\NodeFactory\ConstructorClassMethodFactory;
 use Rector\Compatibility\ValueObject\PropertyWithPhpDocInfo;
 use Rector\Core\Rector\AbstractRector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php81\Enum\AttributeName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -185,6 +186,8 @@ CODE_SAMPLE
                 $propertyPhpDocInfo,
                 'Doctrine\Common\Annotations\Annotation\Required'
             );
+
+            dd($property->getAttribute(AttributeKey::STMT_KEY));
 
             $this->removeNode($property);
         }
