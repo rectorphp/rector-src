@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\While_;
+use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -59,13 +60,12 @@ CODE_SAMPLE
     /**
      * @param Do_|For_|Foreach_|While_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?int
     {
         if ($node->stmts !== []) {
             return null;
         }
 
-        $this->removeNode($node);
-        return null;
+        return NodeTraverser::REMOVE_NODE;
     }
 }
