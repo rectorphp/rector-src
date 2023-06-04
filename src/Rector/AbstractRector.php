@@ -119,6 +119,11 @@ CODE_SAMPLE;
 
     private NodeConnectingTraverser $nodeConnectingTraverser;
 
+<<<<<<< HEAD
+=======
+    private bool $shouldRemoveCurrentNode = false;
+
+>>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
     private ?string $toBeRemovedNodeHash = null;
 
     #[Required]
@@ -242,7 +247,9 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-            return $refactoredNode;
+            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+            $this->shouldRemoveCurrentNode = true;
+            return $originalNode;
         }
 
         // nothing to change or just removed via removeNode() → continue
@@ -264,7 +271,12 @@ CODE_SAMPLE;
      */
     public function leaveNode(Node $node)
     {
+<<<<<<< HEAD
         if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
+=======
+        if ($this->shouldRemoveCurrentNode && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
+            $this->shouldRemoveCurrentNode = false;
+>>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
             $this->toBeRemovedNodeHash = null;
 
             return NodeConnectingTraverser::REMOVE_NODE;
