@@ -13,6 +13,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
@@ -81,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ClassMethod|int|null
     {
         if (! $this->php4ConstructorClassMethodAnalyzer->detect($node, $scope)) {
             return null;
@@ -107,22 +108,18 @@ CODE_SAMPLE
             $node->name = new Identifier(MethodName::CONSTRUCT);
         }
 
-        $stmts = $node->stmts;
-        if ($stmts === null) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        if (count($stmts) === 1) {
-            /** @var Expression|Expr $stmt */
-            $stmt = $stmts[0];
+        if (count((array) $node->stmts) === 1) {
+            $stmt = $node->stmts[0];
             if (! $stmt instanceof Expression) {
                 return null;
             }
 
             if ($this->isLocalMethodCallNamed($stmt->expr, MethodName::CONSTRUCT)) {
-                $this->removeNode($node);
-
-                return null;
+                return NodeTraverser::REMOVE_NODE;
             }
         }
 

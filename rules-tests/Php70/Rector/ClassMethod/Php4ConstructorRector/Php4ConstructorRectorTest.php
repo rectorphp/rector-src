@@ -8,10 +8,6 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-/**
- * Some test cases used from:
- * - https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/2.12/tests/Fixer/ClassNotation/NoPhp4ConstructorFixerTest.php
- */
 final class Php4ConstructorRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]

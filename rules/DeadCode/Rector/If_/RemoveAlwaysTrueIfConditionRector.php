@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
@@ -75,9 +76,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return If_|null|Stmt[]
+     * @return int|null|Stmt[]
      */
-    public function refactor(Node $node): If_|null|array
+    public function refactor(Node $node): int|null|array
     {
         if ($node->else instanceof Else_) {
             return null;
@@ -111,8 +112,7 @@ CODE_SAMPLE
         }
 
         if ($node->stmts === []) {
-            $this->removeNode($node);
-            return null;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return $node->stmts;

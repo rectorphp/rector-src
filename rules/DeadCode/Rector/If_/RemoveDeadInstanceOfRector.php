@@ -113,21 +113,9 @@ CODE_SAMPLE
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @return null|Stmt[]|int
      */
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
-=======
-     * @return null|Stmt[]|If_|int
-     */
-    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|If_|int
->>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
-=======
-     * @return null|Stmt[]|int
-     */
-    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
->>>>>>> c99396da76 (deprecate NodeRemovingPostRector)
     {
         if (! $instanceof->class instanceof Name) {
             return null;
@@ -157,15 +145,11 @@ CODE_SAMPLE
             return NodeTraverser::REMOVE_NODE;
         }
 
-<<<<<<< HEAD
         if ($if->stmts === []) {
             return NodeTraverser::REMOVE_NODE;
         }
 
         return $if->stmts;
-=======
-        return NodeTraverser::REMOVE_NODE;
->>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
     }
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool

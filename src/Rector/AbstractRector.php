@@ -119,11 +119,6 @@ CODE_SAMPLE;
 
     private NodeConnectingTraverser $nodeConnectingTraverser;
 
-<<<<<<< HEAD
-=======
-    private bool $shouldRemoveCurrentNode = false;
-
->>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
     private ?string $toBeRemovedNodeHash = null;
 
     #[Required]
@@ -241,18 +236,8 @@ CODE_SAMPLE;
         }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
-<<<<<<< HEAD
         if ($refactoredNode === NodeTraverser::REMOVE_NODE && $originalNode instanceof Node) {
             $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
-            return $originalNode;
-        }
-
-        if (is_int($refactoredNode)) {
-=======
-        if ($refactoredNode === NodeTraverser::REMOVE_NODE && is_object($originalNode)) {
->>>>>>> c99396da76 (deprecate NodeRemovingPostRector)
-            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
-            $this->shouldRemoveCurrentNode = true;
             return $originalNode;
         }
 
@@ -279,18 +264,7 @@ CODE_SAMPLE;
      */
     public function leaveNode(Node $node)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
         if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
-=======
-        if ($this->shouldRemoveCurrentNode && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
-=======
-        if ($this->shouldRemoveCurrentNode && $this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash(
-            $node
-        )) {
->>>>>>> c99396da76 (deprecate NodeRemovingPostRector)
-            $this->shouldRemoveCurrentNode = false;
->>>>>>> 5933e2a392 (Add REMOVE_NODE support to refactor() direct call)
             $this->toBeRemovedNodeHash = null;
 
             return NodeConnectingTraverser::REMOVE_NODE;
@@ -384,6 +358,12 @@ CODE_SAMPLE;
     {
         // node is removed, nothing to post process
         if (is_int($refactoredNode)) {
+            // mark removed node
+            if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
+                $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+                $this->file->addRectorClassWithLine($rectorWithLineChange);
+            }
+
             return $originalNode ?? $node;
         }
 
