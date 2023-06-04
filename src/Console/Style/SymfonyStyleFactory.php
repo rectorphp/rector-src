@@ -18,6 +18,9 @@ final class SymfonyStyleFactory
     ) {
     }
 
+    /**
+     * @api
+     */
     public function create(): SymfonyStyle
     {
         // to prevent missing argv indexes
