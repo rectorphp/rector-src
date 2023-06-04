@@ -8,7 +8,7 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRec
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        InlineConstructorDefaultToPropertyRector::class,
         TypedPropertyFromStrictConstructorRector::class,
+        InlineConstructorDefaultToPropertyRector::class,
     ]);
 };
