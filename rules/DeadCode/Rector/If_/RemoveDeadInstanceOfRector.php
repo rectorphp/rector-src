@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\NodeTraverser;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -85,7 +86,7 @@ CODE_SAMPLE
      * @param If_ $node
      * @return Stmt[]|null|If_
      */
-    public function refactor(Node $node): If_|array|null
+    public function refactor(Node $node)
     {
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;
@@ -101,20 +102,20 @@ CODE_SAMPLE
         }
 
         if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
-            return $this->processMayDeadInstanceOf($node, $node->cond->expr);
+            return $this->refactorStmtAndInstanceof($node, $node->cond->expr);
         }
 
         if ($node->cond instanceof Instanceof_) {
-            return $this->processMayDeadInstanceOf($node, $node->cond);
+            return $this->refactorStmtAndInstanceof($node, $node->cond);
         }
 
         return null;
     }
 
     /**
-     * @return null|Stmt[]|If_
+     * @return null|Stmt[]|If_|int
      */
-    private function processMayDeadInstanceOf(If_ $if, Instanceof_ $instanceof): null|array|If_
+    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|If_|int
     {
         if (! $instanceof->class instanceof Name) {
             return null;
@@ -144,8 +145,7 @@ CODE_SAMPLE
             return $if->stmts;
         }
 
-        $this->removeNode($if);
-        return $if;
+        return NodeTraverser::REMOVE_NODE;
     }
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool

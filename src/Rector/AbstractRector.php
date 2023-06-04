@@ -118,6 +118,10 @@ CODE_SAMPLE;
 
     private NodeConnectingTraverser $nodeConnectingTraverser;
 
+    private bool $shouldRemoveCurrentNode = false;
+
+    private ?string $toBeRemovedNodeHash = null;
+
     #[Required]
     public function autowire(
         NodesToRemoveCollector $nodesToRemoveCollector,
@@ -234,7 +238,9 @@ CODE_SAMPLE;
 
         // @see NodeTravser::* codes, e.g. removal of node of stopping the traversing
         if (is_int($refactoredNode)) {
-            return $refactoredNode;
+            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+            $this->shouldRemoveCurrentNode = true;
+            return $originalNode;
         }
 
         // nothing to change or just removed via removeNode() → continue
@@ -256,6 +262,13 @@ CODE_SAMPLE;
      */
     public function leaveNode(Node $node)
     {
+        if ($this->shouldRemoveCurrentNode && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
+            $this->shouldRemoveCurrentNode = false;
+            $this->toBeRemovedNodeHash = null;
+
+            return NodeConnectingTraverser::REMOVE_NODE;
+        }
+
         $objectHash = spl_object_hash($node);
 
         // update parents relations!!!
