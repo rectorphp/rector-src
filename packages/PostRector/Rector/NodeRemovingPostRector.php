@@ -15,6 +15,9 @@ use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @deprecated Remove node directly instead in refactor() method
+ */
 final class NodeRemovingPostRector extends AbstractPostRector
 {
     public function __construct(

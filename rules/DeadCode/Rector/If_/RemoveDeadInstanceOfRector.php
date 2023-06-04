@@ -84,7 +84,7 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return Stmt[]|null|If_
+     * @return Stmt[]|null|int
      */
     public function refactor(Node $node)
     {
@@ -113,9 +113,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|Stmt[]|If_|int
+     * @return null|Stmt[]|int
      */
-    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|If_|int
+    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
     {
         if (! $instanceof->class instanceof Name) {
             return null;
