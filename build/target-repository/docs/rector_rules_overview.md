@@ -1,4 +1,4 @@
-# 387 Rules Overview
+# 386 Rules Overview
 
 <br>
 
@@ -6,7 +6,7 @@
 
 - [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (73)
+- [CodeQuality](#codequality) (72)
 
 - [CodingStyle](#codingstyle) (34)
 
@@ -1013,26 +1013,6 @@ Change OR, AND to ||, && with more common understanding
 -if ($f = false or true) {
 +if (($f = false) || true) {
      return $f;
- }
-```
-
-<br>
-
-### NarrowUnionTypeDocRector
-
-Changes docblock by narrowing type
-
-- class: [`Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector`](../rules/CodeQuality/Rector/ClassMethod/NarrowUnionTypeDocRector.php)
-
-```diff
- class SomeClass {
-     /**
--     * @param object|DateTime $message
-+     * @param DateTime $message
-      */
-     public function getMessage(object $message)
-     {
-     }
  }
 ```
 

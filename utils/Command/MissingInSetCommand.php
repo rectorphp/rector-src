@@ -6,7 +6,6 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
-use Rector\CodeQuality\Rector\ClassMethod\NarrowUnionTypeDocRector;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -52,8 +51,6 @@ final class MissingInSetCommand extends Command
         FlipNegatedTernaryInstanceofRector::class,
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
-        // deprecated
-        NarrowUnionTypeDocRector::class,
     ];
 
     public function __construct(
