@@ -734,3 +734,5 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
+
+        - '#Call to deprecated method removeNode\(\) of class Rector\\Core\\Rector\\AbstractRector#'

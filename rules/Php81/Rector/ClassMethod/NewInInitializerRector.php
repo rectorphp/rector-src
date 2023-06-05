@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
@@ -20,7 +17,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
-use Rector\Php81\NodeAnalyzer\ComplexNewAnalyzer;
+use Rector\Php81\NodeAnalyzer\CoalesePropertyAssignMatcher;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,9 +30,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NewInInitializerRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ComplexNewAnalyzer $complexNewAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ClassChildAnalyzer $classChildAnalyzer
+        private readonly ClassChildAnalyzer $classChildAnalyzer,
+        private readonly CoalesePropertyAssignMatcher $coalesePropertyAssignMatcher,
     ) {
     }
 
@@ -103,39 +100,26 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        foreach ($params as $param) {
-            /** @var string $paramName */
-            $paramName = $this->getName($param->var);
+        foreach ((array) $constructClassMethod->stmts as $key => $stmt) {
+            foreach ($params as $param) {
+                $paramName = $this->getName($param);
 
-            $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty(
-                $node,
-                $constructClassMethod,
-                $paramName
-            );
-            $toPropertyAssigns = array_filter(
-                $toPropertyAssigns,
-                static fn (Assign $assign): bool => $assign->expr instanceof Coalesce
-            );
-
-            foreach ($toPropertyAssigns as $toPropertyAssign) {
-                /** @var Coalesce $coalesce */
-                $coalesce = $toPropertyAssign->expr;
-
-                if (! $coalesce->right instanceof New_) {
-                    continue;
-                }
-
-                if ($this->complexNewAnalyzer->isDynamic($coalesce->right)) {
+                $coalesce = $this->coalesePropertyAssignMatcher->matchCoalesceAssignsToLocalPropertyNamed(
+                    $stmt,
+                    $paramName
+                );
+                if (! $coalesce instanceof Coalesce) {
                     continue;
                 }
 
                 /** @var NullableType $currentParamType */
                 $currentParamType = $param->type;
+
                 $param->type = $currentParamType->type;
                 $param->default = $coalesce->right;
 
-                $this->removeNode($toPropertyAssign);
-                $this->processPropertyPromotion($constructClassMethod, $param, $paramName);
+                unset($constructClassMethod->stmts[$key]);
+                $this->processPropertyPromotion($node, $param, $paramName);
 
                 $hasChanged = true;
             }
@@ -181,14 +165,9 @@ CODE_SAMPLE
         );
     }
 
-    private function processPropertyPromotion(ClassMethod $classMethod, Param $param, string $paramName): void
+    private function processPropertyPromotion(Class_ $class, Param $param, string $paramName): void
     {
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return;
-        }
-
-        foreach ($classLike->stmts as $key => $stmt) {
+        foreach ($class->stmts as $key => $stmt) {
             if (! $stmt instanceof Property) {
                 continue;
             }
@@ -201,7 +180,7 @@ CODE_SAMPLE
             $param->flags = $property->flags;
             $param->attrGroups = array_merge($property->attrGroups, $param->attrGroups);
 
-            unset($classLike->stmts[$key]);
+            unset($class->stmts[$key]);
         }
     }
 
