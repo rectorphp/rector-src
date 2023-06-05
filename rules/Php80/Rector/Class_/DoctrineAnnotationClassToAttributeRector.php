@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -125,7 +126,13 @@ CODE_SAMPLE
         $attributeGroup = $this->phpAttributeGroupFactory->createFromClass(AttributeName::ATTRIBUTE);
         $this->decorateTarget($phpDocInfo, $attributeGroup);
 
-        foreach ($node->getProperties() as $property) {
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Property) {
+                continue;
+            }
+
+            $property = $stmt;
+
             $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
             if (! $propertyPhpDocInfo instanceof PhpDocInfo) {
                 continue;
@@ -152,7 +159,7 @@ CODE_SAMPLE
             $this->propertyToAddCollector->addPropertyToClass($node, $propertyMetadata);
 
             if ($this->shouldRemoveAnnotations) {
-                $this->removeNode($property);
+                unset($node->stmts[$key]);
             }
         }
 
