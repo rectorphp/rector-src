@@ -7,6 +7,7 @@ namespace Rector\Removing\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -52,15 +53,20 @@ CODE_SAMPLE
     /**
      * @param Expression $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): ?int
     {
         $expr = $node->expr;
-
         if (! $expr instanceof FuncCall) {
             return null;
         }
 
-        $this->removeNodeIfNeeded($node, $expr);
+        foreach ($this->removedFunctions as $removedFunction) {
+            if (! $this->isName($expr->name, $removedFunction)) {
+                continue;
+            }
+
+            return NodeTraverser::REMOVE_NODE;
+        }
 
         return null;
     }
@@ -72,18 +78,5 @@ CODE_SAMPLE
     {
         Assert::allString($configuration);
         $this->removedFunctions = $configuration;
-    }
-
-    private function removeNodeIfNeeded(Expression $expression, FuncCall $funcCall): void
-    {
-        foreach ($this->removedFunctions as $removedFunction) {
-            if (! $this->isName($funcCall->name, $removedFunction)) {
-                continue;
-            }
-
-            $this->removeNode($expression);
-
-            break;
-        }
     }
 }
