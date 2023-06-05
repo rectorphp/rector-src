@@ -236,7 +236,7 @@ CODE_SAMPLE;
         }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
-        if ($refactoredNode === NodeTraverser::REMOVE_NODE && $originalNode instanceof \PhpParser\Node) {
+        if ($refactoredNode === NodeTraverser::REMOVE_NODE && $originalNode instanceof Node) {
             $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
             return $originalNode;
         }
