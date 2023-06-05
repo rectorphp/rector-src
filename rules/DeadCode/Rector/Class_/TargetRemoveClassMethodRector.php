@@ -68,18 +68,29 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
+
         foreach ($this->targetRemoveClassMethods as $targetRemoveClassMethod) {
             if (! $this->isName($node, $targetRemoveClassMethod->getClassName())) {
                 continue;
             }
 
-            $classMethod = $node->getMethod($targetRemoveClassMethod->getMethodName());
-            if (! $classMethod instanceof ClassMethod) {
-                continue;
-            }
+            foreach ($node->stmts as $key => $stmt) {
+                if (! $stmt instanceof ClassMethod) {
+                    continue;
+                }
 
-            $this->removeNode($classMethod);
-            return null;
+                if (! $this->isName($stmt, $targetRemoveClassMethod->getMethodName())) {
+                    continue;
+                }
+
+                unset($node->stmts[$key]);
+                $hasChanged = true;
+            }
+        }
+
+        if ($hasChanged) {
+            return $node;
         }
 
         return null;
