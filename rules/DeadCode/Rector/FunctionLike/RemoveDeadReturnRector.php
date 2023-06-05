@@ -72,17 +72,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->stmts === []) {
+        if ($node->stmts === [] || $node->stmts === null) {
             return null;
         }
 
-        if ($node->stmts === null) {
-            return null;
-        }
+        $lastStmtKey = array_key_last($node->stmts);
 
-        $stmtValues = array_values($node->stmts);
-        $lastStmt = end($stmtValues);
-
+        $lastStmt = $node->stmts[$lastStmtKey];
         if (! $lastStmt instanceof Return_) {
             return null;
         }
@@ -91,8 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->removeNode($lastStmt);
-
+        unset($node->stmts[$lastStmtKey]);
         return $node;
     }
 }
