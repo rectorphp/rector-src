@@ -61,8 +61,7 @@ A) Direct return null for no change:
 
 B) Remove the Node:
 
-    \$this->removeNode(\$node);
-    return null;
+    return NodeTraverser::REMOVE_NODE;
 CODE_SAMPLE;
 
     protected NodeNameResolver $nodeNameResolver;
