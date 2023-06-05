@@ -79,13 +79,28 @@ CODE_SAMPLE
             $defaultCases[$key] = $case;
         }
 
-        if (count($defaultCases) < 2) {
+        $defaultCaseCount = count($defaultCases);
+        if ($defaultCaseCount < 2) {
             return null;
         }
 
-        $this->removeExtraDefaultCases($node->cases, $defaultCases);
+        foreach ($node->cases as $key => $case) {
+            if ($case->cond instanceof Expr) {
+                continue;
+            }
+
+            // remove previous default cases
+            if ($defaultCaseCount > 1) {
+                unset($node->cases[$key]);
+                --$defaultCaseCount;
+            }
+        }
 
         return $node;
+        //
+        //        $this->removeExtraDefaultCases($node->cases, $defaultCases);
+        //
+        //        return $node;
     }
 
     /**
