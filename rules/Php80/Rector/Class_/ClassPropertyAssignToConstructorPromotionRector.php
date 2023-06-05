@@ -144,7 +144,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->removeNode($property);
+            $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
+            unset($node->stmts[$propertyStmtKey]);
+
             $this->removeNode($promotionCandidate->getAssign());
 
             $property = $promotionCandidate->getProperty();
