@@ -358,13 +358,14 @@ CODE_SAMPLE;
     {
         // node is removed, nothing to post process
         if (is_int($refactoredNode)) {
+            $currentNode = $originalNode ?? $node;
             // mark removed node
             if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
-                $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+                $rectorWithLineChange = new RectorWithLineChange(static::class, $currentNode->getLine());
                 $this->file->addRectorClassWithLine($rectorWithLineChange);
             }
 
-            return $originalNode ?? $node;
+            return $currentNode;
         }
 
         $originalNode ??= $node;

@@ -108,11 +108,12 @@ CODE_SAMPLE
             $node->name = new Identifier(MethodName::CONSTRUCT);
         }
 
-        if ($node->stmts === null) {
+        $classMethodStmts = $node->stmts;
+        if ($classMethodStmts === null) {
             return null;
         }
 
-        if (count((array) $node->stmts) === 1) {
+        if (count($classMethodStmts) === 1) {
             $stmt = $node->stmts[0];
             if (! $stmt instanceof Expression) {
                 return null;
