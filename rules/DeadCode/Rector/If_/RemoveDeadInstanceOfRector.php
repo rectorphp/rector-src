@@ -140,12 +140,15 @@ CODE_SAMPLE
         if ($this->shouldSkipFromNotTypedParam($instanceof)) {
             return null;
         }
+
         if ($if->cond !== $instanceof) {
             return NodeTraverser::REMOVE_NODE;
         }
+
         if ($if->stmts === []) {
             return NodeTraverser::REMOVE_NODE;
         }
+
         return $if->stmts;
     }
 
