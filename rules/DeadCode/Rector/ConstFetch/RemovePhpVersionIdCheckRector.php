@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
@@ -103,9 +104,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return null|If_|Stmt[]
+     * @return null|int|Stmt[]
      */
-    public function refactor(Node $node): null|If_|array
+    public function refactor(Node $node): null|array|int
     {
         /**
          * $this->phpVersionProvider->provide() fallback is here as $currentFileProvider must be accessed after initialization
@@ -135,41 +136,41 @@ CODE_SAMPLE
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function processSmaller(ConstFetch $constFetch, Smaller $smaller, If_ $if): null|If_|array
+    private function refactorSmaller(ConstFetch $constFetch, Smaller $smaller, If_ $if): null|array|int
     {
         if ($smaller->left === $constFetch) {
-            return $this->processSmallerLeft($smaller, $if);
+            return $this->refactorSmallerLeft($smaller);
         }
 
         if ($smaller->right === $constFetch) {
-            return $this->processSmallerRight($smaller, $if);
+            return $this->refactorSmallerRight($smaller, $if);
         }
 
         return null;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|int|Stmt[]
      */
     private function processGreaterOrEqual(
         ConstFetch $constFetch,
         GreaterOrEqual $greaterOrEqual,
         If_ $if,
-    ): null|If_|array {
+    ): null|int|array {
         if ($greaterOrEqual->left === $constFetch) {
-            return $this->processGreaterOrEqualLeft($greaterOrEqual, $if);
+            return $this->refactorGreaterOrEqualLeft($greaterOrEqual, $if);
         }
 
         if ($greaterOrEqual->right === $constFetch) {
-            return $this->processGreaterOrEqualRight($greaterOrEqual, $if);
+            return $this->refactorGreaterOrEqualRight($greaterOrEqual);
         }
 
         return null;
     }
 
-    private function processSmallerLeft(Smaller $smaller, If_ $if): ?If_
+    private function refactorSmallerLeft(Smaller $smaller): ?int
     {
         $value = $smaller->right;
         if (! $value instanceof LNumber) {
@@ -177,17 +178,16 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return null;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function processSmallerRight(Smaller $smaller, If_ $if): null|If_|array
+    private function refactorSmallerRight(Smaller $smaller, If_ $if): null|array|int
     {
         $value = $smaller->left;
         if (! $value instanceof LNumber) {
@@ -199,17 +199,16 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return $if->stmts;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function processGreaterOrEqualLeft(GreaterOrEqual $greaterOrEqual, If_ $if): null|If_|array
+    private function refactorGreaterOrEqualLeft(GreaterOrEqual $greaterOrEqual, If_ $if): null|array|int
     {
         $value = $greaterOrEqual->right;
         if (! $value instanceof LNumber) {
@@ -221,14 +220,13 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return $if->stmts;
     }
 
-    private function processGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual, If_ $if): ?If_
+    private function refactorGreaterOrEqualRight(GreaterOrEqual $greaterOrEqual): ?int
     {
         $value = $greaterOrEqual->left;
         if (! $value instanceof LNumber) {
@@ -236,33 +234,32 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return null;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function processGreater(ConstFetch $constFetch, Greater $greater, If_ $if): null|If_|array
+    private function refactorGreater(ConstFetch $constFetch, Greater $greater, If_ $if): null|array|int
     {
         if ($greater->left === $constFetch) {
-            return $this->processGreaterLeft($greater, $if);
+            return $this->refactorGreaterLeft($greater, $if);
         }
 
         if ($greater->right === $constFetch) {
-            return $this->processGreaterRight($greater, $if);
+            return $this->refactorGreaterRight($greater);
         }
 
         return null;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function processGreaterLeft(Greater $greater, If_ $if): null|If_|array
+    private function refactorGreaterLeft(Greater $greater, If_ $if): null|array|int
     {
         $value = $greater->right;
         if (! $value instanceof LNumber) {
@@ -274,14 +271,13 @@ CODE_SAMPLE
         }
 
         if ($if->stmts === []) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return $if->stmts;
     }
 
-    private function processGreaterRight(Greater $greater, If_ $if): ?If_
+    private function refactorGreaterRight(Greater $greater): ?int
     {
         $value = $greater->left;
         if (! $value instanceof LNumber) {
@@ -289,20 +285,19 @@ CODE_SAMPLE
         }
 
         if ($this->phpVersion >= $value->value) {
-            $this->removeNode($if);
-            return $if;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         return null;
     }
 
     /**
-     * @return null|If_|Stmt[]
+     * @return null|Stmt[]|int
      */
-    private function refactorConstFetch(ConstFetch $constFetch, If_ $if, BinaryOp $binaryOp): null|If_|array
+    private function refactorConstFetch(ConstFetch $constFetch, If_ $if, BinaryOp $binaryOp): null|array|int
     {
         if ($binaryOp instanceof Smaller) {
-            return $this->processSmaller($constFetch, $binaryOp, $if);
+            return $this->refactorSmaller($constFetch, $binaryOp, $if);
         }
 
         if ($binaryOp instanceof GreaterOrEqual) {
@@ -310,7 +305,7 @@ CODE_SAMPLE
         }
 
         if ($binaryOp instanceof Greater) {
-            return $this->processGreater($constFetch, $binaryOp, $if);
+            return $this->refactorGreater($constFetch, $binaryOp, $if);
         }
 
         return null;
