@@ -140,12 +140,13 @@ CODE_SAMPLE
         if ($this->shouldSkipFromNotTypedParam($instanceof)) {
             return null;
         }
-
-        if ($if->cond === $instanceof && $if->stmts !== []) {
-            return $if->stmts;
+        if ($if->cond !== $instanceof) {
+            return NodeTraverser::REMOVE_NODE;
         }
-
-        return NodeTraverser::REMOVE_NODE;
+        if ($if->stmts === []) {
+            return NodeTraverser::REMOVE_NODE;
+        }
+        return $if->stmts;
     }
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool
