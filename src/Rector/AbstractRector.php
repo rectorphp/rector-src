@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Internal\BytesHelper;
@@ -117,6 +118,8 @@ CODE_SAMPLE;
     private DocBlockUpdater $docBlockUpdater;
 
     private NodeConnectingTraverser $nodeConnectingTraverser;
+
+    private ?string $toBeRemovedNodeHash = null;
 
     #[Required]
     public function autowire(
@@ -232,7 +235,12 @@ CODE_SAMPLE;
             $this->printConsumptions($startTime, $previousMemory);
         }
 
-        // @see NodeTravser::* codes, e.g. removal of node of stopping the traversing
+        // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
+        if ($refactoredNode === NodeTraverser::REMOVE_NODE && $originalNode instanceof Node) {
+            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+            return $originalNode;
+        }
+
         if (is_int($refactoredNode)) {
             return $refactoredNode;
         }
@@ -256,6 +264,12 @@ CODE_SAMPLE;
      */
     public function leaveNode(Node $node)
     {
+        if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
+            $this->toBeRemovedNodeHash = null;
+
+            return NodeConnectingTraverser::REMOVE_NODE;
+        }
+
         $objectHash = spl_object_hash($node);
 
         // update parents relations!!!
@@ -340,8 +354,13 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node|null $originalNode, Node $node, Node|array $refactoredNode): Node
+    private function postRefactorProcess(Node|null $originalNode, Node $node, Node|array|int $refactoredNode): Node
     {
+        // node is removed, nothing to post process
+        if (is_int($refactoredNode)) {
+            return $originalNode ?? $node;
+        }
+
         $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */
