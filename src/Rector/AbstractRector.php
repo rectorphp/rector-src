@@ -238,6 +238,11 @@ CODE_SAMPLE;
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
         if ($refactoredNode === NodeTraverser::REMOVE_NODE && $originalNode instanceof Node) {
             $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+
+            // notify this rule changing code
+            $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
+            $this->file->addRectorClassWithLine($rectorWithLineChange);
+
             return $originalNode;
         }
 
@@ -357,10 +362,6 @@ CODE_SAMPLE;
     private function postRefactorProcess(Node|null $originalNode, Node $node, Node|array|int $refactoredNode): Node
     {
         // node is removed, nothing to post process
-        if (is_int($refactoredNode)) {
-            return $originalNode ?? $node;
-        }
-
         $originalNode ??= $node;
 
         /** @var non-empty-array<Node>|Node $refactoredNode */

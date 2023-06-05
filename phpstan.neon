@@ -735,4 +735,9 @@ parameters:
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\For_\\RemoveDeadIfForeachForRector\:\:refactor\(\)" is 16, keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\MethodCall\\RemoveEmptyMethodCallRector\:\:refactor\(\)" is 18, keep it under 11#'
 
-        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
+        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
+
+        # false positive
+        -
+            message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
+            path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
