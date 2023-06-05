@@ -30,8 +30,6 @@ final class FileInfoParser
     public function parseFileInfoToNodesAndDecorate(string $filePath): array
     {
         $stmts = $this->rectorParser->parseFile($filePath);
-        $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
-
         $file = new File($filePath, FileSystem::read($filePath));
 
         return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
