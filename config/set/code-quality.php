@@ -24,7 +24,6 @@ use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToArrayFilterRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
-use Rector\CodeQuality\Rector\FuncCall\ArrayKeysAndInArrayToArrayKeyExistsRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
 use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
@@ -160,7 +159,6 @@ return static function (RectorConfig $rectorConfig): void {
         ForRepeatedCountToOwnVariableRector::class,
         ForeachItemsAssignToEmptyArrayToAssignRector::class,
         InlineIfToExplicitIfRector::class,
-        ArrayKeysAndInArrayToArrayKeyExistsRector::class,
         UnusedForeachValueToArrayKeysRector::class,
         CommonNotEqualRector::class,
         SetTypeToCastRector::class,
