@@ -247,7 +247,6 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
             // notify this rule changing code
