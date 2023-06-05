@@ -94,21 +94,15 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isPropertyUsedInReadContext(
-        Class_ $class,
-        Property | Param $propertyOrPromotedParam,
-        Scope $scope
-    ): bool {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
+    public function isPropertyUsedInReadContext(Class_ $class, Param $param, Scope $scope): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
 
-        if ($this->isAllowedReadOnly($propertyOrPromotedParam, $phpDocInfo)) {
+        if ($this->isAllowedReadOnly($param, $phpDocInfo)) {
             return true;
         }
 
-        $privatePropertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches(
-            $class,
-            $propertyOrPromotedParam
-        );
+        $privatePropertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $param);
 
         foreach ($privatePropertyFetches as $privatePropertyFetch) {
             if ($this->readWritePropertyAnalyzer->isRead($privatePropertyFetch, $scope)) {
@@ -117,12 +111,7 @@ final class PropertyManipulator
         }
 
         // has classLike $this->$variable call?
-        $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirst($classLike->stmts, function (Node $node) use ($scope): bool {
+        return (bool) $this->betterNodeFinder->findFirst($class->stmts, function (Node $node) use ($scope): bool {
             if (! $node instanceof PropertyFetch) {
                 return false;
             }

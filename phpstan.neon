@@ -736,3 +736,4 @@ parameters:
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
 
         - '#Call to deprecated method removeNode\(\) of class Rector\\Core\\Rector\\AbstractRector#'
+        - '#Cognitive complexity for "Rector\\ReadWrite\\NodeAnalyzer\\ReadWritePropertyAnalyzer\:\:isRead\(\)" is 12, keep it under 11#'

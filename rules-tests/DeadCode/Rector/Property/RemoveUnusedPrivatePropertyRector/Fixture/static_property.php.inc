@@ -6,8 +6,6 @@ class StaticProperty
 {
     public static $publicProperty;
     protected static $protectedProperty;
-    private static $privateProperty;
-    private static $unusedPrivateProperty;
 
     public function foo()
     {
@@ -25,7 +23,6 @@ class StaticProperty
 {
     public static $publicProperty;
     protected static $protectedProperty;
-    private static $privateProperty;
 
     public function foo()
     {

@@ -17,10 +17,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use Rector\Core\Enum\ObjectReference;
@@ -29,7 +27,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class PropertyFetchAnalyzer
@@ -43,7 +40,6 @@ final class PropertyFetchAnalyzer
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
@@ -85,30 +81,6 @@ final class PropertyFetchAnalyzer
         }
 
         return $this->isLocalPropertyFetch($node);
-    }
-
-    public function countLocalPropertyFetchName(Class_ $class, string $propertyName): int
-    {
-        $total = 0;
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($class->getMethods(), function (Node $subNode) use (
-            $propertyName,
-            &$total
-        ): int|null|Node {
-            // skip anonymous classes and inner function
-            if ($subNode instanceof Class_ || $subNode instanceof Function_) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-            }
-
-            if (! $this->isLocalPropertyFetchName($subNode, $propertyName)) {
-                return null;
-            }
-
-            ++$total;
-            return $subNode;
-        });
-
-        return $total;
     }
 
     public function containsLocalPropertyFetchName(Trait_ $trait, string $propertyName): bool

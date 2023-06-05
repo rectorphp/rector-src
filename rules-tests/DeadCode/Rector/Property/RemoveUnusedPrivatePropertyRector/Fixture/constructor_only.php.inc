@@ -23,7 +23,7 @@ namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRecto
 
 class ConstructorOnly
 {
-    public function __construct()
+    public function __construct(int $contentFinder)
     {
     }
 }

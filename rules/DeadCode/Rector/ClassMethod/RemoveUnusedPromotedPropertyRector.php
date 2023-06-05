@@ -122,6 +122,7 @@ CODE_SAMPLE
 
             // remove param
             unset($constructClassMethod->params[$key]);
+
             $hasChanged = true;
         }
 
