@@ -12,7 +12,6 @@ use Rector\DeadCode\Rector\Cast\RecastingRemovalRector;
 use Rector\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveDelegatingParentCallRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveLastReturnRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
@@ -91,7 +90,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveUselessVarTagRector::class,
 
         RemoveUnusedPromotedPropertyRector::class,
-        RemoveLastReturnRector::class,
         RemoveJustPropertyFetchForAssignRector::class,
         RemoveJustVariableAssignRector::class,
 

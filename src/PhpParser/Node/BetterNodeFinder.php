@@ -194,6 +194,7 @@ final class BetterNodeFinder
     }
 
     /**
+     * @api used in Symfony
      * @template T of Node
      *
      * @param Stmt[] $nodes
