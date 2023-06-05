@@ -108,8 +108,7 @@ final class PHPStanNodeScopeResolver
          */
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
-
-        $stmts = $this->nodeTraverser->traverse($stmts);
+        $this->nodeTraverser->traverse($stmts);
 
         if (! $isScopeRefreshing) {
             $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
