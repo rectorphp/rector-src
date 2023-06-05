@@ -15,7 +15,7 @@ final class ClassMethodManipulator
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 

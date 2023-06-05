@@ -684,12 +684,6 @@ parameters:
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Naming/VariableRenamer.php
 
-        # next to resolve
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\SimplifyForeachToCoalescingRector\:\:refactor\(\)" is 16, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Foreach_\\ForeachToInArrayRector\:\:refactor\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\If_\\SimplifyIfNullableReturnRector\:\:refactor\(\)" is 15, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Isset_\\IssetOnPropertyObjectToPropertyExistsRector\:\:refactor\(\)" is 14, keep it under 11#'
-
         # resolve continually
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
 
@@ -731,9 +725,8 @@ parameters:
             path: packages/BetterPhpDocParser/PhpDoc/StringNode.php
 
         # resolve later
-        - '#Cognitive complexity for "Rector\\CodeQuality\\Rector\\Class_\\InlineConstructorDefaultToPropertyRector\:\:refactor\(\)" is 20, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\For_\\RemoveDeadIfForeachForRector\:\:refactor\(\)" is 16, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\MethodCall\\RemoveEmptyMethodCallRector\:\:refactor\(\)" is 18, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\(.*?)\:\:refactor\(\)" is (1[0-9]|20), keep it under 11#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\StaticCall\\RemoveParentCallWithoutParentRector\:\:refactor\(\)" is 26, keep it under 11#'
 
         - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
 

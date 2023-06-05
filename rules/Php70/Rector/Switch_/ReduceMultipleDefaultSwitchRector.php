@@ -6,7 +6,6 @@ namespace Rector\Php70\Rector\Switch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -97,41 +96,5 @@ CODE_SAMPLE
         }
 
         return $node;
-        //
-        //        $this->removeExtraDefaultCases($node->cases, $defaultCases);
-        //
-        //        return $node;
-    }
-
-    /**
-     * @param Case_[] $cases
-     * @param Case_[] $defaultCases
-     */
-    private function removeExtraDefaultCases(array $cases, array $defaultCases): void
-    {
-        // keep only last
-        array_pop($defaultCases);
-
-        foreach ($defaultCases as $key => $defaultCase) {
-            $this->keepStatementsToParentCase($cases, $defaultCase, $key);
-            $this->removeNode($defaultCase);
-        }
-    }
-
-    /**
-     * @param Case_[] $cases
-     */
-    private function keepStatementsToParentCase(array $cases, Case_ $case, int $key): void
-    {
-        if (! isset($cases[$key - 1])) {
-            return;
-        }
-
-        $previousCase = $cases[$key - 1];
-
-        if ($previousCase->stmts === []) {
-            $previousCase->stmts = $case->stmts;
-            $case->stmts = [];
-        }
     }
 }
