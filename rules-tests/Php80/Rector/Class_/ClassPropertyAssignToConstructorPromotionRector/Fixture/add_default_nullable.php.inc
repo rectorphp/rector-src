@@ -20,7 +20,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class AddDefaultNullable
 {
-    public function __construct(public $name = null)
+    public function __construct(public ?string $name = null)
     {
     }
 }
