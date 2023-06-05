@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
+use PhpParser\NodeTraverser;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -56,9 +57,9 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
-     * @return Node[]|Node|null
+     * @return Node[]|Node|null|int
      */
-    public function refactor(Node $node): array|Node|null
+    public function refactor(Node $node): array|Node|null|int
     {
         if ($this->hasGetMagic($node)) {
             return null;
@@ -102,7 +103,7 @@ CODE_SAMPLE
         return ! $phpPropertyReflection instanceof PhpPropertyReflection;
     }
 
-    private function removeNodeAndKeepComments(Expression $expression): ?Node
+    private function removeNodeAndKeepComments(Expression $expression): int|Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($expression);
 
@@ -113,8 +114,6 @@ CODE_SAMPLE
             return $nop;
         }
 
-        $this->removeNode($expression);
-
-        return null;
+        return NodeTraverser::REMOVE_NODE;
     }
 }
