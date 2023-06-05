@@ -121,13 +121,15 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass($node);
-        if ($promotionCandidates === []) {
+        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
             return null;
         }
 
-        /** @var ClassMethod $constructClassMethod */
-        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        $promotionCandidates = $this->promotedPropertyCandidateResolver->resolveFromClass($node, $constructClassMethod);
+        if ($promotionCandidates === []) {
+            return null;
+        }
 
         $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
 
@@ -147,7 +149,9 @@ CODE_SAMPLE
             $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
             unset($node->stmts[$propertyStmtKey]);
 
-            $this->removeNode($promotionCandidate->getAssign());
+            // remove assign
+            $assignStmtPosition = $promotionCandidate->getStmtPosition();
+            unset($constructClassMethod->stmts[$assignStmtPosition]);
 
             $property = $promotionCandidate->getProperty();
             $paramName = $this->getName($param);
