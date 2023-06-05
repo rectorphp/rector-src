@@ -48,6 +48,8 @@ use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -79,7 +81,8 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
@@ -105,7 +108,13 @@ final class PHPStanNodeScopeResolver
          */
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
-        $this->nodeTraverser->traverse($stmts);
+
+        $stmts = $this->nodeTraverser->traverse($stmts);
+        $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
+
+        if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+            $stmts = $stmts[0]->stmts;
+        }
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
