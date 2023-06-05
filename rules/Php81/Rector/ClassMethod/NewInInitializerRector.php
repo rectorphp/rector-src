@@ -13,7 +13,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
@@ -76,25 +75,43 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        $params = $this->resolveParams($node);
+        if ($node->stmts === null || $node->stmts === []) {
+            return null;
+        }
+
+        if ($node->isAbstract() || $node->isAnonymous()) {
+            return null;
+        }
+
+        $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+        if (! $constructClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
+        $params = $this->resolveParams($constructClassMethod);
         if ($params === []) {
             return null;
         }
 
         $hasChanged = false;
+
         foreach ($params as $param) {
             /** @var string $paramName */
             $paramName = $this->getName($param->var);
 
-            $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty($node, $paramName);
+            $toPropertyAssigns = $this->betterNodeFinder->findClassMethodAssignsToLocalProperty(
+                $node,
+                $constructClassMethod,
+                $paramName
+            );
             $toPropertyAssigns = array_filter(
                 $toPropertyAssigns,
                 static fn (Assign $assign): bool => $assign->expr instanceof Coalesce
@@ -118,7 +135,7 @@ CODE_SAMPLE
                 $param->default = $coalesce->right;
 
                 $this->removeNode($toPropertyAssign);
-                $this->processPropertyPromotion($node, $param, $paramName);
+                $this->processPropertyPromotion($constructClassMethod, $param, $paramName);
 
                 $hasChanged = true;
             }
@@ -141,10 +158,6 @@ CODE_SAMPLE
      */
     private function resolveParams(ClassMethod $classMethod): array
     {
-        if (! $this->isLegalClass($classMethod)) {
-            return [];
-        }
-
         $params = $this->matchConstructorParams($classMethod);
         if ($params === []) {
             return [];
@@ -175,28 +188,21 @@ CODE_SAMPLE
             return;
         }
 
-        $property = $classLike->getProperty($paramName);
-        if (! $property instanceof Property) {
-            return;
+        foreach ($classLike->stmts as $key => $stmt) {
+            if (! $stmt instanceof Property) {
+                continue;
+            }
+
+            $property = $stmt;
+            if (! $this->isName($stmt, $paramName)) {
+                continue;
+            }
+
+            $param->flags = $property->flags;
+            $param->attrGroups = array_merge($property->attrGroups, $param->attrGroups);
+
+            unset($classLike->stmts[$key]);
         }
-
-        $param->flags = $property->flags;
-        $param->attrGroups = array_merge($property->attrGroups, $param->attrGroups);
-        $this->removeNode($property);
-    }
-
-    private function isLegalClass(ClassMethod $classMethod): bool
-    {
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
-        if ($classLike instanceof Interface_) {
-            return false;
-        }
-
-        if ($classLike instanceof Class_) {
-            return ! $classLike->isAbstract();
-        }
-
-        return true;
     }
 
     /**
@@ -204,15 +210,8 @@ CODE_SAMPLE
      */
     private function matchConstructorParams(ClassMethod $classMethod): array
     {
-        if (! $this->isName($classMethod, MethodName::CONSTRUCT)) {
-            return [];
-        }
-
-        if ($classMethod->params === []) {
-            return [];
-        }
-
-        if ((array) $classMethod->stmts === []) {
+        // skip empty constructor assigns, as we need those here
+        if ($classMethod->stmts === null || $classMethod->stmts === []) {
             return [];
         }
 

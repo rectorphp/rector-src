@@ -248,8 +248,11 @@ final class BetterNodeFinder
     /**
      * @return Assign[]
      */
-    public function findClassMethodAssignsToLocalProperty(ClassMethod $classMethod, string $propertyName): array
-    {
+    public function findClassMethodAssignsToLocalProperty(
+        Class_ $class,
+        ClassMethod $classMethod,
+        string $propertyName
+    ): array {
         /** @var Assign[] $assigns */
         $assigns = [];
 
