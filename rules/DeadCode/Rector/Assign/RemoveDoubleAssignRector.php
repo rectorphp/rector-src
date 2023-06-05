@@ -73,7 +73,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasRemovedStmt = false;
+        $hasChanged = false;
+
         foreach ($stmts as $key => $stmt) {
             if (! isset($stmts[$key + 1])) {
                 continue;
@@ -117,11 +118,11 @@ CODE_SAMPLE
             }
 
             // remove current Stmt if will be overriden in next stmt
-            $this->removeNode($stmt);
-            $hasRemovedStmt = true;
+            unset($node->stmts[$key]);
+            $hasChanged = true;
         }
 
-        if (! $hasRemovedStmt) {
+        if (! $hasChanged) {
             return null;
         }
 
