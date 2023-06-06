@@ -23,7 +23,7 @@ class Fixture
 {
     protected array $imageSize;
 
-    public function __construct(protected $imageId)
+    public function __construct(protected string $imageId)
     {
         $this->imageSize = [];
     }
