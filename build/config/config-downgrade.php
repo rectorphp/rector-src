@@ -50,5 +50,6 @@ final class DowngradeRectorConfig
 
         // debug
         \Rector\DowngradePhp72\Rector\FuncCall\DowngradeStreamIsattyRector::class,
+        \Rector\DowngradePhp81\Rector\FuncCall\DowngradeArrayIsListRector::class,
     ];
 }
