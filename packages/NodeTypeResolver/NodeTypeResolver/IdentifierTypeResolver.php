@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
-use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\NullType;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PHPStan\Type\BooleanType;
+use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
@@ -31,7 +32,7 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
     /**
      * @param Identifier $node
-     * @return StringType|BooleanType|ConstantBooleanType|NullType|IntegerType|FloatType|MixedType
+     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|IntegerType|FloatType|MixedType
      */
     public function resolve(Node $node): Type
     {
@@ -55,6 +56,10 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
         if ($lowerString === 'null') {
             return new NullType();
+        }
+
+        if ($lowerString === 'object') {
+            return new ObjectWithoutClassType();
         }
 
         if ($lowerString === 'int') {
