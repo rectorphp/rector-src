@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
@@ -32,7 +33,7 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
     /**
      * @param Identifier $node
-     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|IntegerType|FloatType|MixedType
+     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|ArrayType|IntegerType|FloatType|MixedType
      */
     public function resolve(Node $node): Type
     {
@@ -60,6 +61,10 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
         if ($lowerString === 'object') {
             return new ObjectWithoutClassType();
+        }
+
+        if ($lowerString === 'array') {
+            return new ArrayType(new MixedType(), new MixedType());
         }
 
         if ($lowerString === 'int') {
