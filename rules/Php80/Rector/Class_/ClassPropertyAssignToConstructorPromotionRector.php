@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
@@ -200,7 +201,14 @@ CODE_SAMPLE
         }
 
         if ($param->default instanceof Expr && $this->valueResolver->isNull($param->default)) {
-            $paramType = $this->getType($param);
+            $paramType = $param->type instanceof Node
+                ? $this->getType($param->type)
+                : $this->getType($param);
+
+            if (! TypeCombinator::containsNull($paramType)) {
+                $paramType = TypeCombinator::addNull($paramType);
+            }
+
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
         }
     }
