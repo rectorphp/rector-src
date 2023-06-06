@@ -49,9 +49,6 @@ final class DowngradeRectorConfig
         'vendor/rector/rector-generator/templates',
 
         // debug
-        \Rector\DowngradePhp81\Rector\FuncCall\DowngradeArrayIsListRector::class => [
-            // something fishy here
-            'vendor/symfony/dependency-injection/Compiler/*',
-        ]
+        \Rector\DowngradePhp81\Rector\FuncCall\DowngradeArrayIsListRector::class,
     ];
 }
