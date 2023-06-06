@@ -75,7 +75,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
-            $this->fileProcessor->refactor($file, $configuration);
+            $this->fileProcessor->refactor($file);
 
             // 3. apply post rectors
             $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
