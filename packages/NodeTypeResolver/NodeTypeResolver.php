@@ -16,8 +16,8 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
@@ -112,7 +112,7 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
-        if ($node instanceof Property && $node->type instanceof NullableType) {
+        if ($node instanceof Property && $node->type instanceof Node) {
             return $this->getType($node->type);
         }
 
@@ -169,6 +169,16 @@ final class NodeTypeResolver
             }
 
             return new MixedType();
+        }
+
+        if ($node instanceof NodeUnionType) {
+            $types = [];
+
+            foreach ($node->types as $type) {
+                $types[] = $this->getType($type);
+            }
+
+            return new UnionType($types);
         }
 
         if (! $node instanceof Expr) {

@@ -24,7 +24,7 @@ use DateTimeInterface;
 
 class NullableType
 {
-    public function __construct(private ?\DateTimeInterface $time = null)
+    public function __construct(private ?DateTimeInterface $time = null)
     {
     }
 }

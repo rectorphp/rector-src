@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-final class AddDefaultNullable
+final class AddDefaultNullable2
 {
     public $name;
 
-    public function __construct(string $name = null)
+    public function __construct(string|false $name = null)
     {
         $this->name = $name;
     }
@@ -18,9 +18,9 @@ final class AddDefaultNullable
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-final class AddDefaultNullable
+final class AddDefaultNullable2
 {
-    public function __construct(public ?string $name = null)
+    public function __construct(public string|false|null $name = null)
     {
     }
 }
