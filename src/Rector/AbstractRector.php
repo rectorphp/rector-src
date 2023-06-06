@@ -38,11 +38,9 @@ use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeRemoval\NodeRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -78,18 +76,11 @@ CODE_SAMPLE;
 
     protected BetterNodeFinder $betterNodeFinder;
 
-    /**
-     * @internal Use service directly or return changes nodes
-     */
-    protected NodeRemover $nodeRemover;
-
     protected NodeComparator $nodeComparator;
 
     protected File $file;
 
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
-
-    private NodesToRemoveCollector $nodesToRemoveCollector;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
@@ -122,8 +113,6 @@ CODE_SAMPLE;
 
     #[Required]
     public function autowire(
-        NodesToRemoveCollector $nodesToRemoveCollector,
-        NodeRemover $nodeRemover,
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
         SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
@@ -145,8 +134,6 @@ CODE_SAMPLE;
         DocBlockUpdater $docBlockUpdater,
         NodeConnectingTraverser $nodeConnectingTraverser
     ): void {
-        $this->nodesToRemoveCollector = $nodesToRemoveCollector;
-        $this->nodeRemover = $nodeRemover;
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
         $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
@@ -361,7 +348,6 @@ CODE_SAMPLE;
      */
     protected function removeNode(Node $node): void
     {
-        $this->nodeRemover->removeNode($node);
     }
 
     /**
@@ -444,10 +430,6 @@ CODE_SAMPLE;
 
     private function shouldSkipCurrentNode(Node $node): bool
     {
-        if ($this->nodesToRemoveCollector->isNodeRemoved($node)) {
-            return true;
-        }
-
         $filePath = $this->file->getFilePath();
         if ($this->skipper->shouldSkipElementAndFilePath($this, $filePath)) {
             return true;

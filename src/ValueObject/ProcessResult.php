@@ -22,7 +22,6 @@ final class ProcessResult
         private readonly array $fileDiffs,
         private readonly int $addedFilesCount,
         private readonly int $removedFilesCount,
-        private readonly int $removedNodeCount
     ) {
         Assert::allIsAOf($fileDiffs, FileDiff::class);
         Assert::allIsAOf($systemErrors, SystemError::class);
@@ -57,10 +56,5 @@ final class ProcessResult
     public function getRemovedAndAddedFilesCount(): int
     {
         return $this->removedFilesCount + $this->addedFilesCount;
-    }
-
-    public function getRemovedNodeCount(): int
-    {
-        return $this->removedNodeCount;
     }
 }
