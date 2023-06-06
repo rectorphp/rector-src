@@ -183,7 +183,7 @@ CODE_SAMPLE
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
-            $this->processUnionType($param);
+            $this->processUnionType($property, $param);
 
             $this->phpDocTypeChanger->copyPropertyDocToParam($constructClassMethod, $property, $param);
         }
@@ -196,8 +196,13 @@ CODE_SAMPLE
         return PhpVersionFeature::PROPERTY_PROMOTION;
     }
 
-    private function processUnionType(Param $param): void
+    private function processUnionType(Property $property, Param $param): void
     {
+        if ($property->type instanceof Node) {
+            $param->type = $property->type;
+            return;
+        }
+
         if (! $param->default instanceof Expr) {
             return;
         }
