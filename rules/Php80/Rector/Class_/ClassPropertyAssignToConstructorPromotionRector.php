@@ -201,7 +201,7 @@ CODE_SAMPLE
         }
 
         if ($param->default instanceof Expr && $this->valueResolver->isNull($param->default)) {
-            $paramType = $this->getType($param->type);
+            $paramType = $this->getType($param);
 
             if (! TypeCombinator::containsNull($paramType)) {
                 $paramType = TypeCombinator::addNull($paramType);
