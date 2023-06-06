@@ -221,9 +221,7 @@ CODE_SAMPLE
             return;
         }
 
-        $paramType = $paramType instanceof \PHPStan\Type\UnionType
-            ? TypeCombinator::union($defaultType, ...$paramType->getTypes())
-            : TypeCombinator::union($paramType, $defaultType);
+        $paramType = TypeCombinator::union($paramType, $defaultType);
 
         $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
     }
