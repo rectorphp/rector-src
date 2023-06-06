@@ -47,8 +47,5 @@ final class DowngradeRectorConfig
         'vendor/symfony/contracts/Cache/*',
 
         'vendor/rector/rector-generator/templates',
-
-        // debug
-        \Rector\DowngradePhp81\Rector\FuncCall\DowngradeArrayIsListRector::class,
     ];
 }
