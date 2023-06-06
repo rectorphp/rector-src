@@ -38,17 +38,17 @@ final class ByRefReturnNodeVisitor extends NodeVisitorAbstract implements ScopeR
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $stmts,
-            static function (Node $subNode): int|null|Return_ {
-                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
+            static function (Node $node): int|null|Node {
+                if ($node instanceof Class_ || $node instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if (! $subNode instanceof Return_) {
+                if (! $node instanceof Return_) {
                     return null;
                 }
 
-                $subNode->setAttribute(AttributeKey::IS_BYREF_RETURN, true);
-                return $subNode;
+                $node->setAttribute(AttributeKey::IS_BYREF_RETURN, true);
+                return $node;
             }
         );
 

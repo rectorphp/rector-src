@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
-use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PostDec;
@@ -20,7 +18,6 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
@@ -62,19 +59,6 @@ final class PropertyManipulator
         'Doctrine\ORM\Mapping\MappedSuperclass',
     ];
 
-    /**
-     * @var string[]|class-string<ManyToMany>[]
-     */
-    private const ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
-        'Doctrine\ORM\Mapping\Id',
-        'Doctrine\ORM\Mapping\Column',
-        'Doctrine\ORM\Mapping\OneToMany',
-        'Doctrine\ORM\Mapping\ManyToMany',
-        'Doctrine\ORM\Mapping\ManyToOne',
-        'Doctrine\ORM\Mapping\OneToOne',
-        'JMS\Serializer\Annotation\Type',
-    ];
-
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -92,47 +76,6 @@ final class PropertyManipulator
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
-    }
-
-    public function isPropertyUsedInReadContext(
-        Class_ $class,
-        Property | Param $propertyOrPromotedParam,
-        Scope $scope
-    ): bool {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($propertyOrPromotedParam);
-
-        if ($this->isAllowedReadOnly($propertyOrPromotedParam, $phpDocInfo)) {
-            return true;
-        }
-
-        $privatePropertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches(
-            $class,
-            $propertyOrPromotedParam
-        );
-
-        foreach ($privatePropertyFetches as $privatePropertyFetch) {
-            if ($this->readWritePropertyAnalyzer->isRead($privatePropertyFetch, $scope)) {
-                return true;
-            }
-        }
-
-        // has classLike $this->$variable call?
-        $classLike = $this->betterNodeFinder->findParentType($propertyOrPromotedParam, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return false;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirst($classLike->stmts, function (Node $node) use ($scope): bool {
-            if (! $node instanceof PropertyFetch) {
-                return false;
-            }
-
-            if (! $this->readWritePropertyAnalyzer->isRead($node, $scope)) {
-                return false;
-            }
-
-            return $node->name instanceof Expr;
-        });
     }
 
     public function isPropertyChangeableExceptConstructor(
@@ -215,18 +158,6 @@ final class PropertyManipulator
         }
 
         return false;
-    }
-
-    private function isAllowedReadOnly(Property | Param $propertyOrPromotedParam, PhpDocInfo $phpDocInfo): bool
-    {
-        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
-            return true;
-        }
-
-        return $this->phpAttributeAnalyzer->hasPhpAttributes(
-            $propertyOrPromotedParam,
-            self::ALLOWED_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
-        );
     }
 
     private function isPropertyAssignedOnlyInConstructor(

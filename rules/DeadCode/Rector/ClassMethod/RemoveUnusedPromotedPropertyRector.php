@@ -8,13 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
-use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Core\ValueObject\Visibility;
+use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -27,8 +28,8 @@ final class RemoveUnusedPromotedPropertyRector extends AbstractScopeAwareRector 
 {
     public function __construct(
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly PropertyManipulator $propertyManipulator,
-        private readonly VisibilityManipulator $visibilityManipulator
+        private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
     ) {
     }
 
@@ -89,8 +90,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // is attribute? skip it
-        if ($node->attrGroups !== []) {
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
@@ -102,14 +102,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->propertyManipulator->isPropertyUsedInReadContext($node, $param, $scope)) {
-                continue;
-            }
-
             $paramName = $this->getName($param);
 
             $propertyFetches = $this->propertyFetchFinder->findLocalPropertyFetchesByName($node, $paramName);
             if ($propertyFetches !== []) {
+                continue;
+            }
+
+            if (! $this->propertyWriteonlyAnalyzer->arePropertyFetchesExclusivelyBeingAssignedTo($propertyFetches)) {
                 continue;
             }
 
@@ -122,6 +122,7 @@ CODE_SAMPLE
 
             // remove param
             unset($constructClassMethod->params[$key]);
+
             $hasChanged = true;
         }
 
@@ -135,5 +136,20 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_PROMOTION;
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        if ($class->attrGroups !== []) {
+            return true;
+        }
+
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof TraitUse) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

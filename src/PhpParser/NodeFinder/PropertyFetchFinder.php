@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -23,11 +24,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class PropertyFetchFinder
 {
-    /**
-     * @var string
-     */
-    private const THIS = 'this';
-
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -39,7 +35,7 @@ final class PropertyFetchFinder
     }
 
     /**
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return array<PropertyFetch|StaticPropertyFetch>
      */
     public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam): array
     {
@@ -112,6 +108,19 @@ final class PropertyFetchFinder
         return $propertyArrayDimFetches;
     }
 
+    public function isLocalPropertyFetchByName(Expr $expr, string $propertyName): bool
+    {
+        if (! $expr instanceof PropertyFetch) {
+            return false;
+        }
+
+        if (! $this->nodeNameResolver->isName($expr->name, $propertyName)) {
+            return false;
+        }
+
+        return $this->nodeNameResolver->isName($expr->var, 'this');
+    }
+
     /**
      * @param Stmt[] $stmts
      * @return PropertyFetch[]|StaticPropertyFetch[]
@@ -170,12 +179,8 @@ final class PropertyFetchFinder
     ): bool {
         // early check if property fetch name is not equals with property name
         // so next check is check var name and var type only
-        if (! $this->nodeNameResolver->isName($propertyFetch->name, $propertyName)) {
+        if (! $this->isLocalPropertyFetchByName($propertyFetch, $propertyName)) {
             return false;
-        }
-
-        if ($this->nodeNameResolver->isName($propertyFetch->var, self::THIS)) {
-            return true;
         }
 
         $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class WriteOnly
+final class SkipDimFetchWriteOnly
 {
     private $seemsUnused;
 
@@ -13,20 +13,3 @@ class WriteOnly
         }
     }
 }
-
-?>
------
-<?php
-
-namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
-
-class WriteOnly
-{
-    public function getValue()
-    {
-        foreach ([1, 2, 3] as $key) {
-        }
-    }
-}
-
-?>

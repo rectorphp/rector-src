@@ -110,9 +110,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $removedParamKeys = $this->complexNodeRemover
-            ->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
-
+        $removedParamKeys = $this->complexNodeRemover->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
         if ($removedParamKeys !== []) {
             return $classMethod;
         }

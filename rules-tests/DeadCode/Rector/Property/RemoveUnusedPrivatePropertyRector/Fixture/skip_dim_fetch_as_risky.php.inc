@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-final class WriteOnlyDimFetchUseVariable
+final class SkipDimFetchAsRisky
 {
     /**
      * @var string
@@ -21,24 +21,3 @@ final class WriteOnlyDimFetchUseVariable
         $this->writeOnly[$this->key] = 10000;
     }
 }
-
-?>
------
-<?php
-
-namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
-
-final class WriteOnlyDimFetchUseVariable
-{
-    protected $writeOnly;
-
-    public function __construct()
-    {
-    }
-
-    public function buildData(): array
-    {
-    }
-}
-
-?>

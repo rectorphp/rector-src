@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
 
-class ConstructorOnlyStatic
+final class SkipStatic
 {
     /**
      * @var int
@@ -14,18 +14,3 @@ class ConstructorOnlyStatic
         self::$contentFinder = $contentFinder;
     }
 }
-
-?>
------
-<?php
-
-namespace Rector\Tests\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector\Fixture;
-
-class ConstructorOnlyStatic
-{
-    public function __construct()
-    {
-    }
-}
-
-?>
