@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
@@ -89,8 +90,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // is attribute? skip it
-        if ($node->attrGroups !== []) {
+        if ($this->shouldSkipClass($node)) {
             return null;
         }
 
@@ -136,5 +136,20 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::PROPERTY_PROMOTION;
+    }
+
+    private function shouldSkipClass(Class_ $class): bool
+    {
+        if ($class->attrGroups !== []) {
+            return true;
+        }
+
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof TraitUse) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
