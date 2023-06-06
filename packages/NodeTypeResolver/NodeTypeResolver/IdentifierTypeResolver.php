@@ -11,6 +11,7 @@ use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectWithoutClassType;
@@ -33,7 +34,7 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
     /**
      * @param Identifier $node
-     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|ArrayType|IntegerType|FloatType|MixedType
+     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|ArrayType|IterableType|IntegerType|FloatType|MixedType
      */
     public function resolve(Node $node): Type
     {
@@ -69,6 +70,10 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
         if ($lowerString === 'int') {
             return new IntegerType();
+        }
+
+        if ($lowerString === 'iterable') {
+            return new IterableType(new MixedType(), new MixedType());
         }
 
         if ($lowerString === 'float') {
