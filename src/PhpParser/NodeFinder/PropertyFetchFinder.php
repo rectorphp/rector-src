@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -58,7 +59,7 @@ final class PropertyFetchFinder
      */
     public function findLocalPropertyFetchesByName(Class_ $class, string $paramName): array
     {
-        /** @expr PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->findInstancesOf(
             $class,
             [PropertyFetch::class, StaticPropertyFetch::class]
@@ -82,7 +83,7 @@ final class PropertyFetchFinder
     {
         $propertyName = $this->nodeNameResolver->getName($property);
 
-        /** @expr Assign[] $assigns */
+        /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstanceOf($class, Assign::class);
 
         $propertyArrayDimFetches = [];
@@ -107,7 +108,7 @@ final class PropertyFetchFinder
         return $propertyArrayDimFetches;
     }
 
-    public function isLocalPropertyFetchByName(\PhpParser\Node\Expr $expr, string $propertyName): bool
+    public function isLocalPropertyFetchByName(Expr $expr, string $propertyName): bool
     {
         if (! $expr instanceof PropertyFetch) {
             return false;
@@ -130,10 +131,10 @@ final class PropertyFetchFinder
         string $propertyName,
         bool $hasTrait
     ): array {
-        /** @expr PropertyFetch[] $propertyFetches */
+        /** @var PropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, PropertyFetch::class);
 
-        /** @expr PropertyFetch[] $matchingPropertyFetches */
+        /** @var PropertyFetch[] $matchingPropertyFetches */
         $matchingPropertyFetches = array_filter($propertyFetches, function (PropertyFetch $propertyFetch) use (
             $propertyName,
             $class,
@@ -146,10 +147,10 @@ final class PropertyFetchFinder
             return $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class);
         });
 
-        /** @expr StaticPropertyFetch[] $staticPropertyFetches */
+        /** @var StaticPropertyFetch[] $staticPropertyFetches */
         $staticPropertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, StaticPropertyFetch::class);
 
-        /** @expr StaticPropertyFetch[] $matchingStaticPropertyFetches */
+        /** @var StaticPropertyFetch[] $matchingStaticPropertyFetches */
         $matchingStaticPropertyFetches = array_filter(
             $staticPropertyFetches,
             fn (StaticPropertyFetch $staticPropertyFetch): bool => $this->nodeNameResolver->isName(
@@ -177,7 +178,7 @@ final class PropertyFetchFinder
         Class_|Trait_ $class
     ): bool {
         // early check if property fetch name is not equals with property name
-        // so next check is check expr name and expr type only
+        // so next check is check var name and var type only
         if (! $this->isLocalPropertyFetchByName($propertyFetch, $propertyName)) {
             return false;
         }
