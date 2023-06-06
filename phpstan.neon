@@ -61,8 +61,6 @@ parameters:
         - tests/DependencyInjection/config
 
     ignoreErrors:
-        - '#Parameter \#1 \$node of method Rector\\PostRector\\Collector\\NodesToAddCollector\:\:wrapToExpression\(\) expects PhpParser\\Node\\Expr\|PhpParser\\Node\\Stmt, PhpParser\\Node given#'
-
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 
         -
@@ -306,9 +304,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
 
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
-
-        # cleanup after merge of assing remover refactoring
-        - '#Cognitive complexity for "Rector\\Removing\\NodeManipulator\\ComplexNodeRemover\:\:removePropertyAndUsages\(\)" is \d+, keep it under 11#'
 
         -
             message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 11#'
@@ -711,10 +706,6 @@ parameters:
         - '#Fetching deprecated class constant PARENT_NODE#'
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
-        # resolve before 1.0
-        - '#Parameter \$nodesToAddCollector of (.*?) has typehint with deprecated class Rector\\PostRector\\Collector\\NodesToAddCollector#'
-
-        - '#Call to deprecated method removeNode\(\) of class Rector\\NodeRemoval\\NodeRemover#'
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
@@ -734,6 +725,3 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
-
-        - '#Call to deprecated method removeNode\(\) of class Rector\\Core\\Rector\\AbstractRector#'
-        - '#Cognitive complexity for "Rector\\ReadWrite\\NodeAnalyzer\\ReadWritePropertyAnalyzer\:\:isRead\(\)" is 12, keep it under 11#'
