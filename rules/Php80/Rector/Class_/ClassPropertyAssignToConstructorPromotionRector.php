@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -27,6 +28,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -63,7 +65,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard
+        private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
+        private readonly TypeComparator $typeComparator
     ) {
     }
 
@@ -180,7 +183,7 @@ CODE_SAMPLE
             $param->flags = $property->flags;
             // Copy over attributes of the "old" property
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
-            $this->processNullableType($property, $param);
+            $this->processUnionType($param);
 
             $this->phpDocTypeChanger->copyPropertyDocToParam($constructClassMethod, $property, $param);
         }
@@ -193,22 +196,36 @@ CODE_SAMPLE
         return PhpVersionFeature::PROPERTY_PROMOTION;
     }
 
-    private function processNullableType(Property $property, Param $param): void
+    private function processUnionType(Param $param): void
     {
-        if ($this->nodeTypeResolver->isNullableType($property)) {
-            $objectType = $this->getType($property);
-            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
+        if (! $param->default instanceof Expr) {
+            return;
         }
 
-        if ($param->default instanceof Expr && $this->valueResolver->isNull($param->default)) {
-            $paramType = $this->getType($param);
-
-            if (! TypeCombinator::containsNull($paramType)) {
-                $paramType = TypeCombinator::addNull($paramType);
-            }
-
-            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
+        if (! $param->type instanceof Node) {
+            return;
         }
+
+        $defaultType = $this->getType($param->default);
+        $paramType = $this->getType($param);
+
+        if ($this->typeComparator->isSubtype($defaultType, $paramType)) {
+            return;
+        }
+
+        if ($this->typeComparator->areTypesEqual($defaultType, $paramType)) {
+            return;
+        }
+
+        if ($paramType instanceof MixedType) {
+            return;
+        }
+
+        $paramType = $paramType instanceof \PHPStan\Type\UnionType
+            ? TypeCombinator::union($defaultType, ...$paramType->getTypes())
+            : TypeCombinator::union($paramType, $defaultType);
+
+        $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
     }
 
     private function decorateParamWithPropertyPhpDocInfo(
