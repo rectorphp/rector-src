@@ -57,11 +57,11 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
             return new NullType();
         }
 
-        if ($node->toLowerString() === 'int') {
+        if ($lowerString === 'int') {
             return new IntegerType();
         }
 
-        if ($node->toLowerString() === 'float') {
+        if ($lowerString === 'float') {
             return new FloatType();
         }
 
