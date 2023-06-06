@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
-use Rector\ChangesReporting\Collector\AffectedFilesCollector;
 use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\Configuration;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
 final class FileProcessor
 {
     public function __construct(
-        private readonly AffectedFilesCollector $affectedFilesCollector,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly RectorParser $rectorParser,
         private readonly RectorNodeTraverser $rectorNodeTraverser,
@@ -35,16 +32,11 @@ final class FileProcessor
         $file->hydrateStmtsAndTokens($newStmts, $oldStmts, $oldTokens);
     }
 
-    public function refactor(File $file, Configuration $configuration): void
+    public function refactor(File $file): void
     {
         $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($file->getNewStmts());
         $newStmts = $this->rectorNodeTraverser->traverse($newStmts);
 
         $file->changeNewStmts($newStmts);
-
-        $this->affectedFilesCollector->removeFromList($file);
-        while (($otherTouchedFile = $this->affectedFilesCollector->getNext()) instanceof File) {
-            $this->refactor($otherTouchedFile, $configuration);
-        }
     }
 }
