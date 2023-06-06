@@ -35,11 +35,9 @@ class Fixture3
     {
         switch ($operation) {
             case 'fruits':
-                $item2Unpacked = $this->getFirstArray();
-                return array_merge(['banana', 'orange'], is_array($item2Unpacked) ? $item2Unpacked : iterator_to_array($item2Unpacked));
+                return array_merge(['banana', 'orange'], is_array($this->getFirstArray()) ? $this->getFirstArray() : iterator_to_array($this->getFirstArray()));
             case 'veggies':
-                $item2Unpacked = $this->getSecondArray();
-                return array_merge(['tomato', 'lettuce'], is_array($item2Unpacked) ? $item2Unpacked : iterator_to_array($item2Unpacked));
+                return array_merge(['tomato', 'lettuce'], is_array($this->getSecondArray()) ? $this->getSecondArray() : iterator_to_array($this->getSecondArray()));
         }
     }
 }

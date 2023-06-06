@@ -34,8 +34,7 @@ class Fixture
     {
         switch ($operation) {
             case 'fruits':
-                $item2Unpacked = $this->getArray();
-                return array_merge(['banana', 'orange'], $item2Unpacked);
+                return array_merge(['banana', 'orange'], $this->getArray());
         }
     }
 }
