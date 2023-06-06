@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\NullType;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PHPStan\Type\BooleanType;
@@ -33,12 +35,26 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        if ($node->toLowerString() === 'string') {
+        $lowerString = $node->toLowerString();
+
+        if ($lowerString === 'string') {
             return new StringType();
         }
 
-        if ($node->toLowerString() === 'bool') {
+        if ($lowerString === 'bool') {
             return new BooleanType();
+        }
+
+        if ($lowerString === 'false') {
+            return new ConstantBooleanType(false);
+        }
+
+        if ($lowerString === 'true') {
+            return new ConstantBooleanType(true);
+        }
+
+        if ($lowerString === 'null') {
+            return new NullType();
         }
 
         if ($node->toLowerString() === 'int') {

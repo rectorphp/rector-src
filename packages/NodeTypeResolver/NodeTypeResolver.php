@@ -18,6 +18,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
@@ -169,6 +170,16 @@ final class NodeTypeResolver
             }
 
             return new MixedType();
+        }
+
+        if ($node instanceof NodeUnionType) {
+            $types = [];
+
+            foreach ($node->types as $type) {
+                $types[] = $this->getType($type);
+            }
+
+            return new UnionType($types);
         }
 
         if (! $node instanceof Expr) {
