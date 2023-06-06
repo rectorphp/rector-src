@@ -26,7 +26,6 @@ use PhpParser\Node\Stmt\While_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -54,11 +53,6 @@ final class NewlineAfterStatementRector extends AbstractRector
         Interface_::class,
         Switch_::class,
     ];
-
-    public function __construct(
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector
-    ) {
-    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -150,10 +144,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->isRemoved($stmt)) {
-                continue;
-            }
-
             array_splice($node->stmts, $key + 1, 0, [new Nop()]);
 
             $hasChanged = true;
@@ -201,11 +191,6 @@ CODE_SAMPLE
         }
 
         return ! isset($comments[0]);
-    }
-
-    private function isRemoved(Stmt $stmt): bool
-    {
-        return $this->nodesToRemoveCollector->isNodeRemoved($stmt);
     }
 
     private function shouldSkip(Stmt $stmt): bool

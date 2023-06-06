@@ -9,13 +9,11 @@ use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 
 final class ProcessResultFactory
 {
     public function __construct(
         private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector
     ) {
     }
 
@@ -32,7 +30,6 @@ final class ProcessResultFactory
             $fileDiffs,
             $this->removedAndAddedFilesCollector->getAddedFileCount(),
             $this->removedAndAddedFilesCollector->getRemovedFilesCount(),
-            $this->nodesToRemoveCollector->getCount(),
         );
     }
 }

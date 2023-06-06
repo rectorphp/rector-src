@@ -16,7 +16,6 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 
@@ -33,7 +32,6 @@ final class ConstructorAssignDetector
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector
     ) {
     }
 
@@ -52,10 +50,6 @@ final class ConstructorAssignDetector
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $initializeClassMethod->stmts, function (
                 Node $node
             ) use ($propertyName, &$isAssignedInConstructor): ?int {
-                if ($node instanceof Expression && $this->nodesToRemoveCollector->isNodeRemoved($node)) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
                 $expr = $this->matchAssignExprToPropertyName($node, $propertyName);
                 if (! $expr instanceof Expr) {
                     return null;

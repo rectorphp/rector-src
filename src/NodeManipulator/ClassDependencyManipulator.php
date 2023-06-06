@@ -25,7 +25,6 @@ use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\Collector\NodesToRemoveCollector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 
@@ -39,7 +38,6 @@ final class ClassDependencyManipulator
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly PropertyPresenceChecker $propertyPresenceChecker,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodesToRemoveCollector $nodesToRemoveCollector,
         private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private readonly DependencyClassMethodDecorator $dependencyClassMethodDecorator,
         private readonly ReflectionResolver $reflectionResolver
@@ -244,10 +242,6 @@ final class ClassDependencyManipulator
 
         // only if the property does not exist yet
         $existingProperty = $class->getProperty($propertyMetadata->getName());
-        if (! $existingProperty instanceof Property) {
-            return true;
-        }
-
-        return $this->nodesToRemoveCollector->isNodeRemoved($existingProperty);
+        return ! $existingProperty instanceof Property;
     }
 }
