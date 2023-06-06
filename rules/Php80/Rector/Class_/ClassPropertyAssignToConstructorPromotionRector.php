@@ -207,7 +207,7 @@ CODE_SAMPLE
         }
 
         $defaultType = $this->getType($param->default);
-        $paramType = $this->getType($param);
+        $paramType = $this->getType($param->type);
 
         if ($this->typeComparator->isSubtype($defaultType, $paramType)) {
             return;

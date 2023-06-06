@@ -113,7 +113,7 @@ final class NodeTypeResolver
 
     public function getType(Node $node): Type
     {
-        if (($node instanceof Property || $node instanceof Param) && $node->type instanceof Node) {
+        if ($node instanceof Property && $node->type instanceof Node) {
             return $this->getType($node->type);
         }
 
