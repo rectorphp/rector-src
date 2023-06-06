@@ -11,6 +11,7 @@ return static function (Configuration $config): Configuration {
     // rector dependencies
     $config->addPatternFilter(PatternFilter::fromString('#rector/.#'));
     $config->addPatternFilter(PatternFilter::fromString('#phpstan/phpstan#'));
+    $config->addPatternFilter(PatternFilter::fromString('#symfony/polyfill-php81#'));
 
     return $config;
 };
