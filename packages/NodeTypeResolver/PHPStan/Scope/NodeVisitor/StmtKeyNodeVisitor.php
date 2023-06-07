@@ -23,17 +23,17 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         $currentNode = current($nodes);
 
         if (! $currentNode instanceof Stmt) {
-            return $nodes;
+            return null;
         }
 
         $statementDepth = $currentNode->getAttribute(AttributeKey::STATEMENT_DEPTH);
         if ($statementDepth > 0) {
-            return $nodes;
+            return null;
         }
 
         // on target node or no other root stmt, eg: only namespace without declare, no need reindex
         if (count($nodes) === 1) {
-            return $nodes;
+            return null;
         }
 
         foreach ($nodes as $key => $node) {
