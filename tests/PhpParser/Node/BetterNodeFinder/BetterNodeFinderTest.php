@@ -11,9 +11,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Parser\SimplePhpParser;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class BetterNodeFinderTest extends AbstractTestCase
+final class BetterNodeFinderTest extends AbstractLazyTestCase
 {
     /**
      * @var Node[]
@@ -24,11 +24,9 @@ final class BetterNodeFinderTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
 
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
-
-        $simplePhpParser = $this->getService(SimplePhpParser::class);
+        $simplePhpParser = $this->make(SimplePhpParser::class);
         $this->nodes = $simplePhpParser->parseFile(__DIR__ . '/Source/SomeFile.php.inc');
     }
 
