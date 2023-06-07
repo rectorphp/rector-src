@@ -30,7 +30,6 @@ use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
@@ -170,13 +169,6 @@ CODE_SAMPLE;
         }
 
         $this->file = $file;
-
-        foreach ($nodes as $key => $childStmt) {
-            if (! $childStmt instanceof FileWithoutNamespace) {
-                $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
-                continue;
-            }
-        }
 
         return parent::beforeTraverse($nodes);
     }

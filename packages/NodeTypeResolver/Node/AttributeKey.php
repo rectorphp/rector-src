@@ -216,4 +216,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_MULTI_ASSIGN = 'is_multi_assign';
+
+    /**
+     * @var string
+     */
+    public const STATEMENT_DEPTH = 'statementDepth';
 }
