@@ -197,6 +197,11 @@ CODE_SAMPLE
         }
 
         $firstArg = $expr->getArgs()[0];
+
+        if (! $this->isArray($firstArg->value)) {
+            return null;
+        }
+
         return $firstArg->value;
     }
 
