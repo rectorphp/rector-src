@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\If_;
 
+use PDO;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -106,15 +107,23 @@ CODE_SAMPLE
 
         // remove last return null
         $throwExpr = null;
+        $hasChanged = false;
         foreach ($node->stmts as $key => $stmt) {
             if (in_array($key, $ifKeys, true)) {
                 unset($node->stmts[$key]);
+                $hasChanged = true;
+
+                continue;
+            }
+
+            if (! $hasChanged) {
                 continue;
             }
 
             if ($stmt instanceof Throw_) {
                 unset($node->stmts[$key]);
                 $throwExpr = new ExprThrow_($stmt->expr);
+
                 continue;
             }
 
