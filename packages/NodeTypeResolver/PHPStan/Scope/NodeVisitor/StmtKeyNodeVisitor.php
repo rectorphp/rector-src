@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
@@ -14,6 +15,27 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
+    /**
+     * @param Stmt[] $nodes
+     */
+    public function beforeTraverse(array $nodes)
+    {
+        $currentNode = current($nodes);
+
+        if (! $currentNode instanceof Stmt) {
+            return $nodes;
+        }
+
+        $statementDepth = $currentNode->getAttribute(AttributeKey::STATEMENT_DEPTH);
+        if ($statementDepth > 0) {
+            return $nodes;
+        }
+
+        foreach ($nodes as $key => $node) {
+            $node->setAttribute(AttributeKey::STMT_KEY, $key);
+        }
+    }
+
     public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_) {

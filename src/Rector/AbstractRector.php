@@ -171,13 +171,6 @@ CODE_SAMPLE;
 
         $this->file = $file;
 
-        foreach ($nodes as $key => $childStmt) {
-            if (! $childStmt instanceof FileWithoutNamespace) {
-                $childStmt->setAttribute(AttributeKey::STMT_KEY, $key);
-                continue;
-            }
-        }
-
         return parent::beforeTraverse($nodes);
     }
 
