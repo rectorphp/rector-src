@@ -725,3 +725,7 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
+
+        # resolve before Rector 1.0
+        - '#Call to deprecated method findParentType#'
+        - '#Call to deprecated method findParentByTypes#'

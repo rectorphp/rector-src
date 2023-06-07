@@ -83,6 +83,11 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/packages/Testing/PHPUnit/Behavior/MovingFilesTrait.php',
         ],
 
+        // avoid simplifying itself
+        \Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector::class => [
+            __DIR__ . '/rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php',
+        ],
+
         // race condition with stmts aware patch and PHPStan type
         \Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector::class => [
             __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
