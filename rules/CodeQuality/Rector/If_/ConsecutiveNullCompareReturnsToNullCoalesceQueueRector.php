@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\Throw_ as ExprThrow_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -104,6 +105,7 @@ CODE_SAMPLE
         }
 
         // remove last return null
+        $throwExpr = null;
         $stmts = $node->stmts;
         foreach ($node->stmts as $key => $stmt) {
             if (in_array($key, $ifKeys, true)) {
@@ -112,8 +114,9 @@ CODE_SAMPLE
             }
 
             if ($stmt instanceof Throw_) {
-                $node->stmts = $stmts;
-                return null;
+                unset($node->stmts[$key]);
+                $throwExpr = new ExprThrow_($stmt->expr);
+                continue;
             }
 
             if (! $this->isReturnNull($stmt)) {
@@ -123,7 +126,7 @@ CODE_SAMPLE
             unset($node->stmts[$key]);
         }
 
-        $node->stmts[] = $this->createCealesceReturn($coalescingExprs);
+        $node->stmts[] = $this->createCealesceReturn($coalescingExprs, $throwExpr);
 
         return $node;
     }
@@ -149,7 +152,7 @@ CODE_SAMPLE
     /**
      * @param Expr[] $coalescingExprs
      */
-    private function createCealesceReturn(array $coalescingExprs): Return_
+    private function createCealesceReturn(array $coalescingExprs, ?Expr $throwExpr): Return_
     {
         /** @var Expr $leftExpr */
         $leftExpr = array_shift($coalescingExprs);
@@ -161,6 +164,10 @@ CODE_SAMPLE
 
         foreach ($coalescingExprs as $coalescingExpr) {
             $coalesce = new Coalesce($coalesce, $coalescingExpr);
+        }
+
+        if ($throwExpr instanceof Expr) {
+            $coalesce = new Coalesce($coalesce, $throwExpr);
         }
 
         return new Return_($coalesce);
