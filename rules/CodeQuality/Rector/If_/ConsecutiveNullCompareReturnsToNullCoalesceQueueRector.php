@@ -114,7 +114,6 @@ CODE_SAMPLE
             if ($stmt instanceof Throw_) {
                 $node->stmts = $stmts;
                 return null;
-                break;
             }
 
             if (! $this->isReturnNull($stmt)) {
