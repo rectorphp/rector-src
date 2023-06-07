@@ -254,7 +254,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $this->decorateInlineHTMLOrNopAndUpdatePhpdocInfo($nodes);
+        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
 
@@ -382,7 +382,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
      */
     protected function pStmts(array $nodes, bool $indent = true): string
     {
-        $this->decorateInlineHTMLOrNopAndUpdatePhpdocInfo($nodes);
+        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
 
         return parent::pStmts($nodes, $indent);
     }
@@ -540,7 +540,7 @@ final class BetterStandardPrinter extends Standard implements NodePrinterInterfa
     /**
      * @param array<Node|null> $nodes
      */
-    private function decorateInlineHTMLOrNopAndUpdatePhpdocInfo(array $nodes): void
+    private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
     {
         // move phpdoc from node to "comment" attribute
         foreach ($nodes as $node) {
