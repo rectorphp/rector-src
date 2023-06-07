@@ -105,10 +105,6 @@ final class ChangedNodeScopeRefresher
              */
             $stmts = $node->stmts;
             $node->stmts = array_values($stmts);
-
-            foreach ($node->stmts as $key => $stmt) {
-                $stmt->setAttribute(AttributeKey::STMT_KEY, $key);
-            }
         }
 
         if ($node instanceof FunctionLike) {
