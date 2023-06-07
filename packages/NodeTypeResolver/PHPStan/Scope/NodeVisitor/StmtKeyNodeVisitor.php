@@ -16,7 +16,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
     /**
-     * @param Stmt[] $nodes
+     * @param Node[] $nodes
      */
     public function beforeTraverse(array $nodes)
     {
@@ -39,6 +39,8 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         foreach ($nodes as $key => $node) {
             $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
+
+        return $nodes;
     }
 
     public function enterNode(Node $node): ?Node
