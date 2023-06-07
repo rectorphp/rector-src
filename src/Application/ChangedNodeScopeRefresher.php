@@ -17,9 +17,7 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
@@ -27,7 +25,6 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\MutatingScope;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -123,11 +120,6 @@ final class ChangedNodeScopeRefresher
         if ($node instanceof Switch_) {
             $node->cases = array_values($node->cases);
         }
-    }
-
-    private function hasArrayStmtsNode(Node $node): bool
-    {
-        return ($node instanceof ClassLike || $node instanceof StmtsAwareInterface || $node instanceof Declare_) && $node->stmts !== null;
     }
 
     /**
