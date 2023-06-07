@@ -31,6 +31,11 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             return $nodes;
         }
 
+        // on target node, no need reindex
+        if (count($nodes) === 1) {
+            return $nodes;
+        }
+
         foreach ($nodes as $key => $node) {
             $node->setAttribute(AttributeKey::STMT_KEY, $key);
         }
