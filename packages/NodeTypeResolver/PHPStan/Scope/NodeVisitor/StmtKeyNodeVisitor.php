@@ -27,7 +27,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         $statementDepth = $currentNode->getAttribute(AttributeKey::STATEMENT_DEPTH);
-        if ($statementDepth > 0) {
+        if ($statementDepth > 0 || $statementDepth === null) {
             return null;
         }
 
