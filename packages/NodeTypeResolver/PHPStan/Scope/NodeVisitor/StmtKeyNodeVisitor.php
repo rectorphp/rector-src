@@ -31,7 +31,7 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             return $nodes;
         }
 
-        // on target node, no need reindex
+        // on target node or no other root stmt, eg: only namespace without declare, no need reindex
         if (count($nodes) === 1) {
             return $nodes;
         }
