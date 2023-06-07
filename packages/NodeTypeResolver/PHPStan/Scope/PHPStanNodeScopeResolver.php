@@ -110,7 +110,8 @@ final class PHPStanNodeScopeResolver
         Assert::allIsInstanceOf($stmts, Stmt::class);
         $this->nodeTraverser->traverse($stmts);
 
-        if (! $isScopeRefreshing) {
+        $isFileWithoutNamespace = count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace;
+        if (! $isScopeRefreshing && ! $isFileWithoutNamespace) {
             $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
 
             if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
