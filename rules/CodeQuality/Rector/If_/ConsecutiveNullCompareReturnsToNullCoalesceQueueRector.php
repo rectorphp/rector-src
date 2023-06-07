@@ -106,7 +106,6 @@ CODE_SAMPLE
 
         // remove last return null
         $throwExpr = null;
-        $stmts = $node->stmts;
         foreach ($node->stmts as $key => $stmt) {
             if (in_array($key, $ifKeys, true)) {
                 unset($node->stmts[$key]);
