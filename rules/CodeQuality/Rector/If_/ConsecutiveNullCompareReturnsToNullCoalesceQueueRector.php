@@ -175,7 +175,7 @@ CODE_SAMPLE
         }
 
         if ($throwExpr instanceof Expr) {
-            $coalesce = new Coalesce($coalesce, $throwExpr);
+            return new Return_(new Coalesce($coalesce, $throwExpr));
         }
 
         return new Return_($coalesce);
