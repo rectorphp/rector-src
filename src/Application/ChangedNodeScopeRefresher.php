@@ -98,15 +98,6 @@ final class ChangedNodeScopeRefresher
 
     public function reIndexNodeAttributes(Node $node): void
     {
-        if ($this->hasArrayStmtsNode($node)) {
-            /**
-             * @var StmtsAwareInterface|ClassLike|Declare_ $node
-             * @var Stmt[] $stmts
-             */
-            $stmts = $node->stmts;
-            $node->stmts = array_values($stmts);
-        }
-
         if ($node instanceof FunctionLike) {
             /** @var ClassMethod|Function_|Closure $node */
             $node->params = array_values($node->params);
