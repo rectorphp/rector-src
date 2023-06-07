@@ -91,6 +91,11 @@ final class PHPStanNodeScopeResolver
         }
     }
 
+    private function isFileWithoutNamespace(array $stmts): bool
+    {
+        return current($stmts) instanceof FileWithoutNamespace;
+    }
+
     /**
      * @param Stmt[] $stmts
      * @return Stmt[]
@@ -108,17 +113,16 @@ final class PHPStanNodeScopeResolver
          */
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
-        $this->nodeTraverser->traverse($stmts);
 
-        $isFileWithoutNamespace = count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace;
-        if (! $isScopeRefreshing && ! $isFileWithoutNamespace) {
+        if (! $isScopeRefreshing && ! $this->isFileWithoutNamespace($stmts)) {
             $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
 
-            if (count($stmts) === 1 && $stmts[0] instanceof FileWithoutNamespace) {
+            if ($this->isFileWithoutNamespace($stmts)) {
                 $stmts = $stmts[0]->stmts;
             }
         }
 
+        $stmts = $this->nodeTraverser->traverse($stmts);
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
