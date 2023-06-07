@@ -104,7 +104,7 @@ CODE_SAMPLE
         }
 
         // remove last return null
-        $throwExpr = null;
+        $stmts = $node->stmts;
         foreach ($node->stmts as $key => $stmt) {
             if (in_array($key, $ifKeys, true)) {
                 unset($node->stmts[$key]);
@@ -112,9 +112,9 @@ CODE_SAMPLE
             }
 
             if ($stmt instanceof Throw_) {
-                unset($node->stmts[$key]);
-                $throwExpr = $stmt->expr;
-                continue;
+                $node->stmts = $stmts;
+                return null;
+                break;
             }
 
             if (! $this->isReturnNull($stmt)) {
@@ -124,7 +124,7 @@ CODE_SAMPLE
             unset($node->stmts[$key]);
         }
 
-        $node->stmts[] = $this->createCealesceReturn($coalescingExprs, $throwExpr);
+        $node->stmts[] = $this->createCealesceReturn($coalescingExprs);
 
         return $node;
     }
@@ -150,7 +150,7 @@ CODE_SAMPLE
     /**
      * @param Expr[] $coalescingExprs
      */
-    private function createCealesceReturn(array $coalescingExprs, ?Expr $throwExpr): Return_
+    private function createCealesceReturn(array $coalescingExprs): Return_
     {
         /** @var Expr $leftExpr */
         $leftExpr = array_shift($coalescingExprs);
@@ -162,10 +162,6 @@ CODE_SAMPLE
 
         foreach ($coalescingExprs as $coalescingExpr) {
             $coalesce = new Coalesce($coalesce, $coalescingExpr);
-        }
-
-        if ($throwExpr instanceof Expr) {
-            $coalesce = new Coalesce($coalesce, $throwExpr);
         }
 
         return new Return_($coalesce);
