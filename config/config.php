@@ -41,6 +41,8 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\Dy
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParserFactory;
+use Rector\RectorGenerator\Command\GenerateCommand;
+use Rector\RectorGenerator\Command\InitRecipeCommand;
 use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
@@ -212,9 +214,18 @@ return static function (RectorConfig $rectorConfig): void {
         $services->set(MissingInSetCommand::class);
         $services->set(OutsideAnySetCommand::class);
 
-        $services->set(ConsoleApplication::class)
+        $services->get(ConsoleApplication::class)
             ->call('add', [service(MissingInSetCommand::class)])
             ->call('add', [service(OutsideAnySetCommand::class)]);
+    }
+
+    if (class_exists(InitRecipeCommand::class)) {
+        $services->set(InitRecipeCommand::class);
+        $services->set(GenerateCommand::class);
+
+        $services->get(ConsoleApplication::class)
+            ->call('add', [service(InitRecipeCommand::class)])
+            ->call('add', [service(GenerateCommand::class)]);
     }
 
     // phpdoc parser
