@@ -6,7 +6,6 @@ namespace Rector\Php55\Rector\ClassConstFetch;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Rector\AbstractRector;
