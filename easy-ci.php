@@ -5,7 +5,6 @@ declare(strict_types=1);
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
-use Rector\CodeQuality\NodeTypeGroup;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -14,14 +13,12 @@ use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NodeManipulator\MethodCallManipulator;
 use Rector\FileSystemRector\Parser\FileInfoParser;
-use Rector\Naming\Contract\AssignVariableNameResolverInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
 use Rector\Php80\Contract\AttributeDecoratorInterface;
-use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
@@ -60,15 +57,12 @@ return static function (EasyCIConfig $easyCiConfig): void {
         PHPStanServicesFactory::class,
         OutputStyleInterface::class,
         MethodCallManipulator::class,
-        AssignVariableNameResolverInterface::class,
         // fix later - rector-symfony
         // used in tests
         FileInfoParser::class,
-        AnnotationToAttributeMapperInterface::class,
         TypeWithClassTypeSpecifierInterface::class,
         ParentNodeReadAnalyzerInterface::class,
         StmtsAwareInterface::class,
-        NodeTypeGroup::class,
 
         ScopeResolverNodeVisitorInterface::class,
     ]);

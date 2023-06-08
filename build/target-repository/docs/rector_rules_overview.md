@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# 373 Rules Overview
-=======
-# 374 Rules Overview
->>>>>>> 846092ec68 (Remove MethodCallToMethodCallRector as unused)
+# 372 Rules Overview
 
 <br>
 
@@ -60,7 +56,7 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (24)
+- [Transform](#transform) (23)
 
 - [TypeDeclaration](#typedeclaration) (40)
 
