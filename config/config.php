@@ -216,7 +216,7 @@ return static function (RectorConfig $rectorConfig): void {
         $services->set(OutsideAnySetCommand::class);
     }
 
-        // phpdoc parser
+    // phpdoc parser
     $services->set(SmartPhpParser::class)
         ->factory([service(SmartPhpParserFactory::class), 'create']);
 
