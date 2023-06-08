@@ -80,6 +80,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php52\Rector\Property\VarToPublicPropertyRector;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
+use Rector\Strict\Rector\ClassMethod\AddConstructorParentCallRector;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -188,5 +189,6 @@ return static function (RectorConfig $rectorConfig): void {
         CleanupUnneededNullsafeOperatorRector::class,
         DisallowedEmptyRuleFixerRector::class,
         ConvertStaticPrivateConstantToSelfRector::class,
+        AddConstructorParentCallRector::class,
     ]);
 };
