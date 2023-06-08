@@ -25,7 +25,7 @@ final class NewStaticToNewSelfRector extends AbstractRector
         return new RuleDefinition('Change unsafe new static() to new self()', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
     public function build()
     {
@@ -36,7 +36,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
     public function build()
     {
@@ -53,29 +53,37 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [New_::class];
+        return [Class_::class];
     }
 
     /**
-     * @param New_ $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if (! $class instanceof Class_) {
+        if (! $node->isFinal()) {
             return null;
         }
 
-        if (! $class->isFinal()) {
-            return null;
+        $hasChanged = false;
+
+        $this->traverseNodesWithCallable($node, function (\PhpParser\Node $node) use (&$hasChanged) {
+            if (! $node instanceof New_) {
+                return null;
+            }
+
+            if (! $this->isName($node->class, ObjectReference::STATIC)) {
+                return null;
+            }
+
+            $node->class = new Name(ObjectReference::SELF);
+            return $node;
+        });
+
+        if ($hasChanged) {
+            return $node;
         }
 
-        if (! $this->isName($node->class, ObjectReference::STATIC)) {
-            return null;
-        }
-
-        $node->class = new Name(ObjectReference::SELF);
-
-        return $node;
+        return null;
     }
 }
