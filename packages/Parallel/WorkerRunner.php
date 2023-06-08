@@ -9,7 +9,6 @@ use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -40,7 +39,6 @@ final class WorkerRunner
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
-        private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly array $fileProcessors = [],
@@ -107,8 +105,6 @@ final class WorkerRunner
                     $this->invalidateFile($file);
                 }
             }
-
-            $this->removedAndAddedFilesProcessor->run($configuration);
 
             /**
              * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
