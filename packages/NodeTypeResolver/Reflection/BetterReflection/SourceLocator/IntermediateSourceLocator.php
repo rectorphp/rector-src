@@ -9,27 +9,22 @@ use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflection\Reflection;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use Rector\NodeTypeResolver\Contract\SourceLocatorProviderInterface;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 final class IntermediateSourceLocator implements SourceLocator
 {
-    /**
-     * @param SourceLocatorProviderInterface[] $sourceLocatorProviders
-     */
     public function __construct(
-        private readonly array $sourceLocatorProviders
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider
     ) {
     }
 
     public function locateIdentifier(Reflector $reflector, Identifier $identifier): ?Reflection
     {
-        foreach ($this->sourceLocatorProviders as $sourceLocatorProvider) {
-            $sourceLocator = $sourceLocatorProvider->provide();
+        $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-            $reflection = $sourceLocator->locateIdentifier($reflector, $identifier);
-            if ($reflection instanceof Reflection) {
-                return $reflection;
-            }
+        $reflection = $sourceLocator->locateIdentifier($reflector, $identifier);
+        if ($reflection instanceof Reflection) {
+            return $reflection;
         }
 
         return null;
@@ -41,13 +36,11 @@ final class IntermediateSourceLocator implements SourceLocator
      */
     public function locateIdentifiersByType(Reflector $reflector, IdentifierType $identifierType): array
     {
-        foreach ($this->sourceLocatorProviders as $sourceLocatorProvider) {
-            $sourceLocator = $sourceLocatorProvider->provide();
+        $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-            $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
-            if ($reflections !== []) {
-                return $reflections;
-            }
+        $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
+        if ($reflections !== []) {
+            return $reflections;
         }
 
         return [];

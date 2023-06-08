@@ -18,8 +18,8 @@ use Rector\Tests\Transform\Rector\Class_\ParentClassToTraitsRector\Source\Anothe
 
 class ClassWithMultipleTraits
 {
-    use \Rector\Tests\Transform\Rector\Class_\ParentClassToTraitsRector\Source\SomeTrait;
     use \Rector\Tests\Transform\Rector\Class_\ParentClassToTraitsRector\Source\SecondTrait;
+    use \Rector\Tests\Transform\Rector\Class_\ParentClassToTraitsRector\Source\SomeTrait;
 }
 
 ?>
