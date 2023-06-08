@@ -33,12 +33,6 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
     ) {
     }
 
-    public function getPriority(): int
-    {
-        // must be run before name importing, so new names are imported
-        return 650;
-    }
-
     /**
      * @param Stmt[] $nodes
      * @return Stmt[]

@@ -9,6 +9,9 @@ use Rector\ChangesReporting\Collector\RectorChangeCollector;
 use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 
+/**
+ * @deprecated Use directly in the class
+ */
 final class PropertyToAddCollector implements NodeCollectorInterface
 {
     /**

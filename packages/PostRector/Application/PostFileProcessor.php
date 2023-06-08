@@ -6,12 +6,16 @@ namespace Rector\PostRector\Application;
 
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
+use Rector\PostRector\Rector\ClassRenamingPostRector;
+use Rector\PostRector\Rector\NameImportingPostRector;
+use Rector\PostRector\Rector\PropertyAddingPostRector;
+use Rector\PostRector\Rector\UnusedImportRemovingPostRector;
+use Rector\PostRector\Rector\UseAddingPostRector;
 use Rector\Skipper\Skipper\Skipper;
 
 final class PostFileProcessor
@@ -21,16 +25,29 @@ final class PostFileProcessor
      */
     private array $postRectors = [];
 
-    /**
-     * @param PostRectorInterface[] $postRectors
-     */
     public function __construct(
         private readonly Skipper $skipper,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly CurrentRectorProvider $currentRectorProvider,
-        array $postRectors
+        // set order here
+        UseAddingPostRector $useAddingPostRector,
+        NameImportingPostRector $nameImportingPostRector,
+        PropertyAddingPostRector $propertyAddingPostRector,
+        ClassRenamingPostRector $classRenamingPostRector,
+        UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
     ) {
-        $this->postRectors = $this->sortByPriority($postRectors);
+        $this->postRectors = [
+            // priority: 900
+            $propertyAddingPostRector,
+            // priority: 650
+            $classRenamingPostRector,
+            // priority: 600
+            $nameImportingPostRector,
+            // priority: 500
+            $useAddingPostRector,
+            // priority: 100
+            $unusedImportRemovingPostRector,
+        ];
     }
 
     /**
@@ -52,32 +69,6 @@ final class PostFileProcessor
         }
 
         return $stmts;
-    }
-
-    /**
-     * @param PostRectorInterface[] $postRectors
-     * @return PostRectorInterface[]
-     */
-    private function sortByPriority(array $postRectors): array
-    {
-        $postRectorsByPriority = [];
-
-        foreach ($postRectors as $postRector) {
-            if (isset($postRectorsByPriority[$postRector->getPriority()])) {
-                $errorMessage = sprintf(
-                    'There are multiple post rectors with the same priority: %d. Use different one for your new PostRector',
-                    $postRector->getPriority()
-                );
-
-                throw new ShouldNotHappenException($errorMessage);
-            }
-
-            $postRectorsByPriority[$postRector->getPriority()] = $postRector;
-        }
-
-        krsort($postRectorsByPriority);
-
-        return $postRectorsByPriority;
     }
 
     private function shouldSkipPostRector(PostRectorInterface $postRector): bool

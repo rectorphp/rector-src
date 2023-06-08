@@ -68,12 +68,6 @@ final class UseAddingPostRector extends AbstractPostRector
         return $this->resolveNodesWithImportedUses($nodes, $useImportTypes, $functionUseImportTypes, $namespace);
     }
 
-    public function getPriority(): int
-    {
-        // must be after name importing
-        return 500;
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(

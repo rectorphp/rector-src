@@ -715,5 +715,6 @@ parameters:
 
         # handle later
         - '#Fetching class constant class of deprecated class Rector\\(.*?)#'
+        - '#has typehint with deprecated class Rector\\PostRector\\Collector\\PropertyToAddCollector#'
 
         - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'

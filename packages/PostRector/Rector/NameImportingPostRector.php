@@ -72,12 +72,6 @@ final class NameImportingPostRector extends AbstractPostRector
         return $node;
     }
 
-    public function getPriority(): int
-    {
-        // this must run after NodeRemovingPostRector, sine renamed use imports can block next import
-        return 600;
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Imports fully qualified names', [
