@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @deprecated Rather handle by IDE, not practical
  * @see \Rector\Tests\Arguments\Rector\MethodCall\RemoveMethodCallParamRector\RemoveMethodCallParamRectorTest
  */
 final class RemoveMethodCallParamRector extends AbstractRector implements ConfigurableRectorInterface

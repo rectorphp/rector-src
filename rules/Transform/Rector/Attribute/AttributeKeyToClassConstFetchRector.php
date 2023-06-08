@@ -17,6 +17,7 @@ use Webmozart\Assert\Assert;
 /**
  * @changelog https://github.com/doctrine/dbal/blob/3.1.x/src/Types/Types.php
  *
+ * @api used in rector-doctrine
  * @see \Rector\Tests\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector\AttributeKeyToClassConstFetchRectorTest
  */
 final class AttributeKeyToClassConstFetchRector extends AbstractRector implements ConfigurableRectorInterface

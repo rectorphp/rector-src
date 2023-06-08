@@ -712,3 +712,6 @@ parameters:
         - '#Call to deprecated method findParentType#'
         - '#Call to deprecated method findParentByTypes#'
         - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'
+
+        # handle later
+        - '#Fetching class constant class of deprecated class Rector\\(.*?)#'

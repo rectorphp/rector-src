@@ -35,7 +35,7 @@ final class WorkerCommand extends AbstractProcessCommand
     protected function configure(): void
     {
         $this->setName('worker');
-        $this->setDescription('(Internal) Support for parallel process');
+        $this->setDescription('[INTERNAL] Support for parallel process');
         parent::configure();
     }
 

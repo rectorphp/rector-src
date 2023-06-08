@@ -15,6 +15,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @deprecated rather for downgrade-php, but still a comment, so not useful
  * @changelog https://wiki.php.net/rfc/deprecate_dynamic_properties
  *
  * @see \Rector\Tests\Transform\Rector\Class_\RemoveAllowDynamicPropertiesAttributeRector\RemoveAllowDynamicPropertiesAttributeRectorTest
