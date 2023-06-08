@@ -211,9 +211,6 @@ parameters:
         # specific generics
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:refactor\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
-        # only for empty ctor
-        - '#Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
-
         # generics
         - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:traverse\(\) should return array<TNode of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
         - '#Parameter \#1 \$stmts of class Rector\\Core\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
@@ -230,7 +227,6 @@ parameters:
 
         # on purpose, allows empty tokens
         - '#Rector\\BetterPhpDocParser\\ValueObject\\Parser\\BetterTokenIterator\:\:__construct\(\) does not call parent constructor from PHPStan\\PhpDocParser\\Parser\\TokenIterator#'
-        - '#Rector\\Comments\\NodeTraverser\\CommentRemovingNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
 
         # confused generics
         - '#Return type \(array<class\-string<PhpParser\\Node\>\>\) of method Rector\\NodeTypeResolver\\NodeTypeResolver\\(.*?)TypeResolver\:\:getNodeClasses\(\) should be covariant with return type \(array<class\-string<PhpParser\\Node\\(.*?)\>\>\) of method Rector\\NodeTypeResolver\\Contract\\NodeTypeResolverInterface<PhpParser\\Node\\(.*?)\>\:\:getNodeClasses\(\)#'
@@ -272,7 +268,6 @@ parameters:
             message: '#Only booleans are allowed in an if condition, array\|null given#'
             paths:
                 - rules/Naming/Naming/PropertyNaming.php
-                - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
@@ -296,9 +291,6 @@ parameters:
 
         # stmts refactoring
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
-
-        # empty parent construct
-        - '#Rector\\Core\\PhpParser\\NodeTraverser\\FileWithoutNamespaceNodeTraverser\:\:__construct\(\) does not call parent constructor from PhpParser\\NodeTraverser#'
 
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
@@ -373,14 +365,6 @@ parameters:
         -
             message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
             path: packages/Config/RectorConfig.php
-
-        # optional rule for PHP 8.1
-        - '#Register "Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector" service to "php81\.php" config set#'
-        - '#Rule Rector\\Php81\\Rector\\Class_\\ConstantListClassToEnumRector must implements Rector\\VersionBonding\\Contract\\MinPhpVersionInterface#'
-
-        -
-            message: '#Method "refactor(Params|Return)\(\)" returns bool type, so the name should start with is/has/was#'
-            path: rules/Php81/Rector/Class_/ConstantListClassToEnumRector.php
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
@@ -483,10 +467,6 @@ parameters:
         -
             message: '#Only booleans are allowed in a negated boolean, string\|false given#'
             path: packages/Testing/Fixture/FixtureFileUpdater.php
-
-        -
-            message: '#Only booleans are allowed in a negated boolean, array<int, ReflectionParameter> given#'
-            path: src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
 
         -
             message: '#Only booleans are allowed in an if condition, array\|string\|null give#'
