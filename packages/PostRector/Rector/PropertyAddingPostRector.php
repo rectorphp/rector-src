@@ -24,11 +24,6 @@ final class PropertyAddingPostRector extends AbstractPostRector
     ) {
     }
 
-    public function getPriority(): int
-    {
-        return 900;
-    }
-
     public function enterNode(Node $node): ?Node
     {
         if (! $node instanceof Class_) {
