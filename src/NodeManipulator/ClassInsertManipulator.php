@@ -47,19 +47,6 @@ final class ClassInsertManipulator
     }
 
     /**
-     * @api
-     *
-     * @deprecated Add properties directly instead
-     * @param Property[] $properties
-     */
-    public function addPropertiesToClass(Class_ $class, array $properties): void
-    {
-        foreach ($properties as $property) {
-            $this->addAsFirstMethod($class, $property);
-        }
-    }
-
-    /**
      * @internal Use PropertyAdder service instead
      */
     public function addPropertyToClass(Class_ $class, string $name, ?Type $type): void
