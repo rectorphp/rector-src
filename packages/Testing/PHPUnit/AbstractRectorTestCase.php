@@ -11,7 +11,6 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPUnit\Framework\ExpectationFailedException;
 use Psr\Container\ContainerInterface;
 use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
@@ -24,14 +23,9 @@ use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
-use Rector\Testing\PHPUnit\Behavior\MovingFilesTrait;
 
 abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
 {
-    use MovingFilesTrait;
-
-    protected RemovedAndAddedFilesCollector $removedAndAddedFilesCollector;
-
     protected static ?ContainerInterface $allRectorContainer = null;
 
     private ParameterProvider $parameterProvider;
@@ -56,10 +50,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->parameterProvider = $this->getService(ParameterProvider::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
 
-        // restore added and removed files to 0
-        $this->removedAndAddedFilesCollector = $this->getService(RemovedAndAddedFilesCollector::class);
-        $this->removedAndAddedFilesCollector->reset();
-
         /** @var AdditionalAutoloader $additionalAutoloader */
         $additionalAutoloader = $this->getService(AdditionalAutoloader::class);
         $additionalAutoloader->autoloadPaths();
@@ -82,7 +72,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $this->applicationFileProcessor,
             $this->parameterProvider,
             $this->dynamicSourceLocatorProvider,
-            $this->removedAndAddedFilesCollector,
         );
         gc_collect_cycles();
     }
@@ -160,11 +149,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
 
         $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);
-
-        // file is removed, we cannot compare it
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($originalFilePath)) {
-            return;
-        }
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);

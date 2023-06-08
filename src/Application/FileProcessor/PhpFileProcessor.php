@@ -10,7 +10,6 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileProcessor;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -38,7 +37,6 @@ final class PhpFileProcessor implements FileProcessorInterface
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
         private readonly FileProcessor $fileProcessor,
-        private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
@@ -183,12 +181,6 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     private function printFile(File $file, Configuration $configuration): void
     {
-        $filePath = $file->getFilePath();
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
-            // skip, because this file exists no more
-            return;
-        }
-
         // only save to string first, no need to print to file when not needed
         $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
 

@@ -7,7 +7,6 @@ namespace Rector\Core\Application;
 use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesProcessor;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
@@ -44,7 +43,6 @@ final class ApplicationFileProcessor
     public function __construct(
         private readonly Filesystem $filesystem,
         private readonly FileDiffFileDecorator $fileDiffFileDecorator,
-        private readonly RemovedAndAddedFilesProcessor $removedAndAddedFilesProcessor,
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileFactory $fileFactory,
         private readonly NodeScopeResolver $nodeScopeResolver,
@@ -144,8 +142,6 @@ final class ApplicationFileProcessor
                 $this->rectorOutputStyle->progressAdvance();
             }
         }
-
-        $this->removedAndAddedFilesProcessor->run($configuration);
 
         return $systemErrorsAndFileDiffs;
     }

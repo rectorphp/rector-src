@@ -6,7 +6,6 @@ namespace Rector\Core\NonPhpFile;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
-use Rector\Core\Application\FileSystem\RemovedAndAddedFilesCollector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\ValueObject\Application\File;
@@ -31,7 +30,6 @@ final class NonPhpFileProcessor implements FileProcessorInterface
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly Filesystem $filesystem,
-        private readonly RemovedAndAddedFilesCollector $removedAndAddedFilesCollector,
     ) {
     }
 
@@ -99,16 +97,11 @@ final class NonPhpFileProcessor implements FileProcessorInterface
 
     private function printFile(File $file, Configuration $configuration): void
     {
-        $filePath = $file->getFilePath();
-        if ($this->removedAndAddedFilesCollector->isFileRemoved($filePath)) {
-            // skip, because this file exists no more
-            return;
-        }
-
         if ($configuration->isDryRun()) {
             return;
         }
 
+        $filePath = $file->getFilePath();
         $this->filesystem->dumpFile($filePath, $file->getFileContent());
     }
 }
