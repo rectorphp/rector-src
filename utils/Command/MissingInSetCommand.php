@@ -108,7 +108,9 @@ final class MissingInSetCommand extends Command
             return self::FAILURE;
         }
 
-        $this->symfonyStyle->success(sprintf('All %d sets contains the rules from their category', count(self::RULES_DIRECTORY_TO_SET_CONFIG)));
+        $this->symfonyStyle->success(
+            sprintf('All %d sets contains the rules from their category', count(self::RULES_DIRECTORY_TO_SET_CONFIG))
+        );
 
         return self::SUCCESS;
     }

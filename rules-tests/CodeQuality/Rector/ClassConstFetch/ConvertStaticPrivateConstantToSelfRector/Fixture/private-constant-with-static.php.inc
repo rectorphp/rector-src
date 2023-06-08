@@ -2,26 +2,30 @@
 
 namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
-class Foo
+final class PrivateConstantWithStatic
 {
     private const BAR = 1;
-    private function baz(): void
+
+    public function baz(): void
     {
         echo static::BAR;
     }
 }
+
 ?>
 -----
 <?php
 
 namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
-class Foo
+final class PrivateConstantWithStatic
 {
     private const BAR = 1;
-    private function baz(): void
+
+    public function baz(): void
     {
         echo self::BAR;
     }
 }
+
 ?>
