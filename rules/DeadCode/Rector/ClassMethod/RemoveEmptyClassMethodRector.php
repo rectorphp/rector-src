@@ -66,7 +66,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Class_
     {
-        $hasChanged = true;
+        $hasChanged = false;
 
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof ClassMethod) {

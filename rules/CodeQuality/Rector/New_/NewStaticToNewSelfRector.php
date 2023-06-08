@@ -67,7 +67,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (\PhpParser\Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): ?New_ {
             if (! $node instanceof New_) {
                 return null;
             }
@@ -75,6 +75,8 @@ CODE_SAMPLE
             if (! $this->isName($node->class, ObjectReference::STATIC)) {
                 return null;
             }
+
+            $hasChanged = true;
 
             $node->class = new Name(ObjectReference::SELF);
             return $node;

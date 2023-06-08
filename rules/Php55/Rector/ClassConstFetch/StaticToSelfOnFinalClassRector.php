@@ -68,7 +68,7 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): ?ClassConstFetch {
             if (! $node instanceof ClassConstFetch) {
                 return null;
             }
