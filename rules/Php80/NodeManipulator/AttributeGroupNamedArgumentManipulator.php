@@ -17,6 +17,7 @@ final class AttributeGroupNamedArgumentManipulator
     private array $attributeDecorators = [];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public function __construct(SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator)
     {
 =======
@@ -24,6 +25,10 @@ final class AttributeGroupNamedArgumentManipulator
         SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator,
     ) {
 >>>>>>> 2edfc379be (make attribute groupr named explicit)
+=======
+    public function __construct(SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator)
+    {
+>>>>>>> 541b18d776 (avoid autowire of value object)
         $this->attributeDecorators[] = $sensioParamConverterAttributeDecorator;
     }
 
