@@ -15,8 +15,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -35,7 +35,7 @@ final class AddParamBasedOnParentClassMethodRector extends AbstractRector implem
     public function __construct(
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly AstResolver $astResolver,
-        private readonly NodePrinterInterface $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
     ) {
     }
 
@@ -213,7 +213,7 @@ CODE_SAMPLE
             $paramDefault = $parentClassMethodParam->default;
 
             if ($paramDefault instanceof Expr) {
-                $printParamDefault = $this->nodePrinter->print($paramDefault);
+                $printParamDefault = $this->betterStandardPrinter->print($paramDefault);
                 $paramDefault = new ConstFetch(new Name($printParamDefault));
             }
 
@@ -231,7 +231,7 @@ CODE_SAMPLE
             );
 
             if ($parentClassMethodParam->attrGroups !== []) {
-                $attrGroupsAsComment = $this->nodePrinter->print($parentClassMethodParam->attrGroups);
+                $attrGroupsAsComment = $this->betterStandardPrinter->print($parentClassMethodParam->attrGroups);
                 $node->params[$key]->setAttribute(AttributeKey::COMMENTS, [new Comment($attrGroupsAsComment)]);
             }
         }

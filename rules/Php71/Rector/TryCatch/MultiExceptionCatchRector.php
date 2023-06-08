@@ -6,7 +6,7 @@ namespace Rector\Php71\Rector\TryCatch;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\TryCatch;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class MultiExceptionCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $nodePrinter
     ) {
     }
 

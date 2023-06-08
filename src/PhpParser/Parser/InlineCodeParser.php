@@ -12,9 +12,9 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Util\StringUtils;
 
 final class InlineCodeParser
@@ -62,7 +62,7 @@ final class InlineCodeParser
     private const BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter,
+        private readonly BetterStandardPrinter $nodePrinter,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder

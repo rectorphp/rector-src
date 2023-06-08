@@ -7,7 +7,6 @@ namespace Rector\Tests\Comments\CommentRemover;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Comments\CommentRemover;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -21,7 +20,7 @@ final class CommentRemoverTest extends AbstractTestCase
 
     private FileInfoParser $fileInfoParser;
 
-    private NodePrinterInterface $nodePrinter;
+    private BetterStandardPrinter $nodePrinter;
 
     protected function setUp(): void
     {

@@ -6,13 +6,13 @@ namespace Rector\Core\PhpParser\Comparing;
 
 use PhpParser\Node;
 use Rector\Comments\CommentRemover;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 
 final class NodeComparator
 {
     public function __construct(
         private readonly CommentRemover $commentRemover,
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $nodePrinter
     ) {
     }
 

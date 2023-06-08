@@ -13,7 +13,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,7 +29,7 @@ final class SimplifyIfElseToTernaryRector extends AbstractRector
     private const LINE_LENGTH_LIMIT = 120;
 
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $nodePrinter
     ) {
     }
 

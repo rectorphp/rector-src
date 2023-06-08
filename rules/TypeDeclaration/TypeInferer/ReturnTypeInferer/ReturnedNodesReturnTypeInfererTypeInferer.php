@@ -19,9 +19,9 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -41,7 +41,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private readonly AstResolver $reflectionAstResolver,
-        private readonly NodePrinterInterface $nodePrinter,
+        private readonly BetterStandardPrinter $nodePrinter,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
     ) {
