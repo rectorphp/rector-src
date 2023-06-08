@@ -8,6 +8,14 @@ use Composer\XdebugHandler\XdebugHandler;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\VersionResolver;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Console\Command\ListRulesCommand;
+use Rector\Core\Console\Command\ProcessCommand;
+use Rector\Core\Console\Command\SetupCICommand;
+use Rector\Core\Console\Command\WorkerCommand;
+use Rector\RectorGenerator\Command\GenerateCommand;
+use Rector\RectorGenerator\Command\InitRecipeCommand;
+use Rector\Utils\Command\MissingInSetCommand;
+use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -22,14 +30,37 @@ final class ConsoleApplication extends Application
      */
     private const NAME = 'Rector';
 
-    /**
-     * @param Command[] $commands
-     */
-    public function __construct(array $commands = [])
-    {
+    public function __construct(
+        ProcessCommand $processCommand,
+        WorkerCommand $workerCommand,
+        SetupCICommand $setupCICommand,
+        ListRulesCommand $listRulesCommand,
+        // dev
+        ?MissingInSetCommand $missingInSetCommand = null,
+        ?OutsideAnySetCommand $outsideAnySetCommand = null,
+        ?GenerateCommand $generateCommand = null,
+        ?InitRecipeCommand $initRecipeCommand = null,
+    ) {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
-        $this->addCommands($commands);
+        $this->addCommands([$processCommand, $workerCommand, $setupCICommand, $listRulesCommand]);
+
+        if ($missingInSetCommand instanceof Command) {
+            $this->add($missingInSetCommand);
+        }
+
+        if ($outsideAnySetCommand instanceof Command) {
+            $this->add($outsideAnySetCommand);
+        }
+
+        if ($generateCommand instanceof Command) {
+            $this->add($generateCommand);
+        }
+
+        if ($initRecipeCommand instanceof Command) {
+            $this->add($initRecipeCommand);
+        }
+
         $this->setDefaultCommand('process');
     }
 

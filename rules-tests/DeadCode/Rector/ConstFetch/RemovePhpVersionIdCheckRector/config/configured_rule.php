@@ -7,6 +7,6 @@ use Rector\Core\ValueObject\PhpVersion;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig
-        ->ruleWithConfiguration(RemovePhpVersionIdCheckRector::class, [PhpVersion::PHP_80]);
+    $rectorConfig->rule(RemovePhpVersionIdCheckRector::class);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 };

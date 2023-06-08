@@ -19,6 +19,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector;
+use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 use Rector\DeadCode\Rector\Expression\SimplifyMirrorAssignRector;
 use Rector\DeadCode\Rector\For_\RemoveDeadContinueRector;
@@ -95,5 +96,6 @@ return static function (RectorConfig $rectorConfig): void {
 
         RemoveAlwaysTrueIfConditionRector::class,
         RemoveDeadZeroAndOneOperationRector::class,
+        RemovePhpVersionIdCheckRector::class,
     ]);
 };
