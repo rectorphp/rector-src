@@ -16,10 +16,5 @@ final class AttributeName
     /**
      * @var string
      */
-    public const ATTRIBUTE = 'Attribute';
-
-    /**
-     * @var string
-     */
     public const ALLOW_DYNAMIC_PROPERTIES = 'AllowDynamicProperties';
 }
