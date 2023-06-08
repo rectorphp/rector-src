@@ -32,7 +32,7 @@ class ReturnNewObject
 
     public function getProp(): \stdClass
     {
-        return ($this->prop1 ?? $this->prop2) ?? throw new \stdClass();
+        return ($this->prop1 ?? $this->prop2) ?? new \stdClass();
     }
 }
 
