@@ -12,5 +12,7 @@ final class CommentRemovingNodeTraverser extends NodeTraverser
     public function __construct(CommentRemovingNodeVisitor $commentRemovingNodeVisitor)
     {
         $this->addVisitor($commentRemovingNodeVisitor);
+
+        parent::__construct();
     }
 }

@@ -7,7 +7,6 @@ namespace Rector\Strict\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Enum\ObjectReference;
@@ -71,28 +70,38 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [Class_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param Class_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Class_
     {
+        // no parent? skip it
+        if (! $node->extends instanceof Node) {
+            return null;
+        }
+
+        $constructorClassMethod = $node->getMethod(MethodName::CONSTRUCT);
+
+        if (! $constructorClassMethod instanceof ClassMethod) {
+            return null;
+        }
+
         if (! $this->isName($node, MethodName::CONSTRUCT)) {
             return null;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof Class_) {
+        if ($this->hasParentCallOfMethod($constructorClassMethod)) {
             return null;
         }
 
-        if ($this->hasParentCallOfMethod($node)) {
-            return null;
-        }
-
-        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies($classLike, $node, $scope);
+        $this->dependencyClassMethodDecorator->decorateConstructorWithParentDependencies(
+            $node,
+            $constructorClassMethod,
+            $scope
+        );
 
         return $node;
     }

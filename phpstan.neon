@@ -731,3 +731,4 @@ parameters:
         # resolve before Rector 1.0
         - '#Call to deprecated method findParentType#'
         - '#Call to deprecated method findParentByTypes#'
+        - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'
