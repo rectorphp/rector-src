@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Naming\Naming\PropertyNaming;
@@ -37,13 +36,11 @@ final class FuncCallStaticCallToMethodCallAnalyzer
         Class_ $class,
         ClassMethod $classMethod,
         ObjectType $objectType,
-        Scope $scope
     ): MethodCall | PropertyFetch | Variable {
         $expr = $this->typeProvidingExprFromClassResolver->resolveTypeProvidingExprFromClass(
             $class,
             $classMethod,
             $objectType,
-            $scope
         );
 
         if ($expr instanceof Expr) {

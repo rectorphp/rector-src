@@ -122,7 +122,6 @@ CODE_SAMPLE
                 $classLike,
                 $classMethod,
                 $staticCallToMethodCall->getClassObjectType(),
-                $scope
             );
 
             if ($staticCallToMethodCall->getMethodName() === '*') {
