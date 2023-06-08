@@ -6,16 +6,20 @@ namespace Rector\Php80\NodeManipulator;
 
 use PhpParser\Node\AttributeGroup;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\AttributeDecorator\SensioParamConverterAttributeDecorator;
 use Rector\Php80\Contract\AttributeDecoratorInterface;
 
 final class AttributeGroupNamedArgumentManipulator
 {
     /**
-     * @param AttributeDecoratorInterface[] $attributeDecorators
+     * @var AttributeDecoratorInterface[]
      */
+    private array $attributeDecorators = [];
+
     public function __construct(
-        private readonly array $attributeDecorators
+        SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator,
     ) {
+        $this->attributeDecorators[] = $sensioParamConverterAttributeDecorator;
     }
 
     /**
