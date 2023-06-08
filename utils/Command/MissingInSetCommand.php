@@ -9,7 +9,6 @@ use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelf
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Contract\Rector\DeprecatedRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
@@ -41,7 +40,6 @@ final class MissingInSetCommand extends Command
      */
     private const SKIPPED_RULES = [
         ConfigurableRectorInterface::class,
-        DeprecatedRectorInterface::class,
         ConvertStaticPrivateConstantToSelfRector::class,
         RemoveJustPropertyFetchRector::class,
         NullifyUnionNullableRector::class,
@@ -110,7 +108,7 @@ final class MissingInSetCommand extends Command
             return self::FAILURE;
         }
 
-        $this->symfonyStyle->success('All sets contains the rules from their category');
+        $this->symfonyStyle->success(sprintf('All %d sets contains the rules from their category', count(self::RULES_DIRECTORY_TO_SET_CONFIG)));
 
         return self::SUCCESS;
     }
