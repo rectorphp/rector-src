@@ -9,7 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\MixedType;
+use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -23,8 +23,6 @@ use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttributeFlagFactory;
 use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\PostRector\Collector\PropertyToAddCollector;
-use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -53,7 +51,6 @@ final class DoctrineAnnotationClassToAttributeRector extends AbstractRector impl
         private readonly AttributeFlagFactory $attributeFlagFactory,
         private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly PropertyToAddCollector $propertyToAddCollector,
         private readonly AnnotationTargetResolver $annotationTargetResolver
     ) {
     }
@@ -155,8 +152,8 @@ CODE_SAMPLE
             // require in constructor
             $propertyName = $this->getName($property);
 
-            $propertyMetadata = new PropertyMetadata($propertyName, new MixedType(), Class_::MODIFIER_PUBLIC);
-            $this->propertyToAddCollector->addPropertyToClass($node, $propertyMetadata);
+            $newProperty[] = new Property(Class_::MODIFIER_PUBLIC, [new PropertyProperty($propertyName)]);
+            $node->stmts = array_merge([$newProperty], $node->stmts);
 
             if ($this->shouldRemoveAnnotations) {
                 unset($node->stmts[$key]);
