@@ -9,40 +9,13 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Definition;
 
 final class ParameterSkipper
 {
-    /**
-     * Classes that create circular dependencies
-     *
-     * @var class-string<LoaderInterface>[]|string[]
-     */
-    private const DEFAULT_EXCLUDED_FATAL_CLASSES = [
-        'Symfony\Component\Form\FormExtensionInterface',
-        'Symfony\Component\Asset\PackageInterface',
-        'Symfony\Component\Config\Loader\LoaderInterface',
-        'Symfony\Component\VarDumper\Dumper\ContextProvider\ContextProviderInterface',
-        'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface',
-        'Sonata\CoreBundle\Model\Adapter\AdapterInterface',
-        'Sonata\Doctrine\Adapter\AdapterChain',
-        'Sonata\Twig\Extension\TemplateExtension',
-    ];
-
-    /**
-     * @var string[]
-     */
-    private array $excludedFatalClasses = [];
-
-    /**
-     * @param string[] $excludedFatalClasses
-     */
     public function __construct(
         private readonly ParameterTypeResolver $parameterTypeResolver,
-        array $excludedFatalClasses = []
     ) {
-        $this->excludedFatalClasses = array_merge(self::DEFAULT_EXCLUDED_FATAL_CLASSES, $excludedFatalClasses);
     }
 
     public function shouldSkipParameter(
@@ -69,11 +42,8 @@ final class ParameterSkipper
             return true;
         }
 
-        if (in_array($parameterType, $this->excludedFatalClasses, true)) {
-            return true;
-        }
-
-        if (! class_exists($parameterType) && ! interface_exists($parameterType)) {
+        // autowire only rector classes
+        if (! str_starts_with($parameterType, 'Rector\\')) {
             return true;
         }
 

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection\CompilerPass;
 
-use Nette\Utils\Strings;
 use Rector\Core\DependencyInjection\DefinitionFinder;
 use Rector\Core\DependencyInjection\DocBlock\ParamTypeDocBlockResolver;
 use Rector\Core\DependencyInjection\Skipper\ParameterSkipper;
 use Rector\Core\DependencyInjection\TypeResolver\ParameterTypeResolver;
 use ReflectionClass;
 use ReflectionMethod;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -25,47 +23,20 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
 {
-    /**
-     * These namespaces are already configured by their bundles/extensions.
-     *
-     * @var string[]
-     */
-    private const EXCLUDED_NAMESPACES = ['Doctrine', 'JMS', 'Symfony', 'Sensio', 'Knp', 'EasyCorp', 'Sonata', 'Twig'];
-
-    /**
-     * Classes that create circular dependencies
-     *
-     * @var class-string<LoaderInterface>[]|string[]
-     */
-    private const EXCLUDED_FATAL_CLASSES = [
-        'Symfony\Component\Form\FormExtensionInterface',
-        'Symfony\Component\Asset\PackageInterface',
-        'Symfony\Component\Config\Loader\LoaderInterface',
-        'Symfony\Component\VarDumper\Dumper\ContextProvider\ContextProviderInterface',
-        'EasyCorp\Bundle\EasyAdminBundle\Form\Type\Configurator\TypeConfiguratorInterface',
-        'Sonata\CoreBundle\Model\Adapter\AdapterInterface',
-        'Sonata\Doctrine\Adapter\AdapterChain',
-        'Sonata\Twig\Extension\TemplateExtension',
-        'Symfony\Component\HttpKernel\KernelInterface',
-    ];
-
     private readonly DefinitionFinder $definitionFinder;
 
     private readonly ParameterTypeResolver $parameterTypeResolver;
 
     private readonly ParameterSkipper $parameterSkipper;
 
-    /**
-     * @param string[] $excludedFatalClasses
-     */
-    public function __construct(array $excludedFatalClasses = [])
+    public function __construct()
     {
         $this->definitionFinder = new DefinitionFinder();
 
         $paramTypeDocBlockResolver = new ParamTypeDocBlockResolver();
         $this->parameterTypeResolver = new ParameterTypeResolver($paramTypeDocBlockResolver);
 
-        $this->parameterSkipper = new ParameterSkipper($this->parameterTypeResolver, $excludedFatalClasses);
+        $this->parameterSkipper = new ParameterSkipper($this->parameterTypeResolver);
     }
 
     public function process(ContainerBuilder $containerBuilder): void
@@ -94,22 +65,6 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
         }
 
         if ($definition->getClass() === null) {
-            return true;
-        }
-
-        // here class name can be "%parameter.class%"
-        $parameterBag = $containerBuilder->getParameterBag();
-        $resolvedClassName = $parameterBag->resolveValue($definition->getClass());
-
-        // skip 3rd party classes, they're autowired by own config
-        $excludedNamespacePattern = '#^(' . implode('|', self::EXCLUDED_NAMESPACES) . ')\\\\#';
-        $excludedNamespaceMatch = Strings::match($resolvedClassName, $excludedNamespacePattern);
-
-        if ($excludedNamespaceMatch !== null) {
-            return true;
-        }
-
-        if (in_array($resolvedClassName, self::EXCLUDED_FATAL_CLASSES, true)) {
             return true;
         }
 
