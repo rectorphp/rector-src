@@ -95,6 +95,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! isset($node->stmts[$key + 1])) {
+                return null;
+            }
+
             $coalescingExprs[] = $comparedExpr;
             $ifKeys[] = $key;
         }
