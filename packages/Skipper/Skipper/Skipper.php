@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use Rector\Skipper\Contract\SkipVoterInterface;
+use Rector\Skipper\SkipVoter\ClassSkipVoter;
+use Rector\Skipper\SkipVoter\PathSkipVoter;
 
 /**
  * @api
@@ -18,11 +20,13 @@ final class Skipper
     private const FILE_ELEMENT = 'file_elements';
 
     /**
-     * @param SkipVoterInterface[] $skipVoters
+     * @var SkipVoterInterface[]
      */
-    public function __construct(
-        private readonly array $skipVoters
-    ) {
+    private array $skipVoters = [];
+
+    public function __construct(ClassSkipVoter $classSkipVoter, PathSkipVoter $pathSkipVoter)
+    {
+        $this->skipVoters = [$classSkipVoter, $pathSkipVoter];
     }
 
     public function shouldSkipElement(string | object $element): bool
