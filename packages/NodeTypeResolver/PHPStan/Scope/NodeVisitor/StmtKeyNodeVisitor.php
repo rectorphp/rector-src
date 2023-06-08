@@ -29,13 +29,15 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             return null;
         }
 
-        $statementDepth = $nodes[0]->getAttribute(AttributeKey::STATEMENT_DEPTH);
-        if ($statementDepth > 0 || $statementDepth === null) {
+        // on target node or no other root stmt, eg: only namespace without declare, no need to index
+        if (count($nodes) === 1) {
             return null;
         }
 
-        // on target node or no other root stmt, eg: only namespace without declare, no need to index
-        if (count($nodes) === 1) {
+        // ensure statement depth is 0 to avoid declare in deep statements
+        // eg: declare(ticks=1) @see https://www.php.net/manual/en/control-structures.declare.php#123674
+        $statementDepth = $nodes[0]->getAttribute(AttributeKey::STATEMENT_DEPTH);
+        if ($statementDepth > 0 || $statementDepth === null) {
             return null;
         }
 
