@@ -13,10 +13,8 @@ use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToC
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NodeManipulator\MethodCallManipulator;
-use Rector\DependencyInjection\NodeManipulator\PropertyConstructorInjectionManipulator;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\Contract\AssignVariableNameResolverInterface;
-use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
@@ -56,7 +54,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         NodeTypeResolverInterface::class,
         ReadNodeAnalyzerInterface::class,
         SetListInterface::class,
-        ConflictingNameGuardInterface::class,
         TypeParser::class,
         RectorBetterReflectionSourceLocatorFactory::class,
         AbstractTestCase::class,
@@ -65,7 +62,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         MethodCallManipulator::class,
         AssignVariableNameResolverInterface::class,
         // fix later - rector-symfony
-        PropertyConstructorInjectionManipulator::class,
         // used in tests
         FileInfoParser::class,
         AnnotationToAttributeMapperInterface::class,
