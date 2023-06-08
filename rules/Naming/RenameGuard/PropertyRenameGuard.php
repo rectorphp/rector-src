@@ -4,27 +4,38 @@ declare(strict_types=1);
 
 namespace Rector\Naming\RenameGuard;
 
-use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
+use PHPStan\Type\ObjectType;
+use Rector\Naming\Guard\DateTimeAtNamingConventionGuard;
+use Rector\Naming\Guard\HasMagicGetSetGuard;
 use Rector\Naming\ValueObject\PropertyRename;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class PropertyRenameGuard
 {
-    /**
-     * @param ConflictingNameGuardInterface[] $conflictingNameGuards
-     */
     public function __construct(
-        private readonly array $conflictingNameGuards
+        private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly DateTimeAtNamingConventionGuard $dateTimeAtNamingConventionGuard,
+        private readonly HasMagicGetSetGuard $hasMagicGetSetGuard,
     ) {
     }
 
     public function shouldSkip(PropertyRename $propertyRename): bool
     {
-        foreach ($this->conflictingNameGuards as $conflictingNameGuard) {
-            if ($conflictingNameGuard->isConflicting($propertyRename)) {
-                return true;
-            }
+        if (! $propertyRename->isPrivateProperty()) {
+            return true;
         }
 
-        return false;
+        if ($this->nodeTypeResolver->isObjectType(
+            $propertyRename->getProperty(),
+            new ObjectType('Ramsey\Uuid\UuidInterface')
+        )) {
+            return true;
+        }
+
+        if ($this->dateTimeAtNamingConventionGuard->isConflicting($propertyRename)) {
+            return true;
+        }
+
+        return $this->hasMagicGetSetGuard->isConflicting($propertyRename);
     }
 }
