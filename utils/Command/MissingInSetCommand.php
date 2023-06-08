@@ -32,6 +32,19 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/EarlyReturn/Rector' => __DIR__ . '/../../config/set/early-return.php',
         __DIR__ . '/../../rules/Naming/Rector' => __DIR__ . '/../../config/set/naming.php',
         __DIR__ . '/../../rules/TypeDeclaration/Rector' => __DIR__ . '/../../config/set/type-declaration.php',
+        __DIR__ . '/../../rules/Php52/Rector' => __DIR__ . '/../../config/set/php52.php',
+        __DIR__ . '/../../rules/Php53/Rector' => __DIR__ . '/../../config/set/php53.php',
+        __DIR__ . '/../../rules/Php54/Rector' => __DIR__ . '/../../config/set/php54.php',
+        __DIR__ . '/../../rules/Php55/Rector' => __DIR__ . '/../../config/set/php55.php',
+        __DIR__ . '/../../rules/Php56/Rector' => __DIR__ . '/../../config/set/php56.php',
+        __DIR__ . '/../../rules/Php70/Rector' => __DIR__ . '/../../config/set/php70.php',
+        __DIR__ . '/../../rules/Php71/Rector' => __DIR__ . '/../../config/set/php71.php',
+        __DIR__ . '/../../rules/Php72/Rector' => __DIR__ . '/../../config/set/php72.php',
+        __DIR__ . '/../../rules/Php73/Rector' => __DIR__ . '/../../config/set/php73.php',
+        __DIR__ . '/../../rules/Php74/Rector' => __DIR__ . '/../../config/set/php74.php',
+        __DIR__ . '/../../rules/Php80/Rector' => __DIR__ . '/../../config/set/php80.php',
+        __DIR__ . '/../../rules/Php81/Rector' => __DIR__ . '/../../config/set/php81.php',
+        __DIR__ . '/../../rules/Php82/Rector' => __DIR__ . '/../../config/set/php82.php',
     ];
 
     /**
