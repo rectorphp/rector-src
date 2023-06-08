@@ -16,9 +16,8 @@ final class AttributeGroupNamedArgumentManipulator
      */
     private array $attributeDecorators = [];
 
-    public function __construct(
-        SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator,
-    ) {
+    public function __construct(SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator)
+    {
         $this->attributeDecorators[] = $sensioParamConverterAttributeDecorator;
     }
 
