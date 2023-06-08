@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -20,18 +21,20 @@ final class StmtKeyNodeVisitor extends NodeVisitorAbstract implements ScopeResol
      */
     public function beforeTraverse(array $nodes)
     {
-        $currentNode = current($nodes);
-
-        if (! $currentNode instanceof Stmt) {
+        if ($nodes === []) {
             return null;
         }
 
-        $statementDepth = $currentNode->getAttribute(AttributeKey::STATEMENT_DEPTH);
+        if (! $nodes[0] instanceof Declare_ && ! $nodes[0] instanceof Namespace_) {
+            return null;
+        }
+
+        $statementDepth = $nodes[0]->getAttribute(AttributeKey::STATEMENT_DEPTH);
         if ($statementDepth > 0 || $statementDepth === null) {
             return null;
         }
 
-        // on target node or no other root stmt, eg: only namespace without declare, no need reindex
+        // on target node or no other root stmt, eg: only namespace without declare, no need to index
         if (count($nodes) === 1) {
             return null;
         }
