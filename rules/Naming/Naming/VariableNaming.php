@@ -20,6 +20,8 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
+use Rector\Naming\AssignVariableNameResolver\NewAssignVariableNameResolver;
+use Rector\Naming\AssignVariableNameResolver\PropertyFetchAssignVariableNameResolver;
 use Rector\Naming\Contract\AssignVariableNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -28,13 +30,21 @@ use Symfony\Component\String\UnicodeString;
 final class VariableNaming
 {
     /**
-     * @param AssignVariableNameResolverInterface[] $assignVariableNameResolvers
+     * @var AssignVariableNameResolverInterface[]
      */
+    private array $assignVariableNameResolvers = [];
+
+
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly array $assignVariableNameResolvers
+        PropertyFetchAssignVariableNameResolver $propertyFetchAssignVariableNameResolver,
+        NewAssignVariableNameResolver $newAssignVariableNameResolver,
     ) {
+        $this->assignVariableNameResolvers = [
+            $propertyFetchAssignVariableNameResolver,
+            $newAssignVariableNameResolver,
+        ];
     }
 
     /**
