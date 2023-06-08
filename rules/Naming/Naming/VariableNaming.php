@@ -34,7 +34,6 @@ final class VariableNaming
      */
     private array $assignVariableNameResolvers = [];
 
-
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
