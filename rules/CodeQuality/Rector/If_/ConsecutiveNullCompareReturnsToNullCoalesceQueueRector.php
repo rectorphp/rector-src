@@ -130,7 +130,7 @@ CODE_SAMPLE
             if (! $this->isReturnNull($stmt)) {
                 if ($stmt instanceof Return_ && $stmt->expr instanceof Expr) {
                     unset($node->stmts[$key]);
-                    $appendExpr = new ExprThrow_($stmt->expr);
+                    $appendExpr = $stmt->expr;
 
                     continue;
                 }
