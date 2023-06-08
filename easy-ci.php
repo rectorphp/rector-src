@@ -29,7 +29,6 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
 use Rector\ReadWrite\Contract\ReadNodeAnalyzerInterface;
 use Rector\Set\Contract\SetListInterface;
-use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -40,7 +39,6 @@ use Symplify\EasyCI\Config\EasyCIConfig;
 
 return static function (EasyCIConfig $easyCiConfig): void {
     $easyCiConfig->typesToSkip([
-        SkipVoterInterface::class,
         AttributeDecoratorInterface::class,
         ArrayItemNode::class,
         PhpDocNodeDecoratorInterface::class,
@@ -75,16 +73,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         ParentNodeReadAnalyzerInterface::class,
         StmtsAwareInterface::class,
         NodeTypeGroup::class,
-        // deprecated, keep it for now
-        TemplateResolverInterface::class,
-
-        MethodTypeAnalyzer::class,
-        DoctrineAnnotationFactory::class,
-        ClassFromEnumFactory::class,
-        CoalesceAnalyzer::class,
-        NamespacedNameDecorator::class,
-        NamedVariableFactory::class,
-        BinaryOpTreeRootLocator::class,
 
         ScopeResolverNodeVisitorInterface::class,
     ]);
