@@ -41,7 +41,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private readonly AstResolver $reflectionAstResolver,
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
     ) {
@@ -185,8 +185,8 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
             return new MixedType();
         }
 
-        $classMethodCacheKey = $this->nodePrinter->print($classMethod);
-        $functionLikeCacheKey = $this->nodePrinter->print($originalFunctionLike);
+        $classMethodCacheKey = $this->betterStandardPrinter->print($classMethod);
+        $functionLikeCacheKey = $this->betterStandardPrinter->print($originalFunctionLike);
 
         if ($classMethodCacheKey === $functionLikeCacheKey) {
             return new MixedType();

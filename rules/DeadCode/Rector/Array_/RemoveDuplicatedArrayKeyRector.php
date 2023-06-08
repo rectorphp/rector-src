@@ -28,7 +28,7 @@ final class RemoveDuplicatedArrayKeyRector extends AbstractRector
     private const ALLOWED_KEY_DUPLICATES = [PreInc::class, PreDec::class];
 
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
@@ -102,7 +102,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $keyValue = $this->nodePrinter->print($arrayItem->key);
+            $keyValue = $this->betterStandardPrinter->print($arrayItem->key);
             $arrayItemsByKeys[$keyValue][] = $arrayItem;
         }
 

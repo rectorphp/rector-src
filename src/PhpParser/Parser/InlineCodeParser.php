@@ -62,7 +62,7 @@ final class InlineCodeParser
     private const BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder
@@ -112,7 +112,7 @@ final class InlineCodeParser
             return $this->resolveConcatValue($expr);
         }
 
-        return $this->nodePrinter->print($expr);
+        return $this->betterStandardPrinter->print($expr);
     }
 
     private function resolveEncapsedValue(Encapsed $encapsed): string
@@ -129,7 +129,7 @@ final class InlineCodeParser
             $value .= $partValue;
         }
 
-        $printedExpr = $isRequirePrint ? $this->nodePrinter->print($encapsed) : $value;
+        $printedExpr = $isRequirePrint ? $this->betterStandardPrinter->print($encapsed) : $value;
 
         // remove "
         $printedExpr = trim($printedExpr, '""');

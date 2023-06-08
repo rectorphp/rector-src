@@ -25,7 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -64,7 +64,7 @@ final class ListSwapArrayOrderRector extends AbstractRector implements MinPhpVer
             }
 
             if ($arrayItem->value instanceof ArrayDimFetch && ! $arrayItem->value->dim instanceof Expr) {
-                $printedVariables[] = $this->nodePrinter->print($arrayItem->value->var);
+                $printedVariables[] = $this->betterStandardPrinter->print($arrayItem->value->var);
             } else {
                 return null;
             }

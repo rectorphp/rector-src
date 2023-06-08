@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class MultiExceptionCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -74,7 +74,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->catches as $key => $catch) {
-            $currentPrintedCatch = $this->nodePrinter->print($catch->stmts);
+            $currentPrintedCatch = $this->betterStandardPrinter->print($catch->stmts);
 
             // already duplicated catch → remove it and join the type
             if (in_array($currentPrintedCatch, $printedCatches, true)) {

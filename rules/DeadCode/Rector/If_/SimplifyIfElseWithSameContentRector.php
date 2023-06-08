@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyIfElseWithSameContentRector extends AbstractRector
 {
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
     ) {
     }
 
@@ -83,10 +83,10 @@ CODE_SAMPLE
     private function isIfWithConstantReturns(If_ $if): bool
     {
         $possibleContents = [];
-        $possibleContents[] = $this->nodePrinter->print($if->stmts);
+        $possibleContents[] = $this->betterStandardPrinter->print($if->stmts);
 
         foreach ($if->elseifs as $elseif) {
-            $possibleContents[] = $this->nodePrinter->print($elseif->stmts);
+            $possibleContents[] = $this->betterStandardPrinter->print($elseif->stmts);
         }
 
         $else = $if->else;
@@ -94,7 +94,7 @@ CODE_SAMPLE
             throw new ShouldNotHappenException();
         }
 
-        $possibleContents[] = $this->nodePrinter->print($else->stmts);
+        $possibleContents[] = $this->betterStandardPrinter->print($else->stmts);
 
         $uniqueContents = array_unique($possibleContents);
 

@@ -48,7 +48,7 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
         private readonly ArgumentAddingScope $argumentAddingScope,
         private readonly ChangedArgumentsDetector $changedArgumentsDetector,
         private readonly AstResolver $astResolver,
-        private readonly BetterStandardPrinter $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -215,7 +215,7 @@ CODE_SAMPLE
                 throw new ShouldNotHappenException('Previous position does not have default value');
             }
 
-            $default = $this->nodePrinter->print($param->default);
+            $default = $this->betterStandardPrinter->print($param->default);
             $node->args[$index] = new Arg(new ConstFetch(new Name($default)));
         }
     }

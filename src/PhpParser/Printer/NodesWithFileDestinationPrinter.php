@@ -10,7 +10,7 @@ use Rector\PostRector\Application\PostFileProcessor;
 final class NodesWithFileDestinationPrinter
 {
     public function __construct(
-        private readonly BetterStandardPrinter $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly PostFileProcessor $postFileProcessor
     ) {
     }
@@ -18,6 +18,6 @@ final class NodesWithFileDestinationPrinter
     public function printNodesWithFileDestination(AddedFileWithNodes $addedFileWithNodes): string
     {
         $nodes = $this->postFileProcessor->traverse($addedFileWithNodes->getNodes());
-        return $this->nodePrinter->prettyPrintFile($nodes);
+        return $this->betterStandardPrinter->prettyPrintFile($nodes);
     }
 }

@@ -16,7 +16,7 @@ final class ExprUsedInNodeAnalyzer
     public function __construct(
         private readonly UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private readonly CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
-        private readonly BetterStandardPrinter $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -28,7 +28,7 @@ final class ExprUsedInNodeAnalyzer
 
         // variable as variable variable need mark as used
         if ($node instanceof Variable) {
-            $print = $this->nodePrinter->print($node);
+            $print = $this->betterStandardPrinter->print($node);
             if (\str_starts_with($print, '${$')) {
                 return true;
             }

@@ -121,10 +121,8 @@ final class NodeNameResolver
             return $namespacedName;
         }
 
-        if ($node instanceof MethodCall || $node instanceof StaticCall) {
-            if ($this->isCallOrIdentifier($node->name)) {
-                return null;
-            }
+        if (($node instanceof MethodCall || $node instanceof StaticCall) && $this->isCallOrIdentifier($node->name)) {
+            return null;
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);

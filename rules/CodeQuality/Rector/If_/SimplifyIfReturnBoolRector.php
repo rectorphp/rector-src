@@ -28,7 +28,7 @@ final class SimplifyIfReturnBoolRector extends AbstractRector
     public function __construct(
         private readonly CommentsMerger $commentsMerger,
         private readonly ExprBoolCaster $exprBoolCaster,
-        private readonly BetterStandardPrinter $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -146,7 +146,7 @@ CODE_SAMPLE
             return ! $this->valueResolver->isTrueOrFalse($return->expr);
         }
 
-        $condString = $this->nodePrinter->print($if->cond);
+        $condString = $this->betterStandardPrinter->print($if->cond);
         if (! \str_contains($condString, '!=')) {
             return ! $this->valueResolver->isTrueOrFalse($return->expr);
         }
