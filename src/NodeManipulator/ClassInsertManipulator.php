@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ClassInsertManipulator
 {
-    /**
-     * @var array<class-string<Stmt>>
-     */
-    private const BEFORE_TRAIT_TYPES = [TraitUse::class, Property::class, ClassMethod::class];
-
     public function __construct(
         private readonly NodeFactory $nodeFactory,
     ) {
@@ -58,12 +51,6 @@ final class ClassInsertManipulator
 
         $property = $this->nodeFactory->createPrivatePropertyFromNameAndType($name, $type);
         $this->addAsFirstMethod($class, $property);
-    }
-
-    public function addAsFirstTrait(Class_ $class, string $traitName): void
-    {
-        $traitUse = new TraitUse([new FullyQualified($traitName)]);
-        $this->addTraitUse($class, $traitUse);
     }
 
     /**
@@ -106,22 +93,5 @@ final class ClassInsertManipulator
         }
 
         return false;
-    }
-
-    private function addTraitUse(Class_ $class, TraitUse $traitUse): void
-    {
-        foreach (self::BEFORE_TRAIT_TYPES as $type) {
-            foreach ($class->stmts as $key => $classStmt) {
-                if (! $classStmt instanceof $type) {
-                    continue;
-                }
-
-                $class->stmts = $this->insertBefore($class->stmts, $traitUse, $key);
-
-                return;
-            }
-        }
-
-        $class->stmts[] = $traitUse;
     }
 }
