@@ -12,27 +12,19 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Contract\Template\TemplateResolverInterface;
-use Rector\Core\NodeAnalyzer\CoalesceAnalyzer;
-use Rector\Core\NodeDecorator\NamespacedNameDecorator;
 use Rector\Core\NodeManipulator\MethodCallManipulator;
-use Rector\Core\PhpParser\Node\NamedVariableFactory;
 use Rector\DependencyInjection\NodeManipulator\PropertyConstructorInjectionManipulator;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Naming\Contract\AssignVariableNameResolverInterface;
 use Rector\Naming\Contract\Guard\ConflictingNameGuardInterface;
-use Rector\NodeCollector\BinaryOpTreeRootLocator;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
-use Rector\NodeTypeResolver\TypeAnalyzer\MethodTypeAnalyzer;
 use Rector\Php80\Contract\AttributeDecoratorInterface;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
-use Rector\Php81\NodeFactory\ClassFromEnumFactory;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
-use Rector\PhpAttribute\NodeFactory\DoctrineAnnotationFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
@@ -59,7 +51,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         TypeToCallReflectionResolverInterface::class,
         FileProcessorInterface::class,
         ClassNameImportSkipVoterInterface::class,
-        StrStartWithMatchAndRefactorInterface::class,
         PhpDocTypeMapperInterface::class,
         PhpParserNodeMapperInterface::class,
         TypeMapperInterface::class,
