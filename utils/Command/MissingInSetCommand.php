@@ -46,6 +46,14 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/Php80/Rector' => __DIR__ . '/../../config/set/php80.php',
         __DIR__ . '/../../rules/Php81/Rector' => __DIR__ . '/../../config/set/php81.php',
         __DIR__ . '/../../rules/Php82/Rector' => __DIR__ . '/../../config/set/php82.php',
+        __DIR__ . '/../../rules/Strict/Rector' => __DIR__ . '/../../config/set/strict-booleans.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp70' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php70.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp71' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php71.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp72' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php72.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp73' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php73.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp74' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php74.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp80' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php80.php',
+        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp81' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php81.php',
     ];
 
     /**

@@ -21,12 +21,9 @@ use Webmozart\Assert\Assert;
 final class StaticCallToFuncCallRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @param StaticCallToFuncCall[] $staticCallsToFunctions
+     * @var StaticCallToFuncCall[]
      */
-    public function __construct(
-        private array $staticCallsToFunctions = []
-    ) {
-    }
+    private array $staticCallsToFunctions = [];
 
     public function getRuleDefinition(): RuleDefinition
     {

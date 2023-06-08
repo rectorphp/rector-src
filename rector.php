@@ -8,7 +8,6 @@ use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Config\RectorConfig;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
@@ -28,6 +27,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::EARLY_RETURN,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
+        SetList::STRICT_BOOLEANS,
     ]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class]);
@@ -71,17 +71,9 @@ return static function (RectorConfig $rectorConfig): void {
         '**/Source/*',
         '**/Expected/*',
         '**/Expected*',
-        __DIR__ . '/tests/PhpUnit/MultipleFilesChangedTrait/MultipleFilesChangedTraitTest.php',
-
-        // to keep original API from PHPStan untouched
-        __DIR__ . '/packages/Caching/ValueObject/Storage/FileCacheStorage.php',
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
-        RenameForeachValueVariableToMatchExprVariableRector::class => [
-            // false positive on plurals
-            __DIR__ . '/packages/Testing/PHPUnit/Behavior/MovingFilesTrait.php',
-        ],
 
         // avoid simplifying itself
         \Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector::class => [
@@ -91,6 +83,13 @@ return static function (RectorConfig $rectorConfig): void {
         // race condition with stmts aware patch and PHPStan type
         \Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector::class => [
             __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
+        ],
+
+        \Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector::class => [
+            __DIR__ . '/src/DependencyInjection',
+        ],
+        \Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector::class => [
+            __DIR__ . '/src/DependencyInjection',
         ],
     ]);
 

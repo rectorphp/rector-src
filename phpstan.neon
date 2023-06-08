@@ -158,7 +158,7 @@ parameters:
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
-            message: '#"@\\rename\(\$tmpPath, \$path\)" is forbidden to use#'
+            message: '#"@\\rename(.*?)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
@@ -731,3 +731,4 @@ parameters:
         # resolve before Rector 1.0
         - '#Call to deprecated method findParentType#'
         - '#Call to deprecated method findParentByTypes#'
+        - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'

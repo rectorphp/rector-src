@@ -19,12 +19,12 @@ trait MovingFilesTrait
 
         $wasFound = false;
 
-        foreach ($addedFilePathsWithContents as $addedFilePathsWithContent) {
-            if ($addedFilePathsWithContent->getFilePath() !== $expectedFilePath) {
+        foreach ($addedFilePathsWithContents as $addedFilePathWithContent) {
+            if ($addedFilePathWithContent->getFilePath() !== $expectedFilePath) {
                 continue;
             }
 
-            $this->assertSame($expectedFileContents, $addedFilePathsWithContent->getFileContent());
+            $this->assertSame($expectedFileContents, $addedFilePathWithContent->getFileContent());
             $wasFound = true;
         }
 
@@ -46,9 +46,9 @@ trait MovingFilesTrait
             return $addedFilePathsWithContents;
         }
 
-        foreach ($addedFilesWithNodes as $addedFileWithNodes) {
-            $fileContent = $nodesWithFileDestinationPrinter->printNodesWithFileDestination($addedFileWithNodes);
-            $addedFilePathsWithContents[] = new AddedFileWithContent($addedFileWithNodes->getFilePath(), $fileContent);
+        foreach ($addedFilesWithNodes as $addedFileWithNode) {
+            $fileContent = $nodesWithFileDestinationPrinter->printNodesWithFileDestination($addedFileWithNode);
+            $addedFilePathsWithContents[] = new AddedFileWithContent($addedFileWithNode->getFilePath(), $fileContent);
         }
 
         return $addedFilePathsWithContents;

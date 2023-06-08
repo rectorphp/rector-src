@@ -20,6 +20,7 @@ final class RectorNodeTraverser extends NodeTraverser
         private readonly array $phpRectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
+        parent::__construct();
     }
 
     /**
