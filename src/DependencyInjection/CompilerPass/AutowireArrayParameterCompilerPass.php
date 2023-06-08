@@ -156,6 +156,8 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
                 continue;
             }
 
+            dump($parameterType);
+
             $definitionsOfType = $this->definitionFinder->findAllByType($containerBuilder, $parameterType);
             $definitionsOfType = $this->filterOutAbstractDefinitions($definitionsOfType);
 
