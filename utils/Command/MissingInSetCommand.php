@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
-use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -40,7 +39,6 @@ final class MissingInSetCommand extends Command
      */
     private const SKIPPED_RULES = [
         ConfigurableRectorInterface::class,
-        ConvertStaticPrivateConstantToSelfRector::class,
         RemoveJustPropertyFetchRector::class,
         NullifyUnionNullableRector::class,
         DeclareStrictTypesRector::class,

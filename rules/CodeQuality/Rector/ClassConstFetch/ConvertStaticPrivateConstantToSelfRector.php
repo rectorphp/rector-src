@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -119,11 +118,6 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    private function isUsedInPrivateMethod(ClassMethod $classMethod): bool
-    {
-        return $classMethod->flags === Class_::MODIFIER_PRIVATE;
     }
 
     private function shouldBeSkipped(Class_ $class, ClassConstFetch $classConstFetch): bool
