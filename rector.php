@@ -88,6 +88,9 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector::class => [
             __DIR__ . '/src/DependencyInjection',
         ],
+        \Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector::class => [
+            __DIR__ . '/src/DependencyInjection',
+        ],
     ]);
 
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');

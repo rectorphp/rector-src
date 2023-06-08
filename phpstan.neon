@@ -158,7 +158,7 @@ parameters:
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
-            message: '#"@\\rename\(\$tmpPath, \$path\)" is forbidden to use#'
+            message: '#"@\\rename(.*?)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
         -
