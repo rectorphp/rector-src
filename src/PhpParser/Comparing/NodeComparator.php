@@ -6,13 +6,13 @@ namespace Rector\Core\PhpParser\Comparing;
 
 use PhpParser\Node;
 use Rector\Comments\CommentRemover;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 
 final class NodeComparator
 {
     public function __construct(
         private readonly CommentRemover $commentRemover,
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -23,7 +23,7 @@ final class NodeComparator
     public function printWithoutComments(Node | array | null $node): string
     {
         $node = $this->commentRemover->removeFromNode($node);
-        $content = $this->nodePrinter->print($node);
+        $content = $this->betterStandardPrinter->print($node);
 
         return trim($content);
     }
@@ -96,8 +96,8 @@ final class NodeComparator
             return false;
         }
 
-        $printFirstNode = $this->nodePrinter->print($firstNode);
-        $printSecondNode = $this->nodePrinter->print($secondNode);
+        $printFirstNode = $this->betterStandardPrinter->print($firstNode);
+        $printSecondNode = $this->betterStandardPrinter->print($secondNode);
 
         return $printFirstNode === $printSecondNode;
     }

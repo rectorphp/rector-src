@@ -17,7 +17,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\Error\InvalidNameNodeReporter;
 use Rector\NodeNameResolver\Regex\RegexPatternDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -42,7 +41,6 @@ final class NodeNameResolver
     public function __construct(
         private readonly RegexPatternDetector $regexPatternDetector,
         private readonly ClassNaming $classNaming,
-        private readonly InvalidNameNodeReporter $invalidNameNodeReporter,
         private readonly CallAnalyzer $callAnalyzer,
         private readonly array $nodeNameResolvers = []
     ) {
@@ -123,12 +121,8 @@ final class NodeNameResolver
             return $namespacedName;
         }
 
-        if ($node instanceof MethodCall || $node instanceof StaticCall) {
-            if ($this->isCallOrIdentifier($node->name)) {
-                return null;
-            }
-
-            $this->invalidNameNodeReporter->reportInvalidNodeForName($node);
+        if (($node instanceof MethodCall || $node instanceof StaticCall) && $this->isCallOrIdentifier($node->name)) {
+            return null;
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);

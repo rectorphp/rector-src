@@ -8,15 +8,15 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 
 final class ExprUsedInNodeAnalyzer
 {
     public function __construct(
         private readonly UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
         private readonly CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -28,7 +28,7 @@ final class ExprUsedInNodeAnalyzer
 
         // variable as variable variable need mark as used
         if ($node instanceof Variable) {
-            $print = $this->nodePrinter->print($node);
+            $print = $this->betterStandardPrinter->print($node);
             if (\str_starts_with($print, '${$')) {
                 return true;
             }

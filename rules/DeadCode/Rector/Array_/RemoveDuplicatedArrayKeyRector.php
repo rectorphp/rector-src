@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\PreDec;
 use PhpParser\Node\Expr\PreInc;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\MultiInstanceofChecker;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -28,7 +28,7 @@ final class RemoveDuplicatedArrayKeyRector extends AbstractRector
     private const ALLOWED_KEY_DUPLICATES = [PreInc::class, PreDec::class];
 
     public function __construct(
-        private readonly NodePrinterInterface $nodePrinter,
+        private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
     }
@@ -102,7 +102,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $keyValue = $this->nodePrinter->print($arrayItem->key);
+            $keyValue = $this->betterStandardPrinter->print($arrayItem->key);
             $arrayItemsByKeys[$keyValue][] = $arrayItem;
         }
 

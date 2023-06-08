@@ -21,11 +21,11 @@ use PHPStan\Type\Type;
 use Rector\Arguments\NodeAnalyzer\ArgumentAddingScope;
 use Rector\Arguments\NodeAnalyzer\ChangedArgumentsDetector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
-use Rector\Core\Contract\PhpParser\NodePrinterInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -48,7 +48,7 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
         private readonly ArgumentAddingScope $argumentAddingScope,
         private readonly ChangedArgumentsDetector $changedArgumentsDetector,
         private readonly AstResolver $astResolver,
-        private readonly NodePrinterInterface $nodePrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 
@@ -215,7 +215,7 @@ CODE_SAMPLE
                 throw new ShouldNotHappenException('Previous position does not have default value');
             }
 
-            $default = $this->nodePrinter->print($param->default);
+            $default = $this->betterStandardPrinter->print($param->default);
             $node->args[$index] = new Arg(new ConstFetch(new Name($default)));
         }
     }
