@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
+ * @deprecated Make the required services explicit, for faster autowire
+ *
  * @inspiration https://github.com/nette/di/pull/178
  * @see \Rector\Core\Tests\DependencyInjection\CompilerPass\AutowireArrayParameterCompilerPassTest
  */

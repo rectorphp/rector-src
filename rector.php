@@ -72,12 +72,8 @@ return static function (RectorConfig $rectorConfig): void {
         '**/Expected/*',
         '**/Expected*',
 
-        \Rector\Strict\Rector\ClassMethod\AddConstructorParentCallRector::class => [
-            __DIR__ . '/packages/StaticTypeMapper/ValueObject/Type/SimpleStaticType.php',
-        ],
-
         // keep configs untouched, as the classes are just strings
-        UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config'],
+        UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
 
         // avoid simplifying itself
         \Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector::class => [
