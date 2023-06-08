@@ -32,6 +32,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/EarlyReturn/Rector' => __DIR__ . '/../../config/set/early-return.php',
         __DIR__ . '/../../rules/Naming/Rector' => __DIR__ . '/../../config/set/naming.php',
         __DIR__ . '/../../rules/TypeDeclaration/Rector' => __DIR__ . '/../../config/set/type-declaration.php',
+        __DIR__ . '/../../rules/Privatization/Rector' => __DIR__ . '/../../config/set/privatization.php',
         __DIR__ . '/../../rules/Php52/Rector' => __DIR__ . '/../../config/set/php52.php',
         __DIR__ . '/../../rules/Php53/Rector' => __DIR__ . '/../../config/set/php53.php',
         __DIR__ . '/../../rules/Php54/Rector' => __DIR__ . '/../../config/set/php54.php',
