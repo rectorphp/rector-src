@@ -28,6 +28,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::EARLY_RETURN,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
+        SetList::STRICT_BOOLEANS,
     ]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class]);
