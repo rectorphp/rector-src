@@ -91,6 +91,10 @@ return static function (RectorConfig $rectorConfig): void {
         \Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector::class => [
             __DIR__ . '/src/DependencyInjection',
         ],
+
+        \Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector::class => [
+            __DIR__ . '/src/Util/FileHasher.php',
+        ],
     ]);
 
     $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');

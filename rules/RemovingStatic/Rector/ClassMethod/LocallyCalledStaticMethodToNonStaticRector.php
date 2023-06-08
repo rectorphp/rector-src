@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\RemovingStatic\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
@@ -121,7 +123,7 @@ CODE_SAMPLE
 
         // replace all the calls
         $classMethodName = $this->getName($classMethod);
-        $this->traverseNodesWithCallable($class, function (\PhpParser\Node $node) use ($classMethodName) {
+        $this->traverseNodesWithCallable($class, function (Node $node) use ($classMethodName): ?MethodCall {
             if (! $node instanceof StaticCall) {
                 return null;
             }
@@ -134,7 +136,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return new Node\Expr\MethodCall(new Node\Expr\Variable('this'), $classMethodName);
+            return new MethodCall(new Variable('this'), $classMethodName);
         });
 
         // change static calls to non-static ones, but only if in non-static method!!!
@@ -159,10 +161,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->traverseNodesWithCallable($checkedClassMethod->stmts, function (Node $node) use (
+            $this->traverseNodesWithCallable($checkedClassMethod, function (Node $node) use (
                 $currentClassMethodName,
                 &$isInsideStaticClassMethod
-            ) {
+            ): ?StaticCall {
                 if (! $node instanceof StaticCall) {
                     return null;
                 }

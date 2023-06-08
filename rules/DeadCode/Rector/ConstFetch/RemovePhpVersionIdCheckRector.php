@@ -14,19 +14,16 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
-use ReflectionClass;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector\RemovePhpVersionIdCheckRectorTest
  */
-final class RemovePhpVersionIdCheckRector extends AbstractRector implements ConfigurableRectorInterface
+final class RemovePhpVersionIdCheckRector extends AbstractRector
 {
     /**
      * @var PhpVersion::*|null
@@ -36,26 +33,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
-    }
-
-    /**
-     * @param mixed[] $configuration
-     */
-    public function configure(array $configuration): void
-    {
-        $phpVersion = $configuration[0];
-        Assert::integer($phpVersion);
-
-        // get all constants
-        $phpVersionReflectionClass = new ReflectionClass(PhpVersion::class);
-        // @todo check
-        if (in_array($phpVersion, $phpVersionReflectionClass->getConstants(), true)) {
-            return;
-        }
-
-        // ensure cast to (string) first to allow string like "8.0" value to be converted to the int value
-        /** @var PhpVersion::* $phpVersion */
-        $this->phpVersion = $phpVersion;
+        $this->phpVersion = $this->phpVersionProvider->provide();
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -63,7 +41,7 @@ final class RemovePhpVersionIdCheckRector extends AbstractRector implements Conf
         return new RuleDefinition(
             'Remove unneeded PHP_VERSION_ID conditional checks',
             [
-                new ConfiguredCodeSample(
+                new CodeSample(
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
@@ -87,8 +65,6 @@ class SomeClass
     }
 }
 CODE_SAMPLE
-                    ,
-                    [PhpVersion::PHP_80]
                 ),
             ],
         );
