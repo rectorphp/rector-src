@@ -23,7 +23,6 @@ use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSourceLocatorFactory;
 use Rector\Php80\Contract\AttributeDecoratorInterface;
-use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
