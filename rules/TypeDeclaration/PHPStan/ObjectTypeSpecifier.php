@@ -45,9 +45,6 @@ final class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
-        //        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
-        // @todo reuse name scope
-
         if ($scope instanceof Scope) {
             foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
                 if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
