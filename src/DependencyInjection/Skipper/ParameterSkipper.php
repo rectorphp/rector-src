@@ -9,7 +9,6 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
-use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Definition;
 
 final class ParameterSkipper
