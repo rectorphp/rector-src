@@ -710,7 +710,6 @@ parameters:
                 Use AbstractScopeAwareRector\\-\\>refactorWithScope\\(\\) instead$#
             """
             paths:
-                - src/Rector/AbstractRector.php
                 - packages/BetterPhpDocParser/PhpDocParser/ClassAnnotationMatcher.php
                 - packages/NodeNameResolver/NodeNameResolver.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
@@ -728,12 +727,9 @@ parameters:
                 - packages/StaticTypeMapper/PhpParser/ExprNodeMapper.php
                 - packages/VendorLocker/NodeVendorLocker/ClassMethodReturnTypeOverrideGuard.php
                 - rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php
-                - rules/DeadCode/Rector/Assign/RemoveUnusedVariableAssignRector.php
                 - rules/Naming/Guard/BreakingVariableRenameGuard.php
                 - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
-                - rules/Privatization/Rector/ClassMethod/PrivatizeFinalClassMethodRector.php
                 - rules/TypeDeclaration/Rector/Param/ParamTypeFromStrictTypedPropertyRector.php
-                - rules/TypeDeclaration/TypeAnalyzer/AlwaysStrictScalarExprAnalyzer.php
                 - src/NodeAnalyzer/ClassAnalyzer.php
                 - src/NodeAnalyzer/ScopeAnalyzer.php
                 - src/NodeManipulator/ClassDependencyManipulator.php
