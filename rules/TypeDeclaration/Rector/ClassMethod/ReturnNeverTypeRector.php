@@ -14,8 +14,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\NeverType;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -28,7 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\ReturnNeverTypeRectorTest
  */
-final class ReturnNeverTypeRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnNeverTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
@@ -74,9 +75,9 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
@@ -90,7 +91,7 @@ CODE_SAMPLE
         return PhpVersionFeature::NEVER_TYPE;
     }
 
-    private function shouldSkip(ClassMethod | Function_ | Closure $node): bool
+    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
         if ($node instanceof ClassMethod && $node->isMagic()) {
@@ -118,7 +119,8 @@ CODE_SAMPLE
         }
 
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node
+            $node,
+            $scope
         )) {
             return true;
         }

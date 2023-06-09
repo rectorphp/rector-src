@@ -20,7 +20,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -47,7 +46,7 @@ final class ClassMethodReturnTypeOverrideGuard
     ) {
     }
 
-    public function shouldSkipClassMethod(ClassMethod $classMethod): bool
+    public function shouldSkipClassMethod(ClassMethod $classMethod, Scope $scope): bool
     {
         // 1. skip magic methods
         if ($classMethod->isMagic()) {
@@ -72,7 +71,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if (! $this->isReturnTypeChangeAllowed($classMethod)) {
+        if (! $this->isReturnTypeChangeAllowed($classMethod, $scope)) {
             return true;
         }
 
@@ -92,7 +91,7 @@ final class ClassMethodReturnTypeOverrideGuard
         return $this->hasClassMethodExprReturn($classMethod);
     }
 
-    private function isReturnTypeChangeAllowed(ClassMethod $classMethod): bool
+    private function isReturnTypeChangeAllowed(ClassMethod $classMethod, Scope $scope): bool
     {
         // make sure return type is not protected by parent contract
         $parentClassMethodReflection = $this->parentClassMethodTypeOverrideGuard->getParentClassMethod($classMethod);
@@ -100,11 +99,6 @@ final class ClassMethodReturnTypeOverrideGuard
         // nothing to check
         if (! $parentClassMethodReflection instanceof MethodReflection) {
             return true;
-        }
-
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(

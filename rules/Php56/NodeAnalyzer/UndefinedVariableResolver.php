@@ -143,8 +143,12 @@ final class UndefinedVariableResolver
     /**
      * @param string[] $checkedVariables
      */
-    private function shouldSkipVariable(Variable $variable, string $variableName, array &$checkedVariables, Node $parentNode): bool
-    {
+    private function shouldSkipVariable(
+        Variable $variable,
+        string $variableName,
+        array &$checkedVariables,
+        Node $parentNode
+    ): bool {
         if ($this->isAsCoalesceLeftOrAssignOpCoalesceVar($parentNode, $variable)) {
             return true;
         }
