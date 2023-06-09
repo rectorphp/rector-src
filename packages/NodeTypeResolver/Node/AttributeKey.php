@@ -23,6 +23,8 @@ final class AttributeKey
     public const VIRTUAL_NODE = 'virtual_node';
 
     /**
+     * @deprecated Use AbstractScopeAwareRector->refactorWithScope() instead
+     *
      * Contains @see Scope
      * @var string
      */
