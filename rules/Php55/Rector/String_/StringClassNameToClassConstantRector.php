@@ -81,14 +81,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [String_::class, FuncCall::class];
+        return [String_::class, FuncCall::class, ClassConst::class];
     }
 
     /**
-     * @param String_|FuncCall $node
+     * @param String_|FuncCall|ClassConst $node
      */
     public function refactorWithScope(Node $node, Scope $scope)
     {
+        // allow class strings to be part of class const arrays, as probably on purpose
+        if ($node instanceof ClassConst) {
+            return NodeTraverser::STOP_TRAVERSAL;
+        }
+
         // keep allowed string as condition
         if ($node instanceof FuncCall) {
             if ($this->isName($node, 'is_a')) {
@@ -139,7 +144,7 @@ CODE_SAMPLE
         return PhpVersionFeature::CLASSNAME_CONSTANT;
     }
 
-    private function shouldSkip(string $classLikeName, String_ $string): bool
+    private function shouldSkip(string $classLikeName): bool
     {
         if (! $this->reflectionProvider->hasClass($classLikeName)) {
             return true;
@@ -166,8 +171,6 @@ CODE_SAMPLE
             }
         }
 
-        // allow class strings to be part of class const arrays, as probably on purpose
-        $parentClassConst = $this->betterNodeFinder->findParentType($string, ClassConst::class);
-        return $parentClassConst instanceof ClassConst;
+        return false;
     }
 }
