@@ -42,7 +42,7 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
      */
     private array $addedArguments = [];
 
-    private bool $haveArgumentsChanged = false;
+    private bool $hasChanged = false;
 
     public function __construct(
         private readonly ArgumentAddingScope $argumentAddingScope,
@@ -83,9 +83,14 @@ class MyCustomClass extends SomeExampleClass
 CODE_SAMPLE
                     ,
                     [
-                        new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, new ObjectType(
-                            'SomeType'
-                        )),
+                        new ArgumentAdder(
+                            'SomeExampleClass',
+                            'someMethod',
+                            0,
+                            'someArgument',
+                            true,
+                            new ObjectType('SomeType')
+                        ),
                     ]
                 ),
             ]
@@ -97,29 +102,25 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class, ClassMethod::class];
+        return [MethodCall::class, StaticCall::class, Class_::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|ClassMethod $node
+     * @param MethodCall|StaticCall|Class_ $node
      */
-    public function refactor(Node $node): MethodCall | StaticCall | ClassMethod | null
+    public function refactor(Node $node): MethodCall | StaticCall | Class_ | null
     {
-        $this->haveArgumentsChanged = false;
+        $this->hasChanged = false;
 
-        foreach ($this->addedArguments as $addedArgument) {
-            if (! $this->isName($node->name, $addedArgument->getMethod())) {
-                continue;
+        if ($node instanceof MethodCall || $node instanceof StaticCall) {
+            $this->refactorCall($node);
+        } else {
+            foreach ($node->getMethods() as $classMethod) {
+                $this->refactorClassMethod($node, $classMethod);
             }
-
-            if (! $this->isObjectTypeMatch($node, $addedArgument->getObjectType())) {
-                continue;
-            }
-
-            $this->processPositionWithDefaultValues($node, $addedArgument);
         }
 
-        if ($this->haveArgumentsChanged) {
+        if ($this->hasChanged) {
             return $node;
         }
 
@@ -135,22 +136,13 @@ CODE_SAMPLE
         $this->addedArguments = $configuration;
     }
 
-    private function isObjectTypeMatch(MethodCall | StaticCall | ClassMethod $node, ObjectType $objectType): bool
+    private function isObjectTypeMatch(MethodCall | StaticCall $call, ObjectType $objectType): bool
     {
-        if ($node instanceof MethodCall) {
-            return $this->isObjectType($node->var, $objectType);
+        if ($call instanceof MethodCall) {
+            return $this->isObjectType($call->var, $objectType);
         }
 
-        if ($node instanceof StaticCall) {
-            return $this->isObjectType($node->class, $objectType);
-        }
-
-        $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        return $this->isObjectType($classLike, $objectType);
+        return $this->isObjectType($call->class, $objectType);
     }
 
     private function processPositionWithDefaultValues(
@@ -189,7 +181,7 @@ CODE_SAMPLE
         $this->fillGapBetweenWithDefaultValue($methodCall, $position);
 
         $methodCall->args[$position] = $arg;
-        $this->haveArgumentsChanged = true;
+        $this->hasChanged = true;
     }
 
     private function fillGapBetweenWithDefaultValue(MethodCall | StaticCall $node, int $position): void
@@ -281,7 +273,7 @@ CODE_SAMPLE
         }
 
         $classMethod->params[$position] = $param;
-        $this->haveArgumentsChanged = true;
+        $this->hasChanged = true;
     }
 
     private function processStaticCall(StaticCall $staticCall, int $position, ArgumentAdder $argumentAdder): void
@@ -302,6 +294,36 @@ CODE_SAMPLE
         $this->fillGapBetweenWithDefaultValue($staticCall, $position);
 
         $staticCall->args[$position] = new Arg(new Variable($argumentName));
-        $this->haveArgumentsChanged = true;
+        $this->hasChanged = true;
+    }
+
+    private function refactorCall(StaticCall|MethodCall $call): void
+    {
+        foreach ($this->addedArguments as $addedArgument) {
+            if (! $this->isName($call->name, $addedArgument->getMethod())) {
+                continue;
+            }
+
+            if (! $this->isObjectTypeMatch($call, $addedArgument->getObjectType())) {
+                continue;
+            }
+
+            $this->processPositionWithDefaultValues($call, $addedArgument);
+        }
+    }
+
+    private function refactorClassMethod(Class_ $class, ClassMethod $classMethod): void
+    {
+        foreach ($this->addedArguments as $addedArgument) {
+            if (! $this->isName($classMethod, $addedArgument->getMethod())) {
+                continue;
+            }
+
+            if (! $this->isObjectType($class, $addedArgument->getObjectType())) {
+                continue;
+            }
+
+            $this->processPositionWithDefaultValues($classMethod, $addedArgument);
+        }
     }
 }
