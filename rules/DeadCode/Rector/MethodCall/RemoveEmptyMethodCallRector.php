@@ -139,11 +139,6 @@ CODE_SAMPLE
         return $this->reflectionAstResolver->resolveClassFromName($classReflection->getName());
     }
 
-    private function shouldSkipMethodCall(MethodCall $methodCall): bool
-    {
-        return $this->callAnalyzer->isObjectCall($methodCall->var);
-    }
-
     private function shouldSkipClassMethod(
         Class_ | Trait_ | Interface_ | Enum_ $classLike,
         MethodCall $methodCall,
