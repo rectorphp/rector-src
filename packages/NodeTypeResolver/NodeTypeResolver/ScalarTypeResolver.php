@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\String_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\Constant\ConstantFloatType;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
@@ -33,7 +34,7 @@ final class ScalarTypeResolver implements NodeTypeResolverInterface
         return [Scalar::class];
     }
 
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         if ($node instanceof DNumber) {
             return new ConstantFloatType((float) $node->value);

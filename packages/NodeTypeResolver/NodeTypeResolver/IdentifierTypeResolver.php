@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
@@ -36,7 +37,7 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
      * @param Identifier $node
      * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|ArrayType|IterableType|IntegerType|FloatType|MixedType
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         $lowerString = $node->toLowerString();
 

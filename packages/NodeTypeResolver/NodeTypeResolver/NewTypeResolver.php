@@ -43,7 +43,7 @@ final class NewTypeResolver implements NodeTypeResolverInterface
     /**
      * @param New_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         if ($node->class instanceof Name) {
             $className = $this->nodeNameResolver->getName($node->class);
@@ -57,7 +57,6 @@ final class NewTypeResolver implements NodeTypeResolverInterface
             return $this->resolveAnonymousClassType($node);
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             // new node probably
             return new MixedType();

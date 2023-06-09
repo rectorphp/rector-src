@@ -38,14 +38,14 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Variable $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         $variableName = $this->nodeNameResolver->getName($node);
         if ($variableName === null) {
             return new MixedType();
         }
 
-        $scopeType = $this->resolveTypesFromScope($node, $variableName);
+        $scopeType = $this->resolveTypesFromScope($node, $variableName, $scope);
         if (! $scopeType instanceof MixedType) {
             return $scopeType;
         }
@@ -55,9 +55,12 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
         return $phpDocInfo->getVarType();
     }
 
-    private function resolveTypesFromScope(Variable $variable, string $variableName): Type
+    private function resolveTypesFromScope(Variable $variable, string $variableName, ?Scope $scope): Type
     {
-        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        }
+
         if (! $scope instanceof Scope) {
             return new MixedType();
         }
@@ -68,5 +71,24 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
 
         // this → object type is easier to work with and consistent with the rest of the code
         return $scope->getVariableType($variableName);
+    }
+
+    private function resolveNodeScope(Variable $variable, ?Scope $scope): ?Scope
+    {
+        if ($scope instanceof Scope) {
+            return $scope;
+        }
+
+        return $this->resolveFromParentNodes($variable);
+    }
+
+    private function resolveFromParentNodes(Variable $variable): ?Scope
+    {
+        $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentNode instanceof Node) {
+            return null;
+        }
+
+        return $parentNode->getAttribute(AttributeKey::SCOPE);
     }
 }

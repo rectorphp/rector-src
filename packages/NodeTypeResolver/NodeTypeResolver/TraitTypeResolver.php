@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
@@ -36,7 +37,7 @@ final class TraitTypeResolver implements NodeTypeResolverInterface
     /**
      * @param Trait_ $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         $traitName = (string) $node->namespacedName;
         if (! $this->reflectionProvider->hasClass($traitName)) {

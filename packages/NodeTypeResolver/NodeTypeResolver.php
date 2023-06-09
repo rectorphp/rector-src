@@ -143,7 +143,8 @@ final class NodeTypeResolver
             }
         }
 
-        $type = $this->resolveByNodeTypeResolvers($node);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        $type = $this->resolveByNodeTypeResolvers($node, $scope);
 
         if ($type instanceof Type) {
             $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
@@ -157,8 +158,6 @@ final class NodeTypeResolver
 
             return $type;
         }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         if (! $scope instanceof Scope) {
             if ($node instanceof ConstFetch) {
@@ -317,14 +316,14 @@ final class NodeTypeResolver
             ->yes();
     }
 
-    private function resolveByNodeTypeResolvers(Node $node): ?Type
+    private function resolveByNodeTypeResolvers(Node $node, ?Scope $scope): ?Type
     {
         foreach ($this->nodeTypeResolvers as $nodeClass => $nodeTypeResolver) {
             if (! $node instanceof $nodeClass) {
                 continue;
             }
 
-            return $nodeTypeResolver->resolve($node);
+            return $nodeTypeResolver->resolve($node, $scope);
         }
 
         return null;

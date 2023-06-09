@@ -31,7 +31,7 @@ final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInter
     /**
      * @param ClassMethod|ClassConst $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {

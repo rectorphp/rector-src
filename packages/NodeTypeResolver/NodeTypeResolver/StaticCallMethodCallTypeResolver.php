@@ -48,7 +48,7 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
     /**
      * @param StaticCall|MethodCall $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         $methodName = $this->nodeNameResolver->getName($node->name);
 
@@ -57,7 +57,6 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
             return new MixedType();
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return new MixedType();
         }

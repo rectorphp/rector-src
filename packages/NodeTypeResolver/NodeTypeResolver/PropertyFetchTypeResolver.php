@@ -49,15 +49,14 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
     /**
      * @param PropertyFetch $node
      */
-    public function resolve(Node $node): Type
+    public function resolve(Node $node, ?Scope $scope): Type
     {
         // compensate 3rd party non-analysed property reflection
-        $vendorPropertyType = $this->getVendorPropertyFetchType($node);
+        $vendorPropertyType = $this->getVendorPropertyFetchType($node, $scope);
         if (! $vendorPropertyType instanceof MixedType) {
             return $vendorPropertyType;
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
             return new MixedType();
         }
@@ -65,7 +64,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
         return $scope->getType($node);
     }
 
-    private function getVendorPropertyFetchType(PropertyFetch $propertyFetch): Type
+    private function getVendorPropertyFetchType(PropertyFetch $propertyFetch, ?Scope $scope): Type
     {
         // 3rd party code
         $propertyName = $this->nodeNameResolver->getName($propertyFetch->name);
@@ -87,12 +86,11 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
             return new MixedType();
         }
 
-        $propertyFetchScope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
-        if (! $propertyFetchScope instanceof Scope) {
+        if (! $scope instanceof Scope) {
             return new MixedType();
         }
 
-        $propertyReflection = $classReflection->getProperty($propertyName, $propertyFetchScope);
+        $propertyReflection = $classReflection->getProperty($propertyName, $scope);
 
         return $propertyReflection->getReadableType();
     }
