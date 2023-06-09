@@ -6,6 +6,7 @@ namespace Rector\Php55\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -58,7 +59,7 @@ CODE_SAMPLE
     /**
      * @param FuncCall $node
      */
-    public function refactorWithScope(Node $node, \PHPStan\Analyser\Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if (! $this->isName($node, 'get_called_class')) {
             return null;

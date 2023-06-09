@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -73,7 +74,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactorWithScope(Node $node, \PHPStan\Analyser\Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if (! $scope->isInClass()) {
             return null;
