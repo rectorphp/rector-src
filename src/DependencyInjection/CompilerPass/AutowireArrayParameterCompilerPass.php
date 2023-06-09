@@ -107,6 +107,8 @@ final class AutowireArrayParameterCompilerPass implements CompilerPassInterface
                 $reflectionMethod
             );
 
+            dump($parameterType);
+
             if ($parameterType === null) {
                 continue;
             }
