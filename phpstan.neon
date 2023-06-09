@@ -703,3 +703,41 @@ parameters:
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
 
         - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+
+		-
+			message: """
+				#^Fetching deprecated class constant SCOPE of class Rector\\\\NodeTypeResolver\\\\Node\\\\AttributeKey\\:
+				Use AbstractScopeAwareRector\\-\\>refactorWithScope\\(\\) instead$#
+			"""
+			paths:
+			    - src/Rector/AbstractRector.php
+			    - packages/BetterPhpDocParser/PhpDocParser/ClassAnnotationMatcher.php
+			    - packages/NodeNameResolver/NodeNameResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/ClassAndInterfaceTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/NewTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/PropertyFetchTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/PropertyTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/StaticCallMethodCallTypeResolver.php
+			    - packages/NodeTypeResolver/NodeTypeResolver/VariableTypeResolver.php
+			    - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+			    - packages/PostRector/Rector/ClassRenamingPostRector.php
+			    - packages/ReadWrite/Guard/VariableToConstantGuard.php
+			    - packages/StaticTypeMapper/Naming/NameScopeFactory.php
+			    - packages/StaticTypeMapper/PhpDocParser/IdentifierTypeMapper.php
+			    - packages/StaticTypeMapper/PhpParser/ExprNodeMapper.php
+			    - packages/VendorLocker/NodeVendorLocker/ClassMethodReturnTypeOverrideGuard.php
+			    - rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php
+			    - rules/DeadCode/Rector/Assign/RemoveUnusedVariableAssignRector.php
+			    - rules/Naming/Guard/BreakingVariableRenameGuard.php
+			    - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
+			    - rules/Privatization/Rector/ClassMethod/PrivatizeFinalClassMethodRector.php
+			    - rules/TypeDeclaration/Rector/Param/ParamTypeFromStrictTypedPropertyRector.php
+			    - rules/TypeDeclaration/TypeAnalyzer/AlwaysStrictScalarExprAnalyzer.php
+			    - src/NodeAnalyzer/ClassAnalyzer.php
+			    - src/NodeAnalyzer/ScopeAnalyzer.php
+			    - src/NodeManipulator/ClassDependencyManipulator.php
+			    - src/NodeManipulator/ClassInsertManipulator.php
+			    - src/Rector/AbstractRector.php
+			    - src/Rector/AbstractScopeAwareRector.php
+			    - src/Reflection/ReflectionResolver.php
