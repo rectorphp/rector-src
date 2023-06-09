@@ -13,21 +13,32 @@ use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToC
 final class TypeToCallReflectionResolverRegistry
 {
     /**
-     * @param TypeToCallReflectionResolverInterface[] $resolvers
+     * @var TypeToCallReflectionResolverInterface[]
      */
+    private array $typeToCallReflectionResolvers = [];
+
     public function __construct(
-        private readonly array $resolvers
+        ClosureTypeToCallReflectionResolver $closureTypeToCallReflectionResolver,
+        ConstantArrayTypeToCallReflectionResolver $constantArrayTypeToCallReflectionResolver,
+        ConstantStringTypeToCallReflectionResolver $constantStringTypeToCallReflectionResolver,
+        ObjectTypeToCallReflectionResolver $objectTypeToCallReflectionResolver,
     ) {
+        $this->typeToCallReflectionResolvers = [
+            $closureTypeToCallReflectionResolver,
+            $constantArrayTypeToCallReflectionResolver,
+            $constantStringTypeToCallReflectionResolver,
+            $objectTypeToCallReflectionResolver,
+        ];
     }
 
     public function resolve(Type $type, Scope $scope): FunctionReflection|MethodReflection|null
     {
-        foreach ($this->resolvers as $resolver) {
-            if (! $resolver->supports($type)) {
+        foreach ($this->typeToCallReflectionResolvers as $typeToCallReflectionResolver) {
+            if (! $typeToCallReflectionResolver->supports($type)) {
                 continue;
             }
 
-            return $resolver->resolve($type, $scope);
+            return $typeToCallReflectionResolver->resolve($type, $scope);
         }
 
         return null;

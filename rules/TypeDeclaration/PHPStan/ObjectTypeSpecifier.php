@@ -27,17 +27,23 @@ use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
+use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SameNamespacedTypeSpecifier;
+use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SelfStaticParentTypeSpecifier;
 
 final class ObjectTypeSpecifier
 {
     /**
-     * @param TypeWithClassTypeSpecifierInterface[] $typeWithClassTypeSpecifiers
+     * @var TypeWithClassTypeSpecifierInterface[]
      */
+    private array $typeWithClassTypeSpecifiers = [];
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly array $typeWithClassTypeSpecifiers
+        SelfStaticParentTypeSpecifier $selfStaticParentTypeSpecifier,
+        SameNamespacedTypeSpecifier $sameNamespacedTypeSpecifier,
     ) {
+        $this->typeWithClassTypeSpecifiers = [$selfStaticParentTypeSpecifier, $sameNamespacedTypeSpecifier];
     }
 
     public function narrowToFullyQualifiedOrAliasedObjectType(
