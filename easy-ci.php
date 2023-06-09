@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PHPStan\PhpDocParser\Parser\TypeParser;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
@@ -29,7 +28,6 @@ use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
 use Symplify\EasyCI\Config\EasyCIConfig;
 
 return static function (EasyCIConfig $easyCiConfig): void {
@@ -37,7 +35,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         AttributeDecoratorInterface::class,
         ArrayItemNode::class,
         PhpDocNodeDecoratorInterface::class,
-        Command::class,
         Application::class,
         RectorInterface::class,
         TypeToCallReflectionResolverInterface::class,
@@ -51,7 +48,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         NodeTypeResolverInterface::class,
         ReadNodeAnalyzerInterface::class,
         SetListInterface::class,
-        TypeParser::class,
         RectorBetterReflectionSourceLocatorFactory::class,
         AbstractTestCase::class,
         PHPStanServicesFactory::class,

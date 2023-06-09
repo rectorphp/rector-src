@@ -12,10 +12,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ObjectType;
+use Rector\Core\NodeManipulator\ClassDependencyManipulator;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PostRector\Collector\PropertyToAddCollector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Transform\NodeFactory\PropertyFetchFactory;
 use Rector\Transform\NodeTypeAnalyzer\TypeProvidingExprFromClassResolver;
@@ -28,7 +28,7 @@ final class FuncCallStaticCallToMethodCallAnalyzer
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeFactory $nodeFactory,
         private readonly PropertyFetchFactory $propertyFetchFactory,
-        private readonly PropertyToAddCollector $propertyToAddCollector
+        private readonly ClassDependencyManipulator $classDependencyManipulator,
     ) {
     }
 
@@ -52,8 +52,10 @@ final class FuncCallStaticCallToMethodCallAnalyzer
         }
 
         $propertyName = $this->propertyNaming->fqnToVariableName($objectType);
-        $propertyMetadata = new PropertyMetadata($propertyName, $objectType, Class_::MODIFIER_PRIVATE);
-        $this->propertyToAddCollector->addPropertyToClass($class, $propertyMetadata);
+        $this->classDependencyManipulator->addConstructorDependency(
+            $class,
+            new PropertyMetadata($propertyName, $objectType)
+        );
 
         return $this->propertyFetchFactory->createFromType($objectType);
     }
