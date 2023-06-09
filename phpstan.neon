@@ -85,7 +85,9 @@ parameters:
 
         -
             message: '#Use explicit return value over magic &reference#'
-            path: rules/Php70/EregToPcreTransformer.php
+            paths:
+                - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
+                - rules/Php70/EregToPcreTransformer.php
 
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
