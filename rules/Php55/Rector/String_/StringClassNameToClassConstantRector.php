@@ -111,7 +111,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkip($classLikeName, $node)) {
+        if ($this->shouldSkip($classLikeName)) {
             return null;
         }
 
@@ -147,11 +147,6 @@ CODE_SAMPLE
     private function shouldSkip(string $classLikeName): bool
     {
         if (! $this->reflectionProvider->hasClass($classLikeName)) {
-            return true;
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($classLikeName);
-        if ($classReflection->getName() !== $classLikeName) {
             return true;
         }
 
