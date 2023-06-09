@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use PHPStan\Type\TypeCombinator;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ConditionalTypeForParameter;
@@ -40,7 +41,7 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        $type = \PHPStan\Type\TypeCombinator::union($type->getIf(), $type->getElse());
+        $type = TypeCombinator::union($type->getIf(), $type->getElse());
         return $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type, $typeKind);
     }
 
@@ -50,7 +51,7 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        $type = \PHPStan\Type\TypeCombinator::union($type->getIf(), $type->getElse());
+        $type = TypeCombinator::union($type->getIf(), $type->getElse());
         return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
     }
 }
