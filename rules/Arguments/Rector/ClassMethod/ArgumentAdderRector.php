@@ -83,9 +83,14 @@ class MyCustomClass extends SomeExampleClass
 CODE_SAMPLE
                     ,
                     [
-                        new ArgumentAdder('SomeExampleClass', 'someMethod', 0, 'someArgument', true, new ObjectType(
-                            'SomeType'
-                        )),
+                        new ArgumentAdder(
+                            'SomeExampleClass',
+                            'someMethod',
+                            0,
+                            'someArgument',
+                            true,
+                            new ObjectType('SomeType')
+                        ),
                     ]
                 ),
             ]
