@@ -80,7 +80,7 @@ CODE_SAMPLE
         $class = $node;
         $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use ($class, &$hasChanged) {
+        $this->traverseNodesWithCallable($node, function (Node $node) use ($class, &$hasChanged): ?PropertyFetch {
             if (! $node instanceof MethodCall) {
                 return null;
             }
