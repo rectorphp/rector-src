@@ -184,11 +184,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyMetadata = new PropertyMetadata(
-                $propertyToComplete,
-                new ObjectType($className),
-                Class_::MODIFIER_PRIVATE
-            );
+            $propertyMetadata = new PropertyMetadata($propertyToComplete, new ObjectType($className));
+
             $hasClassContextProperty = $this->propertyPresenceChecker->hasClassContextProperty(
                 $class,
                 $propertyMetadata
