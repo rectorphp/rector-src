@@ -102,11 +102,11 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getMethods() as $classMethod) {
-            $this->traverseNodesWithCallable($classMethod, function (\PhpParser\Node $node) use (
+            $this->traverseNodesWithCallable($classMethod, function (Node $node) use (
                 $class,
                 $classMethod,
                 &$hasChanged
-            ) {
+            ): null|MethodCall|StaticCall {
                 if (! $node instanceof StaticCall) {
                     return null;
                 }
