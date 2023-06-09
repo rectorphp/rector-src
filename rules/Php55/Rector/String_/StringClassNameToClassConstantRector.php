@@ -34,6 +34,11 @@ final class StringClassNameToClassConstantRector extends AbstractScopeAwareRecto
      */
     private array $classesToSkip = [];
 
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace string class names by <class>::class constant', [
@@ -141,9 +146,9 @@ CODE_SAMPLE
 
     private function shouldSkip(string $classLikeName): bool
     {
-        //        if (! $this->reflectionProvider->hasClass($classLikeName)) {
-        //            return true;
-        //        }
+        if (! $this->reflectionProvider->hasClass($classLikeName)) {
+            return true;
+        }
 
         // skip short class names, mostly invalid use of strings
         if (! str_contains($classLikeName, '\\')) {

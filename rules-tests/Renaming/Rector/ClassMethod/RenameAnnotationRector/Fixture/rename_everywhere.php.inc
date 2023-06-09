@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\FixtureRenameEverywhere;
+namespace Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\Fixture;
 
 final class RenameEveryWhere
 {
@@ -18,7 +18,7 @@ final class RenameEveryWhere
 -----
 <?php
 
-namespace Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\FixtureRenameEverywhere;
+namespace Rector\Tests\Renaming\Rector\ClassMethod\RenameAnnotationRector\Fixture;
 
 final class RenameEveryWhere
 {

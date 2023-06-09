@@ -78,38 +78,62 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Property::class, Expression::class];
+        return [Class_::class, Expression::class];
     }
 
     /**
-     * @param ClassMethod|Property $node
+     * @param Class_|Expression $node
      */
     public function refactor(Node $node): ?Node
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if (! $classLike instanceof Class_) {
+        $hasChanged = false;
+
+        if ($node instanceof Expression) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+            foreach ($this->renameAnnotations as $renameAnnotation) {
+                $hasDocBlockChanged = $this->docBlockTagReplacer->replaceTagByAnother(
+                    $phpDocInfo,
+                    $renameAnnotation->getOldAnnotation(),
+                    $renameAnnotation->getNewAnnotation()
+                );
+
+                if ($hasDocBlockChanged) {
+                    $hasChanged = true;
+                }
+            }
+
+            if ($hasChanged) {
+                return $node;
+            }
+
             return null;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $hasChanged = false;
-
-        foreach ($this->renameAnnotations as $renameAnnotation) {
-            if ($renameAnnotation instanceof RenameAnnotationByType && ! $this->isObjectType(
-                $classLike,
-                $renameAnnotation->getObjectType()
-            )) {
+        foreach ($node->stmts as $stmt) {
+            if (! $stmt instanceof ClassMethod && ! $stmt instanceof Property) {
                 continue;
             }
 
-            $hasDocBlockChanged = $this->docBlockTagReplacer->replaceTagByAnother(
-                $phpDocInfo,
-                $renameAnnotation->getOldAnnotation(),
-                $renameAnnotation->getNewAnnotation()
-            );
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($stmt);
 
-            if ($hasDocBlockChanged) {
-                $hasChanged = true;
+            foreach ($this->renameAnnotations as $renameAnnotation) {
+                if ($renameAnnotation instanceof RenameAnnotationByType && ! $this->isObjectType(
+                    $node,
+                    $renameAnnotation->getObjectType()
+                )) {
+                    continue;
+                }
+
+                $hasDocBlockChanged = $this->docBlockTagReplacer->replaceTagByAnother(
+                    $phpDocInfo,
+                    $renameAnnotation->getOldAnnotation(),
+                    $renameAnnotation->getNewAnnotation()
+                );
+
+                if ($hasDocBlockChanged) {
+                    $hasChanged = true;
+                }
             }
         }
 
@@ -126,7 +150,6 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsAOf($configuration, RenameAnnotationInterface::class);
-
         $this->renameAnnotations = $configuration;
     }
 }
