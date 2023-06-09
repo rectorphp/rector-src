@@ -51,9 +51,11 @@ final class UndefinedVariableResolver
     public function resolve(ClassMethod | Function_ | Closure $node): array
     {
         $undefinedVariables = [];
+        $checkedVariables = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
-            &$undefinedVariables
+            &$undefinedVariables,
+            &$checkedVariables
         ): ?int {
             // entering new scope - break!
             if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
@@ -74,11 +76,11 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            if ($this->shouldSkipVariable($node, $parentNode)) {
+            $variableName = (string) $this->nodeNameResolver->getName($node);
+            if ($this->shouldSkipVariable($node, $variableName, $checkedVariables, $parentNode)) {
                 return null;
             }
 
-            $variableName = $this->nodeNameResolver->getName($node);
             if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName)) {
                 return null;
             }
@@ -138,7 +140,10 @@ final class UndefinedVariableResolver
         return in_array($parentNode::class, [Assign::class, AssignRef::class], true);
     }
 
-    private function shouldSkipVariable(Variable $variable, Node $parentNode): bool
+    /**
+     * @param string[] $checkedVariables
+     */
+    private function shouldSkipVariable(Variable $variable, string $variableName, array &$checkedVariables, Node $parentNode): bool
     {
         if ($this->isAsCoalesceLeftOrAssignOpCoalesceVar($parentNode, $variable)) {
             return true;
@@ -176,6 +181,11 @@ final class UndefinedVariableResolver
             return true;
         }
 
+        if (in_array($variableName, $checkedVariables, true)) {
+            return true;
+        }
+
+        $checkedVariables[] = $variableName;
         if ($this->hasPreviousCheckedWithIsset($variable)) {
             return true;
         }
