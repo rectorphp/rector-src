@@ -8,6 +8,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\TypeAnalyzer\AlwaysStrictScalarExprAnalyzer;
@@ -21,7 +22,7 @@ final class StrictScalarReturnTypeAnalyzer
     ) {
     }
 
-    public function matchAlwaysScalarReturnType(ClassMethod|Closure|Function_ $functionLike): ?Type
+    public function matchAlwaysScalarReturnType(ClassMethod|Closure|Function_ $functionLike, Scope $scope): ?Type
     {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
         if ($returns === null) {
@@ -36,7 +37,7 @@ final class StrictScalarReturnTypeAnalyzer
                 return null;
             }
 
-            $scalarType = $this->alwaysStrictScalarExprAnalyzer->matchStrictScalarExpr($return->expr);
+            $scalarType = $this->alwaysStrictScalarExprAnalyzer->matchStrictScalarExpr($return->expr, $scope);
             if (! $scalarType instanceof Type) {
                 return null;
             }
