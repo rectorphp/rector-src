@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -78,7 +77,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        )) {
             return null;
         }
 

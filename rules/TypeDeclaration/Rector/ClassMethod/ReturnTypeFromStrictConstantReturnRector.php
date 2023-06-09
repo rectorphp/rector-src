@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Type;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;

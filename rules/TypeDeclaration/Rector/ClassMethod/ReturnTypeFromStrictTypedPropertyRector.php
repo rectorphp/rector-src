@@ -13,7 +13,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;

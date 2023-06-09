@@ -25,7 +25,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -160,7 +159,10 @@ CODE_SAMPLE
             return true;
         }
 
-        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope);
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        );
     }
 
     private function changeReturnType(Node $node, Type $exprType): void

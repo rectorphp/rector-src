@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\NeverType;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
@@ -121,7 +120,7 @@ CODE_SAMPLE
 
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
-                $scope
+            $scope
         )) {
             return true;
         }

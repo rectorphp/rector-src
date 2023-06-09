@@ -16,7 +16,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\GeneralizePrecision;
 use PHPStan\Type\Type;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;

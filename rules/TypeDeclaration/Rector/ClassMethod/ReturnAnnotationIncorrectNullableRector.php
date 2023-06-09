@@ -11,7 +11,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\Guard\PhpDocNestedAnnotationGuard;
 use Rector\TypeDeclaration\Helper\PhpDocNullableTypeHelper;
@@ -84,7 +83,10 @@ CODE_SAMPLE
     {
         $returnType = $node->getReturnType();
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        )) {
             return null;
         }
 
