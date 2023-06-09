@@ -6,13 +6,11 @@ namespace Rector\DependencyInjection\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PHPStan\Type\ObjectType;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,7 +19,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\DependencyInjection\Rector\ClassMethod\AddMethodParentCallRector\AddMethodParentCallRectorTest
  */
-final class AddMethodParentCallRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddMethodParentCallRector extends AbstractScopeAwareRector implements ConfigurableRectorInterface
 {
     /**
      * @var array<string, string>
@@ -75,18 +73,17 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, \PHPStan\Analyser\Scope $scope): ?Node
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        if (! $scope->isInClass()) {
             return null;
         }
 
-        $className = (string) $this->nodeNameResolver->getName($classLike);
+        $classReflection = $scope->getClassReflection();
 
         foreach ($this->methodByParentTypes as $type => $method) {
             // not itself
-            if ($className === $type) {
+            if ($classReflection->getName() === $type) {
                 continue;
             }
 
@@ -94,12 +91,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isObjectType($classLike, new ObjectType($type))) {
+            if (! $classReflection->isSubclassOf($type)) {
                 continue;
             }
 
             $node->stmts[] = $this->createParentStaticCall($method);
-
             return $node;
         }
 
