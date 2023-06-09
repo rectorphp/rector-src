@@ -40,7 +40,8 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
     {
-        return $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getTarget(), $typeKind);
+        $type = \PHPStan\Type\TypeCombinator::union($type->getIf(), $type->getElse());
+        return $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type, $typeKind);
     }
 
     /**
@@ -49,6 +50,7 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type->getTarget(), $typeKind);
+        $type = \PHPStan\Type\TypeCombinator::union($type->getIf(), $type->getElse());
+        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($type, $typeKind);
     }
 }
