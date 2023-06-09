@@ -321,10 +321,6 @@ parameters:
                 - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
                 - src/DependencyInjection/DefinitionFinder.php
 
-        -
-            message: '#Function "interface_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: src/DependencyInjection/Skipper/ParameterSkipper.php
-
         # use of internal phpstan classes
         -
             message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
@@ -628,7 +624,6 @@ parameters:
         # phpstan 1.10.0
         - '#Call to deprecated method getDirectClassNames\(\) of class PHPStan\\Type\\TypeUtils.*#'
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
-        - '#Parameters should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs\|PhpParser\\Node\\Param" types as the only types passed to this method#'
 
         # various usage
         - '#Parameters should use "PHPStan\\DependencyInjection\\Container" types as the only types passed to this method#'
@@ -703,5 +698,6 @@ parameters:
         - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'
 
         - '#Cognitive complexity for "Rector\\Transform\\Rector\\StaticCall\\StaticCallToMethodCallRector\:\:refactorWithScope\(\)" is 14, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
 
         - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
