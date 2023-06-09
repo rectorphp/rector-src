@@ -20,6 +20,9 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
+use Rector\ReadWrite\ParentNodeReadAnalyzer\ArgParentNodeReadAnalyzer;
+use Rector\ReadWrite\ParentNodeReadAnalyzer\ArrayDimFetchParentNodeReadAnalyzer;
+use Rector\ReadWrite\ParentNodeReadAnalyzer\IncDecParentNodeReadAnalyzer;
 
 /**
  * Possibly re-use the same logic from PHPStan rule:
@@ -28,15 +31,24 @@ use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
 final class ReadWritePropertyAnalyzer
 {
     /**
-     * @param ParentNodeReadAnalyzerInterface[] $parentNodeReadAnalyzers
+     * @var ParentNodeReadAnalyzerInterface[]
      */
+    private array $parentNodeReadAnalyzers = [];
+
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly ReadExprAnalyzer $readExprAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PureFunctionDetector $pureFunctionDetector,
-        private readonly array $parentNodeReadAnalyzers
+        ArgParentNodeReadAnalyzer $argParentNodeReadAnalyzer,
+        IncDecParentNodeReadAnalyzer $incDecParentNodeReadAnalyzer,
+        ArrayDimFetchParentNodeReadAnalyzer $arrayDimFetchParentNodeReadAnalyzer,
     ) {
+        $this->parentNodeReadAnalyzers = [
+            $argParentNodeReadAnalyzer,
+            $incDecParentNodeReadAnalyzer,
+            $arrayDimFetchParentNodeReadAnalyzer,
+        ];
     }
 
     public function isRead(PropertyFetch | StaticPropertyFetch $node, Scope $scope): bool
