@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\ClassConst;
 
+use PHPStan\Analyser\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
@@ -62,7 +63,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactorWithScope(Node $node, \PHPStan\Analyser\Scope $scope): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node->isFinal()) {
             return null;
