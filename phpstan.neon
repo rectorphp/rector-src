@@ -725,7 +725,6 @@ parameters:
                 - packages/StaticTypeMapper/Naming/NameScopeFactory.php
                 - packages/StaticTypeMapper/PhpDocParser/IdentifierTypeMapper.php
                 - packages/StaticTypeMapper/PhpParser/ExprNodeMapper.php
-                - packages/VendorLocker/NodeVendorLocker/ClassMethodReturnTypeOverrideGuard.php
                 - rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php
                 - rules/Naming/Guard/BreakingVariableRenameGuard.php
                 - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
