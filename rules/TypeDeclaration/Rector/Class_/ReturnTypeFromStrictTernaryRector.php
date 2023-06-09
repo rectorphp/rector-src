@@ -12,10 +12,12 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\GeneralizePrecision;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\ValueObject\TernaryIfElseTypes;
@@ -27,7 +29,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\ReturnTypeFromStrictTernaryRectorTest
  */
-final class ReturnTypeFromStrictTernaryRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictTernaryRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
@@ -73,7 +75,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $hasChanged = false;
 
@@ -106,7 +108,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod)) {
+            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($classMethod, $scope)) {
                 continue;
             }
 

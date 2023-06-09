@@ -17,11 +17,13 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
@@ -35,7 +37,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\ReturnTypeFromStrictTypedCallRectorTest
  */
-final class ReturnTypeFromStrictTypedCallRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictTypedCallRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly TypeNodeUnwrapper $typeNodeUnwrapper,
@@ -99,9 +101,9 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure|ArrowFunction $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->isSkipped($node)) {
+        if ($this->isSkipped($node, $scope)) {
             return null;
         }
 
@@ -197,7 +199,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isSkipped(ClassMethod | Function_ | Closure | ArrowFunction $node): bool
+    private function isSkipped(ClassMethod | Function_ | Closure | ArrowFunction $node, Scope $scope): bool
     {
         if ($node instanceof ArrowFunction) {
             return $node->returnType !== null;
@@ -211,7 +213,7 @@ CODE_SAMPLE
             return $this->isUnionPossibleReturnsVoid($node);
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node)) {
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
             return true;
         }
 
