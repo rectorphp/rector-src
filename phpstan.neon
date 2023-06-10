@@ -703,3 +703,4 @@ parameters:
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
 
         - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+        - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
