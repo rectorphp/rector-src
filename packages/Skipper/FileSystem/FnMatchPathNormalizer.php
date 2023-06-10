@@ -14,14 +14,8 @@ final class FnMatchPathNormalizer
 {
     public function normalizeForFnmatch(string $path): string
     {
-        // ends with *
-        if (Strings::match($path, AsteriskMatch::ONLY_ENDS_WITH_ASTERISK_REGEX) !== null) {
-            return '*' . $path;
-        }
-
-        // starts with *
-        if (Strings::match($path, AsteriskMatch::ONLY_STARTS_WITH_ASTERISK_REGEX) !== null) {
-            return $path . '*';
+        if (str_ends_with($path, '*') || str_starts_with($path, '*')) {
+            return '*' . trim($path, '*') . '*';
         }
 
         if (\str_contains($path, '..')) {
