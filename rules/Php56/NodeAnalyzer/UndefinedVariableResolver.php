@@ -28,7 +28,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -39,7 +38,6 @@ final class UndefinedVariableResolver
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeComparator $nodeComparator,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly VariableAnalyzer $variableAnalyzer
     ) {
     }
@@ -51,10 +49,12 @@ final class UndefinedVariableResolver
     {
         $undefinedVariables = [];
         $checkedVariables = [];
+        $currentStmt = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $node->stmts, function (Node $node) use (
             &$undefinedVariables,
-            &$checkedVariables
+            &$checkedVariables,
+            &$currentStmt
         ): ?int {
             // entering new scope - break!
             if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
@@ -69,6 +69,10 @@ final class UndefinedVariableResolver
             $checkedVariables = $this->resolveCheckedVariables($node, $checkedVariables);
             if ($node instanceof Case_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            if ($node instanceof Stmt) {
+                $currentStmt = $node;
             }
 
             if (! $node instanceof Variable) {
@@ -89,7 +93,7 @@ final class UndefinedVariableResolver
                 return null;
             }
 
-            if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName)) {
+            if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName, $currentStmt)) {
                 return null;
             }
 
@@ -179,8 +183,11 @@ final class UndefinedVariableResolver
         return $checkedVariables;
     }
 
-    private function hasVariableTypeOrCurrentStmtUnreachable(Variable $variable, ?string $variableName): bool
-    {
+    private function hasVariableTypeOrCurrentStmtUnreachable(
+        Variable $variable,
+        ?string $variableName,
+        ?Stmt $currentStmt
+    ): bool {
         if (! is_string($variableName)) {
             return true;
         }
@@ -192,7 +199,6 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($variable);
         return $currentStmt instanceof Stmt && $currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true;
     }
 
