@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
@@ -98,6 +97,10 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
+        if ($node->isReadonly()) {
+            return null;
+        }
+
         // skip "clone $this" cases, as can create unexpected write to local constructor property
 
         if ($this->hasCloneThis($node)) {
@@ -133,16 +136,6 @@ CODE_SAMPLE
         return PhpVersionFeature::READONLY_PROPERTY;
     }
 
-    private function shouldSkipInReadonlyClass(Property|Param $node): bool
-    {
-        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
-        if (! $class instanceof Class_) {
-            return true;
-        }
-
-        return $class->isReadonly();
-    }
-
     private function refactorProperty(Class_ $class, Property $property, Scope $scope): ?Property
     {
         // 1. is property read-only?
@@ -171,10 +164,6 @@ CODE_SAMPLE
         }
 
         if ($this->propertyFetchAssignManipulator->isAssignedMultipleTimesInConstructor($class, $property)) {
-            return null;
-        }
-
-        if ($this->shouldSkipInReadonlyClass($property)) {
             return null;
         }
 
@@ -211,11 +200,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isPromotedPropertyAssigned($param)) {
-            return null;
-        }
-
-        if ($this->shouldSkipInReadonlyClass($param)) {
+        if ($this->isPromotedPropertyAssigned($class, $param)) {
             return null;
         }
 
@@ -223,14 +208,9 @@ CODE_SAMPLE
         return $param;
     }
 
-    private function isPromotedPropertyAssigned(Param $param): bool
+    private function isPromotedPropertyAssigned(Class_ $class, Param $param): bool
     {
-        $classLike = $this->betterNodeFinder->findParentType($param, ClassLike::class);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        $constructClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
+        $constructClassMethod = $class->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod) {
             return false;
         }
@@ -241,10 +221,13 @@ CODE_SAMPLE
 
         $propertyFetch = new PropertyFetch(new Variable('this'), $this->getName($param));
 
-        $stmts = $classLike->stmts;
         $isAssigned = false;
-        $this->traverseNodesWithCallable($stmts, function (Node $node) use ($propertyFetch, &$isAssigned): ?int {
-            if ($node instanceof Assign && $this->nodeComparator->areNodesEqual($propertyFetch, $node->var)) {
+        $this->traverseNodesWithCallable($class->stmts, function (Node $node) use ($propertyFetch, &$isAssigned): ?int {
+            if (! $node instanceof Assign) {
+                return null;
+            }
+
+            if ($this->nodeComparator->areNodesEqual($propertyFetch, $node->var)) {
                 $isAssigned = true;
                 return NodeTraverser::STOP_TRAVERSAL;
             }
