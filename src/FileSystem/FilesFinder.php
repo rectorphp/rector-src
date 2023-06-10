@@ -117,6 +117,12 @@ final class FilesFinder
                     return false;
                 }
 
+                if (str_contains($excludePath, '**')) {
+                    // prevent matching a fnmatch pattern as a regex
+                    // which is a waste of resources
+                    continue;
+                }
+
                 if (StringUtils::isMatch($realPath, '#' . preg_quote($excludePath, '#') . '#')) {
                     return false;
                 }
