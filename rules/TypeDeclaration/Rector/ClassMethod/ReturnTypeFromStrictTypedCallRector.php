@@ -102,12 +102,12 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->isSkipped($node, $scope)) {
-            return null;
-        }
-
         if ($node instanceof ArrowFunction) {
             return $this->processArrowFunction($node);
+        }
+
+        if ($this->isSkipped($node, $scope)) {
+            return null;
         }
 
         /** @var Return_[] $returns */
@@ -153,6 +153,11 @@ CODE_SAMPLE
 
     private function processArrowFunction(ArrowFunction $arrowFunction): ?ArrowFunction
     {
+        // already filled → skip
+        if ($arrowFunction->returnType instanceof Node) {
+            return null;
+        }
+
         $resolvedType = $this->nodeTypeResolver->getType($arrowFunction->expr);
 
         // void type is not accepted for arrow functions - https://www.php.net/manual/en/functions.arrow.php#125673
@@ -198,29 +203,23 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isSkipped(ClassMethod | Function_ | Closure | ArrowFunction $node, Scope $scope): bool
+    private function isSkipped(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
-        if ($node instanceof ArrowFunction) {
-            return $node->returnType !== null;
-        }
-
         if ($node->returnType !== null) {
             return true;
         }
 
-        if (! $node instanceof ClassMethod) {
-            return $this->isUnionPossibleReturnsVoid($node);
+        if ($node instanceof ClassMethod) {
+            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+                return true;
+            }
+
+            if ($node->isMagic()) {
+                return true;
+            }
         }
 
-        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-            return true;
-        }
-
-        if (! $node->isMagic()) {
-            return $this->isUnionPossibleReturnsVoid($node);
-        }
-
-        return true;
+        return $this->isUnionPossibleReturnsVoid($node);
     }
 
     private function refactorSingleReturnType(
