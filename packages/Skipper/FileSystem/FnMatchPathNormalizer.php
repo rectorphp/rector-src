@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\FileSystem;
 
-use Nette\Utils\Strings;
-use Rector\Skipper\Enum\AsteriskMatch;
-
 /**
  * @see \Rector\Tests\Skipper\FileSystem\FnMatchPathNormalizerTest
  */
