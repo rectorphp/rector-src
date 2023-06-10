@@ -333,4 +333,8 @@ require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Parser/TypePa
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Printer/DiffElem.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Printer/Differ.php';
 require_once __DIR__ . '/../../../vendor/phpstan/phpdoc-parser/src/Printer/Printer.php';
+
 require_once __DIR__ . '/../../../vendor/nette/utils/src/Utils/Reflection.php';
+
+class_alias('\Nette\Utils\Reflection', '\_PHPStan_dcc7b7cff\Nette\Utils\Reflection', false);
+
