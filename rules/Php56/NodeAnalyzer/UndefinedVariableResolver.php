@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\Cast\Unset_ as UnsetCast;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Isset_;
@@ -111,6 +112,11 @@ final class UndefinedVariableResolver
             return $this->resolveCheckedVariablesFromIssetOrUnset($node, $checkedVariables);
         }
 
+        if ($node instanceof UnsetCast && $node->expr instanceof Variable) {
+            $checkedVariables[] = (string) $this->nodeNameResolver->getName($node->expr);
+            return $checkedVariables;
+        }
+
         if ($node instanceof Coalesce && $node->left instanceof Variable) {
             $checkedVariables[] = (string) $this->nodeNameResolver->getName($node->left);
             return $checkedVariables;
@@ -121,15 +127,11 @@ final class UndefinedVariableResolver
             return $checkedVariables;
         }
 
-        if ($node instanceof Array_ || $node instanceof List_) {
-            return $this->resolveCheckedVariablesFromArrayOrList($node, $checkedVariables);
-        }
-
         if ($node instanceof AssignRef && $node->var instanceof Variable) {
             $checkedVariables[] = (string) $this->nodeNameResolver->getName($node->var);
         }
 
-        return $checkedVariables;
+        return $this->resolveCheckedVariablesFromArrayOrList($node, $checkedVariables);
     }
 
     /**
@@ -151,8 +153,12 @@ final class UndefinedVariableResolver
      * @param string[] $checkedVariables
      * @return string[]
      */
-    private function resolveCheckedVariablesFromArrayOrList(Array_|List_ $node, array $checkedVariables): array
+    private function resolveCheckedVariablesFromArrayOrList(Node $node, array $checkedVariables): array
     {
+        if (! $node instanceof Array_ && ! $node instanceof List_) {
+            return $checkedVariables;
+        }
+
         foreach ($node->items as $item) {
             if (! $item instanceof ArrayItem) {
                 continue;
