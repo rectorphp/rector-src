@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
@@ -16,6 +17,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -100,38 +102,23 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->isSkipped($node, $scope)) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->find((array) $node->stmts, function (Node $subNode) use ($node): bool {
-            $currentFunctionLike = $this->betterNodeFinder->findParentType($subNode, FunctionLike::class);
+        if ($this->shouldSkip($node, $scope)) {
+            return null;
+        }
 
-            if ($currentFunctionLike === $node) {
-                return $subNode instanceof Return_;
-            }
+        $currentScopeReturns = $this->findCurrentScopeReturns($node);
 
-            $currentReturn = $this->betterNodeFinder->findParentType($subNode, Return_::class);
-            if (! $currentReturn instanceof Return_) {
-                return false;
-            }
-
-            $currentReturnFunctionLike = $this->betterNodeFinder->findParentType($currentReturn, FunctionLike::class);
-            if ($currentReturnFunctionLike !== $currentFunctionLike) {
-                return false;
-            }
-
-            return $subNode instanceof Return_;
-        });
-
-        $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($returns);
+        $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($currentScopeReturns);
         if ($returnedStrictTypes === []) {
             return null;
         }
 
         if (count($returnedStrictTypes) === 1) {
-            return $this->refactorSingleReturnType($returns[0], $returnedStrictTypes[0], $node);
+            return $this->refactorSingleReturnType($currentScopeReturns[0], $returnedStrictTypes[0], $node);
         }
 
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
@@ -173,7 +160,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isSkipped(ClassMethod | Function_ | Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
         if ($node->returnType !== null) {
             return true;
@@ -215,5 +202,36 @@ CODE_SAMPLE
         $functionLike->returnType = $returnType;
 
         return $functionLike;
+    }
+
+    /**
+     * @return Return_[]
+     */
+    private function findCurrentScopeReturns(ClassMethod|Function_|Closure $node): array
+    {
+        $currentScopeReturns = [];
+
+        if ($node->stmts === null) {
+            return [];
+        }
+
+        $this->traverseNodesWithCallable($node->stmts, static function (Node $node) use (&$currentScopeReturns): ?int {
+            // skip scope nesting
+            if ($node instanceof FunctionLike) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
+            if (! $node instanceof Return_) {
+                return null;
+            }
+
+            if (! $node->expr instanceof Expr) {
+                return null;
+            }
+
+            $currentScopeReturns[] = $node;
+            return null;
+        });
+        return $currentScopeReturns;
     }
 }
