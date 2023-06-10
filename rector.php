@@ -66,10 +66,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
         '**/Fixture*',
-        '**/Fixture/*',
         '**/Source*',
-        '**/Source/*',
-        '**/Expected/*',
         '**/Expected*',
 
         // keep configs untouched, as the classes are just strings
