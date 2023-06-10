@@ -8,51 +8,68 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BooleanNot;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Scope;
+use PHPStan\Node\ClassStatementsGatherer;
+use PHPStan\Type\MixedType;
+use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNestingScope\ContextAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\RemoveDeadInstanceOfRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\If_\RemoveTypedPropertyDeadInstanceOfRector\RemoveTypedPropertyDeadInstanceOfRectorTest
  */
-final class RemoveDeadInstanceOfRector extends AbstractRector
+final class RemoveTypedPropertyDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly PromotedPropertyResolver $promotedPropertyResolver,
         private readonly ContextAnalyzer $contextAnalyzer
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Remove dead instanceof check on type hinted variable', [
+        return new RuleDefinition('Remove dead instanceof check on type hinted property', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-function run(stdClass $stdClass)
+final class SomeClass
 {
-    if (! $stdClass instanceof stdClass) {
-        return false;
-    }
+    public function go(stdClass $stdClass)
+    {
+        if (! $stdClass instanceof stdClass) {
+            return false;
+        }
 
-    return true;
+        return true;
+    }
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-function run(stdClass $stdClass)
+final class SomeClass
 {
-    return true;
+    public function go(stdClass $stdClass)
+    {
+        return true;
+    }
 }
 CODE_SAMPLE
             ),
@@ -101,11 +118,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // handle in another rule
-        if ($this->isPropertyFetch($instanceof->expr) || $instanceof->expr instanceof CallLike) {
-            return null;
-        }
-
         $classType = $this->nodeTypeResolver->getType($instanceof->class);
         $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
 
@@ -113,6 +125,12 @@ CODE_SAMPLE
             ->yes();
 
         if (! $isSameStaticTypeOrSubtype) {
+            return null;
+        }
+
+        if (! $instanceof->expr instanceof Variable && ! $this->isInPropertyPromotedParams(
+            $instanceof->expr
+        ) && $this->isSkippedPropertyFetch($instanceof->expr)) {
             return null;
         }
 
@@ -128,7 +146,6 @@ CODE_SAMPLE
             return NodeTraverser::REMOVE_NODE;
         }
 
-        // unwrap stmts
         return $if->stmts;
     }
 
@@ -162,12 +179,65 @@ CODE_SAMPLE
         return false;
     }
 
-    private function isPropertyFetch(Expr $expr): bool
+    private function isSkippedPropertyFetch(Expr $expr): bool
     {
-        if ($expr instanceof PropertyFetch) {
+        if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr)) {
             return true;
         }
 
-        return $expr instanceof StaticPropertyFetch;
+        /** @var Scope $scope */
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        $nativePropertyFetchType = $scope->getNativeType($expr);
+
+        // new ClassStatementsGatherer($expr)
+
+        dump($nativePropertyFetchType);
+
+        // skip as we don't know the type
+        //        dump($propertyType);
+        if ($nativePropertyFetchType instanceof MixedType) {
+            return true;
+        }
+
+        return false;
+
+        /** @var string $propertyName */
+        $propertyName = $this->nodeNameResolver->getName($propertyFetch);
+        //        $property = $classLike->getProperty($propertyName);
+
+        //        if (! $property instanceof Property) {
+        //            return true;
+        //        }
+
+        //        $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned(
+        //            $classLike,
+        //            $propertyName
+        //        );
+
+        //        return $property->type === null && ! $isPropertyAssignedInConstuctor;
+    }
+
+    private function isInPropertyPromotedParams(Expr $expr): bool
+    {
+        if (! $expr instanceof PropertyFetch) {
+            return false;
+        }
+
+        $classLike = $this->betterNodeFinder->findParentType($expr, Class_::class);
+        if (! $classLike instanceof Class_) {
+            return false;
+        }
+
+        /** @var string $propertyName */
+        $propertyName = $this->nodeNameResolver->getName($expr);
+        $params = $this->promotedPropertyResolver->resolveFromClass($classLike);
+
+        foreach ($params as $param) {
+            if ($this->nodeNameResolver->isName($param, $propertyName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
