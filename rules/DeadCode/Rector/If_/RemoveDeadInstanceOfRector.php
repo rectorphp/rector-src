@@ -23,7 +23,6 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNestingScope\ContextAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -93,11 +92,6 @@ CODE_SAMPLE
         }
 
         if ($this->contextAnalyzer->isInLoop($node)) {
-            return null;
-        }
-
-        $originalCondNode = $node->cond->getAttribute(AttributeKey::ORIGINAL_NODE);
-        if (! $originalCondNode instanceof Node) {
             return null;
         }
 
