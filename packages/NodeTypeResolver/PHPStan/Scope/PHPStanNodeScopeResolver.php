@@ -254,11 +254,11 @@ final class PHPStanNodeScopeResolver
 
     private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt, MutatingScope $mutatingScope): void
     {
-        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
+        if (! $stmt instanceof StmtsAwareInterface && ! $stmt instanceof ClassLike && ! $stmt instanceof Declare_) {
             return;
         }
 
-        if (! $stmt instanceof StmtsAwareInterface && ! $stmt instanceof ClassLike && ! $stmt instanceof Declare_) {
+        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
             return;
         }
 
