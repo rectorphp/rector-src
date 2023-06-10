@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\Fixture;
 
 use stdClass;
 
-class SkipDirectMethodCall
+final class SkipDirectMethodCall
 {
     private function get(): stdClass
     {
@@ -22,5 +22,3 @@ class SkipDirectMethodCall
         return true;
     }
 }
-
-?>
