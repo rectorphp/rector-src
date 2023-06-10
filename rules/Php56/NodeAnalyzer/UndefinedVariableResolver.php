@@ -75,6 +75,7 @@ final class UndefinedVariableResolver
                 return null;
             }
 
+            // after variable variable, the variable name got unpredictable, just stop
             if ($node->name instanceof Variable) {
                 return NodeTraverser::STOP_TRAVERSAL;
             }
