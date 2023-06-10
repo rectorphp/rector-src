@@ -28,6 +28,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -38,6 +39,7 @@ use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
+use PHPStan\Analyser\StatementContext;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -224,7 +226,7 @@ final class PHPStanNodeScopeResolver
                 );
 
                 $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+                $this->processStmts($node->stmts, $traitScope, $nodeCallback);
                 $this->decorateTraitAttrGroups($node, $traitScope);
 
                 return;
@@ -250,6 +252,36 @@ final class PHPStanNodeScopeResolver
         };
 
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @param callable(Node $node, Scope $scope): void $nodeCallback
+     */
+    public function processStmts(array $nodes, MutatingScope $mutatingScope, callable $nodeCallback): void
+    {
+        foreach ($nodes as $i => $node) {
+            if (! $node instanceof Stmt) {
+                continue;
+            }
+
+            $statementResult = $this->privatesAccessor->callPrivateMethod(
+                $this->nodeScopeResolver,
+                'processStmtNode',
+                [$node, $mutatingScope, $nodeCallback, StatementContext::createTopLevel()]
+            );
+            $mutatingScope = $statementResult->getScope();
+            if (! $statementResult->isAlwaysTerminating()) {
+                continue;
+            }
+
+            $nextStmt = $this->getFirstNonNopNode(array_slice($nodes, $i + 1));
+            if (! $nextStmt instanceof Stmt) {
+                continue;
+            }
+
+            $nodeCallback(new UnreachableStatementNode($nextStmt), $mutatingScope);
+        }
     }
 
     private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt, MutatingScope $mutatingScope): void
@@ -329,6 +361,17 @@ final class PHPStanNodeScopeResolver
         }
     }
 
+    private function getFirstNonNopNode(array $nodes): ?Node
+    {
+        foreach ($nodes as $node) {
+            if (! $node instanceof Nop) {
+                return $node;
+            }
+        }
+
+        return null;
+    }
+
     private function processUnreachableStatementNode(
         UnreachableStatementNode $unreachableStatementNode,
         string $filePath,
@@ -339,23 +382,6 @@ final class PHPStanNodeScopeResolver
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
-
-        $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof StmtsAwareInterface && ! $parentNode instanceof ClassLike && ! $parentNode instanceof Declare_) {
-            return;
-        }
-
-        $stmtKey = $unreachableStatementNode->getAttribute(AttributeKey::STMT_KEY);
-        $totalKeys = $parentNode->stmts === null ? 0 : count($parentNode->stmts);
-
-        for ($key = $stmtKey + 1; $key < $totalKeys; ++$key) {
-            if (! isset($parentNode->stmts[$key])) {
-                continue;
-            }
-
-            $parentNode->stmts[$key]->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-            $this->processNodes([$parentNode->stmts[$key]], $filePath, $mutatingScope);
-        }
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
@@ -401,7 +427,7 @@ final class PHPStanNodeScopeResolver
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
-        $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        $this->processStmts($stmts, $mutatingScope, $nodeCallback);
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 
         return $stmts;
