@@ -45,7 +45,7 @@ final class FilesFinder
      * @param string[] $suffixes
      * @return string[]
      */
-    private function findInDirectories(array $directories, array $suffixes, bool $sortByName = false): array
+    private function findInDirectories(array $directories, array $suffixes, bool $sortByName = true): array
     {
         if ($directories === []) {
             return [];
