@@ -146,10 +146,6 @@ CODE_SAMPLE
 
     private function shouldSkip(string $classLikeName): bool
     {
-        if (! $this->reflectionProvider->hasClass($classLikeName)) {
-            return true;
-        }
-
         // skip short class names, mostly invalid use of strings
         if (! str_contains($classLikeName, '\\')) {
             return true;
@@ -157,6 +153,10 @@ CODE_SAMPLE
 
         // possibly string
         if (ctype_lower($classLikeName[0])) {
+            return true;
+        }
+
+        if (! $this->reflectionProvider->hasClass($classLikeName)) {
             return true;
         }
 
