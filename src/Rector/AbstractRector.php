@@ -32,7 +32,6 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -106,8 +105,6 @@ CODE_SAMPLE;
 
     private DocBlockUpdater $docBlockUpdater;
 
-    private NodeConnectingTraverser $nodeConnectingTraverser;
-
     private ?string $toBeRemovedNodeHash = null;
 
     #[Required]
@@ -130,8 +127,7 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        DocBlockUpdater $docBlockUpdater,
-        NodeConnectingTraverser $nodeConnectingTraverser
+        DocBlockUpdater $docBlockUpdater
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -152,7 +148,6 @@ CODE_SAMPLE;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
         $this->docBlockUpdater = $docBlockUpdater;
-        $this->nodeConnectingTraverser = $nodeConnectingTraverser;
     }
 
     /**
@@ -252,7 +247,7 @@ CODE_SAMPLE;
         if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
             $this->toBeRemovedNodeHash = null;
 
-            return NodeConnectingTraverser::REMOVE_NODE;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         $objectHash = spl_object_hash($node);
@@ -363,7 +358,6 @@ CODE_SAMPLE;
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateParentNodes($refactoredNode, $parentNode);
-            $this->nodeConnectingTraverser->traverse($refactoredNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -377,7 +371,6 @@ CODE_SAMPLE;
             : $refactoredNode;
 
         $this->updateParentNodes($refactoredNode, $parentNode);
-        $this->nodeConnectingTraverser->traverse([$refactoredNode]);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
