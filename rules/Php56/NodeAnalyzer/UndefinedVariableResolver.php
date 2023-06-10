@@ -75,6 +75,10 @@ final class UndefinedVariableResolver
                 return null;
             }
 
+            if ($node->name instanceof Variable) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             if ($node->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
                 return null;
             }
@@ -214,11 +218,6 @@ final class UndefinedVariableResolver
         if ($this->variableAnalyzer->isStaticOrGlobal($variable)) {
             return true;
         }
-
-        $checkedVariables = array_filter(
-            $checkedVariables,
-            static fn (string $variableName): bool => $variableName !== ''
-        );
 
         return in_array($variableName, $checkedVariables, true);
     }
