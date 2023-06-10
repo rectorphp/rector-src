@@ -5,27 +5,22 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Do_;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
-use PHPStan\Analyser\Scope;
-use PHPStan\Node\ClassStatementsGatherer;
-use PHPStan\Type\MixedType;
-use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeNestingScope\ContextAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -38,10 +33,8 @@ final class RemoveTypedPropertyDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PromotedPropertyResolver $promotedPropertyResolver,
-        private readonly ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -52,13 +45,20 @@ final class RemoveTypedPropertyDeadInstanceOfRector extends AbstractRector
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function go(stdClass $stdClass)
+    private $someObject;
+
+    public function __construct($someObject)
     {
-        if (! $stdClass instanceof stdClass) {
-            return false;
+        $this->someObject = $someObject;
+    }
+
+    public function run()
+    {
+        if ($this->someObject instanceof SomeObject) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 }
 CODE_SAMPLE
@@ -66,7 +66,14 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function go(stdClass $stdClass)
+    private $someObject;
+
+    public function __construct($someObject)
+    {
+        $this->someObject = $someObject;
+    }
+
+    public function run()
     {
         return true;
     }
@@ -81,29 +88,55 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [Class_::class];
     }
 
     /**
-     * @param If_ $node
-     * @return Stmt[]|null|int
+     * @param Class_ $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Class_
     {
-        if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
+        $hasChanged = false;
+        $class = $node;
+
+        $this->traverseNodesWithCallable($node->getMethods(), function (Node $node) use (
+            &$hasChanged,
+            $class
+        ): int|null|array {
+            // avoid loop ifs
+            if ($node instanceof While_ || $node instanceof Foreach_ || $node instanceof For_ || $node instanceof Do_) {
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
+            if (! $node instanceof If_) {
+                return null;
+            }
+
+            if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
+                return null;
+            }
+
+            if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
+                $result = $this->refactorStmtAndInstanceof($class, $node, $node->cond->expr);
+                if ($result !== null) {
+                    $hasChanged = true;
+                    return $result;
+                }
+            }
+
+            if ($node->cond instanceof Instanceof_) {
+                $result = $this->refactorStmtAndInstanceof($class, $node, $node->cond);
+                if ($result !== null) {
+                    $hasChanged = true;
+                    return $result;
+                }
+            }
+
             return null;
-        }
+        });
 
-        if ($this->contextAnalyzer->isInLoop($node)) {
-            return null;
-        }
-
-        if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
-            return $this->refactorStmtAndInstanceof($node, $node->cond->expr);
-        }
-
-        if ($node->cond instanceof Instanceof_) {
-            return $this->refactorStmtAndInstanceof($node, $node->cond);
+        if ($hasChanged) {
+            return $node;
         }
 
         return null;
@@ -112,11 +145,18 @@ CODE_SAMPLE
     /**
      * @return null|Stmt[]|int
      */
-    private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
+    private function refactorStmtAndInstanceof(Class_ $class, If_ $if, Instanceof_ $instanceof): null|array|int
     {
+        // check local property only
+        if (! $instanceof->expr instanceof PropertyFetch || ! $this->isName($instanceof->expr->var, 'this')) {
+            return null;
+        }
+
         if (! $instanceof->class instanceof Name) {
             return null;
         }
+
+        $propertyFetch = $instanceof->expr;
 
         $classType = $this->nodeTypeResolver->getType($instanceof->class);
         $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
@@ -128,13 +168,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $instanceof->expr instanceof Variable && ! $this->isInPropertyPromotedParams(
+        if (! $this->isInPropertyPromotedParams($class, $instanceof->expr) && $this->isSkippedPropertyFetch(
+            $class,
             $instanceof->expr
-        ) && $this->isSkippedPropertyFetch($instanceof->expr)) {
-            return null;
-        }
-
-        if ($this->shouldSkipFromNotTypedParam($instanceof)) {
+        )) {
             return null;
         }
 
@@ -149,88 +186,30 @@ CODE_SAMPLE
         return $if->stmts;
     }
 
-    private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool
+    private function isSkippedPropertyFetch(Class_ $class, PropertyFetch|StaticPropertyFetch $propertyFetch): bool
     {
-        $functionLike = $this->betterNodeFinder->findParentType($instanceof, FunctionLike::class);
-        if (! $functionLike instanceof FunctionLike) {
+        $propertyName = $this->getName($propertyFetch->name);
+        if ($propertyName === null) {
+            return true;
+        }
+
+        if ($this->constructorAssignDetector->isPropertyAssigned($class, $propertyName)) {
             return false;
         }
 
-        $variable = $instanceof->expr;
-        $isReAssign = (bool) $this->betterNodeFinder->findFirstPrevious(
-            $instanceof,
-            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $subNode->var,
-                $variable
-            )
-        );
-
-        if ($isReAssign) {
+        $property = $class->getProperty($propertyName);
+        if (! $property instanceof Property) {
             return false;
         }
 
-        $params = $functionLike->getParams();
-        foreach ($params as $param) {
-            if ($this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
-                return $param->type === null;
-            }
-        }
-
-        return false;
+        return $property->type === null;
     }
 
-    private function isSkippedPropertyFetch(Expr $expr): bool
+    private function isInPropertyPromotedParams(Class_ $class, PropertyFetch|StaticPropertyFetch $propertyFetch): bool
     {
-        if (! $this->propertyFetchAnalyzer->isLocalPropertyFetch($expr)) {
-            return true;
-        }
-
-        /** @var Scope $scope */
-        $scope = $expr->getAttribute(AttributeKey::SCOPE);
-        $nativePropertyFetchType = $scope->getNativeType($expr);
-
-        // new ClassStatementsGatherer($expr)
-
-        dump($nativePropertyFetchType);
-
-        // skip as we don't know the type
-        //        dump($propertyType);
-        if ($nativePropertyFetchType instanceof MixedType) {
-            return true;
-        }
-
-        return false;
-
         /** @var string $propertyName */
         $propertyName = $this->nodeNameResolver->getName($propertyFetch);
-        //        $property = $classLike->getProperty($propertyName);
-
-        //        if (! $property instanceof Property) {
-        //            return true;
-        //        }
-
-        //        $isPropertyAssignedInConstuctor = $this->constructorAssignDetector->isPropertyAssigned(
-        //            $classLike,
-        //            $propertyName
-        //        );
-
-        //        return $property->type === null && ! $isPropertyAssignedInConstuctor;
-    }
-
-    private function isInPropertyPromotedParams(Expr $expr): bool
-    {
-        if (! $expr instanceof PropertyFetch) {
-            return false;
-        }
-
-        $classLike = $this->betterNodeFinder->findParentType($expr, Class_::class);
-        if (! $classLike instanceof Class_) {
-            return false;
-        }
-
-        /** @var string $propertyName */
-        $propertyName = $this->nodeNameResolver->getName($expr);
-        $params = $this->promotedPropertyResolver->resolveFromClass($classLike);
+        $params = $this->promotedPropertyResolver->resolveFromClass($class);
 
         foreach ($params as $param) {
             if ($this->nodeNameResolver->isName($param, $propertyName)) {

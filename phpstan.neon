@@ -704,3 +704,5 @@ parameters:
 
         - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
         - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
+
+        - '#Parameter \#2 \$callable of method Rector\\Core\\Rector\\AbstractRector\:\:traverseNodesWithCallable\(\) expects callable\(PhpParser\\Node\)\: \(int\|PhpParser\\Node\|null\), Closure\(PhpParser\\Node\)\: \(array<PhpParser\\Node\\Stmt>\|int\|null\) given#'

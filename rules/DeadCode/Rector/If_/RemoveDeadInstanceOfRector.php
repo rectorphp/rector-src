@@ -6,20 +6,22 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Do_;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
+use PHPStan\Type\MixedType;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\Rector\AbstractRector;
-use Rector\NodeNestingScope\ContextAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -30,7 +32,6 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
-        private readonly ContextAnalyzer $contextAnalyzer
     ) {
     }
 
@@ -64,20 +65,21 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [If_::class];
+        return [If_::class, For_::class, Foreach_::class, While_::class, Do_::class];
     }
 
     /**
-     * @param If_ $node
+     * @param If_|For_|Foreach_|While_|Do_ $node
      * @return Stmt[]|null|int
      */
     public function refactor(Node $node)
     {
-        if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
-            return null;
+        // avoid ifs in a loop, as unexpected behavior
+        if (! $node instanceof If_) {
+            return NodeTraverser::STOP_TRAVERSAL;
         }
 
-        if ($this->contextAnalyzer->isInLoop($node)) {
+        if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;
         }
 
@@ -134,32 +136,8 @@ CODE_SAMPLE
 
     private function shouldSkipFromNotTypedParam(Instanceof_ $instanceof): bool
     {
-        $functionLike = $this->betterNodeFinder->findParentType($instanceof, FunctionLike::class);
-        if (! $functionLike instanceof FunctionLike) {
-            return false;
-        }
-
-        $variable = $instanceof->expr;
-        $isReAssign = (bool) $this->betterNodeFinder->findFirstPrevious(
-            $instanceof,
-            fn (Node $subNode): bool => $subNode instanceof Assign && $this->nodeComparator->areNodesEqual(
-                $subNode->var,
-                $variable
-            )
-        );
-
-        if ($isReAssign) {
-            return false;
-        }
-
-        $params = $functionLike->getParams();
-        foreach ($params as $param) {
-            if ($this->nodeComparator->areNodesEqual($param->var, $instanceof->expr)) {
-                return $param->type === null;
-            }
-        }
-
-        return false;
+        $nativeParamType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
+        return $nativeParamType instanceof MixedType;
     }
 
     private function isPropertyFetch(Expr $expr): bool
