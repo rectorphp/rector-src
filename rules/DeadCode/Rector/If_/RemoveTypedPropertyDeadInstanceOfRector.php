@@ -156,8 +156,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $propertyFetch = $instanceof->expr;
-
         $classType = $this->nodeTypeResolver->getType($instanceof->class);
         $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
 
