@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
@@ -67,15 +68,22 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class, ClassMethod::class];
+        return [MethodCall::class, StaticCall::class, Class_::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|ClassMethod $node
+     * @param MethodCall|StaticCall|Class_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $classReflection = $scope->getClassReflection();
+
+        if ($node instanceof Class_) {
+            foreach ($node->getMethods() as $classMethod) {
+                ;
+            }
+
+        }
 
         foreach ($this->methodCallRenames as $methodCallRename) {
             if (! $this->isName($node->name, $methodCallRename->getOldMethod())) {
