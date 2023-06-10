@@ -10,12 +10,12 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -26,8 +26,7 @@ final class VariableRenamer
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -44,6 +43,8 @@ final class VariableRenamer
         }
 
         $hasRenamed = false;
+        $currentStmt = null;
+        $currentClosure = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->getStmts(),
@@ -52,7 +53,9 @@ final class VariableRenamer
                 $expectedName,
                 $assign,
                 &$isRenamingActive,
-                &$hasRenamed
+                &$hasRenamed,
+                &$currentStmt,
+                &$currentClosure
             ): int|null|Variable {
                 // skip param names
                 if ($node instanceof Param) {
@@ -64,13 +67,19 @@ final class VariableRenamer
                     return null;
                 }
 
+                if ($node instanceof Stmt) {
+                    $currentStmt = $node;
+                }
+
+                if ($node instanceof Closure) {
+                    $currentClosure = $node;
+                }
+
                 if (! $node instanceof Variable) {
                     return null;
                 }
 
-                // TODO: Remove in next PR (with above param check?),
-                // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
-                if ($this->isParamInParentFunction($node)) {
+                if ($this->isParamInParentFunction($node, $currentClosure)) {
                     return null;
                 }
 
@@ -78,7 +87,7 @@ final class VariableRenamer
                     return null;
                 }
 
-                $variable = $this->renameVariableIfMatchesName($node, $oldName, $expectedName);
+                $variable = $this->renameVariableIfMatchesName($node, $oldName, $expectedName, $currentStmt);
                 if ($variable instanceof Variable) {
                     $hasRenamed = true;
                 }
@@ -90,9 +99,8 @@ final class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(Variable $variable): bool
+    private function isParamInParentFunction(Variable $variable, ?Closure $closure): bool
     {
-        $closure = $this->betterNodeFinder->findParentType($variable, Closure::class);
         if (! $closure instanceof Closure) {
             return false;
         }
@@ -111,15 +119,19 @@ final class VariableRenamer
         return false;
     }
 
-    private function renameVariableIfMatchesName(Variable $variable, string $oldName, string $expectedName): ?Variable
-    {
+    private function renameVariableIfMatchesName(
+        Variable $variable,
+        string $oldName,
+        string $expectedName,
+        ?Stmt $currentStmt
+    ): ?Variable {
         if (! $this->nodeNameResolver->isName($variable, $oldName)) {
             return null;
         }
 
         $variable->name = $expectedName;
 
-        $variablePhpDocInfo = $this->resolvePhpDocInfo($variable);
+        $variablePhpDocInfo = $this->resolvePhpDocInfo($variable, $currentStmt);
         $this->varTagValueNodeRenamer->renameAssignVarTagVariableName($variablePhpDocInfo, $oldName, $expectedName);
 
         return $variable;
@@ -128,10 +140,9 @@ final class VariableRenamer
     /**
      * Expression doc block has higher priority
      */
-    private function resolvePhpDocInfo(Variable $variable): PhpDocInfo
+    private function resolvePhpDocInfo(Variable $variable, ?Stmt $currentStmt): PhpDocInfo
     {
-        $currentStmt = $this->betterNodeFinder->resolveCurrentStatement($variable);
-        if ($currentStmt instanceof Node) {
+        if ($currentStmt instanceof Stmt) {
             return $this->phpDocInfoFactory->createFromNodeOrEmpty($currentStmt);
         }
 
