@@ -33,17 +33,19 @@ final class RectifiedAnalyzer
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    private function hasConsecutiveCreatedByRule(string $rectorClass, Node $node, ?Node $originalNode): bool
+    private function hasConsecutiveCreatedByRule(string $rectorClass, Node $node, ?Node $originalNode = null): bool
     {
-        $createdByRuleNode = $originalNode ?? $node;
         /** @var class-string<RectorInterface>[] $createdByRule */
-        $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        if (end($createdByRule) === $rectorClass) {
+            return true;
+        }
 
-        if ($createdByRule === []) {
+        if (! $originalNode instanceof Node) {
             return false;
         }
 
-        return end($createdByRule) === $rectorClass;
+        return $this->hasConsecutiveCreatedByRule($rectorClass, $originalNode);
     }
 
     private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
