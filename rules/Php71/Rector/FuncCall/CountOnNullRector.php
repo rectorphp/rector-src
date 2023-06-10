@@ -78,14 +78,19 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class, Ternary::class];
+        return [Trait_::class, FuncCall::class, Ternary::class];
     }
 
     /**
-     * @param FuncCall|Ternary $node
+     * @param Trait_|FuncCall|Ternary $node
      */
     public function refactorWithScope(Node $node, Scope $scope): int|Ternary|null|FuncCall
     {
+        if ($node instanceof Trait_) {
+            // skip contents in traits, as hard to analyze
+            return NodeTraverser::STOP_TRAVERSAL;
+        }
+
         if ($node instanceof Ternary) {
             if ($this->shouldSkipTernaryIfElseCountFuncCall($node)) {
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
@@ -157,12 +162,6 @@ CODE_SAMPLE
         }
 
         if ($funcCall->isFirstClassCallable()) {
-            return true;
-        }
-
-        // skip ternary in trait, as impossible to analyse
-        $trait = $this->betterNodeFinder->findParentType($funcCall, Trait_::class);
-        if ($trait instanceof Trait_) {
             return true;
         }
 
