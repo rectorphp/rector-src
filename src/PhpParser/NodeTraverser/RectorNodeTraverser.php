@@ -38,6 +38,9 @@ final class RectorNodeTraverser extends NodeTraverser
 
         foreach ($this->activePhpRectors as $activePhpRector) {
             $this->visitors = [$activePhpRector];
+
+            // call parent::traverse() on loop to ensure
+            // stopTraversal always reset to false before run on next Rector rule
             $nodes = parent::traverse($nodes);
         }
 
