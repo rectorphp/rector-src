@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\TypeComparator;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ArrayType;
@@ -23,7 +22,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -39,7 +38,7 @@ final class TypeComparator
         private readonly ArrayTypeComparator $arrayTypeComparator,
         private readonly ScalarTypeComparator $scalarTypeComparator,
         private readonly TypeFactory $typeFactory,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -298,12 +297,12 @@ final class TypeComparator
             return true;
         }
 
-        $class = $this->betterNodeFinder->findParentType($node, Class_::class);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
-        if (! $class instanceof Class_) {
+        if ($classReflection === null || ! $classReflection->isClass()) {
             return false;
         }
 
-        return $class->isFinal();
+        return $classReflection->isFinalByKeyword();
     }
 }
