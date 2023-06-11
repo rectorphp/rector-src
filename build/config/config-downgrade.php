@@ -47,5 +47,8 @@ final class DowngradeRectorConfig
         'vendor/symfony/contracts/Cache/*',
 
         'vendor/rector/rector-generator/templates',
+
+        // debug
+        \Rector\DowngradePhp80\Rector\MethodCall\DowngradeReflectionGetAttributesRector::class,
     ];
 }
