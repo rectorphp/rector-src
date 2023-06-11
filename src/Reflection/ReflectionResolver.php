@@ -26,7 +26,6 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverRegistry;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -41,7 +40,6 @@ final class ReflectionResolver
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly TypeToCallReflectionResolverRegistry $typeToCallReflectionResolverRegistry,
@@ -195,16 +193,12 @@ final class ReflectionResolver
 
     public function resolveMethodReflectionFromClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->resolveClassReflection($classMethod);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-        if (! is_string($className)) {
-            return null;
-        }
-
+        $className = $classReflection->getName();
         $methodName = $this->nodeNameResolver->getName($classMethod);
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
 
