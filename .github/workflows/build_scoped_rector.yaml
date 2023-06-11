@@ -108,7 +108,7 @@ jobs:
                 id: git-log
                 run: |
                     echo "log<<EOF" >> $GITHUB_OUTPUT
-                    echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='%H %s' | sed -e 's/^/https:\/\/github.com\/rectorphp\/rector-src\/commit\//')" >> $GITHUB_OUTPUT
+                    echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/rectorphp/rector-src/commit/%H %s')" >> $GITHUB_OUTPUT
                     echo 'EOF' >> $GITHUB_OUTPUT
 
             # 8.A publish it to remote repository without tag
@@ -116,9 +116,11 @@ jobs:
                 name: "Commit Prefixed - main"
                 working-directory: remote-repository
                 if: "!startsWith(github.ref, 'refs/tags/')"
+                env:
+                    INPUT_LOG: ${{ steps.git-log.outputs.log }}
                 run: |
                     git add --all
-                    git commit -m "Updated Rector to commit ${{ github.event.after }}" -m "${{ steps.git-log.outputs.log }}"
+                    git commit -m "Updated Rector to commit ${{ github.event.after }}" -m "$INPUT_LOG"
                     git push --quiet origin main
 
             # 8.B publish it to remote repository with tag
@@ -126,9 +128,11 @@ jobs:
                 name: "Commit Prefixed - tag"
                 working-directory: remote-repository
                 if: "startsWith(github.ref, 'refs/tags/')"
+                env:
+                    INPUT_LOG: ${{ steps.git-log.outputs.log }}
                 run: |
                     git add --all
-                    git commit -m "Rector ${GITHUB_REF#refs/tags/}" -m "${{ steps.git-log.outputs.log }}"
+                    git commit -m "Rector ${GITHUB_REF#refs/tags/}" -m "$INPUT_LOG"
                     git push --quiet origin main
                     git tag ${GITHUB_REF#refs/tags/} -m "${GITHUB_REF#refs/tags/}"
                     git push --quiet origin ${GITHUB_REF#refs/tags/}
