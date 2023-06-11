@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\TypeComparator;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -299,7 +300,7 @@ final class TypeComparator
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
-        if ($classReflection === null || ! $classReflection->isClass()) {
+        if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             return false;
         }
 
