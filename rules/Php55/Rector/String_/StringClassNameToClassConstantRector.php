@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php55\NodeVisitor\ClassConstStringValueNodeVisitor;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -29,6 +30,11 @@ use Webmozart\Assert\Assert;
  */
 final class StringClassNameToClassConstantRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const IS_UNDER_CLASS_CONST = 'is_under_class_const';
+
     /**
      * @var string[]
      */
@@ -87,11 +93,12 @@ CODE_SAMPLE
     /**
      * @param String_|FuncCall|ClassConst $node
      */
-    public function refactorWithScope(Node $node, Scope $scope)
+    public function refactorWithScope(Node $node, Scope $scope): Concat|ClassConstFetch|null|int
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            return NodeTraverser::STOP_TRAVERSAL;
+            $this->fillIsUnderClassConstAttribute($node);
+            return null;
         }
 
         // keep allowed string as condition
@@ -100,6 +107,10 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
+            return null;
+        }
+
+        if ($node->getAttribute(self::IS_UNDER_CLASS_CONST) === true) {
             return null;
         }
 
@@ -142,6 +153,13 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::CLASSNAME_CONSTANT;
+    }
+
+    private function fillIsUnderClassConstAttribute(ClassConst $classConst): void
+    {
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new ClassConstStringValueNodeVisitor());
+        $nodeTraverser->traverse([$classConst]);
     }
 
     private function shouldSkip(string $classLikeName): bool
