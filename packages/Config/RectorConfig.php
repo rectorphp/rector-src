@@ -135,7 +135,9 @@ final class RectorConfig extends ContainerConfigurator
         });
 
         $services->set($rectorClass)
-            ->call('configure', [$configuration]);
+            ->call('configure', [$configuration])
+            ->tag(RectorInterface::class)
+            ->tag(PhpRectorInterface::class);
     }
 
     /**

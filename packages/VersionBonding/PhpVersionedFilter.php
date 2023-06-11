@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\VersionBonding;
 
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 
@@ -16,9 +16,8 @@ final class PhpVersionedFilter
     }
 
     /**
-     * @template T as RectorInterface
-     * @param array<T> $rectors
-     * @return array<T>
+     * @param iterable<PhpRectorInterface> $rectors
+     * @return array<PhpRectorInterface>
      */
     public function filter(iterable $rectors): array
     {

@@ -13,6 +13,7 @@ use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
@@ -28,19 +29,21 @@ final class ContainerBuilderFactory
      * @var array<class-string>
      */
     private const TYPES_TO_TAG_AUTOCONFIGURE = [
-        NodeTypeResolverInterface::class,
-        PhpParserNodeMapperInterface::class,
-        ScopeResolverNodeVisitorInterface::class,
-        PhpDocTypeMapperInterface::class,
-        ClassNameImportSkipVoterInterface::class,
-        OutputFormatterInterface::class,
-        FileProcessorInterface::class,
         BasePhpDocNodeVisitorInterface::class,
         PhpDocNodeDecoratorInterface::class,
-        NonPhpRectorInterface::class,
+        NodeTypeResolverInterface::class,
+        ScopeResolverNodeVisitorInterface::class,
         TypeMapperInterface::class,
-        PhpRectorInterface::class,
+        PhpParserNodeMapperInterface::class,
+        PhpDocTypeMapperInterface::class,
+        ClassNameImportSkipVoterInterface::class,
         RectorInterface::class,
+        RectorInterface::class,
+        OutputFormatterInterface::class,
+        NonPhpRectorInterface::class,
+        PhpRectorInterface::class,
+        NodeNameResolverInterface::class,
+        FileProcessorInterface::class,
     ];
 
     public function __construct(

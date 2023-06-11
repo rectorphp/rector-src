@@ -13,14 +13,6 @@ final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
 
-<<<<<<< HEAD
-=======
-    /**
-     * @var PhpRectorInterface[]|NodeVisitor[]
-     */
-    private array $activePhpRectors = [];
-
->>>>>>> deb36aa9b4 (make use of tags in DI)
     /**
      * @param PhpRectorInterface[] $phpRectors
      */
@@ -56,14 +48,9 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
-<<<<<<< HEAD
         $this->visitors = $this->visitors === []
             ? $activePhpRectors
             : array_merge($this->visitors, $activePhpRectors);
-=======
-
-        $this->activePhpRectors = array_merge($this->visitors, $activePhpRectors);
->>>>>>> c2bfa653c4 (pass rector instances directly)
 
         $this->areNodeVisitorsPrepared = true;
     }

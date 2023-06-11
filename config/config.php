@@ -52,6 +52,8 @@ use Rector\Core\NonPhpFile\NonPhpFileProcessor;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
+use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -283,7 +285,7 @@ return static function (RectorConfig $rectorConfig): void {
         ->arg('$nodeTypeResolvers', tagged_iterator(NodeTypeResolverInterface::class));
 
     $services->set(PHPStanNodeScopeResolver::class)
-        ->arg('$nodeVisitors', tagged_iterator(ScopeResolverNodeVisitorInterface::class)->getValues());
+        ->arg('$nodeVisitors', tagged_iterator(ScopeResolverNodeVisitorInterface::class));
 
     $services->set(PHPStanStaticTypeMapper::class)
         ->arg('$typeMappers', tagged_iterator(TypeMapperInterface::class));
@@ -307,16 +309,20 @@ return static function (RectorConfig $rectorConfig): void {
         ->arg('$outputFormatters', tagged_iterator(OutputFormatterInterface::class));
 
     $services->set(NonPhpFileProcessor::class)
-        ->arg('$nonPhpRectors', tagged_iterator(NonPhpRectorInterface::class))
-        ->tag(FileProcessorInterface::class);
+        ->arg('$nonPhpRectors', tagged_iterator(NonPhpRectorInterface::class));
 
     $services->set(RectorNodeTraverser::class)
         ->arg('$phpRectors', tagged_iterator(PhpRectorInterface::class));
 
+    $services->set(NodeNameResolver::class)
+        ->arg('$nodeNameResolvers', tagged_iterator(NodeNameResolverInterface::class));
+
     $services->set(ApplicationFileProcessor::class)
         ->arg('$fileProcessors', tagged_iterator(FileProcessorInterface::class));
+
     $services->set(FileFactory::class)
         ->arg('$fileProcessors', tagged_iterator(FileProcessorInterface::class));
+
     $services->set(WorkerRunner::class)
         ->arg('$fileProcessors', tagged_iterator(FileProcessorInterface::class));
 };
