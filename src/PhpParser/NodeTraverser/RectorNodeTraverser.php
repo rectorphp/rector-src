@@ -33,8 +33,8 @@ final class RectorNodeTraverser extends NodeTraverser
     public function traverse(array $nodes): array
     {
         $this->prepareNodeVisitors();
-        foreach ($this->visitorsToVisit as $visitor) {
-            $this->visitors = [$visitor];
+        foreach ($this->visitorsToVisit as $visitorToVisit) {
+            $this->visitors = [$visitorToVisit];
 
             $nodes = parent::traverse($nodes);
             $this->stopTraversal = false;
