@@ -321,9 +321,8 @@ final class BetterStandardPrinter extends Standard
             return 'yield';
         }
 
-        $parentNode = $yield->getAttribute(AttributeKey::PARENT_NODE);
         // brackets are needed only in case of assign, @see https://www.php.net/manual/en/language.generators.syntax.php
-        $shouldAddBrackets = $parentNode instanceof Assign;
+        $shouldAddBrackets = (bool) $yield->getAttribute(AttributeKey::IS_ASSIGNED_TO);
 
         return sprintf(
             '%syield %s%s%s',

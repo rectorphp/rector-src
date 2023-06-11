@@ -95,7 +95,11 @@ CODE_SAMPLE
             $methodCalls = $this->localMethodCallFinder->match($node, $method);
             $classMethodParameterTypes = $this->callTypesResolver->resolveStrictTypesFromCalls($methodCalls);
 
-            $classMethod = $this->classMethodParamTypeCompleter->complete($method, $classMethodParameterTypes, self::MAX_UNION_TYPES);
+            $classMethod = $this->classMethodParamTypeCompleter->complete(
+                $method,
+                $classMethodParameterTypes,
+                self::MAX_UNION_TYPES
+            );
             if ($classMethod instanceof ClassMethod) {
                 $hasChanged = true;
             }
