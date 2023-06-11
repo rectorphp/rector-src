@@ -33,12 +33,12 @@ class NewInArray
     /**
      * @param array<string, object> $property
      */
-    public function __construct(?array $property = null)
+    public function __construct(array $property = null)
     {
-        $this->property = $property;
-        $this->property = $property ?? [
+        $property ??= [
             'a' => new stdClass()
         ];
+        $this->property = $property;
     }
 }
 

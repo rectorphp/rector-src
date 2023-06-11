@@ -39,6 +39,23 @@ final class DocBlockUpdater
         $node->setDocComment(new Doc($phpDoc));
     }
 
+    public function updateRefactoredNodeWithPhpDocInfo(Node $node): void
+    {
+        // nothing to change? don't save it
+        $phpDocInfo = $this->resolveChangedPhpDocInfo($node);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return;
+        }
+
+        $phpDocNode = $phpDocInfo->getPhpDocNode();
+        if ($phpDocNode->children === []) {
+            $this->setCommentsAttribute($node);
+            return;
+        }
+
+        $node->setDocComment(new Doc((string) $phpDocNode));
+    }
+
     private function setCommentsAttribute(Node $node): void
     {
         if ($node->hasAttribute(AttributeKey::PREVIOUS_DOCS_AS_COMMENTS)) {
