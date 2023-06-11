@@ -170,11 +170,7 @@ final class PropertyFetchFinder
             return false;
         }
 
-        if ($classReflection->getName() === $this->nodeNameResolver->getName($class)) {
-            return false;
-        }
-
-        return ! $hasTrait;
+        return $classReflection->getName() !== $this->nodeNameResolver->getName($class) && ! $hasTrait;
     }
 
     private function isNamePropertyNameEquals(
