@@ -17,7 +17,7 @@ final class RectorKernel
     /**
      * @var string
      */
-    private const CACHE_KEY = 'v97';
+    private const CACHE_KEY = 'v102';
 
     private ContainerInterface|null $container = null;
 
@@ -118,6 +118,7 @@ final class RectorKernel
         $configFiles = array_merge($defaultConfigFiles, $configFiles);
 
         $containerBuilderBuilder = new ContainerBuilderBuilder();
+
         return $this->container = $containerBuilderBuilder->build($configFiles);
     }
 

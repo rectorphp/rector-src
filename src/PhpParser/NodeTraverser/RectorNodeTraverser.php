@@ -25,7 +25,7 @@ final class RectorNodeTraverser extends NodeTraverser
      * @param PhpRectorInterface[] $phpRectors
      */
     public function __construct(
-        private readonly array $phpRectors,
+        private readonly iterable $phpRectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
         parent::__construct();
@@ -56,9 +56,14 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
+<<<<<<< HEAD
         $this->visitors = $this->visitors === []
             ? $activePhpRectors
             : array_merge($this->visitors, $activePhpRectors);
+=======
+
+        $this->activePhpRectors = array_merge($this->visitors, $activePhpRectors);
+>>>>>>> c2bfa653c4 (pass rector instances directly)
 
         $this->areNodeVisitorsPrepared = true;
     }

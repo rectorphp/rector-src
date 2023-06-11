@@ -52,7 +52,7 @@ final class ApplicationFileProcessor
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors = [],
+        private readonly iterable $fileProcessors,
     ) {
     }
 

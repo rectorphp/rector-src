@@ -8,10 +8,10 @@ use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 use Webmozart\Assert\Assert;
 
 /**
@@ -148,7 +148,8 @@ final class RectorConfig extends ContainerConfigurator
 
         $services = $this->services();
         $services->set($rectorClass)
-            ->tag(RectorInterface::class);
+            ->tag(RectorInterface::class)
+            ->tag(PhpRectorInterface::class);
     }
 
     /**
@@ -259,23 +260,5 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::INDENT_CHAR, $character);
         $parameters->set(Option::INDENT_SIZE, $count);
-    }
-
-    /**
-     * @template TObject as object
-     *
-     * @param class-string<TObject> $class
-     * @return array<TObject>
-     */
-    public function taggedInstances(string $class): array
-    {
-        Assert::interfaceExists($class);
-
-        $services = $this->services();
-        $services->instanceof($class)
-            ->tag($class);
-
-        $instances = tagged_iterator($class);
-        return $instances->getValues();
     }
 }

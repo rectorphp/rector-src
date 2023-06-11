@@ -20,7 +20,7 @@ final class PhpVersionedFilter
      * @param array<T> $rectors
      * @return array<T>
      */
-    public function filter(array $rectors): array
+    public function filter(iterable $rectors): array
     {
         $minProjectPhpVersion = $this->phpVersionProvider->provide();
 
