@@ -13,6 +13,14 @@ final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
 
+<<<<<<< HEAD
+=======
+    /**
+     * @var PhpRectorInterface[]|NodeVisitor[]
+     */
+    private array $activePhpRectors = [];
+
+>>>>>>> deb36aa9b4 (make use of tags in DI)
     /**
      * @param PhpRectorInterface[] $phpRectors
      */

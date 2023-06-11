@@ -22,32 +22,61 @@ use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
+use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
+use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
 use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
+use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
+use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
+use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\RectorConfig;
+use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Bootstrap\ExtensionConfigResolver;
+use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Console\Command\ListRulesCommand;
 use Rector\Core\Console\ConsoleApplication;
+use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Core\Contract\Processor\FileProcessorInterface;
+use Rector\Core\Contract\Rector\NonPhpRectorInterface;
+use Rector\Core\Contract\Rector\PhpRectorInterface;
+use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\NonPhpFile\NonPhpFileProcessor;
+use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
+use Rector\Core\ValueObjectFactory\Application\FileFactory;
+use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
+use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocator\IntermediateSourceLocator;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Rector\Parallel\WorkerRunner;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParserFactory;
+use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\RectorGenerator\Command\GenerateCommand;
 use Rector\RectorGenerator\Command\InitRecipeCommand;
+use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
+use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
+use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
+use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
 
@@ -242,4 +271,63 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
     $services->set(TypeParser::class);
     $services->set(ConstExprParser::class);
+
+    // tagged services
+    $fileProcessors = $rectorConfig->taggedInstances(FileProcessorInterface::class);
+    $services->set(FileFactory::class)
+        ->arg('$fileProcessors', $fileProcessors);
+    $services->set(WorkerRunner::class)
+        ->arg('$fileProcessors', $fileProcessors);
+    $services->set(ApplicationFileProcessor::class)
+        ->arg('$fileProcessors', $fileProcessors);
+
+    $phpdocNodeVisitors = $rectorConfig->taggedInstances(BasePhpDocNodeVisitorInterface::class);
+    $services->set(PhpDocNodeMapper::class)
+        ->arg('$phpDocNodeVisitors', $phpdocNodeVisitors);
+
+    $phpDocNodeDecorators = $rectorConfig->taggedInstances(PhpDocNodeDecoratorInterface::class);
+    $services->set(BetterPhpDocParser::class)
+        ->arg('$phpDocNodeDecorators', $phpDocNodeDecorators);
+
+    $nodeTypeResolvers = $rectorConfig->taggedInstances(NodeTypeResolverInterface::class);
+    $services->set(NodeTypeResolver::class)
+        ->arg('$nodeTypeResolvers', $nodeTypeResolvers);
+
+    $rectorConfig->taggedInstances(ScopeResolverNodeVisitorInterface::class);
+    $services->set(PHPStanNodeScopeResolver::class)
+        ->arg('$nodeVisitors', tagged_iterator(ScopeResolverNodeVisitorInterface::class)->getValues());
+
+    $typeMappers = $rectorConfig->taggedInstances(TypeMapperInterface::class);
+    $services->set(PHPStanStaticTypeMapper::class)
+        ->arg('$typeMappers', $typeMappers);
+
+    $phpParserNodeMappers = $rectorConfig->taggedInstances(PhpParserNodeMapperInterface::class);
+    $services->set(PhpParserNodeMapper::class)
+        ->arg('$phpParserNodeMappers', $phpParserNodeMappers);
+
+    $phpDocTypeMappers = $rectorConfig->taggedInstances(PhpDocTypeMapperInterface::class);
+    $services->set(PhpDocTypeMapper::class)
+        ->arg('$phpDocTypeMappers', $phpDocTypeMappers);
+
+    $classNameImportSkipVoters = $rectorConfig->taggedInstances(ClassNameImportSkipVoterInterface::class);
+    $services->set(ClassNameImportSkipper::class)
+        ->arg('$classNameImportSkipVoters', $classNameImportSkipVoters);
+
+    $rectors = $rectorConfig->taggedInstances(RectorInterface::class);
+    $services->set(ConfigInitializer::class)
+        ->arg('$rectors', $rectors);
+    $services->set(ListRulesCommand::class)
+        ->arg('$rectors', $rectors);
+
+    $outputFormatters = $rectorConfig->taggedInstances(OutputFormatterInterface::class);
+    $services->set(OutputFormatterCollector::class)
+        ->arg('$outputFormatters', $outputFormatters);
+
+    $nonPhpRectors = $rectorConfig->taggedInstances(NonPhpRectorInterface::class);
+    $services->set(NonPhpFileProcessor::class)
+        ->arg('$nonPhpRectors', $nonPhpRectors);
+
+    $phpRectors = $rectorConfig->taggedInstances(PhpRectorInterface::class);
+    $services->set(RectorNodeTraverser::class)
+        ->arg('$phpRectors', $phpRectors);
 };

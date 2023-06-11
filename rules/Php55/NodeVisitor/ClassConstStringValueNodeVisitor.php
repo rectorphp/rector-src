@@ -23,4 +23,4 @@ final class ClassConstStringValueNodeVisitor extends NodeVisitorAbstract
 
         return null;
     }
-};
+}
