@@ -151,6 +151,7 @@ final class PropertyFetchAnalyzer
             if (! $callerClassReflection instanceof ClassReflection) {
                 continue;
             }
+
             if (! $callerClassReflection->isClass()) {
                 continue;
             }
