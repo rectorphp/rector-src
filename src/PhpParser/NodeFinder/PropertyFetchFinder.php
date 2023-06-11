@@ -164,12 +164,12 @@ final class PropertyFetchFinder
 
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool
     {
-        $parentNode = $this->betterNodeFinder->findParentType($propertyFetch, Class_::class);
-        if (! $parentNode instanceof Class_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
+        if ($classReflection === null || ! $classReflection->isFinal()) {
             return false;
         }
 
-        return $parentNode !== $class && ! $hasTrait;
+        return $classReflection->getName() !== $this->nodeNameResolver->getName($class) && ! $hasTrait;
     }
 
     private function isNamePropertyNameEquals(
