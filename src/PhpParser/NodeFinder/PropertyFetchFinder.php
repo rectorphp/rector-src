@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -165,7 +166,7 @@ final class PropertyFetchFinder
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
-        if ($classReflection === null || ! $classReflection->isClass()) {
+        if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             return false;
         }
 
