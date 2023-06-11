@@ -60,7 +60,6 @@ final class ContainerBuilderBuilder
 
             // add all merged arguments of Rector services
             new MergeImportedRectorConfigureCallValuesCompilerPass($this->configureCallValuesCollector),
-            // new AutowireArrayParameterCompilerPass(),
         ];
     }
 }
