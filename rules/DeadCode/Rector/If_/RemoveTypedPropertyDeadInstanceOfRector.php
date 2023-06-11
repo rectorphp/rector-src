@@ -47,7 +47,7 @@ final class SomeClass
 {
     private $someObject;
 
-    public function __construct($someObject)
+    public function __construct(SomeObject $someObject)
     {
         $this->someObject = $someObject;
     }
@@ -68,7 +68,7 @@ final class SomeClass
 {
     private $someObject;
 
-    public function __construct($someObject)
+    public function __construct(SomeObject $someObject)
     {
         $this->someObject = $someObject;
     }
