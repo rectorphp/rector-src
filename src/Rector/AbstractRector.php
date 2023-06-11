@@ -19,7 +19,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\RectorOutputStyle;
