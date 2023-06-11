@@ -108,7 +108,7 @@ jobs:
                 id: git-log
                 run: |
                     echo "log<<EOF" >> $GITHUB_OUTPUT
-                    echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='%H %s' | sed -e 's/^/https:\/\/github.com\/rectorphp\/rector-src\/commit\//')" >> $GITHUB_OUTPUT
+                    echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/rectorphp/rector-src/commit/%H %s')" >> $GITHUB_OUTPUT
                     echo 'EOF' >> $GITHUB_OUTPUT
 
             # 8.A publish it to remote repository without tag
