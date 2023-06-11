@@ -320,8 +320,6 @@ parameters:
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
-                - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
-                - src/DependencyInjection/DefinitionFinder.php
                 - config/config.php
 
         # use of internal phpstan classes
@@ -457,10 +455,6 @@ parameters:
             path: packages/Testing/Fixture/FixtureFileUpdater.php
 
         -
-            message: '#Only booleans are allowed in an if condition, array\|string\|null give#'
-            path: src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
-
-        -
             message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
             paths:
                 - packages/NodeTypeResolver/NodeTypeResolver.php
@@ -535,11 +529,6 @@ parameters:
 
         # false positive
         - '#Method Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddParamTypeBasedOnPHPUnitDataProviderRector\:\:resolveDataProviderPhpDocTagNode\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|null but returns PHPStan\\PhpDocParser\\Ast\\Node\|null#'
-
-        -
-            message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
-            paths:
-                - src/DependencyInjection/DefinitionFinder.php
 
         # changelog generator
         -
@@ -698,7 +687,6 @@ parameters:
         # resolve before Rector 1.0
         - '#Call to deprecated method findParentType#'
         - '#Call to deprecated method findParentByTypes#'
-        - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'
 
         - '#Cognitive complexity for "Rector\\Transform\\Rector\\StaticCall\\StaticCallToMethodCallRector\:\:refactorWithScope\(\)" is 14, keep it under 11#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
@@ -708,4 +696,6 @@ parameters:
         - '#Parameter \#2 \$callable of method Rector\\Core\\Rector\\AbstractRector\:\:traverseNodesWithCallable\(\) expects callable\(PhpParser\\Node\)\: \(int\|PhpParser\\Node\|null\), Closure\(PhpParser\\Node\)\: \(array<PhpParser\\Node\\Stmt>\|int\|null\) given#'
 
         # false positive
-        - '#Parameters should use "iterable<Rector\\Core\\Contract\\Rector\\PhpRectorInterface>" types as the only types passed to this method#'
+        -
+            message: '#Parameters should use "array" types as the only types passed to this method#'
+            path: packages/VersionBonding/PhpVersionedFilter.php

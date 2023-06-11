@@ -16,18 +16,25 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 final class ListRulesCommand extends Command
 {
     /**
-     * @param RectorInterface[] $rectors
+     * @var RectorInterface[]
+     */
+    private array $rectors = [];
+
+    /**
+     * @param RewindableGenerator<RectorInterface> $rectors
      */
     public function __construct(
         private readonly RectorOutputStyle $rectorOutputStyle,
         private readonly SkippedClassResolver $skippedClassResolver,
-        private readonly array $rectors
+        RewindableGenerator $rectors
     ) {
         parent::__construct();
+        $this->rectors = iterator_to_array($rectors);
     }
 
     protected function configure(): void

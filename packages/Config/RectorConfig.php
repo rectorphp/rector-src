@@ -12,6 +12,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Webmozart\Assert\Assert;
 
 /**
@@ -21,6 +22,8 @@ use Webmozart\Assert\Assert;
  */
 final class RectorConfig extends ContainerConfigurator
 {
+    private ?ServicesConfigurator $servicesConfigurator = null;
+
     /**
      * @param string[] $paths
      */
@@ -123,8 +126,6 @@ final class RectorConfig extends ContainerConfigurator
         Assert::isAOf($rectorClass, RectorInterface::class);
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
-        $services = $this->services();
-
         // decorate with value object inliner so Symfony understands, see https://getrector.org/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
         array_walk_recursive($configuration, static function (&$value) {
             if (is_object($value)) {
@@ -134,10 +135,12 @@ final class RectorConfig extends ContainerConfigurator
             return $value;
         });
 
-        $services->set($rectorClass)
+        $servicesConfigurator = $this->getServices();
+
+        $servicesConfigurator->set($rectorClass)
             ->call('configure', [$configuration])
-            ->tag(RectorInterface::class)
-            ->tag(PhpRectorInterface::class);
+            ->tag(PhpRectorInterface::class)
+            ->tag(RectorInterface::class);
     }
 
     /**
@@ -148,10 +151,11 @@ final class RectorConfig extends ContainerConfigurator
         Assert::classExists($rectorClass);
         Assert::isAOf($rectorClass, RectorInterface::class);
 
-        $services = $this->services();
-        $services->set($rectorClass)
-            ->tag(RectorInterface::class)
-            ->tag(PhpRectorInterface::class);
+        $servicesConfigurator = $this->getServices();
+
+        $servicesConfigurator->set($rectorClass)
+            ->tag(PhpRectorInterface::class)
+            ->tag(RectorInterface::class);
     }
 
     /**
@@ -262,5 +266,15 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::INDENT_CHAR, $character);
         $parameters->set(Option::INDENT_SIZE, $count);
+    }
+
+    private function getServices(): ServicesConfigurator
+    {
+        if ($this->servicesConfigurator instanceof ServicesConfigurator) {
+            return $this->servicesConfigurator;
+        }
+
+        $this->servicesConfigurator = $this->services();
+        return $this->servicesConfigurator;
     }
 }

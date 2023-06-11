@@ -8,6 +8,8 @@ use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Config\RectorConfig;
+use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
+use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
@@ -62,6 +64,16 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->parallel();
 
     $rectorConfig->skip([
+        RenamePropertyToMatchTypeRector::class => [
+            __DIR__ . '/src/Console/Command/ListRulesCommand.php',
+            __DIR__ . '/src/Configuration/ConfigInitializer.php',
+        ],
+
+        RenameParamToMatchTypeRector::class => [
+            __DIR__ . '/src/Console/Command/ListRulesCommand.php',
+            __DIR__ . '/src/Configuration/ConfigInitializer.php',
+        ],
+
         StringClassNameToClassConstantRector::class,
         __DIR__ . '/bin/validate-phpstan-version.php',
         // tests

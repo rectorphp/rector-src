@@ -16,7 +16,7 @@ final class PhpVersionedFilter
     }
 
     /**
-     * @param iterable<PhpRectorInterface> $rectors
+     * @param array<PhpRectorInterface> $rectors
      * @return array<PhpRectorInterface>
      */
     public function filter(iterable $rectors): array
