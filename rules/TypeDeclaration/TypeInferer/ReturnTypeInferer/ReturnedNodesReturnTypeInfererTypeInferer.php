@@ -7,20 +7,16 @@ namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -43,18 +39,17 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         private readonly AstResolver $reflectionAstResolver,
         private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
-        $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
+        if (! $classReflection instanceof ClassReflection) {
             return new MixedType();
         }
 
-        if ($functionLike instanceof ClassMethod && $classLike instanceof Interface_) {
+        if ($functionLike instanceof ClassMethod && $classReflection->isInterface()) {
             return new MixedType();
         }
 
@@ -62,13 +57,17 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
 
         $localReturnNodes = $this->collectReturns($functionLike);
         if ($localReturnNodes === []) {
-            /** @var Class_|Interface_|Trait_ $classLike */
-            return $this->resolveNoLocalReturnNodes($classLike, $functionLike);
+            return $this->resolveNoLocalReturnNodes($classReflection, $functionLike);
         }
 
         foreach ($localReturnNodes as $localReturnNode) {
             $returnedExprType = $this->nodeTypeResolver->getType($localReturnNode);
-            $returnedExprType = $this->correctWithNestedType($returnedExprType, $localReturnNode, $functionLike);
+            $returnedExprType = $this->correctWithNestedType(
+                $returnedExprType,
+                $localReturnNode,
+                $functionLike,
+                $classReflection
+            );
 
             $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
         }
@@ -108,32 +107,35 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
     }
 
     private function resolveNoLocalReturnNodes(
-        Class_|Interface_|Trait_ $classLike,
+        ClassReflection $classReflection,
         FunctionLike $functionLike
     ): VoidType | MixedType {
         // void type
-        if (! $this->isAbstractMethod($classLike, $functionLike)) {
+        if (! $this->isAbstractMethod($classReflection, $functionLike)) {
             return new VoidType();
         }
 
         return new MixedType();
     }
 
-    private function isAbstractMethod(Class_|Interface_|Trait_ $classLike, FunctionLike $functionLike): bool
+    private function isAbstractMethod(ClassReflection $classReflection, FunctionLike $functionLike): bool
     {
-        if ($functionLike instanceof ClassMethod && $functionLike->isAbstract()) {
+        if ($functionLike instanceof ClassMethod && $classReflection->isAbstract()) {
             return true;
         }
 
-        if (! $classLike instanceof Class_) {
+        if (! $classReflection->isClass()) {
             return false;
         }
 
-        return $classLike->isAbstract();
+        return $classReflection->isAbstract();
     }
 
-    private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $originalFunctionLike): Type
-    {
+    private function inferFromReturnedMethodCall(
+        Return_ $return,
+        FunctionLike $originalFunctionLike,
+        ClassReflection $classReflection
+    ): Type {
         if (! $return->expr instanceof MethodCall) {
             return new MixedType();
         }
@@ -143,8 +145,8 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
             return new MixedType();
         }
 
-        $parentClassMethod = $this->betterNodeFinder->findParentType($return, ClassMethod::class);
-        if ($parentClassMethod === $originalFunctionLike) {
+        $returnClassReflection = $this->reflectionResolver->resolveClassReflection($return);
+        if ($returnClassReflection !== $classReflection) {
             return new MixedType();
         }
 
@@ -164,10 +166,14 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         return $type->getKeyType() instanceof MixedType;
     }
 
-    private function correctWithNestedType(Type $resolvedType, Return_ $return, FunctionLike $functionLike): Type
-    {
+    private function correctWithNestedType(
+        Type $resolvedType,
+        Return_ $return,
+        FunctionLike $functionLike,
+        ClassReflection $classReflection
+    ): Type {
         if ($resolvedType instanceof MixedType || $this->isArrayTypeMixed($resolvedType)) {
-            $correctedType = $this->inferFromReturnedMethodCall($return, $functionLike);
+            $correctedType = $this->inferFromReturnedMethodCall($return, $functionLike, $classReflection);
 
             // override only if has some extra value
             if (! $correctedType instanceof MixedType && ! $correctedType->isVoid()->yes()) {
