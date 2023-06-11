@@ -6,6 +6,7 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
@@ -13,7 +14,7 @@ final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
 
-    /** @var PhpRectorInterface[] */
+    /** @var PhpRectorInterface[]|NodeVisitor[] */
     private array $activePhpRectors = [];
 
     /**
@@ -34,6 +35,7 @@ final class RectorNodeTraverser extends NodeTraverser
     public function traverse(array $nodes): array
     {
         $this->prepareNodeVisitors();
+
         foreach ($this->activePhpRectors as $activePhpRector) {
             $this->visitors = [$activePhpRector];
 
