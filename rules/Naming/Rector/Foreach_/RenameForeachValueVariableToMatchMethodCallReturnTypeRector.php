@@ -85,7 +85,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectedName = $this->expectedNameResolver->resolveForForeach($variableAndCallForeach->getCall());
+        $expectedName = $this->expectedNameResolver->resolveForForeach($variableAndCallForeach);
         if ($expectedName === null) {
             return null;
         }
