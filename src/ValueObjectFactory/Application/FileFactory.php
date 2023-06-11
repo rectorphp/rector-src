@@ -22,7 +22,7 @@ final class FileFactory
     public function __construct(
         private readonly FilesFinder $filesFinder,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors,
+        private readonly iterable $fileProcessors,
     ) {
     }
 

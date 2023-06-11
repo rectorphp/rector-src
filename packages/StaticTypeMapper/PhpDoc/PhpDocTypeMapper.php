@@ -20,7 +20,7 @@ final class PhpDocTypeMapper
      * @param PhpDocTypeMapperInterface[] $phpDocTypeMappers
      */
     public function __construct(
-        private readonly array $phpDocTypeMappers,
+        private readonly iterable $phpDocTypeMappers,
         private readonly TypeNodeResolver $typeNodeResolver
     ) {
     }

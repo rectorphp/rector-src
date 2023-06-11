@@ -24,7 +24,7 @@ final class PhpDocNodeMapper
         private readonly CurrentTokenIteratorProvider $currentTokenIteratorProvider,
         private readonly ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
         private readonly CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
-        private readonly array $phpDocNodeVisitors
+        private readonly iterable $phpDocNodeVisitors
     ) {
     }
 

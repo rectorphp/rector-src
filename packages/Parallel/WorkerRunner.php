@@ -41,7 +41,7 @@ final class WorkerRunner
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly array $fileProcessors = [],
+        private readonly iterable $fileProcessors = [],
     ) {
     }
 

@@ -8,18 +8,25 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
 
     /**
-     * @param PhpRectorInterface[] $phpRectors
+     * @var PhpRectorInterface[]
+     */
+    private array $phpRectors = [];
+
+    /**
+     * @param RewindableGenerator<PhpRectorInterface> $phpRectors
      */
     public function __construct(
-        private readonly array $phpRectors,
+        RewindableGenerator $phpRectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
+        $this->phpRectors = iterator_to_array($phpRectors);
         parent::__construct();
     }
 
@@ -48,6 +55,7 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
+
         $this->visitors = $this->visitors === []
             ? $activePhpRectors
             : array_merge($this->visitors, $activePhpRectors);
