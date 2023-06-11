@@ -165,7 +165,7 @@ final class PropertyFetchFinder
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
-        if ($classReflection === null || ! $classReflection->isFinal()) {
+        if ($classReflection === null || ! $classReflection->isClass()) {
             return false;
         }
 
