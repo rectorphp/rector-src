@@ -13,7 +13,8 @@ final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
 
-    private array $visitorsToVisit = [];
+    /** @var PhpRectorInterface[] */
+    private array $activePhpRectors = [];
 
     /**
      * @param PhpRectorInterface[] $phpRectors
@@ -33,8 +34,8 @@ final class RectorNodeTraverser extends NodeTraverser
     public function traverse(array $nodes): array
     {
         $this->prepareNodeVisitors();
-        foreach ($this->visitorsToVisit as $visitorToVisit) {
-            $this->visitors = [$visitorToVisit];
+        foreach ($this->activePhpRectors as $activePhpRector) {
+            $this->visitors = [$activePhpRector];
 
             $nodes = parent::traverse($nodes);
             $this->stopTraversal = false;
@@ -57,7 +58,7 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
-        $this->visitorsToVisit = array_merge($this->visitors, $activePhpRectors);
+        $this->activePhpRectors = array_merge($this->visitors, $activePhpRectors);
 
         $this->areNodeVisitorsPrepared = true;
     }
