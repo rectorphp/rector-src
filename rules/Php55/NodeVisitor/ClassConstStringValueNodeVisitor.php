@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 
-class ClassConstStringValueNodeVisitor extends NodeVisitorAbstract
+final class ClassConstStringValueNodeVisitor extends NodeVisitorAbstract
 {
     /**
      * @var string
