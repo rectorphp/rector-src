@@ -6,12 +6,16 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
+
+    /** @var PhpRectorInterface[]|NodeVisitor[] */
+    private array $activePhpRectors = [];
 
     /**
      * @param PhpRectorInterface[] $phpRectors
@@ -31,7 +35,16 @@ final class RectorNodeTraverser extends NodeTraverser
     public function traverse(array $nodes): array
     {
         $this->prepareNodeVisitors();
-        return parent::traverse($nodes);
+
+        foreach ($this->activePhpRectors as $activePhpRector) {
+            $this->visitors = [$activePhpRector];
+
+            // call parent::traverse() on loop to ensure
+            // stopTraversal always reset to false before run on next Rector rule
+            $nodes = parent::traverse($nodes);
+        }
+
+        return $nodes;
     }
 
     /**
@@ -48,9 +61,7 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
-        $this->visitors = $this->visitors === []
-            ? $activePhpRectors
-            : array_merge($this->visitors, $activePhpRectors);
+        $this->activePhpRectors = array_merge($this->visitors, $activePhpRectors);
 
         $this->areNodeVisitorsPrepared = true;
     }
