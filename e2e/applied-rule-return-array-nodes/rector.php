@@ -11,8 +11,9 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src',
     ]);
 
-    $services = $rectorConfig->services();
-    $services->set(RemoveAlwaysElseRector::class);
-    $services->set(RemoveUnusedPrivateMethodRector::class);
+    $rectorConfig->rules([
+        RemoveAlwaysElseRector::class,
+        RemoveUnusedPrivateMethodRector::class,
+    ]);
 };
 

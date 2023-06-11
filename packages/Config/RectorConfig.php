@@ -8,10 +8,12 @@ use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\PhpVersion;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Webmozart\Assert\Assert;
 
@@ -137,10 +139,9 @@ final class RectorConfig extends ContainerConfigurator
 
         $servicesConfigurator = $this->getServices();
 
-        $servicesConfigurator->set($rectorClass)
-            ->call('configure', [$configuration])
-            ->tag(PhpRectorInterface::class)
-            ->tag(RectorInterface::class);
+        $rectorService = $servicesConfigurator->set($rectorClass)
+            ->call('configure', [$configuration]);
+        $this->tagRectorService($rectorService, $rectorClass);
     }
 
     /**
@@ -153,9 +154,8 @@ final class RectorConfig extends ContainerConfigurator
 
         $servicesConfigurator = $this->getServices();
 
-        $servicesConfigurator->set($rectorClass)
-            ->tag(PhpRectorInterface::class)
-            ->tag(RectorInterface::class);
+        $rectorService = $servicesConfigurator->set($rectorClass);
+        $this->tagRectorService($rectorService, $rectorClass);
     }
 
     /**
@@ -276,5 +276,19 @@ final class RectorConfig extends ContainerConfigurator
 
         $this->servicesConfigurator = $this->services();
         return $this->servicesConfigurator;
+    }
+
+    /**
+     * @param class-string<RectorInterface|PhpRectorInterface|NonPhpRectorInterface> $rectorClass
+     */
+    private function tagRectorService(ServiceConfigurator $rectorServiceConfigurator, string $rectorClass): void
+    {
+        $rectorServiceConfigurator->tag(RectorInterface::class);
+
+        if (is_a($rectorClass, PhpRectorInterface::class, true)) {
+            $rectorServiceConfigurator->tag(PhpRectorInterface::class);
+        } elseif (is_a($rectorClass, NonPhpRectorInterface::class, true)) {
+            $rectorServiceConfigurator->tag(NonPhpRectorInterface::class);
+        }
     }
 }

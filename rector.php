@@ -69,9 +69,11 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/src/Configuration/ConfigInitializer.php',
         ],
 
+        // resolve later
         RenameParamToMatchTypeRector::class => [
             __DIR__ . '/src/Console/Command/ListRulesCommand.php',
             __DIR__ . '/src/Configuration/ConfigInitializer.php',
+            __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php',
         ],
 
         StringClassNameToClassConstantRector::class,
