@@ -75,12 +75,15 @@ return [
 
         // fix autoconfigure instanceof child to non child class magic conversion
         static function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with($filePath, 'vendor/symfony/dependency-injection/Compiler/ResolveInstanceofConditionalsPass.php')) {
+            if (! \str_ends_with(
+                $filePath,
+                'vendor/symfony/dependency-injection/Compiler/ResolveInstanceofConditionalsPass.php'
+            )) {
                 return $content;
             }
 
             $content = str_replace('\'53\'', "'72'", $content);
-            return str_replace(", 44,", ", 63, ", $content);
+            return str_replace(', 44,', ', 63, ', $content);
         },
 
         // fix symfony deprecation reports, @see https://github.com/rectorphp/rector/issues/7434
