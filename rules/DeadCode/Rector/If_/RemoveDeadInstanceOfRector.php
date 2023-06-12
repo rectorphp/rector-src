@@ -81,7 +81,7 @@ CODE_SAMPLE
     {
         // skip in if a loop, as unexpected behavior
         if (! $node instanceof If_) {
-            $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) {
+            $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) : void {
                 if ($subNode instanceof Instanceof_) {
                     $subNode->setAttribute(self::IS_IN_LOOP, true);
                 }
