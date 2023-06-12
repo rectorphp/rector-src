@@ -100,6 +100,7 @@ CODE_SAMPLE
                 if ($subNode instanceof String_) {
                     $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
                 }
+
                 return null;
             });
 
