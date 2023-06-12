@@ -79,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node)
     {
-        // skip in if a loop, as unexpected behavior
+        // avoid ifs in a loop, as unexpected behavior
         if (! $node instanceof If_) {
             $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) : void {
                 if ($subNode instanceof Instanceof_) {
