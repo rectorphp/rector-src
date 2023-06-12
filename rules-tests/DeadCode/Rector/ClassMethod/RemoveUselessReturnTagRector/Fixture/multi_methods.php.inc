@@ -2,6 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
+use DateTime;
 use stdClass;
 
 class MultiMethods
@@ -14,9 +15,9 @@ class MultiMethods
     }
 
     /**
-     * @return stdClass
+     * @return DateTime
      */
-    function bar(): stdClass
+    function bar(): DateTime
     {
     }
 }
@@ -27,6 +28,7 @@ class MultiMethods
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
+use DateTime;
 use stdClass;
 
 class MultiMethods
@@ -35,7 +37,7 @@ class MultiMethods
     {
     }
 
-    function bar(): stdClass
+    function bar(): DateTime
     {
     }
 }
