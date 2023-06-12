@@ -91,13 +91,13 @@ final class TrustedClassMethodPropertyTypeInferer
     private function resolveType(
         Property $property,
         string $propertyName,
-        ClassLike $classLike,
+        Class_ $class,
         Type $resolvedType
     ): Type {
         $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
             $property,
             $propertyName,
-            $classLike
+            $class
         );
 
         if (! $exactType instanceof UnionType) {
