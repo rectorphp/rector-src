@@ -9,7 +9,6 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\NodeManipulator\MethodCallManipulator;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
@@ -46,7 +45,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         AbstractTestCase::class,
         PHPStanServicesFactory::class,
         OutputStyleInterface::class,
-        MethodCallManipulator::class,
         // fix later - rector-symfony
         // used in tests
         FileInfoParser::class,
