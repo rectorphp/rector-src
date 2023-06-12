@@ -14,25 +14,10 @@ final class RectorKernel
 
     /**
      * @param string[] $configFiles
-     * @api used in tests
      */
     public function createBuilder(array $configFiles = []): ContainerBuilder
     {
-        return $this->buildContainer($configFiles);
-    }
-
-    /**
-     * @param string[] $configFiles
-     * @api used in tests
-     */
-    public function createFromConfigs(array $configFiles): ContainerInterface
-    {
-        if ($configFiles === []) {
-            return $this->buildContainer([]);
-        }
-
-        $container = $this->buildContainer($configFiles);
-        return $this->container = $container;
+        return $this->container = $this->buildContainer($configFiles);
     }
 
     /**

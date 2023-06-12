@@ -15,7 +15,7 @@ final class SkippedPathsResolverTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
+        $containerBuilder = $rectorKernel->createBuilder([__DIR__ . '/config/config.php']);
 
         $this->skippedPathsResolver = $containerBuilder->get(SkippedPathsResolver::class);
     }

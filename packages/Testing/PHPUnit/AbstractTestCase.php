@@ -37,7 +37,7 @@ abstract class AbstractTestCase extends TestCase
             self::$currentContainer = $rectorKernel->getContainer();
         } else {
             $rectorKernel = new RectorKernel();
-            $containerBuilder = $rectorKernel->createFromConfigs($configFiles);
+            $containerBuilder = $rectorKernel->createBuilder($configFiles);
 
             self::$kernelsByHash[$configsHash] = $rectorKernel;
             self::$currentContainer = $containerBuilder;
