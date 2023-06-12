@@ -10,7 +10,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class RectorKernel
 {
-    public $container;
+    private ContainerInterface|null $container = null;
+
     /**
      * @param string[] $configFiles
      * @api used in tests
