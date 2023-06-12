@@ -15,11 +15,13 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -33,12 +35,24 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRector
 {
+    /**
+     * @var ClassLike[]
+     */
+    private array $classLikes = [];
+
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer
     ) {
+    }
+
+    public function beforeTraverse(array $nodes): ?array
+    {
+        $this->classLikes = $this->betterNodeFinder->findInstanceOf($nodes, ClassLike::class);
+
+        return parent::beforeTraverse($nodes);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -138,7 +152,24 @@ CODE_SAMPLE
             return false;
         }
 
-        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property);
+        $classLike = $this->resolveClassLikeWithProperty($property, $propertyName);
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($classLike, $property);
         return $type instanceof ArrayType;
+    }
+
+    private function resolveClassLikeWithProperty(Property $property, string $propertyName): ClassLike
+    {
+        foreach ($this->classLikes as $classLike) {
+            $targetProperty = $classLike->getProperty($propertyName);
+            if (! $targetProperty instanceof Property) {
+                continue;
+            }
+
+            if ($this->nodeComparator->areSameNode($targetProperty, $property)) {
+                return $classLike;
+            }
+        }
+
+        throw new ShouldNotHappenException();
     }
 }
