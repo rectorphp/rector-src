@@ -15,7 +15,7 @@ final class EmptyConfigureTest extends AbstractTestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createBuilder([__DIR__ . '/config/empty_configure.php']);
+        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/empty_configure.php']);
         $this->emptyConfigurableRectorCollector = $containerBuilder->get(EmptyConfigurableRectorCollector::class);
     }
 

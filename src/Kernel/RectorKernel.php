@@ -22,6 +22,20 @@ final class RectorKernel
     }
 
     /**
+     * @param string[] $configFiles
+     * @api used in tests
+     */
+    public function createFromConfigs(array $configFiles): ContainerInterface
+    {
+        if ($configFiles === []) {
+            return $this->buildContainer([]);
+        }
+
+        $container = $this->buildContainer($configFiles);
+        return $this->container = $container;
+    }
+
+    /**
      * @api used in tests
      */
     public function getContainer(): ContainerInterface
