@@ -139,9 +139,9 @@ final class RectorConfig extends ContainerConfigurator
 
         $servicesConfigurator = $this->getServices();
 
-        $serviceConfigurator = $servicesConfigurator->set($rectorClass)
+        $rectorService = $servicesConfigurator->set($rectorClass)
             ->call('configure', [$configuration]);
-        $this->tagRectorService($serviceConfigurator, $rectorClass);
+        $this->tagRectorService($rectorService, $rectorClass);
     }
 
     /**
@@ -154,8 +154,8 @@ final class RectorConfig extends ContainerConfigurator
 
         $servicesConfigurator = $this->getServices();
 
-        $serviceConfigurator = $servicesConfigurator->set($rectorClass);
-        $this->tagRectorService($serviceConfigurator, $rectorClass);
+        $rectorService = $servicesConfigurator->set($rectorClass);
+        $this->tagRectorService($rectorService, $rectorClass);
     }
 
     /**
