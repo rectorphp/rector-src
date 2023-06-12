@@ -359,14 +359,13 @@ CODE_SAMPLE;
             $this->getNodeTypes(),
             static fn (string $nodeType): bool => $nodeType !== $originalNode::class
         );
-        $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types) {
+        $this->traverseNodesWithCallable($originalNode, static function (Node $subNode) use ($types) {
             if (in_array($subNode::class, $types, true)) {
                 $originalNode = $subNode->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $subNode;
 
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
                 $originalNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
             }
-
             return null;
         });
     }
