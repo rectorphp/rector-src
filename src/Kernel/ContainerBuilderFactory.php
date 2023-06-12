@@ -16,6 +16,7 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -44,6 +45,7 @@ final class ContainerBuilderFactory
         PhpRectorInterface::class,
         NodeNameResolverInterface::class,
         FileProcessorInterface::class,
+        AnnotationToAttributeMapperInterface::class,
     ];
 
     public function __construct(
@@ -58,7 +60,6 @@ final class ContainerBuilderFactory
     public function create(array $configFiles, array $compilerPasses): ContainerBuilder
     {
         Assert::allIsAOf($compilerPasses, CompilerPassInterface::class);
-
         Assert::allString($configFiles);
 
         $containerBuilder = new ContainerBuilder();
