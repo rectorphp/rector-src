@@ -77,9 +77,7 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php',
         ],
 
-        RenameVariableToMatchMethodCallReturnTypeRector::class => [
-            __DIR__ . '/packages/Config/RectorConfig.php',
-        ],
+        RenameVariableToMatchMethodCallReturnTypeRector::class => [__DIR__ . '/packages/Config/RectorConfig.php'],
 
         StringClassNameToClassConstantRector::class,
         __DIR__ . '/bin/validate-phpstan-version.php',
