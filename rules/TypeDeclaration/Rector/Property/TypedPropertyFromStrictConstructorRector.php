@@ -97,6 +97,7 @@ CODE_SAMPLE
             }
 
             $propertyType = $this->trustedClassMethodPropertyTypeInferer->inferProperty(
+                $node,
                 $property,
                 $constructClassMethod
             );

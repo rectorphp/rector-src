@@ -11,6 +11,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -24,7 +25,6 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\ClassMethodPropertyFetchManipulator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -49,20 +49,14 @@ final class TrustedClassMethodPropertyTypeInferer
         private readonly TypeFactory $typeFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly TypeComparator $typeComparator,
     ) {
     }
 
-    public function inferProperty(Property $property, ClassMethod $classMethod): Type
+    public function inferProperty(Class_ $classLike, Property $property, ClassMethod $classMethod): Type
     {
-        $classLike = $this->betterNodeFinder->findParentType($property, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
-            return new MixedType();
-        }
-
         $propertyName = $this->nodeNameResolver->getName($property);
 
         // 1. direct property = param assign
