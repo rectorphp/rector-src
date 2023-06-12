@@ -6,13 +6,11 @@ namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -30,8 +28,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
 
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -62,16 +59,7 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
-            $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
-            // fallback to class, since property fetches are not scoped by PHPStan
-            if ($classLike instanceof ClassLike) {
-                $scope = $classLike->getAttribute(AttributeKey::SCOPE);
-            }
-
-            if (! $scope instanceof Scope) {
-                return new MixedType();
-            }
+            return new MixedType();
         }
 
         return $scope->getType($node);
