@@ -94,7 +94,7 @@ CODE_SAMPLE
     /**
      * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactorWithScope(Node $node, ?Scope $scope): ?Node
     {
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
         if ($oldToNewClasses !== []) {
