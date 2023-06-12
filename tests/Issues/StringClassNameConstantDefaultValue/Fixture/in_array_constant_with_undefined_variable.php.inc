@@ -23,7 +23,7 @@ namespace Rector\Core\Tests\Issues\StringClassNameConstantDefaultValue\Fixture;
 final class InArrayConstantWithUndefinedVariable
 {
     const SKIP_TYPES = [
-       'Rector\Config\RectorConfig'
+       'Rector\Set\ValueObject\SetList'
     ];
 
     public function run()
