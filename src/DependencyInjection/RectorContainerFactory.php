@@ -16,7 +16,7 @@ final class RectorContainerFactory
     public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
     {
         $rectorKernel = new RectorKernel();
-        $container = $rectorKernel->createBuilder($bootstrapConfigs->getConfigFiles());
+        $container = $rectorKernel->createFromConfigs($bootstrapConfigs->getConfigFiles());
 
         $mainConfigFile = $bootstrapConfigs->getMainConfigFile();
 
