@@ -85,7 +85,7 @@ final class TrustedClassMethodPropertyTypeInferer
             ? $resolvedTypes[0]
             : TypeCombinator::union(...$resolvedTypes);
 
-        return $this->resolveType($property, $propertyName, $classLike, $resolvedType);
+        return $this->resolveType($property, $propertyName, $class, $resolvedType);
     }
 
     private function resolveType(
