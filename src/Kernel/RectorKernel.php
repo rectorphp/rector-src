@@ -10,8 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class RectorKernel
 {
-    private ContainerInterface|null $container = null;
-
     /**
      * @param string[] $configFiles
      * @api used in tests
@@ -51,6 +49,6 @@ final class RectorKernel
 
         $containerBuilderBuilder = new ContainerBuilderBuilder();
 
-        return $this->container = $containerBuilderBuilder->build($configFiles);
+        return $containerBuilderBuilder->build($configFiles);
     }
 }
