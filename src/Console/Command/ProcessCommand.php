@@ -109,7 +109,6 @@ final class ProcessCommand extends AbstractProcessCommand
         $optionClearCache = (bool) $input->getOption(Option::CLEAR_CACHE);
         if ($optionDebug || $optionClearCache) {
             $this->changedFilesDetector->clear();
-            RectorKernel::clearCache();
         }
     }
 
