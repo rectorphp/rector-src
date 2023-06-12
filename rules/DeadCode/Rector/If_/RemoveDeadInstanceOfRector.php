@@ -77,14 +77,16 @@ CODE_SAMPLE
      * @param If_|For_|Foreach_|While_|Do_ $node
      * @return Stmt[]|null|int
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): array|null|int
     {
         // avoid ifs in a loop, as unexpected behavior
         if (! $node instanceof If_) {
-            $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) : void {
+            $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) {
                 if ($subNode instanceof Instanceof_) {
                     $subNode->setAttribute(self::IS_IN_LOOP, true);
                 }
+
+                return null;
             });
 
             return null;
