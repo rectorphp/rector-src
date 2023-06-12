@@ -193,27 +193,6 @@ final class BetterNodeFinder
     }
 
     /**
-     * @api used in Symfony
-     * @template T of Node
-     *
-     * @param Stmt[] $nodes
-     * @param class-string<T> $type
-     */
-    public function findLastInstanceOf(array $nodes, string $type): ?Node
-    {
-        Assert::allIsAOf($nodes, Stmt::class);
-        Assert::isAOf($type, Node::class);
-
-        $foundInstances = $this->nodeFinder->findInstanceOf($nodes, $type);
-        if ($foundInstances === []) {
-            return null;
-        }
-
-        $lastItemKey = array_key_last($foundInstances);
-        return $foundInstances[$lastItemKey];
-    }
-
-    /**
      * @param Node|Node[] $nodes
      * @param callable(Node $node): bool $filter
      * @return Node[]
@@ -455,41 +434,6 @@ final class BetterNodeFinder
     /**
      * @api
      *
-     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
-     */
-    public function resolvePreviousNode(Node $node): ?Node
-    {
-        $currentStmt = $this->resolveCurrentStatement($node);
-
-        if (! $currentStmt instanceof Stmt) {
-            return null;
-        }
-
-        $startTokenPos = $node->getStartTokenPos();
-        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-            );
-
-        if ($nodes === []) {
-            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $this->isAllowedParentNode($parentNode)) {
-                return null;
-            }
-
-            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
-        }
-
-        return end($nodes);
-    }
-
-    /**
-     * @api
-     *
      * Resolve next node from any Node, eg: Expr, Identifier, Name, etc
      */
     public function resolveNextNode(Node $node): ?Node
@@ -519,6 +463,41 @@ final class BetterNodeFinder
         }
 
         return $nextNode;
+    }
+
+    /**
+     * @api
+     *
+     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
+     */
+    private function resolvePreviousNode(Node $node): ?Node
+    {
+        $currentStmt = $this->resolveCurrentStatement($node);
+
+        if (! $currentStmt instanceof Stmt) {
+            return null;
+        }
+
+        $startTokenPos = $node->getStartTokenPos();
+        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
+            ? []
+            : $this->find(
+                $currentStmt,
+                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+            );
+
+        if ($nodes === []) {
+            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $this->isAllowedParentNode($parentNode)) {
+                return null;
+            }
+
+            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
+            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
+        }
+
+        return end($nodes);
     }
 
     private function isAllowedParentNode(?Node $node): bool
