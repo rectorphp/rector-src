@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Enum\PreferenceSelfThis;
 use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
-use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Config\RectorConfig;
@@ -20,7 +18,6 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81,
-        PHPUnitSetList::PHPUNIT_100,
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
         SetList::PRIVATIZATION,
@@ -28,19 +25,13 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::INSTANCEOF,
         SetList::EARLY_RETURN,
-        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::STRICT_BOOLEANS,
+        PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+        PHPUnitSetList::PHPUNIT_100,
     ]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class]);
-
-    $rectorConfig->ruleWithConfiguration(
-        PreferThisOrSelfMethodCallRector::class,
-        [
-            'PHPUnit\Framework\TestCase' => PreferenceSelfThis::PREFER_THIS,
-        ]
-    );
 
     $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
         new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
@@ -97,13 +88,6 @@ return static function (RectorConfig $rectorConfig): void {
         // race condition with stmts aware patch and PHPStan type
         \Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector::class => [
             __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
-        ],
-
-        \Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector::class => [
-            __DIR__ . '/src/DependencyInjection',
-        ],
-        \Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector::class => [
-            __DIR__ . '/src/DependencyInjection',
         ],
 
         \Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector::class => [
