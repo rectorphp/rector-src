@@ -224,6 +224,7 @@ CODE_SAMPLE;
             $this->decorateCurrentAndChildren($node, $originalNode, $refactoredNode);
 
             // notify this rule changing code
+            $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
             $this->file->addRectorClassWithLine($rectorWithLineChange);
 
             return $refactoredNode;
