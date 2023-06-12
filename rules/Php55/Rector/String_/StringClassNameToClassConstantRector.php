@@ -17,7 +17,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Php55\NodeVisitor\ClassConstStringValueNodeVisitor;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -97,7 +96,14 @@ CODE_SAMPLE
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            $this->fillIsUnderClassConstAttribute($node);
+            $this->traverseNodesWithCallable($node->consts, static function (Node $subNode) {
+                if ($subNode instanceof String_) {
+                    $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
+                }
+
+                return null;
+            });
+
             return null;
         }
 
@@ -153,13 +159,6 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::CLASSNAME_CONSTANT;
-    }
-
-    private function fillIsUnderClassConstAttribute(ClassConst $classConst): void
-    {
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new ClassConstStringValueNodeVisitor());
-        $nodeTraverser->traverse([$classConst]);
     }
 
     private function shouldSkip(string $classLikeName): bool
