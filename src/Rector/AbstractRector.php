@@ -366,6 +366,7 @@ CODE_SAMPLE;
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
                 $originalNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
             }
+
             return null;
         });
     }
