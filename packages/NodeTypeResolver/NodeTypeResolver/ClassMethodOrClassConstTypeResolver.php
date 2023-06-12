@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -20,17 +21,12 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInterface
 {
-    private NodeTypeResolver $nodeTypeResolver;
-
-    public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
-    ) {
-    }
+    private ReflectionResolver $reflectionResolver;
 
     #[Required]
-    public function autowire(NodeTypeResolver $nodeTypeResolver): void
+    public function autowire(ReflectionResolver $reflectionResolver): void
     {
-        $this->nodeTypeResolver = $nodeTypeResolver;
+        $this->reflectionResolver = $reflectionResolver;
     }
 
     /**
@@ -46,12 +42,12 @@ final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInter
      */
     public function resolve(Node $node): Type
     {
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (!$classReflection instanceof ClassReflection || $classReflection->isAnonymous()) {
             // anonymous class
             return new ObjectWithoutClassType();
         }
 
-        return $this->nodeTypeResolver->getType($classLike);
+        return new ObjectType($classReflection->getName());
     }
 }
