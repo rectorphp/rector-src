@@ -169,9 +169,11 @@ final class PropertyFetchFinder
         if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             return false;
         }
+
         if ($classReflection->getName() === $this->nodeNameResolver->getName($class)) {
             return false;
         }
+
         return ! $hasTrait;
     }
 
