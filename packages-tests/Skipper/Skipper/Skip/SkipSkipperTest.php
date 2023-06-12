@@ -20,7 +20,7 @@ final class SkipSkipperTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
+        $containerBuilder = $rectorKernel->createBuilder([__DIR__ . '/config/config.php']);
 
         $this->skipper = $containerBuilder->get(Skipper::class);
     }

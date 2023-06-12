@@ -15,7 +15,8 @@ final class RectorContainerFactory
 {
     public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
     {
-        $container = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
+        $rectorKernel = new RectorKernel();
+        $container = $rectorKernel->createBuilder($bootstrapConfigs->getConfigFiles());
 
         $mainConfigFile = $bootstrapConfigs->getMainConfigFile();
 
@@ -42,9 +43,9 @@ final class RectorContainerFactory
      * @param string[] $configFiles
      * @api
      */
-    private function createFromConfigs(array $configFiles): ContainerInterface
+    private function createBuilder(array $configFiles): ContainerInterface
     {
         $rectorKernel = new RectorKernel();
-        return $rectorKernel->createFromConfigs($configFiles);
+        return $rectorKernel->createBuilder($configFiles);
     }
 }
