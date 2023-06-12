@@ -228,6 +228,10 @@ CODE_SAMPLE;
             )) {
                 $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
+                // filter only types that
+                //    1. registered in getNodesTypes() method
+                //    2. different with current node type, as already decorated above
+                //
                 $types = array_filter(
                     $this->getNodeTypes(),
                     static fn (string $nodeType): bool => $nodeType !== $originalNode::class
