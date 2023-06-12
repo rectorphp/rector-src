@@ -361,7 +361,10 @@ CODE_SAMPLE;
         );
         $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types) {
             if (in_array($subNode::class, $types, true)) {
-                $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
+                $originalNode = $subNode->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $subNode;
+
+                $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+                $originalNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
             }
 
             return null;
