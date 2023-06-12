@@ -224,7 +224,7 @@ CODE_SAMPLE;
             if (in_array($refactoredNode, [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN], true)) {
                 $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-                $types = $this->getNodeTypes();
+                $types = array_filter($this->getNodeTypes(), fn (string $nodeType): bool => $nodeType !== $originalNode::class);
                 $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types) {
                     if (in_array($subNode::class, $types, true)) {
                         $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
