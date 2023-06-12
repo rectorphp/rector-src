@@ -21,9 +21,9 @@ final class ControllerClassMethodManipulator
     ) {
     }
 
-    public function isControllerClassMethodWithBehaviorAnnotation(ClassMethod $classMethod): bool
+    public function isControllerClassMethodWithBehaviorAnnotation(Class_ $class, ClassMethod $classMethod): bool
     {
-        if (! $this->isControllerClassMethod($classMethod)) {
+        if (! $this->isControllerClassMethod($class, $classMethod)) {
             return false;
         }
 
@@ -31,14 +31,9 @@ final class ControllerClassMethodManipulator
         return $phpDocInfo->hasByType(GenericTagValueNode::class);
     }
 
-    private function isControllerClassMethod(ClassMethod $classMethod): bool
+    private function isControllerClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
         if (! $classMethod->isPublic()) {
-            return false;
-        }
-
-        $class = $this->betterNodeFinder->findParentType($classMethod, Class_::class);
-        if (! $class instanceof Class_) {
             return false;
         }
 
