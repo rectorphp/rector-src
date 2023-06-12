@@ -10,28 +10,29 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 
 final class SilentVoidResolver
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
     public function hasExclusiveVoid(ClassMethod | Closure | Function_ $functionLike): bool
     {
-        $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-        if ($classLike instanceof Interface_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
+        if ($classReflection instanceof ClassReflection && $classReflection->isInterface()) {
             return false;
         }
 
