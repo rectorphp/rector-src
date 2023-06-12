@@ -30,11 +30,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDeadInstanceOfRector extends AbstractRector
 {
-    /**
-     * @var string
-     */
-    private const IS_IN_LOOP = 'is_in_loop';
-
     public function __construct(
         private readonly IfManipulator $ifManipulator,
     ) {
@@ -81,14 +76,6 @@ CODE_SAMPLE
     {
         // avoid ifs in a loop, as unexpected behavior
         if (! $node instanceof If_) {
-            $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) {
-                if ($subNode instanceof Instanceof_) {
-                    $subNode->setAttribute(self::IS_IN_LOOP, true);
-                }
-
-                return null;
-            });
-
             return null;
         }
 
@@ -113,10 +100,6 @@ CODE_SAMPLE
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
     {
         if (! $instanceof->class instanceof Name) {
-            return null;
-        }
-
-        if ($instanceof->getAttribute(self::IS_IN_LOOP) === true) {
             return null;
         }
 
