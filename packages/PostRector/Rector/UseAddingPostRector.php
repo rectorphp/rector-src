@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -21,7 +20,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class UseAddingPostRector extends AbstractPostRector
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly TypeFactory $typeFactory,
         private readonly UseImportsAdder $useImportsAdder,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
@@ -40,6 +38,14 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
+        $rootNode = null;
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                $rootNode = $node;
+                break;
+            }
+        }
+
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
             throw new ShouldNotHappenException();
@@ -54,18 +60,16 @@ final class UseAddingPostRector extends AbstractPostRector
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
-        $firstNode = $nodes[0];
 
-        if ($firstNode instanceof FileWithoutNamespace) {
-            $nodes = $firstNode->stmts;
+        if ($rootNode instanceof FileWithoutNamespace) {
+            $nodes = $rootNode->stmts;
         }
 
-        $namespace = $this->betterNodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
-        if (! $firstNode instanceof FileWithoutNamespace && ! $namespace instanceof Namespace_) {
+        if (! $rootNode instanceof FileWithoutNamespace && ! $rootNode instanceof Namespace_) {
             return $nodes;
         }
 
-        return $this->resolveNodesWithImportedUses($nodes, $useImportTypes, $functionUseImportTypes, $namespace);
+        return $this->resolveNodesWithImportedUses($nodes, $useImportTypes, $functionUseImportTypes, $rootNode);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -107,7 +111,7 @@ CODE_SAMPLE
         array $nodes,
         array $useImportTypes,
         array $functionUseImportTypes,
-        ?Namespace_ $namespace
+        FileWithoutNamespace|Namespace_ $namespace
     ): array {
         // A. has namespace? add under it
         if ($namespace instanceof Namespace_) {
