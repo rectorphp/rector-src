@@ -135,7 +135,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->controllerClassMethodManipulator->isControllerClassMethodWithBehaviorAnnotation($classMethod)) {
+        if ($this->controllerClassMethodManipulator->isControllerClassMethodWithBehaviorAnnotation($class, $classMethod)) {
             return true;
         }
 

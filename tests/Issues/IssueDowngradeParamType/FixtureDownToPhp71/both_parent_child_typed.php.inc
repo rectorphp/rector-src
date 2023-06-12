@@ -27,8 +27,8 @@ namespace Rector\Core\Tests\Issues\IssueDowngradeParamType\FixtureDownToPhp71;
 class ParentClassTyped
 {
     /**
-     * @return mixed
      * @param object $object
+     * @return mixed
      */
     public function resolveValue($object)
     {
@@ -39,8 +39,8 @@ class ParentClassTyped
 class ChildClassTyped extends ParentClassTyped
 {
     /**
-     * @return mixed
      * @param object $object
+     * @return mixed
      */
     public function resolveValue($object)
     {
