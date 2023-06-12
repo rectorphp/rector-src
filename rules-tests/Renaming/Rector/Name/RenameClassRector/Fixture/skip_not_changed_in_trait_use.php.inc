@@ -2,10 +2,6 @@
 
 namespace MyNamespace;
 
-trait LockDelete {
-    public function extractObjectsId() {}
-}
-
 abstract class SkipNotChangedInTraitUse
 {
     use LockDelete {
