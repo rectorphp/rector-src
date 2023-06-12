@@ -465,39 +465,6 @@ final class BetterNodeFinder
         return $nextNode;
     }
 
-    /**
-     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
-     */
-    private function resolvePreviousNode(Node $node): ?Node
-    {
-        $currentStmt = $this->resolveCurrentStatement($node);
-
-        if (! $currentStmt instanceof Stmt) {
-            return null;
-        }
-
-        $startTokenPos = $node->getStartTokenPos();
-        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-            );
-
-        if ($nodes === []) {
-            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $this->isAllowedParentNode($parentNode)) {
-                return null;
-            }
-
-            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
-        }
-
-        return end($nodes);
-    }
-
     private function isAllowedParentNode(?Node $node): bool
     {
         return $node instanceof StmtsAwareInterface || $node instanceof ClassLike || $node instanceof Declare_;
@@ -636,6 +603,8 @@ final class BetterNodeFinder
      */
     private function findFirstInlinedPrevious(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
     {
+        $previousNode = null;
+
         if (! $parentNode instanceof Node) {
             $previousNode = $this->resolvePreviousNodeFromFile($newStmts, $node);
         } elseif ($node instanceof Stmt) {
@@ -650,8 +619,6 @@ final class BetterNodeFinder
 
             /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
             $previousNode = $parentNode->stmts[$currentStmtKey - 1] ?? null;
-        } else {
-            $previousNode = $this->resolvePreviousNode($node);
         }
 
         if (! $previousNode instanceof Node) {
