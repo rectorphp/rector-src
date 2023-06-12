@@ -221,11 +221,18 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-            if (in_array($refactoredNode, [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN], true)) {
+            if (in_array(
+                $refactoredNode,
+                [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
+                true
+            )) {
                 $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-                $types = array_filter($this->getNodeTypes(), fn (string $nodeType): bool => $nodeType !== $originalNode::class);
-                $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types) {
+                $types = array_filter(
+                    $this->getNodeTypes(),
+                    static fn (string $nodeType): bool => $nodeType !== $originalNode::class
+                );
+                $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types): void {
                     if (in_array($subNode::class, $types, true)) {
                         $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
                     }
