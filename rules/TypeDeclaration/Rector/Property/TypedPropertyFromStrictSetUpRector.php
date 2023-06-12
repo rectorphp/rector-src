@@ -93,7 +93,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyType = $this->trustedClassMethodPropertyTypeInferer->inferProperty($property, $setUpClassMethod);
+            $propertyType = $this->trustedClassMethodPropertyTypeInferer->inferProperty($node, $property, $setUpClassMethod);
 
             $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                 $propertyType,
