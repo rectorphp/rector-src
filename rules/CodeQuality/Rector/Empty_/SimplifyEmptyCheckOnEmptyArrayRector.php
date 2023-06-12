@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Analyser\Scope;
@@ -36,9 +37,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRector
 {
     /**
-     * @var ClassLike[]
+     * @var Class_[]
      */
-    private array $classLikes = [];
+    private array $classes = [];
 
     public function __construct(
         private readonly ExprAnalyzer $exprAnalyzer,
@@ -50,7 +51,7 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
 
     public function beforeTraverse(array $nodes): ?array
     {
-        $this->classLikes = $this->betterNodeFinder->findInstanceOf($nodes, ClassLike::class);
+        $this->classes = $this->betterNodeFinder->findInstanceOf($nodes, Class_::class);
 
         return parent::beforeTraverse($nodes);
     }
@@ -159,14 +160,14 @@ CODE_SAMPLE
 
     private function resolveClassLikeWithProperty(Property $property, string $propertyName): ClassLike
     {
-        foreach ($this->classLikes as $classLike) {
-            $targetProperty = $classLike->getProperty($propertyName);
+        foreach ($this->classes as $class) {
+            $targetProperty = $class->getProperty($propertyName);
             if (! $targetProperty instanceof Property) {
                 continue;
             }
 
             if ($this->nodeComparator->areSameNode($targetProperty, $property)) {
-                return $classLike;
+                return $class;
             }
         }
 
