@@ -221,27 +221,11 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-            if (in_array(
-                $refactoredNode,
-                [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
-                true
-            )) {
-                $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+            // decorate early
+            $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-                // filter only types that
-                //    1. registered in getNodesTypes() method
-                //    2. different with current node type, as already decorated above
-                //
-                $types = array_filter(
-                    $this->getNodeTypes(),
-                    static fn (string $nodeType): bool => $nodeType !== $originalNode::class
-                );
-                $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types): void {
-                    if (in_array($subNode::class, $types, true)) {
-                        $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
-                    }
-                });
-            }
+            // decorate children if use DONT_TRAVERSE_CHILDREN or DONT_TRAVERSE_CURRENT_AND_CHILDREN
+            $this->decorateChildren($originalNode, $refactoredNode);
 
             return $refactoredNode;
         }
@@ -352,6 +336,33 @@ CODE_SAMPLE;
      */
     protected function removeNode(Node $node): void
     {
+    }
+
+    private function decorateChildren(Node $originalNode, int $refactoredNode): void
+    {
+        if (! in_array(
+            $refactoredNode,
+            [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
+            true
+        )) {
+            return;
+        }
+
+        // filter only types that
+        //    1. registered in getNodesTypes() method
+        //    2. different with current node type, as already decorated above
+        //
+        $types = array_filter(
+            $this->getNodeTypes(),
+            static fn (string $nodeType): bool => $nodeType !== $originalNode::class
+        );
+        $this->traverseNodesWithCallable($originalNode, function (Node $subNode) use ($types) {
+            if (in_array($subNode::class, $types, true)) {
+                $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
+            }
+
+            return null;
+        });
     }
 
     /**
