@@ -193,27 +193,6 @@ final class BetterNodeFinder
     }
 
     /**
-     * @api used in Symfony
-     * @template T of Node
-     *
-     * @param Stmt[] $nodes
-     * @param class-string<T> $type
-     */
-    public function findLastInstanceOf(array $nodes, string $type): ?Node
-    {
-        Assert::allIsAOf($nodes, Stmt::class);
-        Assert::isAOf($type, Node::class);
-
-        $foundInstances = $this->nodeFinder->findInstanceOf($nodes, $type);
-        if ($foundInstances === []) {
-            return null;
-        }
-
-        $lastItemKey = array_key_last($foundInstances);
-        return $foundInstances[$lastItemKey];
-    }
-
-    /**
      * @param Node|Node[] $nodes
      * @param callable(Node $node): bool $filter
      * @return Node[]
