@@ -223,6 +223,9 @@ CODE_SAMPLE;
         if (is_int($refactoredNode)) {
             $this->decorateCurrentAndChildren($node, $originalNode, $refactoredNode);
 
+            // notify this rule changing code
+            $this->file->addRectorClassWithLine($rectorWithLineChange);
+
             return $refactoredNode;
         }
 
