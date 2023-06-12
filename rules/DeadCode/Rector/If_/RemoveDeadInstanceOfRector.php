@@ -74,9 +74,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node)
     {
-        // avoid ifs in a loop, as unexpected behavior
+        // skip in if a loop, as unexpected behavior
         if (! $node instanceof If_) {
-            return NodeTraverser::STOP_TRAVERSAL;
+            return null;
         }
 
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
