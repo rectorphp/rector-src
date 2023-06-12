@@ -221,11 +221,7 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-            // decorate early
-            $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
-
-            // decorate children if use DONT_TRAVERSE_CHILDREN or DONT_TRAVERSE_CURRENT_AND_CHILDREN
-            $this->decorateChildren($originalNode, $refactoredNode);
+            $this->decorateCurrentAndChildren($node, $originalNode, $refactoredNode);
 
             return $refactoredNode;
         }
@@ -338,8 +334,11 @@ CODE_SAMPLE;
     {
     }
 
-    private function decorateChildren(Node $originalNode, int $refactoredNode): void
+    private function decorateCurrentAndChildren(Node $node, Node $originalNode, int $refactoredNode): void
     {
+        // decorate early
+        $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+
         if (! in_array(
             $refactoredNode,
             [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
