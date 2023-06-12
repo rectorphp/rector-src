@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
@@ -61,20 +63,26 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassLike::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassLike $node
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $hasChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
-        if (! $hasChanged) {
-            return null;
+        $hasChanged = false;
+        foreach ($node->getMethods() as $classMethod) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+            if ($this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node, $classMethod)) {
+                $hasChanged = true;
+            }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc\TagRemover;
 
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -16,7 +17,7 @@ final class ReturnTagRemover
     ) {
     }
 
-    public function removeReturnTagIfUseless(PhpDocInfo $phpDocInfo, ClassMethod $classMethod): bool
+    public function removeReturnTagIfUseless(PhpDocInfo $phpDocInfo, ClassLike $classLike, ClassMethod $classMethod): bool
     {
         // remove existing type
         $returnTagValueNode = $phpDocInfo->getReturnTagValue();
@@ -24,7 +25,7 @@ final class ReturnTagRemover
             return false;
         }
 
-        $isReturnTagValueDead = $this->deadReturnTagValueNodeAnalyzer->isDead($returnTagValueNode, $classMethod);
+        $isReturnTagValueDead = $this->deadReturnTagValueNodeAnalyzer->isDead($returnTagValueNode, $classLike, $classMethod);
         if (! $isReturnTagValueDead) {
             return false;
         }

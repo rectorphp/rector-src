@@ -13,7 +13,6 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
@@ -23,7 +22,6 @@ final class DeadReturnTagValueNodeAnalyzer
 {
     public function __construct(
         private readonly TypeComparator $typeComparator,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
         private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
         private readonly StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
@@ -31,14 +29,13 @@ final class DeadReturnTagValueNodeAnalyzer
     ) {
     }
 
-    public function isDead(ReturnTagValueNode $returnTagValueNode, ClassMethod $classMethod): bool
+    public function isDead(ReturnTagValueNode $returnTagValueNode, ClassLike $classLike, ClassMethod $classMethod): bool
     {
         $returnType = $classMethod->getReturnType();
         if ($returnType === null) {
             return false;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($classMethod, ClassLike::class);
         if ($classLike instanceof Trait_ && $returnTagValueNode->type instanceof ThisTypeNode) {
             return false;
         }
