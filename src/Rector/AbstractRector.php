@@ -224,7 +224,7 @@ CODE_SAMPLE;
             if (in_array($refactoredNode, [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN], true)) {
                 $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-                $this->traverseNodesWithCallable($originalNode, function (Node $subNode) {
+                $this->traverseNodesWithCallable($originalNode, function (Node $subNode): void {
                     $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
                 });
             }
