@@ -60,10 +60,9 @@ final class UseAddingPostRector extends AbstractPostRector
 
         /** @var FullyQualifiedObjectType[] $useImportTypes */
         $useImportTypes = $this->typeFactory->uniquateTypes($useImportTypes);
-        $firstNode = $rootNode;
 
-        if ($firstNode instanceof FileWithoutNamespace) {
-            $nodes = $firstNode->stmts;
+        if ($rootNode instanceof FileWithoutNamespace) {
+            $nodes = $rootNode->stmts;
         }
 
         if (! $rootNode instanceof FileWithoutNamespace && ! $rootNode instanceof Namespace_) {
