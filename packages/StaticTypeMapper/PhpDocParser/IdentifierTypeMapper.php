@@ -24,6 +24,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
@@ -43,7 +44,8 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
         private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -146,23 +148,11 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function resolveClassName(Node $node): ?string
     {
-        $classLike = $node instanceof ClassLike
-            ? $node
-            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if ($classReflection === null) {
             return null;
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-        if (! is_string($className)) {
-            return null;
-        }
-
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
-
-        return $className;
+        return $classReflection->getName();
     }
 }
