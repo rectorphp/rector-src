@@ -17,7 +17,7 @@ final class ConfigFactoryTest extends TestCase
     protected function setUp(): void
     {
         $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createBuilder(
+        $containerBuilder = $rectorKernel->createFromConfigs(
             [__DIR__ . '/config/config_with_nested_value_objects.php']
         );
 
