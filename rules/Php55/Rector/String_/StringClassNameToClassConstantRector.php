@@ -30,11 +30,6 @@ use Webmozart\Assert\Assert;
 final class StringClassNameToClassConstantRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
-     * @var string
-     */
-    private const IS_UNDER_CLASS_CONST = 'is_under_class_const';
-
-    /**
      * @var string[]
      */
     private array $classesToSkip = [];
@@ -105,10 +100,6 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
-            return null;
-        }
-
-        if ($node->getAttribute(self::IS_UNDER_CLASS_CONST) === true) {
             return null;
         }
 
