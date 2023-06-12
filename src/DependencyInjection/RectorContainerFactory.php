@@ -38,14 +38,4 @@ final class RectorContainerFactory
 
         return $container;
     }
-
-    /**
-     * @param string[] $configFiles
-     * @api
-     */
-    private function createBuilder(array $configFiles): ContainerInterface
-    {
-        $rectorKernel = new RectorKernel();
-        return $rectorKernel->createBuilder($configFiles);
-    }
 }
