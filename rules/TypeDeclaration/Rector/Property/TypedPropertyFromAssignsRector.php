@@ -147,6 +147,10 @@ CODE_SAMPLE
                     $phpDocInfo,
                     false
                 );
+
+                if ($phpDocInfo->hasChanged()) {
+                    $hasChanged = true;
+                }
             } else {
                 $property->type = $typeNode;
                 $hasChanged = true;
