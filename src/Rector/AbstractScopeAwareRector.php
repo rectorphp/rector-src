@@ -41,10 +41,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         if (! $currentScope instanceof Scope) {
-            if (! $this->scopeAnalyzer->hasScope($node)) {
-                return $this->refactorWithScope($node, null);
-            }
-
             /**
              * @var Node $parentNode
              *
