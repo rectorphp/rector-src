@@ -96,15 +96,7 @@ CODE_SAMPLE
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            $this->traverseNodesWithCallable($node->consts, static function (Node $subNode) {
-                if ($subNode instanceof String_) {
-                    $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
-                }
-
-                return null;
-            });
-
-            return null;
+            return NodeTraverser::DONT_TRAVERSE_CHILDREN;
         }
 
         // keep allowed string as condition

@@ -221,11 +221,13 @@ CODE_SAMPLE;
         }
 
         if (is_int($refactoredNode)) {
-            $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
+            if (in_array($refactoredNode, [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN], true)) {
+                $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-            // notify this rule changing code
-            $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
-            $this->file->addRectorClassWithLine($rectorWithLineChange);
+                $this->traverseNodesWithCallable($originalNode, function (Node $subNode) {
+                    $this->createdByRuleDecorator->decorate($subNode, $subNode, static::class);
+                });
+            }
 
             return $refactoredNode;
         }
