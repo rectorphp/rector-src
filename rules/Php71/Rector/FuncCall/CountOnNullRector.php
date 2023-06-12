@@ -78,19 +78,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Trait_::class, FuncCall::class, Ternary::class];
+        return [FuncCall::class, Ternary::class];
     }
 
     /**
-     * @param Trait_|FuncCall|Ternary $node
+     * @param FuncCall|Ternary $node
      */
     public function refactorWithScope(Node $node, Scope $scope): int|Ternary|null|FuncCall
     {
-        if ($node instanceof Trait_) {
-            // skip contents in traits, as hard to analyze
-            return NodeTraverser::STOP_TRAVERSAL;
-        }
-
         if ($node instanceof Ternary) {
             if ($this->shouldSkipTernaryIfElseCountFuncCall($node)) {
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
