@@ -23,7 +23,7 @@ namespace Rector\Core\Tests\Issues\StringClassNameConstantDefaultValue\Fixture;
 final class InArrayConstantWithUndefinedVariable
 {
     const SKIP_TYPES = [
-       'Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\SomeUser'
+       'Rector\Config\RectorConfig'
     ];
 
     public function run()
