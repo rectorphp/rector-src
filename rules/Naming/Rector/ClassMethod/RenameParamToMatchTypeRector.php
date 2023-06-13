@@ -94,7 +94,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName($param, $expectedName);
+            $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName($node, $param, $expectedName);
             if (! $paramRename instanceof ParamRename) {
                 continue;
             }
