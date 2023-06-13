@@ -165,7 +165,7 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(Node $node, Type $exprType): void
+    private function changeReturnType(ClassMethod|Function_|Closure $node, Type $exprType): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
