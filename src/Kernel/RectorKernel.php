@@ -22,7 +22,6 @@ final class RectorKernel
 
     /**
      * @param string[] $configFiles
-     * @api used in tests
      */
     public function createFromConfigs(array $configFiles): ContainerInterface
     {
