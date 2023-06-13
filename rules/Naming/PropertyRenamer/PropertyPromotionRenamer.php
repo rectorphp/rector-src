@@ -111,6 +111,7 @@ final class PropertyPromotionRenamer
 
     private function renameParamDoc(
         PhpDocInfo $phpDocInfo,
+        Param $classMethod,
         Param $param,
         string $paramVarName,
         string $desiredPropertyName
@@ -120,7 +121,11 @@ final class PropertyPromotionRenamer
             return;
         }
 
-        $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName($param, $desiredPropertyName);
+        $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName(
+            $classMethod,
+            $param,
+            $desiredPropertyName
+        );
         if (! $paramRename instanceof ParamRename) {
             return;
         }
