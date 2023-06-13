@@ -254,11 +254,13 @@ final class PhpDocTypeChanger
     /**
      * @api doctrine
      */
-    public function changeVarTypeNode(PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
+    public function changeVarTypeNode(Stmt $stmt, PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
     {
         // add completely new one
         $varTagValueNode = new VarTagValueNode($typeNode, '', '');
         $phpDocInfo->addTagValueNode($varTagValueNode);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
     private function processKeepComments(Property $property, Param $param): void
