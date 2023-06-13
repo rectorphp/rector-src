@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Node;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
@@ -40,8 +38,6 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
      * @var array<class-string<Node>>
      */
     private const NODES_TO_MATCH = [
-        Assign::class,
-        AssignRef::class,
         Foreach_::class,
         Static_::class,
         Echo_::class,
