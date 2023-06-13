@@ -145,7 +145,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
+        return $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, new VoidType());
     }
 
     private function shouldSkipClassMethod(ClassMethod|Function_|Closure $functionLike): bool

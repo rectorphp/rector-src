@@ -172,7 +172,7 @@ CODE_SAMPLE
         $exprType = $this->narrowConstantArrayType($exprType);
 
         if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+            $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $exprType);
         }
     }
 
