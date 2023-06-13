@@ -19,6 +19,9 @@ use Rector\Core\Util\StringUtils;
 use Rector\Core\ValueObject\SprintfStringAndArgs;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
+/**
+ * @api used in phpunit
+ */
 final class NodeTransformer
 {
     /**
@@ -28,7 +31,7 @@ final class NodeTransformer
     private const PERCENT_TEXT_REGEX = '#^%\w$#';
 
     /**
-     * @api symfony
+     * @api used in phpunit symfony
      *
      * From:
      * - sprintf("Hi %s", $name);

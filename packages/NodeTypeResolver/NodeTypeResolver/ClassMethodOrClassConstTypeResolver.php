@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -43,7 +42,7 @@ final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInter
     public function resolve(Node $node): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (!$classReflection instanceof ClassReflection || $classReflection->isAnonymous()) {
+        if (! $classReflection instanceof ClassReflection || $classReflection->isAnonymous()) {
             // anonymous class
             return new ObjectWithoutClassType();
         }
