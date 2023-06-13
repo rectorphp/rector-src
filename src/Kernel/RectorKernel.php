@@ -13,7 +13,6 @@ final class RectorKernel
     private ContainerInterface|null $container = null;
 
     /**
-     * @param string[] $configFiles
      * @api used in tests
      */
     public function create(): ContainerBuilder
