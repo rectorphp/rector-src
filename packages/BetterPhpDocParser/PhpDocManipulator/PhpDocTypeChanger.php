@@ -247,7 +247,7 @@ final class PhpDocTypeChanger
         $phpDocInfo = $classMethod->getAttribute(AttributeKey::PHP_DOC_INFO);
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
 
-        $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);
+        $this->changeParamType($classMethod, $phpDocInfo, $paramType, $param, $paramVarName);
         $this->processKeepComments($property, $param);
     }
 
