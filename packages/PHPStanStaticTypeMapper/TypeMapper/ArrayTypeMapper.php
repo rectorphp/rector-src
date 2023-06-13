@@ -51,8 +51,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private DetailedTypeAnalyzer $detailedTypeAnalyzer;
 
-    private ArrayShapeTypeMapper $arrayShapeTypeMapper;
-
     // To avoid circular dependency
 
     #[Required]
@@ -69,7 +67,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         $this->reflectionProvider = $reflectionProvider;
         $this->genericClassStringTypeNormalizer = $genericClassStringTypeNormalizer;
         $this->detailedTypeAnalyzer = $detailedTypeAnalyzer;
-        $this->arrayShapeTypeMapper = $arrayShapeTypeMapper;
     }
 
     /**

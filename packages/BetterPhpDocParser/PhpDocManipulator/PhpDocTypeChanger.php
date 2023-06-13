@@ -32,7 +32,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
 
@@ -87,8 +86,7 @@ final class PhpDocTypeChanger
 
         // override existing type
         $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $newType,
-            TypeKind::PROPERTY
+            $newType
         );
 
         $currentVarTagValueNode = $phpDocInfo->getVarTagValueNode();
@@ -122,8 +120,7 @@ final class PhpDocTypeChanger
 
         // override existing type
         $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $newType,
-            TypeKind::RETURN
+            $newType
         );
 
         $currentReturnTagValueNode = $phpDocInfo->getReturnTagValue();
@@ -152,7 +149,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM);
+        $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
         // override existing type

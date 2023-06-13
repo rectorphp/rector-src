@@ -13,7 +13,6 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 
 final class ArrayShapeTypeMapper
@@ -49,8 +48,7 @@ final class ArrayShapeTypeMapper
             $valueType = $constantArrayType->getValueTypes()[$index];
 
             $valueDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-                $valueType,
-                TypeKind::RETURN
+                $valueType
             );
 
             $arrayShapeItemNodes[] = new ArrayShapeItemNode(
