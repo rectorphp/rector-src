@@ -17,7 +17,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -107,8 +106,7 @@ CODE_SAMPLE
     private function hasTwoAndMoreGenericClassStringTypes(ConstantArrayType $constantArrayType): bool
     {
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $constantArrayType,
-            TypeKind::RETURN
+            $constantArrayType
         );
         if (! $typeNode instanceof ArrayTypeNode) {
             return false;
