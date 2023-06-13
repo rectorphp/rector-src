@@ -93,11 +93,7 @@ final class TrustedClassMethodPropertyTypeInferer
         Class_ $class,
         Type $resolvedType
     ): Type {
-        $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
-            $property,
-            $propertyName,
-            $class
-        );
+        $exactType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike($property, $propertyName, $class);
 
         if (! $exactType instanceof UnionType) {
             return $resolvedType;

@@ -647,10 +647,6 @@ parameters:
         - '#Fetching deprecated class constant PARENT_NODE#'
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
-        -
-            message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
-            path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
-
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
         -
             message: '#Method name "(get|has|set)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'

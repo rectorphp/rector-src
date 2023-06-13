@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
-use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
 use Rector\Config\RectorConfig;
 use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
@@ -32,10 +30,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class]);
-
-    $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
-        new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
-    ]);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',
