@@ -29,7 +29,7 @@ final class HasOffsetTypeMapper implements TypeMapperInterface
     /**
      * @param HasOffsetType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return new ArrayTypeNode(new IdentifierTypeNode('mixed'));
     }

@@ -35,7 +35,7 @@ final class AccessoryNumericStringTypeMapper implements TypeMapperInterface
     /**
      * @param AccessoryNumericStringType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return new IdentifierTypeNode('string');
     }

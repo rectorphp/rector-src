@@ -37,16 +37,13 @@ final class ClosureTypeMapper implements TypeMapperInterface
     /**
      * @param ClosureType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         $identifierTypeNode = new IdentifierTypeNode($type->getClassName());
 
-        $returnDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-            $type->getReturnType(),
-            $typeKind
-        );
+        $returnDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getReturnType());
 
-        $callableTypeParameterNodes = $this->createCallableTypeParameterNodes($type, $typeKind);
+        $callableTypeParameterNodes = $this->createCallableTypeParameterNodes($type);
 
         // callable parameters must be of specific type
         Assert::allIsInstanceOf($callableTypeParameterNodes, CallableTypeParameterNode::class);
@@ -74,10 +71,9 @@ final class ClosureTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @return CallableTypeParameterNode[]
      */
-    private function createCallableTypeParameterNodes(ClosureType $closureType, string $typeKind): array
+    private function createCallableTypeParameterNodes(ClosureType $closureType): array
     {
         $callableTypeParameterNodes = [];
 
@@ -85,7 +81,6 @@ final class ClosureTypeMapper implements TypeMapperInterface
             /** @var ParameterReflection $parameterReflection */
             $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
                 $parameterReflection->getType(),
-                $typeKind
             );
 
             $callableTypeParameterNodes[] = new CallableTypeParameterNode(

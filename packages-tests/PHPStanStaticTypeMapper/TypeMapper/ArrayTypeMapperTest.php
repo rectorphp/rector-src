@@ -11,7 +11,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
 use Rector\Testing\PHPUnit\AbstractTestCase;
 
@@ -30,14 +29,14 @@ final class ArrayTypeMapperTest extends AbstractTestCase
     #[DataProvider('provideDataUnionedWithoutKeys')]
     public function testWithoutKeys(ArrayType $arrayType, string $expectedResult): void
     {
-        $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType, TypeKind::ANY);
+        $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType);
         $this->assertSame($expectedResult, (string) $actualTypeNode);
     }
 
     #[DataProvider('provideDataWithKeys')]
     public function testWithKeys(ArrayType $arrayType, string $expectedResult): void
     {
-        $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType, TypeKind::ANY);
+        $actualTypeNode = $this->arrayTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType);
         $this->assertSame($expectedResult, (string) $actualTypeNode);
     }
 

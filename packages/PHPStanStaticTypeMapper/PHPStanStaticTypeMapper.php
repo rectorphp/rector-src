@@ -19,6 +19,8 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\CallableTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ClassStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ClosureTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\FloatTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\IntegerTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ObjectTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
@@ -33,21 +35,18 @@ final class PHPStanStaticTypeMapper
     ) {
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         foreach ($this->typeMappers as $typeMapper) {
             if (! is_a($type, $typeMapper->getNodeClass(), true)) {
                 continue;
             }
 
-            if ($typeMapper instanceof StringTypeMapper || $typeMapper instanceof ArrayTypeMapper || $typeMapper instanceof CallableTypeMapper || $typeMapper instanceof ClosureTypeMapper || $typeMapper instanceof ObjectTypeMapper || $typeMapper instanceof UnionTypeMapper || $typeMapper instanceof ClassStringTypeMapper) {
-                return $typeMapper->mapToPHPStanPhpDocTypeNode($type, $typeKind);
+            if ($typeMapper instanceof StringTypeMapper || $typeMapper instanceof ArrayTypeMapper || $typeMapper instanceof CallableTypeMapper || $typeMapper instanceof ClosureTypeMapper || $typeMapper instanceof ObjectTypeMapper || $typeMapper instanceof UnionTypeMapper || $typeMapper instanceof ClassStringTypeMapper || $typeMapper instanceof IntegerTypeMapper || $typeMapper instanceof FloatTypeMapper) {
+                return $typeMapper->mapToPHPStanPhpDocTypeNode($type);
             }
 
-            return $type->toPhpDocNode(); // $typeMapper-> mapToPHPStanPhpDocTypeNode($type, $typeKind);
+            return $type->toPhpDocNode();
         }
 
         if ($type->isString()->yes()) {

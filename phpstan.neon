@@ -683,3 +683,4 @@ parameters:
 
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
+        - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ArrayTypeMapper\:\:mapToPHPStanPhpDocTypeNode\(\) expects PHPStan\\Type\\ArrayType\|PHPStan\\Type\\CallableType\|PHPStan\\Type\\ClosureType\|PHPStan\\Type\\ObjectType\|PHPStan\\Type\\StringType\|PHPStan\\Type\\UnionType, PHPStan\\Type\\Type given#'
