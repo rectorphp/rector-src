@@ -58,7 +58,7 @@
         "rector/phpstan-rules": "^0.6",
         "rector/rector-generator": "dev-main",
         "spatie/enum": "^3.13",
-        "symplify/easy-ci": "^11.1.18",
+        "symplify/easy-ci": "^11.2",
         "symplify/easy-coding-standard": "^11.3",
         "symplify/phpstan-extensions": "^11.2",
         "symplify/phpstan-rules": "^12.0",
