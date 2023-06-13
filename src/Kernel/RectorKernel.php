@@ -15,7 +15,7 @@ final class RectorKernel
     /**
      * @api used in tests
      */
-    public function create(): ContainerBuilder
+    public function create(): ContainerInterface
     {
         return $this->createFromConfigs([]);
     }
@@ -23,7 +23,7 @@ final class RectorKernel
     /**
      * @param string[] $configFiles
      */
-    public function createFromConfigs(array $configFiles): ContainerInterface
+    public function createFromConfigs(array $configFiles): ContainerBuilder
     {
         $container = $this->buildContainer($configFiles);
         return $this->container = $container;
