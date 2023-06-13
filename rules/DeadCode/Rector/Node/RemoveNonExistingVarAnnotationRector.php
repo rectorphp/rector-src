@@ -40,8 +40,6 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
      * @var array<class-string<Node>>
      */
     private const NODES_TO_MATCH = [
-        Assign::class,
-        AssignRef::class,
         Foreach_::class,
         Static_::class,
         Echo_::class,
