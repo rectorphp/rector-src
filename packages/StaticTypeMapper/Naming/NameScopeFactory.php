@@ -36,13 +36,13 @@ final class NameScopeFactory
 
     // This is needed to avoid circular references
 
-    #[Required]
-    public function autowire(
+    // #[Required]
+    public function __construct(
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
         BetterNodeFinder $betterNodeFinder,
         UseImportsResolver $useImportsResolver,
-    ): void {
+    ) {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
         $this->betterNodeFinder = $betterNodeFinder;

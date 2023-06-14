@@ -19,16 +19,16 @@ use PHPStan\Type\MixedType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class StaticTypeMapperTest extends AbstractTestCase
+final class StaticTypeMapperTest extends AbstractLazyTestCase
 {
     private StaticTypeMapper $staticTypeMapper;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->staticTypeMapper = $this->getService(StaticTypeMapper::class);
+        parent::setUp();
+        $this->staticTypeMapper = $this->make(StaticTypeMapper::class);
     }
 
     #[DataProvider('provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType')]

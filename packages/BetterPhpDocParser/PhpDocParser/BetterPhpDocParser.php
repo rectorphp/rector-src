@@ -30,17 +30,22 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 final class BetterPhpDocParser extends PhpDocParser
 {
     /**
-     * @param PhpDocNodeDecoratorInterface[] $phpDocNodeDecorators
+     * @var PhpDocNodeDecoratorInterface[]
      */
+    private array $phpDocNodeDecorators = [];
+
     public function __construct(
         TypeParser $typeParser,
         ConstExprParser $constExprParser,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly iterable $phpDocNodeDecorators,
+        DoctrineAnnotationDecorator $doctrineAnnotationDecorator,
+        ConstExprClassNameDecorator $constExprClassNameDecorator,
         private readonly PrivatesAccessor $privatesAccessor = new PrivatesAccessor(),
     ) {
         parent::__construct($typeParser, $constExprParser);
+
+        $this->phpDocNodeDecorators = [$doctrineAnnotationDecorator, $constExprClassNameDecorator];
     }
 
     public function parse(TokenIterator $tokenIterator): PhpDocNode

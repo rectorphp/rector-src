@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Kernel;
 
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
-use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
@@ -31,7 +30,6 @@ final class ContainerBuilderFactory
      */
     private const TYPES_TO_TAG_AUTOCONFIGURE = [
         BasePhpDocNodeVisitorInterface::class,
-        PhpDocNodeDecoratorInterface::class,
         NodeTypeResolverInterface::class,
         ScopeResolverNodeVisitorInterface::class,
         TypeMapperInterface::class,
