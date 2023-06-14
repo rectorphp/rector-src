@@ -96,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $constType);
+        $this->phpDocTypeChanger->changeVarType($node, $phpDocInfo, $constType);
         if (! $phpDocInfo->hasChanged()) {
             return null;
         }

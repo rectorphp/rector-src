@@ -115,7 +115,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $updatedPhpDocType);
+        $this->phpDocTypeChanger->changeVarType($node, $phpDocInfo, $updatedPhpDocType);
 
         if (! $phpDocInfo->hasChanged()) {
             return null;

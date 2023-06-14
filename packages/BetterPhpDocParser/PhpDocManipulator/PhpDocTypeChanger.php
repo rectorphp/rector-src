@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocManipulator;
 
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
@@ -29,6 +31,7 @@ use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareIntersectionTypeNode
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareCallableTypeNode;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -60,11 +63,12 @@ final class PhpDocTypeChanger
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly CommentsMerger $commentsMerger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard
+        private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
-    public function changeVarType(PhpDocInfo $phpDocInfo, Type $newType): void
+    public function changeVarType(Stmt $stmt, PhpDocInfo $phpDocInfo, Type $newType): void
     {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@var')) {
@@ -102,9 +106,11 @@ final class PhpDocTypeChanger
 
             $phpDocInfo->addTagValueNode($varTagValueNode);
         }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
-    public function changeReturnType(PhpDocInfo $phpDocInfo, Type $newType): bool
+    public function changeReturnType(FunctionLike $functionLike, PhpDocInfo $phpDocInfo, Type $newType): bool
     {
         // better not touch this, can crash
         if ($phpDocInfo->hasInvalidTag('@return')) {
@@ -138,10 +144,12 @@ final class PhpDocTypeChanger
             $phpDocInfo->addTagValueNode($returnTagValueNode);
         }
 
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
+
         return true;
     }
 
-    public function changeParamType(PhpDocInfo $phpDocInfo, Type $newType, Param $param, string $paramName): void
+    public function changeParamType(FunctionLike $functionLike, PhpDocInfo $phpDocInfo, Type $newType, Param $param, string $paramName): void
     {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
@@ -178,6 +186,8 @@ final class PhpDocTypeChanger
             $paramTagValueNode = $this->paramPhpDocNodeFactory->create($phpDocTypeNode, $param);
             $phpDocInfo->addTagValueNode($paramTagValueNode);
         }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
     }
 
     public function isAllowed(TypeNode $typeNode): bool
@@ -237,18 +247,20 @@ final class PhpDocTypeChanger
         $phpDocInfo = $classMethod->getAttribute(AttributeKey::PHP_DOC_INFO);
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
 
-        $this->changeParamType($phpDocInfo, $paramType, $param, $paramVarName);
+        $this->changeParamType($classMethod, $phpDocInfo, $paramType, $param, $paramVarName);
         $this->processKeepComments($property, $param);
     }
 
     /**
      * @api doctrine
      */
-    public function changeVarTypeNode(PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
+    public function changeVarTypeNode(Stmt $stmt, PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
     {
         // add completely new one
         $varTagValueNode = new VarTagValueNode($typeNode, '', '');
         $phpDocInfo->addTagValueNode($varTagValueNode);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
     private function processKeepComments(Property $property, Param $param): void
@@ -258,6 +270,8 @@ final class PhpDocTypeChanger
 
         $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
         $this->commentsMerger->keepComments($param, [$property]);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
@@ -274,5 +288,7 @@ final class PhpDocTypeChanger
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
     }
 }

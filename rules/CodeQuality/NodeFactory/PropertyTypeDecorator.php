@@ -27,6 +27,6 @@ final class PropertyTypeDecorator
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $phpDocInfo->makeMultiLined();
 
-        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $propertyType);
+        $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
     }
 }
