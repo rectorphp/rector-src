@@ -15,7 +15,7 @@ class MethodWithArg
 }
 
 ?>
-    -----
+-----
 <?php
 
 namespace Rector\Tests\RemovingStatic\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
