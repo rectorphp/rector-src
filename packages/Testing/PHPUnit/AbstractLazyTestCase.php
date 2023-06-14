@@ -61,6 +61,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
+use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IntersectionTypeMapper;
@@ -229,6 +230,17 @@ abstract class AbstractLazyTestCase extends TestCase
                 $container->get(CloningPhpDocNodeVisitor::class),
                 $basePhpDocNodeVisitors
             );
+        });
+
+        $container->singleton(NameScopeFactory::class, function (Container $container) {
+            $nameScopeFactory = $this->make(NameScopeFactory::class);
+
+            // prevent cyclic dependencies
+            $nameScopeFactory->autowire(
+                $container->make(StaticTypeMapper::class)
+            );
+
+            return $nameScopeFactory;
         });
 
         $this->container = $container;

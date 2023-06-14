@@ -34,19 +34,25 @@ final class NameScopeFactory
 
     private UseImportsResolver $useImportsResolver;
 
-    // This is needed to avoid circular references
-
-    // #[Required]
     public function __construct(
         PhpDocInfoFactory $phpDocInfoFactory,
-        StaticTypeMapper $staticTypeMapper,
         BetterNodeFinder $betterNodeFinder,
         UseImportsResolver $useImportsResolver,
     ) {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
-        $this->staticTypeMapper = $staticTypeMapper;
         $this->betterNodeFinder = $betterNodeFinder;
         $this->useImportsResolver = $useImportsResolver;
+    }
+
+    /**
+     * Prevents cyclic dependency
+     */
+    #[Required]
+    public function autowire(
+        StaticTypeMapper $staticTypeMapper,
+    )
+    {
+        $this->staticTypeMapper = $staticTypeMapper;
     }
 
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
