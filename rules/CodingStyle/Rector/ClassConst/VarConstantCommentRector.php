@@ -23,6 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @deprecated The doc block types are not reliable, and typed constants are comming to PHP 8.3, use those instead.
+ *
  * @see \Rector\Tests\CodingStyle\Rector\ClassConst\VarConstantCommentRector\VarConstantCommentRectorTest
  */
 final class VarConstantCommentRector extends AbstractRector
