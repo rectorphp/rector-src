@@ -146,17 +146,8 @@ final class PHPStanNodeScopeResolver
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            $expr = $node;
-            while ($expr instanceof Assign || $expr instanceof AssignOp) {
-                if ($expr->expr instanceof CallLike && ! $expr->expr->isFirstClassCallable()) {
-                    foreach ($expr->expr->getArgs() as $arg) {
-                        $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    }
-                }
-
-                // decorate value as well
-                $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $expr = $expr->expr;
+            if ($node instanceof Assign || $node instanceof AssignOp) {
+                $this->processAssign($node, $mutatingScope);
             }
 
             if ($node instanceof Ternary) {
@@ -259,6 +250,23 @@ final class PHPStanNodeScopeResolver
         };
 
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
+    }
+
+    private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
+    {
+        $expr = $assign;
+
+        while ($expr instanceof Assign || $expr instanceof AssignOp) {
+            if ($expr->expr instanceof CallLike && ! $expr->expr->isFirstClassCallable()) {
+                foreach ($expr->expr->getArgs() as $arg) {
+                    $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
+            // decorate value as well
+            $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $expr = $expr->expr;
+        }
     }
 
     private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt, MutatingScope $mutatingScope): void
