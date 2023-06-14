@@ -254,6 +254,11 @@ final class PHPStanNodeScopeResolver
 
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
+        if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
+            $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            return;
+        }
+
         $expr = $assign;
 
         while ($expr instanceof Assign || $expr instanceof AssignOp) {
