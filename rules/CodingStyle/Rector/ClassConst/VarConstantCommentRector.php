@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\ClassConst;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
@@ -17,7 +18,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -87,12 +87,16 @@ CODE_SAMPLE
         $constType = $this->typeNormalizer->generalizeConstantBoolTypes($constType);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
         if ($this->shouldSkipConstantArrayType($constType, $phpDocInfo)) {
             return null;
         }
 
         if ($this->typeComparator->isSubtype($constType, $phpDocInfo->getVarType())) {
+            return null;
+        }
+
+        // already filled
+        if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
             return null;
         }
 
