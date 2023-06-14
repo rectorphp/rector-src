@@ -136,7 +136,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            return new MethodCall(new Variable('this'), $classMethodName);
+            return new MethodCall(new Variable('this'), $classMethodName, $node->args);
         });
 
         // change static calls to non-static ones, but only if in non-static method!!!
