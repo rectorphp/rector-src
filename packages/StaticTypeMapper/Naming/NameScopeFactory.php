@@ -34,15 +34,15 @@ final class NameScopeFactory
 
     private UseImportsResolver $useImportsResolver;
 
-    public function __construct(
-        PhpDocInfoFactory $phpDocInfoFactory,
-        BetterNodeFinder $betterNodeFinder,
-        UseImportsResolver $useImportsResolver,
-    ) {
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
-        $this->betterNodeFinder = $betterNodeFinder;
-        $this->useImportsResolver = $useImportsResolver;
-    }
+//    public function __construct(
+//        PhpDocInfoFactory $phpDocInfoFactory,
+//        BetterNodeFinder $betterNodeFinder,
+//        UseImportsResolver $useImportsResolver,
+//    ) {
+//        $this->phpDocInfoFactory = $phpDocInfoFactory;
+//        $this->betterNodeFinder = $betterNodeFinder;
+//        $this->useImportsResolver = $useImportsResolver;
+//    }
 
     /**
      * Prevents cyclic dependency
