@@ -271,6 +271,8 @@ final class PhpDocTypeChanger
         $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
         $this->commentsMerger->keepComments($param, [$property]);
 
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $toBeRemoved) {
@@ -286,5 +288,7 @@ final class PhpDocTypeChanger
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
     }
 }
