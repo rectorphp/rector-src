@@ -135,11 +135,7 @@ final class LocalPropertyAnalyzer
             return true;
         }
 
-        if ($propertyFetch->name instanceof Variable) {
-            return true;
-        }
-
-        return $this->isPartOfClosureBindTo($propertyFetch);
+        return $propertyFetch->name instanceof Variable;
     }
 
     /**
@@ -183,19 +179,5 @@ final class LocalPropertyAnalyzer
         }
 
         return $scope->isInClosureBind();
-    }
-
-    private function isPartOfClosureBindTo(PropertyFetch $propertyFetch): bool
-    {
-        $parentMethodCall = $this->betterNodeFinder->findParentType($propertyFetch, MethodCall::class);
-        if (! $parentMethodCall instanceof MethodCall) {
-            return false;
-        }
-
-        if (! $parentMethodCall->var instanceof Closure) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($parentMethodCall->name, 'bindTo');
     }
 }
