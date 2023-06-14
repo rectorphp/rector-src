@@ -224,7 +224,7 @@ final class PhpDocTypeChanger
 
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {
-            $this->processKeepComments($property, $param);
+            $this->processKeepComments($classMethod, $property, $param);
             return;
         }
 
