@@ -145,10 +145,15 @@ final class PHPStanNodeScopeResolver
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
-                if ($node->expr instanceof CallLike && ! $node->expr->isFirstClassCallable()) {
-                    foreach ($node->expr->getArgs() as $arg) {
-                        $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $expr = $node->expr;
+                while ($expr instanceof Assign || $expr instanceof AssignOp) {
+                    if ($expr->expr instanceof CallLike && ! $expr->expr->isFirstClassCallable()) {
+                        foreach ($expr->expr->getArgs() as $arg) {
+                            $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                        }
                     }
+
+                    $expr = $expr->expr;
                 }
             }
 
