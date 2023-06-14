@@ -166,6 +166,16 @@ abstract class AbstractLazyTestCase extends TestCase
         // @todo extract to Laravel container
         $container = new Container();
 
+        $container->singleton(NameScopeFactory::class, function (Container $container) {
+            $nameScopeFactory = $this->make(NameScopeFactory::class);
+
+            // prevent cyclic dependencies
+            $staticTypeMapper = $container->get(StaticTypeMapper::class);
+            $nameScopeFactory->autowire($staticTypeMapper);
+
+            return $nameScopeFactory;
+        });
+
         $container->singleton(PHPStanServicesFactory::class, static function (Container $container) {
             // @todo fix patch
             $parameterProvider = new ParameterProvider(new \Symfony\Component\DependencyInjection\Container(new ParameterBag([
@@ -232,16 +242,7 @@ abstract class AbstractLazyTestCase extends TestCase
             );
         });
 
-        $container->singleton(NameScopeFactory::class, function (Container $container) {
-            $nameScopeFactory = $this->make(NameScopeFactory::class);
 
-            // prevent cyclic dependencies
-            $nameScopeFactory->autowire(
-                $container->make(StaticTypeMapper::class)
-            );
-
-            return $nameScopeFactory;
-        });
 
         $this->container = $container;
     }
