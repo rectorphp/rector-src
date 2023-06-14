@@ -6,7 +6,6 @@ namespace Rector\Naming\ValueObjectFactory;
 
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -14,7 +13,6 @@ final class PropertyRenameFactory
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
