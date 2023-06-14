@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
@@ -143,6 +144,12 @@ final class PHPStanNodeScopeResolver
                 $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+                if ($node->expr instanceof CallLike && ! $node->expr->isFirstClassCallable()) {
+                    foreach ($node->expr->getArgs() as $arg) {
+                        $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
+                }
             }
 
             if ($node instanceof Ternary) {
