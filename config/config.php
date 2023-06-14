@@ -280,9 +280,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(PhpDocNodeMapper::class)
         ->arg('$phpDocNodeVisitors', tagged_iterator(BasePhpDocNodeVisitorInterface::class));
 
-    $services->set(BetterPhpDocParser::class)
-        ->arg('$phpDocNodeDecorators', tagged_iterator(PhpDocNodeDecoratorInterface::class));
-
     $services->set(NodeTypeResolver::class)
         ->arg('$nodeTypeResolvers', tagged_iterator(NodeTypeResolverInterface::class));
 
