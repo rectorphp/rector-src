@@ -50,15 +50,12 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     /**
      * @param IntersectionType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         $intersectionTypesNodes = [];
 
         foreach ($type->getTypes() as $intersectionedType) {
-            $intersectionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode(
-                $intersectionedType,
-                $typeKind
-            );
+            $intersectionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($intersectionedType);
         }
 
         $intersectionTypesNodes = array_unique($intersectionTypesNodes);
