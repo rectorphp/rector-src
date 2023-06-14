@@ -28,7 +28,7 @@ final class FilesFinder
      * @param string[] $suffixes
      * @return string[]
      */
-    public function findInDirectoriesAndFiles(array $source, array $suffixes = []): array
+    public function findInDirectoriesAndFiles(array $source, array $suffixes = [], bool $sortByName = true): array
     {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
@@ -37,7 +37,10 @@ final class FilesFinder
 
         $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
 
-        return array_merge($currentAndDependentFilePaths, $this->findInDirectories($directories, $suffixes));
+        return array_merge(
+            $currentAndDependentFilePaths,
+            $this->findInDirectories($directories, $suffixes, $sortByName)
+        );
     }
 
     /**
@@ -45,7 +48,7 @@ final class FilesFinder
      * @param string[] $suffixes
      * @return string[]
      */
-    private function findInDirectories(array $directories, array $suffixes): array
+    private function findInDirectories(array $directories, array $suffixes, bool $sortByName = true): array
     {
         if ($directories === []) {
             return [];
@@ -55,8 +58,11 @@ final class FilesFinder
             ->files()
             // skip empty files
             ->size('> 0')
-            ->in($directories)
-            ->sortByName();
+            ->in($directories);
+
+        if ($sortByName) {
+            $finder->sortByName();
+        }
 
         if ($suffixes !== []) {
             $suffixesPattern = $this->normalizeSuffixesToPattern($suffixes);

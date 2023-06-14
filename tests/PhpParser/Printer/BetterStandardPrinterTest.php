@@ -6,7 +6,7 @@ namespace Rector\Core\Tests\PhpParser\Printer;
 
 use Iterator;
 use PhpParser\Comment;
-use PhpParser\Node\Expr\Assign;
+use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
@@ -72,24 +72,25 @@ final class BetterStandardPrinterTest extends AbstractTestCase
         yield ["Vendor'Name", "'Vendor\'Name'"];
     }
 
-    public function testYield(): void
+    #[DataProvider('provideDataForYield')]
+    public function testYield(Node $node, string $expectedPrintedNode): void
+    {
+        $printedNode = $this->betterStandardPrinter->print($node);
+        $this->assertSame($expectedPrintedNode, $printedNode);
+    }
+
+    public static function provideDataForYield(): Iterator
     {
         $yield = new Yield_(new String_('value'));
+        yield [$yield, "yield 'value'"];
 
-        $printed = $this->betterStandardPrinter->print($yield);
-        $this->assertSame("yield 'value'", $printed);
-
-        $printed = $this->betterStandardPrinter->print(new Yield_());
-        $this->assertSame('yield', $printed);
-
-        $yieldAssign = new Assign(new Variable('yieldMe'), $yield);
-        $yield->setAttribute(AttributeKey::PARENT_NODE, $yieldAssign);
-        $printed = $this->betterStandardPrinter->print($yield);
-        $this->assertSame("(yield 'value')", $printed);
+        yield [new Yield_(), 'yield'];
 
         $expression = new Expression($yield);
-        $yield->setAttribute(AttributeKey::PARENT_NODE, $expression);
-        $printed = $this->betterStandardPrinter->print($expression);
-        $this->assertSame("yield 'value';", $printed);
+        yield [$expression, "yield 'value';"];
+
+        $assignedToYield = clone $yield;
+        $assignedToYield->setAttribute(AttributeKey::IS_ASSIGNED_TO, true);
+        yield [$assignedToYield, "(yield 'value')"];
     }
 }

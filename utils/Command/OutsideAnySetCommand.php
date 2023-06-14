@@ -38,6 +38,7 @@ final class OutsideAnySetCommand extends Command
         sort($rectorClassesOutsideAnySet);
 
         $this->symfonyStyle->listing($rectorClassesOutsideAnySet);
+        $this->symfonyStyle->warning(sprintf('%d rules is outside any set', count($rectorClassesOutsideAnySet)));
 
         return self::SUCCESS;
     }

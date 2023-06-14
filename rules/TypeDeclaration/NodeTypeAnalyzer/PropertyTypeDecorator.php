@@ -42,7 +42,7 @@ final class PropertyTypeDecorator
             }
 
             if ($changeVarTypeFallback) {
-                $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
+                $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $unionType);
             }
 
             return;
@@ -66,7 +66,7 @@ final class PropertyTypeDecorator
             return;
         }
 
-        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $unionType);
+        $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $unionType);
     }
 
     private function isDocBlockRequired(UnionType $unionType): bool

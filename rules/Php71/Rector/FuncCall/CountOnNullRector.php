@@ -17,7 +17,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
-use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
@@ -78,19 +77,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Trait_::class, FuncCall::class, Ternary::class];
+        return [FuncCall::class, Ternary::class];
     }
 
     /**
-     * @param Trait_|FuncCall|Ternary $node
+     * @param FuncCall|Ternary $node
      */
     public function refactorWithScope(Node $node, Scope $scope): int|Ternary|null|FuncCall
     {
-        if ($node instanceof Trait_) {
-            // skip contents in traits, as hard to analyze
-            return NodeTraverser::STOP_TRAVERSAL;
-        }
-
         if ($node instanceof Ternary) {
             if ($this->shouldSkipTernaryIfElseCountFuncCall($node)) {
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;

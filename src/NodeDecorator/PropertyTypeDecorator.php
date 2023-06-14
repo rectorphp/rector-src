@@ -39,13 +39,13 @@ final class PropertyTypeDecorator
                 $property->type = $phpParserType;
 
                 if ($type instanceof GenericObjectType) {
-                    $this->phpDocTypeChanger->changeVarType($phpDocInfo, $type);
+                    $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $type);
                 }
 
                 return;
             }
         }
 
-        $this->phpDocTypeChanger->changeVarType($phpDocInfo, $type);
+        $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $type);
     }
 }

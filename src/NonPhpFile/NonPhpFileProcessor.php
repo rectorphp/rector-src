@@ -26,7 +26,7 @@ final class NonPhpFileProcessor implements FileProcessorInterface
      * @param NonPhpRectorInterface[] $nonPhpRectors
      */
     public function __construct(
-        private readonly array $nonPhpRectors,
+        private readonly iterable $nonPhpRectors,
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly Filesystem $filesystem,

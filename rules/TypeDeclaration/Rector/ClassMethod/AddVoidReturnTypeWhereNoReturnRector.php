@@ -137,7 +137,7 @@ CODE_SAMPLE
         $this->usePhpdoc = $usePhpdoc;
     }
 
-    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure|Node $node): bool
+    private function changePhpDocToVoidIfNotNever(ClassMethod|Function_|Closure $node): bool
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
@@ -145,7 +145,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->phpDocTypeChanger->changeReturnType($phpDocInfo, new VoidType());
+        return $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, new VoidType());
     }
 
     private function shouldSkipClassMethod(ClassMethod|Function_|Closure $functionLike): bool

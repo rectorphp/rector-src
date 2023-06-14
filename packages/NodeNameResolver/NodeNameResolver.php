@@ -42,7 +42,7 @@ final class NodeNameResolver
         private readonly RegexPatternDetector $regexPatternDetector,
         private readonly ClassNaming $classNaming,
         private readonly CallAnalyzer $callAnalyzer,
-        private readonly array $nodeNameResolvers = []
+        private readonly iterable $nodeNameResolvers = []
     ) {
     }
 

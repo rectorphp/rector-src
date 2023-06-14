@@ -19,7 +19,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\RectorOutputStyle;
@@ -104,8 +103,6 @@ CODE_SAMPLE;
 
     private FilePathHelper $filePathHelper;
 
-    private DocBlockUpdater $docBlockUpdater;
-
     private NodeConnectingTraverser $nodeConnectingTraverser;
 
     private ?string $toBeRemovedNodeHash = null;
@@ -130,7 +127,6 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        DocBlockUpdater $docBlockUpdater,
         NodeConnectingTraverser $nodeConnectingTraverser
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
@@ -151,7 +147,6 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
-        $this->docBlockUpdater = $docBlockUpdater;
         $this->nodeConnectingTraverser = $nodeConnectingTraverser;
     }
 
@@ -252,7 +247,7 @@ CODE_SAMPLE;
         if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
             $this->toBeRemovedNodeHash = null;
 
-            return NodeConnectingTraverser::REMOVE_NODE;
+            return NodeTraverser::REMOVE_NODE;
         }
 
         $objectHash = spl_object_hash($node);
@@ -392,12 +387,6 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            /**
-             * Early refresh Doc Comment of Node before refresh Scope to ensure doc node is latest update
-             * to make PHPStan type can be correctly detected
-             */
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
             $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
     }

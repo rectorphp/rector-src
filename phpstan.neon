@@ -112,6 +112,7 @@ parameters:
             paths:
                 # on PhpParser Nodes
                 - packages/NodeNameResolver/NodeNameResolver.php
+                - utils/ChangelogGenerator/Command/
 
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
@@ -320,8 +321,7 @@ parameters:
                 - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
-                - src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
-                - src/DependencyInjection/DefinitionFinder.php
+                - config/config.php
 
         # use of internal phpstan classes
         -
@@ -456,10 +456,6 @@ parameters:
             path: packages/Testing/Fixture/FixtureFileUpdater.php
 
         -
-            message: '#Only booleans are allowed in an if condition, array\|string\|null give#'
-            path: src/DependencyInjection/CompilerPass/AutowireArrayParameterCompilerPass.php
-
-        -
             message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
             paths:
                 - packages/NodeTypeResolver/NodeTypeResolver.php
@@ -535,11 +531,6 @@ parameters:
         # false positive
         - '#Method Rector\\TypeDeclaration\\Rector\\ClassMethod\\AddParamTypeBasedOnPHPUnitDataProviderRector\:\:resolveDataProviderPhpDocTagNode\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|null but returns PHPStan\\PhpDocParser\\Ast\\Node\|null#'
 
-        -
-            message: '#Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary#'
-            paths:
-                - src/DependencyInjection/DefinitionFinder.php
-
         # changelog generator
         -
             message: '#Anonymous (variable|variables) in#'
@@ -549,11 +540,6 @@ parameters:
         -
             message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: utils/ChangelogGenerator
-
-        -
-            message: '#Function "property_exists\(\)" cannot be used/left in the code#'
-            path: utils/ChangelogGenerator
-
 
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
@@ -648,17 +634,6 @@ parameters:
         # resolve continually
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
 
-
-        # statics are required in the kernel for performance reasons
-        -
-            message: '#Do not use static property#'
-            path: src/Kernel/RectorKernel.php
-
-        # '@package_version@' compare with '@package_version@' to verify on rector-src
-        -
-            message: '#Strict comparison using \!\=\= between .* and .* will always evaluate to false#'
-            path: src/Kernel/RectorKernel.php
-
         # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
         - '#Access to an undefined property PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
@@ -671,10 +646,6 @@ parameters:
         # WIP
         - '#Fetching deprecated class constant PARENT_NODE#'
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
-
-        -
-            message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
-            path: rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php
 
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
         -
@@ -697,10 +668,18 @@ parameters:
         # resolve before Rector 1.0
         - '#Call to deprecated method findParentType#'
         - '#Call to deprecated method findParentByTypes#'
-        - '#Instantiation of deprecated class Rector\\Core\\DependencyInjection\\CompilerPass\\AutowireArrayParameterCompilerPass#'
 
         - '#Cognitive complexity for "Rector\\Transform\\Rector\\StaticCall\\StaticCallToMethodCallRector\:\:refactorWithScope\(\)" is 14, keep it under 11#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
 
-        - '#Function "class_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
         - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
+
+        - '#Parameter \#2 \$callable of method Rector\\Core\\Rector\\AbstractRector\:\:traverseNodesWithCallable\(\) expects callable\(PhpParser\\Node\)\: \(int\|PhpParser\\Node\|null\), Closure\(PhpParser\\Node\)\: \(array<PhpParser\\Node\\Stmt>\|int\|null\) given#'
+
+        # false positive
+        -
+            message: '#Parameters should use "array" types as the only types passed to this method#'
+            path: packages/VersionBonding/PhpVersionedFilter.php
+
+        # for symfony configs check
+        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'

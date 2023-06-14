@@ -30,6 +30,11 @@ use Webmozart\Assert\Assert;
 final class StringClassNameToClassConstantRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
+     * @var string
+     */
+    private const IS_UNDER_CLASS_CONST = 'is_under_class_const';
+
+    /**
      * @var string[]
      */
     private array $classesToSkip = [];
@@ -87,11 +92,19 @@ CODE_SAMPLE
     /**
      * @param String_|FuncCall|ClassConst $node
      */
-    public function refactorWithScope(Node $node, Scope $scope)
+    public function refactorWithScope(Node $node, Scope $scope): Concat|ClassConstFetch|null|int
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            return NodeTraverser::STOP_TRAVERSAL;
+            $this->traverseNodesWithCallable($node->consts, static function (Node $subNode) {
+                if ($subNode instanceof String_) {
+                    $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
+                }
+
+                return null;
+            });
+
+            return null;
         }
 
         // keep allowed string as condition
@@ -100,6 +113,10 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
+            return null;
+        }
+
+        if ($node->getAttribute(self::IS_UNDER_CLASS_CONST) === true) {
             return null;
         }
 

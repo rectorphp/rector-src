@@ -21,7 +21,7 @@ final class ClassNameImportSkipper
      * @param ClassNameImportSkipVoterInterface[] $classNameImportSkipVoters
      */
     public function __construct(
-        private readonly array $classNameImportSkipVoters,
+        private readonly iterable $classNameImportSkipVoters,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly UseImportsResolver $useImportsResolver
     ) {

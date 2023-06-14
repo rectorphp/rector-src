@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -164,12 +165,16 @@ final class PropertyFetchFinder
 
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool
     {
-        $parentNode = $this->betterNodeFinder->findParentType($propertyFetch, Class_::class);
-        if (! $parentNode instanceof Class_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($propertyFetch);
+        if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             return false;
         }
 
-        return $parentNode !== $class && ! $hasTrait;
+        if ($classReflection->getName() === $this->nodeNameResolver->getName($class)) {
+            return false;
+        }
+
+        return ! $hasTrait;
     }
 
     private function isNamePropertyNameEquals(

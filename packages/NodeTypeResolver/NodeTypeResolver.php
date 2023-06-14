@@ -59,7 +59,7 @@ final class NodeTypeResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly AccessoryNonEmptyStringTypeCorrector $accessoryNonEmptyStringTypeCorrector,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        array $nodeTypeResolvers
+        iterable $nodeTypeResolvers
     ) {
         foreach ($nodeTypeResolvers as $nodeTypeResolver) {
             foreach ($nodeTypeResolver->getNodeClasses() as $nodeClass) {

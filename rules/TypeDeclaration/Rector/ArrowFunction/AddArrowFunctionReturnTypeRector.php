@@ -51,13 +51,11 @@ CODE_SAMPLE
         }
 
         $type = $this->getType($node->expr);
-
         if ($type->isVoid()->yes()) {
             return null;
         }
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
-
         if ($returnTypeNode === null) {
             return null;
         }

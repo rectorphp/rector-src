@@ -77,7 +77,7 @@ final class PHPStanNodeScopeResolver
         private readonly DependencyResolver $dependencyResolver,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        array $nodeVisitors,
+        iterable $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,

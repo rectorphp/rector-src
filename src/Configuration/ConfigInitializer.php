@@ -12,18 +12,25 @@ use Rector\Core\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 final class ConfigInitializer
 {
     /**
-     * @param RectorInterface[] $rectors
+     * @var RectorInterface[]
+     */
+    private array $rectors = [];
+
+    /**
+     * @param RewindableGenerator<RectorInterface> $rectors
      */
     public function __construct(
-        private readonly array $rectors,
+        RewindableGenerator $rectors,
         private readonly InitFilePathsResolver $initFilePathsResolver,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
+        $this->rectors = iterator_to_array($rectors);
     }
 
     public function createConfig(string $projectDirectory): void
