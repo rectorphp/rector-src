@@ -327,13 +327,6 @@ CODE_SAMPLE;
     }
 
     /**
-     * @deprecated Return NodeTraverser::REMOVE_NODE or array of changed nodes instead
-     */
-    protected function removeNode(Node $node): void
-    {
-    }
-
-    /**
      * @param Node|Node[] $refactoredNode
      */
     private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode): Node
