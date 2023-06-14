@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Ternary;
@@ -145,6 +146,19 @@ final class PHPStanNodeScopeResolver
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
+            $expr = $node;
+            while ($expr instanceof Assign || $expr instanceof AssignOp) {
+                if ($expr->expr instanceof CallLike && ! $expr->expr->isFirstClassCallable()) {
+                    foreach ($expr->expr->getArgs() as $arg) {
+                        $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
+                }
+
+                // decorate value as well
+                $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $expr = $expr->expr;
+            }
+
             if ($node instanceof Ternary) {
                 $this->processTernary($node, $mutatingScope);
             }
@@ -187,11 +201,6 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof FuncCall && $node->name instanceof Expr) {
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            if ($node instanceof Assign || $node instanceof AssignOp) {
-                // decorate value as well
-                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Trait_) {
