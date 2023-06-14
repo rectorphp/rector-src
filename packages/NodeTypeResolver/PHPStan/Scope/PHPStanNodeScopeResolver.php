@@ -138,9 +138,7 @@ final class PHPStanNodeScopeResolver
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
-                $node instanceof Assign ||
                 $node instanceof EnumCase ||
-                $node instanceof AssignOp ||
                 $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
