@@ -10,6 +10,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPUnit\Framework\TestCase;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\DataProvider\CurrentTokenIteratorProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ArrayTypePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\CallableTypePhpDocNodeVisitor;
@@ -18,6 +19,8 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\TemplatePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\UnionTypeNodePhpDocNodeVisitor;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\DependencyInjection\BleedingEdgeIncludePurifier;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanExtensionsConfigResolver;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
@@ -167,7 +170,16 @@ abstract class AbstractLazyTestCase extends TestCase
         $container = new Container();
 
         $container->singleton(NameScopeFactory::class, function (Container $container) {
-            $nameScopeFactory = $this->make(NameScopeFactory::class);
+
+            // @todo remove cyclicl dependy on StaticTypeMapper in
+            // * PhpDocInfoFactory
+            // * NameScopeFactory
+
+            $nameScopeFactory = new NameScopeFactory(
+                $container->make(PhpDocInfoFactory::class),
+                $container->make(BetterNodeFinder::class),
+                $container->make(UseImportsResolver::class)
+            );
 
             // prevent cyclic dependencies
             $staticTypeMapper = $container->get(StaticTypeMapper::class);
