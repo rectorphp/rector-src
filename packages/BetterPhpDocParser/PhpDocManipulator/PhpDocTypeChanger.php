@@ -242,6 +242,8 @@ final class PhpDocTypeChanger
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
         $phpDocInfo = $classMethod->getAttribute(AttributeKey::PHP_DOC_INFO);
@@ -272,7 +274,6 @@ final class PhpDocTypeChanger
         $this->commentsMerger->keepComments($param, [$property]);
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
@@ -291,6 +292,5 @@ final class PhpDocTypeChanger
         $phpDocInfo->removeByType(VarTagValueNode::class);
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
     }
 }
