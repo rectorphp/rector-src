@@ -134,6 +134,7 @@ final class LocalPropertyAnalyzer
         if ($this->isPartOfClosureBind($propertyFetch)) {
             return true;
         }
+
         return $propertyFetch->name instanceof Variable;
     }
 
