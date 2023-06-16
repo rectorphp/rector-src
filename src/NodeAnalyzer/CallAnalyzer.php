@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Clone_;
@@ -16,8 +14,7 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\If_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Symfony\Contracts\Service\Attribute\Required;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CallAnalyzer
 {
@@ -26,17 +23,9 @@ final class CallAnalyzer
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
-    private BetterNodeFinder $betterNodeFinder;
-
     public function __construct(
         private readonly NodeComparator $nodeComparator
     ) {
-    }
-
-    #[Required]
-    public function autowire(BetterNodeFinder $betterNodeFinder): void
-    {
-        $this->betterNodeFinder = $betterNodeFinder;
     }
 
     public function isObjectCall(Expr $expr): bool
@@ -81,16 +70,6 @@ final class CallAnalyzer
             return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstPrevious($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            if (! $this->nodeComparator->areNodesEqual($node->var, $expr)) {
-                return false;
-            }
-
-            return $node->expr instanceof Clone_ || $node->expr instanceof New_;
-        });
+        return $expr->getAttribute(AttributeKey::IS_NEW_INSTANCE_FROM_ASSIGN) === true;
     }
 }

@@ -221,4 +221,9 @@ final class AttributeKey
      * @var string
      */
     public const STATEMENT_DEPTH = 'statementDepth';
+
+    /**
+     * @var string
+     */
+    public const IS_NEW_INSTANCE_FROM_ASSIGN = 'is_new_instance_from_assign';
 }
