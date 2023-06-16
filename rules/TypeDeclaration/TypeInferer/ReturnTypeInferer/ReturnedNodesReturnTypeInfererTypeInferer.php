@@ -9,19 +9,18 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeTraverser;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -44,18 +43,17 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         private readonly AstResolver $reflectionAstResolver,
         private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
-        $classLike = $this->betterNodeFinder->findParentType($functionLike, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
+        if ($classReflection === null) {
             return new MixedType();
         }
 
-        if ($functionLike instanceof ClassMethod && $classLike instanceof Interface_) {
+        if ($functionLike instanceof ClassMethod && $classReflection->isInterface()) {
             return new MixedType();
         }
 
@@ -63,8 +61,8 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
 
         $localReturnNodes = $this->collectReturns($functionLike);
         if ($localReturnNodes === []) {
-            /** @var Class_|Interface_|Trait_ $classLike */
-            return $this->resolveNoLocalReturnNodes($classLike, $functionLike);
+            /** @var Class_|Interface_|Trait_ $classReflection */
+            return $this->resolveNoLocalReturnNodes($classReflection, $functionLike);
         }
 
         foreach ($localReturnNodes as $localReturnNode) {
@@ -109,28 +107,28 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
     }
 
     private function resolveNoLocalReturnNodes(
-        Class_|Interface_|Trait_ $classLike,
+        ClassReflection $classReflection,
         FunctionLike $functionLike
     ): VoidType | MixedType {
         // void type
-        if (! $this->isAbstractMethod($classLike, $functionLike)) {
+        if (! $this->isAbstractMethod($classReflection, $functionLike)) {
             return new VoidType();
         }
 
         return new MixedType();
     }
 
-    private function isAbstractMethod(Class_|Interface_|Trait_ $classLike, FunctionLike $functionLike): bool
+    private function isAbstractMethod(ClassReflection $classReflection, FunctionLike $functionLike): bool
     {
         if ($functionLike instanceof ClassMethod && $functionLike->isAbstract()) {
             return true;
         }
 
-        if (! $classLike instanceof Class_) {
+        if (! $classReflection->isClass()) {
             return false;
         }
 
-        return $classLike->isAbstract();
+        return $classReflection->isAbstract();
     }
 
     private function inferFromReturnedMethodCall(Return_ $return, FunctionLike $originalFunctionLike): Type
@@ -152,12 +150,15 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
                 if ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
+
                 if (! $subNode instanceof Return_) {
                     return null;
                 }
+
                 if ($return === $subNode) {
                     $isReturnScoped = true;
                 }
+
                 return null;
             }
         );
