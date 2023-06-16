@@ -153,6 +153,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
 
                 if ($return === $subNode) {
                     $isReturnScoped = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
                 return null;
