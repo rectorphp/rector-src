@@ -61,7 +61,6 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
 
         $localReturnNodes = $this->collectReturns($functionLike);
         if ($localReturnNodes === []) {
-            /** @var Class_|Interface_|Trait_ $classReflection */
             return $this->resolveNoLocalReturnNodes($classReflection, $functionLike);
         }
 
