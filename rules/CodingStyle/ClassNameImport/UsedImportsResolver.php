@@ -41,8 +41,8 @@ final class UsedImportsResolver
         $stmts = $file->getNewStmts();
         foreach ($stmts as $stmt) {
             if ($stmt instanceof Namespace_) {
-                $isFound = $this->betterNodeFinder->findFirst($stmt, static fn(Node $subNode): bool => $subNode === $node);
-                if ($isFound instanceof Node) {
+                $foundNode = $this->betterNodeFinder->findFirst($stmt, static fn(Node $subNode): bool => $subNode === $node);
+                if ($foundNode instanceof Node) {
                     return $stmt;
                 }
             }
