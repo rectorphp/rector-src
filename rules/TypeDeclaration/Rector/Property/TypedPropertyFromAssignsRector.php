@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
@@ -98,7 +99,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class];
+        return [Class_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -107,54 +108,64 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Property $node
+     * @param Class_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->makePropertyTypedGuard->isLegal($node, $this->inlinePublic)) {
-            return null;
+        $hasChanged = false;
+
+        foreach ($node->getProperties() as $property) {
+            if (! $this->makePropertyTypedGuard->isLegal($property, $this->inlinePublic)) {
+                continue;
+            }
+
+            // non-private property can be anything with not inline public configured
+            if (! $property->isPrivate() && ! $this->inlinePublic) {
+                continue;
+            }
+
+            $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $node);
+            if (! $inferredType instanceof Type) {
+                continue;
+            }
+
+            if ($inferredType instanceof MixedType) {
+                continue;
+            }
+
+            $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($property, $inferredType);
+            $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY);
+            if ($typeNode === null) {
+                continue;
+            }
+
+            $hasChanged = true;
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+            if ($inferredType instanceof UnionType) {
+                $this->propertyTypeDecorator->decoratePropertyUnionType(
+                    $inferredType,
+                    $typeNode,
+                    $property,
+                    $phpDocInfo,
+                    false
+                );
+            } else {
+                $property->type = $typeNode;
+            }
+
+            if (! $property->type instanceof Node) {
+                continue;
+            }
+
+            $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $property);
         }
 
-        // non-private property can be anything with not inline public configured
-        if (! $node->isPrivate() && ! $this->inlinePublic) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($node);
-        if (! $inferredType instanceof Type) {
-            return null;
-        }
-
-        if ($inferredType instanceof MixedType) {
-            return null;
-        }
-
-        $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($node, $inferredType);
-        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY);
-        if ($typeNode === null) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if ($inferredType instanceof UnionType) {
-            $this->propertyTypeDecorator->decoratePropertyUnionType(
-                $inferredType,
-                $typeNode,
-                $node,
-                $phpDocInfo,
-                false
-            );
-        } else {
-            $node->type = $typeNode;
-        }
-
-        if (! $node->type instanceof Node) {
-            return null;
-        }
-
-        $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
-
-        return $node;
+        return null;
     }
 
     private function decorateTypeWithNullableIfDefaultPropertyNull(Property $property, Type $inferredType): Type

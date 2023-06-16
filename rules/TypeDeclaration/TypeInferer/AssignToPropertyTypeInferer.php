@@ -48,8 +48,12 @@ final class AssignToPropertyTypeInferer
     ) {
     }
 
-    public function inferPropertyInClassLike(Property $property, string $propertyName, ClassLike $classLike): ?Type
+    public function inferPropertyInClassLike(Property $property, string $propertyName, ?ClassLike $classLike): ?Type
     {
+        if (! $classLike instanceof ClassLike) {
+            return null;
+        }
+
         if ($this->hasAssignDynamicPropertyValue($classLike, $propertyName)) {
             return null;
         }
