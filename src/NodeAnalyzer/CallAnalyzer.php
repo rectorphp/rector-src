@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CallAnalyzer
@@ -22,11 +21,6 @@ final class CallAnalyzer
      * @var array<class-string<Expr>>
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
-
-    public function __construct(
-        private readonly NodeComparator $nodeComparator
-    ) {
-    }
 
     public function isObjectCall(Expr $expr): bool
     {
