@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ClassConstManipulator
@@ -19,15 +18,13 @@ final class ClassConstManipulator
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly AstResolver $astResolver
     ) {
     }
 
     public function hasClassConstFetch(ClassConst $classConst, ClassReflection $classReflection): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classConst);
-        if (! $classReflection instanceof ClassReflection || (! $classReflection->isClass() && ! $classReflection->isEnum())) {
+        if (! $classReflection->isClass() && ! $classReflection->isEnum()) {
             return true;
         }
 
