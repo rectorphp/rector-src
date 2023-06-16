@@ -7,17 +7,11 @@ namespace Rector\ReadWrite\ParentNodeReadAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
 
 final class ArrayDimFetchParentNodeReadAnalyzer implements ParentNodeReadAnalyzerInterface
 {
-    public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-    ) {
-    }
-
     public function isRead(Expr $expr, Node $parentNode): bool
     {
         if (! $parentNode instanceof ArrayDimFetch) {
