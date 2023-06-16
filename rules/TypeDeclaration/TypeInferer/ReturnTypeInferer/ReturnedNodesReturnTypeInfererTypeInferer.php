@@ -49,7 +49,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
     public function inferFunctionLike(FunctionLike $functionLike): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
-        if ($classReflection === null) {
+        if (! $classReflection instanceof ClassReflection) {
             return new MixedType();
         }
 
