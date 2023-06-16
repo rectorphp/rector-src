@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Class_;
@@ -143,8 +144,25 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
             return new MixedType();
         }
 
-        $parentClassMethod = $this->betterNodeFinder->findParentType($return, ClassMethod::class);
-        if ($parentClassMethod === $originalFunctionLike) {
+        $isReturnScoped = false;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $originalFunctionLike->getStmts(),
+            static function (Node $subNode) use ($return, &$isReturnScoped): ?int {
+                if ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+                if (! $subNode instanceof Return_) {
+                    return null;
+                }
+                if ($return === $subNode) {
+                    $isReturnScoped = true;
+                }
+                return null;
+            }
+        );
+
+        if ($isReturnScoped) {
             return new MixedType();
         }
 
