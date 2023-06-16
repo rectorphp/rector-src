@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\RemovingStatic\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
 
 class MethodWithArg
 {
@@ -18,7 +18,7 @@ class MethodWithArg
 -----
 <?php
 
-namespace Rector\Tests\RemovingStatic\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture;
 
 class MethodWithArg
 {
