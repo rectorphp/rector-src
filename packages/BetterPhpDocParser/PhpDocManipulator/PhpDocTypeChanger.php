@@ -35,7 +35,6 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
 
@@ -90,10 +89,7 @@ final class PhpDocTypeChanger
         }
 
         // override existing type
-        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $newType,
-            TypeKind::PROPERTY
-        );
+        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
 
         $currentVarTagValueNode = $phpDocInfo->getVarTagValueNode();
         if ($currentVarTagValueNode instanceof VarTagValueNode) {
@@ -127,10 +123,7 @@ final class PhpDocTypeChanger
         }
 
         // override existing type
-        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $newType,
-            TypeKind::RETURN
-        );
+        $newPHPStanPhpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
 
         $currentReturnTagValueNode = $phpDocInfo->getReturnTagValue();
 
@@ -149,8 +142,13 @@ final class PhpDocTypeChanger
         return true;
     }
 
-    public function changeParamType(FunctionLike $functionLike, PhpDocInfo $phpDocInfo, Type $newType, Param $param, string $paramName): void
-    {
+    public function changeParamType(
+        FunctionLike $functionLike,
+        PhpDocInfo $phpDocInfo,
+        Type $newType,
+        Param $param,
+        string $paramName
+    ): void {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
             return;
@@ -160,7 +158,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType, TypeKind::PARAM);
+        $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
         // override existing type

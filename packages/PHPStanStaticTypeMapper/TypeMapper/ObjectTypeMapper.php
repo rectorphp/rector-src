@@ -16,7 +16,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
@@ -44,7 +43,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         if ($type instanceof ShortenedObjectType) {
             return new IdentifierTypeNode($type->getClassName());
@@ -55,7 +54,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         }
 
         if ($type instanceof GenericObjectType) {
-            return $this->mapGenericObjectType($type, $typeKind);
+            return $this->mapGenericObjectType($type);
         }
 
         if ($type instanceof NonExistingObjectType) {
@@ -111,10 +110,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    private function mapGenericObjectType(GenericObjectType $genericObjectType, string $typeKind): TypeNode
+    private function mapGenericObjectType(GenericObjectType $genericObjectType): TypeNode
     {
         $name = $this->resolveGenericObjectTypeName($genericObjectType);
         $identifierTypeNode = new IdentifierTypeNode($name);
@@ -126,7 +122,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
                 continue;
             }
 
-            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType, $typeKind);
+            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType);
             $genericTypeNodes[] = $typeNode;
         }
 

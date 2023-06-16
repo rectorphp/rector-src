@@ -20,7 +20,6 @@ use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Util\StringUtils;
 use Rector\PhpDocParser\TypeAnalyzer\ClassMethodReturnTypeResolver;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -116,10 +115,7 @@ CODE_SAMPLE
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
-        $returnExprTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $returnExprType,
-            TypeKind::RETURN
-        );
+        $returnExprTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($returnExprType);
 
         if ($returnExprTypeNode instanceof GenericTypeNode) {
             return null;

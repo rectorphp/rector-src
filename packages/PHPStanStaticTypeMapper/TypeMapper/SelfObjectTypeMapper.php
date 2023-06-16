@@ -28,7 +28,7 @@ final class SelfObjectTypeMapper implements TypeMapperInterface
     /**
      * @param SelfObjectType $type
      */
-    public function mapToPHPStanPhpDocTypeNode(Type $type, string $typeKind): TypeNode
+    public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return new IdentifierTypeNode('self');
     }

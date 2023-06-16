@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Rector\ClassConst;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassConst;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
@@ -17,12 +18,13 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
+ * @deprecated The doc block types are not reliable, and typed constants are comming to PHP 8.3, use those instead.
+ *
  * @see \Rector\Tests\CodingStyle\Rector\ClassConst\VarConstantCommentRector\VarConstantCommentRectorTest
  */
 final class VarConstantCommentRector extends AbstractRector
@@ -87,12 +89,16 @@ CODE_SAMPLE
         $constType = $this->typeNormalizer->generalizeConstantBoolTypes($constType);
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
         if ($this->shouldSkipConstantArrayType($constType, $phpDocInfo)) {
             return null;
         }
 
         if ($this->typeComparator->isSubtype($constType, $phpDocInfo->getVarType())) {
+            return null;
+        }
+
+        // already filled
+        if ($phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode) {
             return null;
         }
 
@@ -106,10 +112,7 @@ CODE_SAMPLE
 
     private function hasTwoAndMoreGenericClassStringTypes(ConstantArrayType $constantArrayType): bool
     {
-        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-            $constantArrayType,
-            TypeKind::RETURN
-        );
+        $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($constantArrayType);
         if (! $typeNode instanceof ArrayTypeNode) {
             return false;
         }

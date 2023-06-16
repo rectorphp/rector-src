@@ -16,8 +16,11 @@ final class PropertyRenameFactory
     ) {
     }
 
-    public function createFromExpectedName(ClassLike $classLike, Property $property, string $expectedName): ?PropertyRename
-    {
+    public function createFromExpectedName(
+        ClassLike $classLike,
+        Property $property,
+        string $expectedName
+    ): ?PropertyRename {
         $currentName = $this->nodeNameResolver->getName($property);
         $className = (string) $this->nodeNameResolver->getName($classLike);
 

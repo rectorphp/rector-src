@@ -114,7 +114,13 @@ CODE_SAMPLE
             }
 
             $paramName = $this->getName($param);
-            $this->phpDocTypeChanger->changeParamType($node, $functionLikePhpDocInfo, $genericParamType, $param, $paramName);
+            $this->phpDocTypeChanger->changeParamType(
+                $node,
+                $functionLikePhpDocInfo,
+                $genericParamType,
+                $param,
+                $paramName
+            );
         }
 
         if ($functionLikePhpDocInfo->hasChanged()) {
