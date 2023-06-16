@@ -19,10 +19,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\UnionType;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\TypeDeclaration\NodeAnalyzer\CallerParamMatcher;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -35,7 +35,6 @@ final class ParamTypeByMethodCallTypeRector extends AbstractScopeAwareRector
 {
     public function __construct(
         private readonly CallerParamMatcher $callerParamMatcher,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
     ) {
     }
@@ -157,7 +156,7 @@ CODE_SAMPLE
         // mimic type
         $newParamType = $paramType;
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+        $this->traverseNodesWithCallable(
             $newParamType,
             static function (Node $node) {
                 // original node has to removed to avoid tokens crashing from origin positions
@@ -179,26 +178,32 @@ CODE_SAMPLE
             return false;
         }
 
-        /** @var Variable[] $variables */
-        $variables = $this->betterNodeFinder->findInstanceOf((array) $classMethod->stmts, Variable::class);
+        $isParamConditioned = false;
 
-        foreach ($variables as $variable) {
-            if (! $this->isName($variable, $paramName)) {
-                continue;
+        $this->traverseNodesWithCallable(
+            (array) $classMethod->stmts,
+            function (Node $subNode) use (&$isParamConditioned, $paramName): ?int {
+                if ($subNode instanceof If_ && (bool) $this->betterNodeFinder->findFirst(
+                    $subNode->cond,
+                    fn (Node $node): bool => $node instanceof Variable && $this->isName($node, $paramName)
+                )) {
+                    $isParamConditioned = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
+                if ($subNode instanceof Ternary && (bool) $this->betterNodeFinder->findFirst(
+                    $subNode,
+                    fn (Node $node): bool => $node instanceof Variable && $this->isName($node, $paramName)
+                )) {
+                    $isParamConditioned = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
+                return null;
             }
+        );
 
-            $conditional = $this->betterNodeFinder->findParentType($variable, If_::class);
-            if ($conditional instanceof If_) {
-                return true;
-            }
-
-            $conditional = $this->betterNodeFinder->findParentType($variable, Ternary::class);
-            if ($conditional instanceof Ternary) {
-                return true;
-            }
-        }
-
-        return false;
+        return $isParamConditioned;
     }
 
     private function shouldSkipParam(Param $param, ClassMethod $classMethod): bool
