@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Naming;
 
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
@@ -28,7 +29,7 @@ final class VariableRenamer
     }
 
     public function renameVariableInFunctionLike(
-        Node\FunctionLike $functionLike,
+        FunctionLike $functionLike,
         string $oldName,
         string $expectedName,
         ?Assign $assign = null
