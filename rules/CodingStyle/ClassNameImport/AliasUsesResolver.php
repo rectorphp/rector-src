@@ -32,6 +32,7 @@ final class AliasUsesResolver
 
             $node = current($namespaces);
         }
+
         return $this->resolveFromStmts($node->stmts);
     }
 
