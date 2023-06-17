@@ -29,6 +29,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -72,7 +73,7 @@ final class PropertyManipulator
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PromotedPropertyResolver $promotedPropertyResolver,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly AstResolver $astResolver,
+        private readonly ClassLikeAstResolver $classLikeAstResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
@@ -147,7 +148,7 @@ final class PropertyManipulator
     public function isUsedByTrait(ClassReflection $classReflection, string $propertyName): bool
     {
         foreach ($classReflection->getTraits() as $traitUse) {
-            $trait = $this->astResolver->resolveClassFromName($traitUse->getName());
+            $trait = $this->classLikeAstResolver->resolveClassFromClassReflection($traitUse);
             if (! $trait instanceof Trait_) {
                 continue;
             }
