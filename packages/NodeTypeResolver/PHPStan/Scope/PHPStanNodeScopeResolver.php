@@ -329,7 +329,7 @@ final class PHPStanNodeScopeResolver
             return;
         }
 
-        if ($expr instanceof CallLike && ! $expr->isFirstClassCallable()) {
+        if (! $expr->isFirstClassCallable()) {
             foreach ($expr->getArgs() as $arg) {
                 $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
