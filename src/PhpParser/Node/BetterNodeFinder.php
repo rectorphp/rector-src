@@ -393,21 +393,23 @@ final class BetterNodeFinder
         ClassMethod | Function_ | Closure $functionLike,
         callable $filter
     ): ?Node {
-        $foundNode = $this->findFirst((array) $functionLike->stmts, $filter);
-        if (! $foundNode instanceof Node) {
-            return null;
-        }
+        $nodes = [];
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $functionLike->stmts,
+            function (Node $subNode) use ($nodes) {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-        $parentFunctionLike = $this->findParentByTypes(
-            $foundNode,
-            [ClassMethod::class, Function_::class, Closure::class, Class_::class]
-        );
+                if (! $subNode instanceof Stmt) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-        if ($parentFunctionLike !== $functionLike) {
-            return null;
-        }
+                $nodes[] = $subNode;
+                return null;
+            });
 
-        return $foundNode;
+        return $this->findFirst($nodes, $filter);
     }
 
     public function resolveCurrentStatement(Node $node): ?Stmt
