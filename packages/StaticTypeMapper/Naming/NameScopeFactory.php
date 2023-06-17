@@ -15,7 +15,9 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -30,9 +32,11 @@ final class NameScopeFactory
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
-    private BetterNodeFinder $betterNodeFinder;
-
     private UseImportsResolver $useImportsResolver;
+
+    private ReflectionResolver $reflectionResolver;
+
+    private ClassLikeAstResolver $classLikeAstResolver;
 
     // This is needed to avoid circular references
 
@@ -42,11 +46,14 @@ final class NameScopeFactory
         StaticTypeMapper $staticTypeMapper,
         BetterNodeFinder $betterNodeFinder,
         UseImportsResolver $useImportsResolver,
+        ReflectionResolver $reflectionResolver,
+        ClassLikeAstResolver $classLikeAstResolver
     ): void {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
-        $this->betterNodeFinder = $betterNodeFinder;
         $this->useImportsResolver = $useImportsResolver;
+        $this->reflectionResolver = $reflectionResolver;
+        $this->classLikeAstResolver = $classLikeAstResolver;
     }
 
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
@@ -110,11 +117,15 @@ final class NameScopeFactory
     {
         $nodeTemplateTypes = $this->resolveTemplateTypesFromNode($node);
 
-        $classLike = $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
         $classTemplateTypes = [];
-        if ($classLike instanceof ClassLike) {
-            $classTemplateTypes = $this->resolveTemplateTypesFromNode($classLike);
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if ($classReflection instanceof ClassReflection) {
+            $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+
+            if ($classLike instanceof ClassLike) {
+                $classTemplateTypes = $this->resolveTemplateTypesFromNode($classLike);
+            }
         }
 
         $templateTypes = array_merge($nodeTemplateTypes, $classTemplateTypes);
