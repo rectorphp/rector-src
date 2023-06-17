@@ -235,6 +235,7 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof ClassConstFetch) {
                 $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Trait_) {
