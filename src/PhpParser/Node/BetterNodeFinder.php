@@ -327,21 +327,26 @@ final class BetterNodeFinder
             $types = [$types];
         }
 
-        foreach ($types as $type) {
-            $foundNodes = $this->findInstanceOf((array) $functionLike->stmts, $type);
-            foreach ($foundNodes as $foundNode) {
-                $parentFunctionLike = $this->findParentByTypes(
-                    $foundNode,
-                    [ClassMethod::class, Function_::class, Closure::class]
-                );
-
-                if ($parentFunctionLike === $functionLike) {
-                    return true;
+        $isFoundNode = false;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $functionLike->stmts,
+            static function (Node $subNode) use ($types, &$isFoundNode): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
-            }
-        }
 
-        return false;
+                foreach ($types as $type) {
+                    if ($subNode instanceof $type) {
+                        $isFoundNode = true;
+                        return NodeTraverser::STOP_TRAVERSAL;
+                    }
+                }
+
+                return null;
+            }
+        );
+
+        return $isFoundNode;
     }
 
     /**
