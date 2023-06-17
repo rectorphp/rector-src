@@ -106,7 +106,7 @@ final class UsedImportsResolver
         $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
 
         if (count($namespaces) !== 1) {
-            return [];
+            return null;
         }
 
         return current($namespaces);
