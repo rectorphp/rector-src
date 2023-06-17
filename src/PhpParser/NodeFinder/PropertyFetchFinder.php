@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -60,19 +61,21 @@ final class PropertyFetchFinder
      */
     public function findLocalPropertyFetchesByName(Class_ $class, string $paramName): array
     {
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstancesOf(
-            $class,
-            [PropertyFetch::class, StaticPropertyFetch::class]
-        );
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $foundPropertyFetches */
+        $foundPropertyFetches = $this->betterNodeFinder->find(
+            $class->getMethods(),
+            function (Node $subNode) use ($paramName): bool {
+                if ($subNode instanceof PropertyFetch) {
+                    return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
+                }
 
-        $foundPropertyFetches = [];
+                if ($subNode instanceof StaticPropertyFetch) {
+                    return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
+                }
 
-        foreach ($propertyFetches as $propertyFetch) {
-            if ($this->propertyFetchAnalyzer->isLocalPropertyFetchName($propertyFetch, $paramName)) {
-                $foundPropertyFetches[] = $propertyFetch;
+                return false;
             }
-        }
+        );
 
         return $foundPropertyFetches;
     }

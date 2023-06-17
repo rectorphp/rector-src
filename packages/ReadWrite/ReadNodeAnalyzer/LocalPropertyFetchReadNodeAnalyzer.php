@@ -8,8 +8,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Class_;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use PHPStan\Reflection\ClassReflection;
+use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\ReadWrite\Contract\ReadNodeAnalyzerInterface;
 
@@ -22,7 +24,8 @@ final class LocalPropertyFetchReadNodeAnalyzer implements ReadNodeAnalyzerInterf
         private readonly JustReadExprAnalyzer $justReadExprAnalyzer,
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ClassLikeAstResolver $classLikeAstResolver
     ) {
     }
 
@@ -33,8 +36,8 @@ final class LocalPropertyFetchReadNodeAnalyzer implements ReadNodeAnalyzerInterf
 
     public function isRead(Expr $expr): bool
     {
-        $class = $this->betterNodeFinder->findParentType($expr, Class_::class);
-        if (! $class instanceof Class_) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($expr);
+        if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             // assume worse to keep node protected
             return true;
         }
@@ -45,7 +48,10 @@ final class LocalPropertyFetchReadNodeAnalyzer implements ReadNodeAnalyzerInterf
             return true;
         }
 
+        /** @var Class_ $class */
+        $class = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
         $propertyFetches = $this->propertyFetchFinder->findLocalPropertyFetchesByName($class, $propertyName);
+
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->justReadExprAnalyzer->isReadContext($propertyFetch)) {
                 return true;
