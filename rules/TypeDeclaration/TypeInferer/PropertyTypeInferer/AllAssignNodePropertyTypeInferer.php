@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Type;
@@ -29,6 +30,7 @@ final class AllAssignNodePropertyTypeInferer
             return null;
         }
 
+        /** @var ClassLike $classLike */
         $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
         $propertyName = $this->nodeNameResolver->getName($property);
 
