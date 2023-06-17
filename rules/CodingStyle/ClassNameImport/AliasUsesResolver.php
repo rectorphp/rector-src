@@ -30,7 +30,7 @@ final class AliasUsesResolver
             $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
             foreach ($namespaces as $namespace) {
                 $isFoundInNamespace = (bool) $this->betterNodeFinder->findFirst(
-                    $namespace->stmts,
+                    $namespace,
                     static fn (Node $subNode): bool => $subNode === $node
                 );
 
