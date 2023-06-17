@@ -20,12 +20,25 @@ final class AliasUsesResolver
     }
 
     /**
+     * @param Stmt[] $stmts
      * @return string[]
      */
-    public function resolveFromNode(Node $node): array
+    public function resolveFromNode(Node $node, array $stmts): array
     {
         if (! $node instanceof Namespace_) {
-            $node = $this->betterNodeFinder->findParentType($node, Namespace_::class);
+            /** @var Namespace_[] $namespaces */
+            $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+            foreach ($namespaces as $namespace) {
+                $isFoundInNamespace = (bool) $this->betterNodeFinder->findFirst(
+                    $namespace,
+                    static fn (Node $subNode): bool => $subNode === $node
+                );
+
+                if ($isFoundInNamespace) {
+                    $node = $namespace;
+                    break;
+                }
+            }
         }
 
         if ($node instanceof Namespace_) {
