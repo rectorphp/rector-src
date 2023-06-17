@@ -401,6 +401,7 @@ final class BetterNodeFinder
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
+                // Expr is part of Stmt, so only collect Stmt only to be filtered
                 if (! $subNode instanceof Stmt) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
