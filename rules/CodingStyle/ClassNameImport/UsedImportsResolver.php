@@ -27,30 +27,6 @@ final class UsedImportsResolver
     ) {
     }
 
-    private function resolveCurrentNamespaceForNode(Node $node): ?Namespace_
-    {
-        if ($node instanceof Namespace_) {
-            return $node;
-        }
-
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        $stmts = $file->getNewStmts();
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Namespace_) {
-                $foundNode = $this->betterNodeFinder->findFirst($stmt, static fn(Node $subNode): bool => $subNode === $node);
-                if ($foundNode instanceof Node) {
-                    return $stmt;
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
      * @return array<FullyQualifiedObjectType|AliasedObjectType>
      */
@@ -113,6 +89,27 @@ final class UsedImportsResolver
         });
 
         return $usedFunctionImports;
+    }
+
+    private function resolveCurrentNamespaceForNode(Node $node): ?Namespace_
+    {
+        if ($node instanceof Namespace_) {
+            return $node;
+        }
+
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return null;
+        }
+
+        $stmts = $file->getNewStmts();
+        $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+
+        if (count($namespaces) !== 1) {
+            return [];
+        }
+
+        return current($namespaces);
     }
 
     /**

@@ -9,13 +9,11 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\UseUse;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class AliasUsesResolver
 {
     public function __construct(
-        private readonly UseImportsTraverser $useImportsTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly UseImportsTraverser $useImportsTraverser
     ) {
     }
 
@@ -28,24 +26,13 @@ final class AliasUsesResolver
         if (! $node instanceof Namespace_) {
             /** @var Namespace_[] $namespaces */
             $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
-            foreach ($namespaces as $namespace) {
-                $isFoundInNamespace = (bool) $this->betterNodeFinder->findFirst(
-                    $namespace,
-                    static fn (Node $subNode): bool => $subNode === $node
-                );
-
-                if ($isFoundInNamespace) {
-                    $node = $namespace;
-                    break;
-                }
+            if (count($namespaces) !== 1) {
+                return [];
             }
-        }
 
-        if ($node instanceof Namespace_) {
-            return $this->resolveFromStmts($node->stmts);
+            $node = current($namespaces);
         }
-
-        return [];
+        return $this->resolveFromStmts($node->stmts);
     }
 
     /**
