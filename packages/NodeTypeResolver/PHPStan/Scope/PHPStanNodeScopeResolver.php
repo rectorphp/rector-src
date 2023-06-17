@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Ternary;
@@ -214,6 +215,11 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof StaticPropertyFetch) {
                 $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof PropertyFetch) {
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
