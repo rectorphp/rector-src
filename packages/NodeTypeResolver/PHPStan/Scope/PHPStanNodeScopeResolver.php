@@ -15,6 +15,10 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -207,6 +211,10 @@ final class PHPStanNodeScopeResolver
                 }
             }
 
+            if ($node instanceof CallLike) {
+                $this->processCallike($node, $mutatingScope);
+            }
+
             if ($node instanceof Trait_) {
                 $traitName = $this->resolveClassName($node);
 
@@ -265,6 +273,47 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
     }
 
+    private function processCallike(CallLike $node, MutatingScope $mutatingScope): void
+    {
+        $this->processArgsForCallike($node, $mutatingScope);
+
+        if ($node instanceof StaticCall) {
+            $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($node instanceof MethodCall) {
+            $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($node instanceof FuncCall) {
+            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($node instanceof New_) {
+            $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+
+        if ($node instanceof NullsafeMethodCall) {
+            $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processArgsForCallike(Expr $expr, MutatingScope $mutatingScope): void
+    {
+        if (! $expr instanceof CallLike) {
+            return;
+        }
+
+        if ($expr instanceof CallLike && ! $expr->isFirstClassCallable()) {
+            foreach ($expr->getArgs() as $arg) {
+                $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+        }
+    }
+
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
         if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
@@ -275,11 +324,7 @@ final class PHPStanNodeScopeResolver
         $expr = $assign;
 
         while ($expr instanceof Assign || $expr instanceof AssignOp) {
-            if ($expr->expr instanceof CallLike && ! $expr->expr->isFirstClassCallable()) {
-                foreach ($expr->expr->getArgs() as $arg) {
-                    $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            }
+            $this->processArgsForCallike($expr->expr, $mutatingScope);
 
             // decorate value as well
             $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
