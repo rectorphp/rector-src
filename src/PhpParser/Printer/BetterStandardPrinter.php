@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Printer;
 
+use PhpParser\Node\Stmt;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
@@ -541,7 +542,7 @@ final class BetterStandardPrinter extends Standard
     {
         // move phpdoc from node to "comment" attribute
         foreach ($nodes as $node) {
-            if (! $node instanceof Node\Stmt && ! $node instanceof Node\Param) {
+            if (! $node instanceof Stmt && ! $node instanceof Param) {
                 continue;
             }
 
