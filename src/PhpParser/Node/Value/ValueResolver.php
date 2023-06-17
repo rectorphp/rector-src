@@ -11,11 +11,10 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\MagicConst\File;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
@@ -25,6 +24,8 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
@@ -42,7 +43,9 @@ final class ValueResolver
         private readonly ConstFetchAnalyzer $constFetchAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PrivatesAccessor $privatesAccessor
     ) {
     }
 
@@ -307,27 +310,34 @@ final class ValueResolver
 
     private function resolveClassFromSelfStaticParent(ClassConstFetch $classConstFetch, string $class): string
     {
-        $classLike = $this->betterNodeFinder->findParentType($classConstFetch, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classConstFetch);
+        if (! $classReflection instanceof ClassReflection) {
             throw new ShouldNotHappenException(
                 'Complete class parent node for to class const fetch, so "self" or "static" references is resolvable to a class name'
             );
         }
 
         if ($class === ObjectReference::PARENT) {
-            if (! $classLike instanceof Class_) {
+            if (! $classReflection->isClass()) {
                 throw new ShouldNotHappenException(
                     'Complete class parent node for to class const fetch, so "parent" references is resolvable to lookup parent class'
                 );
             }
 
-            if (! $classLike->extends instanceof FullyQualified) {
+            $nativeReflection = $classReflection->getNativeReflection();
+            $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
+                $nativeReflection,
+                'betterReflectionClass'
+            );
+            $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
+
+            if ($parentClassName === null) {
                 throw new ShouldNotHappenException();
             }
 
-            return $classLike->extends->toString();
+            return $parentClassName;
         }
 
-        return (string) $this->nodeNameResolver->getName($classLike);
+        return $classReflection->getName();
     }
 }
