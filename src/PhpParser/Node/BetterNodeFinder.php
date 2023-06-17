@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeFinder;
+use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\StopSearchException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -37,6 +38,7 @@ use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
 
 /**
@@ -50,7 +52,8 @@ final class BetterNodeFinder
         private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -357,31 +360,23 @@ final class BetterNodeFinder
         /** @var T[] $foundNodes */
         $foundNodes = [];
 
-        foreach ($types as $type) {
-            /** @var T[] $nodes */
-            $nodes = $this->findInstanceOf((array) $functionLike->stmts, $type);
-
-            if ($nodes === []) {
-                continue;
-            }
-
-            foreach ($nodes as $key => $node) {
-                $parentFunctionLike = $this->findParentByTypes(
-                    $node,
-                    [ClassMethod::class, Function_::class, Closure::class]
-                );
-
-                if ($parentFunctionLike !== $functionLike) {
-                    unset($nodes[$key]);
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $functionLike->stmts,
+            static function (Node $subNode) use ($types, &$foundNodes): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
-            }
 
-            if ($nodes === []) {
-                continue;
-            }
+                foreach ($types as $type) {
+                    if ($subNode instanceof $type) {
+                        $foundNodes[] = $subNode;
+                        return null;
+                    }
+                }
 
-            $foundNodes = array_merge($foundNodes, $nodes);
-        }
+                return null;
+            }
+        );
 
         return $foundNodes;
     }
