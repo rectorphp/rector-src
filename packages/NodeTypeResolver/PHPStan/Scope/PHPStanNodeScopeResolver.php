@@ -273,31 +273,31 @@ final class PHPStanNodeScopeResolver
         return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
     }
 
-    private function processCallike(CallLike $node, MutatingScope $mutatingScope): void
+    private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
-        $this->processArgsForCallike($node, $mutatingScope);
+        $this->processArgsForCallike($callLike, $mutatingScope);
 
-        if ($node instanceof StaticCall) {
-            $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($callLike instanceof StaticCall) {
+            $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
 
-        if ($node instanceof MethodCall) {
-            $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($callLike instanceof MethodCall) {
+            $callLike->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
 
-        if ($node instanceof FuncCall) {
-            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($callLike instanceof FuncCall) {
+            $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
 
-        if ($node instanceof New_) {
-            $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($callLike instanceof New_) {
+            $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
 
-        if ($node instanceof NullsafeMethodCall) {
-            $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($callLike instanceof NullsafeMethodCall) {
+            $callLike->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
