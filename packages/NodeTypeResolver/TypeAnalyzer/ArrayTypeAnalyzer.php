@@ -23,7 +23,6 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\ClassLikeAstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -33,7 +32,6 @@ final class ArrayTypeAnalyzer
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassLikeAstResolver $classLikeAstResolver
@@ -144,12 +142,15 @@ final class ArrayTypeAnalyzer
             return false;
         }
 
-        $classLike = $this->betterNodeFinder->findParentType($expr, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($expr);
+        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
+        /** @var ClassLike $classLike */
+        $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
         $propertyName = $this->nodeNameResolver->getName($expr->name);
+
         if ($propertyName === null) {
             return false;
         }
