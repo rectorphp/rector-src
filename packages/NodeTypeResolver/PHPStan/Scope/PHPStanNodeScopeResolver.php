@@ -14,6 +14,8 @@ use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -29,6 +31,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Enum_;
@@ -225,6 +228,14 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof CallLike) {
                 $this->processCallike($node, $mutatingScope);
+            }
+
+            if ($node instanceof ConstFetch) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof ClassConstFetch) {
+                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Trait_) {
