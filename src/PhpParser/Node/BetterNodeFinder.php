@@ -400,10 +400,12 @@ final class BetterNodeFinder
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
+
                 // Expr is part of Stmt, so only collect Stmt only to be filtered
                 if (! $subNode instanceof Stmt) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
+
                 $nodes[] = $subNode;
                 return null;
             });
