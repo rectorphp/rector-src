@@ -396,7 +396,7 @@ final class BetterNodeFinder
         $nodes = [];
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->stmts,
-            function (Node $subNode) use ($nodes) {
+            function (Node $subNode) use (&$nodes) {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
