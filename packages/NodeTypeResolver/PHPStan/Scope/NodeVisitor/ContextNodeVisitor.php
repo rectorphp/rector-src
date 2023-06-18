@@ -68,11 +68,13 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         if ($node instanceof Arg) {
             $node->value->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
         }
-
-        if ($node instanceof Assign && $node->var instanceof ArrayDimFetch) {
-            $node->var->var->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
+        if (!$node instanceof Assign) {
+            return null;
         }
-
+        if (!$node->var instanceof ArrayDimFetch) {
+            return null;
+        }
+        $node->var->var->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
         return null;
     }
 
