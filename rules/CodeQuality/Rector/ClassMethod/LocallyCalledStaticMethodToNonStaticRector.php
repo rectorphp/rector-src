@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -164,7 +165,7 @@ CODE_SAMPLE
             $this->traverseNodesWithCallable($checkedClassMethod, function (Node $node) use (
                 $currentClassMethodName,
                 &$isInsideStaticClassMethod
-            ): ?StaticCall {
+            ): ?int {
                 if (! $node instanceof StaticCall) {
                     return null;
                 }
@@ -178,7 +179,7 @@ CODE_SAMPLE
                 }
 
                 $isInsideStaticClassMethod = true;
-                return $node;
+                return NodeTraverser::STOP_TRAVERSAL;
             });
 
             if ($isInsideStaticClassMethod) {
