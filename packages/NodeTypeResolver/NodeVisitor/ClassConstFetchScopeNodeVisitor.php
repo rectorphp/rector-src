@@ -28,5 +28,7 @@ final class ClassConstFetchScopeNodeVisitor extends NodeVisitorAbstract
 
         $node->class->setAttribute(AttributeKey::SCOPE, $this->scope);
         $node->name->setAttribute(AttributeKey::SCOPE, $this->scope);
+
+        return null;
     }
 }
