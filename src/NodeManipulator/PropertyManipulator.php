@@ -174,7 +174,7 @@ final class PropertyManipulator
             static fn (Node $subNode): bool => ($subNode instanceof PropertyFetch || $subNode instanceof StaticPropertyFetch) && $subNode === $propertyFetch
         );
 
-        if ($node === null) {
+        if (! $node instanceof Node) {
             return false;
         }
 
