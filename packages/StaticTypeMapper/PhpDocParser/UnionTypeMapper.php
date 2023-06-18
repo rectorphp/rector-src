@@ -19,7 +19,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class UnionTypeMapper implements PhpDocTypeMapperInterface
 {
-    private PhpDocTypeMapper $phpDocTypeMapper;
+    private readonly PhpDocTypeMapper $phpDocTypeMapper;
 
     public function __construct(
         private readonly TypeFactory $typeFactory

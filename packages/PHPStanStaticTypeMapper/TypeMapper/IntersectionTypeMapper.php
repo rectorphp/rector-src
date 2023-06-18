@@ -25,7 +25,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class IntersectionTypeMapper implements TypeMapperInterface
 {
-    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+    private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,

@@ -32,9 +32,9 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class ParamTypeResolver implements NodeTypeResolverInterface
 {
-    private NodeTypeResolver $nodeTypeResolver;
+    private readonly NodeTypeResolver $nodeTypeResolver;
 
-    private StaticTypeMapper $staticTypeMapper;
+    private readonly StaticTypeMapper $staticTypeMapper;
 
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,

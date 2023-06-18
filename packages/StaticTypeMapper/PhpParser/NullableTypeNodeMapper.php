@@ -18,7 +18,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
 {
-    private PhpParserNodeMapper $phpParserNodeMapper;
+    private readonly PhpParserNodeMapper $phpParserNodeMapper;
 
     public function __construct(
         private readonly TypeFactory $typeFactory

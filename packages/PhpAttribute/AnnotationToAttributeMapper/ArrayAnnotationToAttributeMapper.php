@@ -22,7 +22,7 @@ use Webmozart\Assert\Assert;
  */
 final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMapperInterface
 {
-    private AnnotationToAttributeMapper $annotationToAttributeMapper;
+    private readonly AnnotationToAttributeMapper $annotationToAttributeMapper;
 
     public function __construct(
         private readonly ValueResolver $valueResolver

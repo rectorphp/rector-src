@@ -26,7 +26,7 @@ final class CallAnalyzer
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
-    private BetterNodeFinder $betterNodeFinder;
+    private readonly BetterNodeFinder $betterNodeFinder;
 
     public function __construct(
         private readonly NodeComparator $nodeComparator

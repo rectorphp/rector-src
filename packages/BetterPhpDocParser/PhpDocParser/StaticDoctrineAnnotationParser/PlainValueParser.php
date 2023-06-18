@@ -23,9 +23,9 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class PlainValueParser
 {
-    private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser;
+    private readonly StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser;
 
-    private ArrayParser $arrayParser;
+    private readonly ArrayParser $arrayParser;
 
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,

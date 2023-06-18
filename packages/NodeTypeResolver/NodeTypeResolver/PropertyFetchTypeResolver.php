@@ -24,7 +24,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class PropertyFetchTypeResolver implements NodeTypeResolverInterface
 {
-    private NodeTypeResolver $nodeTypeResolver;
+    private readonly NodeTypeResolver $nodeTypeResolver;
 
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,

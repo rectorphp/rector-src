@@ -17,7 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class ClassLikeAstResolver
 {
-    private AstResolver $astResolver;
+    private readonly AstResolver $astResolver;
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,

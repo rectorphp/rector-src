@@ -36,7 +36,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class ReflectionResolver
 {
-    private AstResolver $astResolver;
+    private readonly AstResolver $astResolver;
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,

@@ -21,7 +21,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationToAttributeMapperInterface
 {
-    private AnnotationToAttributeMapper $annotationToAttributeMapper;
+    private readonly AnnotationToAttributeMapper $annotationToAttributeMapper;
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,

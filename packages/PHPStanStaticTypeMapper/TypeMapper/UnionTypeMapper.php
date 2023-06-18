@@ -48,7 +48,7 @@ use Webmozart\Assert\InvalidArgumentException;
  */
 final class UnionTypeMapper implements TypeMapperInterface
 {
-    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+    private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
