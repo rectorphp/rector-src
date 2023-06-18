@@ -6,34 +6,35 @@ namespace Rector\NodeNameResolver\NodeNameResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 
 /**
- * @implements NodeNameResolverInterface<Variable>
+ * @implements NodeNameResolverInterface<MethodCall>
  */
-final class VariableNameResolver implements NodeNameResolverInterface
+final class MethodCallNameResolver implements NodeNameResolverInterface
 {
+    /**
+     * @var string
+     */
+    public const IS_EXPR_NAME = 'is_expr_name';
+
     public function getNode(): string
     {
-        return Variable::class;
+        return MethodCall::class;
     }
 
     /**
-     * @param Variable $node
+     * @param MethodCall $node
      */
     public function resolve(Node $node, ?Scope $scope): ?string
     {
-        // skip $some->$dynamicMethodName()
-        if ($node->getAttribute(MethodCallNameResolver::IS_EXPR_NAME) === true) {
-            return null;
-        }
-
         if ($node->name instanceof Expr) {
+            $node->name->setAttribute(self::IS_EXPR_NAME, true);
             return null;
         }
 
-        return $node->name;
+        return (string) $node->name;
     }
 }
