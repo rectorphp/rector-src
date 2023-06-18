@@ -43,10 +43,20 @@ jobs:
                 run: composer install --ansi
                 working-directory: ${{ matrix.directory }}
 
+            # run e2e test with dry run, we expect non-zero exit code
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-1-dry-run.diff --dry-run
+                working-directory: ${{ matrix.directory }}
+                continue-on-error: true
+
+            # run e2e test with dry run once more, we expect non-zero exit code again
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-2-dry-run.diff --dry-run
+                working-directory: ${{ matrix.directory }}
+                continue-on-error: true
+
             # run e2e test
-            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-1.diff
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-3.diff
                 working-directory: ${{ matrix.directory }}
 
             # this tests that a 2nd run with cache and consecutive changes works, see https://github.com/rectorphp/rector-src/pull/3614#issuecomment-1507742338
-            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-2.diff
+            -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-4.diff
                 working-directory: ${{ matrix.directory }}

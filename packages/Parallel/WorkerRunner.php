@@ -95,7 +95,7 @@ final class WorkerRunner
 
                     if ($errorAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
                         $this->invalidateFile($file);
-                    } elseif (! $configuration->isDryRun()) {
+                    } else if (! $configuration->isDryRun() || $errorAndFileDiffs[Bridge::FILE_DIFFS] === []) {
                         $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
                     }
                 } catch (Throwable $throwable) {
