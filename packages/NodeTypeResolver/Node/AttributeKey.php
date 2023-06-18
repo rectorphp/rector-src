@@ -236,4 +236,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_ARRAY_IN_ATTRIBUTE = 'is_array_in_attribute';
+
+    /**
+     * @var string
+     */
+    public const IS_READ_CONTEXT = 'is_read_context';
 }

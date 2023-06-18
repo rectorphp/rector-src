@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
@@ -15,6 +19,7 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
@@ -54,6 +59,18 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                     return null;
                 }
             );
+        }
+
+        if ($node instanceof Return_ && $node->expr instanceof Expr) {
+            $node->expr->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
+        }
+
+        if ($node instanceof Arg) {
+            $node->value->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
+        }
+
+        if ($node instanceof Assign && $node->var instanceof ArrayDimFetch) {
+            $node->var->var->setAttribute(AttributeKey::IS_READ_CONTEXT, true);
         }
 
         return null;
