@@ -70,8 +70,7 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        $isInAttribute = (bool) $this->betterNodeFinder->findParentType($array, Attribute::class);
-        if ($isInAttribute) {
+        if ($array->getAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE) === true) {
             return null;
         }
 
