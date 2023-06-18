@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
