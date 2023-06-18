@@ -503,9 +503,9 @@ final class PHPStanNodeScopeResolver
 
         // ClassConstFetch to resolve current ClassReflection depends on current ClassLike ClassReflection
         // scope filled first
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new ClassConstFetchScopeNodeVisitor());
-        $traverser->traverse($stmts);
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new ClassConstFetchScopeNodeVisitor());
+        $nodeTraverser->traverse($stmts);
 
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 

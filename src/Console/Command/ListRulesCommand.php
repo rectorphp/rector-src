@@ -84,6 +84,7 @@ final class ListRulesCommand extends Command
      */
     private function resolveRectorClasses(): array
     {
+        $rector = null;
         $customRectors = array_filter(
             $this->rectors,
             static function (RectorInterface $rector): bool {
