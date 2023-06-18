@@ -44,7 +44,7 @@ final class ShortNameResolver
      */
     private array $shortNamesByFilePath = [];
 
-    private PhpDocInfoFactory $phpDocInfoFactory;
+    private readonly PhpDocInfoFactory $phpDocInfoFactory;
 
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
