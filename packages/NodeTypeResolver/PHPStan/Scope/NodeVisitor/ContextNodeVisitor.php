@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
@@ -35,6 +36,12 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_) {
             $this->processContextInLoop($node);
             return null;
+        }
+
+        if ($node instanceof Isset_) {
+            foreach ($node->vars as $var) {
+                $var->setAttribute(AttributeKey::IS_ISSET_VAR, true);
+            }
         }
 
         if ($node instanceof Unset_) {
