@@ -27,7 +27,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_) {
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
                 $node->stmts,
-                function (Node $subNode) {
+                static function (Node $subNode) : void {
                     if ($subNode instanceof If_ || $subNode instanceof Break_) {
                         $subNode->setAttribute(AttributeKey::IS_IN_LOOP, true);
                     }
