@@ -97,6 +97,7 @@ CODE_SAMPLE
                     if (! $subNode instanceof Break_) {
                         return null;
                     }
+
                     $subNode->setAttribute(self::IS_BREAK_IN_SWITCH, true);
                     return null;
                 }
