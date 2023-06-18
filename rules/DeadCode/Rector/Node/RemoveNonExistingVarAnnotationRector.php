@@ -22,7 +22,6 @@ use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -34,25 +33,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 {
-    /**
-     * @var array<class-string<Node>>
-     */
-    private const NODES_TO_MATCH = [
-        Foreach_::class,
-        Static_::class,
-        Echo_::class,
-        Return_::class,
-        Expression::class,
-        Throw_::class,
-        If_::class,
-        While_::class,
-        Switch_::class,
-        Nop::class,
-    ];
-
     public function __construct(
-        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
-        private readonly MultiInstanceofChecker $multiInstanceofChecker
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     ) {
     }
 
@@ -92,7 +74,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Node::class];
+        return [
+            Foreach_::class,
+            Static_::class,
+            Echo_::class,
+            Return_::class,
+            Expression::class,
+            Throw_::class,
+            If_::class,
+            While_::class,
+            Switch_::class,
+            Nop::class,
+        ];
     }
 
     public function refactor(Node $node): ?Node
@@ -158,15 +151,7 @@ CODE_SAMPLE
 
     private function shouldSkip(Node $node): bool
     {
-        if (! $node instanceof Nop) {
-            return ! $this->multiInstanceofChecker->isInstanceOf($node, self::NODES_TO_MATCH);
-        }
-
-        if (count($node->getComments()) <= 1) {
-            return ! $this->multiInstanceofChecker->isInstanceOf($node, self::NODES_TO_MATCH);
-        }
-
-        return true;
+        return count($node->getComments()) !== 1;
     }
 
     private function hasVariableName(Node $node, string $variableName): bool
