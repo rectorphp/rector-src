@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -22,8 +23,9 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
-    public function __construct(private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser)
-    {
+    public function __construct(
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+    ) {
     }
 
     public function enterNode(Node $node): ?Node
@@ -41,9 +43,16 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                     }
 
                     return null;
-                });
+                }
+            );
 
             return null;
+        }
+
+        if ($node instanceof Unset_) {
+            foreach ($node->vars as $var) {
+                $var->setAttribute(AttributeKey::IS_UNSETTED, true);
+            }
         }
 
         return null;
