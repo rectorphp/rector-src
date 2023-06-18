@@ -108,8 +108,7 @@ final class PropertyManipulator
                 return true;
             }
 
-            $isInUnset = (bool) $this->betterNodeFinder->findParentType($propertyFetch, Unset_::class);
-            if ($isInUnset) {
+            if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR) === true) {
                 return true;
             }
         }

@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -44,6 +45,12 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                 });
 
             return null;
+        }
+
+        if ($node instanceof Unset_) {
+            foreach ($node->vars as $var) {
+                $var->setAttribute(AttributeKey::IS_UNSET_VAR, true);
+            }
         }
 
         return null;
