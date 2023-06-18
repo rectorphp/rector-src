@@ -90,6 +90,7 @@ final class PropertyManipulator
         }
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam);
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->isChangeableContext($propertyFetch, $scope)) {
@@ -98,9 +99,8 @@ final class PropertyManipulator
 
             // skip for constructor? it is allowed to set value in constructor method
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-            $classMethod = $this->betterNodeFinder->findParentType($propertyFetch, ClassMethod::class);
 
-            if ($this->isPropertyAssignedOnlyInConstructor($class, $propertyName, $classMethod)) {
+            if ($this->isPropertyAssignedOnlyInConstructor($class, $propertyName, $propertyFetch, $classMethod)) {
                 continue;
             }
 
@@ -162,14 +162,19 @@ final class PropertyManipulator
     private function isPropertyAssignedOnlyInConstructor(
         Class_ $class,
         string $propertyName,
+        StaticPropertyFetch|PropertyFetch $propertyFetch,
         ?ClassMethod $classMethod
     ): bool {
         if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
-        // there is property unset in Test class, so only check on __construct
-        if (! $this->nodeNameResolver->isName($classMethod->name, MethodName::CONSTRUCT)) {
+        $node = $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            static fn (Node $subNode): bool => ($subNode instanceof PropertyFetch || $subNode instanceof StaticPropertyFetch) && $subNode === $propertyFetch
+        );
+
+        if ($node === null) {
             return false;
         }
 
