@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -65,8 +64,8 @@ use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\NodeVisitor\ClassConstFetchScopeNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
-use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ClassConstFetchScopeNodeVisitor;
 use Webmozart\Assert\Assert;
 
 /**
