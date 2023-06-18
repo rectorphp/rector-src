@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\NodeAnalyzer;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -70,8 +69,7 @@ final class ArrayCallableMethodMatcher
             return null;
         }
 
-        $isInAttribute = (bool) $this->betterNodeFinder->findParentType($array, Attribute::class);
-        if ($isInAttribute) {
+        if ($array->getAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE) === true) {
             return null;
         }
 

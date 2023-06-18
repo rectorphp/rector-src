@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Break_;
@@ -23,27 +25,15 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
-    public function __construct(private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser)
-    {
+    public function __construct(
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+    ) {
     }
 
     public function enterNode(Node $node): ?Node
     {
         if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_) {
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                $node->stmts,
-                static function (Node $subNode): ?int {
-                    if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
-                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                    }
-
-                    if ($subNode instanceof If_ || $subNode instanceof Break_) {
-                        $subNode->setAttribute(AttributeKey::IS_IN_LOOP, true);
-                    }
-
-                    return null;
-                });
-
+            $this->processContextInLoop($node);
             return null;
         }
 
@@ -53,6 +43,37 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             }
         }
 
+        if ($node instanceof Attribute) {
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+                $node->args,
+                static function (Node $subNode) {
+                    if ($subNode instanceof Array_) {
+                        $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
+                    }
+
+                    return null;
+                }
+            );
+        }
+
         return null;
+    }
+
+    private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
+    {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $node->stmts,
+            static function (Node $subNode): ?int {
+                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($subNode instanceof If_ || $subNode instanceof Break_) {
+                    $subNode->setAttribute(AttributeKey::IS_IN_LOOP, true);
+                }
+
+                return null;
+            }
+        );
     }
 }
