@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Switch_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
 
@@ -42,14 +41,6 @@ final class ContextAnalyzer
         }
 
         return false;
-    }
-
-    /**
-     * @api
-     */
-    public function isInSwitch(Node $node): bool
-    {
-        return (bool) $this->betterNodeFinder->findParentType($node, Switch_::class);
     }
 
     /**
