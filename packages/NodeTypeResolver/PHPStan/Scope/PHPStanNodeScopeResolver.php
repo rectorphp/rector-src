@@ -66,6 +66,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ClassConstFetchScopeNodeVisitor;
 use Webmozart\Assert\Assert;
 
 /**
@@ -230,11 +231,6 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof ConstFetch) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            if ($node instanceof ClassConstFetch) {
-                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
@@ -505,6 +501,13 @@ final class PHPStanNodeScopeResolver
         callable $nodeCallback
     ): array {
         $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+
+        // ClassConstFetch to resolve current ClassReflection depends on current ClassLike ClassReflection
+        // scope filled first
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor(new ClassConstFetchScopeNodeVisitor());
+        $traverser->traverse($stmts);
+
         $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 
         return $stmts;
