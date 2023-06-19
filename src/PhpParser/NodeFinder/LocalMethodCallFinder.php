@@ -34,7 +34,8 @@ final class LocalMethodCallFinder
 
         $classMethodName = $this->nodeNameResolver->getName($classMethod);
 
-        return $this->betterNodeFinder->find(
+        /** @var MethodCall[] $matchingMethodCalls */
+        $matchingMethodCalls = $this->betterNodeFinder->find(
             $class->getMethods(),
             function (Node $subNode) use ($className, $classMethodName): bool {
                 if (! $subNode instanceof MethodCall) {
@@ -53,5 +54,7 @@ final class LocalMethodCallFinder
                 return $callerType->getClassName() === $className;
             }
         );
+
+        return $matchingMethodCalls;
     }
 }
