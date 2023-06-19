@@ -113,6 +113,7 @@ final class PropertyFetchFinder
                 }
 
                 $propertyArrayDimFetches[] = $dimFetchVar;
+                return null;
             }
         );
 
