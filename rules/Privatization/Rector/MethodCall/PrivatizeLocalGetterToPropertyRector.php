@@ -103,9 +103,13 @@ CODE_SAMPLE
                 return null;
             }
 
-            $hasChanged = true;
+            $propertyFetch = $this->matchLocalPropertyFetchInGetterMethod($classMethod);
+            if (! $propertyFetch instanceof PropertyFetch) {
+                return null;
+            }
 
-            return $this->matchLocalPropertyFetchInGetterMethod($classMethod);
+            $hasChanged = true;
+            return $propertyFetch;
         });
 
         if ($hasChanged) {
