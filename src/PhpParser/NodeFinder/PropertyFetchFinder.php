@@ -135,35 +135,27 @@ final class PropertyFetchFinder
         string $propertyName,
         bool $hasTrait
     ): array {
-        /** @var PropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, PropertyFetch::class);
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->find(
+            $stmts,
+            function (Node $subNode) use ($class, $hasTrait, $propertyName): bool {
+                if ($subNode instanceof PropertyFetch) {
+                    if ($this->isInAnonymous($subNode, $class, $hasTrait)) {
+                        return false;
+                    }
 
-        /** @var PropertyFetch[] $matchingPropertyFetches */
-        $matchingPropertyFetches = array_filter($propertyFetches, function (PropertyFetch $propertyFetch) use (
-            $propertyName,
-            $class,
-            $hasTrait
-        ): bool {
-            if ($this->isInAnonymous($propertyFetch, $class, $hasTrait)) {
+                    return $this->isNamePropertyNameEquals($subNode, $propertyName, $class);
+                }
+
+                if ($subNode instanceof StaticPropertyFetch) {
+                    return $this->nodeNameResolver->isName($subNode->name, $propertyName);
+                }
+
                 return false;
             }
-
-            return $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class);
-        });
-
-        /** @var StaticPropertyFetch[] $staticPropertyFetches */
-        $staticPropertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, StaticPropertyFetch::class);
-
-        /** @var StaticPropertyFetch[] $matchingStaticPropertyFetches */
-        $matchingStaticPropertyFetches = array_filter(
-            $staticPropertyFetches,
-            fn (StaticPropertyFetch $staticPropertyFetch): bool => $this->nodeNameResolver->isName(
-                $staticPropertyFetch->name,
-                $propertyName
-            )
         );
 
-        return array_merge($matchingPropertyFetches, $matchingStaticPropertyFetches);
+        return $propertyFetches;
     }
 
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool
