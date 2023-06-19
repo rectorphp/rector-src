@@ -407,10 +407,6 @@ final class PHPStanNodeScopeResolver
         }
 
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-        if ($arrayItem->value instanceof Array_) {
-            $this->processArray($arrayItem->value, $mutatingScope);
-        }
     }
 
     private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
