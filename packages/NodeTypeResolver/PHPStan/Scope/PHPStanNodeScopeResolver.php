@@ -352,6 +352,10 @@ final class PHPStanNodeScopeResolver
             $this->processBinaryOp($assign->var->name, $mutatingScope);
         }
 
+        if ($assign->expr instanceof Variable && $assign->expr->name instanceof BinaryOp) {
+            $this->processBinaryOp($assign->expr->name, $mutatingScope);
+        }
+
         if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
             $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             return;
