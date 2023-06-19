@@ -132,17 +132,16 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
-        $fullyQualifiedOrAliasName = new FullyQualified($fullyQualified);
 
         if ($classLikeName !== $node->value) {
             $preSlashCount = strlen($node->value) - strlen($classLikeName);
             $preSlash = str_repeat('\\', $preSlashCount);
             $string = new String_($preSlash);
 
-            return new Concat($string, new ClassConstFetch($fullyQualifiedOrAliasName, 'class'));
+            return new Concat($string, new ClassConstFetch($fullyQualified, 'class'));
         }
 
-        return new ClassConstFetch($fullyQualifiedOrAliasName, 'class');
+        return new ClassConstFetch($fullyQualified, 'class');
     }
 
     /**
