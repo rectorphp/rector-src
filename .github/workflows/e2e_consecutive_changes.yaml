@@ -22,10 +22,11 @@ jobs:
             fail-fast: false
             matrix:
                 php_version: ['8.1']
+                rector_disable_parallel: ['true', 'false']
                 directory:
                     - 'e2e/consecutive-changes-with-cache'
 
-        name: End to end test - ${{ matrix.directory }}
+        name: End to end test - ${{ matrix.directory }} [disableParallel=${{ matrix.rector_disable_parallel }}]
 
         steps:
             -   uses: actions/checkout@v3
@@ -47,16 +48,24 @@ jobs:
             -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-1-dry-run.diff --dry-run
                 working-directory: ${{ matrix.directory }}
                 continue-on-error: true
+                env:
+                    RECTOR_DISABLE_PARALLEL: ${{ matrix.rector_disable_parallel }}
 
             # run e2e test with dry run once more, we expect non-zero exit code again
             -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-2-dry-run.diff --dry-run
                 working-directory: ${{ matrix.directory }}
                 continue-on-error: true
+                env:
+                    RECTOR_DISABLE_PARALLEL: ${{ matrix.rector_disable_parallel }}
 
             # run e2e test
             -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-3.diff
                 working-directory: ${{ matrix.directory }}
+                env:
+                    RECTOR_DISABLE_PARALLEL: ${{ matrix.rector_disable_parallel }}
 
             # this tests that a 2nd run with cache and consecutive changes works, see https://github.com/rectorphp/rector-src/pull/3614#issuecomment-1507742338
             -   run: php ../e2eTestChangingRunnerWithCache.php -o expected-output-4.diff
                 working-directory: ${{ matrix.directory }}
+                env:
+                    RECTOR_DISABLE_PARALLEL: ${{ matrix.rector_disable_parallel }}
