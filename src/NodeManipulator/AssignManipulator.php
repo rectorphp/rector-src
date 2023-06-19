@@ -132,7 +132,6 @@ final class AssignManipulator
             return false;
         }
 
-        $node = $parentArrayItem->getAttribute(AttributeKey::PARENT_NODE);
-        return $node instanceof Assign && $node->var === $parentArrayItem;
+        return $parentArrayItem->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true;
     }
 }
