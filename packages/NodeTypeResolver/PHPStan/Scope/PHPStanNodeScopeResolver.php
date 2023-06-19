@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
@@ -150,7 +149,9 @@ final class PHPStanNodeScopeResolver
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
+                $node instanceof Assign ||
                 $node instanceof EnumCase ||
+                $node instanceof AssignOp ||
                 $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -338,26 +339,8 @@ final class PHPStanNodeScopeResolver
 
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
-        $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-        $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-        if ($assign->expr instanceof ArrayDimFetch) {
-            $assign->expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            if ($assign->expr->dim instanceof BinaryOp) {
-                $assign->expr->dim->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->processBinaryOp($assign->expr->dim, $mutatingScope);
-            }
-        }
-
-        if ($assign->var instanceof Variable && $assign->var->name instanceof BinaryOp) {
-            $this->processBinaryOp($assign->var->name, $mutatingScope);
-        }
-
-        if ($assign->expr instanceof Variable && $assign->expr->name instanceof BinaryOp) {
-            $this->processBinaryOp($assign->expr->name, $mutatingScope);
-        }
-
         if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
+            $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             return;
         }
 
@@ -366,6 +349,7 @@ final class PHPStanNodeScopeResolver
         while ($expr instanceof Assign || $expr instanceof AssignOp) {
             $this->processArgsForCallike($expr->expr, $mutatingScope);
 
+            // decorate value as well
             $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $expr = $expr->expr;
         }
