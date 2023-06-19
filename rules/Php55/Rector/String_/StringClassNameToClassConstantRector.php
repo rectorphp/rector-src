@@ -12,10 +12,9 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\NodeTraverser;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -27,7 +26,7 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\StringClassNameToClassConstantRectorTest
  */
-final class StringClassNameToClassConstantRector extends AbstractScopeAwareRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
+final class StringClassNameToClassConstantRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @var string
@@ -92,7 +91,7 @@ CODE_SAMPLE
     /**
      * @param String_|FuncCall|ClassConst $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): Concat|ClassConstFetch|null|int
+    public function refactor(Node $node): Concat|ClassConstFetch|null|int
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
@@ -133,7 +132,7 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
-        $fullyQualifiedOrAliasName = new FullyQualified($scope->resolveName($fullyQualified));
+        $fullyQualifiedOrAliasName = new FullyQualified($fullyQualified);
 
         if ($classLikeName !== $node->value) {
             $preSlashCount = strlen($node->value) - strlen($classLikeName);
