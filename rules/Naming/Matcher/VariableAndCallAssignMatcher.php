@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -24,7 +23,7 @@ final class VariableAndCallAssignMatcher
     ) {
     }
 
-    public function match(Assign $assign): ?VariableAndCallAssign
+    public function match(Assign $assign, ClassMethod|Closure|Function_ $functionLike): ?VariableAndCallAssign
     {
         $call = $this->callMatcher->matchCall($assign);
         if ($call === null) {
@@ -40,11 +39,6 @@ final class VariableAndCallAssignMatcher
             return null;
         }
 
-        $functionLike = $this->getFunctionLike($assign);
-        if (! $functionLike instanceof FunctionLike) {
-            return null;
-        }
-
         $isVariableFoundInCallArgs = (bool) $this->betterNodeFinder->findFirst(
             $call->isFirstClassCallable() ? [] : $call->getArgs(),
             fn (Node $subNode): bool =>
@@ -56,13 +50,5 @@ final class VariableAndCallAssignMatcher
         }
 
         return new VariableAndCallAssign($assign->var, $call, $assign, $variableName, $functionLike);
-    }
-
-    private function getFunctionLike(Assign $assign): ClassMethod | Function_ | Closure | null
-    {
-        return $this->betterNodeFinder->findParentByTypes(
-            $assign,
-            [Closure::class, ClassMethod::class, Function_::class]
-        );
     }
 }
