@@ -365,8 +365,8 @@ final class PHPStanNodeScopeResolver
 
         while ($expr instanceof Assign || $expr instanceof AssignOp) {
             $this->processArgsForCallike($expr->expr, $mutatingScope);
-            $this->processAssign($expr, $mutatingScope);
 
+            $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $expr = $expr->expr;
         }
     }
