@@ -338,6 +338,7 @@ final class PHPStanNodeScopeResolver
 
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
+        $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         if ($assign->expr instanceof ArrayDimFetch) {
@@ -357,7 +358,6 @@ final class PHPStanNodeScopeResolver
         }
 
         if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
-            $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             return;
         }
 
