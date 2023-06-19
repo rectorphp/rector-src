@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
@@ -104,7 +103,15 @@ final class LocalPropertyAnalyzer
         }
 
         // skip closure call
-        return $node instanceof MethodCall && $node->var instanceof Closure;
+        if ($node instanceof MethodCall && $node->var instanceof Closure) {
+            return true;
+        }
+
+        if ($node instanceof StaticCall) {
+            return $this->nodeNameResolver->isName($node->class, self::LARAVEL_COLLECTION_CLASS);
+        }
+
+        return false;
     }
 
     private function resolvePropertyName(Node $node): string|null
@@ -126,11 +133,6 @@ final class LocalPropertyAnalyzer
 
     private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch): bool
     {
-        // special Laravel collection scope
-        if ($this->shouldSkipForLaravelCollection($propertyFetch)) {
-            return true;
-        }
-
         if ($this->isPartOfClosureBind($propertyFetch)) {
             return true;
         }
@@ -151,20 +153,6 @@ final class LocalPropertyAnalyzer
         }
 
         return $propertyNameToType;
-    }
-
-    private function shouldSkipForLaravelCollection(PropertyFetch $propertyFetch): bool
-    {
-        $staticCallOrClassMethod = $this->betterNodeFinder->findParentByTypes(
-            $propertyFetch,
-            [ClassMethod::class, StaticCall::class]
-        );
-
-        if (! $staticCallOrClassMethod instanceof StaticCall) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($staticCallOrClassMethod->class, self::LARAVEL_COLLECTION_CLASS);
     }
 
     /**
