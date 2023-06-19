@@ -13,7 +13,6 @@ use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNode
 
 final class ObjectNodeVisitor extends NodeVisitorAbstract implements ScopeResolverNodeVisitorInterface
 {
-
     public function enterNode(Node $node): ?Node
     {
         if ($node instanceof MethodCall) {
