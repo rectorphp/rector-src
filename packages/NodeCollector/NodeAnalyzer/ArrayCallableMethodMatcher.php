@@ -11,9 +11,8 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
@@ -22,8 +21,8 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
@@ -38,7 +37,7 @@ final class ArrayCallableMethodMatcher
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ValueResolver $valueResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -148,12 +147,12 @@ final class ArrayCallableMethodMatcher
         $classConstantReference = $this->valueResolver->getValue($classConstFetch);
 
         if ($classConstantReference === ObjectReference::STATIC) {
-            $classLike = $this->betterNodeFinder->findParentType($classConstFetch, Class_::class);
-            if (! $classLike instanceof ClassLike) {
+            $classReflection = $this->reflectionResolver->resolveClassReflection($classConstFetch);
+            if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
                 return new MixedType();
             }
 
-            $classConstantReference = (string) $this->nodeNameResolver->getName($classLike);
+            $classConstantReference = $classReflection->getName();
         }
 
         // non-class value
