@@ -88,7 +88,7 @@ final class PropertyFetchFinder
     public function findLocalPropertyArrayDimFetchesAssignsByName(Class_ $class, Property $property): array
     {
         $propertyName = $this->nodeNameResolver->getName($property);
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyArrayDimFetches */
+        /** @var ArrayDimFetch[] $propertyArrayDimFetches */
         $propertyArrayDimFetches = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
