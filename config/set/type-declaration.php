@@ -14,6 +14,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnPar
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
@@ -74,5 +75,6 @@ return static function (RectorConfig $rectorConfig): void {
         PropertyTypeFromStrictSetterGetterRector::class,
         ReturnTypeFromStrictTernaryRector::class,
         BoolReturnTypeFromStrictScalarReturnsRector::class,
+        NumericReturnTypeFromStrictScalarReturnsRector::class,
     ]);
 };
