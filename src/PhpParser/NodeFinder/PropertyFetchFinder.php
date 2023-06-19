@@ -23,6 +23,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchFinder
 {
@@ -32,7 +33,8 @@ final class PropertyFetchFinder
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -86,28 +88,34 @@ final class PropertyFetchFinder
     public function findLocalPropertyArrayDimFetchesAssignsByName(Class_ $class, Property $property): array
     {
         $propertyName = $this->nodeNameResolver->getName($property);
-
-        /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf($class, Assign::class);
-
+        /** @var ArrayDimFetch[] $propertyArrayDimFetches */
         $propertyArrayDimFetches = [];
-        foreach ($assigns as $assign) {
-            if (! $assign->var instanceof ArrayDimFetch) {
-                continue;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $class->getMethods(),
+            function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName) {
+                if (! $subNode instanceof Assign) {
+                    return null;
+                }
+
+                if (! $subNode->var instanceof ArrayDimFetch) {
+                    return null;
+                }
+
+                $dimFetchVar = $subNode->var;
+
+                if (! $dimFetchVar->var instanceof PropertyFetch && ! $dimFetchVar->var instanceof StaticPropertyFetch) {
+                    return null;
+                }
+
+                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($dimFetchVar->var, $propertyName)) {
+                    return null;
+                }
+
+                $propertyArrayDimFetches[] = $dimFetchVar;
+                return null;
             }
-
-            $dimFetchVar = $assign->var;
-
-            if (! $dimFetchVar->var instanceof PropertyFetch && ! $dimFetchVar->var instanceof StaticPropertyFetch) {
-                continue;
-            }
-
-            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($dimFetchVar->var, $propertyName)) {
-                continue;
-            }
-
-            $propertyArrayDimFetches[] = $dimFetchVar;
-        }
+        );
 
         return $propertyArrayDimFetches;
     }
