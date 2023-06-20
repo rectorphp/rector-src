@@ -9,6 +9,7 @@ use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
@@ -86,6 +87,10 @@ return static function (RectorConfig $rectorConfig): void {
 
         \Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector::class => [
             __DIR__ . '/src/Util/FileHasher.php',
+        ],
+
+        PrivatizeFinalClassMethodRector::class => [
+            __DIR__  . '/src/PhpParser/Printer/BetterStandardPrinter.php',
         ],
     ]);
 
