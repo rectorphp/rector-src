@@ -156,7 +156,7 @@ final class BetterStandardPrinter extends Printer
 
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
-        if ($node instanceof Expr && $node instanceof VirtualNode) {
+        if ($node instanceof Expr && $node instanceof VirtualNode && method_exists($node, 'getExpr')) {
             $content = parent::p($node->getExpr(), $parentFormatPreserved);
         } else {
             $content = parent::p($node, $parentFormatPreserved);

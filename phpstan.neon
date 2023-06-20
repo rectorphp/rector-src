@@ -692,3 +692,11 @@ parameters:
         -
             message: '#Extending PHPStan\\Node\\Printer\\Printer is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php
+
+        -
+            message: '#Function "method_exists\(\)" cannot be used/left in the code#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
+
+        -
+            message: '#Function "method_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
