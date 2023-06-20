@@ -26,8 +26,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
+use PHPStan\Node\Printer\Printer;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -39,7 +39,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *
  * @property array<string, array{string, bool, string, null}> $insertionMap
  */
-final class BetterStandardPrinter extends Standard
+final class BetterStandardPrinter extends Printer
 {
     /**
      * @var string
