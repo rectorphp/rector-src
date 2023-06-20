@@ -683,3 +683,7 @@ parameters:
 
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
+
+        -
+            message: '#Extending PHPStan\\Node\\Printer\\Printer is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
