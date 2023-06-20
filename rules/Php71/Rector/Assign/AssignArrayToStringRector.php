@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
@@ -164,8 +163,14 @@ CODE_SAMPLE
     /**
      * @return ArrayDimFetch[]
      */
-    private function findSameNamedVariableAssigns(Variable $variable, StmtsAwareInterface $stmtsAware): array
-    {
+    private function findSameNamedVariableAssigns(
+        Variable $variable,
+        Namespace_|FileWithoutNamespace|ClassMethod|Function_ $node
+    ): array {
+        if ($node->stmts === null) {
+            return [];
+        }
+
         $variableName = $this->nodeNameResolver->getName($variable);
         if ($variableName === null) {
             return [];
@@ -173,7 +178,7 @@ CODE_SAMPLE
 
         $assignedArrayDimFetches = [];
 
-        $this->traverseNodesWithCallable((array) $stmtsAware->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
             $variableName,
             &$assignedArrayDimFetches
         ) {
