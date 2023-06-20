@@ -172,7 +172,7 @@ CODE_SAMPLE
      */
     private function findSameNamedVariableAssigns(
         Variable $variable,
-        Namespace_|FileWithoutNamespace|Class_|ClassMethod|Function_|Closure $node
+        Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
     ): array {
         if ($node->stmts === null) {
             return [];
