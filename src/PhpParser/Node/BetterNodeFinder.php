@@ -407,15 +407,11 @@ final class BetterNodeFinder
         }
 
         $isFound = false;
-        $foundNodeScope = $foundNode->getAttribute(AttributeKey::SCOPE);
-
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $functionLike->stmts,
-            static function (Node $subNode) use ($foundNodeScope, &$isFound): ?int {
+            static function (Node $subNode) use (&$isFound, $foundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    $scope = $subNode->getAttribute(AttributeKey::SCOPE);
-
-                    if ($scope === $foundNodeScope) {
+                    if ($subNode === $foundNode) {
                         $isFound = true;
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
