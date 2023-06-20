@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
@@ -16,6 +17,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
+use PhpParser\NodeTraverser;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
@@ -64,14 +66,25 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Namespace_::class, FileWithoutNamespace::class, ClassMethod::class, Function_::class];
+        return [
+            Namespace_::class,
+            FileWithoutNamespace::class,
+            Class_::class,
+            ClassMethod::class,
+            Function_::class,
+            Closure::class,
+        ];
     }
 
     /**
-     * @param Namespace_|FileWithoutNamespace|ClassMethod|Function_ $node
+     * @param Namespace_|FileWithoutNamespace|Class_|ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node instanceof Class_) {
+            return $this->refactorClass($node);
+        }
+
         if ($node->stmts === null) {
             return null;
         }
@@ -80,6 +93,10 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable(
             $node->stmts,
             function (Node $subNode) use (&$hasChanged, $node): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
                 if ($subNode instanceof Assign) {
                     $assign = $this->refactorAssign($subNode, $node);
 
@@ -87,16 +104,6 @@ CODE_SAMPLE
                         $hasChanged = true;
                         return null;
                     }
-                }
-
-                if ($subNode instanceof Class_) {
-                    $class = $this->refactorClass($subNode);
-
-                    if ($class instanceof Class_) {
-                        $hasChanged = true;
-                    }
-
-                    return null;
                 }
 
                 return null;
@@ -165,7 +172,7 @@ CODE_SAMPLE
      */
     private function findSameNamedVariableAssigns(
         Variable $variable,
-        Namespace_|FileWithoutNamespace|ClassMethod|Function_ $node
+        Namespace_|FileWithoutNamespace|Class_|ClassMethod|Function_|Closure $node
     ): array {
         if ($node->stmts === null) {
             return [];
@@ -207,7 +214,7 @@ CODE_SAMPLE
 
     private function refactorAssign(
         Assign $assign,
-        Namespace_|FileWithoutNamespace|ClassMethod|Function_ $node
+        Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
     ): ?Assign {
         if (! $this->isEmptyString($assign->expr)) {
             return null;
