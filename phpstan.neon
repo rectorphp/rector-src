@@ -690,5 +690,5 @@ parameters:
                 """
 
         -
-            message: '#Instead of protected element, use private element or contract method#'
+            message: '#Extending PHPStan\\Node\\Printer\\Printer is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php
