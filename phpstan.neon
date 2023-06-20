@@ -688,3 +688,7 @@ parameters:
                 #^Fetching class constant class of deprecated class Rector\\\\CodingStyle\\\\Rector\\\\ClassConst\\\\VarConstantCommentRector\\:
                 The doc block types are not reliable, and typed constants are comming to PHP 8\\.3, use those instead\\.$#
                 """
+
+        -
+            message: '#Instead of protected element, use private element or contract method#'
+            path: src/PhpParser/Printer/BetterStandardPrinter.php
