@@ -154,17 +154,13 @@ final class BetterStandardPrinter extends Printer
         return ltrim($content);
     }
 
-    /**
-     * required since PHPStan 1.10.20
-     */
-    protected function pPHPStan_Node_AlwaysRememberedExpr(AlwaysRememberedExpr $alwaysRememberedExpr): string
-    {
-        return $this->p($alwaysRememberedExpr->getExpr());
-    }
-
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
-        $content = parent::p($node, $parentFormatPreserved);
+        if ($node instanceof AlwaysRememberedExpr) {
+            $content = parent::p($node->getExpr(), $parentFormatPreserved);
+        } else {
+            $content = parent::p($node, $parentFormatPreserved);
+        }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
