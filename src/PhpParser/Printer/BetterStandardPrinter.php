@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\Printer;
 
+use PHPStan\Node\VirtualNode;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
@@ -26,7 +27,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
-use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use PHPStan\Node\Printer\Printer;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
@@ -156,7 +156,7 @@ final class BetterStandardPrinter extends Printer
 
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
-        if ($node instanceof AlwaysRememberedExpr) {
+        if ($node instanceof Expr && $node instanceof VirtualNode) {
             $content = parent::p($node->getExpr(), $parentFormatPreserved);
         } else {
             $content = parent::p($node, $parentFormatPreserved);
