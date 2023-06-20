@@ -683,8 +683,3 @@ parameters:
 
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
-
-        -  """
-                #^Fetching class constant class of deprecated class Rector\\\\CodingStyle\\\\Rector\\\\ClassConst\\\\VarConstantCommentRector\\:
-                The doc block types are not reliable, and typed constants are comming to PHP 8\\.3, use those instead\\.$#
-                """
