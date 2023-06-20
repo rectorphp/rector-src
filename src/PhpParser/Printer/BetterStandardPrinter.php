@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
+use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -151,6 +152,14 @@ final class BetterStandardPrinter extends Standard
         $content = $this->pStmts($fileWithoutNamespace->stmts, false);
 
         return ltrim($content);
+    }
+
+    /**
+     * required since PHPStan 1.10.20
+     */
+    protected function pPHPStan_Node_AlwaysRememberedExpr(AlwaysRememberedExpr $alwaysRememberedExpr): string
+    {
+        return $this->p($alwaysRememberedExpr->getExpr());
     }
 
     protected function p(Node $node, $parentFormatPreserved = false): string

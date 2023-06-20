@@ -98,7 +98,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            unset($node->stmts[$key]);
+//            unset($node->stmts[$key]);
             $hasChanged = true;
         }
 
@@ -129,7 +129,7 @@ CODE_SAMPLE
         }
 
         // skips interfaces by default too
-        if (! $classMethod->isPrivate()) {
+        if (! $classMethod->isPrivate()) {die;
             return true;
         }
 
