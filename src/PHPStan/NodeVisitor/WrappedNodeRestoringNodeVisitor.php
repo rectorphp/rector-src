@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Match_;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
 
