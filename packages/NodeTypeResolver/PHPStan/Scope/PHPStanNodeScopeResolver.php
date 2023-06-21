@@ -239,10 +239,6 @@ final class PHPStanNodeScopeResolver
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof \PHPStan\Node\MatchExpressionNode) {
-
-            }
-
             if ($node instanceof Trait_) {
                 $traitName = $this->resolveClassName($node);
 
