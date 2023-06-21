@@ -420,6 +420,11 @@ final class BetterNodeFinder
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
+                if ($foundNode instanceof $subNode && $subNode === $foundNode) {
+                    $isFound = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 return null;
             }
         );
