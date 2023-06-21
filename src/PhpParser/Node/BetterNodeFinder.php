@@ -397,11 +397,12 @@ final class BetterNodeFinder
             return null;
         }
 
+        $foundNode = $this->findFirst($functionLike->stmts, $filter);
+
         if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, Function_::class, Closure::class])) {
-            return $this->findFirst($functionLike->stmts, $filter);
+            return $foundNode;
         }
 
-        $foundNode = $this->findFirst($functionLike->stmts, $filter);
         if (! $foundNode instanceof Node) {
             return null;
         }
@@ -411,7 +412,7 @@ final class BetterNodeFinder
             $functionLike->stmts,
             static function (Node $subNode) use (&$isFound, $foundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    if ($subNode === $foundNode) {
+                    if ($foundNode instanceof $subNode && $subNode === $foundNode) {
                         $isFound = true;
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
