@@ -406,13 +406,13 @@ final class BetterNodeFinder
             return $foundNode;
         }
 
-        $isFound = false;
+        $scopedNode = null;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $functionLike->stmts,
-            static function (Node $subNode) use (&$isFound, $foundNode): ?int {
+            static function (Node $subNode) use (&$scopedNode, $foundNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     if ($foundNode instanceof $subNode && $subNode === $foundNode) {
-                        $isFound = true;
+                        $scopedNode = $subNode;
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
 
@@ -420,7 +420,7 @@ final class BetterNodeFinder
                 }
 
                 if ($foundNode instanceof $subNode && $subNode === $foundNode) {
-                    $isFound = true;
+                    $scopedNode = $subNode;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }
 
@@ -428,11 +428,7 @@ final class BetterNodeFinder
             }
         );
 
-        if ($isFound) {
-            return $foundNode;
-        }
-
-        return null;
+        return $scopedNode;
     }
 
     public function resolveCurrentStatement(Node $node): ?Stmt
