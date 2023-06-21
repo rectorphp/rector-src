@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Rector\Php70\Rector\Break_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -23,6 +27,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class BreakNotInLoopOrSwitchToReturnRector extends AbstractRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const IS_BREAK_IN_SWITCH = 'is_break_in_switch';
+
     public function __construct(
         private readonly ContextAnalyzer $contextAnalyzer
     ) {
@@ -76,19 +85,39 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Break_::class];
+        return [Switch_::class, Break_::class];
     }
 
     /**
-     * @param Break_ $node
+     * @param Switch_|Break_ $node
      */
     public function refactor(Node $node): Return_|null|int
     {
+        if ($node instanceof Switch_) {
+            $this->traverseNodesWithCallable(
+                $node->cases,
+                static function (Node $subNode): ?int {
+                    if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
+                        return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                    }
+
+                    if (! $subNode instanceof Break_) {
+                        return null;
+                    }
+
+                    $subNode->setAttribute(self::IS_BREAK_IN_SWITCH, true);
+                    return null;
+                }
+            );
+
+            return null;
+        }
+
         if ($this->contextAnalyzer->isInLoop($node)) {
             return null;
         }
 
-        if ($this->contextAnalyzer->isInSwitch($node)) {
+        if ($node->getAttribute(self::IS_BREAK_IN_SWITCH) === true) {
             return null;
         }
 

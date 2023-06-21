@@ -8,7 +8,6 @@ use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
 use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
-use Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
@@ -59,7 +58,6 @@ return static function (RectorConfig $rectorConfig): void {
         CatchExceptionNameMatchingTypeRector::class,
         UseIncrementAssignRector::class,
         SplitDoubleAssignRector::class,
-        VarConstantCommentRector::class,
         EncapsedStringsToSprintfRector::class,
         WrapEncapsedVariableInCurlyBracesRector::class,
         NewlineBeforeNewAssignSetRector::class,

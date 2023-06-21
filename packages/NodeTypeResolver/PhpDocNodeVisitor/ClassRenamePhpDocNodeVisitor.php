@@ -7,8 +7,8 @@ namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 use PhpParser\Node as PhpParserNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -18,13 +18,10 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\RectorConfigProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
@@ -39,8 +36,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
@@ -87,10 +82,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 continue;
             }
 
-            $newTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode(
-                $oldToNewType->getNewType(),
-                TypeKind::ANY
-            );
+            $newTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($oldToNewType->getNewType());
 
             $parentType = $node->getAttribute(PhpDocAttributeKey::PARENT);
             if ($parentType instanceof TypeNode) {
@@ -139,17 +131,19 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $uses = $this->useImportsResolver->resolveForNode($phpParserNode);
-        $namespace = $this->betterNodeFinder->findParentType($phpParserNode, Namespace_::class);
+        $scope = $phpParserNode->getAttribute(AttributeKey::SCOPE);
 
-        if (! $namespace instanceof Namespace_) {
-            return $this->resolveNamefromUse($uses, $name);
+        if (! $scope instanceof Scope) {
+            if (! $phpParserNode->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+                return $this->resolveNamefromUse($uses, $name);
+            }
+
+            return '';
         }
 
-        $originalNode = $namespace->getAttribute(AttributeKey::ORIGINAL_NODE);
-        $namespaceName = (string) $this->nodeNameResolver->getName($namespace);
-
-        if ($originalNode instanceof Namespace_ && ! $this->nodeNameResolver->isName($originalNode, $namespaceName)) {
-            return $name;
+        $namespaceName = $scope->getNamespace();
+        if ($namespaceName === null) {
+            return $this->resolveNamefromUse($uses, $name);
         }
 
         if ($uses === []) {

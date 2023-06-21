@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeFinder;
+use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\StopSearchException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -37,6 +38,7 @@ use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
 
 /**
@@ -50,7 +52,8 @@ final class BetterNodeFinder
         private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -193,27 +196,6 @@ final class BetterNodeFinder
     }
 
     /**
-     * @api used in Symfony
-     * @template T of Node
-     *
-     * @param Stmt[] $nodes
-     * @param class-string<T> $type
-     */
-    public function findLastInstanceOf(array $nodes, string $type): ?Node
-    {
-        Assert::allIsAOf($nodes, Stmt::class);
-        Assert::isAOf($type, Node::class);
-
-        $foundInstances = $this->nodeFinder->findInstanceOf($nodes, $type);
-        if ($foundInstances === []) {
-            return null;
-        }
-
-        $lastItemKey = array_key_last($foundInstances);
-        return $foundInstances[$lastItemKey];
-    }
-
-    /**
      * @param Node|Node[] $nodes
      * @param callable(Node $node): bool $filter
      * @return Node[]
@@ -345,21 +327,26 @@ final class BetterNodeFinder
             $types = [$types];
         }
 
-        foreach ($types as $type) {
-            $foundNodes = $this->findInstanceOf((array) $functionLike->stmts, $type);
-            foreach ($foundNodes as $foundNode) {
-                $parentFunctionLike = $this->findParentByTypes(
-                    $foundNode,
-                    [ClassMethod::class, Function_::class, Closure::class]
-                );
-
-                if ($parentFunctionLike === $functionLike) {
-                    return true;
+        $isFoundNode = false;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $functionLike->stmts,
+            static function (Node $subNode) use ($types, &$isFoundNode): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
-            }
-        }
 
-        return false;
+                foreach ($types as $type) {
+                    if ($subNode instanceof $type) {
+                        $isFoundNode = true;
+                        return NodeTraverser::STOP_TRAVERSAL;
+                    }
+                }
+
+                return null;
+            }
+        );
+
+        return $isFoundNode;
     }
 
     /**
@@ -378,31 +365,23 @@ final class BetterNodeFinder
         /** @var T[] $foundNodes */
         $foundNodes = [];
 
-        foreach ($types as $type) {
-            /** @var T[] $nodes */
-            $nodes = $this->findInstanceOf((array) $functionLike->stmts, $type);
-
-            if ($nodes === []) {
-                continue;
-            }
-
-            foreach ($nodes as $key => $node) {
-                $parentFunctionLike = $this->findParentByTypes(
-                    $node,
-                    [ClassMethod::class, Function_::class, Closure::class]
-                );
-
-                if ($parentFunctionLike !== $functionLike) {
-                    unset($nodes[$key]);
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            (array) $functionLike->stmts,
+            static function (Node $subNode) use ($types, &$foundNodes): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
-            }
 
-            if ($nodes === []) {
-                continue;
-            }
+                foreach ($types as $type) {
+                    if ($subNode instanceof $type) {
+                        $foundNodes[] = $subNode;
+                        return null;
+                    }
+                }
 
-            $foundNodes = array_merge($foundNodes, $nodes);
-        }
+                return null;
+            }
+        );
 
         return $foundNodes;
     }
@@ -414,21 +393,42 @@ final class BetterNodeFinder
         ClassMethod | Function_ | Closure $functionLike,
         callable $filter
     ): ?Node {
-        $foundNode = $this->findFirst((array) $functionLike->stmts, $filter);
+        if ($functionLike->stmts === null) {
+            return null;
+        }
+
+        $foundNode = $this->findFirst($functionLike->stmts, $filter);
         if (! $foundNode instanceof Node) {
             return null;
         }
 
-        $parentFunctionLike = $this->findParentByTypes(
-            $foundNode,
-            [ClassMethod::class, Function_::class, Closure::class, Class_::class]
-        );
-
-        if ($parentFunctionLike !== $functionLike) {
-            return null;
+        if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, Function_::class, Closure::class])) {
+            return $foundNode;
         }
 
-        return $foundNode;
+        $scopedNode = null;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $functionLike->stmts,
+            static function (Node $subNode) use (&$scopedNode, $foundNode): ?int {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    if ($foundNode instanceof $subNode && $subNode === $foundNode) {
+                        $scopedNode = $subNode;
+                        return NodeTraverser::STOP_TRAVERSAL;
+                    }
+
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($foundNode instanceof $subNode && $subNode === $foundNode) {
+                    $scopedNode = $subNode;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
+                return null;
+            }
+        );
+
+        return $scopedNode;
     }
 
     public function resolveCurrentStatement(Node $node): ?Stmt
@@ -450,41 +450,6 @@ final class BetterNodeFinder
         }
 
         return null;
-    }
-
-    /**
-     * @api
-     *
-     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
-     */
-    public function resolvePreviousNode(Node $node): ?Node
-    {
-        $currentStmt = $this->resolveCurrentStatement($node);
-
-        if (! $currentStmt instanceof Stmt) {
-            return null;
-        }
-
-        $startTokenPos = $node->getStartTokenPos();
-        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-            );
-
-        if ($nodes === []) {
-            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $this->isAllowedParentNode($parentNode)) {
-                return null;
-            }
-
-            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
-        }
-
-        return end($nodes);
     }
 
     /**
@@ -519,6 +484,41 @@ final class BetterNodeFinder
         }
 
         return $nextNode;
+    }
+
+    /**
+     * @api
+     *
+     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
+     */
+    private function resolvePreviousNode(Node $node): ?Node
+    {
+        $currentStmt = $this->resolveCurrentStatement($node);
+
+        if (! $currentStmt instanceof Stmt) {
+            return null;
+        }
+
+        $startTokenPos = $node->getStartTokenPos();
+        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
+            ? []
+            : $this->find(
+                $currentStmt,
+                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
+            );
+
+        if ($nodes === []) {
+            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
+            if (! $this->isAllowedParentNode($parentNode)) {
+                return null;
+            }
+
+            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
+            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
+            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
+        }
+
+        return end($nodes);
     }
 
     private function isAllowedParentNode(?Node $node): bool

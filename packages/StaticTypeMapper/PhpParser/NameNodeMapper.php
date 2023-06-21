@@ -6,7 +6,6 @@ namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
@@ -22,8 +21,7 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ParentObjectWithoutClassType;
@@ -38,8 +36,7 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -81,13 +78,10 @@ final class NameNodeMapper implements PhpParserNodeMapperInterface
         Name $name,
         string $reference
     ): MixedType | StaticType | SelfStaticType | ObjectWithoutClassType {
-        $classLike = $this->betterNodeFinder->findParentType($name, ClassLike::class);
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($name);
+        if (! $classReflection instanceof ClassReflection) {
             return new MixedType();
         }
-
-        $className = (string) $this->nodeNameResolver->getName($classLike);
-        $classReflection = $this->reflectionProvider->getClass($className);
 
         if ($reference === ObjectReference::STATIC) {
             return new StaticType($classReflection);

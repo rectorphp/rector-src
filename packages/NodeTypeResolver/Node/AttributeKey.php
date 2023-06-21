@@ -227,4 +227,29 @@ final class AttributeKey
      * @var string
      */
     public const STATEMENT_DEPTH = 'statementDepth';
+
+    /**
+     * @var string
+     */
+    public const IS_IN_LOOP = 'is_in_loop';
+
+    /**
+     * @var string
+     */
+    public const IS_ISSET_VAR = 'is_isset_var';
+
+    /**
+     * @var string
+     */
+    public const IS_UNSET_VAR = 'is_unset_var';
+
+    /**
+     * @var string
+     */
+    public const IS_ARRAY_IN_ATTRIBUTE = 'is_array_in_attribute';
+
+    /**
+     * @var string
+     */
+    public const IS_OBJECT_CALLER = 'is_object_caller';
 }

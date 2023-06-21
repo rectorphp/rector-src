@@ -46,11 +46,4 @@ jobs:
 
             -   uses: "ramsey/composer-install@v2"
 
-            - name: Cache rector kernels temporary files
-              uses: actions/cache@v3
-              with:
-                  path: /tmp/rector/
-                  key: ${{ matrix.php }}-${{ matrix.path }}-rector-kernel-${{ github.run_id }}
-                  restore-keys: ${{ matrix.php }}-${{ matrix.path }}-rector-kernel-
-
             -   run: vendor/bin/phpunit ${{ matrix.path }} --colors

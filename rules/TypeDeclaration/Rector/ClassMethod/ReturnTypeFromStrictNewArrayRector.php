@@ -165,14 +165,14 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(Node $node, Type $exprType): void
+    private function changeReturnType(ClassMethod|Function_|Closure $node, Type $exprType): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $exprType = $this->narrowConstantArrayType($exprType);
 
         if (! $this->typeComparator->isSubtype($phpDocInfo->getReturnType(), $exprType)) {
-            $this->phpDocTypeChanger->changeReturnType($phpDocInfo, $exprType);
+            $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $exprType);
         }
     }
 

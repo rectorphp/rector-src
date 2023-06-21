@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -22,6 +23,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchFinder
 {
@@ -31,7 +33,8 @@ final class PropertyFetchFinder
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -60,19 +63,21 @@ final class PropertyFetchFinder
      */
     public function findLocalPropertyFetchesByName(Class_ $class, string $paramName): array
     {
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstancesOf(
-            $class,
-            [PropertyFetch::class, StaticPropertyFetch::class]
-        );
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $foundPropertyFetches */
+        $foundPropertyFetches = $this->betterNodeFinder->find(
+            $class->getMethods(),
+            function (Node $subNode) use ($paramName): bool {
+                if ($subNode instanceof PropertyFetch) {
+                    return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
+                }
 
-        $foundPropertyFetches = [];
+                if ($subNode instanceof StaticPropertyFetch) {
+                    return $this->propertyFetchAnalyzer->isLocalPropertyFetchName($subNode, $paramName);
+                }
 
-        foreach ($propertyFetches as $propertyFetch) {
-            if ($this->propertyFetchAnalyzer->isLocalPropertyFetchName($propertyFetch, $paramName)) {
-                $foundPropertyFetches[] = $propertyFetch;
+                return false;
             }
-        }
+        );
 
         return $foundPropertyFetches;
     }
@@ -83,28 +88,34 @@ final class PropertyFetchFinder
     public function findLocalPropertyArrayDimFetchesAssignsByName(Class_ $class, Property $property): array
     {
         $propertyName = $this->nodeNameResolver->getName($property);
-
-        /** @var Assign[] $assigns */
-        $assigns = $this->betterNodeFinder->findInstanceOf($class, Assign::class);
-
+        /** @var ArrayDimFetch[] $propertyArrayDimFetches */
         $propertyArrayDimFetches = [];
-        foreach ($assigns as $assign) {
-            if (! $assign->var instanceof ArrayDimFetch) {
-                continue;
+
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $class->getMethods(),
+            function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName) {
+                if (! $subNode instanceof Assign) {
+                    return null;
+                }
+
+                if (! $subNode->var instanceof ArrayDimFetch) {
+                    return null;
+                }
+
+                $dimFetchVar = $subNode->var;
+
+                if (! $dimFetchVar->var instanceof PropertyFetch && ! $dimFetchVar->var instanceof StaticPropertyFetch) {
+                    return null;
+                }
+
+                if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($dimFetchVar->var, $propertyName)) {
+                    return null;
+                }
+
+                $propertyArrayDimFetches[] = $dimFetchVar;
+                return null;
             }
-
-            $dimFetchVar = $assign->var;
-
-            if (! $dimFetchVar->var instanceof PropertyFetch && ! $dimFetchVar->var instanceof StaticPropertyFetch) {
-                continue;
-            }
-
-            if (! $this->propertyFetchAnalyzer->isLocalPropertyFetchName($dimFetchVar->var, $propertyName)) {
-                continue;
-            }
-
-            $propertyArrayDimFetches[] = $dimFetchVar;
-        }
+        );
 
         return $propertyArrayDimFetches;
     }
@@ -132,35 +143,27 @@ final class PropertyFetchFinder
         string $propertyName,
         bool $hasTrait
     ): array {
-        /** @var PropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, PropertyFetch::class);
+        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
+        $propertyFetches = $this->betterNodeFinder->find(
+            $stmts,
+            function (Node $subNode) use ($class, $hasTrait, $propertyName): bool {
+                if ($subNode instanceof PropertyFetch) {
+                    if ($this->isInAnonymous($subNode, $class, $hasTrait)) {
+                        return false;
+                    }
 
-        /** @var PropertyFetch[] $matchingPropertyFetches */
-        $matchingPropertyFetches = array_filter($propertyFetches, function (PropertyFetch $propertyFetch) use (
-            $propertyName,
-            $class,
-            $hasTrait
-        ): bool {
-            if ($this->isInAnonymous($propertyFetch, $class, $hasTrait)) {
+                    return $this->isNamePropertyNameEquals($subNode, $propertyName, $class);
+                }
+
+                if ($subNode instanceof StaticPropertyFetch) {
+                    return $this->nodeNameResolver->isName($subNode->name, $propertyName);
+                }
+
                 return false;
             }
-
-            return $this->isNamePropertyNameEquals($propertyFetch, $propertyName, $class);
-        });
-
-        /** @var StaticPropertyFetch[] $staticPropertyFetches */
-        $staticPropertyFetches = $this->betterNodeFinder->findInstanceOf($stmts, StaticPropertyFetch::class);
-
-        /** @var StaticPropertyFetch[] $matchingStaticPropertyFetches */
-        $matchingStaticPropertyFetches = array_filter(
-            $staticPropertyFetches,
-            fn (StaticPropertyFetch $staticPropertyFetch): bool => $this->nodeNameResolver->isName(
-                $staticPropertyFetch->name,
-                $propertyName
-            )
         );
 
-        return array_merge($matchingPropertyFetches, $matchingStaticPropertyFetches);
+        return $propertyFetches;
     }
 
     private function isInAnonymous(PropertyFetch $propertyFetch, Class_|Trait_ $class, bool $hasTrait): bool

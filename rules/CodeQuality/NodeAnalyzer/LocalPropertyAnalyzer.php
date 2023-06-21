@@ -13,15 +13,15 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\CodeQuality\TypeResolver\ArrayDimFetchTypeResolver;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -36,7 +36,6 @@ final class LocalPropertyAnalyzer
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ArrayDimFetchTypeResolver $arrayDimFetchTypeResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
@@ -102,7 +101,15 @@ final class LocalPropertyAnalyzer
         }
 
         // skip closure call
-        return $node instanceof MethodCall && $node->var instanceof Closure;
+        if ($node instanceof MethodCall && $node->var instanceof Closure) {
+            return true;
+        }
+
+        if ($node instanceof StaticCall) {
+            return $this->nodeNameResolver->isName($node->class, self::LARAVEL_COLLECTION_CLASS);
+        }
+
+        return false;
     }
 
     private function resolvePropertyName(Node $node): string|null
@@ -124,20 +131,11 @@ final class LocalPropertyAnalyzer
 
     private function shouldSkipPropertyFetch(PropertyFetch $propertyFetch): bool
     {
-        // special Laravel collection scope
-        if ($this->shouldSkipForLaravelCollection($propertyFetch)) {
-            return true;
-        }
-
         if ($this->isPartOfClosureBind($propertyFetch)) {
             return true;
         }
 
-        if ($propertyFetch->name instanceof Variable) {
-            return true;
-        }
-
-        return $this->isPartOfClosureBindTo($propertyFetch);
+        return $propertyFetch->name instanceof Variable;
     }
 
     /**
@@ -155,49 +153,17 @@ final class LocalPropertyAnalyzer
         return $propertyNameToType;
     }
 
-    private function shouldSkipForLaravelCollection(PropertyFetch $propertyFetch): bool
-    {
-        $staticCallOrClassMethod = $this->betterNodeFinder->findParentByTypes(
-            $propertyFetch,
-            [ClassMethod::class, StaticCall::class]
-        );
-
-        if (! $staticCallOrClassMethod instanceof StaticCall) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($staticCallOrClassMethod->class, self::LARAVEL_COLLECTION_CLASS);
-    }
-
     /**
      * Local property is actually not local one, but belongs to passed object
      * See https://ocramius.github.io/blog/accessing-private-php-class-members-without-reflection/
      */
     private function isPartOfClosureBind(PropertyFetch $propertyFetch): bool
     {
-        $parentStaticCall = $this->betterNodeFinder->findParentType($propertyFetch, StaticCall::class);
-        if (! $parentStaticCall instanceof StaticCall) {
+        $scope = $propertyFetch->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return false;
         }
 
-        if (! $this->nodeNameResolver->isName($parentStaticCall->class, 'Closure')) {
-            return true;
-        }
-
-        return $this->nodeNameResolver->isName($parentStaticCall->name, 'bind');
-    }
-
-    private function isPartOfClosureBindTo(PropertyFetch $propertyFetch): bool
-    {
-        $parentMethodCall = $this->betterNodeFinder->findParentType($propertyFetch, MethodCall::class);
-        if (! $parentMethodCall instanceof MethodCall) {
-            return false;
-        }
-
-        if (! $parentMethodCall->var instanceof Closure) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isName($parentMethodCall->name, 'bindTo');
+        return $scope->isInClosureBind();
     }
 }

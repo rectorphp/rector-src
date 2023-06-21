@@ -108,7 +108,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyRename = $this->propertyRenameFactory->createFromExpectedName($property, $expectedPropertyName);
+            $propertyRename = $this->propertyRenameFactory->createFromExpectedName(
+                $classLike,
+                $property,
+                $expectedPropertyName
+            );
 
             if (! $propertyRename instanceof PropertyRename) {
                 continue;

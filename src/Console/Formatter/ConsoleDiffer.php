@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Console\Formatter;
 
 use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 final class ConsoleDiffer

@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Naming\ValueObject;
 
-use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Function_;
 use Rector\Naming\Contract\RenameParamValueObjectInterface;
 
 final class ParamRename implements RenameParamValueObjectInterface
@@ -19,7 +16,7 @@ final class ParamRename implements RenameParamValueObjectInterface
         private readonly string $expectedName,
         private readonly Param $param,
         private readonly Variable $variable,
-        private readonly ClassMethod | Function_ | Closure | ArrowFunction $functionLike
+        private readonly FunctionLike $functionLike
     ) {
     }
 
@@ -33,7 +30,7 @@ final class ParamRename implements RenameParamValueObjectInterface
         return $this->expectedName;
     }
 
-    public function getFunctionLike(): ClassMethod | Function_ | Closure | ArrowFunction
+    public function getFunctionLike(): FunctionLike
     {
         return $this->functionLike;
     }

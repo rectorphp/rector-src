@@ -1,18 +1,16 @@
-# 370 Rules Overview
+# 368 Rules Overview
 
 <br>
 
 ## Categories
 
-- [Arguments](#arguments) (5)
+- [Arguments](#arguments) (6)
 
-- [CodeQuality](#codequality) (71)
+- [CodeQuality](#codequality) (72)
 
-- [CodingStyle](#codingstyle) (34)
+- [CodingStyle](#codingstyle) (31)
 
 - [DeadCode](#deadcode) (43)
-
-- [DependencyInjection](#dependencyinjection) (1)
 
 - [EarlyReturn](#earlyreturn) (10)
 
@@ -50,15 +48,13 @@
 
 - [Removing](#removing) (6)
 
-- [RemovingStatic](#removingstatic) (1)
-
 - [Renaming](#renaming) (10)
 
 - [Strict](#strict) (5)
 
 - [Transform](#transform) (22)
 
-- [TypeDeclaration](#typedeclaration) (40)
+- [TypeDeclaration](#typedeclaration) (41)
 
 - [Visibility](#visibility) (3)
 
@@ -138,6 +134,45 @@ return static function (RectorConfig $rectorConfig): void {
 ```diff
 -version_compare(PHP_VERSION, '5.6', 'gte');
 +version_compare(PHP_VERSION, '5.6', 'ge');
+```
+
+<br>
+
+### RemoveMethodCallParamRector
+
+Remove parameter of method call
+
+:wrench: **configure it!**
+
+- class: [`Rector\Arguments\Rector\MethodCall\RemoveMethodCallParamRector`](../rules/Arguments/Rector/MethodCall/RemoveMethodCallParamRector.php)
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Rector\Arguments\Rector\MethodCall\RemoveMethodCallParamRector;
+use Rector\Arguments\ValueObject\RemoveMethodCallParam;
+use Rector\Config\RectorConfig;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->ruleWithConfiguration(RemoveMethodCallParamRector::class, [
+        new RemoveMethodCallParam('Caller', 'process', 1),
+    ]);
+};
+```
+
+↓
+
+```diff
+ final class SomeClass
+ {
+     public function run(Caller $caller)
+     {
+-        $caller->process(1, 2);
++        $caller->process(1);
+     }
+ }
 ```
 
 <br>
@@ -922,6 +957,30 @@ Joins concat of 2 strings, unless the length is too long
      {
 -        $name = 'Hi' . ' Tom';
 +        $name = 'Hi Tom';
+     }
+ }
+```
+
+<br>
+
+### LocallyCalledStaticMethodToNonStaticRector
+
+Change static method and local-only calls to non-static
+
+- class: [`Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector`](../rules/CodeQuality/Rector/ClassMethod/LocallyCalledStaticMethodToNonStaticRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        self::someStatic();
++        $this->someStatic();
+     }
+
+-    private static function someStatic()
++    private function someStatic()
+     {
      }
  }
 ```
@@ -2004,47 +2063,6 @@ Use ++$value or --$value  instead of `$value++` or `$value--`
 
 <br>
 
-### PreferThisOrSelfMethodCallRector
-
-Changes `$this->...` and static:: to self:: or vise versa for given types
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector`](../rules/CodingStyle/Rector/MethodCall/PreferThisOrSelfMethodCallRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use PHPUnit\Framework\TestCase;
-use Rector\CodingStyle\Rector\MethodCall\PreferThisOrSelfMethodCallRector;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(PreferThisOrSelfMethodCallRector::class, [
-        TestCase::class => 'prefer_self',
-    ]);
-};
-```
-
-↓
-
-```diff
- use PHPUnit\Framework\TestCase;
-
- final class SomeClass extends TestCase
- {
-     public function run()
-     {
--        $this->assertEquals('a', 'a');
-+        self::assertEquals('a', 'a');
-     }
- }
-```
-
-<br>
-
 ### RemoveFinalFromConstRector
 
 Remove final from constants in classes defined as final
@@ -2056,49 +2074,6 @@ Remove final from constants in classes defined as final
  {
 -    final public const NAME = 'value';
 +    public const NAME = 'value';
- }
-```
-
-<br>
-
-### ReturnArrayClassMethodToYieldRector
-
-Turns array return to yield return in specific type and method
-
-:wrench: **configure it!**
-
-- class: [`Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector`](../rules/CodingStyle/Rector/ClassMethod/ReturnArrayClassMethodToYieldRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\CodingStyle\Rector\ClassMethod\ReturnArrayClassMethodToYieldRector;
-use Rector\CodingStyle\ValueObject\ReturnArrayClassMethodToYield;
-use Rector\Config\RectorConfig;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ReturnArrayClassMethodToYieldRector::class, [
-        new ReturnArrayClassMethodToYield('PHPUnit\Framework\TestCase', '*provide*'),
-    ]);
-};
-```
-
-↓
-
-```diff
- use PHPUnit\Framework\TestCase;
-
- final class SomeTest implements TestCase
- {
-     public static function provideData()
-     {
--        return [
--            ['some text']
--        ];
-+        yield ['some text'];
-     }
  }
 ```
 
@@ -2319,24 +2294,6 @@ Use ++ increment instead of `$var += 1`
 -        $style += 1;
 +        ++$style;
      }
- }
-```
-
-<br>
-
-### VarConstantCommentRector
-
-Constant should have a `@var` comment with type
-
-- class: [`Rector\CodingStyle\Rector\ClassConst\VarConstantCommentRector`](../rules/CodingStyle/Rector/ClassConst/VarConstantCommentRector.php)
-
-```diff
- class SomeClass
- {
-+    /**
-+     * @var string
-+     */
-     const HI = 'hi';
  }
 ```
 
@@ -3255,47 +3212,6 @@ Remove php version checks if they are passed
 -    return 'is PHP 7.2+';
 -}
 +return 'is PHP 7.2+';
-```
-
-<br>
-
-## DependencyInjection
-
-### AddMethodParentCallRector
-
-Add method parent call, in case new parent method is added
-
-:wrench: **configure it!**
-
-- class: [`Rector\DependencyInjection\Rector\ClassMethod\AddMethodParentCallRector`](../rules/DependencyInjection/Rector/ClassMethod/AddMethodParentCallRector.php)
-
-```php
-<?php
-
-declare(strict_types=1);
-
-use Rector\Config\RectorConfig;
-use Rector\DependencyInjection\Rector\ClassMethod\AddMethodParentCallRector;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(AddMethodParentCallRector::class, [
-        'ParentClassWithNewConstructor' => '__construct',
-    ]);
-};
-```
-
-↓
-
-```diff
- class SunshineCommand extends ParentClassWithNewConstructor
- {
-     public function __construct()
-     {
-         $value = 5;
-+
-+        parent::__construct();
-     }
- }
 ```
 
 <br>
@@ -6158,32 +6074,6 @@ return static function (RectorConfig $rectorConfig): void {
 
 <br>
 
-## RemovingStatic
-
-### LocallyCalledStaticMethodToNonStaticRector
-
-Change static method and local-only calls to non-static
-
-- class: [`Rector\RemovingStatic\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector`](../rules/RemovingStatic/Rector/ClassMethod/LocallyCalledStaticMethodToNonStaticRector.php)
-
-```diff
- class SomeClass
- {
-     public function run()
-     {
--        self::someStatic();
-+        $this->someStatic();
-     }
-
--    private static function someStatic()
-+    private function someStatic()
-     {
-     }
- }
-```
-
-<br>
-
 ## Renaming
 
 ### PseudoNamespaceToNamespaceRector
@@ -8065,6 +7955,25 @@ Flip negated ternary of instanceof to direct use of object
 ```diff
 -echo ! $object instanceof Product ? null : $object->getPrice();
 +echo $object instanceof Product ? $object->getPrice() : null;
+```
+
+<br>
+
+### NumericReturnTypeFromStrictScalarReturnsRector
+
+Change numeric return type based on strict returns type operations
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/NumericReturnTypeFromStrictScalarReturnsRector.php)
+
+```diff
+ class SomeClass
+ {
+-    public function resolve(int $first, int $second)
++    public function resolve(int $first, int $second): int
+     {
+         return $first - $second;
+     }
+ }
 ```
 
 <br>

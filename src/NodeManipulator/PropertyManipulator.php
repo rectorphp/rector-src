@@ -28,7 +28,7 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
-use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -72,7 +72,7 @@ final class PropertyManipulator
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PromotedPropertyResolver $promotedPropertyResolver,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly AstResolver $astResolver,
+        private readonly ClassLikeAstResolver $classLikeAstResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker
     ) {
@@ -90,6 +90,7 @@ final class PropertyManipulator
         }
 
         $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam);
+        $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
             if ($this->isChangeableContext($propertyFetch, $scope)) {
@@ -98,9 +99,8 @@ final class PropertyManipulator
 
             // skip for constructor? it is allowed to set value in constructor method
             $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-            $classMethod = $this->betterNodeFinder->findParentType($propertyFetch, ClassMethod::class);
 
-            if ($this->isPropertyAssignedOnlyInConstructor($class, $propertyName, $classMethod)) {
+            if ($this->isPropertyAssignedOnlyInConstructor($class, $propertyName, $propertyFetch, $classMethod)) {
                 continue;
             }
 
@@ -108,8 +108,7 @@ final class PropertyManipulator
                 return true;
             }
 
-            $isInUnset = (bool) $this->betterNodeFinder->findParentType($propertyFetch, Unset_::class);
-            if ($isInUnset) {
+            if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR) === true) {
                 return true;
             }
         }
@@ -147,7 +146,7 @@ final class PropertyManipulator
     public function isUsedByTrait(ClassReflection $classReflection, string $propertyName): bool
     {
         foreach ($classReflection->getTraits() as $traitUse) {
-            $trait = $this->astResolver->resolveClassFromName($traitUse->getName());
+            $trait = $this->classLikeAstResolver->resolveClassFromClassReflection($traitUse);
             if (! $trait instanceof Trait_) {
                 continue;
             }
@@ -163,14 +162,20 @@ final class PropertyManipulator
     private function isPropertyAssignedOnlyInConstructor(
         Class_ $class,
         string $propertyName,
+        StaticPropertyFetch|PropertyFetch $propertyFetch,
         ?ClassMethod $classMethod
     ): bool {
         if (! $classMethod instanceof ClassMethod) {
             return false;
         }
 
+        $node = $this->betterNodeFinder->findFirst(
+            (array) $classMethod->stmts,
+            static fn (Node $subNode): bool => ($subNode instanceof PropertyFetch || $subNode instanceof StaticPropertyFetch) && $subNode === $propertyFetch
+        );
+
         // there is property unset in Test class, so only check on __construct
-        if (! $this->nodeNameResolver->isName($classMethod->name, MethodName::CONSTRUCT)) {
+        if (! $node instanceof Node) {
             return false;
         }
 

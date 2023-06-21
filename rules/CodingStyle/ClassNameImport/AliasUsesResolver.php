@@ -9,30 +9,31 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\UseUse;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class AliasUsesResolver
 {
     public function __construct(
-        private readonly UseImportsTraverser $useImportsTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly UseImportsTraverser $useImportsTraverser
     ) {
     }
 
     /**
+     * @param Stmt[] $stmts
      * @return string[]
      */
-    public function resolveFromNode(Node $node): array
+    public function resolveFromNode(Node $node, array $stmts): array
     {
         if (! $node instanceof Namespace_) {
-            $node = $this->betterNodeFinder->findParentType($node, Namespace_::class);
+            /** @var Namespace_[] $namespaces */
+            $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+            if (count($namespaces) !== 1) {
+                return [];
+            }
+
+            $node = current($namespaces);
         }
 
-        if ($node instanceof Namespace_) {
-            return $this->resolveFromStmts($node->stmts);
-        }
-
-        return [];
+        return $this->resolveFromStmts($node->stmts);
     }
 
     /**

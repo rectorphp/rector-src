@@ -82,7 +82,7 @@ return [
                 return $content;
             }
 
-            $content = str_replace('\'53\'', "'72'", $content);
+            $content = str_replace("'53'", "'72'", $content);
             return str_replace(', 44,', ', 63, ', $content);
         },
 

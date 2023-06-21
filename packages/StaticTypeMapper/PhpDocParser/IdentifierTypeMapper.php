@@ -6,7 +6,6 @@ namespace Rector\StaticTypeMapper\PhpDocParser;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
 use PHPStan\Analyser\NameScope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -23,8 +22,7 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
@@ -41,9 +39,8 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
     public function __construct(
         private readonly ObjectTypeSpecifier $objectTypeSpecifier,
         private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -146,23 +143,11 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function resolveClassName(Node $node): ?string
     {
-        $classLike = $node instanceof ClassLike
-            ? $node
-            : $this->betterNodeFinder->findParentType($node, ClassLike::class);
-
-        if (! $classLike instanceof ClassLike) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $className = $this->nodeNameResolver->getName($classLike);
-        if (! is_string($className)) {
-            return null;
-        }
-
-        if (! $this->reflectionProvider->hasClass($className)) {
-            return null;
-        }
-
-        return $className;
+        return $classReflection->getName();
     }
 }

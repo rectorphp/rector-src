@@ -97,6 +97,7 @@ CODE_SAMPLE
             }
 
             $propertyType = $this->trustedClassMethodPropertyTypeInferer->inferProperty(
+                $node,
                 $property,
                 $constructClassMethod
             );
@@ -109,7 +110,7 @@ CODE_SAMPLE
 
             // public property can be anything
             if ($property->isPublic()) {
-                $this->phpDocTypeChanger->changeVarType($phpDocInfo, $propertyType);
+                $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
                 $hasChanged = true;
                 continue;
             }

@@ -11,6 +11,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -20,7 +22,8 @@ final class UsedImportsResolver
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly UseImportsTraverser $useImportsTraverser,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -29,10 +32,7 @@ final class UsedImportsResolver
      */
     public function resolveForNode(Node $node): array
     {
-        $namespace = $node instanceof Namespace_ ? $node : $this->betterNodeFinder->findParentType(
-            $node,
-            Namespace_::class
-        );
+        $namespace = $this->resolveCurrentNamespaceForNode($node);
 
         if ($namespace instanceof Namespace_) {
             return $this->resolveForNamespace($namespace);
@@ -89,6 +89,27 @@ final class UsedImportsResolver
         });
 
         return $usedFunctionImports;
+    }
+
+    private function resolveCurrentNamespaceForNode(Node $node): ?Namespace_
+    {
+        if ($node instanceof Namespace_) {
+            return $node;
+        }
+
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return null;
+        }
+
+        $stmts = $file->getNewStmts();
+        $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+
+        if (count($namespaces) !== 1) {
+            return null;
+        }
+
+        return current($namespaces);
     }
 
     /**
