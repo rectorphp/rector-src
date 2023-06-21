@@ -16,10 +16,15 @@ final class WrappedNodeRestoringNodeVisitor extends NodeVisitorAbstract
 {
     public function enterNode(Node $node): ?Node
     {
-        if ($node instanceof AlwaysRememberedExpr) {
-            return $node->getExpr();
+        if (! $node instanceof AlwaysRememberedExpr) {
+            return null;
         }
 
-        return null;
+        $expr = $node;
+        while ($expr instanceof AlwaysRememberedExpr) {
+            $expr = $expr->getExpr();
+        }
+
+        return $expr;
     }
 }
