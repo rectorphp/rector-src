@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
 
@@ -16,10 +17,15 @@ final class WrappedNodeRestoringNodeVisitor extends NodeVisitorAbstract
 {
     public function enterNode(Node $node): ?Node
     {
-        if ($node instanceof AlwaysRememberedExpr) {
-            return $node->getExpr();
+        if (! $node instanceof AlwaysRememberedExpr) {
+            return null;
         }
 
-        return null;
+        $expr = $node;
+        while ($expr instanceof AlwaysRememberedExpr) {
+            $expr = $expr->getExpr();
+        }
+
+        return $expr;
     }
 }
