@@ -398,13 +398,12 @@ final class BetterNodeFinder
         }
 
         $foundNode = $this->findFirst($functionLike->stmts, $filter);
+        if (! $foundNode instanceof Node) {
+            return null;
+        }
 
         if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, Function_::class, Closure::class])) {
             return $foundNode;
-        }
-
-        if (! $foundNode instanceof Node) {
-            return null;
         }
 
         $isFound = false;
