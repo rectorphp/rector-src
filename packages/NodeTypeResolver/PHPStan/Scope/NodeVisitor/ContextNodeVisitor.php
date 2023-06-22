@@ -9,6 +9,8 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -83,20 +85,11 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     private function processContextInIf(If_|Else_|ElseIf_ $node): void
     {
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $node->stmts,
-            static function (Node $subNode): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
-                if ($subNode instanceof Break_) {
-                    $subNode->setAttribute(AttributeKey::IS_IN_IF, true);
-                }
-
-                return null;
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof Break_ || $stmt instanceof PropertyFetch || $stmt instanceof StaticPropertyFetch) {
+                $stmt->setAttribute(AttributeKey::IS_IN_IF, true);
             }
-        );
+        }
     }
 
     private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
