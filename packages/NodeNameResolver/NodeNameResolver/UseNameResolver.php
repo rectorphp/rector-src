@@ -8,22 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\NodeNameResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements NodeNameResolverInterface<Use_>
  */
 final class UseNameResolver implements NodeNameResolverInterface
 {
-    private NodeNameResolver $nodeNameResolver;
-
-    #[Required]
-    public function autowire(NodeNameResolver $nodeNameResolver): void
-    {
-        $this->nodeNameResolver = $nodeNameResolver;
-    }
-
     public function getNode(): string
     {
         return Use_::class;
@@ -39,7 +29,6 @@ final class UseNameResolver implements NodeNameResolverInterface
         }
 
         $onlyUse = $node->uses[0];
-
-        return $this->nodeNameResolver->getName($onlyUse);
+        return $onlyUse->name->toString();
     }
 }
