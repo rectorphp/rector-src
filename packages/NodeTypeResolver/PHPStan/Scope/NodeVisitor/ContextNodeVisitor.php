@@ -84,7 +84,9 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     private function processContextInIf(If_|Else_|ElseIf_ $node): void
     {
         foreach ($node->stmts as $stmt) {
-            $stmt->setAttribute(AttributeKey::IS_IN_IF, true);
+            if ($stmt instanceof Break_) {
+                $stmt->setAttribute(AttributeKey::IS_IN_IF, true);
+            }
         }
     }
 
