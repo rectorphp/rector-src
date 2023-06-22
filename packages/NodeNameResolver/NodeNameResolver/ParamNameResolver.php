@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\NodeNameResolver\NodeNameResolver;
 
-use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Error;
 use PhpParser\Node\Param;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 /**
  * @implements NodeNameResolverInterface<Param>
