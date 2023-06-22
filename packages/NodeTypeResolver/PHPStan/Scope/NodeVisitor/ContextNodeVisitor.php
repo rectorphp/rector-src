@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\Break_;
@@ -86,7 +85,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $node->stmts,
             static function (Node $subNode): ?int {
-                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
@@ -104,7 +103,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $node->stmts,
             static function (Node $subNode): ?int {
-                if ($subNode instanceof Class_ || ($subNode instanceof FunctionLike && ! $subNode instanceof ArrowFunction)) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
