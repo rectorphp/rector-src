@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\NodeTraverser;
-use Rector\NodeNestingScope\ScopeNestingComparator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
@@ -21,7 +20,6 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 final class NullTypeAssignDetector
 {
     public function __construct(
-        private readonly ScopeNestingComparator $scopeNestingComparator,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PropertyAssignMatcher $propertyAssignMatcher,
@@ -40,11 +38,6 @@ final class NullTypeAssignDetector
             $expr = $this->matchAssignExprToPropertyName($node, $propertyName);
             if (! $expr instanceof Expr) {
                 return null;
-            }
-
-            if ($this->scopeNestingComparator->isNodeConditionallyScoped($expr)) {
-                $needsNullType = true;
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             // not in doctrine property
