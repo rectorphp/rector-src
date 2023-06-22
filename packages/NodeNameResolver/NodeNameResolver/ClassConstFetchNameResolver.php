@@ -5,25 +5,17 @@ declare(strict_types=1);
 namespace Rector\NodeNameResolver\NodeNameResolver;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Error;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\NodeNameResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements NodeNameResolverInterface<ClassConstFetch>
  */
 final class ClassConstFetchNameResolver implements NodeNameResolverInterface
 {
-    private NodeNameResolver $nodeNameResolver;
-
-    #[Required]
-    public function autowire(NodeNameResolver $nodeNameResolver): void
-    {
-        $this->nodeNameResolver = $nodeNameResolver;
-    }
-
     public function getNode(): string
     {
         return ClassConstFetch::class;
@@ -34,15 +26,16 @@ final class ClassConstFetchNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node, ?Scope $scope): ?string
     {
-        $class = $this->nodeNameResolver->getName($node->class);
-        $name = $this->nodeNameResolver->getName($node->name);
-        if ($class === null) {
+        if ($node->class instanceof Expr) {
             return null;
         }
 
-        if ($name === null) {
+        if ($node->name instanceof Error) {
             return null;
         }
+
+        $class = $node->class->toString();
+        $name = $node->name->toString();
 
         return $class . '::' . $name;
     }
