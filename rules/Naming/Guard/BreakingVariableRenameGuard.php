@@ -73,6 +73,7 @@ final class BreakingVariableRenameGuard
         if ($this->hasConflictVariable($functionLike, $expectedName)) {
             return true;
         }
+
         return $this->isUsedInClosureUsesName($expectedName, $functionLike);
     }
 
