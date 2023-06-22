@@ -9,8 +9,6 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
-use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -92,7 +90,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if ($subNode instanceof Break_ || $subNode instanceof PropertyFetch || $subNode instanceof StaticPropertyFetch) {
+                if ($subNode instanceof Break_) {
                     $subNode->setAttribute(AttributeKey::IS_IN_IF, true);
                 }
 
