@@ -97,7 +97,8 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
                 }
 
                 return null;
-        });
+            }
+        );
     }
 
     private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
