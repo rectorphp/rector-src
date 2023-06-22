@@ -2,8 +2,6 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector\Fixture;
 
-use Nette\Utils\Strings;
-
 class SkipNotRegex
 {
     public function run($value)
