@@ -7,20 +7,16 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
@@ -92,19 +88,16 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
     {
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $node->stmts,
-            static function (Node $subNode): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
-                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-                }
-
-                if ($subNode instanceof If_ || $subNode instanceof Break_) {
-                    $subNode->setAttribute(AttributeKey::IS_IN_LOOP, true);
-                }
-
-                return null;
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof If_ || $stmt instanceof Break_) {
+                $stmt->setAttribute(AttributeKey::IS_IN_LOOP, true);
             }
-        );
+
+            if ($stmt instanceof If_) {
+                foreach ($stmt->stmts as $ifStmt) {
+                    $ifStmt->setAttribute(AttributeKey::IS_IN_LOOP, true);
+                }
+            }
+        }
     }
 }
