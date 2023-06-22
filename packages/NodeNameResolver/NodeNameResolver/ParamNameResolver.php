@@ -7,12 +7,10 @@ namespace Rector\NodeNameResolver\NodeNameResolver;
 use PhpParser\Error;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PHPStan\Analyser\Scope;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements NodeNameResolverInterface<Param>
