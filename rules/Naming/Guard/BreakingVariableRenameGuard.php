@@ -79,6 +79,7 @@ final class BreakingVariableRenameGuard
         if ($this->isUsedInClosureUsesName($expectedName, $functionLike)) {
             return true;
         }
+
         return $this->isUsedInForeachKeyValueVar($variable, $currentName);
     }
 
