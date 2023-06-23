@@ -31,8 +31,9 @@ final class SimplifyRegexPatternRector extends AbstractRector
         '[\r\n\t\f\v ]' => '\s',
     ];
 
-    public function __construct(private readonly RegexPatternDetector $regexPatternDetector)
-    {
+    public function __construct(
+        private readonly RegexPatternDetector $regexPatternDetector
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition

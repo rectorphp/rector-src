@@ -7,7 +7,6 @@ namespace Rector\Core\Kernel;
 use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
 use Rector\Core\DependencyInjection\Collector\ConfigureCallValuesCollector;
 use Rector\Core\DependencyInjection\CompilerPass\AutowireRectorCompilerPass;
-use Rector\Core\DependencyInjection\CompilerPass\MakeRectorsPublicCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\MergeImportedRectorConfigureCallValuesCompilerPass;
 use Rector\Core\DependencyInjection\CompilerPass\RemoveSkippedRectorsCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -56,7 +55,6 @@ final class ContainerBuilderBuilder
 
             // autowire Rectors by default (mainly for tests)
             new AutowireRectorCompilerPass(),
-            new MakeRectorsPublicCompilerPass(),
 
             // add all merged arguments of Rector services
             new MergeImportedRectorConfigureCallValuesCompilerPass($this->configureCallValuesCollector),
