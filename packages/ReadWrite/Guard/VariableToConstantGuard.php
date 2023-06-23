@@ -32,8 +32,8 @@ final class VariableToConstantGuard
 
     public function isReadArg(Arg $arg): bool
     {
-        $parentParentNode = $arg->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentParentNode instanceof FuncCall) {
+        $parentArg = $arg->getAttribute(AttributeKey::PARENT_NODE);
+        if (! $parentArg instanceof FuncCall) {
             return true;
         }
 
@@ -53,11 +53,6 @@ final class VariableToConstantGuard
         $functionReflection = $this->reflectionProvider->getFunction($functionName, $argScope);
 
         if (! $argScope instanceof Scope) {
-            return true;
-        }
-
-        $parentArg = $arg->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentArg instanceof CallLike) {
             return true;
         }
 
