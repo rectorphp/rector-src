@@ -24,10 +24,10 @@ final class DynamicSourceLocatorDecorator
     /**
      * @param string[] $paths
      */
-    public function addPaths(array $paths): bool
+    public function addPaths(array $paths): void
     {
         if ($paths === []) {
-            return false;
+            return;
         }
 
         $files = $this->fileAndDirectoryFilter->filterFiles($paths);
@@ -38,7 +38,9 @@ final class DynamicSourceLocatorDecorator
             $filesInDirectory = $this->phpFilesFinder->findInPaths([$directory]);
             $this->dynamicSourceLocatorProvider->addFilesByDirectory($directory, $filesInDirectory);
         }
+    }
 
-        return !$this->dynamicSourceLocatorProvider->isPathsEmpty();
+    public function isPathsEmpty(): bool {
+        return $this->dynamicSourceLocatorProvider->isPathsEmpty();
     }
 }
