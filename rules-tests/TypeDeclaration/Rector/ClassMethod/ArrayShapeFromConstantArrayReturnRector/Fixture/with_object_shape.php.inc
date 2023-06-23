@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstant
 final class WithObjectShape
 {
     /**
-     * @return array<string, stdClass>
+     * @return array<string, \stdClass>
      */
     public static function cleanup(?string $value): array
     {
