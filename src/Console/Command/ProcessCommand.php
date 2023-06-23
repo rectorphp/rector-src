@@ -71,7 +71,10 @@ final class ProcessCommand extends AbstractProcessCommand
         $paths = $configuration->getPaths();
 
         // 1. add files and directories to static locator
-        $this->dynamicSourceLocatorDecorator->addPaths($paths);
+        if ($this->dynamicSourceLocatorDecorator->addPaths($paths) === false) {
+            $this->rectorOutputStyle->error("The given paths do not match any files");
+            return ExitCode::FAILURE;
+        }
 
         // 2. inform user about registering configurable rule without configuration
         $this->emptyConfigurableRectorChecker->check();
