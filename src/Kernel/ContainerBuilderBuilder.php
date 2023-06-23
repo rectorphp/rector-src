@@ -28,11 +28,6 @@ final class ContainerBuilderBuilder
             new MergeImportedRectorConfigureCallValuesCompilerPass($configureCallValuesCollector),
         ]);
 
-        // @see https://symfony.com/blog/new-in-symfony-4-4-dependency-injection-improvements-part-1
-        $containerBuilder->setParameter('container.dumper.inline_factories', true);
-        // to fix reincluding files again
-        $containerBuilder->setParameter('container.dumper.inline_class_loader', false);
-
         $containerBuilder->compile();
 
         return $containerBuilder;
