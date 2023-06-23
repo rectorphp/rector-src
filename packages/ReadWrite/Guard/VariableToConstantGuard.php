@@ -66,7 +66,7 @@ final class VariableToConstantGuard
             return true;
         }
 
-        $argumentPosition = $this->getArgumentPosition($parentParentNode, $arg);
+        $argumentPosition = $this->getArgumentPosition($parentArg, $arg);
         return ! in_array($argumentPosition, $referenceParametersPositions, true);
     }
 
