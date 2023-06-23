@@ -12,6 +12,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\HasMethodType;
 use PHPStan\Type\ConditionalType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -46,6 +47,10 @@ final class PHPStanStaticTypeMapper
 
         if ($type instanceof ConditionalType) {
             return new IdentifierTypeNode('mixed');
+        }
+
+        if ($type instanceof \PHPStan\Type\ObjectShapeType) {
+            return new FullyQualifiedIdentifierTypeNode('stdClass');
         }
 
         throw new NotImplementedYetException(__METHOD__ . ' for ' . $type::class);
