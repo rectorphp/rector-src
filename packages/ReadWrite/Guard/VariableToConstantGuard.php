@@ -37,7 +37,7 @@ final class VariableToConstantGuard
             return true;
         }
 
-        $functionNameString = $this->nodeNameResolver->getName($parentParentNode);
+        $functionNameString = $this->nodeNameResolver->getName($parentArg);
         if ($functionNameString === null) {
             return true;
         }
