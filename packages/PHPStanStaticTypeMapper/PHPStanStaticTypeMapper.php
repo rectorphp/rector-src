@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper;
 
+use PHPStan\Type\ObjectShapeType;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -49,7 +50,7 @@ final class PHPStanStaticTypeMapper
             return new IdentifierTypeNode('mixed');
         }
 
-        if ($type instanceof \PHPStan\Type\ObjectShapeType) {
+        if ($type instanceof ObjectShapeType) {
             return new FullyQualifiedIdentifierTypeNode('stdClass');
         }
 
