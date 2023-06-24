@@ -7,6 +7,7 @@ namespace Rector\Core\PhpParser\Node\Value;
 use PhpParser\ConstExprEvaluationException;
 use PhpParser\ConstExprEvaluator;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -70,6 +71,10 @@ final class ValueResolver
             if ($this->nodeNameResolver->isName($expr->name, 'class')) {
                 return $class;
             }
+        }
+
+        if ($expr instanceof ArrayDimFetch) {
+            return null;
         }
 
         $value = $this->resolveExprValueForConst($expr);
