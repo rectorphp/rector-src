@@ -319,7 +319,7 @@ final class ValueResolver
         }
 
         if ($class === ObjectReference::PARENT) {
-            if (! $classReflection->isClasss()) {
+            if (! $classReflection->isClass()) {
                 throw new ShouldNotHappenException(
                     'Complete class parent node for to class const fetch, so "parent" references is resolvable to lookup parent class'
                 );
