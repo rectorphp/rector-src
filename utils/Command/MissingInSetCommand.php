@@ -54,6 +54,24 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp74' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php74.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp80' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php80.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp81' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php81.php',
+        // symfony
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony25' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony25.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony26' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony26.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony27' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony27.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony28' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony28.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony30' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony30.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony33' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony33.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony34' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony34.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony40' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony40.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony42' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony42.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony43' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony43.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony44' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony44.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony51' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony51.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony52' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony52.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony53' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony53.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony60' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony60.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony61' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony61.php',
+        __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony62' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony62.php',
     ];
 
     /**
