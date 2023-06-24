@@ -318,28 +318,28 @@ final class ValueResolver
             );
         }
 
-        if ($class === ObjectReference::PARENT) {
-            if (! $classReflection->isClass()) {
-                throw new ShouldNotHappenException(
-                    'Complete class parent node for to class const fetch, so "parent" references is resolvable to lookup parent class'
-                );
-            }
-
-            // ensure parent class name still resolved even not autoloaded
-            $nativeReflection = $classReflection->getNativeReflection();
-            $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
-                $nativeReflection,
-                'betterReflectionClass'
-            );
-            $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
-
-            if ($parentClassName === null) {
-                throw new ShouldNotHappenException();
-            }
-
-            return $parentClassName;
+        if ($class !== ObjectReference::PARENT) {
+            return $classReflection->getName();
         }
 
-        return $classReflection->getName();
+        if (! $classReflection->isClass()) {
+            throw new ShouldNotHappenException(
+                'Complete class parent node for to class const fetch, so "parent" references is resolvable to lookup parent class'
+            );
+        }
+
+        // ensure parent class name still resolved even not autoloaded
+        $nativeReflection = $classReflection->getNativeReflection();
+        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
+            $nativeReflection,
+            'betterReflectionClass'
+        );
+        $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
+
+        if ($parentClassName === null) {
+            throw new ShouldNotHappenException();
+        }
+
+        return $parentClassName;
     }
 }
