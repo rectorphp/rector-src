@@ -53,9 +53,7 @@ final class FullyQualifiedObjectType extends ObjectType
     {
         $name = new Name($this->getClassName());
         $useUse = new UseUse($name);
-
-        $name->setAttribute(AttributeKey::PARENT_NODE, $useUse);
-
+    
         return new Use_([$useUse]);
     }
 
@@ -63,9 +61,7 @@ final class FullyQualifiedObjectType extends ObjectType
     {
         $name = new Name($this->getClassName());
         $useUse = new UseUse($name, null);
-
-        $name->setAttribute(AttributeKey::PARENT_NODE, $useUse);
-
+       
         $use = new Use_([$useUse]);
         $use->type = Use_::TYPE_FUNCTION;
 
