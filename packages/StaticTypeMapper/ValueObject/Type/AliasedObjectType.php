@@ -50,9 +50,7 @@ final class AliasedObjectType extends ObjectType
     {
         $name = new Name($this->fullyQualifiedClass);
         $useUse = new UseUse($name, $this->getClassName());
-
-        $name->setAttribute(AttributeKey::PARENT_NODE, $useUse);
-
+       
         $use = new Use_([$useUse]);
         $use->type = Use_::TYPE_FUNCTION;
 
