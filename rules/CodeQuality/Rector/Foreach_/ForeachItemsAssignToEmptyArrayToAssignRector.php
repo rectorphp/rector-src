@@ -13,17 +13,16 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeTraverser;
-use PHPStan\Analyser\Scope;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector\ForeachItemsAssignToEmptyArrayToAssignRectorTest
  */
-final class ForeachItemsAssignToEmptyArrayToAssignRector extends AbstractScopeAwareRector
+final class ForeachItemsAssignToEmptyArrayToAssignRector extends AbstractRector
 {
     public function __construct(
         private readonly ForeachAnalyzer $foreachAnalyzer
@@ -77,7 +76,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {
             return null;
