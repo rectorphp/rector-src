@@ -170,8 +170,8 @@ CODE_SAMPLE
     {
         $nodeName = $this->getName($name);
         return $name instanceof FullyQualified
-            ? new FullyQualified(explode('_', $nodeName))
-            : new Name(explode('_', $nodeName));
+            ? new FullyQualified(explode('_', $nodeName), $name->getAttributes())
+            : new Name(explode('_', $nodeName), $name->getAttributes());
     }
 
     private function processIdentifier(Identifier $identifier): ?Identifier
