@@ -149,18 +149,6 @@ final class NameImporter
 
     private function isFunctionOrConstantImportWithSingleName(Name $name): bool
     {
-        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
-
-        $fullName = $name->toString();
-
-        $autoImportNames = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-        if ($autoImportNames && ! $parentNode instanceof Node && ! \str_contains(
-            $fullName,
-            '\\'
-        ) && $this->reflectionProvider->hasFunction(new Name($fullName), null)) {
-            return true;
-        }
-
         if ($name->getAttribute(AttributeKey::IS_CONSTFETCH_NAME) === true) {
             return count($name->getParts()) === 1;
         }
