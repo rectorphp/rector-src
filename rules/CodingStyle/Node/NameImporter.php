@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Node;
 
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\ClassNameImport\AliasUsesResolver;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
@@ -140,8 +140,11 @@ final class NameImporter
             return true;
         }
 
-        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
-        return $parentNode instanceof UseUse;
+        if ($name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true) {
+            return true;
+        }
+
+        return ! $name instanceof FullyQualified;
     }
 
     private function isFunctionOrConstantImportWithSingleName(Name $name): bool
