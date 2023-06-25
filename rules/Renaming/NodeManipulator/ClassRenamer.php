@@ -114,7 +114,7 @@ final class ClassRenamer
 
     private function shouldSkip(string $newName, Name $name, ?Node $parentNode = null): bool
     {
-        if ($parentNode instanceof StaticCall && $parentNode->class === $name && $this->reflectionProvider->hasClass(
+        if ($name->getAttribute(AttributeKey::IS_STATICCALL_CLASS_NAME) === true && $this->reflectionProvider->hasClass(
             $newName
         )) {
             $classReflection = $this->reflectionProvider->getClass($newName);
