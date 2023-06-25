@@ -20,17 +20,22 @@ final class NameNodeVisitor extends NodeVisitorAbstract implements ScopeResolver
     {
         if ($node instanceof Namespace_ && $node->name instanceof Name) {
             $node->name->setAttribute(AttributeKey::IS_NAMESPACE_NAME, true);
+            return null;
         }
 
         if ($node instanceof UseUse && ($node->type === Use_::TYPE_NORMAL || $node->type === Use_::TYPE_UNKNOWN)) {
             $node->name->setAttribute(AttributeKey::IS_USEUSE_NAME, true);
+            return null;
         }
+
         if (!$node instanceof StaticCall) {
             return null;
         }
+
         if (!$node->class instanceof Name) {
             return null;
         }
+
         $node->class->setAttribute(AttributeKey::IS_STATICCALL_CLASS_NAME, true);
         return null;
     }
