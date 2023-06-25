@@ -165,11 +165,11 @@ final class NameImporter
         }
 
         if ($parentNode instanceof ConstFetch) {
-            return count($name->parts) === 1;
+            return count($name->getParts()) === 1;
         }
 
         if ($parentNode instanceof FuncCall) {
-            return count($name->parts) === 1;
+            return count($name->getParts()) === 1;
         }
 
         return false;

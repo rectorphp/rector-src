@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
@@ -168,9 +169,9 @@ CODE_SAMPLE
     private function processName(Name $name): Name
     {
         $nodeName = $this->getName($name);
-        $name->parts = explode('_', $nodeName);
-
-        return $name;
+        return $name instanceof FullyQualified
+            ? new FullyQualified(explode('_', $nodeName), $name->getAttributes())
+            : new Name(explode('_', $nodeName), $name->getAttributes());
     }
 
     private function processIdentifier(Identifier $identifier): ?Identifier
