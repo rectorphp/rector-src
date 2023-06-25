@@ -140,11 +140,7 @@ final class NameImporter
             return true;
         }
 
-        if ($name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true) {
-            return true;
-        }
-
-        return ! $name instanceof FullyQualified;
+        return $name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true;
     }
 
     private function isFunctionOrConstantImportWithSingleName(Name $name): bool
