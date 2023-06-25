@@ -15,7 +15,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -149,8 +148,7 @@ final class ClassRenamer
      */
     private function refactorName(Name $name, array $oldToNewClasses): ?Name
     {
-        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Namespace_ && $parentNode->name === $name) {
+        if ($name->getAttribute(AttributeKey::IS_NAMESPACE_NAME) === true) {
             return null;
         }
 
@@ -165,14 +163,15 @@ final class ClassRenamer
             return null;
         }
 
-        if ($this->shouldSkip($newName, $name, $parentNode)) {
+        // no need to preslash "use \SomeNamespace" of imported namespace
+        if ($name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true) {
+            // no need to rename imports, they will be handled by autoimport and coding standard
+            // also they might cause some rename
             return null;
         }
 
-        // no need to preslash "use \SomeNamespace" of imported namespace
-        if ($parentNode instanceof UseUse && ($parentNode->type === Use_::TYPE_NORMAL || $parentNode->type === Use_::TYPE_UNKNOWN)) {
-            // no need to rename imports, they will be handled by autoimport and coding standard
-            // also they might cause some rename
+        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
+        if ($this->shouldSkip($newName, $name, $parentNode)) {
             return null;
         }
 
