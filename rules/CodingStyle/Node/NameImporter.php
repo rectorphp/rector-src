@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Node;
 
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\AliasUsesResolver;
