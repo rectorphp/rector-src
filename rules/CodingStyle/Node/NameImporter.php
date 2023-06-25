@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Node;
 
-use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\ClassNameImport\AliasUsesResolver;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
@@ -32,8 +30,7 @@ final class NameImporter
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly ParameterProvider $parameterProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 
@@ -149,18 +146,6 @@ final class NameImporter
 
     private function isFunctionOrConstantImportWithSingleName(Name $name): bool
     {
-        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
-
-        $fullName = $name->toString();
-
-        $autoImportNames = $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
-        if ($autoImportNames && ! $parentNode instanceof Node && ! \str_contains(
-            $fullName,
-            '\\'
-        ) && $this->reflectionProvider->hasFunction(new Name($fullName), null)) {
-            return true;
-        }
-
         if ($name->getAttribute(AttributeKey::IS_CONSTFETCH_NAME) === true) {
             return count($name->getParts()) === 1;
         }
