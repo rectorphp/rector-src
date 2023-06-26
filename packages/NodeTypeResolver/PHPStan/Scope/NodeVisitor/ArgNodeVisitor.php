@@ -30,9 +30,11 @@ final class ArgNodeVisitor extends NodeVisitorAbstract implements ScopeResolverN
             if (!$arg instanceof Arg) {
                 continue;
             }
+
             if (!$arg->value instanceof Array_) {
                 continue;
             }
+
             $arg->value->setAttribute(AttributeKey::FROM_FUNC_CALL_NAME, $funcCallName);
         }
 
