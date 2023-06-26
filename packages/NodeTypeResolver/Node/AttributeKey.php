@@ -280,6 +280,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_NEW_INSTANCE_NAME = 'is_new_instance_name';
+
+    /**
+     * @var string
+     */
     public const IS_RETURN_EXPR = 'is_return_expr';
 
     /**
