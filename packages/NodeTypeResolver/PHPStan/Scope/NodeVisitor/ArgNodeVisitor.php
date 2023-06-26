@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\NodeVisitorAbstract;
@@ -26,7 +27,7 @@ final class ArgNodeVisitor extends NodeVisitorAbstract implements ScopeResolverN
 
         $funcCallName = $node->name->toString();
         foreach ($node->args as $arg) {
-            if ($arg instanceof Arg) {
+            if ($arg instanceof Arg && $arg->value instanceof Array_) {
                 $arg->value->setAttribute(AttributeKey::FROM_FUNC_CALL_NAME, $funcCallName);
             }
         }
