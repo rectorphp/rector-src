@@ -196,7 +196,7 @@ final class ParallelFileProcessor
                             ($this->processSpawner)();
                         }
                     }
-                    $this->processRunCounter[$processIdentifier] = $this->processRunCounter[$processIdentifier] + 1;
+                    ++$this->processRunCounter[$processIdentifier];;
                     $job = array_pop($jobs);
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
