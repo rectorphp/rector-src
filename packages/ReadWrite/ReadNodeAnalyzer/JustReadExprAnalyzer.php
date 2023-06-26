@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\ReadWrite\ReadNodeAnalyzer;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Stmt\Expression;
