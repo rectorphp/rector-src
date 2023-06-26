@@ -286,4 +286,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_ARG_VALUE = 'is_arg_value';
+
+    /**
+     * @var string
+     */
+    public const IS_PARAM_TYPE = 'is_param_type';
 }
