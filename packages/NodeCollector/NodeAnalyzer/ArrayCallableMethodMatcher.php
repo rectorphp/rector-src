@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector\NodeAnalyzer;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -26,14 +24,12 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class ArrayCallableMethodMatcher
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ValueResolver $valueResolver,
         private readonly ReflectionProvider $reflectionProvider,
@@ -129,18 +125,12 @@ final class ArrayCallableMethodMatcher
      */
     private function isCallbackAtFunctionNames(Array_ $array, array $functionNames): bool
     {
-        if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) !== true) {
+        $fromFuncCallName = $array->getAttribute(AttributeKey::FROM_FUNC_CALL_NAME);
+        if ($fromFuncCallName === null) {
             return false;
         }
 
-        /** @var Arg $parentNode */
-        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
-        $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentParentNode instanceof FuncCall) {
-            return false;
-        }
-
-        return $this->nodeNameResolver->isNames($parentParentNode, $functionNames);
+        return in_array($fromFuncCallName, $functionNames, true);
     }
 
     private function resolveClassConstFetchType(ClassConstFetch $classConstFetch, Scope $scope): MixedType | ObjectType
