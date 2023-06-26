@@ -39,4 +39,8 @@ final class DynamicSourceLocatorDecorator
             $this->dynamicSourceLocatorProvider->addFilesByDirectory($directory, $filesInDirectory);
         }
     }
+
+    public function isPathsEmpty(): bool {
+        return $this->dynamicSourceLocatorProvider->isPathsEmpty();
+    }
 }
