@@ -7,6 +7,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
@@ -37,6 +38,11 @@ final class NameNodeVisitor extends NodeVisitorAbstract implements ScopeResolver
 
         if ($node instanceof ConstFetch) {
             $node->name->setAttribute(AttributeKey::IS_CONSTFETCH_NAME, true);
+            return null;
+        }
+
+        if ($node instanceof New_ && $node->class instanceof Name) {
+            $node->class->setAttribute(AttributeKey::IS_NEW_INSTANCE_NAME, true);
             return null;
         }
 

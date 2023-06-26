@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php82\Rector\Param;
 
+use PhpParser\Node\Param;
+use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Name\FullyQualified;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use PhpParser\Node;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -16,14 +21,14 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Php82\Rector\Param\AddSensitiveParameterAttributeRector\AddSensitiveParameterAttributeRectorTest
  */
-class AddSensitiveParameterAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
+final class AddSensitiveParameterAttributeRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     public const SENSITIVE_PARAMETERS = 'sensitive_parameters';
 
     /**
      * @var string[]
      */
-    private array $sensitiveParameters;
+    private array $sensitiveParameters = [];
 
     public function __construct(protected PhpAttributeAnalyzer $phpAttributeAnalyzer)
     {
@@ -40,13 +45,13 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
 
     public function getNodeTypes(): array
     {
-        return [Node\Param::class];
+        return [Param::class];
     }
 
     /**
      * @param Node\Param $node
      */
-    public function refactor(Node $node): ?Node\Param
+    public function refactor(Node $node): ?Param
     {
         if (! $this->isNames($node, $this->sensitiveParameters)) {
             return null;
@@ -56,8 +61,8 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
             return null;
         }
 
-        $node->attrGroups[] = new Node\AttributeGroup([
-            new Node\Attribute(new Node\Name\FullyQualified('SensitiveParameter')),
+        $node->attrGroups[] = new AttributeGroup([
+            new Attribute(new FullyQualified('SensitiveParameter')),
         ]);
 
         return $node;
@@ -68,7 +73,7 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
         return new RuleDefinition(
             'Add SensitiveParameter attribute to method and function configured parameters',
             [
-                new \Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
