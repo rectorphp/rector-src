@@ -8,6 +8,7 @@ use PhpParser\Node;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -23,6 +24,10 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
      * @var string[]
      */
     private array $sensitiveParameters;
+
+    public function __construct(protected PhpAttributeAnalyzer $phpAttributeAnalyzer)
+    {
+    }
 
     /**
      * @param mixed[] $configuration
@@ -47,9 +52,15 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
             return null;
         }
 
+        if ($this->phpAttributeAnalyzer->hasPhpAttribute($node, 'SensitiveParameter')) {
+            return null;
+        }
+
         $node->attrGroups[] = new Node\AttributeGroup([
             new Node\Attribute(new Node\Name\FullyQualified('SensitiveParameter')),
         ]);
+
+        $node->setAttribute(\Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NODE, null);
 
         return $node;
     }
