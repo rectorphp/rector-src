@@ -88,7 +88,7 @@ CODE_SAMPLE
 
         $this->visibilityManipulator->makeReadonly($node);
 
-        if ($node->attrGroups === []) {
+        if ($node->attrGroups !== []) {
             // invoke reprint with correct readonly newline
             $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
