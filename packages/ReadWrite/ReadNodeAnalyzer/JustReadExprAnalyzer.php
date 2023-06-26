@@ -18,11 +18,11 @@ final class JustReadExprAnalyzer
             return true;
         }
 
-        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Arg) {
+        if ($expr->getAttribute(AttributeKey::IS_ARG_VALUE) === true) {
             return true;
         }
 
+        $parentNode = $expr->getAttribute(AttributeKey::PARENT_NODE);
         if ($parentNode instanceof ArrayDimFetch) {
             return $parentNode->getAttribute(AttributeKey::IS_BEING_ASSIGNED) !== true;
         }

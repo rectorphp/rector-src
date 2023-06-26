@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -66,7 +67,11 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         if ($node instanceof Return_ && $node->expr instanceof Expr) {
-            $node->expr->setAttribute(AttributeKey::IS_RETURN_EXPR);
+            $node->expr->setAttribute(AttributeKey::IS_RETURN_EXPR, true);
+        }
+
+        if ($node instanceof Arg) {
+            $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
         }
 
         return null;
