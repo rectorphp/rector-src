@@ -88,8 +88,10 @@ CODE_SAMPLE
 
         $this->visibilityManipulator->makeReadonly($node);
 
-        // invoke reprint with correct readonly newline
-        $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        if ($node->attrGroups === []) {
+            // invoke reprint with correct readonly newline
+            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
 
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
 
