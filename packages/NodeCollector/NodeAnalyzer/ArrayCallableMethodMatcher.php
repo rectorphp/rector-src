@@ -129,11 +129,12 @@ final class ArrayCallableMethodMatcher
      */
     private function isCallbackAtFunctionNames(Array_ $array, array $functionNames): bool
     {
-        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Arg) {
+        if ($array->getAttribute(AttributeKey::IS_ARG_VALUE) !== true) {
             return false;
         }
 
+        /** @var Arg $parentNode */
+        $parentNode = $array->getAttribute(AttributeKey::PARENT_NODE);
         $parentParentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentParentNode instanceof FuncCall) {
             return false;
