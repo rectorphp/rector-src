@@ -30,5 +30,7 @@ final class ArgNodeVisitor extends NodeVisitorAbstract implements ScopeResolverN
                 $arg->value->setAttribute(AttributeKey::FROM_FUNC_CALL_NAME, $funcCallName);
             }
         }
+
+        return null;
     }
 }
