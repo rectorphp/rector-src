@@ -291,4 +291,9 @@ final class AttributeKey
      * @var string
      */
     public const IS_PARAM_TYPE = 'is_param_type';
+
+    /**
+     * @var string
+     */
+    public const FROM_FUNC_CALL_NAME = 'FROM_FUNC_CALL_NAME';
 }
