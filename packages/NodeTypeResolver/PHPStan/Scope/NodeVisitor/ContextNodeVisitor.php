@@ -74,11 +74,13 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         if ($node instanceof Arg) {
             $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
         }
-
-        if ($node instanceof Param && $node->type instanceof Node) {
-            $node->type->setAttribute(AttributeKey::IS_PARAM_TYPE, true);
+        if (!$node instanceof Param) {
+            return null;
         }
-
+        if (!$node->type instanceof Node) {
+            return null;
+        }
+        $node->type->setAttribute(AttributeKey::IS_PARAM_TYPE, true);
         return null;
     }
 
