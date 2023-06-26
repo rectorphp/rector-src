@@ -27,9 +27,13 @@ final class ArgNodeVisitor extends NodeVisitorAbstract implements ScopeResolverN
 
         $funcCallName = $node->name->toString();
         foreach ($node->args as $arg) {
-            if ($arg instanceof Arg && $arg->value instanceof Array_) {
-                $arg->value->setAttribute(AttributeKey::FROM_FUNC_CALL_NAME, $funcCallName);
+            if (!$arg instanceof Arg) {
+                continue;
             }
+            if (!$arg->value instanceof Array_) {
+                continue;
+            }
+            $arg->value->setAttribute(AttributeKey::FROM_FUNC_CALL_NAME, $funcCallName);
         }
 
         return null;
