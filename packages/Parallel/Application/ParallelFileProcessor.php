@@ -119,10 +119,8 @@ final class ParallelFileProcessor
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
 
-        $workerCommandLineFactory = $this->workerCommandLineFactory;
         $this->processSpawner = function(
         ) use (
-            $workerCommandLineFactory,
             &$systemErrors,
             &$fileDiffs,
             &$jobs,
@@ -138,7 +136,7 @@ final class ParallelFileProcessor
         ): void {
 
             $processIdentifier = Random::generate();
-            $workerCommandLine = $workerCommandLineFactory->create(
+            $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
                 ProcessCommand::class,
                 'worker',
