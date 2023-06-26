@@ -13,7 +13,7 @@ final class ClassWithoutAttribute {
 namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
 
 final readonly class ClassWithoutAttribute {
-    private string $property;
+   private string $property;
 }
 
 ?>
