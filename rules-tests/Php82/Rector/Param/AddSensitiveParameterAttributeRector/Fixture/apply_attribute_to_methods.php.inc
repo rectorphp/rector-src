@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php82\Rector\Param\AddSensitiveParameterAttributeRector\Fixture;
 
-class Secure
+class ApplyAttributeToMethods
 {
     public function login($username, $password): void
     {
@@ -15,7 +15,7 @@ class Secure
 
 namespace Rector\Tests\Php82\Rector\Param\AddSensitiveParameterAttributeRector\Fixture;
 
-class Secure
+class ApplyAttributeToMethods
 {
     public function login($username, #[\SensitiveParameter]
     $password): void

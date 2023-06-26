@@ -60,8 +60,6 @@ class AddSensitiveParameterAttributeRector extends AbstractRector implements Con
             new Node\Attribute(new Node\Name\FullyQualified('SensitiveParameter')),
         ]);
 
-        $node->setAttribute(\Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NODE, null);
-
         return $node;
     }
 
