@@ -52,5 +52,6 @@ return static function (RectorConfig $rectorConfig): void {
             ),
             new ArgumentAdder(SomeClass::class, 'withoutTypeOrDefaultValue', 0, 'arguments', [], $arrayType),
             new ArgumentAdder(SomeMultiArg::class, 'run', 2, 'c', 4),
+            new ArgumentAdder(SomeClass::class, 'someMethod', 0, 'default', 1),
         ]);
 };
