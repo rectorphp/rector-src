@@ -40,7 +40,7 @@ final class UseImportsResolverTest extends AbstractTestCase
         $firstProperty = $this->betterNodeFinder->findFirstInstanceOf($nodes, Property::class);
         $this->assertInstanceOf(Property::class, $firstProperty);
 
-        $resolvedUses = $this->useImportsResolver->resolveForNode($firstProperty);
+        $resolvedUses = $this->useImportsResolver->resolve();
 
         $stringUses = [];
 

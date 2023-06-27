@@ -61,7 +61,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         $filePath = $file->getFilePath();
         $objectTypes = $this->useImportTypesInFilePath[$filePath] ?? [];
 
-        $uses = $this->useImportsResolver->resolveForNode($node);
+        $uses = $this->useImportsResolver->resolve();
 
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);

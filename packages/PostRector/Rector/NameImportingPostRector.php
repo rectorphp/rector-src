@@ -115,7 +115,7 @@ CODE_SAMPLE
         }
 
         /** @var Use_[]|GroupUse[] $currentUses */
-        $currentUses = $this->useImportsResolver->resolveForNode($name);
+        $currentUses = $this->useImportsResolver->resolve();
 
         if ($this->shouldImportName($name, $currentUses)) {
             $nameInUse = $this->resolveNameInUse($name, $currentUses);

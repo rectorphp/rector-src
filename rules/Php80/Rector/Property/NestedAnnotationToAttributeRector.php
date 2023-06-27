@@ -114,7 +114,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
+        $uses = $this->useImportsResolver->resolveBareUses();
 
         $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
         if ($attributeGroups === []) {
