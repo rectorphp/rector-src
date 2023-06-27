@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -25,7 +24,7 @@ final class UseImportsResolver
     {
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
-            return new ShouldNotHappenException();
+            null;
         }
 
         $newStmts = $file->getNewStmts();
