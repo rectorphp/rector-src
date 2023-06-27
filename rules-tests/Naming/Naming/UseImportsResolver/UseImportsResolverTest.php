@@ -19,8 +19,6 @@ use Rector\Tests\Naming\Naming\UseImportsResolver\Source\SecondClass;
 
 final class UseImportsResolverTest extends AbstractTestCase
 {
-    private UseImportsResolver $useImportsResolver;
-
     private TestingParser $testingParser;
 
     private CurrentFileProvider $currentFileProvider;
