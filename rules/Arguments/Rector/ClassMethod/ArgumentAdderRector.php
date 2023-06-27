@@ -257,10 +257,12 @@ CODE_SAMPLE
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
+
         if (!isset($classMethod->params[$position])) {
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
+
         if ($this->changedArgumentsDetector->isDefaultValueChanged(
             $classMethod->params[$position],
             $argumentAdder->getArgumentDefaultValue()
@@ -268,6 +270,7 @@ CODE_SAMPLE
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
+
         return true;
     }
 
