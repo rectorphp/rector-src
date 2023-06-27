@@ -24,7 +24,12 @@ final class UseImportsResolver
 
     private function resolveNamespace(): Namespace_|FileWithoutNamespace|null
     {
+        /** @var File|null $file */
         $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return null;
+        }
+
         $newStmts = $file->getNewStmts();
 
         if ($newStmts === []) {
