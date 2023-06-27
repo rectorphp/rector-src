@@ -11,8 +11,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\NodeTypeResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\PropertyTypeResolverTest
@@ -21,12 +19,8 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class PropertyTypeResolver implements NodeTypeResolverInterface
 {
-    private NodeTypeResolver $nodeTypeResolver;
-
-    #[Required]
-    public function autowire(NodeTypeResolver $nodeTypeResolver): void
+    public function __construct(private readonly PropertyFetchTypeResolver $propertyFetchTypeResolver)
     {
-        $this->nodeTypeResolver = $nodeTypeResolver;
     }
 
     /**
@@ -46,6 +40,6 @@ final class PropertyTypeResolver implements NodeTypeResolverInterface
         $propertyFetch = new PropertyFetch(new Variable('this'), (string) $node->props[0]->name);
         $propertyFetch->setAttribute(AttributeKey::SCOPE, $node->getAttribute(AttributeKey::SCOPE));
 
-        return $this->nodeTypeResolver->getType($propertyFetch);
+        return $this->propertyFetchTypeResolver->resolve($propertyFetch);
     }
 }
