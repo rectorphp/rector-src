@@ -29,7 +29,7 @@ final class UseImportsResolver
         }
 
         $newStmts = $file->getNewStmts();
-        $namespaces = array_filter($newStmts, fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+        $namespaces = array_filter($newStmts, static fn(Stmt $stmt): bool => $stmt instanceof Namespace_);
 
         // multiple namespaces is not supported
         if (count($namespaces) > 1) {
