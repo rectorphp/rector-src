@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
-use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\ValueObject\Application\File;
@@ -16,7 +15,6 @@ final class FileProcessor
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly RectorParser $rectorParser,
         private readonly RectorNodeTraverser $rectorNodeTraverser,
-        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser,
     ) {
     }
 
@@ -34,8 +32,7 @@ final class FileProcessor
 
     public function refactor(File $file): void
     {
-        $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($file->getNewStmts());
-        $newStmts = $this->rectorNodeTraverser->traverse($newStmts);
+        $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
         $file->changeNewStmts($newStmts);
     }

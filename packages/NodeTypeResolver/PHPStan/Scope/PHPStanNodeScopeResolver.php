@@ -61,7 +61,6 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -94,8 +93,7 @@ final class PHPStanNodeScopeResolver
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer,
-        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
@@ -122,22 +120,7 @@ final class PHPStanNodeScopeResolver
 
         Assert::allIsInstanceOf($stmts, Stmt::class);
 
-        $isInitFileWithoutNamespace = false;
-        if (! $isScopeRefreshing && ! current($stmts) instanceof FileWithoutNamespace) {
-            $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
-
-            $currentStmt = current($stmts);
-            if ($currentStmt instanceof FileWithoutNamespace) {
-                $this->nodeTraverser->traverse($stmts);
-                $stmts = $currentStmt->stmts;
-
-                $isInitFileWithoutNamespace = true;
-            }
-        }
-
-        if (! $isInitFileWithoutNamespace) {
-            $this->nodeTraverser->traverse($stmts);
-        }
+        $this->nodeTraverser->traverse($stmts);
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
@@ -147,6 +130,11 @@ final class PHPStanNodeScopeResolver
             $isScopeRefreshing,
             $filePath
         ): void {
+            if ($node instanceof FileWithoutNamespace) {
+                $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
+                return;
+            }
+
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
