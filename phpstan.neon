@@ -683,3 +683,7 @@ parameters:
 
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
+
+        -
+            message: '#Parameters should use "PhpParser\\Node\\Expr\\Variable\|array" types as the only types passed to this method#'
+            path: src/PhpParser/Node/BetterNodeFinder.php

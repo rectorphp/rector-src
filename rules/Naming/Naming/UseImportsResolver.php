@@ -51,7 +51,10 @@ final class UseImportsResolver
         $currentStmt = current($newStmts);
         if (! $currentStmt instanceof FileWithoutNamespace) {
             $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($newStmts);
-            return current($newStmts);
+            /** @var FileWithoutNamespace $currentStmt  */
+            $currentStmt = current($newStmts);
+
+            return $currentStmt;
         }
 
         return $currentStmt;
