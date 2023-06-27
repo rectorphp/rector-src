@@ -82,7 +82,8 @@ final class DynamicSourceLocatorProvider
         $this->filesByDirectory[$directory] = $files;
     }
 
-    public function isPathsEmpty(): bool {
+    public function isPathsEmpty(): bool
+    {
         return $this->filePaths === [] && $this->filesByDirectory === [];
     }
 }

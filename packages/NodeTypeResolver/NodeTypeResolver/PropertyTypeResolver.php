@@ -19,8 +19,9 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class PropertyTypeResolver implements NodeTypeResolverInterface
 {
-    public function __construct(private readonly PropertyFetchTypeResolver $propertyFetchTypeResolver)
-    {
+    public function __construct(
+        private readonly PropertyFetchTypeResolver $propertyFetchTypeResolver
+    ) {
     }
 
     /**

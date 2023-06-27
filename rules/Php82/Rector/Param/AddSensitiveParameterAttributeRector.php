@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Php82\Rector\Param;
 
-use PhpParser\Node\Param;
-use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Attribute;
-use PhpParser\Node\Name\FullyQualified;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\AttributeGroup;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
@@ -30,8 +30,9 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
      */
     private array $sensitiveParameters = [];
 
-    public function __construct(protected PhpAttributeAnalyzer $phpAttributeAnalyzer)
-    {
+    public function __construct(
+        protected PhpAttributeAnalyzer $phpAttributeAnalyzer
+    ) {
     }
 
     /**
@@ -61,9 +62,7 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
             return null;
         }
 
-        $node->attrGroups[] = new AttributeGroup([
-            new Attribute(new FullyQualified('SensitiveParameter')),
-        ]);
+        $node->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified('SensitiveParameter'))]);
 
         return $node;
     }

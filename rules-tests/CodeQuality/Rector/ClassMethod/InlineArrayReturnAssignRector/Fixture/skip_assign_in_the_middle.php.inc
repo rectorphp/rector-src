@@ -4,18 +4,13 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRec
 
 final class SkipAssignInTheMiddle
 {
-    public function run(array $resul)
+    public function run()
     {
         $items = [];
 
         $result = 'Timmy';
-        $items[] = $this->resolve($result);
+        $items[] = $result . ' Bobby';
 
         return $items;
-    }
-
-    private function resolve(string $result)
-    {
-        return $result;
     }
 }

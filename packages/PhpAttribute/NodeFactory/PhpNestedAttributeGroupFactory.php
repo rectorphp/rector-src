@@ -235,7 +235,9 @@ final class PhpNestedAttributeGroupFactory
                     $annotationPropertyToAttributeClass
                 );
 
-                if ($annotationPropertyToAttributeClass->doesNeedNewImport() && count($attributeName->getParts()) === 1) {
+                if ($annotationPropertyToAttributeClass->doesNeedNewImport() && count(
+                    $attributeName->getParts()
+                ) === 1) {
                     $attributeName->setAttribute(
                         AttributeKey::EXTRA_USE_IMPORT,
                         $annotationPropertyToAttributeClass->getAttributeClass()

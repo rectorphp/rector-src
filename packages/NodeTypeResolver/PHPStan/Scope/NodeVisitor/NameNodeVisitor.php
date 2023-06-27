@@ -46,11 +46,11 @@ final class NameNodeVisitor extends NodeVisitorAbstract implements ScopeResolver
             return null;
         }
 
-        if (!$node instanceof StaticCall) {
+        if (! $node instanceof StaticCall) {
             return null;
         }
 
-        if (!$node->class instanceof Name) {
+        if (! $node->class instanceof Name) {
             return null;
         }
 
