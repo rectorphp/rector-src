@@ -687,3 +687,5 @@ parameters:
         -
             message: '#Parameters should use "PhpParser\\Node\\Expr\\Variable\|array" types as the only types passed to this method#'
             path: src/PhpParser/Node/BetterNodeFinder.php
+
+        - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
