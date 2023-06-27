@@ -153,7 +153,7 @@ CODE_SAMPLE
 
     private function removePropertyAssigns(Class_ $class, string $propertyName): void
     {
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($propertyName): ?int {
+        $this->traverseNodesWithCallable($class, function (Node $node) use ($class, $propertyName): ?int {
             if (! $node instanceof Expression) {
                 return null;
             }
@@ -163,7 +163,7 @@ CODE_SAMPLE
             }
 
             $assign = $node->expr;
-            if (! $this->propertyFetchFinder->isLocalPropertyFetchByName($assign->var, $propertyName)) {
+            if (! $this->propertyFetchFinder->isLocalPropertyFetchByName($assign->var, $class, $propertyName)) {
                 return null;
             }
 
