@@ -18,7 +18,7 @@ class SkipAssignedInNamedConstructor
     public static function create(\DateTimeInterface $date): self
     {
         $ack = new self();
-        $ack->ackedAt = $date;
+        $ack->date = $date;
 
         return $ack;
     }
