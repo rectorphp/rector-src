@@ -125,7 +125,7 @@ CODE_SAMPLE
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
 
         // then add, to prevent adding + removing false positive of same short use
-        return $this->useImportsAdder->addImportsToStmts($nodes, $useImportTypes, $functionUseImportTypes);
+        return $this->useImportsAdder->addImportsToStmts($namespace, $nodes, $useImportTypes, $functionUseImportTypes);
     }
 
     /**

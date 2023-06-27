@@ -9,6 +9,7 @@ use PhpParser\Node;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\PhpParser\Parser\RectorParser;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
@@ -21,6 +22,7 @@ final class TestingParser
         private readonly ParameterProvider $parameterProvider,
         private readonly RectorParser $rectorParser,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -29,7 +31,10 @@ final class TestingParser
         $file = new File($filePath, FileSystem::read($filePath));
 
         $stmts = $this->rectorParser->parseFile($filePath);
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+        $this->currentFileProvider->setFile($file);
 
         return $file;
     }
@@ -41,9 +46,15 @@ final class TestingParser
     {
         $this->parameterProvider->changeParameter(Option::SOURCE, [$filePath]);
 
-        $nodes = $this->rectorParser->parseFile($filePath);
+        $stmts = $this->rectorParser->parseFile($filePath);
 
         $file = new File($filePath, FileSystem::read($filePath));
-        return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $nodes);
+
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+
+        $this->currentFileProvider->setFile($file);
+
+        return $stmts;
     }
 }

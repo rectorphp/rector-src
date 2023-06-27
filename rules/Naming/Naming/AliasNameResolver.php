@@ -16,7 +16,7 @@ final class AliasNameResolver
 
     public function resolveByName(Name $name): ?string
     {
-        $uses = $this->useImportsResolver->resolveForNode($name);
+        $uses = $this->useImportsResolver->resolve();
         $nameString = $name->toString();
 
         foreach ($uses as $use) {

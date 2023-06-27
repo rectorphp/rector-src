@@ -121,7 +121,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $uses = $this->useImportsResolver->resolveBareUsesForNode($node);
+        $uses = $this->useImportsResolver->resolveBareUses();
 
         // 1. bare tags without annotation class, e.g. "@inject"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
