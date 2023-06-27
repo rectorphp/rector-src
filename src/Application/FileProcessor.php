@@ -34,8 +34,7 @@ final class FileProcessor
 
     public function refactor(File $file): void
     {
-        $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($file->getNewStmts());
-        $newStmts = $this->rectorNodeTraverser->traverse($newStmts);
+        $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
         $file->changeNewStmts($newStmts);
     }

@@ -10,15 +10,13 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 
 final class UseImportsResolver
 {
     public function __construct(
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -50,11 +48,7 @@ final class UseImportsResolver
 
         $currentStmt = current($newStmts);
         if (! $currentStmt instanceof FileWithoutNamespace) {
-            $newStmts = $this->fileWithoutNamespaceNodeTraverser->traverse($newStmts);
-            /** @var FileWithoutNamespace $currentStmt  */
-            $currentStmt = current($newStmts);
-
-            return $currentStmt;
+            return null;
         }
 
         return $currentStmt;

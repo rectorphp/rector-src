@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
+use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
@@ -21,6 +22,7 @@ final class NodeScopeAndMetadataDecorator
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         ParentConnectingVisitor $parentConnectingVisitor,
         FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
+        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
@@ -39,7 +41,9 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File $file, array $stmts): array
     {
+        $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $file->getFilePath());
+
         return $this->nodeTraverser->traverse($stmts);
     }
 }
