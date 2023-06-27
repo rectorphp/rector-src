@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt;
 use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\PhpParser\Parser\RectorParser;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 
@@ -19,7 +20,8 @@ final class FileInfoParser
     public function __construct(
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser,
-        private readonly RectorParser $rectorParser
+        private readonly RectorParser $rectorParser,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -33,7 +35,11 @@ final class FileInfoParser
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
 
         $file = new File($filePath, FileSystem::read($filePath));
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
 
-        return $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+        $this->currentFileProvider->setFile($file);
+
+        return $stmts;
     }
 }

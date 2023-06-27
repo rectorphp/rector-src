@@ -31,9 +31,9 @@ final class TestingParser
         $file = new File($filePath, FileSystem::read($filePath));
 
         $stmts = $this->rectorParser->parseFile($filePath);
-        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
-
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+
+        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);
 
         return $file;
@@ -49,9 +49,10 @@ final class TestingParser
         $stmts = $this->rectorParser->parseFile($filePath);
 
         $file = new File($filePath, FileSystem::read($filePath));
-        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
 
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+        $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+
         $this->currentFileProvider->setFile($file);
 
         return $stmts;
