@@ -2,14 +2,14 @@
 
 namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
-class WithNamedConstructor
+class SkipAssignedInNamedConstructor
 {
     private \DateTimeInterface $date;
 
     public function __construct() {
         $this->date = new \DateTime();
     }
-    
+
     public function getDate(): \DateTimeInterface
     {
         return $this->date;
@@ -23,5 +23,3 @@ class WithNamedConstructor
         return $ack;
     }
 }
-
-?>
