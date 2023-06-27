@@ -93,6 +93,10 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        if ($this->shouldSkipTwigExtension($scope)) {
+            return null;
+        }
+
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
         if (! $arrayCallable instanceof ArrayCallable) {
             return null;
@@ -112,5 +116,15 @@ CODE_SAMPLE
             $phpMethodReflection,
             $arrayCallable->getCallerExpr()
         );
+    }
+
+    private function shouldSkipTwigExtension(Scope $scope): bool
+    {
+        if (! $scope->isInClass()) {
+            return false;
+        }
+
+        $classReflection = $scope->getClassReflection();
+        return $classReflection->isSubclassOf('Twig\Extension\ExtensionInterface');
     }
 }
