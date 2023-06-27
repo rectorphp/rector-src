@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\PHPUnit\AbstractTestCase;
@@ -22,13 +23,16 @@ final class UseImportsResolverTest extends AbstractTestCase
 
     private TestingParser $testingParser;
 
+    private CurrentFileProvider $currentFileProvider;
+
     private BetterNodeFinder $betterNodeFinder;
 
     protected function setUp(): void
     {
         $this->boot();
-        $this->useImportsResolver = $this->getService(UseImportsResolver::class);
+
         $this->testingParser = $this->getService(TestingParser::class);
+        $this->currentFileProvider = $this->getService(CurrentFileProvider::class);
         $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
     }
 
@@ -40,7 +44,11 @@ final class UseImportsResolverTest extends AbstractTestCase
         $firstProperty = $this->betterNodeFinder->findFirstInstanceOf($nodes, Property::class);
         $this->assertInstanceOf(Property::class, $firstProperty);
 
-        $resolvedUses = $this->useImportsResolver->resolve();
+        $file = $this->testingParser->parseFilePathToFile($filePath);
+        $this->currentFileProvider->setFile($file);
+
+        $useImportsResolver = $this->getService(UseImportsResolver::class);
+        $resolvedUses = $useImportsResolver->resolve();
 
         $stringUses = [];
 
