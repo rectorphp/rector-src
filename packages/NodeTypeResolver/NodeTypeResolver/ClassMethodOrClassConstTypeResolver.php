@@ -39,7 +39,7 @@ final class ClassMethodOrClassConstTypeResolver implements NodeTypeResolverInter
             return new ObjectWithoutClassType();
         }
 
-        $classReflection = $scope->getClassReflection($node);
+        $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection || $classReflection->isAnonymous()) {
             // anonymous class
             return new ObjectWithoutClassType();
