@@ -53,6 +53,6 @@ final class TestingParser
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);
 
-        return $nodes;
+        return $stmts;
     }
 }
