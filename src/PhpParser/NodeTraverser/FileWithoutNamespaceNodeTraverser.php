@@ -12,11 +12,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @template TNode as Node
      * @param TNode[] $nodes
