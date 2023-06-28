@@ -426,7 +426,7 @@ final class PHPStanNodeScopeResolver
         UnreachableStatementNode|Stmt $unreachableStatementNode,
         MutatingScope $mutatingScope
     ): void {
-        $originalStmt = $unreachableStatementNode instanceof RemoveUnreachableStatementRector
+        $originalStmt = $unreachableStatementNode instanceof UnreachableStatementNode
             ? $unreachableStatementNode->getOriginalStatement()
             : $unreachableStatementNode;
 
