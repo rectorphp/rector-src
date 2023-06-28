@@ -226,10 +226,6 @@ final class PHPStanNodeScopeResolver
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            if ($node instanceof StmtsAwareInterface) {
-                $this->processAfterUnreachableStatementNode($node, $filePath, $mutatingScope);
-            }
-
             if ($node instanceof Trait_) {
                 $traitName = $this->resolveClassName($node);
 
@@ -271,11 +267,19 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
+                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+                $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
+                return;
+            }
+
+            if ($node instanceof StmtsAwareInterface) {
+                $this->processAfterUnreachableStatementNode($node, $filePath, $mutatingScope);
             }
 
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $mutatingScope);
+                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -301,7 +305,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($isPassedUnreachableStmt) {
-                $this->processUnreachableStatementNode($stmt, $mutatingScope);
+                $this->processUnreachableStatementNode($stmt, $filePath, $mutatingScope);
             }
         }
     }
@@ -424,6 +428,7 @@ final class PHPStanNodeScopeResolver
 
     private function processUnreachableStatementNode(
         UnreachableStatementNode|Stmt $unreachableStatementNode,
+        string $filePath,
         MutatingScope $mutatingScope
     ): void {
         $originalStmt = $unreachableStatementNode instanceof UnreachableStatementNode
@@ -432,6 +437,8 @@ final class PHPStanNodeScopeResolver
 
         $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+        $this->processNodes([$originalStmt], $filePath, $mutatingScope);
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
