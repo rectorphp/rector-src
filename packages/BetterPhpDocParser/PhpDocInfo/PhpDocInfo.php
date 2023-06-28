@@ -130,7 +130,6 @@ final class PhpDocInfo
 
         $tags = array_filter($tags, static fn (PhpDocTagNode $phpDocTagNode): bool => $phpDocTagNode->name === $name);
 
-        $tags = array_values($tags);
         return array_values($tags);
     }
 
