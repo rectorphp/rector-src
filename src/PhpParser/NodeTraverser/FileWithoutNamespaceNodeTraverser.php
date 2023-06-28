@@ -6,19 +6,12 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
 {
-    public function __construct(
-        private readonly NodeFinder $nodeFinder,
-    ) {
-        parent::__construct();
-    }
-
     /**
      * @template TNode as Node
      * @param TNode[] $nodes
@@ -26,16 +19,17 @@ final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
      */
     public function traverse(array $nodes): array
     {
-        $hasNamespace = (bool) $this->nodeFinder->findFirstInstanceOf($nodes, Namespace_::class);
-        if (! $hasNamespace && $nodes !== []) {
-            $fileWithoutNamespace = new FileWithoutNamespace($nodes);
-            foreach ($nodes as $node) {
-                $node->setAttribute(AttributeKey::PARENT_NODE, $fileWithoutNamespace);
+        foreach ($nodes as $node) {
+            if ($node instanceof Namespace_) {
+                return $nodes;
             }
-
-            return [$fileWithoutNamespace];
         }
 
-        return $nodes;
+        $fileWithoutNamespace = new FileWithoutNamespace($nodes);
+        foreach ($nodes as $node) {
+            $node->setAttribute(AttributeKey::PARENT_NODE, $fileWithoutNamespace);
+        }
+
+        return [$fileWithoutNamespace];
     }
 }
