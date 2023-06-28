@@ -275,7 +275,7 @@ final class PHPStanNodeScopeResolver
 
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+                $this->processUnreachableStatementNode($node, $mutatingScope);
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -301,7 +301,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($isPassedUnreachableStmt) {
-                $this->processUnreachableStatementNode($stmt, $filePath, $mutatingScope);
+                $this->processUnreachableStatementNode($stmt, $mutatingScope);
             }
         }
     }
@@ -424,7 +424,6 @@ final class PHPStanNodeScopeResolver
 
     private function processUnreachableStatementNode(
         UnreachableStatementNode|Stmt $unreachableStatementNode,
-        string $filePath,
         MutatingScope $mutatingScope
     ): void {
         $originalStmt = $unreachableStatementNode instanceof RemoveUnreachableStatementRector
