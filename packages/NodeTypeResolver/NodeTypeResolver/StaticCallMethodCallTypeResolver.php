@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -27,8 +27,7 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
     private NodeTypeResolver $nodeTypeResolver;
 
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -74,8 +73,8 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
             $callerType = $this->nodeTypeResolver->getType($node->class);
         }
 
-        foreach ($callerType->getReferencedClasses() as $referencedClass) {
-            $classMethodReturnType = $this->resolveClassMethodReturnType($referencedClass, $node, $methodName, $scope);
+        foreach ($callerType->getObjectClassReflections() as $classReflection) {
+            $classMethodReturnType = $this->resolveClassMethodReturnType($classReflection, $node, $methodName, $scope);
             if (! $classMethodReturnType instanceof MixedType) {
                 return $classMethodReturnType;
             }
@@ -85,17 +84,11 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
     }
 
     private function resolveClassMethodReturnType(
-        string $referencedClass,
+        ClassReflection $classReflection,
         StaticCall|MethodCall $node,
         string $methodName,
         Scope $scope
     ): Type {
-        if (! $this->reflectionProvider->hasClass($referencedClass)) {
-            return new MixedType();
-        }
-
-        $classReflection = $this->reflectionProvider->getClass($referencedClass);
-
         foreach ($classReflection->getAncestors() as $ancestorClassReflection) {
             if (! $ancestorClassReflection->hasMethod($methodName)) {
                 continue;
