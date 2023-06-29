@@ -184,6 +184,10 @@ final class PropertyManipulator
 
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch, Scope $scope): bool
     {
+        if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR) === true) {
+            return true;
+        }
+
         $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Node) {
             return false;
@@ -194,10 +198,6 @@ final class PropertyManipulator
             [PreInc::class, PreDec::class, PostInc::class, PostDec::class]
         )) {
             $parentNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-        }
-
-        if (! $parentNode instanceof Node) {
-            return false;
         }
 
         if ($parentNode instanceof Arg) {
@@ -216,7 +216,7 @@ final class PropertyManipulator
             return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $scope);
         }
 
-        return $parentNode instanceof Unset_;
+        return false;
     }
 
     private function isFoundByRefParam(MethodCall | StaticCall $node, Scope $scope): bool
