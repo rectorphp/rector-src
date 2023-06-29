@@ -264,7 +264,6 @@ final class BetterNodeFinder
         }
 
         if ($parentNode instanceof Node) {
-            // no higer parent than FileWithoutNamespace or Namespace_
             if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
                 return null;
             }
@@ -299,7 +298,6 @@ final class BetterNodeFinder
         }
 
         if ($parentNode instanceof Node) {
-            // no higer parent than FileWithoutNamespace or Namespace_
             if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
                 return null;
             }
