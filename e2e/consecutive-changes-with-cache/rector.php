@@ -10,6 +10,10 @@ use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->cacheClass(FileCacheStorage::class);
 
+    if (getenv('RECTOR_DISABLE_PARALLEL') === 'true') {
+        $rectorConfig->disableParallel();
+    }
+
     $rectorConfig->paths([
         __DIR__ . '/src',
     ]);

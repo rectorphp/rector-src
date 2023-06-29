@@ -25,6 +25,10 @@ if (isset($argv[1]) && $argv[1] === '-o') {
     $expectedDiff = 'expected-output.diff';
 }
 
+if (isset($argv[3]) && $argv[3] === '--dry-run') {
+    $e2eCommand .= ' --dry-run';
+}
+
 exec($e2eCommand, $output, $exitCode);
 $output = trim(implode("\n", $output));
 $output = str_replace(__DIR__, '.', $output);

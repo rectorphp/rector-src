@@ -56,6 +56,8 @@ parameters:
         - tests/DependencyInjection/config
 
     ignoreErrors:
+        - '#Cognitive complexity for "Rector\\Parallel\\WorkerRunner\:\:run\(\)" is 12, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\Core\\Application\\ApplicationFileProcessor\:\:processFiles\(\)" is 13, keep it under 11#'
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 
         -
