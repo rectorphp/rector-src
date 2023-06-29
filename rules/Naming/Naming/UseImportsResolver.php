@@ -20,40 +20,6 @@ final class UseImportsResolver
     ) {
     }
 
-    private function resolveNamespace(): Namespace_|FileWithoutNamespace|null
-    {
-        /** @var File|null $file */
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        $newStmts = $file->getNewStmts();
-
-        if ($newStmts === []) {
-            return null;
-        }
-
-        $namespaces = array_filter($newStmts, static fn(Stmt $stmt): bool => $stmt instanceof Namespace_);
-
-        // multiple namespaces is not supported
-        if (count($namespaces) > 1) {
-            return null;
-        }
-
-        $currentNamespace = current($namespaces);
-        if ($currentNamespace instanceof Namespace_) {
-            return $currentNamespace;
-        }
-
-        $currentStmt = current($newStmts);
-        if (! $currentStmt instanceof FileWithoutNamespace) {
-            return null;
-        }
-
-        return $currentStmt;
-    }
-
     /**
      * @return Use_[]|GroupUse[]
      */
@@ -89,5 +55,39 @@ final class UseImportsResolver
         return $use instanceof GroupUse
             ? $use->prefix . '\\'
             : '';
+    }
+
+    private function resolveNamespace(): Namespace_|FileWithoutNamespace|null
+    {
+        /** @var File|null $file */
+        $file = $this->currentFileProvider->getFile();
+        if (! $file instanceof File) {
+            return null;
+        }
+
+        $newStmts = $file->getNewStmts();
+
+        if ($newStmts === []) {
+            return null;
+        }
+
+        $namespaces = array_filter($newStmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+
+        // multiple namespaces is not supported
+        if (count($namespaces) > 1) {
+            return null;
+        }
+
+        $currentNamespace = current($namespaces);
+        if ($currentNamespace instanceof Namespace_) {
+            return $currentNamespace;
+        }
+
+        $currentStmt = current($newStmts);
+        if (! $currentStmt instanceof FileWithoutNamespace) {
+            return null;
+        }
+
+        return $currentStmt;
     }
 }

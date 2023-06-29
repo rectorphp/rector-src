@@ -253,12 +253,12 @@ CODE_SAMPLE
 
         // Check if default value is the same
         $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
-        if (!$classMethod instanceof ClassMethod) {
+        if (! $classMethod instanceof ClassMethod) {
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
 
-        if (!isset($classMethod->params[$position])) {
+        if (! isset($classMethod->params[$position])) {
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }

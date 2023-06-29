@@ -33,8 +33,12 @@ final class UseImportsAdder
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $functionUseImportTypes
      * @return Stmt[]
      */
-    public function addImportsToStmts(FileWithoutNamespace $fileWithoutNamespace, array $stmts, array $useImportTypes, array $functionUseImportTypes): array
-    {
+    public function addImportsToStmts(
+        FileWithoutNamespace $fileWithoutNamespace,
+        array $stmts,
+        array $useImportTypes,
+        array $functionUseImportTypes
+    ): array {
         $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($stmts);
         $existingFunctionUseImports = $this->usedImportsResolver->resolveFunctionImportsForStmts($stmts);
 
