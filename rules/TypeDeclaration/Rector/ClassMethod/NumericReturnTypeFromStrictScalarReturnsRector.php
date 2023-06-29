@@ -151,6 +151,18 @@ CODE_SAMPLE
             return $functionLike;
         }
 
+        if ($binaryOp instanceof Mul) {
+            if ($leftType instanceof FloatType && $rightType instanceof IntegerType) {
+                $functionLike->returnType = new Identifier('float');
+                return $functionLike;
+            }
+
+            if ($leftType instanceof IntegerType && $rightType instanceof FloatType) {
+                $functionLike->returnType = new Identifier('float');
+                return $functionLike;
+            }
+        }
+
         return null;
     }
 }
