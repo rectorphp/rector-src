@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 final class ConfigurationFactory
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly OutputStyleInterface $rectorOutputStyle
     ) {
     }
@@ -24,7 +23,7 @@ final class ConfigurationFactory
      */
     public function createForTests(array $paths): Configuration
     {
-        $fileExtensions = $this->parameterProvider->provideArrayParameter(Option::FILE_EXTENSIONS);
+        $fileExtensions = ParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
         return new Configuration(true, true, false, ConsoleOutputFormatter::NAME, $fileExtensions, $paths);
     }
@@ -44,9 +43,9 @@ final class ConfigurationFactory
 
         $paths = $this->resolvePaths($input);
 
-        $fileExtensions = $this->parameterProvider->provideArrayParameter(Option::FILE_EXTENSIONS);
+        $fileExtensions = ParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
-        $isParallel = $this->parameterProvider->provideBoolParameter(Option::PARALLEL);
+        $isParallel = ParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
 
@@ -89,7 +88,7 @@ final class ConfigurationFactory
         }
 
         // fallback to parameter
-        return ! $this->parameterProvider->provideBoolParameter(Option::NO_DIFFS);
+        return ! ParameterProvider::provideBoolParameter(Option::NO_DIFFS);
     }
 
     /**
@@ -121,7 +120,7 @@ final class ConfigurationFactory
         }
 
         // fallback to parameter
-        return $this->parameterProvider->provideArrayParameter(Option::PATHS);
+        return ParameterProvider::provideArrayParameter(Option::PATHS);
     }
 
     private function resolveMemoryLimit(InputInterface $input): string | null
@@ -131,10 +130,10 @@ final class ConfigurationFactory
             return (string) $memoryLimit;
         }
 
-        if (! $this->parameterProvider->hasParameter(Option::MEMORY_LIMIT)) {
+        if (! ParameterProvider::hasParameter(Option::MEMORY_LIMIT)) {
             return null;
         }
 
-        return $this->parameterProvider->provideStringParameter(Option::MEMORY_LIMIT);
+        return ParameterProvider::provideStringParameter(Option::MEMORY_LIMIT);
     }
 }

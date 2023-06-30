@@ -48,7 +48,6 @@ final class ApplicationFileProcessor
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
-        private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
@@ -229,8 +228,8 @@ final class ApplicationFileProcessor
 
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
-            $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_SIZE),
-            $this->parameterProvider->provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
+            ParameterProvider::provideIntParameter(Option::PARALLEL_JOB_SIZE),
+            ParameterProvider::provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
             $filePaths
         );
 

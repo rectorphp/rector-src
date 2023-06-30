@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\StringableTypedProperty\Fixture;
 
-class Fixture
+final class ClassWithToString
 {
     private $nickname;
 
@@ -27,7 +27,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\StringableTypedProperty\Fixture;
 
-class Fixture implements \Stringable
+final class ClassWithToString implements \Stringable
 {
     private ?string $nickname = null;
 

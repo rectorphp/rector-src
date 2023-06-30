@@ -25,7 +25,6 @@ final class PhpVersionProvider
     private const VALID_PHP_VERSION_REGEX = '#^\d{5,6}$#';
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver
     ) {
     }
@@ -35,7 +34,7 @@ final class PhpVersionProvider
      */
     public function provide(): int
     {
-        $phpVersionFeatures = $this->parameterProvider->provideParameter(Option::PHP_VERSION_FEATURES);
+        $phpVersionFeatures = ParameterProvider::provideParameter(Option::PHP_VERSION_FEATURES);
         $this->validatePhpVersionFeaturesParameter($phpVersionFeatures);
 
         if ($phpVersionFeatures > 0) {

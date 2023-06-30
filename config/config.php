@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-use Symfony\Component\Console\Command\Command;
 
 use Composer\Semver\VersionParser;
 use Doctrine\Inflector\Inflector;
@@ -38,7 +37,6 @@ use Rector\Config\RectorConfig;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Bootstrap\ExtensionConfigResolver;
 use Rector\Core\Configuration\ConfigInitializer;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Console\Command\ListRulesCommand;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Output\OutputFormatterCollector;
@@ -79,6 +77,7 @@ use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
@@ -181,6 +180,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(ConsoleApplication::class)
         ->arg('$commands', tagged_iterator(Command::class));
+
     $services->alias(Application::class, ConsoleApplication::class);
 
     $services->set(EmptyConfigurableRectorCollector::class)
@@ -201,9 +201,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(Lexer::class)
         ->factory([service(PHPStanServicesFactory::class), 'createEmulativeLexer']);
-
-    $services->set(ParameterProvider::class)
-        ->arg('$container', service('service_container'));
 
     $services->set(InflectorFactory::class);
     $services->set(Inflector::class)

@@ -16,7 +16,6 @@ use Webmozart\Assert\Assert;
 final class AdditionalAutoloader
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
     ) {
     }
@@ -40,7 +39,7 @@ final class AdditionalAutoloader
 
     public function autoloadPaths(): void
     {
-        $autoloadPaths = $this->parameterProvider->provideArrayParameter(Option::AUTOLOAD_PATHS);
+        $autoloadPaths = ParameterProvider::provideArrayParameter(Option::AUTOLOAD_PATHS);
         $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths);
     }
 }

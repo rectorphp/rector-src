@@ -28,8 +28,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 {
     protected static ?ContainerInterface $allRectorContainer = null;
 
-    private ParameterProvider $parameterProvider;
-
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
@@ -47,7 +45,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->bootFromConfigFiles([$configFile]);
 
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
-        $this->parameterProvider = $this->getService(ParameterProvider::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
 
         /** @var AdditionalAutoloader $additionalAutoloader */
@@ -70,7 +67,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // free memory and trigger gc to reduce memory peak consumption on windows
         unset(
             $this->applicationFileProcessor,
-            $this->parameterProvider,
             $this->dynamicSourceLocatorProvider,
         );
         gc_collect_cycles();
@@ -146,7 +142,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         string $expectedFileContents,
         string $fixtureFilePath
     ): void {
-        $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
+        // reset parameters
+        ParameterProvider::changeParameter(Option::SOURCE, [$originalFilePath]);
+        ParameterProvider::changeParameter(Option::SKIP, []);
 
         $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);
 

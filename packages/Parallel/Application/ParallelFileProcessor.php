@@ -46,7 +46,6 @@ final class ParallelFileProcessor
 
     public function __construct(
         private readonly WorkerCommandLineFactory $workerCommandLineFactory,
-        private readonly ParameterProvider $parameterProvider
     ) {
     }
 
@@ -132,7 +131,7 @@ final class ParallelFileProcessor
             sleep(1);
         };
 
-        $timeoutInSeconds = $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
+        $timeoutInSeconds = ParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
 
         for ($i = 0; $i < $numberOfProcesses; ++$i) {
             // nothing else to process, stop now

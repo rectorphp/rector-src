@@ -19,7 +19,6 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 final class TestingParser
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly RectorParser $rectorParser,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly CurrentFileProvider $currentFileProvider
@@ -44,7 +43,7 @@ final class TestingParser
      */
     public function parseFileToDecoratedNodes(string $filePath): array
     {
-        $this->parameterProvider->changeParameter(Option::SOURCE, [$filePath]);
+        ParameterProvider::changeParameter(Option::SOURCE, [$filePath]);
 
         $stmts = $this->rectorParser->parseFile($filePath);
 

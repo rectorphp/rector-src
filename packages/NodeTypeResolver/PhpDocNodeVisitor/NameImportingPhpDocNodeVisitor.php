@@ -31,7 +31,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ParameterProvider $parameterProvider,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
@@ -177,7 +176,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private function shouldSkipShortClassName(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        $importShortClasses = $this->parameterProvider->provideBoolParameter(Option::IMPORT_SHORT_CLASSES);
+        $importShortClasses = ParameterProvider::provideBoolParameter(Option::IMPORT_SHORT_CLASSES);
         if ($importShortClasses) {
             return false;
         }

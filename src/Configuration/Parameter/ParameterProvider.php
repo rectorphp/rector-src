@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Configuration\Parameter;
 
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * @api
@@ -16,89 +14,84 @@ final class ParameterProvider
     /**
      * @var array<string, mixed>
      */
-    private array $parameters = [];
+    private static array $parameters = [];
 
-    public function __construct(Container $container)
+    public static function hasParameter(string $name): bool
     {
-        /** @var ParameterBagInterface $parameterBag */
-        $parameterBag = $container->getParameterBag();
-        $this->parameters = $parameterBag->all();
-    }
-
-    public function hasParameter(string $name): bool
-    {
-        return isset($this->parameters[$name]);
+        return array_key_exists($name, self::$parameters);
     }
 
     /**
      * @api
      */
-    public function provideParameter(string $name): mixed
+    public static function provideParameter(string $name): mixed
     {
-        return $this->parameters[$name] ?? null;
+        return self::$parameters[$name] ?? null;
     }
 
     /**
      * @api
      */
-    public function provideStringParameter(string $name, ?string $default = null): string
+    public static function provideStringParameter(string $name, ?string $default = null): string
     {
         if ($default === null) {
-            $this->ensureParameterIsSet($name);
+            self::ensureParameterIsSet($name);
         }
 
-        return (string) ($this->parameters[$name] ?? $default);
+        return (string) (self::$parameters[$name] ?? $default);
     }
 
     /**
      * @api
      * @return mixed[]
      */
-    public function provideArrayParameter(string $name): array
+    public static function provideArrayParameter(string $name): array
     {
-        $this->ensureParameterIsSet($name);
+        self::ensureParameterIsSet($name);
 
-        return $this->parameters[$name];
+        return self::$parameters[$name];
     }
 
     /**
      * @api
      */
-    public function provideBoolParameter(string $parameterName): bool
+    public static function provideBoolParameter(string $parameterName): bool
     {
-        return $this->parameters[$parameterName] ?? false;
+        return self::$parameters[$parameterName] ?? false;
     }
 
-    public function changeParameter(string $name, mixed $value): void
+    public static function changeParameter(string $parameterName, mixed $value): void
     {
-        $this->parameters[$name] = $value;
-    }
-
-    /**
-     * @api
-     * @return mixed[]
-     */
-    public function provide(): array
-    {
-        return $this->parameters;
+        self::$parameters[$parameterName] = $value;
     }
 
     /**
      * @api
      */
-    public function provideIntParameter(string $name): int
+    public static function provideIntParameter(string $name): int
     {
-        $this->ensureParameterIsSet($name);
-
-        return (int) $this->parameters[$name];
+        self::ensureParameterIsSet($name);
+        return (int) self::$parameters[$name];
     }
 
-    /**
-     * @api
-     */
-    public function ensureParameterIsSet(string $name): void
+    public static function addParameter(string $key, mixed $value): void
     {
-        if (array_key_exists($name, $this->parameters)) {
+        if (is_array($value)) {
+            $mergedParameters = array_merge(self::$parameters[$key] ?? [], $value);
+            self::$parameters[$key] = $mergedParameters;
+        } else {
+            self::$parameters[$key][] = $value;
+        }
+    }
+
+    public static function setParameter(string $key, mixed $value): void
+    {
+        self::$parameters[$key] = $value;
+    }
+
+    private static function ensureParameterIsSet(string $name): void
+    {
+        if (array_key_exists($name, self::$parameters)) {
             return;
         }
 

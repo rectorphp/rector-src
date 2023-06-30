@@ -27,7 +27,6 @@ final class NameImporter
     public function __construct(
         private readonly AliasUsesResolver $aliasUsesResolver,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly ParameterProvider $parameterProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
@@ -79,7 +78,7 @@ final class NameImporter
         }
 
         // Importing root namespace classes (like \DateTime) is optional
-        if (! $this->parameterProvider->provideBoolParameter(Option::IMPORT_SHORT_CLASSES)) {
+        if (! ParameterProvider::provideBoolParameter(Option::IMPORT_SHORT_CLASSES)) {
             $stringName = $name->toString();
             if (substr_count($stringName, '\\') === 0) {
                 return true;

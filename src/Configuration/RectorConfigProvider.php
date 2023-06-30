@@ -12,19 +12,14 @@ use Rector\Core\Configuration\Parameter\ParameterProvider;
  */
 final class RectorConfigProvider
 {
-    public function __construct(
-        private readonly ParameterProvider $parameterProvider
-    ) {
-    }
-
     public function shouldImportNames(): bool
     {
-        return $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES);
+        return ParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
     }
 
     public function shouldRemoveUnusedImports(): bool
     {
-        return $this->parameterProvider->provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS);
+        return ParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS);
     }
 
     /**
@@ -32,7 +27,7 @@ final class RectorConfigProvider
      */
     public function getSymfonyContainerPhp(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER);
+        return ParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER);
     }
 
     /**
@@ -40,16 +35,16 @@ final class RectorConfigProvider
      */
     public function getSymfonyContainerXml(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER);
+        return ParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER);
     }
 
     public function getIndentChar(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::INDENT_CHAR, ' ');
+        return ParameterProvider::provideStringParameter(Option::INDENT_CHAR, ' ');
     }
 
     public function getIndentSize(): int
     {
-        return $this->parameterProvider->provideIntParameter(Option::INDENT_SIZE);
+        return ParameterProvider::provideIntParameter(Option::INDENT_SIZE);
     }
 }

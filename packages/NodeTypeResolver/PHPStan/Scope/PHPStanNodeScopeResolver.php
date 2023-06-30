@@ -66,6 +66,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Webmozart\Assert\Assert;
 
 /**
@@ -82,7 +83,7 @@ final class PHPStanNodeScopeResolver
     private readonly NodeTraverser $nodeTraverser;
 
     /**
-     * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
+     * @param RewindableGenerator<int, ScopeResolverNodeVisitorInterface> $nodeVisitors
      */
     public function __construct(
         private readonly ChangedFilesDetector $changedFilesDetector,
@@ -96,6 +97,8 @@ final class PHPStanNodeScopeResolver
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
+
+        $nodeVisitors = iterator_to_array($nodeVisitors->getIterator());
 
         foreach ($nodeVisitors as $nodeVisitor) {
             $this->nodeTraverser->addVisitor($nodeVisitor);

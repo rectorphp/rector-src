@@ -6,6 +6,7 @@ namespace Rector\Config;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
@@ -33,8 +34,7 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::allString($paths);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::PATHS, $paths);
+        ParameterProvider::setParameter(Option::PATHS, $paths);
     }
 
     /**
@@ -52,30 +52,26 @@ final class RectorConfig extends ContainerConfigurator
 
     public function disableParallel(): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::PARALLEL, false);
+        ParameterProvider::setParameter(Option::PARALLEL, false);
     }
 
     public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::PARALLEL, true);
+        ParameterProvider::setParameter(Option::PARALLEL, true);
 
-        $parameters->set(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
-        $parameters->set(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, $maxNumberOfProcess);
-        $parameters->set(Option::PARALLEL_JOB_SIZE, $jobSize);
+        ParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
+        ParameterProvider::setParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, $maxNumberOfProcess);
+        ParameterProvider::setParameter(Option::PARALLEL_JOB_SIZE, $jobSize);
     }
 
     public function noDiffs(): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::NO_DIFFS, true);
+        ParameterProvider::setParameter(Option::NO_DIFFS, true);
     }
 
     public function memoryLimit(string $memoryLimit): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::MEMORY_LIMIT, $memoryLimit);
+        ParameterProvider::setParameter(Option::MEMORY_LIMIT, $memoryLimit);
     }
 
     /**
@@ -83,27 +79,23 @@ final class RectorConfig extends ContainerConfigurator
      */
     public function skip(array $criteria): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::SKIP, $criteria);
+        ParameterProvider::addParameter(Option::SKIP, $criteria);
     }
 
     public function removeUnusedImports(bool $removeUnusedImports = true): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::REMOVE_UNUSED_IMPORTS, $removeUnusedImports);
+        ParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, $removeUnusedImports);
     }
 
     public function importNames(bool $importNames = true, bool $importDocBlockNames = true): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::AUTO_IMPORT_NAMES, $importNames);
-        $parameters->set(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
+        ParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, $importNames);
+        ParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
     }
 
     public function importShortClasses(bool $importShortClasses = true): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::IMPORT_SHORT_CLASSES, $importShortClasses);
+        ParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, $importShortClasses);
     }
 
     /**
@@ -114,8 +106,7 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::fileExists($filePath);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::PHPSTAN_FOR_RECTOR_PATH, $filePath);
+        ParameterProvider::setParameter(Option::PHPSTAN_FOR_RECTOR_PATH, $filePath);
     }
 
     /**
@@ -181,8 +172,7 @@ final class RectorConfig extends ContainerConfigurator
      */
     public function phpVersion(int $phpVersion): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
+        ParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, $phpVersion);
     }
 
     /**
@@ -192,8 +182,7 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::allString($autoloadPaths);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::AUTOLOAD_PATHS, $autoloadPaths);
+        ParameterProvider::setParameter(Option::AUTOLOAD_PATHS, $autoloadPaths);
     }
 
     /**
@@ -203,20 +192,17 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::allString($bootstrapFiles);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::BOOTSTRAP_FILES, $bootstrapFiles);
+        ParameterProvider::addParameter(Option::BOOTSTRAP_FILES, $bootstrapFiles);
     }
 
     public function symfonyContainerXml(string $filePath): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER, $filePath);
+        ParameterProvider::setParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER, $filePath);
     }
 
     public function symfonyContainerPhp(string $filePath): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER, $filePath);
+        ParameterProvider::setParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER, $filePath);
     }
 
     /**
@@ -226,22 +212,20 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::allString($extensions);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::FILE_EXTENSIONS, $extensions);
+        ParameterProvider::setParameter(Option::FILE_EXTENSIONS, $extensions);
     }
 
     public function nestedChainMethodCallLimit(int $limit): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, $limit);
+        ParameterProvider::setParameter(Option::NESTED_CHAIN_METHOD_CALL_LIMIT, $limit);
     }
 
     public function cacheDirectory(string $directoryPath): void
     {
         // cache directory path is created via mkdir in CacheFactory
         // when not exists, so no need to validate $directoryPath is a directory
-        $parameters = $this->parameters();
-        $parameters->set(Option::CACHE_DIR, $directoryPath);
+
+        ParameterProvider::setParameter(Option::CACHE_DIR, $directoryPath);
     }
 
     public function containerCacheDirectory(string $directoryPath): void
@@ -249,8 +233,7 @@ final class RectorConfig extends ContainerConfigurator
         // container cache directory path must be a directory on the first place
         Assert::directory($directoryPath);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::CONTAINER_CACHE_DIRECTORY, $directoryPath);
+        ParameterProvider::setParameter(Option::CONTAINER_CACHE_DIRECTORY, $directoryPath);
     }
 
     /**
@@ -260,8 +243,7 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::isAOf($cacheClass, CacheStorageInterface::class);
 
-        $parameters = $this->parameters();
-        $parameters->set(Option::CACHE_CLASS, $cacheClass);
+        ParameterProvider::setParameter(Option::CACHE_CLASS, $cacheClass);
     }
 
     /**
@@ -269,9 +251,8 @@ final class RectorConfig extends ContainerConfigurator
      */
     public function indent(string $character, int $count): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::INDENT_CHAR, $character);
-        $parameters->set(Option::INDENT_SIZE, $count);
+        ParameterProvider::setParameter(Option::INDENT_CHAR, $character);
+        ParameterProvider::setParameter(Option::INDENT_SIZE, $count);
     }
 
     private function getServices(): ServicesConfigurator

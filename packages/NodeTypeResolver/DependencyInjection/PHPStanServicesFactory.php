@@ -29,7 +29,6 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
         BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
@@ -51,7 +50,7 @@ final class PHPStanServicesFactory
 
         $containerFactory = new ContainerFactory(getcwd());
         $this->container = $containerFactory->create(
-            $parameterProvider->provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+            ParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
             $additionalConfigFiles,
             []
         );
@@ -145,10 +144,8 @@ final class PHPStanServicesFactory
     {
         $additionalConfigFiles = [];
 
-        if ($this->parameterProvider->hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
-            $additionalConfigFiles[] = $this->parameterProvider->provideStringParameter(
-                Option::PHPSTAN_FOR_RECTOR_PATH
-            );
+        if (ParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
+            $additionalConfigFiles[] = ParameterProvider::provideStringParameter(Option::PHPSTAN_FOR_RECTOR_PATH);
         }
 
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';

@@ -32,7 +32,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NameImportingPostRector extends AbstractPostRector
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly NameImporter $nameImporter,
         private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
@@ -46,7 +45,7 @@ final class NameImportingPostRector extends AbstractPostRector
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+        if (! ParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
             return null;
         }
 
@@ -64,7 +63,7 @@ final class NameImportingPostRector extends AbstractPostRector
             return $this->processNodeName($node, $file);
         }
 
-        if ($this->parameterProvider->provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES)) {
+        if (ParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES)) {
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
         }

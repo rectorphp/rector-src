@@ -19,7 +19,6 @@ final class SkippedPathsResolver
     private array $skippedPaths = [];
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly FilePathHelper $filePathHelper
     ) {
     }
@@ -33,7 +32,7 @@ final class SkippedPathsResolver
             return $this->skippedPaths;
         }
 
-        $skip = $this->parameterProvider->provideArrayParameter(Option::SKIP);
+        $skip = ParameterProvider::provideArrayParameter(Option::SKIP);
 
         foreach ($skip as $key => $value) {
             if (! is_int($key)) {
