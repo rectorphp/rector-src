@@ -5,6 +5,13 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -47,16 +54,65 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Stmt\ClassMethod::class, \PhpParser\Node\Stmt\Function_::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\ClassMethod|\PhpParser\Node\Stmt\Function_ $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
-        // change the node
+        $hasChanged = false;
 
-        return $node;
+        foreach ($node->getParams() as $param) {
+            if ($param->type instanceof Node) {
+                continue;
+            }
+
+            if (! $this->isParamAccessedArrayDimFetch($param, $node)) {
+                continue;
+            }
+
+            $param->type = new Identifier('array');
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function isParamAccessedArrayDimFetch(Param $param, ClassMethod|Function_ $functionLike): bool
+    {
+        $paramName = $this->getName($param);
+
+        $isParamAccessedArrayDimFetch = false;
+
+        $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
+            $paramName,
+            &$isParamAccessedArrayDimFetch
+        ): int|null {
+            if ($node instanceof FuncCall && $this->isName($node, 'is_array')) {
+                $firstArg = $node->getArgs()[0];
+                if ($this->isName($firstArg->value, $paramName)) {
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+            }
+
+            if (! $node instanceof ArrayDimFetch) {
+                return null;
+            }
+
+            if (! $this->isName($node->var, $paramName)) {
+                return null;
+            }
+
+            $isParamAccessedArrayDimFetch = true;
+            return null;
+        });
+
+        return $isParamAccessedArrayDimFetch;
     }
 }

@@ -169,6 +169,7 @@ final class RectorConfig extends ContainerConfigurator
     public function rules(array $rectorClasses): void
     {
         Assert::allString($rectorClasses);
+        Assert::uniqueValues($rectorClasses);
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
