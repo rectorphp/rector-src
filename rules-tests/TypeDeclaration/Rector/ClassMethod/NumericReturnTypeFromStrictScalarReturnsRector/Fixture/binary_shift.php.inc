@@ -6,7 +6,12 @@ final class BinaryShift
 {
     public function resolve(int $first, int $second)
     {
-        return $first & $second;
+        return $first << $second;
+    }
+
+    public function resolveRight(int $first, int $second)
+    {
+        return $first >> $second;
     }
 }
 
@@ -20,7 +25,12 @@ final class BinaryShift
 {
     public function resolve(int $first, int $second): int
     {
-        return $first & $second;
+        return $first << $second;
+    }
+
+    public function resolveRight(int $first, int $second): int
+    {
+        return $first >> $second;
     }
 }
 
