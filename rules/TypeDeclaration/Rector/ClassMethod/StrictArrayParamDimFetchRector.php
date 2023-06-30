@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -21,6 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StrictArrayParamDimFetchRector extends AbstractRector
 {
+    public function __construct(private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add array type based on array dim fetch use', [
@@ -63,6 +68,10 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
+
+        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+            return null;
+        }
 
         foreach ($node->getParams() as $param) {
             if ($param->type instanceof Node) {
