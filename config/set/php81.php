@@ -30,6 +30,5 @@ return static function (RectorConfig $rectorConfig): void {
         IntersectionTypesRector::class,
         NullToStrictStringFuncCallArgRector::class,
         FirstClassCallableRector::class,
-        ReturnNeverTypeRector::class,
     ]);
 };
