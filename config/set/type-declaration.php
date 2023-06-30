@@ -28,6 +28,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRect
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
@@ -76,5 +77,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromStrictTernaryRector::class,
         BoolReturnTypeFromStrictScalarReturnsRector::class,
         NumericReturnTypeFromStrictScalarReturnsRector::class,
+        StrictArrayParamDimFetchRector::class,
     ]);
 };
