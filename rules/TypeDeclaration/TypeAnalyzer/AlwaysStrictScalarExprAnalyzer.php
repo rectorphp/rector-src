@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\MagicConst\Line;
@@ -101,6 +102,10 @@ final class AlwaysStrictScalarExprAnalyzer
 
     private function resolveTypeFromScalar(Scalar $scalar): Type|null
     {
+        if ($scalar instanceof Encapsed) {
+            return new StringType();
+        }
+
         if ($scalar instanceof String_) {
             return new StringType();
         }
