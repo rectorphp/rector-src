@@ -20,6 +20,7 @@ use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Webmozart\Assert\Assert;
@@ -39,6 +40,7 @@ final class ContainerBuilderFactory
         PhpDocTypeMapperInterface::class,
         ClassNameImportSkipVoterInterface::class,
         RectorInterface::class,
+        Command::class,
         RectorInterface::class,
         OutputFormatterInterface::class,
         NonPhpRectorInterface::class,

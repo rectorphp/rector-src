@@ -178,6 +178,8 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/../src/constants.php',
         ]);
 
+    $services->set(ConsoleApplication::class)
+        ->arg('$commands', tagged_iterator(\Symfony\Component\Console\Command\Command::class));
     $services->alias(Application::class, ConsoleApplication::class);
 
     $services->set(EmptyConfigurableRectorCollector::class)
@@ -246,19 +248,11 @@ return static function (RectorConfig $rectorConfig): void {
     if (class_exists(MissingInSetCommand::class)) {
         $services->set(MissingInSetCommand::class);
         $services->set(OutsideAnySetCommand::class);
-
-        $services->get(ConsoleApplication::class)
-            ->call('add', [service(MissingInSetCommand::class)])
-            ->call('add', [service(OutsideAnySetCommand::class)]);
     }
 
     if (class_exists(InitRecipeCommand::class)) {
         $services->set(InitRecipeCommand::class);
         $services->set(GenerateCommand::class);
-
-        $services->get(ConsoleApplication::class)
-            ->call('add', [service(InitRecipeCommand::class)])
-            ->call('add', [service(GenerateCommand::class)]);
     }
 
     // phpdoc parser
