@@ -20,7 +20,6 @@ final class NodeScopeAndMetadataDecorator
     public function __construct(
         CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        ParentConnectingVisitor $parentConnectingVisitor,
         FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
         private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
@@ -29,8 +28,8 @@ final class NodeScopeAndMetadataDecorator
         // needed also for format preserving printing
         $this->nodeTraverser->addVisitor($cloningVisitor);
 
-        // this one has to be run again to re-connect parent nodes with new attributes
-        $this->nodeTraverser->addVisitor($parentConnectingVisitor);
+        // connect parent nodes with new attributes
+        $this->nodeTraverser->addVisitor(new ParentConnectingVisitor());
 
         $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
     }
