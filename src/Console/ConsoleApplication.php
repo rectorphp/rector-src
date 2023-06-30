@@ -8,15 +8,14 @@ use Composer\XdebugHandler\XdebugHandler;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Application\VersionResolver;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Console\Command\ListRulesCommand;
-use Rector\Core\Console\Command\ProcessCommand;
-use Rector\Core\Console\Command\SetupCICommand;
-use Rector\Core\Console\Command\WorkerCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
 {
@@ -25,16 +24,19 @@ final class ConsoleApplication extends Application
      */
     private const NAME = 'Rector';
 
-    public function __construct(
-        ProcessCommand $processCommand,
-        WorkerCommand $workerCommand,
-        SetupCICommand $setupCICommand,
-        ListRulesCommand $listRulesCommand,
-    ) {
+    /**
+     * @param RewindableGenerator<int, Command> $commands
+     */
+    public function __construct(iterable $commands)
+    {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
-        $this->addCommands([$processCommand, $workerCommand, $setupCICommand, $listRulesCommand]);
+        $commands = iterator_to_array($commands->getIterator());
+        Assert::allIsInstanceOf($commands, Command::class);
 
+        $this->addCommands($commands);
+
+        // run this command, if no command name is provided
         $this->setDefaultCommand('process');
     }
 
