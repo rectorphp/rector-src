@@ -90,9 +90,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($return->expr instanceof PreInc || $return->expr instanceof PostInc || $return->expr instanceof PostDec || $return->expr instanceof PreDec) {
+        if ($return->expr instanceof PreInc
+            || $return->expr instanceof PostInc
+            || $return->expr instanceof PostDec
+            || $return->expr instanceof PreDec
+        ) {
             $exprType = $this->getType($return->expr);
-            if ($exprType instanceof IntegerType) {
+            if ($exprType->isInteger()->yes()) {
                 $node->returnType = new Identifier('int');
                 return $node;
             }
@@ -101,7 +105,15 @@ CODE_SAMPLE
         }
 
         // @see https://chat.openai.com/share/a9e4fb74-5366-4c4c-9998-d6caeb8b5acc
-        if ($return->expr instanceof Minus || $return->expr instanceof Plus || $return->expr instanceof Mul || $return->expr instanceof Mod || $return->expr instanceof BitwiseAnd || $return->expr instanceof ShiftRight || $return->expr instanceof ShiftLeft || $return->expr instanceof BitwiseOr) {
+        if ($return->expr instanceof Minus
+            || $return->expr instanceof Plus
+            || $return->expr instanceof Mul
+            || $return->expr instanceof Mod
+            || $return->expr instanceof BitwiseAnd
+            || $return->expr instanceof ShiftRight
+            || $return->expr instanceof ShiftLeft
+            || $return->expr instanceof BitwiseOr
+        ) {
             return $this->refactorBinaryOp($return->expr, $node);
         }
 
@@ -141,7 +153,7 @@ CODE_SAMPLE
         $leftType = $this->getType($binaryOp->left);
         $rightType = $this->getType($binaryOp->right);
 
-        if ($leftType instanceof IntegerType && $rightType instanceof IntegerType) {
+        if ($leftType->isInteger()->yes() && $rightType->isInteger()->yes()) {
             $functionLike->returnType = new Identifier('int');
             return $functionLike;
         }
