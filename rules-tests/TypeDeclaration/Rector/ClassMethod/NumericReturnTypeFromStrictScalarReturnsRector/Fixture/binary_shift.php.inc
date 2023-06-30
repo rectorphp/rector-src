@@ -2,11 +2,16 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class BinaryShift
+final class BinaryShiftAgain
 {
     public function resolve(int $first, int $second)
     {
-        return $first & $second;
+        return $first << $second;
+    }
+
+    public function resolveRight(int $first, int $second)
+    {
+        return $first >> $second;
     }
 }
 
@@ -16,11 +21,16 @@ final class BinaryShift
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class BinaryShift
+final class BinaryShiftAgain
 {
     public function resolve(int $first, int $second): int
     {
-        return $first & $second;
+        return $first << $second;
+    }
+
+    public function resolveRight(int $first, int $second): int
+    {
+        return $first >> $second;
     }
 }
 
