@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Symfony\Component\Console\Command\Command;
 
 use Composer\Semver\VersionParser;
 use Doctrine\Inflector\Inflector;
@@ -179,7 +180,7 @@ return static function (RectorConfig $rectorConfig): void {
         ]);
 
     $services->set(ConsoleApplication::class)
-        ->arg('$commands', tagged_iterator(\Symfony\Component\Console\Command\Command::class));
+        ->arg('$commands', tagged_iterator(Command::class));
     $services->alias(Application::class, ConsoleApplication::class);
 
     $services->set(EmptyConfigurableRectorCollector::class)
