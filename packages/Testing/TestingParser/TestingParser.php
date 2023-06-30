@@ -43,7 +43,7 @@ final class TestingParser
      */
     public function parseFileToDecoratedNodes(string $filePath): array
     {
-        ParameterProvider::changeParameter(Option::SOURCE, [$filePath]);
+        ParameterProvider::setParameter(Option::SOURCE, [$filePath]);
 
         $stmts = $this->rectorParser->parseFile($filePath);
 
@@ -53,6 +53,9 @@ final class TestingParser
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
 
         $this->currentFileProvider->setFile($file);
+
+        // reset, as parameters are static
+        ParameterProvider::setParameter(Option::SOURCE, []);
 
         return $stmts;
     }

@@ -18,6 +18,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Application\File;
+use Rector\Core\ValueObject\PhpVersion;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -70,6 +71,9 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             $this->dynamicSourceLocatorProvider,
         );
         gc_collect_cycles();
+
+        // restore latest php version
+        ParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, PhpVersion::PHP_82);
     }
 
     /**
@@ -143,8 +147,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         string $fixtureFilePath
     ): void {
         // reset parameters
-        ParameterProvider::changeParameter(Option::SOURCE, [$originalFilePath]);
-        ParameterProvider::changeParameter(Option::SKIP, []);
+        ParameterProvider::setParameter(Option::PATHS, [$originalFilePath]);
+        ParameterProvider::setParameter(Option::SKIP, []);
 
         $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);
 

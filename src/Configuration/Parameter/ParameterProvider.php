@@ -60,11 +60,6 @@ final class ParameterProvider
         return self::$parameters[$parameterName] ?? false;
     }
 
-    public static function changeParameter(string $parameterName, mixed $value): void
-    {
-        self::$parameters[$parameterName] = $value;
-    }
-
     /**
      * @api
      */
@@ -87,6 +82,11 @@ final class ParameterProvider
     public static function setParameter(string $key, mixed $value): void
     {
         self::$parameters[$key] = $value;
+    }
+
+    public static function isParameterSet(string $parameterName): bool
+    {
+        return isset(self::$parameters[$parameterName]);
     }
 
     private static function ensureParameterIsSet(string $name): void

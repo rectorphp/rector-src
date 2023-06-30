@@ -25,17 +25,25 @@ final class RectorConfigProvider
     /**
      * @api symfony
      */
-    public function getSymfonyContainerPhp(): string
+    public function getSymfonyContainerPhp(): ?string
     {
+        if (! ParameterProvider::isParameterSet(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER)) {
+            return null;
+        }
+
         return ParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER);
     }
 
     /**
      * @api symfony
      */
-    public function getSymfonyContainerXml(): string
+    public function getSymfonyContainerXml(): ?string
     {
-        return ParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER);
+        if (! ParameterProvider::isParameterSet(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER)) {
+            return null;
+        }
+
+        return ParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER, null);
     }
 
     public function getIndentChar(): string
