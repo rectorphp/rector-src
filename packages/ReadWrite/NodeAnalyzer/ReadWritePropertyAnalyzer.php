@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace Rector\ReadWrite\NodeAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\AssignOp;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
@@ -36,7 +33,6 @@ final class ReadWritePropertyAnalyzer
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly ReadExprAnalyzer $readExprAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PureFunctionDetector $pureFunctionDetector,
         ArgParentNodeReadAnalyzer $argParentNodeReadAnalyzer,
         IncDecParentNodeReadAnalyzer $incDecParentNodeReadAnalyzer,
@@ -88,14 +84,9 @@ final class ReadWritePropertyAnalyzer
     private function isArrayDimFetchInImpureFunction(ArrayDimFetch $arrayDimFetch, Node $node, Scope $scope): bool
     {
         if ($arrayDimFetch->var === $node) {
-            $arg = $this->betterNodeFinder->findParentType($arrayDimFetch, Arg::class);
-            if ($arg instanceof Arg) {
-                $parentArg = $arg->getAttribute(AttributeKey::PARENT_NODE);
-                if (! $parentArg instanceof FuncCall) {
-                    return false;
-                }
-
-                return ! $this->pureFunctionDetector->detect($parentArg, $scope);
+            $fromFuncCallName = $arrayDimFetch->getAttribute(AttributeKey::FROM_FUNC_CALL_NAME);
+            if ($fromFuncCallName !== null) {
+                return ! $this->pureFunctionDetector->detect($fromFuncCallName, $scope);
             }
         }
 
