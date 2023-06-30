@@ -77,4 +77,5 @@ return static function (RectorConfig $rectorConfig): void {
         BoolReturnTypeFromStrictScalarReturnsRector::class,
         NumericReturnTypeFromStrictScalarReturnsRector::class,
     ]);
+    $rectorConfig->rule(\Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector::class);
 };
