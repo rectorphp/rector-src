@@ -6,9 +6,7 @@ namespace Rector\ReadWrite\ReadNodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use Rector\NodeNestingScope\ParentScopeFinder;
 use Rector\ReadWrite\Contract\ReadNodeAnalyzerInterface;
-use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 
 /**
  * @implements ReadNodeAnalyzerInterface<Variable>
@@ -16,8 +14,6 @@ use Rector\ReadWrite\NodeFinder\NodeUsageFinder;
 final class VariableReadNodeAnalyzer implements ReadNodeAnalyzerInterface
 {
     public function __construct(
-        private readonly ParentScopeFinder $parentScopeFinder,
-        private readonly NodeUsageFinder $nodeUsageFinder,
         private readonly JustReadExprAnalyzer $justReadExprAnalyzer
     ) {
     }
@@ -32,10 +28,6 @@ final class VariableReadNodeAnalyzer implements ReadNodeAnalyzerInterface
      */
     public function isRead(Expr $expr): bool
     {
-        if ($this->justReadExprAnalyzer->isReadContext($expr)) {
-            return true;
-        }
-
-        return false;
+        return $this->justReadExprAnalyzer->isReadContext($expr);
     }
 }
