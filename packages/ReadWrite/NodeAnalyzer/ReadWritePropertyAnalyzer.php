@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
 use Rector\DeadCode\SideEffect\PureFunctionDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -45,13 +44,8 @@ final class ReadWritePropertyAnalyzer
         ];
     }
 
-    public function isRead(PropertyFetch | StaticPropertyFetch $node, Scope $scope): bool
+    public function isRead(PropertyFetch | StaticPropertyFetch $node, Node $parentNode, Scope $scope): bool
     {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            throw new ShouldNotHappenException();
-        }
-
         foreach ($this->parentNodeReadAnalyzers as $parentNodeReadAnalyzer) {
             if ($parentNodeReadAnalyzer->isRead($node, $parentNode)) {
                 return true;
