@@ -176,7 +176,9 @@ final class PHPStanNodeScopeResolver
                             $insteadof->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                         }
 
-                        $precedence->trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                        if ($precedence->trait instanceof Name) {
+                            $precedence->trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                        }
                     }
                 }
             }
