@@ -108,11 +108,6 @@ final class ParamAnalyzer
         return $param->type instanceof NullableType;
     }
 
-    public function hasDefaultNull(Param $param): bool
-    {
-        return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
-    }
-
     public function isParamReassign(ClassMethod $classMethod, Param $param): bool
     {
         $paramName = (string) $this->nodeNameResolver->getName($param->var);
