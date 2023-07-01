@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -19,8 +18,7 @@ final class UsedImportsResolver
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly UseImportsTraverser $useImportsTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
