@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
+use PHPStan\Type\UnionType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -44,7 +45,7 @@ final class ExprAnalyzer
         }
 
         $type = $scope->getType($expr);
-        if ($nativeType instanceof \PHPStan\Type\UnionType) {
+        if ($nativeType instanceof UnionType) {
             return ! $nativeType->equals($type);
         }
 
