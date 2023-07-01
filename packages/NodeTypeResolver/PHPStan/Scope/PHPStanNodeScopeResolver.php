@@ -400,6 +400,7 @@ final class PHPStanNodeScopeResolver
         if ($assign->var instanceof Variable && $assign->var->name instanceof Expr) {
             $assign->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
+
         $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $expr = $assign;
@@ -411,6 +412,7 @@ final class PHPStanNodeScopeResolver
             if ($expr->var instanceof Variable && $expr->var->name instanceof Expr) {
                 $expr->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
+
             $expr->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
             $expr = $expr->expr;
