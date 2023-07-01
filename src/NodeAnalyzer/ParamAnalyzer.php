@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Error;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
@@ -22,7 +21,6 @@ use PhpParser\NodeTraverser;
 use Rector\Core\NodeManipulator\FuncCallManipulator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -30,7 +28,6 @@ final class ParamAnalyzer
 {
     public function __construct(
         private readonly NodeComparator $nodeComparator,
-        private readonly ValueResolver $valueResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly FuncCallManipulator $funcCallManipulator,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
@@ -106,11 +103,6 @@ final class ParamAnalyzer
         }
 
         return $param->type instanceof NullableType;
-    }
-
-    public function hasDefaultNull(Param $param): bool
-    {
-        return $param->default instanceof ConstFetch && $this->valueResolver->isNull($param->default);
     }
 
     public function isParamReassign(ClassMethod $classMethod, Param $param): bool

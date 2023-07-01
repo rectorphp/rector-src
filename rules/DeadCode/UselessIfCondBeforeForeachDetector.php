@@ -4,28 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
-use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 
 final class UselessIfCondBeforeForeachDetector
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ParamAnalyzer $paramAnalyzer
+        private readonly NodeComparator $nodeComparator
     ) {
     }
 
@@ -98,21 +91,6 @@ final class UselessIfCondBeforeForeachDetector
         return $this->isMatchingNotBinaryOp($notIdentical, $foreachExpr);
     }
 
-    private function fromPreviousParam(Expr $expr): ?Param
-    {
-        return $this->betterNodeFinder->findFirstPrevious($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Param) {
-                return false;
-            }
-
-            if (! $node->var instanceof Variable) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $expr);
-        });
-    }
-
     private function isMatchingNotBinaryOp(NotIdentical | NotEqual $binaryOp, Expr $foreachExpr): bool
     {
         if ($this->isEmptyArrayAndForeachedVariable($binaryOp->left, $binaryOp->right, $foreachExpr)) {
@@ -148,20 +126,7 @@ final class UselessIfCondBeforeForeachDetector
 
         // is array though?
         $arrayType = $scope->getType($empty->expr);
-        if (! $arrayType->isArray()
-            ->yes()) {
-            return false;
-        }
-
-        $previousParam = $this->fromPreviousParam($foreachExpr);
-        if (! $previousParam instanceof Param) {
-            return true;
-        }
-
-        if ($this->paramAnalyzer->isNullable($previousParam)) {
-            return false;
-        }
-
-        return ! $this->paramAnalyzer->hasDefaultNull($previousParam);
+        return $arrayType->isArray()
+            ->yes();
     }
 }
