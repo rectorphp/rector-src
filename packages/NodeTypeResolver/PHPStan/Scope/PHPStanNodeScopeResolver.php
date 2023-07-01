@@ -307,8 +307,14 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
-                if (($node instanceof Class_ || $node instanceof Interface_) && $node->extends instanceof FullyQualified) {
+                if ($node instanceof Class_ && $node->extends instanceof FullyQualified) {
                     $node->extends->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
+                if ($node instanceof Interface_) {
+                    foreach ($node->extends as $extend) {
+                        $extend->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
                 }
 
                 if ($node instanceof Class_ || $node instanceof Enum_) {
