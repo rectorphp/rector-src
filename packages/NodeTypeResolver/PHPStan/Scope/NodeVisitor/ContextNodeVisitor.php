@@ -11,7 +11,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -75,20 +74,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
         }
 
-        if ($node instanceof Param) {
-            $this->processContextParam($node);
-        }
-
         return null;
-    }
-
-    private function processContextParam(Param $param): void
-    {
-        if (! $param->type instanceof Node) {
-            return;
-        }
-
-        $param->type->setAttribute(AttributeKey::IS_PARAM_TYPE, true);
     }
 
     private function processContextInIssetOrUnset(Isset_|Unset_ $node): void
