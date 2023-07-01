@@ -6,6 +6,7 @@ namespace Rector\ReadWrite\ReadNodeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\ReadWrite\Contract\ReadNodeAnalyzerInterface;
 
 /**
@@ -28,6 +29,19 @@ final class VariableReadNodeAnalyzer implements ReadNodeAnalyzerInterface
      */
     public function isRead(Expr $expr): bool
     {
-        return $this->justReadExprAnalyzer->isReadContext($expr);
+        if ($this->justReadExprAnalyzer->isReadContext($expr)) {
+            return true;
+        }
+
+        $scope = $expr->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+            return true;
+        }
+
+        if ($expr->name instanceof Expr) {
+            return true;
+        }
+
+        return $scope->hasVariableType($expr->name)->yes();
     }
 }
