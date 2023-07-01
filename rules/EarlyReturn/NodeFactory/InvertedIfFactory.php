@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\EarlyReturn\NodeFactory;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -18,7 +16,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class InvertedIfFactory
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ConditionInverter $conditionInverter,
         private readonly ContextAnalyzer $contextAnalyzer
     ) {
@@ -39,9 +36,8 @@ final class InvertedIfFactory
             $stmt[0]->setAttribute(AttributeKey::COMMENTS, $ifNextReturn->getAttribute(AttributeKey::COMMENTS));
         }
 
-        $getNextReturnExpr = $this->getNextReturnExpr($if);
-        if ($getNextReturnExpr instanceof Return_) {
-            $return->expr = $getNextReturnExpr->expr;
+        if ($ifNextReturn instanceof Return_ && $ifNextReturn->expr instanceof Expr) {
+            $return->expr = $ifNextReturn->expr;
         }
 
         foreach ($conditions as $condition) {
@@ -52,13 +48,5 @@ final class InvertedIfFactory
         }
 
         return $ifs;
-    }
-
-    private function getNextReturnExpr(If_ $if): ?Node
-    {
-        return $this->betterNodeFinder->findFirstNext(
-            $if,
-            static fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
-        );
     }
 }
