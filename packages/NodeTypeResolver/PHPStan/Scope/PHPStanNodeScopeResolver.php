@@ -145,7 +145,6 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Namespace_ && $node->name instanceof Name) {
-                $mutatingScope->enterNamespace($node->name->toString());
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
