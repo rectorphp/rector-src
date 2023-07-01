@@ -50,5 +50,6 @@ return static function (RectorConfig $rectorConfig): void {
             'Bar' => 'BarInterface',
             'App' => 'Illuminate\Support\Facades\App',
             'NotExistsClass' => 'NewClass',
+            'Exception' => 'RuntimeException',
         ]);
 };
