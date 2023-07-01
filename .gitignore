@@ -23,3 +23,5 @@ tmp
 
 # Allow overrides for Docker configuration (custom volumes, env variables etc)
 docker-compose.override.yml
+
+/temp_*
