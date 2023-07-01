@@ -39,7 +39,12 @@ final class ExprAnalyzer
         }
 
         $nativeType = $scope->getNativeType($expr);
-        return $nativeType instanceof MixedType && ! $nativeType->isExplicitMixed();
+        if ($nativeType instanceof MixedType && ! $nativeType->isExplicitMixed()) {
+            return true;
+        }
+
+        $type = $scope->getType($expr);
+        return ! $nativeType->equals($type);
     }
 
     public function isDynamicExpr(Expr $expr): bool
