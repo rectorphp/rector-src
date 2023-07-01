@@ -32,16 +32,8 @@ final class VariableReadNodeAnalyzer implements ReadNodeAnalyzerInterface
      */
     public function isRead(Expr $expr): bool
     {
-        $parentScope = $this->parentScopeFinder->find($expr);
-        if ($parentScope === null) {
-            return false;
-        }
-
-        $variableUsages = $this->nodeUsageFinder->findVariableUsages((array) $parentScope->stmts, $expr);
-        foreach ($variableUsages as $variableUsage) {
-            if ($this->justReadExprAnalyzer->isReadContext($variableUsage)) {
-                return true;
-            }
+        if ($this->justReadExprAnalyzer->isReadContext($expr)) {
+            return true;
         }
 
         return false;
