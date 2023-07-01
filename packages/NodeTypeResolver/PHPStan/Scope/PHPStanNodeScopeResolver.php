@@ -175,6 +175,7 @@ final class PHPStanNodeScopeResolver
                         foreach ($precedence->insteadof as $insteadof) {
                             $insteadof->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                         }
+
                         $precedence->trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                     }
                 }
