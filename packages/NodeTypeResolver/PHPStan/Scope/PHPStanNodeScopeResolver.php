@@ -49,6 +49,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TraitUse;
+use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\Node\UnionType;
@@ -167,6 +168,15 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof TraitUse) {
                 foreach ($node->traits as $traitName) {
                     $traitName->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
+                foreach ($node->adaptations as $precedence) {
+                    if ($precedence instanceof Precedence) {
+                        foreach ($precedence->insteadof as $insteadof) {
+                            $insteadof->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                        }
+                        $precedence->trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
                 }
             }
 
