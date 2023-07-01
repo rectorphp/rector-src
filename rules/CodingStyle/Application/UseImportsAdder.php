@@ -94,7 +94,7 @@ final class UseImportsAdder
     ): void {
         $namespaceName = $this->getNamespaceName($namespace);
 
-        $existingUseImportTypes = $this->usedImportsResolver->resolveForNode($namespace);
+        $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
         $existingFunctionUseImportTypes = $this->usedImportsResolver->resolveFunctionImportsForStmts($namespace->stmts);
 
         $existingUseImportTypes = $this->typeFactory->uniquateTypes($existingUseImportTypes);
