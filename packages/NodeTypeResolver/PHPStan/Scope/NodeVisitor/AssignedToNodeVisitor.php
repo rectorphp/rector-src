@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\NodeVisitorAbstract;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -22,6 +23,11 @@ final class AssignedToNodeVisitor extends NodeVisitorAbstract implements ScopeRe
         }
 
         $node->var->setAttribute(AttributeKey::IS_BEING_ASSIGNED, true);
+
+        if ($node->var instanceof ArrayDimFetch) {
+            $node->var->var->setAttribute(AttributeKey::IS_BEING_ASSIGNED, true);
+        }
+
         $node->expr->setAttribute(AttributeKey::IS_ASSIGNED_TO, true);
 
         if ($node->expr instanceof Assign) {
