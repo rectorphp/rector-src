@@ -190,9 +190,7 @@ final class PHPStanNodeScopeResolver
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
-                $node instanceof Assign ||
                 $node instanceof EnumCase ||
-                $node instanceof AssignOp ||
                 $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -389,24 +387,32 @@ final class PHPStanNodeScopeResolver
         if (! $expr->isFirstClassCallable()) {
             foreach ($expr->getArgs() as $arg) {
                 $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                if ($arg->value instanceof PropertyFetch) {
+                    $arg->value->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
             }
         }
     }
 
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
-        if (! $assign->var instanceof Variable || ! $assign->var->name instanceof Variable) {
-            $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            return;
+        $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        if ($assign->var instanceof Variable && $assign->var->name instanceof Expr) {
+            $assign->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
+        $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $expr = $assign;
 
         while ($expr instanceof Assign || $expr instanceof AssignOp) {
             $this->processArgsForCallike($expr->expr, $mutatingScope);
 
-            // decorate value as well
             $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($expr->var instanceof Variable && $expr->var->name instanceof Expr) {
+                $expr->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+            $expr->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
             $expr = $expr->expr;
         }
     }
