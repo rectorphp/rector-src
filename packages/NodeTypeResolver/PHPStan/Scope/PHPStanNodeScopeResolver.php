@@ -39,11 +39,13 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
 use PHPStan\AnalysedCodeException;
@@ -132,7 +134,19 @@ final class PHPStanNodeScopeResolver
         ): void {
             if ($node instanceof FileWithoutNamespace) {
                 $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
+
                 return;
+            }
+
+            if ($node instanceof Namespace_ && $node->name instanceof Name) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $mutatingScope = $mutatingScope->enterNamespace($node->name->toString());
+
+                return;
+            }
+
+            if ($node instanceof UseUse) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ((
@@ -369,6 +383,7 @@ final class PHPStanNodeScopeResolver
         foreach ($array->items as $arrayItem) {
             if ($arrayItem instanceof ArrayItem) {
                 $arrayItem->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $this->processArrayItem($arrayItem, $mutatingScope);
             }
         }
     }
