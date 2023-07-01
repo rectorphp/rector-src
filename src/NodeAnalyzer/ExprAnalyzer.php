@@ -44,7 +44,11 @@ final class ExprAnalyzer
         }
 
         $type = $scope->getType($expr);
-        return ! $nativeType->equals($type);
+        if ($nativeType instanceof \PHPStan\Type\UnionType) {
+            return ! $nativeType->equals($type);
+        }
+
+        return ! $nativeType->isSuperTypeOf($type)->yes();
     }
 
     public function isDynamicExpr(Expr $expr): bool
