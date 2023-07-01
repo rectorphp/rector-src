@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -17,6 +18,7 @@ use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
@@ -28,6 +30,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -38,12 +41,14 @@ use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\Node\UnionType;
@@ -139,13 +144,33 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Namespace_ && $node->name instanceof Name) {
+                $mutatingScope->enterNamespace($node->name->toString());
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $mutatingScope = $mutatingScope->enterNamespace($node->name->toString());
+            }
 
-                return;
+            if ($node instanceof Instanceof_) {
+                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof UseUse) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof GroupUse) {
+                $node->prefix->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                foreach ($node->uses as $use) {
+                    $use->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
+            if ($node instanceof TraitUse) {
+                foreach ($node->traits as $traitName) {
+                    $traitName->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+            }
+
+            if ($node instanceof Attribute) {
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
@@ -282,6 +307,15 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
+                if (($node instanceof Class_ || $node instanceof Interface_) && $node->extends instanceof FullyQualified) {
+                    $node->extends->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
+                if ($node instanceof Class_ || $node instanceof Enum_) {
+                    foreach ($node->implements as $implement) {
+                        $implement->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
+                }
             }
 
             if ($node instanceof Stmt) {
