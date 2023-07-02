@@ -22,8 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class StrictArrayParamDimFetchRector extends AbstractRector
 {
-    public function __construct(private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard)
-    {
+    public function __construct(
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
