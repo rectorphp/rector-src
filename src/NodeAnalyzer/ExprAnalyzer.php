@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
-use PHPStan\Type\UnionType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -16,6 +15,7 @@ use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\Encapsed;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeManipulator\ArrayManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -49,7 +49,8 @@ final class ExprAnalyzer
             return ! $nativeType->equals($type);
         }
 
-        return ! $nativeType->isSuperTypeOf($type)->yes();
+        return ! $nativeType->isSuperTypeOf($type)
+            ->yes();
     }
 
     public function isDynamicExpr(Expr $expr): bool
