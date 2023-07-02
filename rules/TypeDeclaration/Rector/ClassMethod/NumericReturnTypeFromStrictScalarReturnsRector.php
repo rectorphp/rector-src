@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,6 +37,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private ExprAnalyzer $exprAnalyzer,
+    )
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change numeric return type based on strict returns type operations', [
@@ -150,6 +157,12 @@ CODE_SAMPLE
         BinaryOp $binaryOp,
         ClassMethod|Function_ $functionLike
     ): null|Function_|ClassMethod {
+        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->left)) {
+            return null;
+        }
+        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->right)) {
+            return null;
+        }
         $leftType = $this->getType($binaryOp->left);
         $rightType = $this->getType($binaryOp->right);
 

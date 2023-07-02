@@ -7,7 +7,14 @@ final class SkipPhpdocTyped
     /**
      * @param int $first
      */
-    public function resolve($first, int $second) {
+    public function resolveLeft($first, int $second) {
+        return $first + $second;
+    }
+
+    /**
+     * @param int $second
+     */
+    public function resolveRight(int $first, $second) {
         return $first + $second;
     }
 }
