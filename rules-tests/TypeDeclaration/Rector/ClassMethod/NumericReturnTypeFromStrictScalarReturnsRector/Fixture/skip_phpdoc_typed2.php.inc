@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromS
 final class SkipPhpdocTyped
 {
     /**
-     * @param 0|1 $first
+     * @param int $first
      */
     public function resolve($first, int $second) {
         return $first + $second;
