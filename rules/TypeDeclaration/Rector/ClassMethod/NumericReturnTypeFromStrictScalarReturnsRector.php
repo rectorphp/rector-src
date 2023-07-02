@@ -121,7 +121,7 @@ CODE_SAMPLE
             || $return->expr instanceof ShiftLeft
             || $return->expr instanceof BitwiseOr
         ) {
-            if ($this->isBinaryOpContainsNonTypedParam($return->expr)) {
+            if ($this->isBinaryOpContainingNonTypedParam($return->expr)) {
                 return null;
             }
 
@@ -157,7 +157,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isBinaryOpContainsNonTypedParam(
+    private function isBinaryOpContainingNonTypedParam(
         BinaryOp $binaryOp
     ):bool {
         if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->left)) {
