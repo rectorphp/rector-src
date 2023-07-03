@@ -24,12 +24,12 @@ final class CacheFactory
      */
     public function create(): Cache
     {
-        $cacheDirectory = $this->parameterProvider->provideStringParameter(Option::CACHE_DIR);
+        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
 
         $cacheClass = FileCacheStorage::class;
 
         if (SimpleParameterProvider::hasParameter(Option::CACHE_CLASS)) {
-            $cacheClass = $this->parameterProvider->provideStringParameter(Option::CACHE_CLASS);
+            $cacheClass = SimpleParameterProvider::provideStringParameter(Option::CACHE_CLASS);
         }
 
         if ($cacheClass === FileCacheStorage::class) {

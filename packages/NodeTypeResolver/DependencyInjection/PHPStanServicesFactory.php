@@ -52,7 +52,7 @@ final class PHPStanServicesFactory
 
         $containerFactory = new ContainerFactory(getcwd());
         $this->container = $containerFactory->create(
-            $parameterProvider->provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+            SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
             $additionalConfigFiles,
             []
         );
