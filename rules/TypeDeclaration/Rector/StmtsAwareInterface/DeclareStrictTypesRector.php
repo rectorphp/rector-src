@@ -62,11 +62,14 @@ CODE_SAMPLE
         $stmt = current($newStmts);
 
         if ($stmt instanceof FileWithoutNamespace) {
-            $stmt = current($stmt->stmts);
+            $currentStmt = current($stmt->stmts);
 
-            if (! $stmt instanceof Stmt) {
+            if (! $currentStmt instanceof Stmt) {
                 return null;
             }
+
+            $nodes = $stmt->stmts;
+            $stmt = $currentStmt;
         }
 
         // when first stmt is Declare_, verify if there is strict_types definition already,
