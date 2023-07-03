@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class SkipPhpdocTyped
+final class SkipPhpdocTypedProps
 {
     /**
      * @var 0|1
