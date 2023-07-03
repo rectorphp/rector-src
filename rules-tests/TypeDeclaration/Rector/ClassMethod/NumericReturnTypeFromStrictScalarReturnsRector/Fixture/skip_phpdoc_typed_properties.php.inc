@@ -9,16 +9,7 @@ final class SkipPhpdocTyped
      */
     private $prop1;
 
-    /**
-     * @var int
-     */
-    private $prop2;
-
     public function resolve1(int $second) {
         return $this->prop1 + $second;
-    }
-
-    public function resolve2(int $second) {
-        return $this->prop2 + $second;
     }
 }
