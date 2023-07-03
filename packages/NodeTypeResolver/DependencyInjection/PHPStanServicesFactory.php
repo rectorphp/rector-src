@@ -15,7 +15,6 @@ use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Symfony\Component\Filesystem\Filesystem;
@@ -30,7 +29,6 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
         BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
