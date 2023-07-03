@@ -7,7 +7,9 @@ namespace Rector\DeadCode\NodeAnalyzer;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
@@ -32,20 +34,38 @@ final class CallCollectionAnalyzer
                 continue;
             }
 
+            if ($this->isSelfStatic($call) && $this->shouldSkip($call, $classMethodName)) {
+                return true;
+            }
+
             if ($callerType->getClassName() !== $className) {
                 continue;
             }
 
-            if (! $call->name instanceof Identifier) {
-                return true;
-            }
-
-            // the method is used
-            if ($this->nodeNameResolver->isName($call->name, $classMethodName)) {
+            if ($this->shouldSkip($call, $classMethodName)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function isSelfStatic(MethodCall|StaticCall $call): bool
+    {
+        return $call instanceof StaticCall && $call->class instanceof Name && in_array(
+            $call->class->toString(),
+            [ObjectReference::SELF, ObjectReference::STATIC],
+            true
+        );
+    }
+
+    private function shouldSkip(StaticCall|MethodCall $call, string $classMethodName): bool
+    {
+        if (! $call->name instanceof Identifier) {
+            return true;
+        }
+
+        // the method is used
+        return $this->nodeNameResolver->isName($call->name, $classMethodName);
     }
 }
