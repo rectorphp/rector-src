@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
+ * @deprecated Use SimpleParameterProvider to avoid coupling with Symfony container.
+ * This class will be removed in next major release.
  * @api
  */
 final class ParameterProvider

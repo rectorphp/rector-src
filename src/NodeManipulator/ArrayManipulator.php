@@ -15,7 +15,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 final class ArrayManipulator
 {
-    private ExprAnalyzer $exprAnalyzer;
+    private readonly ExprAnalyzer $exprAnalyzer;
 
     public function __construct(
         private readonly RectorChangeCollector $rectorChangeCollector
