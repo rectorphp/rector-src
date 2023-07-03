@@ -85,9 +85,13 @@ final class SimpleParameterProvider
     /**
      * @param Option::* $name
      */
-    public static function provideBoolParameter(string $name): bool
+    public static function provideBoolParameter(string $name, ?bool $default = null): bool
     {
-        return self::$parameters[$name];
+        if ($default === null) {
+            self::ensureParameterIsSet($name);
+        }
+
+        return self::$parameters[$name] ?? $default;
     }
 
     /**
