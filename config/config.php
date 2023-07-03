@@ -12,7 +12,6 @@ use PhpParser\ConstExprEvaluator;
 use PhpParser\Lexer;
 use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
 use PHPStan\Dependency\DependencyResolver;
@@ -51,6 +50,7 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\NonPhpFileProcessor;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\Core\PHPStan\NodeVisitor\ImprovedParentConnectingVisitor;
 use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
@@ -191,7 +191,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(BuilderFactory::class);
     $services->set(CloningVisitor::class);
-    $services->set(ParentConnectingVisitor::class);
+    $services->set(ImprovedParentConnectingVisitor::class);
     $services->set(NodeFinder::class);
 
     $services->set(RectorConsoleOutputStyle::class)

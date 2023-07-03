@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
+use Rector\Core\PHPStan\NodeVisitor\ImprovedParentConnectingVisitor;
 
 final class NodeConnectingTraverser extends NodeTraverser
 {
@@ -13,6 +13,6 @@ final class NodeConnectingTraverser extends NodeTraverser
     {
         parent::__construct();
 
-        $this->addVisitor(new ParentConnectingVisitor());
+        $this->addVisitor(new ImprovedParentConnectingVisitor());
     }
 }
