@@ -74,6 +74,12 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
                 }
             }
 
+            if ($stmt instanceof Switch_) {
+                foreach ($stmt->cases as $case) {
+                    $case->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+                }
+            }
+
             if ((
                 $stmt instanceof Expression ||
                 $stmt instanceof Return_ ||
