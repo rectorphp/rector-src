@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -14,6 +15,7 @@ use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
@@ -162,6 +164,14 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
             if ($node->dim instanceof Expr) {
                 $node->dim->setAttribute(AttributeKey::PARENT_NODE, $node);
             }
+        }
+
+        if ($node instanceof Arg) {
+            $node->value->setAttribute(AttributeKey::PARENT_NODE, $node);
+        }
+
+        if ($node instanceof Param) {
+            $node->var->setAttribute(AttributeKey::PARENT_NODE, $node);
         }
     }
 }
