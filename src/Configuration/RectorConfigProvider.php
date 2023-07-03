@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Configuration;
 
 use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 
 /**
  * Rector native configuration provider, to keep deprecated options hidden,
@@ -24,7 +25,7 @@ final class RectorConfigProvider
 
     public function shouldRemoveUnusedImports(): bool
     {
-        return $this->parameterProvider->provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS);
+        return SimpleParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS);
     }
 
     /**
@@ -40,16 +41,16 @@ final class RectorConfigProvider
      */
     public function getSymfonyContainerXml(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER);
+        return SimpleParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER);
     }
 
     public function getIndentChar(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::INDENT_CHAR, ' ');
+        return SimpleParameterProvider::provideStringParameter(Option::INDENT_CHAR, ' ');
     }
 
     public function getIndentSize(): int
     {
-        return $this->parameterProvider->provideIntParameter(Option::INDENT_SIZE);
+        return SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
     }
 }

@@ -8,7 +8,7 @@ use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileDecorator\FileDiffFileDecorator;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Util\ArrayParametersMerger;
@@ -48,7 +48,6 @@ final class ApplicationFileProcessor
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
-        private readonly ParameterProvider $parameterProvider,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
@@ -229,8 +228,8 @@ final class ApplicationFileProcessor
 
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
-            $this->parameterProvider->provideIntParameter(Option::PARALLEL_JOB_SIZE),
-            $this->parameterProvider->provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
+            SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_SIZE),
+            SimpleParameterProvider::provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
             $filePaths
         );
 
