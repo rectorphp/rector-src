@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,6 +37,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private ExprAnalyzer $exprAnalyzer,
+    )
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change numeric return type based on strict returns type operations', [
@@ -90,7 +97,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($return->expr instanceof PreInc || $return->expr instanceof PostInc || $return->expr instanceof PostDec || $return->expr instanceof PreDec) {
+        if ($return->expr instanceof PreInc
+            || $return->expr instanceof PostInc
+            || $return->expr instanceof PostDec
+            || $return->expr instanceof PreDec
+        ) {
             $exprType = $this->getType($return->expr);
             if ($exprType instanceof IntegerType) {
                 $node->returnType = new Identifier('int');
@@ -101,7 +112,19 @@ CODE_SAMPLE
         }
 
         // @see https://chat.openai.com/share/a9e4fb74-5366-4c4c-9998-d6caeb8b5acc
-        if ($return->expr instanceof Minus || $return->expr instanceof Plus || $return->expr instanceof Mul || $return->expr instanceof Mod || $return->expr instanceof BitwiseAnd || $return->expr instanceof ShiftRight || $return->expr instanceof ShiftLeft || $return->expr instanceof BitwiseOr) {
+        if ($return->expr instanceof Minus
+            || $return->expr instanceof Plus
+            || $return->expr instanceof Mul
+            || $return->expr instanceof Mod
+            || $return->expr instanceof BitwiseAnd
+            || $return->expr instanceof ShiftRight
+            || $return->expr instanceof ShiftLeft
+            || $return->expr instanceof BitwiseOr
+        ) {
+            if ($this->isBinaryOpContainingNonTypedParam($return->expr)) {
+                return null;
+            }
+
             return $this->refactorBinaryOp($return->expr, $node);
         }
 
@@ -164,5 +187,18 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isBinaryOpContainingNonTypedParam(
+        BinaryOp $binaryOp
+    ):bool {
+        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->left)) {
+            return true;
+        }
+        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->right)) {
+            return true;
+        }
+
+        return false;
     }
 }
