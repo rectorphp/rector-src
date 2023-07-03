@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
@@ -130,6 +129,7 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
                 foreach ($stmt->catches as $catch) {
                     $catch->setAttribute(AttributeKey::PARENT_NODE, $stmt);
                 }
+
                 if ($stmt->finally instanceof Finally_) {
                     $stmt->finally->setAttribute(AttributeKey::PARENT_NODE, $stmt);
                 }
