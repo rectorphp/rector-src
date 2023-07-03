@@ -77,9 +77,16 @@ final class SimpleParameterProvider
         return self::$parameters[$name] ?? $default;
     }
 
-    public static function provideIntParameter(string $key): int
+    /**
+     * @param Option::* $name
+     */
+    public static function provideIntParameter(string $name, ?int $default = null): ?int
     {
-        return self::$parameters[$key];
+        if ($default === null) {
+            self::ensureParameterIsSet($name);
+        }
+
+        return self::$parameters[$name] ?? $default;
     }
 
     /**

@@ -34,7 +34,10 @@ final class PhpVersionProvider
      */
     public function provide(): int
     {
-        $phpVersionFeatures = SimpleParameterProvider::provideIntParameter(Option::PHP_VERSION_FEATURES);
+        $phpVersionFeatures = SimpleParameterProvider::hasParameter(Option::PHP_VERSION_FEATURES)
+            ? SimpleParameterProvider::provideIntParameter(Option::PHP_VERSION_FEATURES)
+            : null;
+
         $this->validatePhpVersionFeaturesParameter($phpVersionFeatures);
 
         if ($phpVersionFeatures > 0) {
