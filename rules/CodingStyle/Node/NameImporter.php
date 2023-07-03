@@ -10,7 +10,7 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\AliasUsesResolver;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -27,7 +27,6 @@ final class NameImporter
     public function __construct(
         private readonly AliasUsesResolver $aliasUsesResolver,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly ParameterProvider $parameterProvider,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
@@ -79,7 +78,7 @@ final class NameImporter
         }
 
         // Importing root namespace classes (like \DateTime) is optional
-        if (! $this->parameterProvider->provideBoolParameter(Option::IMPORT_SHORT_CLASSES)) {
+        if (! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_SHORT_CLASSES)) {
             $stringName = $name->toString();
             if (substr_count($stringName, '\\') === 0) {
                 return true;

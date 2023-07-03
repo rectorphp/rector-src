@@ -117,15 +117,11 @@ final class RectorConfig extends ContainerConfigurator
         $parameters->set(Option::AUTO_IMPORT_NAMES, $importNames);
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, $importNames);
 
-        $parameters->set(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
     }
 
     public function importShortClasses(bool $importShortClasses = true): void
     {
-        $parameters = $this->parameters();
-        $parameters->set(Option::IMPORT_SHORT_CLASSES, $importShortClasses);
-
         SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, $importShortClasses);
     }
 
