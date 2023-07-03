@@ -18,9 +18,11 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Do_;
 use PhpParser\Node\Stmt\Echo_;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Global_;
@@ -28,6 +30,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
 use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -88,6 +91,25 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
                 }
 
                 $stmt->valueVar->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+            }
+
+            if ($stmt instanceof If_) {
+                foreach ($stmt->elseifs as $elseIf) {
+                    $elseIf->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+                }
+
+                if ($stmt->else instanceof Else_) {
+                    $stmt->else->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+                }
+            }
+
+            if ($stmt instanceof TryCatch) {
+                foreach ($stmt->catches as $catch) {
+                    $catch->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+                }
+                if ($stmt->finally instanceof Finally_) {
+                    $stmt->finally->setAttribute(AttributeKey::PARENT_NODE, $stmt);
+                }
             }
 
             if ($stmt instanceof For_) {
