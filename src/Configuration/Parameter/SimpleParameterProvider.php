@@ -41,7 +41,8 @@ final class SimpleParameterProvider
 
         if (array_is_list($parameter)) {
             // remove duplicates
-            return array_values(array_unique($parameter));
+            $uniqueParameters = array_unique($parameter);
+            return array_values($uniqueParameters);
         }
 
         return $parameter;

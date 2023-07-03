@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\Core\Configuration\Parameter;
 
+use Rector\Core\Configuration\Option;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * @deprecated Use SimpleParameterProvider to avoid coupling with Symfony container.
- * This class will be removed in next major release.
+ * This class will be removed in next major release
+ *
  * @api
  */
 final class ParameterProvider
@@ -27,12 +29,16 @@ final class ParameterProvider
         $this->parameters = $parameterBag->all();
     }
 
+    /**
+     * @param Option::* $name
+     */
     public function hasParameter(string $name): bool
     {
         return isset($this->parameters[$name]);
     }
 
     /**
+     * @param Option::* $name
      * @api
      */
     public function provideParameter(string $name): mixed
@@ -41,6 +47,7 @@ final class ParameterProvider
     }
 
     /**
+     * @param Option::* $name
      * @api
      */
     public function provideStringParameter(string $name, ?string $default = null): string
@@ -53,7 +60,7 @@ final class ParameterProvider
     }
 
     /**
-     * @api
+     * @param Option::* $name
      * @return mixed[]
      */
     public function provideArrayParameter(string $name): array
@@ -64,25 +71,21 @@ final class ParameterProvider
     }
 
     /**
+     * @param Option::* $name
      * @api
      */
-    public function provideBoolParameter(string $parameterName): bool
+    public function provideBoolParameter(string $name): bool
     {
-        return $this->parameters[$parameterName] ?? false;
-    }
-
-    public function changeParameter(string $name, mixed $value): void
-    {
-        $this->parameters[$name] = $value;
+        return $this->parameters[$name] ?? false;
     }
 
     /**
-     * @api
-     * @return mixed[]
+     * @param Option::* $name
      */
-    public function provide(): array
+    public function changeParameter(string $name, mixed $value): void
     {
-        return $this->parameters;
+        $this->parameters[$name] = $value;
+        SimpleParameterProvider::setParameter($name, $value);
     }
 
     /**

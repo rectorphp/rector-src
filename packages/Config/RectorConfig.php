@@ -37,7 +37,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::PATHS, $paths);
 
-        SimpleParameterProvider::addParameter(Option::PATHS, $paths);
+        SimpleParameterProvider::setParameter(Option::PATHS, $paths);
     }
 
     /**
@@ -225,7 +225,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::AUTOLOAD_PATHS, $autoloadPaths);
 
-        SimpleParameterProvider::addParameter(Option::AUTOLOAD_PATHS, $autoloadPaths);
+        SimpleParameterProvider::setParameter(Option::AUTOLOAD_PATHS, $autoloadPaths);
     }
 
     /**
@@ -238,7 +238,7 @@ final class RectorConfig extends ContainerConfigurator
         $parameters = $this->parameters();
         $parameters->set(Option::BOOTSTRAP_FILES, $bootstrapFiles);
 
-        SimpleParameterProvider::addParameter(Option::BOOTSTRAP_FILES, $bootstrapFiles);
+        SimpleParameterProvider::setParameter(Option::BOOTSTRAP_FILES, $bootstrapFiles);
     }
 
     public function symfonyContainerXml(string $filePath): void

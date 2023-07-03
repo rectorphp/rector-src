@@ -30,7 +30,7 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
+        ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
         BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
