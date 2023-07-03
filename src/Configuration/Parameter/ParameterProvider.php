@@ -39,15 +39,6 @@ final class ParameterProvider
 
     /**
      * @param Option::* $name
-     * @api
-     */
-    public function provideParameter(string $name): mixed
-    {
-        return $this->parameters[$name] ?? null;
-    }
-
-    /**
-     * @param Option::* $name
      * @return mixed[]
      */
     public function provideArrayParameter(string $name): array
