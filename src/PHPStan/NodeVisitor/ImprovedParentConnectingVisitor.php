@@ -7,6 +7,7 @@ namespace Rector\Core\PHPStan\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
@@ -153,6 +154,13 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
         if ($node instanceof Isset_) {
             foreach ($node->vars as $var) {
                 $var->setAttribute(AttributeKey::PARENT_NODE, $node);
+            }
+        }
+
+        if ($node instanceof ArrayDimFetch) {
+            $node->var->setAttribute(AttributeKey::PARENT_NODE, $node);
+            if ($node->dim instanceof Expr) {
+                $node->dim->setAttribute(AttributeKey::PARENT_NODE, $node);
             }
         }
     }
