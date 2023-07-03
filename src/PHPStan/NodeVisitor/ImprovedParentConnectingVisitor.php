@@ -6,6 +6,7 @@ namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -13,8 +14,14 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Case_;
@@ -176,6 +183,12 @@ final class ImprovedParentConnectingVisitor extends NodeVisitorAbstract
             $node->var->setAttribute(AttributeKey::PARENT_NODE, $node);
             if ($node->dim instanceof Expr) {
                 $node->dim->setAttribute(AttributeKey::PARENT_NODE, $node);
+            }
+        }
+
+        if ($node instanceof FuncCall || $node instanceof MethodCall || $node instanceof StaticCall || $node instanceof New_ || $node instanceof NullsafeMethodCall || $node instanceof Attribute) {
+            foreach ($node->args as $arg) {
+                $arg->setAttribute(AttributeKey::PARENT_NODE, $node);
             }
         }
 
