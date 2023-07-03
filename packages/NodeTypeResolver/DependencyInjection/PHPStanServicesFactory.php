@@ -16,6 +16,7 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -29,7 +30,7 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
+        ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
         BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
@@ -145,10 +146,8 @@ final class PHPStanServicesFactory
     {
         $additionalConfigFiles = [];
 
-        if ($this->parameterProvider->hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
-            $additionalConfigFiles[] = $this->parameterProvider->provideStringParameter(
-                Option::PHPSTAN_FOR_RECTOR_PATH
-            );
+        if (SimpleParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
+            $additionalConfigFiles[] = SimpleParameterProvider::provideStringParameter(Option::PHPSTAN_FOR_RECTOR_PATH);
         }
 
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';

@@ -691,3 +691,13 @@ parameters:
             path: src/PhpParser/Node/BetterNodeFinder.php
 
         - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
+
+        # refactor in next PR
+        - '#(.*?) has typehint with deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
+
+        -
+            message: '#Do not use static property#'
+            path: src/Configuration/Parameter/SimpleParameterProvider.php
+
+
+        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider\:#'

@@ -38,9 +38,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private ExprAnalyzer $exprAnalyzer,
-    )
-    {
+        private readonly ExprAnalyzer $exprAnalyzer,
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -189,16 +188,12 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isBinaryOpContainingNonTypedParam(
-        BinaryOp $binaryOp
-    ):bool {
+    private function isBinaryOpContainingNonTypedParam(BinaryOp $binaryOp): bool
+    {
         if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->left)) {
             return true;
         }
-        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->right)) {
-            return true;
-        }
 
-        return false;
+        return $this->exprAnalyzer->isNonTypedFromParam($binaryOp->right);
     }
 }
