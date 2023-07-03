@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Configuration;
 
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 
 /**
@@ -13,11 +12,6 @@ use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
  */
 final class RectorConfigProvider
 {
-    public function __construct(
-        private readonly ParameterProvider $parameterProvider
-    ) {
-    }
-
     public function shouldImportNames(): bool
     {
         return SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
@@ -33,7 +27,7 @@ final class RectorConfigProvider
      */
     public function getSymfonyContainerPhp(): string
     {
-        return $this->parameterProvider->provideStringParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER);
+        return SimpleParameterProvider::provideStringParameter(Option::SYMFONY_CONTAINER_PHP_PATH_PARAMETER);
     }
 
     /**

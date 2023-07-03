@@ -7,14 +7,12 @@ namespace Rector\Caching;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class CacheFactory
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly Filesystem $fileSystem
     ) {
     }
@@ -24,12 +22,12 @@ final class CacheFactory
      */
     public function create(): Cache
     {
-        $cacheDirectory = $this->parameterProvider->provideStringParameter(Option::CACHE_DIR);
+        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
 
         $cacheClass = FileCacheStorage::class;
 
         if (SimpleParameterProvider::hasParameter(Option::CACHE_CLASS)) {
-            $cacheClass = $this->parameterProvider->provideStringParameter(Option::CACHE_CLASS);
+            $cacheClass = SimpleParameterProvider::provideStringParameter(Option::CACHE_CLASS);
         }
 
         if ($cacheClass === FileCacheStorage::class) {
