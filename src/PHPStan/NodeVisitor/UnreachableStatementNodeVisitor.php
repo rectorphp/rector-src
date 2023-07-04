@@ -39,7 +39,8 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
         $filePath = $file->getFilePath();
         $isPassedUnreachableStmt = false;
-        $mutatingScope ??= $node->getAttribute(AttributeKey::SCOPE);
+        /** @var \PHPStan\Analyser\MutatingScope $mutatingScope **/
+        $mutatingScope = $node->getAttribute(AttributeKey::SCOPE);
 
         foreach ($node->stmts as $stmt) {
             if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
