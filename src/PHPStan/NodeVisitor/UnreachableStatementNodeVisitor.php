@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PHPStan\NodeVisitor;
 
+use PHPStan\Analyser\MutatingScope;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
@@ -39,7 +40,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
         $filePath = $file->getFilePath();
         $isPassedUnreachableStmt = false;
-        /** @var \PHPStan\Analyser\MutatingScope $mutatingScope **/
+        /** @var MutatingScope $mutatingScope **/
         $mutatingScope = $node->getAttribute(AttributeKey::SCOPE);
 
         foreach ($node->stmts as $stmt) {
