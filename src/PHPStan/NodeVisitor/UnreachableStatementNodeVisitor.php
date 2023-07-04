@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
