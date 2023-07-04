@@ -48,22 +48,13 @@ final class NodeScopeAndMetadataDecorator
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $file->getFilePath());
 
         if ($this->phpStanNodeScopeResolver->hasUnreachableStatementNode()) {
-            $unreachableStatementNodeVisitor = new UnreachableStatementNodeVisitor(
-                $this->phpStanNodeScopeResolver,
-                $file->getFilePath(),
-                $this->scopeFactory
+            $this->nodeTraverser->addVisitor(
+                new UnreachableStatementNodeVisitor(
+                    $this->phpStanNodeScopeResolver,
+                    $file->getFilePath(),
+                    $this->scopeFactory
+                )
             );
-            $this->nodeTraverser->addVisitor($unreachableStatementNodeVisitor);
-
-            $stmts = $this->nodeTraverser->traverse($stmts);
-
-            /**
-             * immediate remove UnreachableStatementNodeVisitor after traverse to avoid
-             * re-used in nodeTraverser property in next file
-             */
-            $this->nodeTraverser->removeVisitor($unreachableStatementNodeVisitor);
-
-            return $stmts;
         }
 
         return $this->nodeTraverser->traverse($stmts);
