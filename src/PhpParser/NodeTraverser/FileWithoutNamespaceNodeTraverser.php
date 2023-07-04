@@ -26,10 +26,6 @@ final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
         }
 
         $fileWithoutNamespace = new FileWithoutNamespace($nodes);
-        foreach ($nodes as $node) {
-            $node->setAttribute(AttributeKey::PARENT_NODE, $fileWithoutNamespace);
-        }
-
         return [$fileWithoutNamespace];
     }
 }
