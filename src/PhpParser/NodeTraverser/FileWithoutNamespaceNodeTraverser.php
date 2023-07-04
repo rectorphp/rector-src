@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
 {
@@ -26,10 +25,6 @@ final class FileWithoutNamespaceNodeTraverser extends NodeTraverser
         }
 
         $fileWithoutNamespace = new FileWithoutNamespace($nodes);
-        foreach ($nodes as $node) {
-            $node->setAttribute(AttributeKey::PARENT_NODE, $fileWithoutNamespace);
-        }
-
         return [$fileWithoutNamespace];
     }
 }

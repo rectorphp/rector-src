@@ -61,17 +61,17 @@ final class UndefinedVariableResolver
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if ($node instanceof Foreach_) {
+            if ($node instanceof Foreach_ || $node instanceof Case_) {
                 // handled above
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-            }
-
-            if ($node instanceof Case_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
             if ($node instanceof Stmt) {
                 $currentStmt = $node;
+
+                if ($currentStmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
             }
 
             if (! $node instanceof Variable) {
@@ -84,16 +84,8 @@ final class UndefinedVariableResolver
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            if ($node->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
-                return null;
-            }
-
             $variableName = (string) $this->nodeNameResolver->getName($node);
-            if ($this->shouldSkipVariable($node, $variableName, $checkedVariables)) {
-                return null;
-            }
-
-            if ($this->hasVariableTypeOrCurrentStmtUnreachable($node, $variableName, $currentStmt)) {
+            if ($this->shouldSkipVariable($node, $variableName, $checkedVariables, $currentStmt)) {
                 return null;
             }
 
@@ -205,8 +197,12 @@ final class UndefinedVariableResolver
     /**
      * @param string[] $checkedVariables
      */
-    private function shouldSkipVariable(Variable $variable, string $variableName, array &$checkedVariables): bool
-    {
+    private function shouldSkipVariable(
+        Variable $variable,
+        string $variableName,
+        array &$checkedVariables,
+        ?Stmt $currentStmt
+    ): bool {
         $variableName = $this->nodeNameResolver->getName($variable);
 
         // skip $this, as probably in outer scope
@@ -226,7 +222,15 @@ final class UndefinedVariableResolver
             return true;
         }
 
-        return in_array($variableName, $checkedVariables, true);
+        if (in_array($variableName, $checkedVariables, true)) {
+            return true;
+        }
+
+        if ($variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
+            return true;
+        }
+
+        return $this->hasVariableTypeOrCurrentStmtUnreachable($variable, $variableName, $currentStmt);
     }
 
     private function isDifferentWithOriginalNodeOrNoScope(Variable $variable): bool
