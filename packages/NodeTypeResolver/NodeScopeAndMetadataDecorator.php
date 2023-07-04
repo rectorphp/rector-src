@@ -63,6 +63,9 @@ final class NodeScopeAndMetadataDecorator
              */
             $this->nodeTraverser->removeVisitor($unreachableStatementNodeVisitor);
 
+            // next file must be init hasUnreachableStatementNode to be false again
+            $this->phpStanNodeScopeResolver->resetHasUnreachableStatementNode();
+
             return $stmts;
         }
 

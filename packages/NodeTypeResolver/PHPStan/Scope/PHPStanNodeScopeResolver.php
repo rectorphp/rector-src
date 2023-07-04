@@ -119,7 +119,6 @@ final class PHPStanNodeScopeResolver
         ?MutatingScope $formerMutatingScope = null
     ): array {
         $isScopeRefreshing = $formerMutatingScope instanceof MutatingScope;
-        $this->hasUnreachableStatementNode = false;
 
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
@@ -494,6 +493,11 @@ final class PHPStanNodeScopeResolver
     public function hasUnreachableStatementNode(): bool
     {
         return $this->hasUnreachableStatementNode;
+    }
+
+    public function resetHasUnreachableStatementNode(): void
+    {
+        $this->hasUnreachableStatementNode = false;
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
