@@ -71,6 +71,10 @@ final class UndefinedVariableResolver
             }
 
             if ($node instanceof Stmt) {
+                if ($node->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 $currentStmt = $node;
             }
 
