@@ -20,7 +20,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
     public function __construct(
         private readonly ScopeFactory $scopeFactory,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly PHPStanNodeScopeResolver $pHPStanNodeScopeResolver
+        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver
     )
     {
     }
@@ -47,7 +47,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
         foreach ($node->stmts as $stmt) {
             if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                 $mutatingScope ??= $this->scopeFactory->createFromFile($file->getFilePath());
-                $this->pHPStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
+                $this->phpStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
 
                 $isPassedUnreachableStmt = true;
                 continue;
@@ -55,7 +55,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
             if ($isPassedUnreachableStmt) {
                 $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->pHPStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
+                $this->phpStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
             }
         }
 
