@@ -34,8 +34,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
@@ -65,7 +63,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\FileSystem\DependencyResolver;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -411,26 +408,6 @@ final class PHPStanNodeScopeResolver
             $expr->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
             $expr = $expr->expr;
-        }
-    }
-
-    private function setChildOfUnreachableStatementNodeAttribute(Stmt $stmt, MutatingScope $mutatingScope): void
-    {
-        if (! $stmt instanceof StmtsAwareInterface && ! $stmt instanceof ClassLike && ! $stmt instanceof Declare_) {
-            return;
-        }
-
-        if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) !== true) {
-            return;
-        }
-
-        if ($stmt->stmts === null) {
-            return;
-        }
-
-        foreach ($stmt->stmts as $childStmt) {
-            $childStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-            $childStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
     }
 
