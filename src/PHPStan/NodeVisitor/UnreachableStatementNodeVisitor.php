@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Rector\Core\PHPStan\NodeVisitor;
 
-use PHPStan\Analyser\MutatingScope;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
 final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver
+        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private readonly ScopeFactory $scopeFactory
     ) {
     }
 
@@ -40,8 +42,11 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
         $filePath = $file->getFilePath();
         $isPassedUnreachableStmt = false;
-        /** @var MutatingScope $mutatingScope **/
+
         $mutatingScope = $node->getAttribute(AttributeKey::SCOPE);
+        $mutatingScope = $mutatingScope instanceof MutatingScope ? $mutatingScope : $this->scopeFactory->createFromFile(
+            $filePath
+        );
 
         foreach ($node->stmts as $stmt) {
             if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
