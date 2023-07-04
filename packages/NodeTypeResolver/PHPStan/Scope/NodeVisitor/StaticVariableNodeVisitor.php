@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -43,7 +44,7 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Sco
             }
 
             foreach ($stmt->vars as $staticVar) {
-                if (is_string($staticVar->var->name)) {
+                if (! $staticVar->var->name instanceof Expr) {
                     $staticVar->var->setAttribute(AttributeKey::IS_STATIC_VAR, true);
                     $staticVariableNames[] = $staticVar->var->name;
                 }
@@ -73,7 +74,7 @@ final class StaticVariableNodeVisitor extends NodeVisitorAbstract implements Sco
                     return null;
                 }
 
-                if (! is_string($subNode->name)) {
+                if ($subNode->name instanceof Expr) {
                     return null;
                 }
 
