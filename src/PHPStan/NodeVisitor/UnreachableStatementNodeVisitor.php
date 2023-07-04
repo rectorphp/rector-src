@@ -42,11 +42,10 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
         $filePath = $file->getFilePath();
         $isPassedUnreachableStmt = false;
-        $mutatingScope = null;
+        $mutatingScope ??= $node->getAttribute(AttributeKey::SCOPE);
 
         foreach ($node->stmts as $stmt) {
             if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
-                $mutatingScope ??= $this->scopeFactory->createFromFile($file->getFilePath());
                 $this->phpStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
 
                 $isPassedUnreachableStmt = true;
