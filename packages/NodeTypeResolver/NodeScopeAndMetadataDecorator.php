@@ -57,8 +57,10 @@ final class NodeScopeAndMetadataDecorator
 
             $stmts = $this->nodeTraverser->traverse($stmts);
 
-            // immediate remove UnreachableStatementNodeVisitor after traverse to avoid
-            // re-used in nodeTraverser property in next file
+            /**
+             * immediate remove UnreachableStatementNodeVisitor after traverse to avoid
+             * re-used in nodeTraverser property in next file
+             *
             $this->nodeTraverser->removeVisitor($unreachableStamtentNodeVisitor);
 
             return $stmts;
