@@ -13,16 +13,13 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
 final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly ScopeFactory $scopeFactory,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver
-    )
-    {
+    ) {
     }
 
     public function enterNode(Node $node): ?Node
