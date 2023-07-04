@@ -334,10 +334,6 @@ final class PHPStanNodeScopeResolver
                 }
             }
 
-            if ($node instanceof Stmt) {
-                $this->setChildOfUnreachableStatementNodeAttribute($node, $mutatingScope);
-            }
-
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
@@ -511,23 +507,6 @@ final class PHPStanNodeScopeResolver
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
-
-        $parentNode = $unreachableStatementNode->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof StmtsAwareInterface && ! $parentNode instanceof ClassLike && ! $parentNode instanceof Declare_) {
-            return;
-        }
-
-        $stmtKey = $unreachableStatementNode->getAttribute(AttributeKey::STMT_KEY);
-        $totalKeys = $parentNode->stmts === null ? 0 : count($parentNode->stmts);
-
-        for ($key = $stmtKey + 1; $key < $totalKeys; ++$key) {
-            if (! isset($parentNode->stmts[$key])) {
-                continue;
-            }
-
-            $parentNode->stmts[$key]->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-            $this->processNodes([$parentNode->stmts[$key]], $filePath, $mutatingScope);
-        }
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
