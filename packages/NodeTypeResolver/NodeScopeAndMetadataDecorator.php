@@ -13,6 +13,7 @@ use Rector\Core\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
 final class NodeScopeAndMetadataDecorator
 {
@@ -23,7 +24,7 @@ final class NodeScopeAndMetadataDecorator
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         ParentConnectingVisitor $parentConnectingVisitor,
         FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
-        UnreachableStatementNodeVisitor $unreachableStatementNodeVisitor,
+        private readonly ScopeFactory $scopeFactory,
         private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
         $this->nodeTraverser = new NodeTraverser();
@@ -35,8 +36,6 @@ final class NodeScopeAndMetadataDecorator
         $this->nodeTraverser->addVisitor($parentConnectingVisitor);
 
         $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
-
-        $this->nodeTraverser->addVisitor($unreachableStatementNodeVisitor);
     }
 
     /**
@@ -47,6 +46,16 @@ final class NodeScopeAndMetadataDecorator
     {
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $file->getFilePath());
+
+        if ($this->phpStanNodeScopeResolver->hasUnreachableStatementNode()) {
+            $this->nodeTraverser->addVisitor(
+                new UnreachableStatementNodeVisitor(
+                    $this->phpStanNodeScopeResolver,
+                    $file->getFilePath(),
+                    $this->scopeFactory
+                )
+            );
+        }
 
         return $this->nodeTraverser->traverse($stmts);
     }

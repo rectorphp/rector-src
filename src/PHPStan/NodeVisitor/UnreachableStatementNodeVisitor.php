@@ -10,8 +10,6 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
@@ -19,8 +17,8 @@ use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private readonly string $filePath,
         private readonly ScopeFactory $scopeFactory
     ) {
     }
@@ -35,17 +33,11 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        $filePath = $file->getFilePath();
         $isPassedUnreachableStmt = false;
 
         $mutatingScope = $node->getAttribute(AttributeKey::SCOPE);
         $mutatingScope = $mutatingScope instanceof MutatingScope ? $mutatingScope : $this->scopeFactory->createFromFile(
-            $filePath
+            $this->filePath
         );
 
         foreach ($node->stmts as $stmt) {
@@ -57,7 +49,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
             if ($isPassedUnreachableStmt) {
                 $stmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
                 $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->phpStanNodeScopeResolver->processNodes([$stmt], $filePath, $mutatingScope);
+                $this->phpStanNodeScopeResolver->processNodes([$stmt], $this->filePath, $mutatingScope);
             }
         }
 

@@ -86,6 +86,8 @@ final class PHPStanNodeScopeResolver
 
     private readonly NodeTraverser $nodeTraverser;
 
+    private bool $hasUnreachableStatementNode = false;
+
     /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
      */
@@ -117,6 +119,7 @@ final class PHPStanNodeScopeResolver
         ?MutatingScope $formerMutatingScope = null
     ): array {
         $isScopeRefreshing = $formerMutatingScope instanceof MutatingScope;
+        $this->hasUnreachableStatementNode = false;
 
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
@@ -484,6 +487,13 @@ final class PHPStanNodeScopeResolver
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
+
+        $this->hasUnreachableStatementNode = true;
+    }
+
+    public function hasUnreachableStatementNode(): bool
+    {
+        return $this->hasUnreachableStatementNode;
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
