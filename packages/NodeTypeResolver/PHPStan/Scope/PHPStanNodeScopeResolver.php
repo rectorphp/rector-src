@@ -143,46 +143,9 @@ final class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Namespace_ && $node->name instanceof Name) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
             if ($node instanceof Instanceof_) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            if ($node instanceof UseUse) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            if ($node instanceof GroupUse) {
-                $node->prefix->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                foreach ($node->uses as $use) {
-                    $use->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            }
-
-            if ($node instanceof TraitUse) {
-                foreach ($node->traits as $traitName) {
-                    $traitName->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-
-                foreach ($node->adaptations as $precedence) {
-                    if ($precedence instanceof Precedence) {
-                        foreach ($precedence->insteadof as $insteadof) {
-                            $insteadof->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                        }
-
-                        if ($precedence->trait instanceof Name) {
-                            $precedence->trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                        }
-                    }
-                }
-            }
-
-            if ($node instanceof Attribute) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ((
@@ -396,6 +359,10 @@ final class PHPStanNodeScopeResolver
         }
 
         $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+        if (! $assign->expr instanceof Assign && ! $assign->expr instanceof AssignOp) {
+            return;
+        }
 
         $expr = $assign;
 
