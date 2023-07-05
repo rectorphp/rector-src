@@ -360,11 +360,6 @@ final class PHPStanNodeScopeResolver
             );
 
             $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-
-            foreach ($catch->types as $type) {
-                $type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
             $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
         }
 
