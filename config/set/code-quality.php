@@ -23,7 +23,6 @@ use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector;
 use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
-use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToArrayFilterRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
@@ -130,7 +129,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveExtraParametersRector::class,
         SimplifyDeMorganBinaryRector::class,
         SimplifyTautologyTernaryRector::class,
-        SimplifyForeachToArrayFilterRector::class,
         SingleInArrayToCompareRector::class,
         SimplifyIfElseToTernaryRector::class,
         JoinStringConcatRector::class,
