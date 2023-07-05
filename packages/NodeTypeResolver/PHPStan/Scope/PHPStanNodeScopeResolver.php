@@ -281,8 +281,6 @@ final class PHPStanNodeScopeResolver
 
     private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
-        $this->processArgsForCallike($callLike, $mutatingScope);
-
         if ($callLike instanceof StaticCall) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
@@ -307,49 +305,10 @@ final class PHPStanNodeScopeResolver
         }
     }
 
-    private function processArgsForCallike(Expr $expr, MutatingScope $mutatingScope): void
-    {
-        if (! $expr instanceof CallLike) {
-            return;
-        }
-
-        if (! $expr->isFirstClassCallable()) {
-            foreach ($expr->getArgs() as $arg) {
-                $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                if ($arg->value instanceof PropertyFetch) {
-                    $arg->value->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            }
-        }
-    }
-
     private function processAssign(Assign|AssignOp $assign, MutatingScope $mutatingScope): void
     {
         $assign->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-        if ($assign->var instanceof Variable && $assign->var->name instanceof Expr) {
-            $assign->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-        }
-
         $assign->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-        if (! $assign->expr instanceof Assign && ! $assign->expr instanceof AssignOp) {
-            return;
-        }
-
-        $expr = $assign;
-
-        while ($expr instanceof Assign || $expr instanceof AssignOp) {
-            $this->processArgsForCallike($expr->expr, $mutatingScope);
-
-            $expr->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            if ($expr->var instanceof Variable && $expr->var->name instanceof Expr) {
-                $expr->var->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
-            $expr->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-            $expr = $expr->expr;
-        }
     }
 
     private function processArray(Array_ $array, MutatingScope $mutatingScope): void
