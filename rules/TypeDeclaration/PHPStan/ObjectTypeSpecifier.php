@@ -69,7 +69,7 @@ final class ObjectTypeSpecifier
             );
         }
 
-        $aliasedObjectType = $this->matchAliasedObjectType($node, $objectType, $uses);
+        $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
         if ($aliasedObjectType instanceof AliasedObjectType) {
             return $aliasedObjectType;
         }
@@ -92,7 +92,7 @@ final class ObjectTypeSpecifier
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function matchAliasedObjectType(Node $node, ObjectType $objectType, array $uses): ?AliasedObjectType
+    private function matchAliasedObjectType(ObjectType $objectType, array $uses): ?AliasedObjectType
     {
         if ($uses === []) {
             return null;
