@@ -137,11 +137,6 @@ final class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof Instanceof_) {
-                $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
@@ -273,21 +268,6 @@ final class PHPStanNodeScopeResolver
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
-                if ($node instanceof Class_ && $node->extends instanceof FullyQualified) {
-                    $node->extends->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-
-                if ($node instanceof Interface_) {
-                    foreach ($node->extends as $extend) {
-                        $extend->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    }
-                }
-
-                if ($node instanceof Class_ || $node instanceof Enum_) {
-                    foreach ($node->implements as $implement) {
-                        $implement->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    }
-                }
             }
 
             // special case for unreachable nodes
