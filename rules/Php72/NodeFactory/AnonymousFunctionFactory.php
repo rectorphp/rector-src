@@ -9,7 +9,6 @@ use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
@@ -25,11 +24,13 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
+use PhpParser\NodeTraverser;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -44,7 +45,6 @@ use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php72\NodeManipulator\ClosureNestedUsesDecorator;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -65,7 +65,6 @@ final class AnonymousFunctionFactory
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly SimplePhpParser $simplePhpParser,
-        private readonly ClosureNestedUsesDecorator $closureNestedUsesDecorator,
         private readonly AstResolver $astResolver,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly InlineCodeParser $inlineCodeParser
@@ -83,8 +82,6 @@ final class AnonymousFunctionFactory
         Identifier | Name | NullableType | UnionType | ComplexType | null $returnTypeNode,
         bool $static = false
     ): Closure {
-        $useVariables = $this->createUseVariablesFromParams($stmts, $params);
-
         $anonymousFunctionNode = new Closure();
         $anonymousFunctionNode->params = $params;
 
@@ -92,18 +89,45 @@ final class AnonymousFunctionFactory
             $anonymousFunctionNode->static = $static;
         }
 
-        foreach ($useVariables as $useVariable) {
-            $anonymousFunctionNode = $this->closureNestedUsesDecorator->applyNestedUses(
-                $anonymousFunctionNode,
-                $useVariable
-            );
-            $anonymousFunctionNode->uses[] = new ClosureUse($useVariable);
-        }
-
         if ($returnTypeNode instanceof Node) {
             $anonymousFunctionNode->returnType = $returnTypeNode;
         }
 
+        $variableUses = [];
+        $filteredVariables = [];
+
+        $paramsVarNames = array_map(static fn (Param $param): string => $param->var->name, $params);
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $stmts,
+            function (Node $node) use ($paramsVarNames, &$filteredVariables, &$variableUses): ?int {
+                if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $node instanceof Variable) {
+                    return null;
+                }
+
+                if ($node->name === 'this') {
+                    return null;
+                }
+
+                if ($node->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
+                    $filteredVariables[] = $node->name;
+                    return null;
+                }
+
+                if (! $this->nodeNameResolver->isNames($node, array_merge($filteredVariables, $paramsVarNames))) {
+                    $variableUses[] = new ClosureUse($node);
+
+                    $filteredVariables[] = $node->name;
+                }
+
+                return null;
+            }
+        );
+
+        $anonymousFunctionNode->uses = $variableUses;
         $anonymousFunctionNode->stmts = $stmts;
         return $anonymousFunctionNode;
     }
@@ -188,68 +212,6 @@ final class AnonymousFunctionFactory
         );
 
         return $anonymousFunction;
-    }
-
-    /**
-     * @param Param[] $params
-     * @return string[]
-     */
-    private function collectParamNames(array $params): array
-    {
-        $paramNames = [];
-        foreach ($params as $param) {
-            $paramNames[] = $this->nodeNameResolver->getName($param);
-        }
-
-        return $paramNames;
-    }
-
-    /**
-     * @param Node[] $nodes
-     * @param Param[] $params
-     * @return array<string, Variable>
-     */
-    private function createUseVariablesFromParams(array $nodes, array $params): array
-    {
-        $paramNames = $this->collectParamNames($params);
-
-        /** @var Variable[] $variables */
-        $variables = $this->betterNodeFinder->findInstanceOf($nodes, Variable::class);
-
-        /** @var array<string, Variable> $filteredVariables */
-        $filteredVariables = [];
-
-        $alreadyAssignedVariables = [];
-        foreach ($variables as $variable) {
-            // "$this" is allowed
-            if ($this->nodeNameResolver-> isName($variable, 'this')) {
-                continue;
-            }
-
-            $variableName = $this->nodeNameResolver->getName($variable);
-            if ($variableName === null) {
-                continue;
-            }
-
-            if (in_array($variableName, $paramNames, true)) {
-                continue;
-            }
-
-            $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Node && in_array(
-                $parentNode::class,
-                [Assign::class, Foreach_::class, Param::class],
-                true
-            )) {
-                $alreadyAssignedVariables[] = $variableName;
-            }
-
-            if (! $this->nodeNameResolver->isNames($variable, $alreadyAssignedVariables)) {
-                $filteredVariables[$variableName] = $variable;
-            }
-        }
-
-        return $filteredVariables;
     }
 
     /**

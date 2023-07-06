@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
 
 final class SimplePhpParser
 {
@@ -41,6 +42,7 @@ final class SimplePhpParser
             return [];
         }
 
+        $this->nodeConnectingTraverser->addVisitor(new AssignedToNodeVisitor());
         return $this->nodeConnectingTraverser->traverse($stmts);
     }
 }
