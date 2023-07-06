@@ -183,8 +183,10 @@ final class PropertyManipulator
             return false;
         }
 
+        // skip array dim fetches just to be sure
         if ($parentNode instanceof ArrayDimFetch) {
-            return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $parentNode, $scope);
+            return true;
+//            return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $parentNode, $scope);
         }
 
         return false;
