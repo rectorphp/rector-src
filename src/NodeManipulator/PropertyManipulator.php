@@ -6,7 +6,6 @@ namespace Rector\Core\NodeManipulator;
 
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
@@ -29,7 +28,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
-use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
 /**
@@ -50,7 +48,6 @@ final class PropertyManipulator
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReadWritePropertyAnalyzer $readWritePropertyAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -169,7 +166,7 @@ final class PropertyManipulator
 
     private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch, Scope $scope): bool
     {
-        if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR) === true) {
+        if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;
         }
 
@@ -178,18 +175,7 @@ final class PropertyManipulator
             return false;
         }
 
-        $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
-        if (! $parentNode instanceof Node) {
-            return false;
-        }
-
-        // skip array dim fetches just to be sure
-        if ($parentNode instanceof ArrayDimFetch) {
-            return true;
-//            return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $parentNode, $scope);
-        }
-
-        return false;
+        return $propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false);
     }
 
     private function hasAllowedNotReadonlyAnnotationOrAttribute(PhpDocInfo $phpDocInfo, Class_ $class): bool

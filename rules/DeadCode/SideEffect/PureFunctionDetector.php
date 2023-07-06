@@ -124,12 +124,9 @@ final class PureFunctionDetector
     ) {
     }
 
-    public function detect(string|FuncCall $funcCall, Scope $scope): bool
+    public function detect(FuncCall $funcCall, Scope $scope): bool
     {
-        $funcCallName = $funcCall instanceof FuncCall ?
-            $this->nodeNameResolver->getName($funcCall)
-            : $funcCall;
-
+        $funcCallName = $this->nodeNameResolver->getName($funcCall);
         if ($funcCallName === null) {
             return false;
         }
