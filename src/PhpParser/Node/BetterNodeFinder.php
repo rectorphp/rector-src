@@ -398,7 +398,7 @@ final class BetterNodeFinder
         return $scopedNode;
     }
 
-    public function resolveCurrentStatement(Node $node): ?Stmt
+    private function resolveCurrentStatement(Node $node): ?Stmt
     {
         if ($node instanceof Stmt) {
             return $node;
