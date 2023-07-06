@@ -6,11 +6,8 @@ namespace Rector\Core\NodeManipulator;
 
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
@@ -26,15 +23,12 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
-use Rector\ReadWrite\Guard\VariableToConstantGuard;
 use Rector\ReadWrite\NodeAnalyzer\ReadWritePropertyAnalyzer;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
@@ -56,11 +50,9 @@ final class PropertyManipulator
     public function __construct(
         private readonly AssignManipulator $assignManipulator,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly VariableToConstantGuard $variableToConstantGuard,
         private readonly ReadWritePropertyAnalyzer $readWritePropertyAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly NodeTypeResolver $nodeTypeResolver,
@@ -181,46 +173,18 @@ final class PropertyManipulator
             return true;
         }
 
+        // args most likely do not change properties
+        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE)) {
+            return false;
+        }
+
         $parentNode = $propertyFetch->getAttribute(AttributeKey::PARENT_NODE);
         if (! $parentNode instanceof Node) {
             return false;
         }
 
-        if ($parentNode instanceof Arg) {
-            $readArg = $this->variableToConstantGuard->isReadArg($parentNode);
-            if (! $readArg) {
-                return true;
-            }
-
-            $callerNode = $parentNode->getAttribute(AttributeKey::PARENT_NODE);
-            if ($callerNode instanceof MethodCall || $callerNode instanceof StaticCall) {
-                return $this->isFoundByRefParam($callerNode, $scope);
-            }
-        }
-
         if ($parentNode instanceof ArrayDimFetch) {
             return ! $this->readWritePropertyAnalyzer->isRead($propertyFetch, $parentNode, $scope);
-        }
-
-        return false;
-    }
-
-    private function isFoundByRefParam(MethodCall | StaticCall $node, Scope $scope): bool
-    {
-        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if ($functionLikeReflection === null) {
-            return false;
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionLikeReflection,
-            $node,
-            $scope
-        );
-        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-            if ($parameterReflection->passedByReference()->yes()) {
-                return true;
-            }
         }
 
         return false;
