@@ -18,7 +18,6 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\RectorBetterReflectionSo
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\ReadWrite\Contract\ParentNodeReadAnalyzerInterface;
 use Rector\Set\Contract\SetListInterface;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -49,7 +48,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         // used in tests
         FileInfoParser::class,
         TypeWithClassTypeSpecifierInterface::class,
-        ParentNodeReadAnalyzerInterface::class,
         StmtsAwareInterface::class,
 
         ScopeResolverNodeVisitorInterface::class,
