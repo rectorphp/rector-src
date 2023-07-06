@@ -47,7 +47,7 @@ final class PropertyManipulator
     /**
      * @var string[]|class-string<Table>[]
      */
-    private const ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES = [
+    private const DOCTRINE_PROPERTY_ANNOTATIONS = [
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
         'Doctrine\ORM\Mapping\MappedSuperclass',
@@ -228,13 +228,10 @@ final class PropertyManipulator
 
     private function hasAllowedNotReadonlyAnnotationOrAttribute(PhpDocInfo $phpDocInfo, Class_ $class): bool
     {
-        if ($phpDocInfo->hasByAnnotationClasses(self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES)) {
+        if ($phpDocInfo->hasByAnnotationClasses(self::DOCTRINE_PROPERTY_ANNOTATIONS)) {
             return true;
         }
 
-        return $this->phpAttributeAnalyzer->hasPhpAttributes(
-            $class,
-            self::ALLOWED_NOT_READONLY_ANNOTATION_CLASS_OR_ATTRIBUTES
-        );
+        return $this->phpAttributeAnalyzer->hasPhpAttributes($class, self::DOCTRINE_PROPERTY_ANNOTATIONS);
     }
 }
