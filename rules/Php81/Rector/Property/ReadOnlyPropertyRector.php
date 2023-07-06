@@ -109,7 +109,7 @@ CODE_SAMPLE
 
         foreach ($node->getMethods() as $classMethod) {
             foreach ($classMethod->params as $param) {
-                $justChanged = $this->refactorParam($node, $classMethod, $param, $scope);
+                $justChanged = $this->refactorParam($node, $classMethod, $param);
                 // different variable to ensure $hasRemoved not replaced
                 if ($justChanged instanceof Param) {
                     $hasChanged = true;
@@ -118,7 +118,7 @@ CODE_SAMPLE
         }
 
         foreach ($node->getProperties() as $property) {
-            $changedProperty = $this->refactorProperty($node, $property, $scope);
+            $changedProperty = $this->refactorProperty($node, $property);
             if ($changedProperty instanceof Property) {
                 $hasChanged = true;
             }
@@ -136,7 +136,7 @@ CODE_SAMPLE
         return PhpVersionFeature::READONLY_PROPERTY;
     }
 
-    private function refactorProperty(Class_ $class, Property $property, Scope $scope): ?Property
+    private function refactorProperty(Class_ $class, Property $property): ?Property
     {
         // 1. is property read-only?
         if ($property->isReadonly()) {
@@ -159,7 +159,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $property, $scope)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $property)) {
             return null;
         }
 
@@ -177,7 +177,7 @@ CODE_SAMPLE
         return $property;
     }
 
-    private function refactorParam(Class_ $class, ClassMethod $classMethod, Param $param, Scope $scope): Param | null
+    private function refactorParam(Class_ $class, ClassMethod $classMethod, Param $param): Param | null
     {
         if (! $this->visibilityManipulator->hasVisibility($param, Visibility::PRIVATE)) {
             return null;
@@ -188,7 +188,7 @@ CODE_SAMPLE
         }
 
         // promoted property?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $param, $scope)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $param)) {
             return null;
         }
 

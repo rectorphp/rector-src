@@ -56,8 +56,6 @@ parameters:
         - tests/DependencyInjection/config
 
     ignoreErrors:
-        - '#Cognitive complexity for "Rector\\Parallel\\WorkerRunner\:\:run\(\)" is 12, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\Core\\Application\\ApplicationFileProcessor\:\:processFiles\(\)" is 13, keep it under 11#'
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 
         -
@@ -699,5 +697,9 @@ parameters:
             message: '#Do not use static property#'
             path: src/Configuration/Parameter/SimpleParameterProvider.php
 
+        -
+            message: '#Only booleans are allowed in an if condition, mixed given#'
+            paths:
+                - src/NodeManipulator/PropertyManipulator.php
 
-        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider\:#'
+        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
