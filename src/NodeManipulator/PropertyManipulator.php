@@ -13,7 +13,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -60,11 +59,8 @@ final class PropertyManipulator
     ) {
     }
 
-    public function isPropertyChangeableExceptConstructor(
-        Class_ $class,
-        Property | Param $propertyOrParam,
-        Scope $scope
-    ): bool {
+    public function isPropertyChangeableExceptConstructor(Class_ $class, Property | Param $propertyOrParam): bool
+    {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
 
         if ($this->hasAllowedNotReadonlyAnnotationOrAttribute($phpDocInfo, $class)) {
@@ -75,7 +71,7 @@ final class PropertyManipulator
         $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
-            if ($this->isChangeableContext($propertyFetch, $scope)) {
+            if ($this->isChangeableContext($propertyFetch)) {
                 return true;
             }
 
@@ -164,7 +160,7 @@ final class PropertyManipulator
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
     }
 
-    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch, Scope $scope): bool
+    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
     {
         if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;
