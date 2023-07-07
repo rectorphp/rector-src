@@ -66,10 +66,6 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->isVariableAlreadyDefined($variable, $currentName)) {
-            return true;
-        }
-
         if ($this->hasConflictVariable($functionLike, $expectedName)) {
             return true;
         }
@@ -107,7 +103,7 @@ final class BreakingVariableRenameGuard
         }
 
         if ($this->isVariableAlreadyDefined($param->var, $currentName)) {
-            return true;
+            //return true;
         }
 
         if ($this->isRamseyUuidInterface($param)) {
@@ -131,21 +127,6 @@ final class BreakingVariableRenameGuard
 
             return $this->nodeNameResolver->isName($node, $expectedName);
         });
-    }
-
-    private function isVariableAlreadyDefined(Variable $variable, string $currentVariableName): bool
-    {
-        $scope = $variable->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
-        $trinaryLogic = $scope->hasVariableType($currentVariableName);
-        if ($trinaryLogic->yes()) {
-            return true;
-        }
-
-        return $trinaryLogic->maybe();
     }
 
     private function hasConflictVariable(ClassMethod | Function_ | Closure $functionLike, string $newName): bool
