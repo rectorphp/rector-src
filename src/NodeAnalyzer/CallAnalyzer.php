@@ -27,11 +27,6 @@ final class CallAnalyzer
 
     private NodeTypeResolver $nodeTypeResolver;
 
-    public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
-    ) {
-    }
-
     #[Required]
     public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
@@ -74,7 +69,7 @@ final class CallAnalyzer
         return false;
     }
 
-    public function isNewInstance(Expr $expr): bool
+    public function isNewInstance(Expr $expr, ReflectionProvider $reflectionProvider): bool
     {
         if ($expr instanceof Clone_ || $expr instanceof New_) {
             return true;
@@ -86,11 +81,11 @@ final class CallAnalyzer
         }
 
         $className = $type->getClassName();
-        if (! $this->reflectionProvider->hasClass($className)) {
+        if (! $reflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($className);
+        $classReflection = $reflectionProvider->getClass($className);
         return $classReflection->getNativeReflection()
             ->isInstantiable();
     }
