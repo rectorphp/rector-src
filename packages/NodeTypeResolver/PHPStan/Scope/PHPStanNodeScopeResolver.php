@@ -158,6 +158,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Param) {
+                dump_node($node->var);
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 

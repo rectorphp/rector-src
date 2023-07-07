@@ -57,7 +57,7 @@ final class UndefinedVariableResolver
             &$currentStmt
         ): ?int {
             // entering new scope - break!
-            if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
+            if ($node instanceof FunctionLike) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
