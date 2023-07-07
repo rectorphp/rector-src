@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
@@ -33,6 +34,7 @@ final class SimplifyUselessVariableRector extends AbstractScopeAwareRector
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
         private readonly VariableAnalyzer $variableAnalyzer,
         private readonly CallAnalyzer $callAnalyzer,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -165,7 +167,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->callAnalyzer->isNewInstance($previousNode->var)) {
+        if ($this->callAnalyzer->isNewInstance($previousNode->var, $this->reflectionProvider)) {
             return true;
         }
 
