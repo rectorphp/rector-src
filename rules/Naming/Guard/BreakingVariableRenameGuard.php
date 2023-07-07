@@ -102,10 +102,6 @@ final class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->isVariableAlreadyDefined($param->var, $currentName)) {
-            //return true;
-        }
-
         if ($this->isRamseyUuidInterface($param)) {
             return true;
         }
