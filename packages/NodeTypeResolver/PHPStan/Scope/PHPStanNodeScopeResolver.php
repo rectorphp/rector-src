@@ -29,6 +29,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
@@ -154,6 +155,10 @@ final class PHPStanNodeScopeResolver
 
             if ($node instanceof BinaryOp) {
                 $this->processBinaryOp($node, $mutatingScope);
+            }
+
+            if ($node instanceof Param) {
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Arg) {
