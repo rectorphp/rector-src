@@ -207,41 +207,39 @@ final class AnonymousFunctionFactory
     {
         $paramNames = $this->collectParamNames($params);
 
-        /** @var Variable[] $variables */
-        $variables = $this->betterNodeFinder->findInstanceOf($nodes, Variable::class);
-
         /** @var array<string, Variable> $filteredVariables */
         $filteredVariables = [];
-
         $alreadyAssignedVariables = [];
-        foreach ($variables as $variable) {
-            // "$this" is allowed
-            if ($this->nodeNameResolver-> isName($variable, 'this')) {
-                continue;
-            }
 
-            $variableName = $this->nodeNameResolver->getName($variable);
-            if ($variableName === null) {
-                continue;
-            }
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $nodes,
+            function (Node $node) use (&$alreadyAssignedVariables, &$filteredVariables, $paramNames): ?Node {
+                if ($node instanceof Assign && $node->var instanceof Variable) {
+                    $alreadyAssignedVariables[] = $this->nodeNameResolver->getName($node->var);
+                }
 
-            if (in_array($variableName, $paramNames, true)) {
-                continue;
-            }
+                if ($node instanceof Foreach_) {
+                    if ($node->keyVar instanceof Variable) {
+                        $alreadyAssignedVariables[] = $this->nodeNameResolver->getName($node->valueVar);
+                    }
 
-            $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Node && in_array(
-                $parentNode::class,
-                [Assign::class, Foreach_::class, Param::class],
-                true
-            )) {
-                $alreadyAssignedVariables[] = $variableName;
-            }
+                    if ($node->valueVar instanceof Variable) {
+                        $alreadyAssignedVariables[] = $this->nodeNameResolver->getName($node->valueVar);
+                    }
+                }
 
-            if (! $this->nodeNameResolver->isNames($variable, $alreadyAssignedVariables)) {
-                $filteredVariables[$variableName] = $variable;
+                if ($node instanceof Variable) {
+                    if (! $this->isExternalSourceVariable($node, $paramNames, $alreadyAssignedVariables)) {
+                        return null;
+                    }
+
+                    $variableName = $this->nodeNameResolver->getName($node);
+                    $filteredVariables[$variableName] = $node;
+                }
+
+                return null;
             }
-        }
+        );
 
         return $filteredVariables;
     }
@@ -304,7 +302,7 @@ final class AnonymousFunctionFactory
             return null;
         }
 
-        // reset original node, to allow the printer to re-use the expr
+        // reset original variable, to allow the printer to re-use the expr
         $paramDefaultExpr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $paramDefaultExpr,
@@ -399,5 +397,30 @@ final class AnonymousFunctionFactory
         }
 
         return [new Return_($innerMethodCall)];
+    }
+
+    /**
+     * @param string[] $paramNames
+     * @param string[] $alreadyAssignedVariables
+     */
+    private function isExternalSourceVariable(
+        Variable $variable,
+        array $paramNames,
+        array $alreadyAssignedVariables
+    ): bool {
+        $variableName = $this->nodeNameResolver->getName($variable);
+        if ($variableName === null) {
+            return false;
+        }
+
+        if (in_array($variableName, $paramNames, true)) {
+            return false;
+        }
+
+        if (in_array($variableName, $alreadyAssignedVariables, true)) {
+            return false;
+        }
+
+        return $variableName !== 'this';
     }
 }

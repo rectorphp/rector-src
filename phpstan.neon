@@ -699,3 +699,6 @@ parameters:
                 - src/NodeManipulator/PropertyManipulator.php
 
         - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
+
+        - '#Parameter \#3 \$alreadyAssignedVariables of method Rector\\Php72\\NodeFactory\\AnonymousFunctionFactory\:\:isExternalSourceVariable\(\) expects array<string>, array<int, string\|null> given#'
+        - '#Cognitive complexity for "Rector\\Php72\\NodeFactory\\AnonymousFunctionFactory\:\:createUseVariablesFromParams\(\)" is 12, keep it under 11#'
