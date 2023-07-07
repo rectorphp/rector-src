@@ -7,6 +7,7 @@ namespace Rector\Core\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -20,16 +21,16 @@ final class ScopeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const NO_SCOPE_NODES = [Name::class, Identifier::class, Param::class, Arg::class];
+    private const REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class];
 
     public function __construct(
         private readonly ScopeFactory $scopeFactory
     ) {
     }
 
-    public function hasScope(Node $node): bool
+    public function isRefreshable(Node $node): bool
     {
-        foreach (self::NO_SCOPE_NODES as $noScopeNode) {
+        foreach (self::REFRESHABLE_NODES as $noScopeNode) {
             if ($node instanceof $noScopeNode) {
                 return false;
             }
