@@ -44,13 +44,13 @@ final class ArrayShapeTypeMapper
                 return null;
             }
 
-            $keyDocTypeNode = new IdentifierTypeNode($keyValue);
+            $identifierTypeNode = new IdentifierTypeNode($keyValue);
             $valueType = $constantArrayType->getValueTypes()[$index];
 
             $valueDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($valueType);
 
             $arrayShapeItemNodes[] = new ArrayShapeItemNode(
-                $keyDocTypeNode,
+                $identifierTypeNode,
                 $constantArrayType->isOptionalKey($index),
                 $valueDocTypeNode
             );

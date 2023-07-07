@@ -43,8 +43,8 @@ final class AttributeArrayNameInliner
 
             if ($arrayItem->key instanceof String_) {
                 $string = $arrayItem->key;
-                $argumentName = new Identifier($string->value);
-                $args[] = new Arg($arrayItem->value, false, false, [], $argumentName);
+                $identifier = new Identifier($string->value);
+                $args[] = new Arg($arrayItem->value, false, false, [], $identifier);
             } else {
                 $args[] = new Arg($arrayItem->value);
             }

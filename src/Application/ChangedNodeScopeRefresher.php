@@ -86,10 +86,10 @@ final class ChangedNodeScopeRefresher
         if ($node instanceof Attribute) {
             // we'll have to fake-traverse 2 layers up, as PHPStan skips Scope for AttributeGroups and consequently Attributes
             $attributeGroup = new AttributeGroup([$node]);
-            $node = new Property(0, [], [], null, [$attributeGroup]);
+            $property = new Property(0, [], [], null, [$attributeGroup]);
         }
 
-        $stmts = $this->resolveStmts($node);
+        $stmts = $this->resolveStmts($property);
         $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath, $mutatingScope);
     }
 

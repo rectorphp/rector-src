@@ -52,8 +52,8 @@ final class ExprParameterReflectionTypeCorrector
         );
 
         foreach ($items as $name => $item) {
-            foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflection) {
-                $correctedItem = $this->correctItemByParameterReflection($name, $item, $parameterReflection);
+            foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
+                $correctedItem = $this->correctItemByParameterReflection($name, $item, $parameterReflectionWithPhpDoc);
                 if (! $correctedItem instanceof Expr) {
                     continue;
                 }
