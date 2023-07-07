@@ -57,7 +57,7 @@ final class UndefinedVariableResolver
             &$currentStmt
         ): ?int {
             // entering new scope - break!
-            if ($node instanceof FunctionLike) {
+            if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
@@ -227,6 +227,10 @@ final class UndefinedVariableResolver
         }
 
         if ($variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
+            return true;
+        }
+
+        if ($variable->getAttribute(AttributeKey::IS_PARAM_VAR) === true) {
             return true;
         }
 
