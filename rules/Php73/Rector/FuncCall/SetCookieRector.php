@@ -132,8 +132,8 @@ CODE_SAMPLE
 
         $items = [];
         foreach ($args as $idx => $arg) {
-            $newKey = new String_(self::KNOWN_OPTIONS[$idx]);
-            $items[] = new ArrayItem($arg->value, $newKey);
+            $string = new String_(self::KNOWN_OPTIONS[$idx]);
+            $items[] = new ArrayItem($arg->value, $string);
         }
 
         $newArgs[] = new Arg(new Array_($items));

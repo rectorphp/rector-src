@@ -142,15 +142,15 @@ CODE_SAMPLE
                 : $this->nodeFactory->createNull();
 
             $assign = new Assign(new Variable($undefinedVariableName), $value);
-            $expresssion = new Expression($assign);
+            $expression = new Expression($assign);
 
             foreach ($expressionStmts as $expressionStmt) {
-                if ($this->nodeComparator->areNodesEqual($expresssion, $expressionStmt)) {
+                if ($this->nodeComparator->areNodesEqual($expression, $expressionStmt)) {
                     continue 2;
                 }
             }
 
-            $variablesInitiation[] = $expresssion;
+            $variablesInitiation[] = $expression;
         }
 
         return $variablesInitiation;

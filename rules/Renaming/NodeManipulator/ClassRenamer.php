@@ -393,8 +393,8 @@ final class ClassRenamer
 
         foreach ($oldToNewClasses as $oldClass => $newClass) {
             $oldObjectType = new ObjectType($oldClass);
-            $newObjectType = new FullyQualifiedObjectType($newClass);
-            $oldToNewTypes[] = new OldToNewType($oldObjectType, $newObjectType);
+            $fullyQualifiedObjectType = new FullyQualifiedObjectType($newClass);
+            $oldToNewTypes[] = new OldToNewType($oldObjectType, $fullyQualifiedObjectType);
         }
 
         $this->oldToNewTypesByCacheKey[$cacheKey] = $oldToNewTypes;

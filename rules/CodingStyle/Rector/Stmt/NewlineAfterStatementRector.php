@@ -132,7 +132,7 @@ CODE_SAMPLE
             $rangeLine = $line - $endLine;
 
             if ($rangeLine > 1) {
-                $rangeLine = $this->resolveRangeLineFromComment($rangeLine, $line, $endLine, $nextStmt);
+                $rangeLine = $this->resolveRangeLineFromComment($rangeLine, $endLine, $nextStmt);
             }
 
             // skip same line or < 0 that cause infinite loop or crash
@@ -160,7 +160,6 @@ CODE_SAMPLE
 
     private function resolveRangeLineFromComment(
         int|float $rangeLine,
-        int $line,
         int $endLine,
         Stmt $nextStmt
     ): int|float {
@@ -177,8 +176,8 @@ CODE_SAMPLE
         }
 
         /** @var Comment[] $comments */
-        $line = $comments[0]->getStartLine();
-        return $line - $endLine;
+        $startLine = $comments[0]->getStartLine();
+        return $startLine - $endLine;
     }
 
     /**

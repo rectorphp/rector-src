@@ -109,9 +109,9 @@ CODE_SAMPLE
             /** @var Assign $assign */
             $assign = $this->stmtsManipulator->getUnwrappedLastStmt($if->stmts);
 
-            $returnLastIf = new Return_($assign->expr);
-            $this->mirrorComments($returnLastIf, $assign);
-            $if->stmts[$lastIfStmtKey] = $returnLastIf;
+            $return = new Return_($assign->expr);
+            $this->mirrorComments($return, $assign);
+            $if->stmts[$lastIfStmtKey] = $return;
 
             /** @var Else_ $else */
             $else = $if->else;
