@@ -7,7 +7,6 @@ namespace Rector\Php56\NodeAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -57,7 +56,7 @@ final class UndefinedVariableResolver
             &$currentStmt
         ): ?int {
             // entering new scope - break!
-            if ($node instanceof FunctionLike && ! $node instanceof ArrowFunction) {
+            if ($node instanceof FunctionLike) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
@@ -227,10 +226,6 @@ final class UndefinedVariableResolver
         }
 
         if ($variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
-            return true;
-        }
-
-        if ($variable->getAttribute(AttributeKey::IS_PARAM_VAR) === true) {
             return true;
         }
 

@@ -158,7 +158,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Param) {
-                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+//                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
             if ($node instanceof Arg) {
