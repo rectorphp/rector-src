@@ -44,7 +44,6 @@ use Rector\Core\PhpParser\Parser\SimplePhpParser;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php72\NodeManipulator\ClosureNestedUsesDecorator;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -65,7 +64,6 @@ final class AnonymousFunctionFactory
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly SimplePhpParser $simplePhpParser,
-        private readonly ClosureNestedUsesDecorator $closureNestedUsesDecorator,
         private readonly AstResolver $astResolver,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly InlineCodeParser $inlineCodeParser
@@ -85,27 +83,23 @@ final class AnonymousFunctionFactory
     ): Closure {
         $useVariables = $this->createUseVariablesFromParams($stmts, $params);
 
-        $anonymousFunctionNode = new Closure();
-        $anonymousFunctionNode->params = $params;
+        $anonymousFunctionClosure = new Closure();
+        $anonymousFunctionClosure->params = $params;
 
         if ($static) {
-            $anonymousFunctionNode->static = $static;
+            $anonymousFunctionClosure->static = $static;
         }
 
         foreach ($useVariables as $useVariable) {
-            $anonymousFunctionNode = $this->closureNestedUsesDecorator->applyNestedUses(
-                $anonymousFunctionNode,
-                $useVariable
-            );
-            $anonymousFunctionNode->uses[] = new ClosureUse($useVariable);
+            $anonymousFunctionClosure->uses[] = new ClosureUse($useVariable);
         }
 
         if ($returnTypeNode instanceof Node) {
-            $anonymousFunctionNode->returnType = $returnTypeNode;
+            $anonymousFunctionClosure->returnType = $returnTypeNode;
         }
 
-        $anonymousFunctionNode->stmts = $stmts;
-        return $anonymousFunctionNode;
+        $anonymousFunctionClosure->stmts = $stmts;
+        return $anonymousFunctionClosure;
     }
 
     public function createFromPhpMethodReflection(PhpMethodReflection $phpMethodReflection, Expr $expr): ?Closure
