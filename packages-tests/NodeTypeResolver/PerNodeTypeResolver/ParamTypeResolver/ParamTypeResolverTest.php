@@ -22,7 +22,7 @@ final class ParamTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $variableNodes = $this->getNodesForFileOfType($file, Param::class);
 
         $resolvedType = $this->nodeTypeResolver->getType($variableNodes[$nodePosition]);
-        $this->assertSame($expectedType, $resolvedType::class);
+        $this->assertSame($resolvedType::class, $expectedType);
     }
 
     public static function provideData(): Iterator
