@@ -6,23 +6,14 @@ namespace Rector\DeadCode\Rector\Node;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Nop;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Static_;
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\Throw_;
-use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -33,11 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -74,20 +60,12 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [
-            Foreach_::class,
-            Static_::class,
-            Echo_::class,
-            Return_::class,
-            Expression::class,
-            Throw_::class,
-            If_::class,
-            While_::class,
-            Switch_::class,
-            Nop::class,
-        ];
+        return [Stmt::class];
     }
 
+    /**
+     * @param Stmt $node
+     */
     public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkip($node)) {
@@ -95,6 +73,7 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {
             return null;
@@ -114,10 +93,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isUsedInNextNodeWithExtractPreviouslyCalled($node, $variableName)) {
-            return null;
-        }
-
         $comments = $node->getComments();
         if (isset($comments[1])) {
             // skip edge case with double comment, as impossible to resolve by PHPStan doc parser
@@ -128,30 +103,13 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function isUsedInNextNodeWithExtractPreviouslyCalled(Node $node, string $variableName): bool
+    private function shouldSkip(Stmt $stmt): bool
     {
-        $variable = new Variable($variableName);
-        $isUsedInNextNode = (bool) $this->betterNodeFinder->findFirstNext(
-            $node,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
-        );
-
-        if (! $isUsedInNextNode) {
-            return false;
+        if ($stmt instanceof ClassConst) {
+            return true;
         }
 
-        return (bool) $this->betterNodeFinder->findFirstPrevious($node, function (Node $subNode): bool {
-            if (! $subNode instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->nodeNameResolver->isName($subNode, 'extract');
-        });
-    }
-
-    private function shouldSkip(Node $node): bool
-    {
-        return count($node->getComments()) !== 1;
+        return count($stmt->getComments()) !== 1;
     }
 
     private function hasVariableName(Node $node, string $variableName): bool
