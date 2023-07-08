@@ -5,24 +5,17 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\NodeTraverser;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
 
 /**
@@ -34,21 +27,16 @@ final class ParamTypeResolver implements NodeTypeResolverInterface
 {
     private NodeTypeResolver $nodeTypeResolver;
 
-    private StaticTypeMapper $staticTypeMapper;
-
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
     #[Required]
-    public function autowire(NodeTypeResolver $nodeTypeResolver, StaticTypeMapper $staticTypeMapper): void
+    public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;
-        $this->staticTypeMapper = $staticTypeMapper;
     }
 
     /**
@@ -69,11 +57,6 @@ final class ParamTypeResolver implements NodeTypeResolverInterface
             return $paramType;
         }
 
-        $firstVariableUseType = $this->resolveFromFirstVariableUse($node);
-        if (! $firstVariableUseType instanceof MixedType) {
-            return $firstVariableUseType;
-        }
-
         return $this->resolveFromFunctionDocBlock($node);
     }
 
@@ -83,42 +66,7 @@ final class ParamTypeResolver implements NodeTypeResolverInterface
             return new MixedType();
         }
 
-        if ($param->type instanceof Identifier) {
-            return new MixedType();
-        }
-
-        return $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-    }
-
-    private function resolveFromFirstVariableUse(Param $param): Type
-    {
-        $classMethod = $this->betterNodeFinder->findParentType($param, ClassMethod::class);
-        if (! $classMethod instanceof ClassMethod) {
-            return new MixedType();
-        }
-
-        $paramName = $this->nodeNameResolver->getName($param);
-        $paramStaticType = new MixedType();
-
-        // special case for param inside method/function
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $classMethod->stmts,
-            function (Node $node) use ($paramName, &$paramStaticType): ?int {
-                if (! $node instanceof Variable) {
-                    return null;
-                }
-
-                if (! $this->nodeNameResolver->isName($node, $paramName)) {
-                    return null;
-                }
-
-                $paramStaticType = $this->nodeTypeResolver->getType($node);
-
-                return NodeTraverser::STOP_TRAVERSAL;
-            }
-        );
-
-        return $paramStaticType;
+        return $this->nodeTypeResolver->getType($param->type);
     }
 
     private function resolveFromFunctionDocBlock(Param $param): Type
