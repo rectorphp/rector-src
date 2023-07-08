@@ -229,12 +229,7 @@ final class AnonymousFunctionFactory
                 continue;
             }
 
-            $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
-            if ($parentNode instanceof Node && in_array(
-                $parentNode::class,
-                [Assign::class, Foreach_::class, Param::class],
-                true
-            )) {
+            if ($variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
                 $alreadyAssignedVariables[] = $variableName;
             }
 
