@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
+use PHPStan\Analyser\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -42,7 +43,7 @@ final class ScopeAnalyzer
         Node $node,
         string $filePath,
         ?Stmt $currentStmt = null
-    ): ?\PHPStan\Analyser\Scope {
+    ): ?Scope {
         // on File level
         if ($node instanceof Stmt && $node->getAttribute(AttributeKey::STATEMENT_DEPTH) === 0) {
             return $this->scopeFactory->createFromFile($filePath);
