@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -105,16 +106,16 @@ CODE_SAMPLE
 
     private function shouldSkip(Stmt $stmt): bool
     {
-        if ($stmt instanceof ClassConst) {
+        if ($stmt instanceof ClassConst || $stmt instanceof Property) {
             return true;
         }
 
         return count($stmt->getComments()) !== 1;
     }
 
-    private function hasVariableName(Node $node, string $variableName): bool
+    private function hasVariableName(Stmt $stmt, string $variableName): bool
     {
-        return (bool) $this->betterNodeFinder->findFirst($node, function (Node $node) use ($variableName): bool {
+        return (bool) $this->betterNodeFinder->findFirst($stmt, function (Node $node) use ($variableName): bool {
             if (! $node instanceof Variable) {
                 return false;
             }
@@ -144,10 +145,8 @@ CODE_SAMPLE
         return str_contains($varTagValueNode->description, '}');
     }
 
-    private function isAnnotatableReturn(Node $node): bool
+    private function isAnnotatableReturn(Stmt $stmt): bool
     {
-        return $node instanceof Return_
-            && $node->expr instanceof CallLike
-            && ! $node->expr instanceof New_;
+        return $stmt instanceof Return_ && $stmt->expr instanceof CallLike && ! $stmt->expr instanceof New_;
     }
 }
