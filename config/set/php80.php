@@ -17,7 +17,6 @@ use Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector;
 use Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector;
 use Rector\Php80\Rector\ClassMethod\SetStateToStaticRector;
 use Rector\Php80\Rector\FuncCall\ClassOnObjectRector;
-use Rector\Php80\Rector\FuncCall\Php8ResourceReturnToObjectRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php80\Rector\Identical\StrEndsWithRector;
 use Rector\Php80\Rector\Identical\StrStartsWithRector;
@@ -29,9 +28,23 @@ use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
 use Rector\Transform\ValueObject\StaticCallToFuncCall;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(StrContainsRector::class);
-    $rectorConfig->rule(StrStartsWithRector::class);
-    $rectorConfig->rule(StrEndsWithRector::class);
+    $rectorConfig->rules([
+        StrContainsRector::class,
+        StrStartsWithRector::class,
+        StrEndsWithRector::class,
+        StringableForToStringRector::class,
+        ClassOnObjectRector::class,
+        GetDebugTypeRector::class,
+        RemoveUnusedVariableInCatchRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        ChangeSwitchToMatchRector::class,
+        RemoveParentCallWithoutParentRector::class,
+        SetStateToStaticRector::class,
+        FinalPrivateToPrivateVisibilityRector::class,
+        AddParamBasedOnParentClassMethodRector::class,
+        MixedTypeRector::class,
+        ClassOnThisVariableObjectRector::class,
+    ]);
 
     $rectorConfig
         ->ruleWithConfiguration(StaticCallToFuncCallRector::class, [
@@ -40,24 +53,13 @@ return static function (RectorConfig $rectorConfig): void {
             new StaticCallToFuncCall('Nette\Utils\Strings', 'contains', 'str_contains'),
         ]);
 
-    $rectorConfig->rules([
-        StringableForToStringRector::class,
-        ClassOnObjectRector::class,
-        GetDebugTypeRector::class,
-        RemoveUnusedVariableInCatchRector::class,
-        ClassPropertyAssignToConstructorPromotionRector::class,
-        ChangeSwitchToMatchRector::class,
-    ]);
-
     // nette\utils and Strings::replace()
     $rectorConfig
         ->ruleWithConfiguration(
             ArgumentAdderRector::class,
             [new ArgumentAdder('Nette\Utils\Strings', 'replace', 2, 'replacement', '')]
         );
-    $rectorConfig->rule(RemoveParentCallWithoutParentRector::class);
-    $rectorConfig->rule(SetStateToStaticRector::class);
-    $rectorConfig->rule(FinalPrivateToPrivateVisibilityRector::class);
+
     // @see https://php.watch/versions/8.0/pgsql-aliases-deprecated
     $rectorConfig
         ->ruleWithConfiguration(RenameFunctionRector::class, [
@@ -100,9 +102,4 @@ return static function (RectorConfig $rectorConfig): void {
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'n', 'ne'),
         ]);
-
-    $rectorConfig->rule(Php8ResourceReturnToObjectRector::class);
-    $rectorConfig->rule(AddParamBasedOnParentClassMethodRector::class);
-    $rectorConfig->rule(MixedTypeRector::class);
-    $rectorConfig->rule(ClassOnThisVariableObjectRector::class);
 };
