@@ -6,7 +6,6 @@ namespace Rector\Core\PhpParser\Node;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
@@ -31,7 +30,6 @@ use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Exception\StopSearchException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\MultiInstanceofChecker;
@@ -49,7 +47,6 @@ final class BetterNodeFinder
     public function __construct(
         private readonly NodeFinder $nodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly MultiInstanceofChecker $multiInstanceofChecker,
         private readonly CurrentFileProvider $currentFileProvider,
@@ -175,21 +172,6 @@ final class BetterNodeFinder
     public function findFirst(Node | array $nodes, callable $filter): ?Node
     {
         return $this->nodeFinder->findFirst($nodes, $filter);
-    }
-
-    /**
-     * @api symfony
-     * @return Assign|null
-     */
-    public function findPreviousAssignToExpr(Expr $expr): ?Node
-    {
-        return $this->findFirstPrevious($expr, function (Node $node) use ($expr): bool {
-            if (! $node instanceof Assign) {
-                return false;
-            }
-
-            return $this->nodeComparator->areNodesEqual($node->var, $expr);
-        });
     }
 
     /**
