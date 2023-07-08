@@ -20,20 +20,20 @@ final class ClosureNestedUsesDecorator
     ) {
     }
 
-    public function applyNestedUses(Closure $anonymousFunctionNode, Variable $useVariable): Closure
+    public function applyNestedUses(Closure $anonymousFunctionClosure, Variable $useVariable): Closure
     {
         $parentNode = $this->betterNodeFinder->findParentType($useVariable, Closure::class);
         if (! $parentNode instanceof Closure) {
-            return $anonymousFunctionNode;
+            return $anonymousFunctionClosure;
         }
 
         $paramNames = $this->nodeNameResolver->getNames($parentNode->params);
 
         if ($this->nodeNameResolver->isNames($useVariable, $paramNames)) {
-            return $anonymousFunctionNode;
+            return $anonymousFunctionClosure;
         }
 
-        $anonymousFunctionNode = clone $anonymousFunctionNode;
+        $anonymousFunctionClosure = clone $anonymousFunctionClosure;
         while ($parentNode instanceof Closure) {
             $parentOfParent = $this->betterNodeFinder->findParentType($parentNode, Closure::class);
 
@@ -49,7 +49,7 @@ final class ClosureNestedUsesDecorator
             $parentNode = $this->betterNodeFinder->findParentType($parentNode, Closure::class);
         }
 
-        return $anonymousFunctionNode;
+        return $anonymousFunctionClosure;
     }
 
     /**
