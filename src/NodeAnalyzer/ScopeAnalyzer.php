@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
@@ -50,10 +51,12 @@ final class ScopeAnalyzer
         }
 
         // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
-        if ($node instanceof Expr
-            && $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) >= 2
-            && $currentStmt instanceof Stmt) {
-            return $currentStmt->getAttribute(AttributeKey::SCOPE);
+        if ($node instanceof Expr && $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) >= 2) {
+            $scope = $currentStmt instanceof Stmt
+                ? $currentStmt->getAttribute(AttributeKey::SCOPE)
+                : $this->scopeFactory->createFromFile($filePath);
+
+            return $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
         }
 
         /**
