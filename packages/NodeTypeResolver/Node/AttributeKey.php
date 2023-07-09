@@ -235,7 +235,7 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const IS_VARIABLE_LOOP = 'is_in_loop';
+    public const IS_VARIABLE_LOOP = 'is_variable_loop';
 
     /**
      * @var string
