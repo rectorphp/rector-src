@@ -56,16 +56,8 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         if ($node instanceof Attribute) {
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                $node->args,
-                static function (Node $subNode) {
-                    if ($subNode instanceof Array_) {
-                        $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
-                    }
-
-                    return null;
-                }
-            );
+            $this->processContextInAttribute($node);
+            return null;
         }
 
         if ($node instanceof If_ || $node instanceof Else_ || $node instanceof ElseIf_) {
@@ -86,6 +78,20 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         return null;
+    }
+
+    private function processContextInAttribute(Attribute $attribute): void
+    {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $attribute->args,
+            static function (Node $subNode) {
+                if ($subNode instanceof Array_) {
+                    $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
+                }
+
+                return null;
+            }
+        );
     }
 
     private function processContextInIssetOrUnset(Isset_|Unset_ $node): void
