@@ -6,7 +6,9 @@ namespace Rector\Php80\Rector\Catch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\TryCatch;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\NodeManipulator\StmtsManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -20,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(
+        private readonly StmtsManipulator $stmtsManipulator
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove unused variable in catch()', [
@@ -56,28 +63,44 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Catch_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Catch_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        $caughtVar = $node->var;
-        if (! $caughtVar instanceof Variable) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        /** @var string $variableName */
-        $variableName = $this->getName($caughtVar);
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof TryCatch) {
+                continue;
+            }
 
-        $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($node->stmts, $variableName);
-        if ($isVariableUsed) {
-            return null;
+            foreach ($stmt->catches as $catch) {
+                $caughtVar = $catch->var;
+                if (! $caughtVar instanceof Variable) {
+                    continue;
+                }
+
+                /** @var string $variableName */
+                $variableName = $this->getName($caughtVar);
+
+                $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($catch->stmts, $variableName);
+                if ($isVariableUsed) {
+                    continue;
+                }
+
+                if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $variableName)) {
+                    continue;
+                }
+
+                $catch->var = null;
+            }
         }
-
-        $node->var = null;
 
         return $node;
     }

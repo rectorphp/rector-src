@@ -8,13 +8,16 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class StmtsManipulator
 {
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeComparator $nodeComparator
     ) {
     }
@@ -56,5 +59,33 @@ final class StmtsManipulator
         );
 
         return $stmts;
+    }
+
+    public function isVariableUsedInNextStmt(
+        StmtsAwareInterface $stmtsAware,
+        int $jumpToKey,
+        string $variableName
+    ): bool {
+        if ($stmtsAware->stmts === null) {
+            return false;
+        }
+
+        $totalKeys = array_key_last($stmtsAware->stmts);
+        for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
+            if (! isset($stmtsAware->stmts[$key])) {
+                continue;
+            }
+
+            $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
+                $stmtsAware->stmts[$key],
+                $variableName
+            );
+
+            if ($isVariableUsed) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
