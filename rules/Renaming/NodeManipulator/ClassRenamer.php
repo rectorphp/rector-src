@@ -255,12 +255,7 @@ final class ClassRenamer
             return false;
         }
 
-        $parentNode = $name->getAttribute(AttributeKey::PARENT_NODE);
-        if ($parentNode instanceof Class_) {
-            return $this->isValidClassNameChange($name, $parentNode, $classReflection);
-        }
-
-        return true;
+        return $this->isValidClassNameChange($name, $classReflection);
     }
 
     /**
@@ -328,9 +323,9 @@ final class ClassRenamer
         });
     }
 
-    private function isValidClassNameChange(Name $name, Class_ $class, ClassReflection $classReflection): bool
+    private function isValidClassNameChange(Name $name, ClassReflection $classReflection): bool
     {
-        if ($class->extends === $name) {
+        if ($name->getAttribute(AttributeKey::IS_CLASS_EXTENDS) === true) {
             // is class to interface?
             if ($classReflection->isInterface()) {
                 return false;
@@ -341,8 +336,12 @@ final class ClassRenamer
             }
         }
 
-        // is interface to class?
-        return ! (in_array($name, $class->implements, true) && $classReflection->isClass());
+        if ($name->getAttribute(AttributeKey::IS_CLASS_IMPLEMENT) === true) {
+            // is interface to class?
+            return  ! $classReflection->isClass();
+        }
+
+        return true;
     }
 
     /**
