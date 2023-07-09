@@ -31,7 +31,6 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\PhpParser\NodeTraverser\NodeConnectingTraverser;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -103,8 +102,6 @@ CODE_SAMPLE;
 
     private FilePathHelper $filePathHelper;
 
-    private NodeConnectingTraverser $nodeConnectingTraverser;
-
     private ?string $toBeRemovedNodeHash = null;
 
     #[Required]
@@ -127,7 +124,6 @@ CODE_SAMPLE;
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         RectorOutputStyle $rectorOutputStyle,
         FilePathHelper $filePathHelper,
-        NodeConnectingTraverser $nodeConnectingTraverser
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -147,7 +143,6 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->rectorOutputStyle = $rectorOutputStyle;
         $this->filePathHelper = $filePathHelper;
-        $this->nodeConnectingTraverser = $nodeConnectingTraverser;
     }
 
     /**
@@ -351,7 +346,6 @@ CODE_SAMPLE;
             $this->mirrorComments($firstNode, $originalNode);
 
             $this->updateParentNodes($refactoredNode, $parentNode);
-            $this->nodeConnectingTraverser->traverse($refactoredNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -365,7 +359,6 @@ CODE_SAMPLE;
             : $refactoredNode;
 
         $this->updateParentNodes($refactoredNode, $parentNode);
-        $this->nodeConnectingTraverser->traverse([$refactoredNode]);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
