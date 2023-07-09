@@ -295,6 +295,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_PARAM_VALUE = 'is_param_value';
+
+    /**
+     * @var string
+     */
     public const FROM_FUNC_CALL_NAME = 'from_func_call_name';
 
     /**

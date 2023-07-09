@@ -229,7 +229,10 @@ final class AnonymousFunctionFactory
                 continue;
             }
 
-            if ($variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true) {
+            if (
+                $variable->getAttribute(AttributeKey::IS_BEING_ASSIGNED) === true
+                || $variable->getAttribute(AttributeKey::IS_PARAM_VALUE) === true
+            ) {
                 $alreadyAssignedVariables[] = $variableName;
             }
 

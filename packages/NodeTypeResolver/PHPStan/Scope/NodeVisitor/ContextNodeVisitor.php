@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -77,6 +78,10 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
         if ($node instanceof Arg) {
             $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
+        }
+
+        if ($node instanceof Param) {
+            $node->var->setAttribute(AttributeKey::IS_ARG_VALUE, true);
         }
 
         return null;
