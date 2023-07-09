@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
@@ -113,6 +114,14 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
     {
+        if ($node instanceof Foreach_) {
+            if ($node->keyVar instanceof Variable) {
+                $node->keyVar->setAttribute(AttributeKey::IS_VARIABLE_LOOP, true);
+            }
+
+            $node->valueVar->setAttribute(AttributeKey::IS_VARIABLE_LOOP, true);
+        }
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $node->stmts,
             static function (Node $subNode): ?int {
