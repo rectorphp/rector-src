@@ -81,7 +81,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         if ($node instanceof Param) {
-            $node->var->setAttribute(AttributeKey::IS_ARG_VALUE, true);
+            $node->var->setAttribute(AttributeKey::IS_PARAM_VALUE, true);
         }
 
         return null;
