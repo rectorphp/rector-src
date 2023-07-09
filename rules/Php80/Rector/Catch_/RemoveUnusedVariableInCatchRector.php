@@ -7,7 +7,6 @@ namespace Rector\Php80\Rector\Catch_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\TryCatch;
-use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
