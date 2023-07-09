@@ -192,12 +192,12 @@ final class RectorConfig extends ContainerConfigurator
     {
         Assert::allString($rectorClasses);
 
-        $duplicatedRectorClasses = self::resolveDuplicatedValues($rectorClasses);
+        $duplicatedRectorClasses = $this->resolveDuplicatedValues($rectorClasses);
         if ($duplicatedRectorClasses !== []) {
-            throw new ShouldNotHappenException(sprintf('Following rules are registered twice: ' . implode(
+            throw new ShouldNotHappenException('Following rules are registered twice: ' . implode(
                 ', ',
                 $duplicatedRectorClasses
-            )));
+            ));
         }
 
         foreach ($rectorClasses as $rectorClass) {
@@ -331,7 +331,7 @@ final class RectorConfig extends ContainerConfigurator
      * @param string[] $values
      * @return string[]
      */
-    private static function resolveDuplicatedValues(array $values): array
+    private function resolveDuplicatedValues(array $values): array
     {
         $counted = array_count_values($values);
         $duplicates = [];
