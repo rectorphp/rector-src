@@ -16,6 +16,8 @@ final class UseImportsRemover
      */
     public function removeImportsFromStmts(array $stmts, array $removedUses): array
     {
+        $hasChanged = false;
+
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof Use_) {
                 continue;
@@ -26,7 +28,13 @@ final class UseImportsRemover
             // remove empty uses
             if ($stmt->uses === []) {
                 unset($stmts[$key]);
+                $hasChanged = true;
             }
+        }
+
+        if ($hasChanged) {
+            // reset keys
+            $stmts = array_values($stmts);
         }
 
         return $stmts;
@@ -37,11 +45,17 @@ final class UseImportsRemover
      */
     private function removeUseFromUse(array $removedUses, Use_ $use): Use_
     {
+        if ($removedUses === []) {
+            return $use;
+        }
+
         foreach ($use->uses as $usesKey => $useUse) {
             foreach ($removedUses as $removedUse) {
-                if ($useUse->name->toString() === $removedUse) {
-                    unset($use->uses[$usesKey]);
+                if ($useUse->name->toString() !== $removedUse) {
+                    continue;
                 }
+
+                unset($use->uses[$usesKey]);
             }
         }
 

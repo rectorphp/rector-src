@@ -230,7 +230,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
+        return $this->postRefactorProcess($originalNode, $refactoredNode);
     }
 
     /**
@@ -324,15 +324,13 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode): Node
+    private function postRefactorProcess(Node $originalNode, Node|array|int $refactoredNode): Node
     {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
         $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
-
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
@@ -345,7 +343,6 @@ CODE_SAMPLE;
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
-            $this->updateParentNodes($refactoredNode, $parentNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -358,7 +355,6 @@ CODE_SAMPLE;
             ? new Expression($refactoredNode)
             : $refactoredNode;
 
-        $this->updateParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -399,23 +395,6 @@ CODE_SAMPLE;
         }
 
         return $this->rectifiedAnalyzer->hasRectified(static::class, $node);
-    }
-
-    /**
-     * @param Node[]|Node $node
-     */
-    private function updateParentNodes(array | Node $node, ?Node $parentNode): void
-    {
-        if (! $parentNode instanceof Node) {
-            return;
-        }
-
-        $nodes = $node instanceof Node ? [$node] : $node;
-
-        foreach ($nodes as $node) {
-            // update parents relations
-            $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-        }
     }
 
     private function printCurrentFileAndRule(): void

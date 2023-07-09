@@ -4,7 +4,13 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use CompanyB\Queue;
 
-$queue = app(\Queue::class);
+final class ConflictWithUseStatementLastName
+{
+    public function run()
+    {
+        $queue = app(\Queue::class);
+    }
+}
 
 ?>
 -----
@@ -14,6 +20,12 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Illuminate\Support\Facades\Queue;
 
-$queue = app(Queue::class);
+final class ConflictWithUseStatementLastName
+{
+    public function run()
+    {
+        $queue = app(Queue::class);
+    }
+}
 
 ?>

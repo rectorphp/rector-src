@@ -109,6 +109,7 @@ CODE_SAMPLE
             static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
         );
 
+        // multiple namespace in single file, hard to process
         if (count($namespaces) > 1) {
             return null;
         }
