@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -24,6 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class JsonThrowOnErrorRector extends AbstractRector implements MinPhpVersionInterface
 {
+    private bool $hasChanged = false;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -49,24 +52,48 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [FuncCall::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param FuncCall $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        // if found, skip it :)
+        $hasJsonErrorFuncCall = (bool) $this->betterNodeFinder->findFirst(
+            $node,
+            fn (Node $node): bool => $this->isNames($node, ['json_last_error', 'json_last_error_msg'])
+        );
+
+        if ($hasJsonErrorFuncCall) {
             return null;
         }
 
-        if ($this->isName($node, 'json_encode')) {
-            return $this->processJsonEncode($node);
-        }
+        $this->hasChanged = false;
 
-        if ($this->isName($node, 'json_decode')) {
-            return $this->processJsonDecode($node);
+        $this->traverseNodesWithCallable($node, function (Node $currentNode): ?FuncCall {
+            if (! $currentNode instanceof FuncCall) {
+                return null;
+            }
+
+            if ($this->shouldSkipFuncCall($currentNode)) {
+                return null;
+            }
+
+            if ($this->isName($currentNode, 'json_encode')) {
+                return $this->processJsonEncode($currentNode);
+            }
+
+            if ($this->isName($currentNode, 'json_decode')) {
+                return $this->processJsonDecode($currentNode);
+            }
+
+            return null;
+        });
+
+        if ($this->hasChanged) {
+            return $node;
         }
 
         return null;
@@ -77,12 +104,8 @@ CODE_SAMPLE
         return PhpVersionFeature::JSON_EXCEPTION;
     }
 
-    private function shouldSkip(FuncCall $funcCall): bool
+    private function shouldSkipFuncCall(FuncCall $funcCall): bool
     {
-        if (! $this->isNames($funcCall, ['json_encode', 'json_decode'])) {
-            return true;
-        }
-
         if ($funcCall->isFirstClassCallable()) {
             return true;
         }
@@ -101,17 +124,7 @@ CODE_SAMPLE
             }
         }
 
-        if ($this->isFirstValueStringOrArray($funcCall)) {
-            return true;
-        }
-
-        return (bool) $this->betterNodeFinder->findFirstNext($funcCall, function (Node $node): bool {
-            if (! $node instanceof FuncCall) {
-                return false;
-            }
-
-            return $this->isNames($node, ['json_last_error', 'json_last_error_msg']);
-        });
+        return $this->isFirstValueStringOrArray($funcCall);
     }
 
     private function processJsonEncode(FuncCall $funcCall): ?FuncCall
@@ -120,8 +133,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $funcCall->args[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
+        $this->hasChanged = true;
 
+        $funcCall->args[1] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
         return $funcCall;
     }
 
@@ -140,6 +154,7 @@ CODE_SAMPLE
             $funcCall->args[2] = new Arg(new LNumber(512));
         }
 
+        $this->hasChanged = true;
         $funcCall->args[3] = new Arg($this->createConstFetch('JSON_THROW_ON_ERROR'));
 
         return $funcCall;
