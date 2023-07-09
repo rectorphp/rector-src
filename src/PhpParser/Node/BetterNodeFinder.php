@@ -8,24 +8,16 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Exception\StopSearchException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -40,7 +32,6 @@ final class BetterNodeFinder
         private readonly NodeFinder $nodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
@@ -163,42 +154,6 @@ final class BetterNodeFinder
     public function findFirst(Node | array $nodes, callable $filter): ?Node
     {
         return $this->nodeFinder->findFirst($nodes, $filter);
-    }
-
-    /**
-     * @deprecated Use node traversing instead
-     *
-     * @param callable(Node $node): bool $filter
-     */
-    public function findFirstNext(Node $node, callable $filter): ?Node
-    {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        $newStmts = $this->resolveNewStmts($parentNode);
-
-        try {
-            $foundNode = $this->findFirstInlinedNext($node, $filter, $newStmts, $parentNode);
-        } catch (StopSearchException) {
-            return null;
-        }
-
-        // we found what we need
-        if ($foundNode instanceof Node) {
-            return $foundNode;
-        }
-
-        if ($parentNode instanceof Return_ || $parentNode instanceof FunctionLike) {
-            return null;
-        }
-
-        if ($parentNode instanceof Node) {
-            if ($parentNode instanceof FileWithoutNamespace || $parentNode instanceof Namespace_) {
-                return null;
-            }
-
-            return $this->findFirstNext($parentNode, $filter);
-        }
-
-        return null;
     }
 
     /**
@@ -375,71 +330,6 @@ final class BetterNodeFinder
     private function isAllowedParentNode(?Node $node): bool
     {
         return $node instanceof StmtsAwareInterface || $node instanceof ClassLike || $node instanceof Declare_;
-    }
-
-    /**
-     * Only search in next Node/Stmt
-     *
-     * @param Stmt[] $newStmts
-     * @param callable(Node $node): bool $filter
-     */
-    private function findFirstInlinedNext(Node $node, callable $filter, array $newStmts, ?Node $parentNode): ?Node
-    {
-        if (! $parentNode instanceof Node) {
-            $nextNode = $this->resolveNextNodeFromFile($newStmts, $node);
-        } elseif ($node instanceof Stmt) {
-            if (! $this->isAllowedParentNode($parentNode)) {
-                return null;
-            }
-
-            $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            $nextNode = $parentNode->stmts[$currentStmtKey + 1] ?? null;
-        } else {
-            $nextNode = $this->resolveNextNode($node);
-        }
-
-        if (! $nextNode instanceof Node) {
-            return null;
-        }
-
-        if ($nextNode instanceof Return_ && ! $nextNode->expr instanceof Expr && ! $parentNode instanceof Case_) {
-            throw new StopSearchException();
-        }
-
-        $found = $this->findFirst($nextNode, $filter);
-        if ($found instanceof Node) {
-            return $found;
-        }
-
-        return $this->findFirstInlinedNext($nextNode, $filter, $newStmts, $parentNode);
-    }
-
-    /**
-     * @return Stmt[]
-     */
-    private function resolveNewStmts(?Node $parentNode): array
-    {
-        if (! $parentNode instanceof Node) {
-            // on __construct(), $file not yet a File object
-            $file = $this->currentFileProvider->getFile();
-            return $file instanceof File ? $file->getNewStmts() : [];
-        }
-
-        return [];
-    }
-
-    /**
-     * @param Stmt[] $newStmts
-     */
-    private function resolveNextNodeFromFile(array $newStmts, Node $node): ?Node
-    {
-        if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
-            return null;
-        }
-
-        $currentStmtKey = $node->getAttribute(AttributeKey::STMT_KEY);
-        return $newStmts[$currentStmtKey + 1] ?? null;
     }
 
     /**
