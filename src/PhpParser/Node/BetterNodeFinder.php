@@ -15,16 +15,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
-use PhpParser\Node\Stmt\Do_;
-use PhpParser\Node\Stmt\ElseIf_;
-use PhpParser\Node\Stmt\For_;
-use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -32,7 +25,6 @@ use Rector\Core\Exception\StopSearchException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\Util\MultiInstanceofChecker;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -48,7 +40,6 @@ final class BetterNodeFinder
         private readonly NodeFinder $nodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly MultiInstanceofChecker $multiInstanceofChecker,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
@@ -377,41 +368,6 @@ final class BetterNodeFinder
         }
 
         return null;
-    }
-
-    /**
-     * @api
-     *
-     * Resolve previous node from any Node, eg: Expr, Identifier, Name, etc
-     */
-    private function resolvePreviousNode(Node $node): ?Node
-    {
-        $currentStmt = $this->resolveCurrentStatement($node);
-
-        if (! $currentStmt instanceof Stmt) {
-            return null;
-        }
-
-        $startTokenPos = $node->getStartTokenPos();
-        $nodes = $startTokenPos < 0 || $currentStmt->getStartTokenPos() === $startTokenPos
-            ? []
-            : $this->find(
-                $currentStmt,
-                static fn (Node $subNode): bool => $subNode->getEndTokenPos() < $startTokenPos
-            );
-
-        if ($nodes === []) {
-            $parentNode = $currentStmt->getAttribute(AttributeKey::PARENT_NODE);
-            if (! $this->isAllowedParentNode($parentNode)) {
-                return null;
-            }
-
-            $currentStmtKey = $currentStmt->getAttribute(AttributeKey::STMT_KEY);
-            /** @var StmtsAwareInterface|ClassLike|Declare_ $parentNode */
-            return $parentNode->stmts[$currentStmtKey - 1] ?? null;
-        }
-
-        return end($nodes);
     }
 
     private function isAllowedParentNode(?Node $node): bool
