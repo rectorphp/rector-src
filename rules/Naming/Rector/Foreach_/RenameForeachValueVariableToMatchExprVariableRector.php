@@ -7,7 +7,6 @@ namespace Rector\Naming\Rector\Foreach_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
-use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
@@ -21,7 +20,6 @@ final class RenameForeachValueVariableToMatchExprVariableRector extends Abstract
 {
     public function __construct(
         private readonly InflectorSingularResolver $inflectorSingularResolver,
-        private readonly ForeachAnalyzer $foreachAnalyzer,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
@@ -101,7 +99,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->foreachAnalyzer->isValueVarUsed($node, $singularValueVarName)) {
+        $alreadyUsedVariable = $this->betterNodeFinder->findVariableOfName($node->stmts, $singularValueVarName);
+        if ($alreadyUsedVariable instanceof Variable) {
             return null;
         }
 
