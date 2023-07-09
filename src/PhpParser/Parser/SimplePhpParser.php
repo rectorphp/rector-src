@@ -15,15 +15,15 @@ final class SimplePhpParser
 {
     private readonly Parser $phpParser;
 
-    private NodeTraverser $nodeTravser;
+    private readonly NodeTraverser $nodeTraverser;
 
     public function __construct()
     {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
 
-        $this->nodeTravser = new NodeTraverser();
-        $this->nodeTravser->addVisitor(new AssignedToNodeVisitor());
+        $this->nodeTraverser = new NodeTraverser();
+        $this->nodeTraverser->addVisitor(new AssignedToNodeVisitor());
     }
 
     /**
@@ -46,6 +46,6 @@ final class SimplePhpParser
             return [];
         }
 
-        return $this->nodeTravser->traverse($stmts);
+        return $this->nodeTraverser->traverse($stmts);
     }
 }
