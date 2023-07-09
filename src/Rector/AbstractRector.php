@@ -345,7 +345,6 @@ CODE_SAMPLE;
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
-            $this->updateParentNodes($refactoredNode, $parentNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -358,7 +357,6 @@ CODE_SAMPLE;
             ? new Expression($refactoredNode)
             : $refactoredNode;
 
-        $this->updateParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -399,23 +397,6 @@ CODE_SAMPLE;
         }
 
         return $this->rectifiedAnalyzer->hasRectified(static::class, $node);
-    }
-
-    /**
-     * @param Node[]|Node $node
-     */
-    private function updateParentNodes(array | Node $node, ?Node $parentNode): void
-    {
-        if (! $parentNode instanceof Node) {
-            return;
-        }
-
-        $nodes = $node instanceof Node ? [$node] : $node;
-
-        foreach ($nodes as $node) {
-            // update parents relations
-            $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-        }
     }
 
     private function printCurrentFileAndRule(): void
