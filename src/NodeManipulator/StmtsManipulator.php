@@ -61,9 +61,6 @@ final class StmtsManipulator
         return $stmts;
     }
 
-    /**
-     * @return Stmt[]
-     */
     public function isVariableUsedInNextStmt(
         StmtsAwareInterface $stmtsAware,
         int $jumpToKey,
