@@ -10,6 +10,7 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\Variable;
@@ -49,6 +50,10 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
         if ($node instanceof ArrayDimFetch) {
             $node->var->setAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, true);
+        }
+
+        if ($node instanceof ArrayItem) {
+            $node->value->setAttribute(AttributeKey::INSIDE_ARRAY_ITEM, true);
         }
 
         if ($node instanceof Isset_ || $node instanceof Unset_) {
