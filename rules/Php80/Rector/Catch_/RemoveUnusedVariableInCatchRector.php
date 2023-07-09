@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Catch_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,11 +20,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove unused variable in catch()', [
@@ -75,11 +69,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isVariableUsedInStmts($node->stmts, $caughtVar)) {
-            return null;
-        }
+        /** @var string $variableName */
+        $variableName = $this->getName($caughtVar);
 
-        if ($this->isVariableUsedNext($node, $caughtVar)) {
+        $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($node->stmts, $variableName);
+        if ($isVariableUsed) {
             return null;
         }
 
@@ -91,24 +85,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NON_CAPTURING_CATCH;
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    private function isVariableUsedInStmts(array $nodes, Variable $variable): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            $nodes,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
-        );
-    }
-
-    private function isVariableUsedNext(Catch_ $catch, Variable $variable): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstNext(
-            $catch,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
-        );
     }
 }
