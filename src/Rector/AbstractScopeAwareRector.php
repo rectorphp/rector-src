@@ -41,15 +41,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         }
 
         if (! $currentScope instanceof Scope) {
-            /**
-             * @var Node $parentNode
-             *
-             * $parentNode is always a Node when $mutatingScope is null, as checked in previous
-             *
-             *      $this->scopeAnalyzer->resolveScope()
-             *
-             *  which verify if no parent and no scope, it resolve Scope from File
-             */
             $errorMessage = sprintf(
                 'Scope not available on "%s" node, but is required by a refactorWithScope() method of "%s" rule. Fix scope refresh on changed nodes first',
                 $node::class,

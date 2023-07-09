@@ -227,7 +227,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
+        return $this->postRefactorProcess($originalNode, $refactoredNode);
     }
 
     /**
@@ -321,7 +321,7 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode): Node
+    private function postRefactorProcess(Node $originalNode, Node|array|int $refactoredNode): Node
     {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
@@ -348,7 +348,6 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        // $this->updateParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;

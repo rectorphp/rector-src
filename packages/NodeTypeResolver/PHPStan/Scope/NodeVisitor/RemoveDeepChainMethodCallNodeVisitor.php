@@ -11,7 +11,7 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 
@@ -26,9 +26,8 @@ final class RemoveDeepChainMethodCallNodeVisitor extends NodeVisitorAbstract imp
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        ParameterProvider $parameterProvider
     ) {
-        $this->nestedChainMethodCallLimit = (int) $parameterProvider->provideParameter(
+        $this->nestedChainMethodCallLimit = SimpleParameterProvider::provideIntParameter(
             Option::NESTED_CHAIN_METHOD_CALL_LIMIT
         );
     }

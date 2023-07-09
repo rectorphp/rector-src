@@ -71,6 +71,8 @@ final class AttributeKey
      * @internal of php-parser, do not change
      * @see https://github.com/nikic/PHP-Parser/pull/681/files
      * @var string
+     *
+     * @api for BC layer
      */
     public const PARENT_NODE = 'parent';
 
