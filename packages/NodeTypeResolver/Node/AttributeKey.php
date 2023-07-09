@@ -295,7 +295,7 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const IS_PARAM_VALUE = 'is_param_value';
+    public const IS_PARAM_VAR = 'IS_PARAM_VAR';
 
     /**
      * @var string
