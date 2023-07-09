@@ -6,11 +6,13 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 /**
  * @see \Rector\PostRector\Rector\NameImportingPostRector
  */
+#[RunTestsInSeparateProcesses()]
 final class AutoImportNamesTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]

@@ -329,8 +329,6 @@ CODE_SAMPLE;
         $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
         $filePath = $this->file->getFilePath();
@@ -342,7 +340,6 @@ CODE_SAMPLE;
             $firstNode = current($refactoredNode);
             $this->mirrorComments($firstNode, $originalNode);
 
-            $this->updateParentNodes($refactoredNode, $parentNode);
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -351,7 +348,7 @@ CODE_SAMPLE;
             return $originalNode;
         }
 
-        $this->updateParentNodes($refactoredNode, $parentNode);
+        // $this->updateParentNodes($refactoredNode, $parentNode);
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
         $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
@@ -392,23 +389,6 @@ CODE_SAMPLE;
         }
 
         return $this->rectifiedAnalyzer->hasRectified(static::class, $node);
-    }
-
-    /**
-     * @param Node[]|Node $node
-     */
-    private function updateParentNodes(array | Node $node, ?Node $parentNode): void
-    {
-        if (! $parentNode instanceof Node) {
-            return;
-        }
-
-        $nodes = $node instanceof Node ? [$node] : $node;
-
-        foreach ($nodes as $node) {
-            // update parents relations
-            $node->setAttribute(AttributeKey::PARENT_NODE, $parentNode);
-        }
     }
 
     private function printCurrentFileAndRule(): void

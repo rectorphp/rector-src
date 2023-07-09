@@ -11,5 +11,6 @@ final class KeepReturnTag
      */
     public function keep()
     {
+        return new TwigFilter();
     }
 }

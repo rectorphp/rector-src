@@ -4,7 +4,13 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\FirstNamespace\SomeServiceClass;
 
-$someService = new SomeServiceClass();
+final class RenameClassWithSameNameButDifferentNamespace
+{
+    public function run(): void
+    {
+        $someService = new SomeServiceClass();
+    }
+}
 
 ?>
 -----
@@ -14,6 +20,12 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportN
 
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\SecondNamespace\SomeServiceClass;
 
-$someService = new SomeServiceClass();
+final class RenameClassWithSameNameButDifferentNamespace
+{
+    public function run(): void
+    {
+        $someService = new SomeServiceClass();
+    }
+}
 
 ?>

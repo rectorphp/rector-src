@@ -7,7 +7,7 @@ namespace Rector\NodeTypeResolver;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use PhpParser\NodeVisitor\ParentConnectingVisitor;
+// use PhpParser\NodeVisitor\ParentConnectingVisitor;
 use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 use Rector\Core\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\Core\ValueObject\Application\File;
@@ -22,7 +22,7 @@ final class NodeScopeAndMetadataDecorator
     public function __construct(
         CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        ParentConnectingVisitor $parentConnectingVisitor,
+        // ParentConnectingVisitor $parentConnectingVisitor,
         FunctionLikeParamArgPositionNodeVisitor $functionLikeParamArgPositionNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
@@ -33,7 +33,7 @@ final class NodeScopeAndMetadataDecorator
         $this->nodeTraverser->addVisitor($cloningVisitor);
 
         // this one has to be run again to re-connect parent nodes with new attributes
-        $this->nodeTraverser->addVisitor($parentConnectingVisitor);
+        // $this->nodeTraverser->addVisitor($parentConnectingVisitor);
 
         $this->nodeTraverser->addVisitor($functionLikeParamArgPositionNodeVisitor);
     }

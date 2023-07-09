@@ -9,6 +9,8 @@ class NameInsensitive extends OldClassWithTypO
     public function run(): OLDClassWithTYPO
     {
         $oldClassWithTypo = new OldClassWithTYPO;
+
+        return $oldClassWithTypo;
     }
 }
 
@@ -23,6 +25,8 @@ class NameInsensitive extends \Rector\Tests\Renaming\Rector\Name\RenameClassRect
     public function run(): \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClassWithoutTypo
     {
         $oldClassWithTypo = new \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClassWithoutTypo;
+
+        return $oldClassWithTypo;
     }
 }
 
