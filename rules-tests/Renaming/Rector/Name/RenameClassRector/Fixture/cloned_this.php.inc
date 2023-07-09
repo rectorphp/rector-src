@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class SomeReturnStaticDocCloneThis extends \DateTime
+class CloneThis extends \DateTime
 {
     /**
      * @return static
@@ -20,7 +20,7 @@ class SomeReturnStaticDocCloneThis extends \DateTime
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class SomeReturnStaticDocCloneThis extends \DateTime
+class CloneThis extends \DateTime
 {
     /**
      * @return static
