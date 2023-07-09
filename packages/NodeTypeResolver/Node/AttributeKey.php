@@ -305,6 +305,16 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_CLASS_EXTENDS = 'is_class_extends';
+
+    /**
+     * @var string
+     */
+    public const IS_CLASS_IMPLEMENT = 'is_class_implement';
+
+    /**
+     * @var string
+     */
     public const FROM_FUNC_CALL_NAME = 'from_func_call_name';
 
     /**
