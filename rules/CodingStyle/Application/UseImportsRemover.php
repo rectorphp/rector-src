@@ -34,7 +34,7 @@ final class UseImportsRemover
 
         if ($hasChanged) {
             // reset keys
-            $stmts = array_values($stmts);
+            return array_values($stmts);
         }
 
         return $stmts;
