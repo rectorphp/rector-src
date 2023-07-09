@@ -8,11 +8,9 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Util\StringUtils;
@@ -65,7 +63,6 @@ final class InlineCodeParser
         private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly ValueResolver $valueResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -148,10 +145,7 @@ final class InlineCodeParser
         }
 
         if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
-            $node = $this->betterNodeFinder->resolveNextNode($concat);
-            if ($node instanceof Variable) {
-                $concat->right->value .= '.';
-            }
+            $concat->right->value .= '.';
         }
 
         $string = $this->stringify($concat->left) . $this->stringify($concat->right);
