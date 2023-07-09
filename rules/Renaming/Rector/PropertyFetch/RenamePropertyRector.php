@@ -55,6 +55,8 @@ final class RenamePropertyRector extends AbstractRector implements ConfigurableR
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof ClassLike) {
+            $this->hasChanged = false;
+
             foreach ($this->renamedProperties as $renamedProperty) {
                 $this->renameProperty($node, $renamedProperty);
             }
