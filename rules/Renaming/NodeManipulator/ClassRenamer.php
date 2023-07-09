@@ -254,7 +254,7 @@ final class ClassRenamer
             return $this->isValidClassNameChange($name, $classReflection);
         }
 
-        if (!$classReflection->isInterface()) {
+        if (! $classReflection->isInterface()) {
             return $this->isValidClassNameChange($name, $classReflection);
         }
 
@@ -341,7 +341,7 @@ final class ClassRenamer
 
         if ($name->getAttribute(AttributeKey::IS_CLASS_IMPLEMENT) === true) {
             // is interface to class?
-            return  ! $classReflection->isClass();
+            return ! $classReflection->isClass();
         }
 
         return true;

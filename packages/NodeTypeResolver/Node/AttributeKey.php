@@ -321,4 +321,9 @@ final class AttributeKey
      * @var string
      */
     public const INSIDE_ARRAY_DIM_FETCH = 'inside_array_dim_fetch';
+
+    /**
+     * @var string
+     */
+    public const INSIDE_ARRAY_ITEM = 'inside_array_item';
 }
