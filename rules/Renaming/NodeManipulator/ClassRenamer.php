@@ -253,9 +253,11 @@ final class ClassRenamer
         if ($name->getAttribute(AttributeKey::IS_NEW_INSTANCE_NAME) !== true) {
             return $this->isValidClassNameChange($name, $classReflection);
         }
+
         if (!$classReflection->isInterface()) {
             return $this->isValidClassNameChange($name, $classReflection);
         }
+
         return false;
     }
 
