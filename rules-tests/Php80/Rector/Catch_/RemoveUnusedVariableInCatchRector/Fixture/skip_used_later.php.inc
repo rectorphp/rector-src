@@ -2,30 +2,14 @@
 
 namespace Rector\Tests\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector\Fixture;
 
-final class Fixture
+final class SkipUsedLater
 {
     public function run()
     {
         try {
-        } catch (Throwable $notUsedThrowable) {
+        } catch (Throwable $usedLater) {
         }
+
+        $this->process($usedLater);
     }
 }
-
-?>
------
-<?php
-
-namespace Rector\Tests\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector\Fixture;
-
-final class Fixture
-{
-    public function run()
-    {
-        try {
-        } catch (Throwable) {
-        }
-    }
-}
-
-?>

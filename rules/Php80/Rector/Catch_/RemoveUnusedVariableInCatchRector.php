@@ -6,8 +6,10 @@ namespace Rector\Php80\Rector\Catch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Stmt\Catch_;
-use Rector\Core\Rector\AbstractRector;
+use PhpParser\Node\Stmt\TryCatch;
+use PHPStan\Analyser\Scope;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -18,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector\RemoveUnusedVariableInCatchRectorTest
  */
-final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
+final class RemoveUnusedVariableInCatchRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -56,28 +58,44 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Catch_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Catch_ $node
+     * @param StmtsAwareInterface $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        $caughtVar = $node->var;
-        if (! $caughtVar instanceof Variable) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        /** @var string $variableName */
-        $variableName = $this->getName($caughtVar);
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof TryCatch) {
+                continue;
+            }
 
-        $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($node->stmts, $variableName);
-        if ($isVariableUsed) {
-            return null;
+            foreach ($stmt->catches as $catch) {
+                $caughtVar = $catch->var;
+                if (! $caughtVar instanceof Variable) {
+                    continue;
+                }
+
+                /** @var string $variableName */
+                $variableName = $this->getName($caughtVar);
+
+                $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($catch->stmts, $variableName);
+                if ($isVariableUsed) {
+                    continue;
+                }
+
+                if ($this->isUsedInNextStmt($node, $key + 1, $variableName)) {
+                    continue;
+                }
+
+                $catch->var = null;
+            }
         }
-
-        $node->var = null;
 
         return $node;
     }
@@ -85,5 +103,25 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NON_CAPTURING_CATCH;
+    }
+
+    private function isUsedInNextStmt(StmtsAwareInterface $stmtsAware, int $jumpToKey, string $variableName): bool
+    {
+        if ($stmtsAware->stmts === null) {
+            return false;
+        }
+
+        $totalKeys = array_key_last($stmtsAware->stmts);
+        for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
+            $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
+                $stmtsAware->stmts[$key],
+                $variableName
+            );
+            if ($isVariableUsed) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
