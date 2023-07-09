@@ -332,7 +332,7 @@ CODE_SAMPLE;
         $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
+        $node->getAttribute(AttributeKey::PARENT_NODE);
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
