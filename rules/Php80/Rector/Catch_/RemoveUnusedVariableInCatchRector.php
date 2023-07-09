@@ -69,11 +69,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isVariableUsedInStmts($node->stmts, $caughtVar)) {
-            return null;
-        }
+        /** @var string $variableName */
+        $variableName = $this->getName($caughtVar);
 
-        if ($this->isVariableUsedNext($node, $caughtVar)) {
+        $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($node->stmts, $variableName);
+        if ($isVariableUsed) {
             return null;
         }
 
@@ -85,24 +85,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NON_CAPTURING_CATCH;
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    private function isVariableUsedInStmts(array $nodes, Variable $variable): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            $nodes,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
-        );
-    }
-
-    private function isVariableUsedNext(Catch_ $catch, Variable $variable): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirstNext(
-            $catch,
-            fn (Node $node): bool => $this->exprUsedInNodeAnalyzer->isUsed($node, $variable)
-        );
     }
 }
