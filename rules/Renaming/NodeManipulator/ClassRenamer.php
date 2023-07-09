@@ -12,7 +12,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -23,7 +22,6 @@ use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\FileHasher;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
@@ -53,7 +51,6 @@ final class ClassRenamer
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly UseImportsResolver $useImportsResolver,
         private readonly RenameClassCallbackHandler $renameClassCallbackHandler,
         private readonly FileHasher $fileHasher
     ) {
@@ -263,11 +260,6 @@ final class ClassRenamer
             return $this->isValidClassNameChange($name, $parentNode, $classReflection);
         }
 
-        // prevent to change to import, that already exists
-        if ($parentNode instanceof UseUse) {
-            return $this->isValidUseImportChange($newClassName, $parentNode);
-        }
-
         return true;
     }
 
@@ -351,27 +343,6 @@ final class ClassRenamer
 
         // is interface to class?
         return ! (in_array($name, $class->implements, true) && $classReflection->isClass());
-    }
-
-    private function isValidUseImportChange(string $newName, UseUse $useUse): bool
-    {
-        $uses = $this->useImportsResolver->resolve();
-        if ($uses === []) {
-            return true;
-        }
-
-        foreach ($uses as $use) {
-            $prefix = $this->useImportsResolver->resolvePrefix($use);
-
-            foreach ($use->uses as $useUse) {
-                if ($prefix . $useUse->name->toString() === $newName) {
-                    // name already exists
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     /**
