@@ -22,8 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly StmtsManipulator $stmtsManipulator)
-    {
+    public function __construct(
+        private readonly StmtsManipulator $stmtsManipulator
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -107,29 +108,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NON_CAPTURING_CATCH;
-    }
-
-    private function isUsedInNextStmt(StmtsAwareInterface $stmtsAware, int $jumpToKey, string $variableName): bool
-    {
-        if ($stmtsAware->stmts === null) {
-            return false;
-        }
-
-        $totalKeys = array_key_last($stmtsAware->stmts);
-        for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key])) {
-                continue;
-            }
-
-            $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
-                $stmtsAware->stmts[$key],
-                $variableName
-            );
-            if ($isVariableUsed) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

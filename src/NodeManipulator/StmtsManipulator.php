@@ -61,24 +61,26 @@ final class StmtsManipulator
         return $stmts;
     }
 
-        /**
-     * @param Stmt[] $stmts
+    /**
      * @return Stmt[]
      */
-    public function isVariableUsedInNextStmt(StmtsAwareInterface $node, int $jumpToKey, string $variableName): bool
-    {
-        if ($node->stmts === null) {
+    public function isVariableUsedInNextStmt(
+        StmtsAwareInterface $stmtsAware,
+        int $jumpToKey,
+        string $variableName
+    ): bool {
+        if ($stmtsAware->stmts === null) {
             return false;
         }
 
-        $totalKeys = array_key_last($node->stmts);
+        $totalKeys = array_key_last($stmtsAware->stmts);
         for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
-            if (! isset($node->stmts[$key])) {
+            if (! isset($stmtsAware->stmts[$key])) {
                 continue;
             }
 
             $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
-                $node->stmts[$key],
+                $stmtsAware->stmts[$key],
                 $variableName
             );
 
