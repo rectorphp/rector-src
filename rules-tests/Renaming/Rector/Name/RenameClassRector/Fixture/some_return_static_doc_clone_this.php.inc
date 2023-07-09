@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class ReturnStaticDocCloneThis extends \DateTime
+class SomeReturnStaticDocCloneThis extends \DateTime
 {
     /**
      * @return static
      */
-    public function run(\DateTime $dateTime)
+    public function executeCloneThis(\DateTime $dateTime)
     {
         $obj = clone $this;
         return $obj;
@@ -20,12 +20,12 @@ class ReturnStaticDocCloneThis extends \DateTime
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class ReturnStaticDocCloneThis extends \DateTime
+class SomeReturnStaticDocCloneThis extends \DateTime
 {
     /**
      * @return static
      */
-    public function run(\DateTimeInterface $dateTime)
+    public function executeCloneThis(\DateTimeInterface $dateTime)
     {
         $obj = clone $this;
         return $obj;
