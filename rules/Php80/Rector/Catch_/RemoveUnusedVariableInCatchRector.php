@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,7 +20,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector\RemoveUnusedVariableInCatchRectorTest
  */
-final class RemoveUnusedVariableInCatchRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -64,7 +64,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         if ($node->stmts === null) {
             return null;
@@ -113,6 +113,10 @@ CODE_SAMPLE
 
         $totalKeys = array_key_last($stmtsAware->stmts);
         for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
+            if (! isset($stmtsAware->stmts[$key])) {
+                continue;
+            }
+
             $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
                 $stmtsAware->stmts[$key],
                 $variableName
