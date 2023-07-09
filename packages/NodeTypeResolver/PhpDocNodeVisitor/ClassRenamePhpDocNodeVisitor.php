@@ -16,7 +16,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\Core\Configuration\RectorConfigProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -36,7 +37,6 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
@@ -67,7 +67,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
 
-        $shouldImport = $this->rectorConfigProvider->shouldImportNames();
+        $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         $isNoNamespacedName = ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0;
 
         // tweak overlapped import + rename

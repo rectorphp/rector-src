@@ -14,7 +14,8 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\Configuration\RectorConfigProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -26,13 +27,12 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly RectorConfigProvider $rectorConfigProvider
     ) {
     }
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $this->rectorConfigProvider->shouldRemoveUnusedImports()) {
+        if (! SimpleParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS)) {
             return null;
         }
 

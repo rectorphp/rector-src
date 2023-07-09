@@ -9,7 +9,8 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Application\UseImportsRemover;
-use Rector\Core\Configuration\RectorConfigProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
@@ -28,7 +29,6 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
     public function __construct(
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly RectorConfigProvider $rectorConfigProvider,
         private readonly UseImportsRemover $useImportsRemover
     ) {
     }
@@ -74,7 +74,7 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
         $scope = $originalNode->getAttribute(AttributeKey::SCOPE);
         $result = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
 
-        if (! $this->rectorConfigProvider->shouldImportNames()) {
+        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
             return $result;
         }
 

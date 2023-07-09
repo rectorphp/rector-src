@@ -28,7 +28,8 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Core\Configuration\RectorConfigProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -81,7 +82,6 @@ final class BetterStandardPrinter extends Standard
      */
     public function __construct(
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly RectorConfigProvider $rectorConfigProvider,
         array $options = []
     ) {
         parent::__construct($options);
@@ -94,7 +94,7 @@ final class BetterStandardPrinter extends Standard
         $this->insertionMap['Expr_Closure->returnType'] = [')', false, ': ', null];
         $this->insertionMap['Expr_ArrowFunction->returnType'] = [')', false, ': ', null];
 
-        $this->tabOrSpaceIndentCharacter = $this->rectorConfigProvider->getIndentChar();
+        $this->tabOrSpaceIndentCharacter = SimpleParameterProvider::provideStringParameter(Option::INDENT_CHAR, ' ');
     }
 
     /**
@@ -177,8 +177,10 @@ final class BetterStandardPrinter extends Standard
             return parent::pExpr_ArrowFunction($arrowFunction);
         }
 
+        $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
+
         $indent = str_repeat($this->tabOrSpaceIndentCharacter, $this->indentLevel) .
-            str_repeat($this->tabOrSpaceIndentCharacter, $this->rectorConfigProvider->getIndentSize());
+            str_repeat($this->tabOrSpaceIndentCharacter, $indentSize);
 
         $text = "\n" . $indent;
         foreach ($comments as $key => $comment) {
@@ -212,7 +214,7 @@ final class BetterStandardPrinter extends Standard
      */
     protected function indent(): void
     {
-        $indentSize = $this->rectorConfigProvider->getIndentSize();
+        $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
 
         $this->indentLevel += $indentSize;
         $this->nl .= str_repeat($this->tabOrSpaceIndentCharacter, $indentSize);
