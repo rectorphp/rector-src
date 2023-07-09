@@ -235,6 +235,11 @@ final class AttributeKey
     /**
      * @var string
      */
+    public const IS_VARIABLE_LOOP = 'is_variable_loop';
+
+    /**
+     * @var string
+     */
     public const IS_IN_IF = 'is_in_if';
 
     /**
@@ -291,6 +296,11 @@ final class AttributeKey
      * @var string
      */
     public const IS_ARG_VALUE = 'is_arg_value';
+
+    /**
+     * @var string
+     */
+    public const IS_PARAM_VAR = 'IS_PARAM_VAR';
 
     /**
      * @var string

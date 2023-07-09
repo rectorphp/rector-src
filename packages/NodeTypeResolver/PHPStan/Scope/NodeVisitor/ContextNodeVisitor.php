@@ -12,6 +12,8 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Isset_;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Do_;
@@ -54,16 +56,8 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
 
         if ($node instanceof Attribute) {
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                $node->args,
-                static function (Node $subNode) {
-                    if ($subNode instanceof Array_) {
-                        $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
-                    }
-
-                    return null;
-                }
-            );
+            $this->processContextInAttribute($node);
+            return null;
         }
 
         if ($node instanceof If_ || $node instanceof Else_ || $node instanceof ElseIf_) {
@@ -79,7 +73,25 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             $node->value->setAttribute(AttributeKey::IS_ARG_VALUE, true);
         }
 
+        if ($node instanceof Param) {
+            $node->var->setAttribute(AttributeKey::IS_PARAM_VAR, true);
+        }
+
         return null;
+    }
+
+    private function processContextInAttribute(Attribute $attribute): void
+    {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $attribute->args,
+            static function (Node $subNode) {
+                if ($subNode instanceof Array_) {
+                    $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
+                }
+
+                return null;
+            }
+        );
     }
 
     private function processContextInIssetOrUnset(Isset_|Unset_ $node): void
@@ -108,6 +120,14 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
     {
+        if ($node instanceof Foreach_) {
+            if ($node->keyVar instanceof Variable) {
+                $node->keyVar->setAttribute(AttributeKey::IS_VARIABLE_LOOP, true);
+            }
+
+            $node->valueVar->setAttribute(AttributeKey::IS_VARIABLE_LOOP, true);
+        }
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $node->stmts,
             static function (Node $subNode): ?int {
