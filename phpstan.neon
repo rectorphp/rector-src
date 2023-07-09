@@ -699,3 +699,6 @@ parameters:
                 - src/NodeManipulator/PropertyManipulator.php
 
         - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
+
+        # handle in next PR
+        - '#Call to deprecated method findFirstNext\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder#'
