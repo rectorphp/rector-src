@@ -3,8 +3,9 @@
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Doctrine\DBAL\DBALException;
+use Symfony\Component\Routing\Annotation\Route;
 
-class RenameBeforeAttribute
+class SomeRenameBeforeAttribute
 {
     /**
      * @throws DBALException
@@ -22,8 +23,9 @@ class RenameBeforeAttribute
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Doctrine\DBAL\DBALException;
+use Symfony\Component\Routing\Annotation\Route;
 
-class RenameBeforeAttribute
+class SomeRenameBeforeAttribute
 {
     /**
      * @throws \Doctrine\DBAL\Exception

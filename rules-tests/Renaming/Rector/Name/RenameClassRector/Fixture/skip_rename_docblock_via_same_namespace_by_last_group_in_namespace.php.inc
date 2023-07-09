@@ -1,12 +1,10 @@
 <?php
 
-/**
- * Future note: Not inside namespace on purpose to check last name GroupUse_ used
- */
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use \Company2\{ Bar };
 
-final class SkipDocblockRenameDifferentNamespace4
+final class SkipRenameDocblockViaSameNamespaceInNamespace
 {
     /**
      * @param Bar $foo

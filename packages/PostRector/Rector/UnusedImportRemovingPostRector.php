@@ -57,7 +57,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-
             if ($this->isUseImportUsed($useUse, $names)) {
                 continue;
             }
