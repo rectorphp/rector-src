@@ -86,6 +86,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $this->hasChanged = false;
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);

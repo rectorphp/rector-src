@@ -86,6 +86,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $this->hasChanged = false;
+
         $this->refactorClassProperties($node);
 
         $hasPromotedPropertyChanged = $this->propertyPromotionRenamer->renamePropertyPromotion($node);
