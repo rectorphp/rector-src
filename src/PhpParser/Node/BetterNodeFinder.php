@@ -274,6 +274,7 @@ final class BetterNodeFinder
 
     /**
      * @api
+     * @deprecated Hook into the previous node instead, to work only with current context
      *
      * Resolve next node from any Node, eg: Expr, Identifier, Name, etc
      */
