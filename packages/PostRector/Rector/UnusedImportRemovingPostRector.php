@@ -56,7 +56,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 continue;
             }
 
-            if (isset($namespaceStmt->uses[0]) && $namespaceStmt->uses[0] instanceof UseUse && $this->isUseImportUsed($namespaceStmt->uses[0], $names)) {
+            $currentUseUse = current($namespaceStmt->uses);
+            if ($currentUseUse instanceof UseUse && $this->isUseImportUsed($namespaceStmt->uses[0], $names)) {
                 continue;
             }
 
