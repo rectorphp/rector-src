@@ -249,13 +249,14 @@ final class ClassRenamer
         }
 
         $classReflection = $this->reflectionProvider->getClass($newClassName);
-
         // ensure new is not with interface
-        if ($name->getAttribute(AttributeKey::IS_NEW_INSTANCE_NAME) === true && $classReflection->isInterface()) {
-            return false;
+        if ($name->getAttribute(AttributeKey::IS_NEW_INSTANCE_NAME) !== true) {
+            return $this->isValidClassNameChange($name, $classReflection);
         }
-
-        return $this->isValidClassNameChange($name, $classReflection);
+        if (!$classReflection->isInterface()) {
+            return $this->isValidClassNameChange($name, $classReflection);
+        }
+        return false;
     }
 
     /**
