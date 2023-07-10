@@ -7,7 +7,9 @@ namespace Rector\Naming\Rector\Foreach_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\NodeManipulator\StmtsManipulator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,7 +22,8 @@ final class RenameForeachValueVariableToMatchExprVariableRector extends Abstract
 {
     public function __construct(
         private readonly InflectorSingularResolver $inflectorSingularResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private readonly StmtsManipulator $stmtsManipulator
     ) {
     }
 
@@ -63,48 +66,75 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Foreach_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Foreach_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        $isPropertyFetch = $this->propertyFetchAnalyzer->isLocalPropertyFetch($node->expr);
-        if (! $node->expr instanceof Variable && ! $isPropertyFetch) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $exprName = $this->getName($node->expr);
-        if ($exprName === null) {
-            return null;
+        $hasChanged = false;
+
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Foreach_) {
+                continue;
+            }
+
+            $isPropertyFetch = $this->propertyFetchAnalyzer->isLocalPropertyFetch($stmt->expr);
+            if (! $stmt->expr instanceof Variable && ! $isPropertyFetch) {
+                continue;
+            }
+
+            $exprName = $this->getName($stmt->expr);
+            if ($exprName === null) {
+                continue;
+            }
+
+            if ($stmt->keyVar instanceof Node) {
+                continue;
+            }
+
+            $valueVarName = $this->getName($stmt->valueVar);
+            if ($valueVarName === null) {
+                continue;
+            }
+
+            $singularValueVarName = $this->inflectorSingularResolver->resolve($exprName);
+            if ($singularValueVarName === $exprName) {
+                continue;
+            }
+
+            if ($singularValueVarName === $valueVarName) {
+                continue;
+            }
+
+            $alreadyUsedVariable = $this->betterNodeFinder->findVariableOfName($stmt->stmts, $singularValueVarName);
+            if ($alreadyUsedVariable instanceof Variable) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $singularValueVarName)) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $valueVarName)) {
+                continue;
+            }
+
+            $node->stmts[$key] = $this->processRename($stmt, $valueVarName, $singularValueVarName);
+            $hasChanged = true;
         }
 
-        if ($node->keyVar instanceof Node) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $valueVarName = $this->getName($node->valueVar);
-        if ($valueVarName === null) {
-            return null;
-        }
-
-        $singularValueVarName = $this->inflectorSingularResolver->resolve($exprName);
-        if ($singularValueVarName === $exprName) {
-            return null;
-        }
-
-        if ($singularValueVarName === $valueVarName) {
-            return null;
-        }
-
-        $alreadyUsedVariable = $this->betterNodeFinder->findVariableOfName($node->stmts, $singularValueVarName);
-        if ($alreadyUsedVariable instanceof Variable) {
-            return null;
-        }
-
-        return $this->processRename($node, $valueVarName, $singularValueVarName);
+        return null;
     }
 
     private function processRename(Foreach_ $foreach, string $valueVarName, string $singularValueVarName): Foreach_
