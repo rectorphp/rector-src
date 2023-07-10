@@ -126,7 +126,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $node->stmts[$key] = $this->processRename($stmt, $valueVarName, $singularValueVarName);
+            $this->processRename($stmt, $valueVarName, $singularValueVarName);
             $hasChanged = true;
         }
 
@@ -137,7 +137,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function processRename(Foreach_ $foreach, string $valueVarName, string $singularValueVarName): Foreach_
+    private function processRename(Foreach_ $foreach, string $valueVarName, string $singularValueVarName): void
     {
         $foreach->valueVar = new Variable($singularValueVarName);
         $this->traverseNodesWithCallable($foreach->stmts, function (Node $node) use (
@@ -154,7 +154,5 @@ CODE_SAMPLE
 
             return new Variable($singularValueVarName);
         });
-
-        return $foreach;
     }
 }
