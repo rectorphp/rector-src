@@ -98,8 +98,6 @@ return static function (RectorConfig $rectorConfig): void {
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, '!', '!='),
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'g', 'gt'),
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'l', 'lt'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'gte', 'ge'),
-            new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'lte', 'le'),
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'n', 'ne'),
         ]);
 };
