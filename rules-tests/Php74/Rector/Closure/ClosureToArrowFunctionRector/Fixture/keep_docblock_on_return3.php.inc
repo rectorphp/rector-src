@@ -1,22 +1,36 @@
 <?php
 
-function() {
-    /**
-     * comment
-     */
-    // something
-    // @psalm-suppress UndefinedFunction
-    return ff();
-};
+class KeepDocblockOnReturn3
+{
+    public function run()
+    {
+        function() {
+            /**
+             * comment
+             */
+            // something
+            // @psalm-suppress UndefinedFunction
+            return ff();
+        };
+    }
+}
+
 ?>
 -----
 <?php
 
-fn() =>
-    /**
-     * comment
-     */
-    // something
-    // @psalm-suppress UndefinedFunction
-    ff();
+class KeepDocblockOnReturn3
+{
+    public function run()
+    {
+        fn() =>
+            /**
+             * comment
+             */
+            // something
+            // @psalm-suppress UndefinedFunction
+            ff();
+    }
+}
+
 ?>
