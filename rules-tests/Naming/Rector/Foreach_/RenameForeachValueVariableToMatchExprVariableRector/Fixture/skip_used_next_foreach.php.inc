@@ -2,16 +2,17 @@
 
 namespace Rector\Tests\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector\Fixture;
 
-final class SkipOldValueUsedNext
+class SkipUsedNextForeach
 {
     public function run()
     {
-        $numbers = ['one', 'two'];
-
-        foreach ($numbers as $txt) {
-            echo "This is number ".$txt;
+        $array = [];
+        foreach ($variables as $property) {
+            $array[] = $property;
         }
 
-        echo $txt;
+        echo $variable;
     }
 }
+
+?>
