@@ -1,14 +1,28 @@
 <?php
 
-function() {
-    /** @psalm-suppress UndefinedFunction */
-    return ff();
-};
+class KeepDocblockOnReturn
+{
+    public function run()
+    {
+        function() {
+            /** @psalm-suppress UndefinedFunction */
+            return ff();
+        };
+    }
+}
+
 ?>
 -----
 <?php
 
-fn() =>
-    /** @psalm-suppress UndefinedFunction */
-    ff();
+class KeepDocblockOnReturn
+{
+    public function run()
+    {
+        fn() =>
+            /** @psalm-suppress UndefinedFunction */
+            ff();
+    }
+}
+
 ?>
