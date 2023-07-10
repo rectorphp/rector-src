@@ -35,6 +35,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveNonExistingVarAnnotationRector extends AbstractRector
 {
+    /**
+     * @var class-string<Stmt>
+     */
     private const NODE_TYPES = [
         Foreach_::class,
         Static_::class,
