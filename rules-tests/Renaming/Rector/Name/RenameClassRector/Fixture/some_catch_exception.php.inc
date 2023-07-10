@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class CatchException
+class SomeCatchException
 {
     public function run()
     {
@@ -18,7 +18,7 @@ class CatchException
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class CatchException
+class SomeCatchException
 {
     public function run()
     {

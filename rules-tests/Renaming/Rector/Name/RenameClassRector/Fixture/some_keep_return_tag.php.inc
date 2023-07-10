@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use Manual\Twig\TwigFilter;
 
-final class KeepReturnTag
+final class SomeKeepReturnTag
 {
     /**
      * @return TwigFilter

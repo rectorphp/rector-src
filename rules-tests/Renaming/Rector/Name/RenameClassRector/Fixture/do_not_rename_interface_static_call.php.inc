@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use DateTime;
 
-final class DoNotReplaceInterfaceCall
+final class DoNotRenameInterfaceStaticCall
 {
     public function run($dateTime)
     {
@@ -24,7 +24,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use DateTime;
 
-final class DoNotReplaceInterfaceCall
+final class DoNotRenameInterfaceStaticCall
 {
     public function run($dateTime)
     {
