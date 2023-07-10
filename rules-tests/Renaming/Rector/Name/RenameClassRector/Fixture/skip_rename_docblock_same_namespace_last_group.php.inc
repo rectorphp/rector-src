@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
 use \Company2\{ Bar };
 
-final class SkipRenameDocblockViaSameNamespaceInNamespace
+final class SkipRenameDocblockSameNamespaceLastGroup
 {
     /**
      * @param Bar $foo
