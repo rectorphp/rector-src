@@ -59,7 +59,12 @@ final class RectifiedAnalyzer
 
         $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
         if ($createdByRule === []) {
-            return ! $node instanceof Stmt;
+            if ($node instanceof Stmt) {
+                $startTokenPos = $node->getStartTokenPos();
+                return $startTokenPos >= 0;
+            }
+
+            return true;
         }
 
         /**
