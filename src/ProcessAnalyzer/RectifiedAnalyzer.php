@@ -57,14 +57,9 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-        if ($createdByRule === []) {
-            if ($node instanceof Stmt) {
-                $startTokenPos = $node->getStartTokenPos();
-                return $startTokenPos >= 0;
-            }
-
-            return true;
+        if (! $node instanceof Stmt) {
+            $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+            return $createdByRule === [];
         }
 
         /**
