@@ -32,7 +32,7 @@ class Fixture extends ParentClass
 {
     public function run($a, $b, $c)
     {
-        if ($a !== 'a' && $b !== 'b') {
+        if (!($a === 'a' || $b === 'b')) {
             return;
         }
         if (!$c) {

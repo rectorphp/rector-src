@@ -45,11 +45,13 @@ class Fixture
     ): bool {
         $user = $this->getUser($user);
 
-        if (!$user instanceof \Rector\Core\Tests\Issues\ReplaceStmtToExpr\Fixture\User) {
+        if ($user === null) {
             return false;
         }
-
-        return $user->isFoo() || $user->isBar();
+        if ($user->isFoo()) {
+            return true;
+        }
+        return (bool) $user->isBar();
     }
 
 }
