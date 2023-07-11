@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -57,10 +56,10 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        if (! $node instanceof Stmt) {
-            $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
-            return $createdByRule === [];
-        }
+        //        if (! $node instanceof Stmt) {
+        //            $createdByRule = $node->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
+        //            return $createdByRule === [];
+        //        }
 
         /**
          * Start token pos must be < 0 to continue, as the node and parent node just re-printed

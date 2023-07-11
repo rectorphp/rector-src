@@ -95,7 +95,7 @@ CODE_SAMPLE
         /** @var BooleanAnd $booleanAnd */
         $booleanAnd = $node->expr;
 
-        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanAnd->right, $scope);
+        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanAnd->right);
         return array_merge($ifNegations, [new Return_($lastReturnExpr)]);
     }
 
