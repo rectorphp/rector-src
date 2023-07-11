@@ -27,7 +27,7 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        return $this->isJustReprintedOverlappedTokenStart($node, $rectorClass, $originalNode);
+        return $this->isJustReprintedOverlappedTokenStart($node, $originalNode);
     }
 
     /**
@@ -46,10 +46,7 @@ final class RectifiedAnalyzer
         return end($createdByRule) === $rectorClass;
     }
 
-    /**
-     * @param class-string<RectorInterface> $rectorClass
-     */
-    private function isJustReprintedOverlappedTokenStart(Node $node, string $rectorClass, ?Node $originalNode): bool
+    private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
     {
         if ($originalNode instanceof Node) {
             return false;
