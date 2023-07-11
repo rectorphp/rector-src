@@ -14,6 +14,7 @@ use PHPStan\Reflection\MethodReflection;
 use Rector\CodingStyle\Reflection\VendorLocationDetector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeResolver\ArgumentSorter;
 use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
@@ -27,6 +28,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class OptionalParametersAfterRequiredRector extends AbstractScopeAwareRector
 {
+    /**
+     * @var string
+     */
+    private const HAS_SWAPPED_PARAMS = 'has_swapped_params';
+
     public function __construct(
         private readonly RequireOptionalParamResolver $requireOptionalParamResolver,
         private readonly ArgumentSorter $argumentSorter,
@@ -91,6 +97,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($classMethod->getAttribute(self::HAS_SWAPPED_PARAMS, false) === true) {
+            return null;
+        }
+
         $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod);
         if (! $classMethodReflection instanceof MethodReflection) {
             return null;
@@ -110,6 +120,7 @@ CODE_SAMPLE
             $expectedArgOrParamOrder
         );
 
+        $classMethod->setAttribute(self::HAS_SWAPPED_PARAMS, true);
         return $classMethod;
     }
 
