@@ -10,17 +10,17 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
-use PHPStan\Analyser\Scope;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\ReturnBinaryOrToEarlyReturnRectorTest
  */
-final class ReturnBinaryOrToEarlyReturnRector extends AbstractScopeAwareRector
+final class ReturnBinaryOrToEarlyReturnRector extends AbstractRector
 {
     public function __construct(
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
@@ -64,38 +64,59 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Return_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Return_ $node
-     * @return null|Node[]
+     * @param StmtsAwareInterface $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?array
+    public function refactor(Node $node): ?Node
     {
-        if (! $node->expr instanceof BooleanOr) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        /** @var BooleanOr $booleanOr */
-        $booleanOr = $node->expr;
+        $hasChanged = false;
 
-        $left = $booleanOr->left;
-        $ifs = $this->createMultipleIfs($left, $node, []);
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Return_) {
+                continue;
+            }
 
-        // ensure ifs not removed by other rules
-        if ($ifs === []) {
-            return null;
+            if (! $stmt->expr instanceof BooleanOr) {
+                continue;
+            }
+
+            /** @var BooleanOr $booleanOr */
+            $booleanOr = $stmt->expr;
+
+            $left = $booleanOr->left;
+            $ifs = $this->createMultipleIfs($left, $stmt, []);
+
+            // ensure ifs not removed by other rules
+            if ($ifs === []) {
+                continue;
+            }
+
+            if (! $this->callAnalyzer->doesIfHasObjectCall($ifs)) {
+                continue;
+            }
+
+            $this->mirrorComments($ifs[0], $stmt);
+
+            $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanOr->right);
+
+            $ifsWithLastIf = array_merge($ifs, [new Return_($lastReturnExpr)]);
+
+            array_splice($node->stmts, $key, 1, $ifsWithLastIf);
+            $hasChanged = true;
         }
 
-        if (! $this->callAnalyzer->doesIfHasObjectCall($ifs)) {
-            return null;
+        if ($hasChanged) {
+            return $node;
         }
 
-        $this->mirrorComments($ifs[0], $node);
-
-        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanOr->right, $scope);
-        return array_merge($ifs, [new Return_($lastReturnExpr)]);
+        return null;
     }
 
     /**
@@ -126,8 +147,12 @@ CODE_SAMPLE
             'stmts' => [new Return_($this->nodeFactory->createTrue())],
         ]);
 
-        // the + is on purpose here, to keep only single continue as last
-        return $ifs + [$lastIf];
+        // if empty, fallback to last if
+        if ($ifs === []) {
+            return [$lastIf];
+        }
+
+        return $ifs;
     }
 
     /**

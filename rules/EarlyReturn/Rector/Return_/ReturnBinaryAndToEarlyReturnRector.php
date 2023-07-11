@@ -13,6 +13,7 @@ use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryAndToEarlyReturnRector\ReturnBinaryAndToEarlyReturnRectorTest
  */
-final class ReturnBinaryAndToEarlyReturnRector extends AbstractScopeAwareRector
+final class ReturnBinaryAndToEarlyReturnRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
@@ -73,7 +74,7 @@ CODE_SAMPLE
      * @param Return_ $node
      * @return null|Node[]
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?array
+    public function refactor(Node $node): ?array
     {
         if (! $node->expr instanceof BooleanAnd) {
             return null;
@@ -95,7 +96,7 @@ CODE_SAMPLE
         /** @var BooleanAnd $booleanAnd */
         $booleanAnd = $node->expr;
 
-        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanAnd->right, $scope);
+        $lastReturnExpr = $this->assignAndBinaryMap->getTruthyExpr($booleanAnd->right);
         return array_merge($ifNegations, [new Return_($lastReturnExpr)]);
     }
 

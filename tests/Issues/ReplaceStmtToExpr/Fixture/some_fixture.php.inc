@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\ReplaceStmtToExpr\Fixture;
 
-class Fixture
+use Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
+
+final class SomeFixture
 {
-    public function getUser(?User $user = null): ?User
+    public function getUser(?SomeUser $user = null): ?SomeUser
     {
         return $user ?? (Auth::check() ? Auth::user() : null);
     }
 
     public function doFoo(
-        ?User $user = null
+        ?SomeUser $user = null
     ): bool {
         $user = $this->getUser($user);
 
@@ -33,19 +35,21 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\ReplaceStmtToExpr\Fixture;
 
-class Fixture
+use Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
+
+final class SomeFixture
 {
-    public function getUser(?User $user = null): ?User
+    public function getUser(?SomeUser $user = null): ?SomeUser
     {
         return $user ?? (Auth::check() ? Auth::user() : null);
     }
 
     public function doFoo(
-        ?User $user = null
+        ?SomeUser $user = null
     ): bool {
         $user = $this->getUser($user);
 
-        if ($user === null) {
+        if (!$user instanceof \Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser) {
             return false;
         }
         if ($user->isFoo()) {

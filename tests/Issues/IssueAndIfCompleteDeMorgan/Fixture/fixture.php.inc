@@ -2,12 +2,9 @@
 
 namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
 
-class ParentClass
-{
-    protected $d;
-}
+use Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
 
-class Fixture extends ParentClass
+final class Fixture extends ParentClassWithLetter
 {
     public function run($a, $b, $c)
     {
@@ -23,16 +20,13 @@ class Fixture extends ParentClass
 
 namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
 
-class ParentClass
-{
-    protected $d;
-}
+use Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
 
-class Fixture extends ParentClass
+final class Fixture extends ParentClassWithLetter
 {
     public function run($a, $b, $c)
     {
-        if (!($a === 'a' || $b === 'b')) {
+        if ($a !== 'a' && $b !== 'b') {
             return;
         }
         if (!$c) {

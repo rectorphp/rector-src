@@ -243,8 +243,6 @@ CODE_SAMPLE;
         }
 
         $objectHash = spl_object_hash($node);
-
-        // update parents relations!!!
         return $this->nodesToReturn[$objectHash] ?? $node;
     }
 
@@ -342,9 +340,9 @@ CODE_SAMPLE;
 
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
+            // will be replaced in leaveNode() the original node must be passed
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
-            // will be replaced in leaveNode() the original node must be passed
             return $originalNode;
         }
 
