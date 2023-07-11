@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
-use Rector\Core\NodeManipulator\IfManipulator;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,7 +23,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnBinaryOrToEarlyReturnRector extends AbstractScopeAwareRector
 {
     public function __construct(
-        private readonly IfManipulator $ifManipulator,
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
         private readonly CallAnalyzer $callAnalyzer
     ) {
@@ -108,10 +106,9 @@ CODE_SAMPLE
     {
         while ($expr instanceof BooleanOr) {
             $ifs = array_merge($ifs, $this->collectLeftBooleanOrToIfs($expr, $return, $ifs));
-            $ifs[] = $this->ifManipulator->createIfStmt(
-                $expr->right,
-                new Return_($this->nodeFactory->createTrue())
-            );
+            $ifs[] = new If_($expr->right, [
+                'stmts' => [new Return_($this->nodeFactory->createTrue())],
+            ]);
 
             $expr = $expr->right;
             if ($expr instanceof BooleanAnd) {
@@ -125,7 +122,12 @@ CODE_SAMPLE
             return [];
         }
 
-        return $ifs + [$this->ifManipulator->createIfStmt($expr, new Return_($this->nodeFactory->createTrue()))];
+        $lastIf = new If_($expr, [
+            'stmts' => [new Return_($this->nodeFactory->createTrue())],
+        ]);
+
+        // the + is on purpose here, to keep only single continue as last
+        return $ifs + [$lastIf];
     }
 
     /**
@@ -136,7 +138,11 @@ CODE_SAMPLE
     {
         $left = $booleanOr->left;
         if (! $left instanceof BooleanOr) {
-            return [$this->ifManipulator->createIfStmt($left, new Return_($this->nodeFactory->createTrue()))];
+            $returnTrueIf = new If_($left, [
+                'stmts' => [new Return_($this->nodeFactory->createTrue())],
+            ]);
+
+            return [$returnTrueIf];
         }
 
         return $this->createMultipleIfs($left, $return, $ifs);
