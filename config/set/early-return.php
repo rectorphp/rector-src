@@ -10,7 +10,6 @@ use Rector\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 use Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector;
-use Rector\EarlyReturn\Rector\Return_\ReturnBinaryAndToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector;
 
@@ -21,7 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
         ChangeIfElseValueAssignToEarlyReturnRector::class,
         ChangeNestedIfsToEarlyReturnRector::class,
         RemoveAlwaysElseRector::class,
-        ReturnBinaryAndToEarlyReturnRector::class,
         ChangeOrIfContinueToMultiContinueRector::class,
         PreparedValueToEarlyReturnRector::class,
         ReturnBinaryOrToEarlyReturnRector::class,
