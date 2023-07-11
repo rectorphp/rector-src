@@ -702,3 +702,6 @@ parameters:
 
         # handle in next PR
         - '#Call to deprecated method findFirstNext\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder#'
+
+        # remove later
+        - '#Public method "Rector\\Core\\NodeManipulator\\IfManipulator\:\:createIfStmt\(\)" is never used#'
