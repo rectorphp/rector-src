@@ -17,7 +17,6 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 
 final class IfManipulator
 {
@@ -25,7 +24,6 @@ final class IfManipulator
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StmtsManipulator $stmtsManipulator,
         private readonly ValueResolver $valueResolver,
-        private readonly ConditionInverter $conditionInverter,
         private readonly NodeComparator $nodeComparator
     ) {
     }
@@ -186,14 +184,6 @@ final class IfManipulator
         }
 
         return $if->elseifs === [];
-    }
-
-    public function createIfNegation(Expr $expr, Return_ $return): If_
-    {
-        $expr = $this->conditionInverter->createInvertedCondition($expr);
-        return new If_($expr, [
-            'stmts' => [$return],
-        ]);
     }
 
     /**
