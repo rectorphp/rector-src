@@ -197,7 +197,7 @@ CODE_SAMPLE
 
         $property = $class->getProperty($propertyName);
         if (! $property instanceof Property) {
-            return false;
+            return true;
         }
 
         return $property->type === null;
