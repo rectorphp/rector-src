@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\Fixture;
 
-final class SkipArrayAppend
+final class SkipSameNamePropertyFetch
 {
     public function addSuccessMessage($success)
     {
