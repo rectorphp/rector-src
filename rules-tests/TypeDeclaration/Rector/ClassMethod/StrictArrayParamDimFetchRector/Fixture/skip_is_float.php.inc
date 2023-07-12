@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\Fixture;
 
-final class SkipIsBool
+final class SkipIsFloat
 {
     private function getLabelsForIds($ids)
     {
