@@ -7,8 +7,5 @@ use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        RemoveUnusedVariableInCatchRector::class,
-        OptionalParametersAfterRequiredRector::class
-    ]);
+    $rectorConfig->rules([RemoveUnusedVariableInCatchRector::class, OptionalParametersAfterRequiredRector::class]);
 };
