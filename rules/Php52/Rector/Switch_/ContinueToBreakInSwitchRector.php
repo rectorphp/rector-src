@@ -86,7 +86,7 @@ CODE_SAMPLE
                 }
 
                 $newStmt = $this->processContinueStatement($caseStmt);
-                if ($newStmt === $caseStmt) {
+                if ($newStmt instanceof Continue_) {
                     continue;
                 }
 
