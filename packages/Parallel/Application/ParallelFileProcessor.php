@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Parallel\Application;
 
+use Closure;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\Random;
@@ -47,9 +48,9 @@ final class ParallelFileProcessor
     private ProcessPool|null $processPool = null;
 
     /**
-     * @var \Closure():void|null
+     * @var Closure():void|null
      */
-    private \Closure|null $processSpawner = null;
+    private Closure|null $processSpawner = null;
 
     /**
      * @var int[]
@@ -185,15 +186,18 @@ final class ParallelFileProcessor
                         $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
+
                     if (!isset($this->processRunCounter[$processIdentifier])) {
                         $this->processRunCounter[$processIdentifier] = 0;
                     }
+
                     if ($this->processRunCounter[$processIdentifier] >= self::MAX_PROCESS_ITERATIONS) {
                         $this->processPool->quitProcess($processIdentifier);
                         if (is_callable($this->processSpawner)){
                             ($this->processSpawner)();
                         }
                     }
+
                     ++$this->processRunCounter[$processIdentifier];;
                     $job = array_pop($jobs);
                     $parallelProcess->request([
