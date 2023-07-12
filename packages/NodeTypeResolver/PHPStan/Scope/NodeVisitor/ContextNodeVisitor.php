@@ -44,17 +44,17 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     ) {
     }
 
-    private function processInsideArrayDimFetch(ArrayDimFetch $node): void
+    private function processInsideArrayDimFetch(ArrayDimFetch $arrayDimFetch): void
     {
-        if ($node->var instanceof PropertyFetch || $node->var instanceof StaticPropertyFetch) {
-            $node->var->setAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, true);
+        if ($arrayDimFetch->var instanceof PropertyFetch || $arrayDimFetch->var instanceof StaticPropertyFetch) {
+            $arrayDimFetch->var->setAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, true);
         }
     }
 
-    private function processInsideArrayItem(ArrayItem $node): void
+    private function processInsideArrayItem(ArrayItem $arrayItem): void
     {
-        if ($node->value instanceof Match_) {
-            $node->value->setAttribute(AttributeKey::INSIDE_ARRAY_ITEM, true);
+        if ($arrayItem->value instanceof Match_) {
+            $arrayItem->value->setAttribute(AttributeKey::INSIDE_ARRAY_ITEM, true);
         }
     }
 
