@@ -2,11 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector\Fixture;
 
-final class StringArrayUnion
+final class SkipIsString
 {
-    /**
-     * @param string|array $ids
-     */
     private function getLabelsForIds($ids)
     {
         if (is_string($ids)) {
