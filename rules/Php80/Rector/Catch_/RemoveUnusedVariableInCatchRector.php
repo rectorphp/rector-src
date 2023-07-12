@@ -75,6 +75,8 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
+
         foreach ($node->stmts as $key => $stmt) {
             if (! $stmt instanceof TryCatch) {
                 continue;
@@ -99,10 +101,15 @@ CODE_SAMPLE
                 }
 
                 $catch->var = null;
+                $hasChanged = true;
             }
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 
     public function provideMinPhpVersion(): int
