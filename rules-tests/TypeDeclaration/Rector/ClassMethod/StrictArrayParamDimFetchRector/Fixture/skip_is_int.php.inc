@@ -18,5 +18,3 @@ final class SkipIsInt
         }
     }
 }
-
-?>
