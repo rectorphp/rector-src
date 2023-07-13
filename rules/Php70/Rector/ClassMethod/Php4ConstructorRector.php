@@ -89,10 +89,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $scope->isInClass()) {
-            return null;
-        }
-
         $psr4ConstructorMethod = $node->getMethod(lcfirst($className)) ?? $node->getMethod($className);
         if (! $psr4ConstructorMethod instanceof ClassMethod) {
             return null;
