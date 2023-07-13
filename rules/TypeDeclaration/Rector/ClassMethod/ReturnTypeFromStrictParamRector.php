@@ -89,28 +89,12 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType !== null) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod) {
-            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
-                return null;
-            }
-
-            if ($node->isMagic()) {
-                return null;
-            }
-        }
-
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        $returnType = TypeCombinator::removeNull($returnType);
-        if ($returnType instanceof UnionType) {
+        if ($this->shouldSkipNode($node)) {
             return null;
         }
 
         $return = $this->findCurrentScopeReturn($node);
-        if ($return === null) {
+        if ($return === null || $return->expr === null) {
             return null;
         }
 
@@ -194,5 +178,30 @@ CODE_SAMPLE
         });
 
         return $isParamModified;
+    }
+
+    private function shouldSkipNode(ClassMethod|Function_ $node): bool
+    {
+        if ($node->returnType !== null) {
+            return true;
+        }
+
+        if ($node instanceof ClassMethod) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+                return true;
+            }
+
+            if ($node->isMagic()) {
+                return true;
+            }
+        }
+
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        $returnType = TypeCombinator::removeNull($returnType);
+        if ($returnType instanceof UnionType) {
+            return true;
+        }
+
+        return false;
     }
 }
