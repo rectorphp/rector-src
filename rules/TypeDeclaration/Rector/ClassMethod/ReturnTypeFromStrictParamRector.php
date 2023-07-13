@@ -93,13 +93,19 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node instanceof ClassMethod) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+                return null;
+            }
+
+            if ($node->isMagic()) {
+                return null;
+            }
+        }
+
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
         $returnType = TypeCombinator::removeNull($returnType);
         if ($returnType instanceof UnionType) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
             return null;
         }
 
