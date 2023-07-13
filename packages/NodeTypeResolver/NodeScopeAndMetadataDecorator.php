@@ -38,16 +38,17 @@ final class NodeScopeAndMetadataDecorator
      */
     public function decorateNodesFromFile(File|string $file, array $stmts): array
     {
+        $filePath = $file instanceof File ? $file->getFilePath() : $file;
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
         $stmts = $this->phpStanNodeScopeResolver->processNodes(
             $stmts,
-            $file instanceof File ? $file->getFilePath() : $file
+            $filePath
         );
 
         if ($this->phpStanNodeScopeResolver->hasUnreachableStatementNode()) {
             $unreachableStatementNodeVisitor = new UnreachableStatementNodeVisitor(
                 $this->phpStanNodeScopeResolver,
-                $file->getFilePath(),
+                $filePath,
                 $this->scopeFactory
             );
             $this->nodeTraverser->addVisitor($unreachableStatementNodeVisitor);
