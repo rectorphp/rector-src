@@ -134,24 +134,26 @@ CODE_SAMPLE
         $returnVarName = null;
 
         $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return, &$returnVarName): ?int {
-            // skip scope nesting
-            if ($node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-            }
-
             if (! $node instanceof Return_) {
                 return null;
             }
 
-            if (! $node->expr instanceof Variable) {
-                return null;
+            // skip scope nesting
+            if ($node instanceof FunctionLike) {
+                $return = null;
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
+            if (! $node->expr instanceof Variable) {
+                $return = null;
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
+            // skip as soon as we find a return which returns a different variable
             $returnName = $this->getName($node->expr);
             if ($returnVarName !== null && $returnName !== $returnVarName) {
                 $return = null;
-
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             $returnVarName = $returnName;
