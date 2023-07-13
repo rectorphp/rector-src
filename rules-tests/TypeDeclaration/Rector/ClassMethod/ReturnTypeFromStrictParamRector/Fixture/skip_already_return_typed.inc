@@ -3,7 +3,7 @@
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector\Fixture;
 
 class SkipAlreadyReturnTyped {
-    public function doFoo(SkipAssign $param): int {
+    public function doFoo(SkipAlreadyReturnTyped $param): int {
         return $param;
     }
 }
