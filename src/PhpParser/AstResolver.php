@@ -318,9 +318,8 @@ final class AstResolver
             return $this->parsedFileNodes[$fileName] = [];
         }
 
-        $file = new File($fileName, FileSystem::read($fileName));
         return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile(
-            $file,
+            $fileName,
             $stmts
         );
     }
