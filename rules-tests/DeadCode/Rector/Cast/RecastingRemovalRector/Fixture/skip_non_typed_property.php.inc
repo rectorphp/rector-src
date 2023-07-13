@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Rector;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-class SkipNonTypedProperty
+final class SkipNonTypedProperty
 {
     /** @var int */
     public $property = 1;
@@ -12,5 +12,3 @@ class SkipNonTypedProperty
         $value = (int) $this->property;
     }
 }
-
-?>

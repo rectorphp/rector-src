@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Rector;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-class TypedParam
+final class TypedParam
 {
     public function run(bool $isStrict = true)
     {
@@ -14,9 +14,9 @@ class TypedParam
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Rector;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-class TypedParam
+final class TypedParam
 {
     public function run(bool $isStrict = true)
     {
