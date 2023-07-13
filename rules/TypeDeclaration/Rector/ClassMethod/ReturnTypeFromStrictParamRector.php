@@ -158,7 +158,7 @@ CODE_SAMPLE
 
         $isParamModified = false;
 
-        $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
+        $this->traverseNodesWithCallable($functionLike->getStmts(), function (Node $node) use (
             $paramName,
             &$isParamModified
         ): int|null {
