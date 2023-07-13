@@ -162,7 +162,14 @@ CODE_SAMPLE
             $paramName,
             &$isParamModified
         ): int|null {
-            if (! $node instanceof Expr\Assign && !$node instanceof Expr\AssignRef) {
+            if ($node instanceof Expr\AssignRef) {
+                if ($this->isName($node->expr, $paramName)) {
+                    $isParamModified = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+            }
+
+            if (! $node instanceof Expr\Assign) {
                 return null;
             }
 
