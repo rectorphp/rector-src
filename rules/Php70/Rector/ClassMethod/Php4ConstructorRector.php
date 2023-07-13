@@ -25,6 +25,7 @@ use Rector\Php70\NodeAnalyzer\Php4ConstructorClassMethodAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Reflection\ClassReflection;
 
 /**
  * @changelog https://wiki.php.net/rfc/remove_php4_constructors
@@ -99,6 +100,9 @@ CODE_SAMPLE
         }
 
         $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         // process parent call references first
         $this->processClassMethodStatementsForParentConstructorCalls($psr4ConstructorMethod, $scope);
