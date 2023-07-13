@@ -1,19 +1,13 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Rector;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-class Config
-{
-    /** @var int */
-    public $property = 1;
-}
+use Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Source\ExternalNonStrictTypedProperty;
 
-class SkipNonTypedProperty2
+final class SkipNonTypedProperty2
 {
-    public function run(Config $config)
+    public function run(ExternalNonStrictTypedProperty $externalNonStrictTypedProperty)
     {
-        $value = (int) $config->property;
+        $value = (int) $externalNonStrictTypedProperty->property;
     }
 }
-
-?>

@@ -147,7 +147,6 @@ final class NodeTypeResolver
 
         if ($type instanceof Type) {
             $type = $this->accessoryNonEmptyStringTypeCorrector->correct($type);
-
             $type = $this->genericClassStringTypeCorrector->correct($type);
 
             if ($type instanceof ObjectType) {
