@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser;
 
-use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
@@ -29,7 +28,6 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
