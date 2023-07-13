@@ -54,6 +54,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit70' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit70.php',
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit80' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit80.php',
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit90' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit90.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit100' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit100.php',
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/AnnotationsToAttributes' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/annotations-to-attributes.php',
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/CodeQuality' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit-code-quality.php',
 
