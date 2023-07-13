@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector\Fixture;
 
-class SkipAssign {
-    public function doFoo(SkipAssign $param) {
+class SkipCallbByRef {
+    public function doFoo(SkipCallbByRef $param) {
         $this->doBar($param);
 
         return $param;
