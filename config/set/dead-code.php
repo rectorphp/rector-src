@@ -44,7 +44,6 @@ use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchForAssignR
 use Rector\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector;
 use Rector\DeadCode\Rector\Ternary\TernaryToBooleanOrFalseToBooleanAndRector;
 use Rector\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector;
-use Rector\PHPUnit\Rector\ClassMethod\RemoveEmptyTestMethodRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -71,7 +70,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveUnreachableStatementRector::class,
         SimplifyIfElseWithSameContentRector::class,
         TernaryToBooleanOrFalseToBooleanAndRector::class,
-        RemoveEmptyTestMethodRector::class,
         RemoveDeadTryCatchRector::class,
         RemoveUnusedVariableAssignRector::class,
         RemoveUnusedNonEmptyArrayBeforeForeachRector::class,
