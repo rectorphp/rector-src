@@ -110,6 +110,10 @@ CODE_SAMPLE
 
         $returnName = $this->getName($return->expr);
         foreach ($node->getParams() as $param) {
+            if (!$param->type instanceof Node) {
+                continue;
+            }
+
             if ($this->shouldSkipParam($param, $node)) {
                 continue;
             }
@@ -119,14 +123,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $resolvedType = $scope->getType($param->var);
-
-            /** @var Name $returnType */
-            $returnType = $resolvedType instanceof ObjectType
-                ? new FullyQualified($resolvedType->getClassName())
-                : $param->type;
-
-            $node->returnType = $returnType;
+            $node->returnType = $param->type;
             return $node;
         }
 
@@ -166,10 +163,6 @@ CODE_SAMPLE
 
     private function shouldSkipParam(Param $param, ClassMethod|Function_ $functionLike): bool
     {
-        if (!$param->type instanceof Node) {
-            return true;
-        }
-
         $paramName = $this->getName($param);
 
         $isParamModified = false;
