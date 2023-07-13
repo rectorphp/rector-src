@@ -21,9 +21,12 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -35,7 +38,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictParamRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -89,6 +93,12 @@ CODE_SAMPLE
             return null;
         }
 
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        $returnType = TypeCombinator::removeNull($returnType);
+        if ($returnType instanceof UnionType) {
+            return null;
+        }
+
         if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
             return null;
         }
@@ -131,9 +141,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnVarName = null;
-
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return, &$returnVarName): ?int {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return): ?int {
             if (! $node instanceof Return_) {
                 return null;
             }
@@ -149,14 +157,6 @@ CODE_SAMPLE
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            // skip as soon as we find a return which returns a different variable
-            $returnName = $this->getName($node->expr);
-            if ($returnVarName !== null && $returnName !== $returnVarName) {
-                $return = null;
-                return NodeTraverser::STOP_TRAVERSAL;
-            }
-
-            $returnVarName = $returnName;
             $return = $node;
             return null;
         });
