@@ -47,6 +47,16 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/Php81/Rector' => __DIR__ . '/../../config/set/php81.php',
         __DIR__ . '/../../rules/Php82/Rector' => __DIR__ . '/../../config/set/php82.php',
         __DIR__ . '/../../rules/Strict/Rector' => __DIR__ . '/../../config/set/strict-booleans.php',
+
+        // phpunit
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit50' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit50.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit60' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit60.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit70' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit70.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit80' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit80.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/PHPUnit90' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit90.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/AnnotationsToAttributes' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/annotations-to-attributes.php',
+        __DIR__ . '/../../vendor/rector/rector-phpunit/rules/CodeQuality' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit-code-quality.php',
+
         // rector-downgrade
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp71' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php71.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp72' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php72.php',
@@ -54,6 +64,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp74' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php74.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp80' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php80.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp81' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php81.php',
+
         // symfony
         __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony25' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony25.php',
         __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony26' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony26.php',
