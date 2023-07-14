@@ -6599,7 +6599,7 @@ use Rector\Transform\ValueObject\AttributeKeyToClassConstFetch;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AttributeKeyToClassConstFetchRector::class, [
         new AttributeKeyToClassConstFetch('Doctrine\ORM\Mapping\Column', 'type', 'Doctrine\DBAL\Types\Types', [
-            'STRING',
+            'string' => 'STRING',
         ]),
     ]);
 };
