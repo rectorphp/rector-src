@@ -83,14 +83,14 @@ CODE_SAMPLE
     {
         $returnType = $node->getReturnType();
 
+        if ($returnType === null) {
+            return null;
+        }
+
         if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
             $node,
             $scope
         )) {
-            return null;
-        }
-
-        if ($returnType === null) {
             return null;
         }
 
