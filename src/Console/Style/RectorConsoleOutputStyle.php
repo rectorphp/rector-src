@@ -81,4 +81,15 @@ final class RectorConsoleOutputStyle extends SymfonyStyle
     {
         return $this->progressBar ?? throw new RuntimeException('The ProgressBar is not started.');
     }
+
+    public function progressFinish(): void
+    {
+        // hide progress bar in tests
+        if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+            return;
+        }
+
+        $progressBar = $this->getProgressBar();
+        $progressBar->finish();
+    }
 }
