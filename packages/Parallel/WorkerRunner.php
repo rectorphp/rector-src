@@ -113,7 +113,7 @@ final class WorkerRunner
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
                     Bridge::FILE_DIFFS => $errorAndFileDiffs[Bridge::FILE_DIFFS] ?? [],
-                    Bridge::FILES_COUNT => is_countable($filePaths) ? count($filePaths) : 0,
+                    Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $systemErrors,
                     Bridge::SYSTEM_ERRORS_COUNT => $systemErrorsCount,
                 ],
