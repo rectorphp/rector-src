@@ -6,14 +6,10 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -22,10 +18,8 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -101,13 +95,13 @@ CODE_SAMPLE
         }
 
         $return = $this->findCurrentScopeReturn($stmts);
-        if ($return === null || $return->expr === null) {
+        if (! $return instanceof Return_ || ! $return->expr instanceof Expr) {
             return null;
         }
 
         $returnName = $this->getName($return->expr);
         foreach ($node->getParams() as $param) {
-            if (!$param->type instanceof Node) {
+            if (! $param->type instanceof Node) {
                 continue;
             }
 
@@ -134,7 +128,7 @@ CODE_SAMPLE
     {
         $return = null;
 
-        $this->traverseNodesWithCallable($stmts, function (Node $node) use (&$return): ?int {
+        $this->traverseNodesWithCallable($stmts, static function (Node $node) use (&$return): ?int {
             if (! $node instanceof Return_) {
                 return null;
             }
@@ -169,14 +163,12 @@ CODE_SAMPLE
             $paramName,
             &$isParamModified
         ): int|null {
-            if ($node instanceof Expr\AssignRef) {
-                if ($this->isName($node->expr, $paramName)) {
-                    $isParamModified = true;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
+            if ($node instanceof AssignRef && $this->isName($node->expr, $paramName)) {
+                $isParamModified = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            if (! $node instanceof Expr\Assign) {
+            if (! $node instanceof Assign) {
                 return null;
             }
 
@@ -217,10 +209,6 @@ CODE_SAMPLE
         }
 
         $returnType = TypeCombinator::removeNull($returnType);
-        if ($returnType instanceof UnionType) {
-            return true;
-        }
-
-        return false;
+        return $returnType instanceof UnionType;
     }
 }
