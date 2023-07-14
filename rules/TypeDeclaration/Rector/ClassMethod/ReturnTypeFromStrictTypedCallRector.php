@@ -112,7 +112,7 @@ CODE_SAMPLE
 
         $currentScopeReturns = $this->findCurrentScopeReturns($node);
 
-        $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($currentScopeReturns);
+        $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($currentScopeReturns, $scope);
         if ($returnedStrictTypes === []) {
             return null;
         }
