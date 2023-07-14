@@ -1,23 +1,39 @@
 <?php
 
-$string = '';
-$string = (string) $string;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-$array = [];
-$array = (array) $array;
+class Fixture
+{
+    public function run()
+    {
+        $string = '';
+        $string = (string) $string;
 
-$array = (array) $string;
+        $array = [];
+        $array = (array) $array;
+
+        $array = (array) $string;
+    }
+}
 
 ?>
 -----
 <?php
 
-$string = '';
-$string = $string;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-$array = [];
-$array = $array;
+class Fixture
+{
+    public function run()
+    {
+        $string = '';
+        $string = $string;
 
-$array = (array) $string;
+        $array = [];
+        $array = $array;
+
+        $array = (array) $string;
+    }
+}
 
 ?>

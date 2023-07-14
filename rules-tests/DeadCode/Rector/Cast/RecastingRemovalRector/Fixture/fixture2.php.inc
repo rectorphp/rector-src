@@ -1,23 +1,39 @@
 <?php
 
-$object = new stdClass();
-$object = (object) $object;
-$object = (array) $object;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-$int = 5;
-$float = (float) $int;
-$int = (int) $int;
+class Fixture2
+{
+    public function run()
+    {
+        $object = new \stdClass();
+        $object = (object) $object;
+        $object = (array) $object;
+
+        $int = 5;
+        $float = (float) $int;
+        $int = (int) $int;
+    }
+}
 
 ?>
 -----
 <?php
 
-$object = new stdClass();
-$object = $object;
-$object = (array) $object;
+namespace Rector\Tests\DeadCode\Rector\Cast\RecastingRemovalRector\Fixture;
 
-$int = 5;
-$float = (float) $int;
-$int = $int;
+class Fixture2
+{
+    public function run()
+    {
+        $object = new \stdClass();
+        $object = $object;
+        $object = (array) $object;
+
+        $int = 5;
+        $float = (float) $int;
+        $int = $int;
+    }
+}
 
 ?>
