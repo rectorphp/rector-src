@@ -15,6 +15,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
@@ -90,11 +91,16 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        $stmts = $node->stmts;
+        if ($stmts === null) {
+            return null;
+        }
+
         if ($this->shouldSkipNode($node)) {
             return null;
         }
 
-        $return = $this->findCurrentScopeReturn($node);
+        $return = $this->findCurrentScopeReturn($stmts);
         if ($return === null || $return->expr === null) {
             return null;
         }
@@ -121,15 +127,14 @@ CODE_SAMPLE
         return null;
     }
 
-    private function findCurrentScopeReturn(ClassMethod|Function_ $node): ?Return_
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function findCurrentScopeReturn(array $stmts): ?Return_
     {
         $return = null;
 
-        if ($node->stmts === null) {
-            return null;
-        }
-
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return): ?int {
+        $this->traverseNodesWithCallable($stmts, function (Node $node) use (&$return): ?int {
             if (! $node instanceof Return_) {
                 return null;
             }
