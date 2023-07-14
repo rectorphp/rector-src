@@ -111,7 +111,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->shouldSkipParam($param, $node)) {
+            if ($this->shouldSkipParam($param, $stmts)) {
                 continue;
             }
 
@@ -157,17 +157,15 @@ CODE_SAMPLE
         return $return;
     }
 
-    private function shouldSkipParam(Param $param, ClassMethod|Function_ $functionLike): bool
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function shouldSkipParam(Param $param, array $stmts): bool
     {
         $paramName = $this->getName($param);
-
         $isParamModified = false;
 
-        if ($functionLike->stmts === null) {
-            return true;
-        }
-
-        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
+        $this->traverseNodesWithCallable($stmts, function (Node $node) use (
             $paramName,
             &$isParamModified
         ): int|null {
