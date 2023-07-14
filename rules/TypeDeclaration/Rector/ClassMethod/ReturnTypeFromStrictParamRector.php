@@ -158,7 +158,11 @@ CODE_SAMPLE
 
         $isParamModified = false;
 
-        $this->traverseNodesWithCallable($functionLike->getStmts(), function (Node $node) use (
+        if ($functionLike->stmts === null) {
+            return true;
+        }
+
+        $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
             $paramName,
             &$isParamModified
         ): int|null {
