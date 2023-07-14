@@ -40,10 +40,7 @@ final class NodeScopeAndMetadataDecorator
     {
         $filePath = $file instanceof File ? $file->getFilePath() : $file;
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
-        $stmts = $this->phpStanNodeScopeResolver->processNodes(
-            $stmts,
-            $filePath
-        );
+        $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath);
 
         if ($this->phpStanNodeScopeResolver->hasUnreachableStatementNode()) {
             $unreachableStatementNodeVisitor = new UnreachableStatementNodeVisitor(
