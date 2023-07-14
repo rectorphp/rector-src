@@ -26,6 +26,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExpr
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
@@ -62,6 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
         ReturnTypeFromStrictScalarReturnExprRector::class,
+        ReturnTypeFromStrictParamRector::class,
         TypedPropertyFromStrictSetUpRector::class,
         ParamTypeByParentCallTypeRector::class,
         AddParamTypeSplFixedArrayRector::class,
