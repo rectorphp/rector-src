@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
@@ -51,10 +55,10 @@ final class ReturnStrictTypeAnalyzer
                 $containsStrictCall = true;
                 $returnNode = $this->resolveMethodCallReturnNode($returnedExpr);
             } elseif (
-                $returnedExpr instanceof Expr\Array_
-                || $returnedExpr instanceof Node\Scalar\String_
-                || $returnedExpr instanceof Node\Scalar\LNumber
-                || $returnedExpr instanceof Node\Scalar\DNumber
+                $returnedExpr instanceof Array_
+                || $returnedExpr instanceof String_
+                || $returnedExpr instanceof LNumber
+                || $returnedExpr instanceof DNumber
             ) {
                 $returnNode = $this->resolveLiteralReturnNode($returnedExpr, $scope);
             } else {
@@ -97,7 +101,7 @@ final class ReturnStrictTypeAnalyzer
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
     }
 
-    private function resolveLiteralReturnNode(Expr\Array_|Scalar $returnedExpr, Scope $scope): ?Node
+    private function resolveLiteralReturnNode(Array_|Scalar $returnedExpr, Scope $scope): ?Node
     {
         $returnType = $scope->getType($returnedExpr);
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
