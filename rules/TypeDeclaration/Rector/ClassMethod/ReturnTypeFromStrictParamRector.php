@@ -125,6 +125,10 @@ CODE_SAMPLE
     {
         $return = null;
 
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return): ?int {
             if (! $node instanceof Return_) {
                 return null;
@@ -187,10 +191,6 @@ CODE_SAMPLE
     private function shouldSkipNode(ClassMethod|Function_ $node): bool
     {
         if ($node->returnType !== null) {
-            return true;
-        }
-
-        if ($node->stmts === null) {
             return true;
         }
 
