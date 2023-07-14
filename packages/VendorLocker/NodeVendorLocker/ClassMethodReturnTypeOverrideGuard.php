@@ -48,12 +48,14 @@ final class ClassMethodReturnTypeOverrideGuard
 
     public function shouldSkipClassMethod(ClassMethod $classMethod, Scope $scope): bool
     {
-        // 1. skip magic methods
+        if ($classMethod->returnType instanceof Node) {
+            return true;
+        }
+
         if ($classMethod->isMagic()) {
             return true;
         }
 
-        // 2. skip chaotic contract class methods
         if ($this->shouldSkipChaoticClassMethods($classMethod)) {
             return true;
         }
@@ -78,10 +80,6 @@ final class ClassMethodReturnTypeOverrideGuard
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
         if ($childrenClassReflections === []) {
             return false;
-        }
-
-        if ($classMethod->returnType instanceof Node) {
-            return true;
         }
 
         if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod)) {
