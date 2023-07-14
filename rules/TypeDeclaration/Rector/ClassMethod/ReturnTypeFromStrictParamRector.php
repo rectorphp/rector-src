@@ -125,7 +125,7 @@ CODE_SAMPLE
     {
         $return = null;
 
-        $this->traverseNodesWithCallable($node->getStmts(), function (Node $node) use (&$return): ?int {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$return): ?int {
             if (! $node instanceof Return_) {
                 return null;
             }
