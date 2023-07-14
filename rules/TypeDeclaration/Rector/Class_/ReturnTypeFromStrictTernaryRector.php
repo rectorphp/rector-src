@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\GeneralizePrecision;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
@@ -123,9 +124,6 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        if ($returnType instanceof MixedType) {
-            return true;
-        }
         $returnType = TypeCombinator::removeNull($returnType);
         if ($returnType instanceof UnionType) {
             return true;
