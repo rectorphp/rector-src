@@ -24,6 +24,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\ValueObject\TernaryIfElseTypes;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -36,7 +37,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictTernaryRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -81,11 +83,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType !== null) {
-            return null;
-        }
-
-        if ($node->stmts === null) {
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
@@ -98,14 +96,8 @@ CODE_SAMPLE
         if (! $return->expr instanceof Ternary) {
             return null;
         }
+
         $ternary = $return->expr;
-
-        if ($node instanceof ClassMethod) {
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-                return null;
-            }
-        }
-
         $ternaryType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($ternary);
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($ternaryType, TypeKind::RETURN);
         if (! $returnTypeNode instanceof Node) {
@@ -119,6 +111,33 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool {
+        if ($node->returnType !== null) {
+            return true;
+        }
+
+        if ($node->stmts === null) {
+            return true;
+        }
+
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        if ($returnType instanceof MixedType) {
+            return true;
+        }
+        $returnType = TypeCombinator::removeNull($returnType);
+        if ($returnType instanceof UnionType) {
+            return true;
+        }
+
+        if ($node instanceof ClassMethod) {
+            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
