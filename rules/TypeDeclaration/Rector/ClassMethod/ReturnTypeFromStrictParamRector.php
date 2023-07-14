@@ -85,7 +85,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->stmts === null) {
+        $stmts = $node->stmts;
+        if ($stmts === null) {
             return null;
         }
 
@@ -93,14 +94,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $return = $this->findCurrentScopeReturn($node->stmts);
+        $return = $this->findCurrentScopeReturn($stmts);
         if (! $return instanceof Return_ || ! $return->expr instanceof Expr) {
             return null;
         }
 
         $returnName = $this->getName($return->expr);
-        $stmts = $node->stmts;
-
         foreach ($node->getParams() as $param) {
             if (! $param->type instanceof Node) {
                 continue;
