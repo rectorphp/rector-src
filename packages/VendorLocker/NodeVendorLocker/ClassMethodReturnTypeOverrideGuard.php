@@ -75,6 +75,10 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        if ($classMethod->isFinal()) {
+            return false;
+        }
+
         $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
         if ($childrenClassReflections === []) {
             return false;
