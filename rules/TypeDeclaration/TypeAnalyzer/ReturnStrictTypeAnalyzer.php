@@ -97,7 +97,7 @@ final class ReturnStrictTypeAnalyzer
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
     }
 
-    private function resolveLiteralReturnNode(Expr\Array_|Scalar $returnedExpr, Scope $scope)
+    private function resolveLiteralReturnNode(Expr\Array_|Scalar $returnedExpr, Scope $scope): ?Node
     {
         $returnType = $scope->getType($returnedExpr);
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);;
