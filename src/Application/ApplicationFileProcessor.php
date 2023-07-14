@@ -148,7 +148,7 @@ final class ApplicationFileProcessor
     /**
      * @param string[] $filePaths
      */
-    public function configurePHPStanNodeScopeResolver(array $filePaths, Configuration $configuration): void
+    public function configurePHPStanNodeScopeResolver(array &$filePaths, Configuration $configuration): void
     {
         $fileExtensions = $configuration->getFileExtensions();
         $fileWithExtensionsFilter = static function (string $filePath) use ($fileExtensions): bool {
