@@ -1,18 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Php82\Rector\Class_\ReadOnlyClassRector;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_82,
-		SetList::CODE_QUALITY,
-		SetList::CODING_STYLE,
-		SetList::DEAD_CODE,
-		SetList::INSTANCEOF,
-		SetList::PRIVATIZATION,
-		SetList::STRICT_BOOLEANS,
-		SetList::TYPE_DECLARATION,
+    $rectorConfig->rules([
+        ReadOnlyPropertyRector::class,
+        FinalizeClassesWithoutChildrenRector::class,
+        ReadOnlyClassRector::class,
     ]);
 };
