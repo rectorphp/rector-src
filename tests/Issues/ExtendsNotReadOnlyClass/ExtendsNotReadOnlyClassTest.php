@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ExtendsNonReadOnlyClass;
+namespace Rector\Core\Tests\Issues\ExtendsNotReadOnlyClass;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class ExtendsNonReadOnlyClassTest extends AbstractRectorTestCase
+final class ExtendsNotReadOnlyClassTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
