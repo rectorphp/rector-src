@@ -6,11 +6,8 @@ final class ShortTernary
 {
     public function getValue()
     {
-        $x = false;
-        if (rand(0,1)) {
-            $x = $this->get();
-        }
-        return $x ?: null;
+        $x = $this->get();
+        return rand(0,1) ? $x : null;
     }
 
     public function get(): ShortTernary {}
@@ -22,18 +19,15 @@ final class ShortTernary
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
-final class ShortTernary
+final class ShortTernary2
 {
-    public function getValue(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\ShortTernary
+    public function getValue(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\ShortTernary2
     {
-        $x = false;
-        if (rand(0,1)) {
-            $x = $this->get();
-        }
-        return $x ?: null;
+        $x = $this->get();
+        return rand(0,1) ? $x : null;
     }
 
-    public function get(): ShortTernary {}
+    public function get(): ShortTernary2 {}
 }
 
 ?>
