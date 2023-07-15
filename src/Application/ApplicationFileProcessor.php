@@ -61,6 +61,7 @@ final class ApplicationFileProcessor
     public function run(Configuration $configuration, InputInterface $input): array
     {
         $filePaths = $this->fileFactory->findFilesInPaths($configuration->getPaths(), $configuration);
+        $filePaths = $this->resolveFilePathsByConfigurationFileExtensions($filePaths, $configuration);
 
         // no files found
         if ($filePaths === []) {
@@ -71,8 +72,6 @@ final class ApplicationFileProcessor
         }
 
         $this->configureCustomErrorHandler();
-
-        $filePaths = $this->resolveFilePathsByConfigurationFileExtensions($filePaths, $configuration);
 
         if ($configuration->isParallel()) {
             $systemErrorsAndFileDiffs = $this->runParallel($filePaths, $configuration, $input);
