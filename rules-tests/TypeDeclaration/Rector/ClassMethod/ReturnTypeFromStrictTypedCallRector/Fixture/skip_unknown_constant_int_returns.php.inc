@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture;
 
-final class SameTypedIntConstantReturns
+final class SkipUnknownConstantIntReturns
 {
     public function getData()
     {
