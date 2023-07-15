@@ -20,6 +20,7 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
@@ -145,8 +146,13 @@ final class ApplicationFileProcessor
                     $this->rectorOutputStyle->progressAdvance();
                 }
             } catch (Throwable $throwable) {
-                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][] = $this->resolveSystemError($throwable, $filePath);
                 $this->invalidateFile($file);
+
+                if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
+                    throw $throwable;
+                }
+
+                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][] = $this->resolveSystemError($throwable, $filePath);
             }
         }
 
