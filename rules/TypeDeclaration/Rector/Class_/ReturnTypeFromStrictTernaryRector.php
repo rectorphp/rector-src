@@ -88,6 +88,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $returns = $this->betterNodeFinder->findInstanceOf($node->stmts, Return_::class);
         if (count($returns) !== 1) {
             return null;
@@ -116,10 +120,6 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool {
         if ($node->returnType !== null) {
-            return true;
-        }
-
-        if ($node->stmts === null) {
             return true;
         }
 
