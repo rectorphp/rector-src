@@ -75,15 +75,9 @@ final class ApplicationFileProcessor
         if ($configuration->isParallel()) {
             $systemErrorsAndFileDiffs = $this->runParallel($filePaths, $configuration, $input);
         } else {
-            $systemErrorsAndFileDiffs = [
-                Bridge::SYSTEM_ERRORS => [],
-                Bridge::FILE_DIFFS => [],
-            ];
-
             $systemErrorsAndFileDiffs = $this->processFiles(
                 $filePaths,
                 $configuration,
-                $systemErrorsAndFileDiffs,
                 false
             );
         }
@@ -104,10 +98,9 @@ final class ApplicationFileProcessor
     public function processFiles(
         array $filePaths,
         Configuration $configuration,
-        array $systemErrorsAndFileDiffs,
         bool $isParallel = true
     ): array {
-        // 1. allow PHPStan to work with static reflection on provided files
+        // allow PHPStan to work with static reflection on provided files
         $this->nodeScopeResolver->setAnalysedFiles($filePaths);
 
         if (! $isParallel) {
@@ -118,6 +111,11 @@ final class ApplicationFileProcessor
                 $this->rectorOutputStyle->progressAdvance(0);
             }
         }
+
+        $systemErrorsAndFileDiffs = [
+            Bridge::SYSTEM_ERRORS => [],
+            Bridge::FILE_DIFFS => [],
+        ];
 
         foreach ($filePaths as $filePath) {
             try {

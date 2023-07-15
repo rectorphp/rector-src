@@ -60,16 +60,9 @@ final class WorkerRunner
 
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
-
-            $systemErrorsAndFileDiffs = [
-                Bridge::SYSTEM_ERRORS => [],
-                Bridge::FILE_DIFFS => [],
-            ];
-
             $systemErrorsAndFileDiffs = $this->applicationFileProcessor->processFiles(
                 $filePaths,
-                $configuration,
-                $systemErrorsAndFileDiffs
+                $configuration
             );
 
             /**
