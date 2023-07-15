@@ -22,7 +22,7 @@ final class FileFactory
     public function __construct(
         private readonly FilesFinder $filesFinder,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly iterable $fileProcessors,
+        private readonly iterable $fileProcessors
     ) {
     }
 
@@ -37,8 +37,15 @@ final class FileFactory
         }
 
         $supportedFileExtensions = $this->resolveSupportedFileExtensions($configuration);
+        $filePaths = $this->filesFinder->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
 
-        return $this->filesFinder->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
+        $fileExtensions = $configuration->getFileExtensions();
+        $fileWithExtensionsFilter = static function (string $filePath) use ($fileExtensions): bool {
+            $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+            return in_array($filePathExtension, $fileExtensions, true);
+        };
+
+        return array_filter($filePaths, $fileWithExtensionsFilter);
     }
 
     /**
