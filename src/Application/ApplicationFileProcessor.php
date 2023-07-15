@@ -75,6 +75,9 @@ final class ApplicationFileProcessor
         if ($configuration->isParallel()) {
             $systemErrorsAndFileDiffs = $this->runParallel($filePaths, $configuration, $input);
         } else {
+            // 1. allow PHPStan to work with static reflection on provided files
+            $this->nodeScopeResolver->setAnalysedFiles($filePaths);
+
             $systemErrorsAndFileDiffs = $this->processFiles(
                 $filePaths,
                 $configuration,
@@ -93,6 +96,7 @@ final class ApplicationFileProcessor
     }
 
     /**
+     * @param string[]|File[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
     public function processFiles(
@@ -100,9 +104,6 @@ final class ApplicationFileProcessor
         Configuration $configuration,
         bool $isParallel = true
     ): array {
-        // allow PHPStan to work with static reflection on provided files
-        $this->nodeScopeResolver->setAnalysedFiles($filePaths);
-
         if (! $isParallel) {
             $shouldShowProgressBar = $configuration->shouldShowProgressBar();
             if ($shouldShowProgressBar) {
@@ -119,7 +120,9 @@ final class ApplicationFileProcessor
 
         foreach ($filePaths as $filePath) {
             try {
-                $file = new File($filePath, UtilsFileSystem::read($filePath));
+                $file = $filePath instanceof File
+                    ? $filePath
+                    : new File($filePath, UtilsFileSystem::read($filePath));
                 $this->currentFileProvider->setFile($file);
 
                 foreach ($this->fileProcessors as $fileProcessor) {

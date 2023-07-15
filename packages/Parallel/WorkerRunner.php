@@ -15,6 +15,7 @@ use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
+use PHPStan\Analyser\NodeScopeResolver;
 
 final class WorkerRunner
 {
@@ -27,6 +28,7 @@ final class WorkerRunner
     public function __construct(
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
+        private readonly NodeScopeResolver $nodeScopeResolver
     ) {
     }
 
@@ -60,6 +62,10 @@ final class WorkerRunner
 
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
+
+            // 1. allow PHPStan to work with static reflection on provided files
+            $this->nodeScopeResolver->setAnalysedFiles($filePaths);
+
             $systemErrorsAndFileDiffs = $this->applicationFileProcessor->processFiles(
                 $filePaths,
                 $configuration
