@@ -18,7 +18,7 @@ final class SkipWrongReturn
         // missing return
     }
 
-    public function get(): ShortTernary {}
+    public function get(): SkipWrongReturn {}
 }
 
 ?>
