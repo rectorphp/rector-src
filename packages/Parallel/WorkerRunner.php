@@ -7,8 +7,8 @@ namespace Rector\Parallel;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\FileSystem;
+use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -39,7 +39,7 @@ final class WorkerRunner
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
         private readonly RectorConsoleOutputStyle $rectorConsoleOutputStyle,
-        private readonly ApplicationFileProcessor $applicationFileProcessor,
+        private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly iterable $fileProcessors = [],
     ) {
@@ -82,7 +82,7 @@ final class WorkerRunner
             $systemErrors = [];
 
             // 1. allow PHPStan to work with static reflection on provided files
-            $filePaths = $this->applicationFileProcessor->configurePHPStanNodeScopeResolver($filePaths, $configuration);
+            $this->nodeScopeResolver->setAnalysedFiles($filePaths);
 
             foreach ($filePaths as $filePath) {
                 $file = null;
