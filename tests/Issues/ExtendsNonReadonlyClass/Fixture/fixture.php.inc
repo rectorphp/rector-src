@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ExtendsNonReadonlyClass\Fixture;
+namespace Rector\Core\Tests\Issues\ExtendsNonReadOnlyClass\Fixture;
 
-use Rector\Core\Tests\Issues\ExtendsNonReadonlyClass\Source\NonReadonlyClass;
+use Rector\Core\Tests\Issues\ExtendsNonReadOnlyClass\Source\NonReadonlyClass;
 
 class Fixture extends NonReadonlyClass
 {
@@ -20,9 +20,9 @@ class Fixture extends NonReadonlyClass
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ExtendsNonReadonlyClass\Fixture;
+namespace Rector\Core\Tests\Issues\ExtendsNonReadOnlyClass\Fixture;
 
-use Rector\Core\Tests\Issues\ExtendsNonReadonlyClass\Source\NonReadonlyClass;
+use Rector\Core\Tests\Issues\ExtendsNonReadOnlyClass\Source\NonReadonlyClass;
 
 final class Fixture extends NonReadonlyClass
 {
