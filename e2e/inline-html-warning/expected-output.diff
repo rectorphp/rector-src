@@ -1,0 +1,24 @@
+
+1 file with changes
+===================
+
+1) src/SomeInlineHtml.php:3
+
+    ---------- begin diff ----------
+@@ @@
+ <html>
+     <head></head>
+     <body>
+-        <?php echo count($x) === 0 ? 1 : 0; ?>
++        <?php echo $x === [] ? 1 : 0; ?>
+         <h1>SomeFixturePrinter</h1>
+     </body>
+ </html>
+    ----------- end diff -----------
+
+Applied rules:
+ * CountArrayToEmptyArrayComparisonRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector                                                                     
+
