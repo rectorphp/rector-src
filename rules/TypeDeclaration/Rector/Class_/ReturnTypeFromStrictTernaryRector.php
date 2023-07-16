@@ -102,6 +102,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $nativeTernaryType = $scope->getNativeType($return->expr);
+        if ($nativeTernaryType instanceof MixedType) {
+            return null;
+        }
+
         $ternary = $return->expr;
         $ternaryType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($ternary);
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($ternaryType, TypeKind::RETURN);

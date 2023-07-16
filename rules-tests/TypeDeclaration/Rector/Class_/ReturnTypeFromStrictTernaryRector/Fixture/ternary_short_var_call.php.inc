@@ -2,14 +2,14 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
-final class CallInTernaryVar
+final class CallInShortTernaryVar
 {
     public function getValue()
     {
         return $this->get() ?: null;
     }
 
-    public function get(): CallInTernaryVar|false {}
+    public function get(): CallInShortTernaryVar|false {}
 }
 
 ?>
@@ -18,14 +18,14 @@ final class CallInTernaryVar
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
-final class CallInTernaryVar
+final class CallInShortTernaryVar
 {
-    public function getValue(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\CallInTernaryVar
+    public function getValue(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\CallInShortTernaryVar
     {
         return $this->get() ?: null;
     }
 
-    public function get(): CallInTernaryVar|false {}
+    public function get(): CallInShortTernaryVar|false {}
 }
 
 ?>
