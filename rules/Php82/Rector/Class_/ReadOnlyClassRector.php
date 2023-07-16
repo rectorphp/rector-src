@@ -144,6 +144,11 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class, Scope $scope): bool
     {
+        $classReflection = $scope->getClassReflection();
+        if (! $classReflection instanceof ClassReflection) {
+            return true;
+        }
+
         if ($this->shouldSkipClass($class)) {
             return true;
         }
