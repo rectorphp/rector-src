@@ -128,12 +128,22 @@ CODE_SAMPLE
         return $statements;
     }
 
-    private function doesLastStatementBreakFlow(If_ | ElseIf_ $node): bool
+    private function doesLastStatementBreakFlow(If_ | ElseIf_ | Else_ $node): bool
     {
         $lastStmt = end($node->stmts);
 
         if ($lastStmt instanceof If_ && $lastStmt->else instanceof Else_) {
-            return $this->doesLastStatementBreakFlow($lastStmt);
+            if ($this->doesLastStatementBreakFlow($lastStmt) || $this->doesLastStatementBreakFlow($lastStmt->else)) {
+                return true;
+            }
+
+            foreach ($lastStmt->elseifs as $elseIf) {
+                if ($this->doesLastStatementBreakFlow($elseIf)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         return ! ($lastStmt instanceof Return_
