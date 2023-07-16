@@ -101,13 +101,13 @@ CODE_SAMPLE
         if (! $return->expr instanceof Ternary) {
             return null;
         }
+        $ternary = $return->expr;
 
-        $nativeTernaryType = $scope->getNativeType($return->expr);
+        $nativeTernaryType = $scope->getNativeType($ternary);
         if ($nativeTernaryType instanceof MixedType) {
             return null;
         }
 
-        $ternary = $return->expr;
         $ternaryType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($ternary);
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($ternaryType, TypeKind::RETURN);
         if (! $returnTypeNode instanceof Node) {
