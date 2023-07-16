@@ -96,7 +96,7 @@ final class PhpFileProcessor implements FileProcessorInterface
 
         // show warning on has InlineHTML node if file has changed
         if ($fileHasChanged && $file->hasInlineHTMLNode()) {
-            $this->symfonyStyle->warning(sprintf(
+            $this->symfonyStyle->getErrorStyle()->warning(sprintf(
                 'File %s has InlineHTML node, this may cause unexpected output, you may need to manually verify the changed file',
                 $this->filePathHelper->relativePath($file->getFilePath())
             ));
