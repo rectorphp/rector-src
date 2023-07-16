@@ -120,7 +120,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::SCALAR_TYPES;
+        return PhpVersionFeature::NULLABLE_TYPE;
     }
 
     private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool {
