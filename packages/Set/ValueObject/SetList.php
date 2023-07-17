@@ -120,6 +120,18 @@ final class SetList implements SetListInterface
     /**
      * @var string
      */
+    public const TYPE_DECLARATION_RETURN = __DIR__ . '/../../../config/set/return-type-declaration.php';
+    /**
+     * @var string
+     */
+    public const TYPE_DECLARATION_PARAMETER = __DIR__ . '/../../../config/set/parameter-type-declaration.php';
+    /**
+     * @var string
+     */
+    public const TYPE_DECLARATION_PROPERTY = __DIR__ . '/../../../config/set/property-type-declaration.php';
+    /**
+     * @var string
+     */
     public const TYPE_DECLARATION = __DIR__ . '/../../../config/set/type-declaration.php';
 
     /**
