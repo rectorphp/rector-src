@@ -182,7 +182,7 @@ CODE_SAMPLE
         return true;
     }
 
-    private function matchBareSingleAssignIf(Stmt $stmt, int $key, StmtsAwareInterface $node): ?BareSingleAssignIf
+    private function matchBareSingleAssignIf(Stmt $stmt, int $key, StmtsAwareInterface $stmtsAware): ?BareSingleAssignIf
     {
         if (! $stmt instanceof If_) {
             return null;
@@ -206,12 +206,13 @@ CODE_SAMPLE
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($stmt)) {
             return null;
         }
-
-        if (isset($node->stmts[$key + 1]) && ($node->stmts[$key + 1] instanceof If_ || $node->stmts[$key + 1] instanceof Return_)) {
-            return new BareSingleAssignIf($stmt, $expression->expr);
+        if (!isset($stmtsAware->stmts[$key + 1])) {
+            return null;
         }
-
-        return null;
+        if (!$stmtsAware->stmts[$key + 1] instanceof If_ && !$stmtsAware->stmts[$key + 1] instanceof Return_) {
+            return null;
+        }
+        return new BareSingleAssignIf($stmt, $expression->expr);
     }
 
     /**
