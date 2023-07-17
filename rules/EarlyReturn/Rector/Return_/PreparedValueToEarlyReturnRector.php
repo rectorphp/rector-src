@@ -206,13 +206,17 @@ CODE_SAMPLE
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($stmt)) {
             return null;
         }
+
         if (!isset($stmtsAware->stmts[$key + 1])) {
             return null;
         }
-        if (!$stmtsAware->stmts[$key + 1] instanceof If_ && !$stmtsAware->stmts[$key + 1] instanceof Return_) {
-            return null;
+        if ($stmtsAware->stmts[$key + 1] instanceof If_) {
+            return new BareSingleAssignIf($stmt, $expression->expr);
         }
-        return new BareSingleAssignIf($stmt, $expression->expr);
+        if ($stmtsAware->stmts[$key + 1] instanceof Return_) {
+            return new BareSingleAssignIf($stmt, $expression->expr);
+        }
+        return null;
     }
 
     /**
