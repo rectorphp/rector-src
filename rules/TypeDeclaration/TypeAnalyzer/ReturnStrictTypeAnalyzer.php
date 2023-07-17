@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -54,7 +55,7 @@ final class ReturnStrictTypeAnalyzer
             if ($returnedExpr instanceof MethodCall || $returnedExpr instanceof StaticCall || $returnedExpr instanceof FuncCall) {
                 $containsStrictCall = true;
                 $returnNode = $this->resolveMethodCallReturnNode($returnedExpr);
-            } elseif ($returnedExpr instanceof Expr\ClassConstFetch) {
+            } elseif ($returnedExpr instanceof ClassConstFetch) {
                 $returnNode = $this->resolveConstFetchReturnNode($returnedExpr, $scope);
             } elseif (
                 $returnedExpr instanceof Array_
@@ -109,9 +110,9 @@ final class ReturnStrictTypeAnalyzer
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
     }
 
-    private function resolveConstFetchReturnNode(Expr\ClassConstFetch $returnedExpr, Scope $scope): ?Node
+    private function resolveConstFetchReturnNode(ClassConstFetch $classConstFetch, Scope $scope): ?Node
     {
-        $constType = $scope->getType($returnedExpr);
+        $constType = $scope->getType($classConstFetch);
 
         if ($constType instanceof MixedType) {
             return null;
