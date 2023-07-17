@@ -210,12 +210,15 @@ CODE_SAMPLE
         if (!isset($stmtsAware->stmts[$key + 1])) {
             return null;
         }
+
         if ($stmtsAware->stmts[$key + 1] instanceof If_) {
             return new BareSingleAssignIf($stmt, $expression->expr);
         }
+
         if ($stmtsAware->stmts[$key + 1] instanceof Return_) {
             return new BareSingleAssignIf($stmt, $expression->expr);
         }
+
         return null;
     }
 
