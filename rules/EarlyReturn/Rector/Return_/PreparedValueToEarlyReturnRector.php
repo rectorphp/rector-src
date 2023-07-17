@@ -88,14 +88,18 @@ CODE_SAMPLE
      */
     public function refactor(Node $node)
     {
+        if ($node->stmts === null) {
+            return null;
+        }
+
         /** @var BareSingleAssignIf[] $bareSingleAssignIfs */
         $bareSingleAssignIfs = [];
 
         $initialAssign = null;
         $initialAssignPosition = null;
 
-        foreach ((array) $node->stmts as $key => $stmt) {
-            $bareSingleAssignIf = $this->matchBareSingleAssignIf($stmt);
+        foreach ($node->stmts as $key => $stmt) {
+            $bareSingleAssignIf = $this->matchBareSingleAssignIf($stmt, $key, $node);
 
             if ($bareSingleAssignIf instanceof BareSingleAssignIf) {
                 $bareSingleAssignIfs[] = $bareSingleAssignIf;
@@ -178,7 +182,7 @@ CODE_SAMPLE
         return true;
     }
 
-    private function matchBareSingleAssignIf(Stmt $stmt): ?BareSingleAssignIf
+    private function matchBareSingleAssignIf(Stmt $stmt, int $key, StmtsAwareInterface $node): ?BareSingleAssignIf
     {
         if (! $stmt instanceof If_) {
             return null;
@@ -203,7 +207,11 @@ CODE_SAMPLE
             return null;
         }
 
-        return new BareSingleAssignIf($stmt, $expression->expr);
+        if (isset($node->stmts[$key + 1]) && ($node->stmts[$key + 1] instanceof If_ || $node->stmts[$key + 1] instanceof Return_)) {
+            return new BareSingleAssignIf($stmt, $expression->expr);
+        }
+
+        return null;
     }
 
     /**
