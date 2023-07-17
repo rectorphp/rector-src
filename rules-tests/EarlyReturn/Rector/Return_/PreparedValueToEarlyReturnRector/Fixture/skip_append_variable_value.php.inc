@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector\Fixture;
 
-final class DemoFile
+final class SkipAppendVariableValue
 {
     public function run( $arg )
     {
