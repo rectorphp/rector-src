@@ -42,11 +42,12 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
 use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ .'/return-type-declaration.php');
-    $rectorConfig->import(__DIR__ .'/parameter-type-declaration.php');
-    $rectorConfig->import(__DIR__ .'/property-type-declaration.php');
-
     $rectorConfig->rules([
-        EmptyOnNullableObjectToInstanceOfRector::class,
+        TypedPropertyFromAssignsRector::class,
+        VarAnnotationIncorrectNullableRector::class,
+        TypedPropertyFromStrictConstructorRector::class,
+        TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
+        TypedPropertyFromStrictSetUpRector::class,
+        PropertyTypeFromStrictSetterGetterRector::class,
     ]);
 };

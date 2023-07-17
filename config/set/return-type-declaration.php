@@ -42,11 +42,27 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
 use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ .'/return-type-declaration.php');
-    $rectorConfig->import(__DIR__ .'/parameter-type-declaration.php');
-    $rectorConfig->import(__DIR__ .'/property-type-declaration.php');
-
     $rectorConfig->rules([
-        EmptyOnNullableObjectToInstanceOfRector::class,
+        AddClosureReturnTypeRector::class,
+        AddArrowFunctionReturnTypeRector::class,
+        ReturnAnnotationIncorrectNullableRector::class,
+        AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
+        ReturnTypeFromStrictTypedPropertyRector::class,
+        AddVoidReturnTypeWhereNoReturnRector::class,
+        ReturnTypeFromReturnNewRector::class,
+        ArrayShapeFromConstantArrayReturnRector::class,
+        ReturnTypeFromStrictBoolReturnExprRector::class,
+        ReturnTypeFromStrictNativeCallRector::class,
+        ReturnTypeFromStrictNewArrayRector::class,
+        ReturnTypeFromStrictScalarReturnExprRector::class,
+        ReturnTypeFromStrictParamRector::class,
+        AddReturnTypeDeclarationFromYieldsRector::class,
+        ReturnTypeFromReturnDirectArrayRector::class,
+        ReturnTypeFromStrictConstantReturnRector::class,
+        ReturnTypeFromStrictTypedCallRector::class,
+        ReturnNeverTypeRector::class,
+        ReturnTypeFromStrictTernaryRector::class,
+        BoolReturnTypeFromStrictScalarReturnsRector::class,
+        NumericReturnTypeFromStrictScalarReturnsRector::class,
     ]);
 };
