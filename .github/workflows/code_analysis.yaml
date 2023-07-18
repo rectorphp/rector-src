@@ -39,7 +39,7 @@ jobs:
 
                     -
                         name: 'Active Classes'
-                        run: vendor/bin/easy-ci check-active-class bin config src packages rules --ansi
+                        run: vendor/bin/class-leak check bin config src rules packages --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" --skip-type="Rector\\Core\\Contract\\Processor\\FileProcessorInterface" --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface"
 
                     -
                         name: 'Compatible PHPStan versions'
