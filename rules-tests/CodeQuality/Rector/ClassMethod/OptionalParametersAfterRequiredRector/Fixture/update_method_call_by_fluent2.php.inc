@@ -6,7 +6,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class UpdateMethodCallByFluent2
 {
-    public function execute()
+    public function execute(): self
     {
         return $this;
     }
@@ -33,7 +33,7 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 final class UpdateMethodCallByFluent2
 {
-    public function execute()
+    public function execute(): self
     {
         return $this;
     }
