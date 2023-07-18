@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\Fixture;
 
-class SkipFluentCall
+class SkipFluentCallFromFuncCall
 {
     public function getMissingDatabaseColumns(): array
     {
