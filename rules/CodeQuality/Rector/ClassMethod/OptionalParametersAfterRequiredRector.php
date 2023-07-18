@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -154,11 +155,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($methodCall instanceof MethodCall && $methodCall->var instanceof Node\Expr\CallLike) {
+        if ($methodCall instanceof MethodCall && $methodCall->var instanceof CallLike) {
             return null;
         }
 
-        if ($methodCall instanceof StaticCall && $methodCall->class instanceof Node\Expr\CallLike) {
+        if ($methodCall instanceof StaticCall && $methodCall->class instanceof CallLike) {
             return null;
         }
 
