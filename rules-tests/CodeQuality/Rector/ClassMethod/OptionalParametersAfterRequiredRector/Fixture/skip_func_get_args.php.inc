@@ -4,16 +4,22 @@ declare(strict_types=1);
 
 namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\Fixture;
 
-final class SkipFuncGetArgs
+class SkipFluentCall
 {
-    public function go($required)
+    public function getMissingDatabaseColumns(): array
     {
-        $args = func_get_args();
-        return $args;
-    }
-
-    public function create()
-    {
-        return $this->go(1, 5, 100);
+        return collect($missingCleanedColumns)
+            ->map(function ($column, $key) {
+                switch ($key) {
+                    case 'id':
+                        return "{$key}:id";
+                    default:
+                        return match ($column['type']) {
+                            'array', 'object' => "{$key}:json:nullable",
+                        };
+                }
+            })
+            ->filter()
+            ->all();
     }
 }

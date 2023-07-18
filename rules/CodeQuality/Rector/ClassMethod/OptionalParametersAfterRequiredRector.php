@@ -154,6 +154,14 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($methodCall instanceof MethodCall && $methodCall->var instanceof Node\Expr\CallLike) {
+            return null;
+        }
+
+        if ($methodCall instanceof StaticCall && $methodCall->class instanceof Node\Expr\CallLike) {
+            return null;
+        }
+
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($methodCall);
         if (! $methodReflection instanceof MethodReflection) {
             return null;
