@@ -43,7 +43,7 @@ final class UpdateMethodCallByFluent
 
     public function process()
     {
-        $this->run(1, 5)
+        $this->run(5, 1)
              ->execute();
     }
 }
