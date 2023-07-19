@@ -5,28 +5,19 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Ternary;
-use PhpParser\Node\Scalar;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ConstantType;
-use PHPStan\Type\GeneralizePrecision;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
-use Rector\TypeDeclaration\ValueObject\TernaryIfElseTypes;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -101,6 +92,7 @@ CODE_SAMPLE
         if (! $return->expr instanceof Ternary) {
             return null;
         }
+
         $ternary = $return->expr;
 
         $nativeTernaryType = $scope->getNativeType($ternary);
@@ -123,7 +115,8 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool {
+    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
+    {
         if ($node->returnType !== null) {
             return true;
         }
@@ -134,13 +127,9 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($node instanceof ClassMethod) {
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        );
     }
-
 }
