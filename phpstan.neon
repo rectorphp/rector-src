@@ -268,11 +268,6 @@ parameters:
             message: '#Make callable type explicit#'
             path: src/NodeManipulator/BinaryOpManipulator.php
 
-        # double protection on purpose to ensure the type
-        -
-            message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
-            path: packages/Config/RectorConfig.php
-
         # stmts refactoring
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
 
@@ -294,15 +289,7 @@ parameters:
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
 
-        # doc arrays cannot be trusted
-        -
-            message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface>> will always evaluate to true#'
-            path: packages/Config/RectorConfig.php
-
         - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 11#'
-
-        # depends on falsy docs
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PhpParser\\Node\\Stmt> and (.*?)Stmt(.*?) will always evaluate to true#'
 
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
@@ -340,9 +327,7 @@ parameters:
             path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
         # validate class-string input
-        -
-            message: '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
-            path: packages/Config/RectorConfig.php
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
@@ -372,11 +357,6 @@ parameters:
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: packages/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
 
-        # regex re-validation
-        -
-            message: '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
-            path: rules/Transform/ValueObject/ParentClassToTraits.php
-
         -
             message: '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
             paths:
@@ -384,9 +364,6 @@ parameters:
                 - src/Bootstrap/RectorConfigsResolver.php
                 - src/NonPhpFile/NonPhpFileProcessor.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
-
-        # part of tests
-        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertIsInt\(\) with 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 will always evaluate to true#'
 
         # false postive, on trait use in multiple classes
         -
@@ -401,9 +378,7 @@ parameters:
             path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
 
         # validation
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<Rector\\BetterPhpDocParser\\PhpDoc\\ArrayItemNode> and (.*?) will always evaluate to true#'
-
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allString\(\) with array<string> will always evaluate to true#'
+        - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
 
         # simple array filters
         -
@@ -576,9 +551,6 @@ parameters:
         # reported in configs
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
 
-        # array type assert
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:allIsInstanceOf\(\) with array<PHPStan\\PhpDocParser\\Ast\\Type\\CallableTypeParameterNode> and (.*?) will always evaluate to true#'
-
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
@@ -590,8 +562,7 @@ parameters:
         # nullable in external package
         - '#Parameters should use "PhpParser\\Node\\Expr\\FuncCall\|string\|string\|PHPStan\\Analyser\\Scope" types as the only types passed to this method#'
 
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:(allIsAOf|isAOf|assertInstanceOf|allIsInstanceOf)(.*?) will always evaluate to true#'
-        - '#Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with (.*?) will always evaluate to true#'
+        - '#Call to method PHPUnit\\Framework\\Assert\:\:assert(.*?) will always evaluate to (true|false)#'
 
         - '#Doing instanceof PHPStan\\Type\\.* is error\-prone and deprecated(\. Use Type\:\:.*\(\) (or .* )?instead)?#'
 
