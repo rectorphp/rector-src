@@ -63,7 +63,6 @@ parameters:
             paths:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
-                - rules/Renaming/NodeManipulator/ClassRenamer.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
 
         - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
@@ -171,12 +170,6 @@ parameters:
                 - packages/PostRector/Rector/AbstractPostRector.php
                 - src/Rector/AbstractRector.php
                 - src/Rector/AbstractScopeAwareRector.php
-
-        # find everything class, better then 10 different finders
-        -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
-            paths:
-                - src/PhpParser/Node/BetterNodeFinder.php
 
         -
             message: '#Parameter \#2 \$length of function str_split expects int<1, max\>, int given#'
@@ -656,8 +649,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\(.*?)\:\:refactor\(\)" is (1[0-9]|20), keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\StaticCall\\RemoveParentCallWithoutParentRector\:\:refactor\(\)" is 26, keep it under 11#'
 
-        - '#Call to deprecated method findFirstPrevious\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder#'
-
         - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
 
         # false positive
@@ -680,11 +671,8 @@ parameters:
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
 
-        -
-            message: '#Parameters should use "PhpParser\\Node\\Expr\\Variable\|array" types as the only types passed to this method#'
-            path: src/PhpParser/Node/BetterNodeFinder.php
-
         - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
+        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
 
         # refactor in next PR
         - '#(.*?) has typehint with deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
@@ -697,11 +685,6 @@ parameters:
             message: '#Only booleans are allowed in an if condition, mixed given#'
             paths:
                 - src/NodeManipulator/PropertyManipulator.php
-
-        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
-
-        # handle in next PR
-        - '#Call to deprecated method findFirstNext\(\) of class Rector\\Core\\PhpParser\\Node\\BetterNodeFinder#'
 
         # remove later
         - '#Public method "Rector\\Core\\NodeManipulator\\IfManipulator\:\:createIfStmt\(\)" is never used#'
