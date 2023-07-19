@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
+use PhpParser\Node\Stmt\Class_;
+use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Property;
@@ -100,7 +102,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Node\Stmt\Class_::class];
+        return [Class_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -126,11 +128,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($classReflection === null) {
+            if (!$classReflection instanceof ClassReflection) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
 
-            if ($classReflection === null) {
+            if (!$classReflection instanceof ClassReflection) {
                 return null;
             }
 
