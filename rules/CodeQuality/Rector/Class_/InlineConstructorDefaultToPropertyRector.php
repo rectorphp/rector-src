@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Class_;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -151,7 +152,7 @@ CODE_SAMPLE
     private function refactorProperty(
         Class_ $class,
         string $propertyName,
-        Node\Expr $defaultExpr,
+        Expr $defaultExpr,
         ClassMethod $constructClassMethod,
         int $key
     ): bool {
