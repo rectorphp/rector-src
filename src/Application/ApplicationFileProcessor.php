@@ -120,6 +120,7 @@ final class ApplicationFileProcessor
         ];
 
         foreach ($filePaths as $filePath) {
+            $file = null;
             try {
                 $file = $filePath instanceof File
                     ? $filePath
