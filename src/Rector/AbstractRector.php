@@ -227,7 +227,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return $this->postRefactorProcess($originalNode, $refactoredNode);
+        return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
     }
 
     /**
@@ -319,7 +319,7 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node $originalNode, Node|array|int $refactoredNode): Node
+    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode): Node
     {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
@@ -328,7 +328,7 @@ CODE_SAMPLE;
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         /** @var MutatingScope|null $currentScope */
-        $currentScope = $originalNode->getAttribute(AttributeKey::SCOPE);
+        $currentScope = $node->getAttribute(AttributeKey::SCOPE);
         $filePath = $this->file->getFilePath();
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
