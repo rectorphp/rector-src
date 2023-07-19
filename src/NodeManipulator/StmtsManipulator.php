@@ -70,22 +70,10 @@ final class StmtsManipulator
             return false;
         }
 
-        $totalKeys = array_key_last($stmtsAware->stmts);
-        for ($key = $jumpToKey; $key <= $totalKeys; ++$key) {
-            if (! isset($stmtsAware->stmts[$key])) {
-                continue;
-            }
-
-            $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName(
-                $stmtsAware->stmts[$key],
-                $variableName
-            );
-
-            if ($isVariableUsed) {
-                return true;
-            }
-        }
-
-        return false;
+        $stmts = array_slice($stmtsAware->stmts, $jumpToKey, null, true);
+        return (bool) $this->betterNodeFinder->findVariableOfName(
+            $stmts,
+            $variableName
+        );
     }
 }
