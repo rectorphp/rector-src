@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -152,14 +151,6 @@ CODE_SAMPLE
     private function refactorMethodCall(MethodCall|StaticCall $methodCall, Scope $scope): MethodCall|StaticCall|null
     {
         if ($methodCall->isFirstClassCallable()) {
-            return null;
-        }
-
-        if ($methodCall instanceof MethodCall && $methodCall->var instanceof CallLike) {
-            return null;
-        }
-
-        if ($methodCall instanceof StaticCall && $methodCall->class instanceof CallLike) {
             return null;
         }
 
