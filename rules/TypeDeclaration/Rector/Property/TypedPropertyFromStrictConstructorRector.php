@@ -9,11 +9,13 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -35,7 +37,8 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly VarTagRemover $varTagRemover,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard
+        private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -90,9 +93,18 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
-            if (! $this->propertyTypeOverrideGuard->isLegal($property)) {
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                return null;
+            }
+
+            if (! $this->propertyTypeOverrideGuard->isLegal($property, $classReflection)) {
                 continue;
             }
 
