@@ -85,6 +85,7 @@ parameters:
                 - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
                 - rules/Php70/EregToPcreTransformer.php
 
+        # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
         -
