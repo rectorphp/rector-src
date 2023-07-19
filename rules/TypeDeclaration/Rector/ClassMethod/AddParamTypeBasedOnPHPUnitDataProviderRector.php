@@ -128,23 +128,8 @@ CODE_SAMPLE
                 return null;
             }
 
-            $hasChanged = false;
-
-            foreach ($classMethod->getParams() as $param) {
-                if ($param->type instanceof Node) {
-                    continue;
-                }
-
-                $paramTypeDeclaration = $this->inferParam($node, $param, $dataProviderPhpDocTagNode);
-                if ($paramTypeDeclaration instanceof MixedType) {
-                    continue;
-                }
-
-                $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-                    $paramTypeDeclaration,
-                    TypeKind::PARAM
-                );
-
+            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $node, $dataProviderPhpDocTagNode);
+            if ($hasClassMethodChanged) {
                 $hasChanged = true;
             }
         }
@@ -298,5 +283,33 @@ CODE_SAMPLE
         }
 
         return $classMethodPhpDocInfo->getByName('@dataProvider');
+    }
+
+    private function refactorClassMethod(
+        ClassMethod $classMethod,
+        Class_ $class,
+        PhpDocTagNode $dataProviderPhpDocTagNode
+    ): bool {
+        $hasChanged = false;
+
+        foreach ($classMethod->getParams() as $param) {
+            if ($param->type instanceof Node) {
+                continue;
+            }
+
+            $paramTypeDeclaration = $this->inferParam($class, $param, $dataProviderPhpDocTagNode);
+            if ($paramTypeDeclaration instanceof MixedType) {
+                continue;
+            }
+
+            $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
+                $paramTypeDeclaration,
+                TypeKind::PARAM
+            );
+
+            $hasChanged = true;
+        }
+
+        return $hasChanged;
     }
 }

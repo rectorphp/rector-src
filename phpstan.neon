@@ -688,3 +688,6 @@ parameters:
 
         # remove later
         - '#Public method "Rector\\Core\\NodeManipulator\\IfManipulator\:\:createIfStmt\(\)" is never used#'
+
+        # submethods that handle smaller change
+        - '#Method "refactor(.*?)\(\)" returns bool type, so the name should start with is/has/was#'

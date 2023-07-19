@@ -109,28 +109,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            foreach ($node->stmts as $classStmt) {
-                if (! $classStmt instanceof Property) {
-                    continue;
-                }
+            $hasPropertyChanged = $this->refactorProperty(
+                $node,
+                $propertyName,
+                $defaultExpr,
+                $constructClassMethod,
+                $key
+            );
 
-                // readonly property cannot have default value
-                if ($classStmt->isReadonly()) {
-                    continue;
-                }
-
-                foreach ($classStmt->props as $propertyProperty) {
-                    if (! $this->isName($propertyProperty, $propertyName)) {
-                        continue;
-                    }
-
-                    $propertyProperty->default = $defaultExpr;
-
-                    // remove assign
-                    unset($constructClassMethod->stmts[$key]);
-
-                    $hasChanged = true;
-                }
+            if ($hasPropertyChanged) {
+                $hasChanged = true;
             }
         }
 
@@ -158,5 +146,38 @@ CODE_SAMPLE
         }
 
         return $propertyName;
+    }
+
+    private function refactorProperty(
+        Class_ $class,
+        string $propertyName,
+        Node\Expr $defaultExpr,
+        ClassMethod $constructClassMethod,
+        int $key
+    ): bool {
+        foreach ($class->stmts as $classStmt) {
+            if (! $classStmt instanceof Property) {
+                continue;
+            }
+
+            // readonly property cannot have default value
+            if ($classStmt->isReadonly()) {
+                continue;
+            }
+
+            foreach ($classStmt->props as $propertyProperty) {
+                if (! $this->isName($propertyProperty, $propertyName)) {
+                    continue;
+                }
+
+                $propertyProperty->default = $defaultExpr;
+
+                // remove assign
+                unset($constructClassMethod->stmts[$key]);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
