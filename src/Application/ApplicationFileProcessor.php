@@ -98,13 +98,13 @@ final class ApplicationFileProcessor
      */
     public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
     {
-        if (! $isParallel) {
-            $shouldShowProgressBar = $configuration->shouldShowProgressBar();
-            if ($shouldShowProgressBar) {
-                $fileCount = count($filePaths);
-                $this->rectorOutputStyle->progressStart($fileCount);
-                $this->rectorOutputStyle->progressAdvance(0);
-            }
+        $shouldShowProgressBar = $configuration->shouldShowProgressBar();
+
+        // progress bar on parallel handled on runParallel()
+        if (! $isParallel && $shouldShowProgressBar) {
+            $fileCount = count($filePaths);
+            $this->rectorOutputStyle->progressStart($fileCount);
+            $this->rectorOutputStyle->progressAdvance(0);
         }
 
         $systemErrorsAndFileDiffs = [
@@ -119,24 +119,10 @@ final class ApplicationFileProcessor
                 $file = $filePath instanceof File
                     ? $filePath
                     : new File($filePath, UtilsFileSystem::read($filePath));
-                $this->currentFileProvider->setFile($file);
+                $systemErrorsAndFileDiffs = $this->processFile($file, $systemErrorsAndFileDiffs, $configuration);
 
-                foreach ($this->fileProcessors as $fileProcessor) {
-                    if (! $fileProcessor->supports($file, $configuration)) {
-                        continue;
-                    }
-
-                    $result = $fileProcessor->process($file, $configuration);
-                    $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
-                }
-
-                if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
-                    $this->changedFilesDetector->invalidateFile($file->getFilePath());
-                } elseif (! $configuration->isDryRun() || $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] === []) {
-                    $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
-                }
-
-                // progress bar +1
+                // progress bar +1,
+                // progress bar on parallel handled on runParallel()
                 if (! $isParallel && $shouldShowProgressBar) {
                     $this->rectorOutputStyle->progressAdvance();
                 }
@@ -149,6 +135,32 @@ final class ApplicationFileProcessor
 
                 $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][] = $this->resolveSystemError($throwable, $filePath);
             }
+        }
+
+        return $systemErrorsAndFileDiffs;
+    }
+
+    /**
+     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int} $systemErrorsAndFileDiffs
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
+     */
+    private function processFile(File $file, array $systemErrorsAndFileDiffs, Configuration $configuration): array
+    {
+        $this->currentFileProvider->setFile($file);
+
+        foreach ($this->fileProcessors as $fileProcessor) {
+            if (! $fileProcessor->supports($file, $configuration)) {
+                continue;
+            }
+
+            $result = $fileProcessor->process($file, $configuration);
+            $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
+        }
+
+        if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
+            $this->changedFilesDetector->invalidateFile($file->getFilePath());
+        } elseif (! $configuration->isDryRun() || $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] === []) {
+            $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
         }
 
         return $systemErrorsAndFileDiffs;
@@ -218,10 +230,6 @@ final class ApplicationFileProcessor
      */
     private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
     {
-        // @todo possibly relative paths?
-        // must be a string, otherwise the serialization returns empty arrays
-        // $filePaths // = $this->filePathNormalizer->resolveFilePathsFromFileInfos($filePaths);
-
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
             SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_SIZE),
