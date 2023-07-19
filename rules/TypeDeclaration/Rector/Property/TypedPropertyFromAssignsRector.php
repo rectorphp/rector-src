@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
-use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
@@ -128,16 +128,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (!$classReflection instanceof ClassReflection) {
+            if (! $classReflection instanceof ClassReflection) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
 
-            if (!$classReflection instanceof ClassReflection) {
+            if (! $classReflection instanceof ClassReflection) {
                 return null;
             }
 
             $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection);
-            if (!$inferredType instanceof Type) {
+            if (! $inferredType instanceof Type) {
                 continue;
             }
 

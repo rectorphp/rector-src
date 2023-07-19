@@ -207,7 +207,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!isset($stmtsAware->stmts[$key + 1])) {
+        if (! isset($stmtsAware->stmts[$key + 1])) {
             return null;
         }
 
