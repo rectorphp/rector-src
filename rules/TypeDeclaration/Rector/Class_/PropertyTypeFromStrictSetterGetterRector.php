@@ -14,6 +14,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -31,7 +32,8 @@ final class PropertyTypeFromStrictSetterGetterRector extends AbstractRector impl
     public function __construct(
         private readonly GetterTypeDeclarationPropertyTypeInferer $getterTypeDeclarationPropertyTypeInferer,
         private readonly SetterTypeDeclarationPropertyTypeInferer $setterTypeDeclarationPropertyTypeInferer,
-        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
+        private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -91,6 +93,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
+        $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
             if ($property->type instanceof Node) {
@@ -110,7 +113,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->makePropertyTypedGuard->isLegal($property, false)) {
+            if ($classReflection === null) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if ($classReflection === null) {
+                return null;
+            }
+
+            if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, false)) {
                 continue;
             }
 

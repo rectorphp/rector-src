@@ -23,6 +23,7 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
@@ -66,7 +67,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
-        private readonly TypeComparator $typeComparator
+        private readonly TypeComparator $typeComparator,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -136,6 +138,7 @@ CODE_SAMPLE
         }
 
         $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
+        $classReflection = null;
 
         foreach ($promotionCandidates as $promotionCandidate) {
             // does property have some useful annotations?
@@ -146,7 +149,21 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->makePropertyPromotionGuard->isLegal($node, $property, $param, $this->inlinePublic)) {
+            if ($classReflection === null) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if ($classReflection === null) {
+                return null;
+            }
+
+            if (! $this->makePropertyPromotionGuard->isLegal(
+                $node,
+                $classReflection,
+                $property,
+                $param,
+                $this->inlinePublic
+            )) {
                 continue;
             }
 
