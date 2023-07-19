@@ -15,7 +15,6 @@ use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
@@ -40,7 +39,6 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
         private readonly FilePathHelper $filePathHelper,
@@ -147,7 +145,6 @@ final class PhpFileProcessor implements FileProcessorInterface
      */
     private function parseFileAndDecorateNodes(File $file): array
     {
-        $this->currentFileProvider->setFile($file);
         $this->notifyFile($file);
 
         try {

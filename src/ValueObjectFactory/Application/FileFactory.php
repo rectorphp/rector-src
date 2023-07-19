@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObjectFactory\Application;
 
-use Nette\Utils\FileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\FileSystem\FilesFinder;
-use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 
 /**
@@ -46,20 +44,6 @@ final class FileFactory
         };
 
         return array_filter($filePaths, $fileWithExtensionsFilter);
-    }
-
-    /**
-     * @param string[] $filePaths
-     * @return File[]
-     */
-    public function createFromPaths(array $filePaths): array
-    {
-        $files = [];
-        foreach ($filePaths as $filePath) {
-            $files[] = new File($filePath, FileSystem::read($filePath));
-        }
-
-        return $files;
     }
 
     /**
