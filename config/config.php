@@ -50,7 +50,6 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NonPhpFile\NonPhpFileProcessor;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\Validation\Collector\EmptyConfigurableRectorCollector;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -182,9 +181,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(ConsoleApplication::class)
         ->arg('$commands', tagged_iterator(Command::class));
     $services->alias(Application::class, ConsoleApplication::class);
-
-    $services->set(EmptyConfigurableRectorCollector::class)
-        ->arg('$containerBuilder', service('service_container'));
 
     $services->set(SimpleCallableNodeTraverser::class);
 

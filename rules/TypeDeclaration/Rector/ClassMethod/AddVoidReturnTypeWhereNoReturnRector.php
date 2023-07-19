@@ -13,7 +13,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -27,7 +27,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\AddVoidReturnTypeWhereNoReturnRectorTest
  */
-final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implements MinPhpVersionInterface, AllowEmptyConfigurableRectorInterface
+final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
     /**
      * @api

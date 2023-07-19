@@ -16,7 +16,6 @@ use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
-use Rector\Core\Validation\EmptyConfigurableRectorChecker;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
@@ -33,7 +32,6 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly ProcessResultFactory $processResultFactory,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly EmptyConfigurableRectorChecker $emptyConfigurableRectorChecker,
         private readonly OutputFormatterCollector $outputFormatterCollector,
         private readonly OutputStyleInterface $rectorOutputStyle,
         private readonly MemoryLimiter $memoryLimiter,
@@ -77,15 +75,12 @@ final class ProcessCommand extends AbstractProcessCommand
             return ExitCode::FAILURE;
         }
 
-        // 2. inform user about registering configurable rule without configuration
-        $this->emptyConfigurableRectorChecker->check();
-
         // MAIN PHASE
-        // 3. run Rector
+        // 2. run Rector
         $systemErrorsAndFileDiffs = $this->applicationFileProcessor->run($configuration, $input);
 
         // REPORTING PHASE
-        // 4. reporting phase
+        // 3. reporting phase
         // report diffs and errors
         $outputFormat = $configuration->getOutputFormat();
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);

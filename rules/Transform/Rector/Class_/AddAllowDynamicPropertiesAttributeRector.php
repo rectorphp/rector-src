@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Core\Contract\Rector\AllowEmptyConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -26,7 +26,7 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\AddAllowDynamicPropertiesAttributeRectorTest
  */
-final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements AllowEmptyConfigurableRectorInterface, MinPhpVersionInterface
+final class AddAllowDynamicPropertiesAttributeRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
     /**
      * @var array<array-key, string>
