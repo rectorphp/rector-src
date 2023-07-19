@@ -79,11 +79,7 @@ final class ApplicationFileProcessor
             // 1. allow PHPStan to work with static reflection on provided files
             $this->nodeScopeResolver->setAnalysedFiles($filePaths);
 
-            $systemErrorsAndFileDiffs = $this->processFiles(
-                $filePaths,
-                $configuration,
-                false
-            );
+            $systemErrorsAndFileDiffs = $this->processFiles($filePaths, $configuration, false);
         }
 
         $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
@@ -100,11 +96,8 @@ final class ApplicationFileProcessor
      * @param string[]|File[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
-    public function processFiles(
-        array $filePaths,
-        Configuration $configuration,
-        bool $isParallel = true
-    ): array {
+    public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
+    {
         if (! $isParallel) {
             $shouldShowProgressBar = $configuration->shouldShowProgressBar();
             if ($shouldShowProgressBar) {

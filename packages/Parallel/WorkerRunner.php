@@ -6,6 +6,7 @@ namespace Rector\Parallel;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\ValueObject\Configuration;
@@ -15,7 +16,6 @@ use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
-use PHPStan\Analyser\NodeScopeResolver;
 
 final class WorkerRunner
 {
@@ -23,7 +23,6 @@ final class WorkerRunner
      * @var string
      */
     private const RESULT = 'result';
-
 
     public function __construct(
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
@@ -66,10 +65,7 @@ final class WorkerRunner
             // 1. allow PHPStan to work with static reflection on provided files
             $this->nodeScopeResolver->setAnalysedFiles($filePaths);
 
-            $systemErrorsAndFileDiffs = $this->applicationFileProcessor->processFiles(
-                $filePaths,
-                $configuration
-            );
+            $systemErrorsAndFileDiffs = $this->applicationFileProcessor->processFiles($filePaths, $configuration);
 
             /**
              * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
