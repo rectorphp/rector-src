@@ -69,9 +69,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
 
-        # known value
-        - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
