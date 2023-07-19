@@ -324,7 +324,7 @@ final class AnonymousFunctionFactory
     ): MethodCall | StaticCall | null {
         if ($phpMethodReflection->isStatic()) {
             $expr = $this->normalizeClassConstFetchForStatic($expr);
-            if (! $expr instanceof \PhpParser\Node) {
+            if (! $expr instanceof Node) {
                 return null;
             }
 
