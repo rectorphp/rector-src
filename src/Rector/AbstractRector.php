@@ -74,6 +74,8 @@ CODE_SAMPLE;
 
     protected File $file;
 
+    protected ?Stmt $currentStmt = null;
+
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
@@ -162,8 +164,7 @@ CODE_SAMPLE;
 
     final public function enterNode(Node $node)
     {
-        $nodeClass = $node::class;
-        if (! $this->isMatchingNodeType($nodeClass)) {
+        if (! $this->isMatchingNodeType($node)) {
             return null;
         }
 
@@ -360,19 +361,23 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
+            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath, $this->currentStmt);
         }
     }
 
-    /**
-     * @param class-string<Node> $nodeClass
-     */
-    private function isMatchingNodeType(string $nodeClass): bool
+    private function isMatchingNodeType(Node $node): bool
     {
+        $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
-            if (is_a($nodeClass, $nodeType, true)) {
-                return true;
+            if (! is_a($nodeClass, $nodeType, true)) {
+                if ($node instanceof Stmt) {
+                    $this->currentStmt = $node;
+                }
+
+                continue;
             }
+
+            return true;
         }
 
         return false;

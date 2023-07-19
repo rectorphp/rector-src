@@ -34,7 +34,7 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
 
         if (! $currentScope instanceof MutatingScope) {
-            $currentScope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath());
+            $currentScope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath(), $this->currentStmt);
         }
 
         if (! $currentScope instanceof Scope) {
