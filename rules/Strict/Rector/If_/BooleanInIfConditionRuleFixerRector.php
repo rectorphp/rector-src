@@ -83,6 +83,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?If_
     {
+        $hasChanged = false;
+
         // 1. if
         $ifCondExprType = $scope->getType($node->cond);
         $notIdentical = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
@@ -92,6 +94,8 @@ CODE_SAMPLE
         );
         if ($notIdentical !== null) {
             $node->cond = $notIdentical;
+
+            $hasChanged = true;
         }
 
         // 2. elseifs
@@ -108,8 +112,14 @@ CODE_SAMPLE
             }
 
             $elseif->cond = $notIdentical;
+
+            $hasChanged = true;
         }
 
-        return $node;
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
     }
 }
