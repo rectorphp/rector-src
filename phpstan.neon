@@ -69,9 +69,6 @@ parameters:
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
 
-        # known value
-        - '#Property PhpParser\\Node\\Stmt\\Foreach_\:\:\$valueVar \(PhpParser\\Node\\Expr\) does not accept PhpParser\\Node\\Expr\|null#'
-
         # is nested expr
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
@@ -88,6 +85,7 @@ parameters:
                 - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
                 - rules/Php70/EregToPcreTransformer.php
 
+        # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
         -
@@ -355,11 +353,6 @@ parameters:
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
-
-        # should be fixed in symplify next
-        -
-            message: '#New objects with "\$arrayItem" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path:  src/PhpParser/Node/NodeFactory.php
 
         # faking node to invoke scope callable on attribute
         -

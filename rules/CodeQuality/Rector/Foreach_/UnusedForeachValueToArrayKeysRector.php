@@ -102,7 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->removeForeachValueAndUseArrayKeys($node);
+        $this->removeForeachValueAndUseArrayKeys($node, $node->keyVar);
 
         return $node;
     }
@@ -170,10 +170,10 @@ CODE_SAMPLE
         );
     }
 
-    private function removeForeachValueAndUseArrayKeys(Foreach_ $foreach): void
+    private function removeForeachValueAndUseArrayKeys(Foreach_ $foreach, Expr $keyVarExpr): void
     {
         // remove key value
-        $foreach->valueVar = $foreach->keyVar;
+        $foreach->valueVar = $keyVarExpr;
         $foreach->keyVar = null;
 
         $foreach->expr = $this->nodeFactory->createFuncCall('array_keys', [$foreach->expr]);
