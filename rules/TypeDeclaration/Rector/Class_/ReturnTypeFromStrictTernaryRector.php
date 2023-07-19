@@ -115,7 +115,8 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool {
+    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
+    {
         if ($node->returnType !== null) {
             return true;
         }
@@ -126,7 +127,9 @@ CODE_SAMPLE
             return true;
         }
 
-        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope);
+        return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        );
     }
-
 }
