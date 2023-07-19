@@ -138,7 +138,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $phpPropertyReflection->getDeclaringClass());
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection);
         return $type instanceof ArrayType;
     }
 }
