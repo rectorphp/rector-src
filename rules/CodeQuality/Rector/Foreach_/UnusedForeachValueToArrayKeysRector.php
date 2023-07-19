@@ -102,7 +102,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->removeForeachValueAndUseArrayKeys($node, $node->expr);
+        $this->removeForeachValueAndUseArrayKeys($node, $node->keyVar);
 
         return $node;
     }

@@ -354,11 +354,6 @@ parameters:
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
 
-        # should be fixed in symplify next
-        -
-            message: '#New objects with "\$arrayItem" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path:  src/PhpParser/Node/NodeFactory.php
-
         # faking node to invoke scope callable on attribute
         -
             message: '#New objects with "\$node" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
