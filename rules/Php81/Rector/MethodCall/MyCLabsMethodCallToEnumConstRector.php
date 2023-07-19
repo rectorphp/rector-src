@@ -149,7 +149,7 @@ CODE_SAMPLE
     private function refactorEqualsMethodCall(MethodCall $methodCall): ?Identical
     {
         $expr = $this->getValidEnumExpr($methodCall->var);
-        if ($expr === null) {
+        if (!$expr instanceof Expr) {
             return null;
         }
 
