@@ -75,11 +75,8 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
             return null;
         }
 
-        $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-        $originalNode ??= $node;
-
         /** @var Scope|null $scope */
-        $scope = $originalNode->getAttribute(AttributeKey::SCOPE);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
         $result = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
 
         if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
