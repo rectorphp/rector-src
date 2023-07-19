@@ -125,6 +125,7 @@ CODE_SAMPLE
         if ($returnType instanceof UnionType) {
             return true;
         }
+
         return $node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope);
     }
 
