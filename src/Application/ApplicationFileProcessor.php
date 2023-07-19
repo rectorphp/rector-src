@@ -94,7 +94,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[]|File[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
      */
     public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
     {
@@ -110,6 +110,7 @@ final class ApplicationFileProcessor
         $systemErrorsAndFileDiffs = [
             Bridge::SYSTEM_ERRORS => [],
             Bridge::FILE_DIFFS => [],
+            Bridge::SYSTEM_ERRORS_COUNT => 0,
         ];
 
         foreach ($filePaths as $filePath) {

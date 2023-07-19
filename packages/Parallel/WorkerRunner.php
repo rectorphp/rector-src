@@ -73,7 +73,7 @@ final class WorkerRunner
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
-                    Bridge::FILE_DIFFS => $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] ?? [],
+                    Bridge::FILE_DIFFS => $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS],
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
                     Bridge::SYSTEM_ERRORS_COUNT => $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS_COUNT],
