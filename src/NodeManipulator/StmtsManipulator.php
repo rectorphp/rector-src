@@ -71,9 +71,6 @@ final class StmtsManipulator
         }
 
         $stmts = array_slice($stmtsAware->stmts, $jumpToKey, null, true);
-        return (bool) $this->betterNodeFinder->findVariableOfName(
-            $stmts,
-            $variableName
-        );
+        return (bool) $this->betterNodeFinder->findVariableOfName($stmts, $variableName);
     }
 }

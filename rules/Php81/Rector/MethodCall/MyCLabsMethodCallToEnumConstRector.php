@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Php81\Rector\MethodCall;
 
-use PhpParser\Node\Arg;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -149,17 +149,17 @@ CODE_SAMPLE
     private function refactorEqualsMethodCall(MethodCall $methodCall): ?Identical
     {
         $expr = $this->getValidEnumExpr($methodCall->var);
-        if (!$expr instanceof Expr) {
+        if (! $expr instanceof Expr) {
             return null;
         }
 
         $arg = $methodCall->getArgs()[0] ?? null;
-        if (!$arg instanceof Arg) {
+        if (! $arg instanceof Arg) {
             return null;
         }
 
         $right = $this->getValidEnumExpr($arg->value);
-        if (!$right instanceof Expr) {
+        if (! $right instanceof Expr) {
             return null;
         }
 
