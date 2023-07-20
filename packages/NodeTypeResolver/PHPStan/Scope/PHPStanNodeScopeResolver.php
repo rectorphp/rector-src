@@ -465,9 +465,9 @@ final class PHPStanNodeScopeResolver
         } catch (\PHPStan\ShouldNotHappenException) {
             $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
             $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
-
-            return $mutatingScope->enterClass($classReflection);
         }
+
+        return $mutatingScope->enterClass($classReflection);
     }
 
     private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
