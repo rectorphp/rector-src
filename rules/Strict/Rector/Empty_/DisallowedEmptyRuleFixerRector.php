@@ -100,6 +100,10 @@ CODE_SAMPLE
             return $this->createDimFetchBooleanAnd($empty);
         }
 
+        if ($this->exprAnalyzer->isNonTypedFromParam($empty->expr)) {
+            return null;
+        }
+
         $emptyExprType = $scope->getType($empty->expr);
 
         return $this->exactCompareFactory->createNotIdenticalFalsyCompare(
