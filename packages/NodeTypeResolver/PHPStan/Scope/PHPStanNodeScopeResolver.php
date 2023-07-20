@@ -261,7 +261,7 @@ final class PHPStanNodeScopeResolver
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
-                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
+                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
             }
 
             // special case for unreachable nodes
@@ -443,8 +443,7 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ | Enum_ $classLike,
-        MutatingScope $mutatingScope,
-        bool $isScopeRefreshing
+        MutatingScope $mutatingScope
     ): MutatingScope {
         $className = $this->resolveClassName($classLike);
         $isAnonymous = $this->classAnalyzer->isAnonymousClass($classLike);
