@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
@@ -27,7 +28,7 @@ final class ArgumentDefaultValueReplacer
     }
 
     public function processReplaces(
-        MethodCall | StaticCall | ClassMethod | FuncCall $node,
+        MethodCall | StaticCall | ClassMethod | FuncCall | New_ $node,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Node {
         if ($node instanceof ClassMethod) {
@@ -82,15 +83,16 @@ final class ArgumentDefaultValueReplacer
     }
 
     private function processArgs(
-        MethodCall | StaticCall | FuncCall $expr,
+        MethodCall | StaticCall | FuncCall | New_ $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Expr {
         $position = $replaceArgumentDefaultValue->getPosition();
-        if (! $expr->args[$position] instanceof Arg) {
+        $particularArg = $expr->getArgs()[$position] ?? null;
+        if (! $particularArg instanceof Arg) {
             return null;
         }
 
-        $argValue = $this->valueResolver->getValue($expr->getArgs()[$position]->value);
+        $argValue = $this->valueResolver->getValue($particularArg->value);
 
         if (is_scalar(
             $replaceArgumentDefaultValue->getValueBefore()

@@ -5,10 +5,20 @@ declare(strict_types=1);
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Config\RectorConfig;
+use Rector\Core\ValueObject\MethodName;
+use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(ReplaceArgumentDefaultValueRector::class, [
+            // special case for constructor
+            new ReplaceArgumentDefaultValue(
+                ReplaceInConstructor::class,
+                MethodName::CONSTRUCT,
+                0,
+                'some value',
+                'SomeClass::SOME_CONSTANT'
+            ),
 
             new ReplaceArgumentDefaultValue(
                 'Symfony\Component\DependencyInjection\Definition',
@@ -22,29 +32,6 @@ return static function (RectorConfig $rectorConfig): void {
                 false,
                 true,
             ], 'Symfony\Component\Yaml\Yaml::PARSE_OBJECT_FOR_MAP'),
-            new ReplaceArgumentDefaultValue('Symfony\Component\Yaml\Yaml', 'parse', 1, [
-                false,
-                true,
-            ], 'Symfony\Component\Yaml\Yaml::PARSE_OBJECT'),
-            new ReplaceArgumentDefaultValue('Symfony\Component\Yaml\Yaml', 'parse', 1, false, 0),
-            new ReplaceArgumentDefaultValue(
-                'Symfony\Component\Yaml\Yaml',
-                'parse',
-                1,
-                true,
-                'Symfony\Component\Yaml\Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE'
-            ),
-            new ReplaceArgumentDefaultValue('Symfony\Component\Yaml\Yaml', 'dump', 3, [
-                false,
-                true,
-            ], 'Symfony\Component\Yaml\Yaml::DUMP_OBJECT'),
-            new ReplaceArgumentDefaultValue(
-                'Symfony\Component\Yaml\Yaml',
-                'dump',
-                3,
-                true,
-                'Symfony\Component\Yaml\Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE'
-            ),
 
             new ReplaceArgumentDefaultValue(
                 'Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Source\SomeClassWithAnyDefaultValue',
