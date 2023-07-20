@@ -30,7 +30,7 @@ final class ThisTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        return new ThisTypeNode();
+        return $type->toPhpDocNode();
     }
 
     /**
