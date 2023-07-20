@@ -9,12 +9,14 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -30,7 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\TypedPropertyFromStrictConstructorRectorTest
  */
-final class TypedPropertyFromStrictConstructorRector extends AbstractRector implements MinPhpVersionInterface
+final class TypedPropertyFromStrictConstructorRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer,
@@ -85,7 +87,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod || $node->getProperties() === []) {
@@ -116,9 +118,11 @@ CODE_SAMPLE
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
             // public property can be anything
-            if ($property->isPublic()) {
+            if ($this->skipPublicProperty($property, $classReflection, $scope)) {
+                // we can't judge about non-readonly properties, therefore only infer a weaker phpdoc type
                 $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
                 $hasChanged = true;
+
                 continue;
             }
 
@@ -191,5 +195,26 @@ CODE_SAMPLE
         }
 
         return $this->isDoctrineCollectionType($propertyType);
+    }
+
+    private function skipPublicProperty(Node\Stmt\Property $property, ClassReflection $classReflection, Scope $scope): bool
+    {
+        if ($property->isPublic()) {
+            $isReadOnlyByPhpdoc = false;
+            $propertyName = $this->nodeNameResolver->getName($property);
+            if ($classReflection->hasProperty($propertyName)) {
+                $propertyReflection = $classReflection->getProperty($propertyName, $scope);
+
+                if (method_exists($propertyReflection, 'isReadOnlyByPhpDoc')) {
+                    $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
+                }
+            }
+
+            if (!$isReadOnlyByPhpdoc) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
