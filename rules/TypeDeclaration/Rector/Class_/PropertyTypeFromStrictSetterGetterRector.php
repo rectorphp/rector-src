@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
@@ -113,11 +114,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($classReflection === null) {
+            if (! $classReflection instanceof ClassReflection) {
                 $classReflection = $this->reflectionResolver->resolveClassReflection($node);
             }
 
-            if ($classReflection === null) {
+            if (! $classReflection instanceof ClassReflection) {
                 return null;
             }
 
