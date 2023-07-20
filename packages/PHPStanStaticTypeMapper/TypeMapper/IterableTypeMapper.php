@@ -14,22 +14,12 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\Type\SpacingAwareArrayTypeNode;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements TypeMapperInterface<IterableType>
  */
 final class IterableTypeMapper implements TypeMapperInterface
 {
-    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
-
-    #[Required]
-    public function autowire(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
-    {
-        $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
-    }
-
     /**
      * @return class-string<Type>
      */
@@ -52,25 +42,5 @@ final class IterableTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         return new Identifier('iterable');
-    }
-
-    private function convertUnionArrayTypeNodesToArrayTypeOfUnionTypeNodes(
-        UnionTypeNode $unionTypeNode
-    ): BracketsAwareUnionTypeNode {
-        $unionedArrayType = [];
-        foreach ($unionTypeNode->types as $unionedType) {
-            if ($unionedType instanceof UnionTypeNode) {
-                foreach ($unionedType->types as $key => $subUnionedType) {
-                    $unionedType->types[$key] = new ArrayTypeNode($subUnionedType);
-                }
-
-                $unionedArrayType[] = $unionedType;
-                continue;
-            }
-
-            $unionedArrayType[] = new ArrayTypeNode($unionedType);
-        }
-
-        return new BracketsAwareUnionTypeNode($unionedArrayType);
     }
 }
