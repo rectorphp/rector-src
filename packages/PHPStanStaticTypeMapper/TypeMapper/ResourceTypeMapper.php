@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ResourceType;
 use PHPStan\Type\Type;
@@ -29,7 +28,7 @@ final class ResourceTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        return new IdentifierTypeNode('resource');
+        return $type->toPhpDocNode();
     }
 
     /**
