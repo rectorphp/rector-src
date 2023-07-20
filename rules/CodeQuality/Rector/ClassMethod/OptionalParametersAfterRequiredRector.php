@@ -100,7 +100,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod($classMethod, $scope);
+        $classMethodReflection = $this->reflectionResolver->resolveMethodReflectionFromClassMethod(
+            $classMethod,
+            $scope
+        );
         if (! $classMethodReflection instanceof MethodReflection) {
             return null;
         }
