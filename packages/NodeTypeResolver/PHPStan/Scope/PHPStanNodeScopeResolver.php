@@ -456,9 +456,9 @@ final class PHPStanNodeScopeResolver
         try {
             return $mutatingScope->enterClass($classReflection);
         } catch (\PHPStan\ShouldNotHappenException) {
-            $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
         }
 
+        $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
         return $mutatingScope->enterClass($classReflection);
     }
 
