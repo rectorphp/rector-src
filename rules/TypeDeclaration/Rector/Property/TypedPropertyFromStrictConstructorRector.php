@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -118,7 +119,7 @@ CODE_SAMPLE
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
             // public property can be anything
-            if ($this->skipPublicProperty($property, $classReflection, $scope)) {
+            if ($this->shouldSkipPublicProperty($property, $classReflection, $scope)) {
                 // we can't judge about non-readonly properties, therefore only infer a weaker phpdoc type
                 $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
                 $hasChanged = true;
@@ -197,7 +198,7 @@ CODE_SAMPLE
         return $this->isDoctrineCollectionType($propertyType);
     }
 
-    private function skipPublicProperty(Node\Stmt\Property $property, ClassReflection $classReflection, Scope $scope): bool
+    private function shouldSkipPublicProperty(Node\Stmt\Property $property, ClassReflection $classReflection, Scope $scope): bool
     {
         if ($property->isPublic()) {
             $isReadOnlyByPhpdoc = false;
@@ -205,7 +206,7 @@ CODE_SAMPLE
             if ($classReflection->hasProperty($propertyName)) {
                 $propertyReflection = $classReflection->getProperty($propertyName, $scope);
 
-                if (method_exists($propertyReflection, 'isReadOnlyByPhpDoc')) {
+                if ($propertyReflection instanceof PhpPropertyReflection) {
                     $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
                 }
             }
