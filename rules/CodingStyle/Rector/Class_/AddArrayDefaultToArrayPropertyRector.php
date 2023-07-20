@@ -136,7 +136,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $propertyName = (string) $this->getName($propertyProperty);
+                $propertyName = $this->getName($propertyProperty);
                 if ($this->constructorAssignDetector->isPropertyAssigned($class, $propertyName)) {
                     return null;
                 }
