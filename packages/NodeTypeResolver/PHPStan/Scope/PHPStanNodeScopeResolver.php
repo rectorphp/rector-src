@@ -454,10 +454,6 @@ final class PHPStanNodeScopeResolver
         $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
 
         try {
-            if ($isAnonymous) {
-                $this->privatesAccessor->setPrivateProperty($context, 'classReflection', $classReflection);
-            }
-
             return $mutatingScope->enterClass($classReflection);
         } catch (\PHPStan\ShouldNotHappenException) {
             $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
