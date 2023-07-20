@@ -6,7 +6,6 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
@@ -30,7 +29,7 @@ final class ThisTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        return new ThisTypeNode();
+        return $type->toPhpDocNode();
     }
 
     /**
