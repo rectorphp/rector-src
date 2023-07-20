@@ -20,6 +20,7 @@ use Rector\CodingStyle\TypeAnalyzer\IterableTypeAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -32,7 +33,8 @@ final class AddArrayDefaultToArrayPropertyRector extends AbstractRector
     public function __construct(
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly IterableTypeAnalyzer $iterableTypeAnalyzer,
-        private readonly VisibilityManipulator $visibilityManipulator
+        private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -115,7 +117,7 @@ CODE_SAMPLE
     private function collectPropertyNamesWithMissingDefaultArray(Class_ $class): array
     {
         $propertyNames = [];
-        $this->traverseNodesWithCallable($class, function (Node $node) use (&$propertyNames) {
+        $this->traverseNodesWithCallable($class, function (Node $node) use ($class, &$propertyNames) {
             if (! $node instanceof Property) {
                 return null;
             }
@@ -134,7 +136,12 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $propertyNames[] = $this->getName($propertyProperty);
+                $propertyName = (string) $this->getName($propertyProperty);
+                if ($this->constructorAssignDetector->isPropertyAssigned($class, $propertyName)) {
+                    return null;
+                }
+
+                $propertyNames[] = $propertyName;
             }
 
             return null;
