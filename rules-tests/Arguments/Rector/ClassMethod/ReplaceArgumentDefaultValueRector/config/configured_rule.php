@@ -5,15 +5,18 @@ declare(strict_types=1);
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Config\RectorConfig;
+use Rector\Core\ValueObject\MethodName;
+use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(ReplaceArgumentDefaultValueRector::class, [
+            // special case for constructor
             new ReplaceArgumentDefaultValue(
-                \Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor::class,
-                \Rector\Core\ValueObject\MethodName::CONSTRUCT,
+                ReplaceInConstructor::class,
+                MethodName::CONSTRUCT,
                 0,
-                'some_value',
+                'some value',
                 'SomeClass::SOME_CONSTANT'
             ),
 
