@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 
@@ -18,19 +17,17 @@ final class PropertyTypeChangeGuard
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyAnalyzer $propertyAnalyzer,
         private readonly PropertyManipulator $propertyManipulator,
-        private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard
     ) {
     }
 
-    public function isLegal(Property $property, bool $inlinePublic = true, bool $isConstructorPromotion = false): bool
-    {
+    public function isLegal(
+        Property $property,
+        ClassReflection $classReflection,
+        bool $inlinePublic = true,
+        bool $isConstructorPromotion = false
+    ): bool {
         if (count($property->props) > 1) {
-            return false;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($property);
-        if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
