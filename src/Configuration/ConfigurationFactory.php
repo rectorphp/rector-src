@@ -94,31 +94,15 @@ final class ConfigurationFactory
     }
 
     /**
-     * @param string[] $commandLinePaths
-     * @return string[]
-     */
-    private function correctBashSpacePaths(array $commandLinePaths): array
-    {
-        // fixes bash edge-case that to merges string with space to one
-        foreach ($commandLinePaths as $commandLinePath) {
-            if (\str_contains($commandLinePath, ' ')) {
-                $commandLinePaths = explode(' ', $commandLinePath);
-            }
-        }
-
-        return $commandLinePaths;
-    }
-
-    /**
      * @return string[]|mixed[]
      */
     private function resolvePaths(InputInterface $input): array
     {
         $commandLinePaths = (array) $input->getArgument(Option::SOURCE);
 
-        // command line has priority
+        // give priority to command line
         if ($commandLinePaths !== []) {
-            return $this->correctBashSpacePaths($commandLinePaths);
+            return $commandLinePaths;
         }
 
         // fallback to parameter
