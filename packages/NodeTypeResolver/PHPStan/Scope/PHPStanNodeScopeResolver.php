@@ -110,8 +110,6 @@ final class PHPStanNodeScopeResolver
         string $filePath,
         ?MutatingScope $formerMutatingScope = null
     ): array {
-        $isScopeRefreshing = $formerMutatingScope instanceof MutatingScope;
-
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
@@ -126,7 +124,6 @@ final class PHPStanNodeScopeResolver
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
-            $isScopeRefreshing,
             $filePath
         ): void {
             if ($node instanceof FileWithoutNamespace) {
