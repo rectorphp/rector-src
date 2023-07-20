@@ -6,7 +6,6 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\Core\Enum\ObjectReference;
@@ -31,7 +30,7 @@ final class ParentStaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        return new IdentifierTypeNode(ObjectReference::PARENT);
+        return $type->toPhpDocNode();
     }
 
     /**
