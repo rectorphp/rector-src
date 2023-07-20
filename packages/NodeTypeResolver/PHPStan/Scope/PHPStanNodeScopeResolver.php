@@ -110,8 +110,6 @@ final class PHPStanNodeScopeResolver
         string $filePath,
         ?MutatingScope $formerMutatingScope = null
     ): array {
-        $isScopeRefreshing = $formerMutatingScope instanceof MutatingScope;
-
         /**
          * The stmts must be array of Stmt, or it will be silently skipped by PHPStan
          * @see vendor/phpstan/phpstan/phpstan.phar/src/Analyser/NodeScopeResolver.php:282
@@ -126,7 +124,6 @@ final class PHPStanNodeScopeResolver
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
-            $isScopeRefreshing,
             $filePath
         ): void {
             if ($node instanceof FileWithoutNamespace) {
@@ -261,7 +258,7 @@ final class PHPStanNodeScopeResolver
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
                 /** @var MutatingScope $mutatingScope */
-                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope, $isScopeRefreshing);
+                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
             }
 
             // special case for unreachable nodes
@@ -443,8 +440,7 @@ final class PHPStanNodeScopeResolver
 
     private function resolveClassOrInterfaceScope(
         Class_ | Interface_ | Enum_ $classLike,
-        MutatingScope $mutatingScope,
-        bool $isScopeRefreshing
+        MutatingScope $mutatingScope
     ): MutatingScope {
         $className = $this->resolveClassName($classLike);
         $isAnonymous = $this->classAnalyzer->isAnonymousClass($classLike);
@@ -458,9 +454,12 @@ final class PHPStanNodeScopeResolver
             $classReflection = $this->reflectionProvider->getClass($className);
         }
 
-        // on refresh, remove entered class avoid entering the class again
-        if ($isScopeRefreshing && $mutatingScope->isInClass() && ! $isAnonymous) {
-            $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
+        $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
+
+        try {
+            $this->privatesAccessor->setPrivateProperty($context, 'classReflection', $classReflection);
+            return $mutatingScope->enterClass($classReflection);
+        } catch (\PHPStan\ShouldNotHappenException) {
             $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
         }
 
