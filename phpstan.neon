@@ -37,6 +37,9 @@ parameters:
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
 
+        # CI test
+        - tests/Fixtures/*
+
         # temporary stinrgable migration from template type provider
         - bin/generate-changelog.php
 
