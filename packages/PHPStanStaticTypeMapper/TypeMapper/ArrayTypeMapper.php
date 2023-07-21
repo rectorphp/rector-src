@@ -51,8 +51,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private DetailedTypeAnalyzer $detailedTypeAnalyzer;
 
-    private ArrayShapeTypeMapper $arrayShapeTypeMapper;
-
     // To avoid circular dependency
 
     #[Required]
@@ -62,14 +60,12 @@ final class ArrayTypeMapper implements TypeMapperInterface
         ReflectionProvider $reflectionProvider,
         GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
         DetailedTypeAnalyzer $detailedTypeAnalyzer,
-        ArrayShapeTypeMapper $arrayShapeTypeMapper
     ): void {
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
         $this->unionTypeCommonTypeNarrower = $unionTypeCommonTypeNarrower;
         $this->reflectionProvider = $reflectionProvider;
         $this->genericClassStringTypeNormalizer = $genericClassStringTypeNormalizer;
         $this->detailedTypeAnalyzer = $detailedTypeAnalyzer;
-        $this->arrayShapeTypeMapper = $arrayShapeTypeMapper;
     }
 
     /**
@@ -94,10 +90,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
         }
 
         if ($type instanceof ConstantArrayType) {
-            $arrayShapeNode = $this->arrayShapeTypeMapper->mapConstantArrayType($type);
-            if ($arrayShapeNode instanceof TypeNode) {
-                return $arrayShapeNode;
-            }
+            return $type->toPhpDocNode();
         }
 
         if ($itemType instanceof ArrayType && $this->isGenericArrayCandidate($itemType)) {
