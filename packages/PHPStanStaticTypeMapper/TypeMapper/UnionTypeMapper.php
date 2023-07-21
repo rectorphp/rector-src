@@ -81,20 +81,6 @@ final class UnionTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         return $type->toPhpDocNode();
-        // note: cannot be handled by PHPStan as uses no-space around |
-        $unionTypesNodes = [];
-        $skipIterable = $this->shouldSkipIterable($type);
-
-        foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType instanceof IterableType && $skipIterable) {
-                continue;
-            }
-
-            $unionTypesNodes[] = $unionedType->toPhpDocNode();
-        }
-
-        $unionTypesNodes = array_unique($unionTypesNodes);
-        return new BracketsAwareUnionTypeNode($unionTypesNodes);
     }
 
     /**
@@ -199,20 +185,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return null;
-    }
-
-    private function shouldSkipIterable(UnionType $unionType): bool
-    {
-        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
-        if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
-            return false;
-        }
-
-        if (! $unionTypeAnalysis->hasIterable()) {
-            return false;
-        }
-
-        return $unionTypeAnalysis->hasArray();
     }
 
     private function matchArrayTypes(UnionType $unionType): Identifier | NullableType | PhpParserUnionType | null
