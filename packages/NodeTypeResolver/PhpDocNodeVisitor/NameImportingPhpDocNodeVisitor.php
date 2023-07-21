@@ -104,17 +104,17 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             ));
         }
 
+        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if ($parentNode instanceof TemplateTagValueNode) {
+            // might break
+            return null;
+        }
+
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
             $file,
             $phpParserNode,
             $fullyQualifiedObjectType
         )) {
-            return null;
-        }
-
-        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if ($parentNode instanceof TemplateTagValueNode) {
-            // might break
             return null;
         }
 
