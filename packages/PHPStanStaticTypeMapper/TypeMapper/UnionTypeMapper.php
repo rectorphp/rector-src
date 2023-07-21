@@ -14,7 +14,6 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
@@ -201,20 +200,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return null;
-    }
-
-    private function shouldSkipIterable(UnionType $unionType): bool
-    {
-        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
-        if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
-            return false;
-        }
-
-        if (! $unionTypeAnalysis->hasIterable()) {
-            return false;
-        }
-
-        return $unionTypeAnalysis->hasArray();
     }
 
     private function matchArrayTypes(UnionType $unionType): Identifier | NullableType | PhpParserUnionType | null
