@@ -97,17 +97,17 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         FullyQualifiedObjectType $fullyQualifiedObjectType,
         File $file
     ): ?IdentifierTypeNode {
+        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if ($parentNode instanceof TemplateTagValueNode) {
+            // might break
+            return null;
+        }
+
         if (str_starts_with($fullyQualifiedObjectType->getClassName(), '@')) {
             $fullyQualifiedObjectType = new FullyQualifiedObjectType(ltrim(
                 $fullyQualifiedObjectType->getClassName(),
                 '@'
             ));
-        }
-
-        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if ($parentNode instanceof TemplateTagValueNode) {
-            // might break
-            return null;
         }
 
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
