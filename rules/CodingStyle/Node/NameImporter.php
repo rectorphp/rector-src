@@ -41,8 +41,7 @@ final class NameImporter
             return null;
         }
 
-        $className = $staticType->getClassName();
-        return $this->importNameAndCollectNewUseStatement($file, $name, $staticType, $className);
+        return $this->importNameAndCollectNewUseStatement($file, $name, $staticType);
     }
 
     private function shouldSkipName(Name $name): bool
@@ -81,8 +80,7 @@ final class NameImporter
     private function importNameAndCollectNewUseStatement(
         File $file,
         Name $name,
-        FullyQualifiedObjectType $fullyQualifiedObjectType,
-        string $className
+        FullyQualifiedObjectType $fullyQualifiedObjectType
     ): ?Name {
         // the same end is already imported → skip
         if ($this->classNameImportSkipper->shouldSkipNameForFullyQualifiedObjectType(
