@@ -7,7 +7,6 @@ namespace Rector\CodingStyle\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
-use Rector\CodingStyle\ClassNameImport\AliasUsesResolver;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -20,7 +19,6 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 final class NameImporter
 {
     public function __construct(
-        private readonly AliasUsesResolver $aliasUsesResolver,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector
