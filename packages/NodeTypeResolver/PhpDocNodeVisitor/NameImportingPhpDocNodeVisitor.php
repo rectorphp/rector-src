@@ -97,6 +97,12 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         FullyQualifiedObjectType $fullyQualifiedObjectType,
         File $file
     ): ?IdentifierTypeNode {
+        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
+        if ($parentNode instanceof TemplateTagValueNode) {
+            // might break
+            return null;
+        }
+
         if (str_starts_with($fullyQualifiedObjectType->getClassName(), '@')) {
             $fullyQualifiedObjectType = new FullyQualifiedObjectType(ltrim(
                 $fullyQualifiedObjectType->getClassName(),
@@ -112,12 +118,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $parentNode = $identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT);
-        if ($parentNode instanceof TemplateTagValueNode) {
-            // might break
-            return null;
-        }
-
         $newNode = new IdentifierTypeNode($fullyQualifiedObjectType->getShortName());
 
         // should skip because its already used
@@ -125,13 +125,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             if (! $this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
                 return null;
             }
-
-            if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
-                $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
-                return $newNode;
-            }
-
-            return null;
         }
 
         if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
