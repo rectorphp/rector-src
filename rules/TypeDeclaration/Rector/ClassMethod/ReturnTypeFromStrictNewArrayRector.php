@@ -172,7 +172,8 @@ CODE_SAMPLE
             return;
         }
 
-        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $arrayType);
+        $narrowArrayType = new ArrayType(new MixedType(), $arrayType->getItemType());
+        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $narrowArrayType);
     }
 
     private function isVariableOverriddenWithNonArray(
