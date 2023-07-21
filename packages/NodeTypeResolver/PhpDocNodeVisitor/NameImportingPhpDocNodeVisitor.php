@@ -121,10 +121,9 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $newNode = new IdentifierTypeNode($fullyQualifiedObjectType->getShortName());
 
         // should skip because its already used
-        if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
-            if (! $this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
-                return null;
-            }
+        if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)
+            && ! $this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
+            return null;
         }
 
         if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
