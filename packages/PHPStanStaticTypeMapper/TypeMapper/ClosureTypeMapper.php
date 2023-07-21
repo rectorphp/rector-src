@@ -39,6 +39,8 @@ final class ClosureTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
+        return $type->toPhpDocNode();
+
         $identifierTypeNode = new IdentifierTypeNode($type->getClassName());
 
         $returnDocTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($type->getReturnType());
