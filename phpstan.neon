@@ -658,3 +658,6 @@ parameters:
 
         # submethods that handle smaller change
         - '#Method "refactor(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
+
+        # deprecated
+        - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\ClassMethod\\ArrayShapeFromConstantArrayReturnRector#'

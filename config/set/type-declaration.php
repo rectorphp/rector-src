@@ -12,7 +12,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProv
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
@@ -58,7 +57,6 @@ return static function (RectorConfig $rectorConfig): void {
         ReturnTypeFromReturnNewRector::class,
         TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
         AddMethodCallBasedStrictParamTypeRector::class,
-        ArrayShapeFromConstantArrayReturnRector::class,
         ReturnTypeFromStrictBoolReturnExprRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
