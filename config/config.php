@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use PHPStan\PhpDocParser\Printer\Printer;
 
 use Composer\Semver\VersionParser;
 
@@ -196,7 +197,7 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(Lexer::class)
         ->factory([service(PHPStanServicesFactory::class), 'createEmulativeLexer']);
 
-    $services->set(\PHPStan\PhpDocParser\Printer\Printer::class)
+    $services->set(Printer::class)
         ->factory([service(PHPStanServicesFactory::class), 'createPhpDocPrinter']);
 
     $services->set(ParameterProvider::class)
@@ -206,7 +207,7 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(Inflector::class)
         ->factory([service(InflectorFactory::class), 'build']);
 
-    $services->set(\PHPStan\PhpDocParser\Printer\Printer::class);
+    $services->set(Printer::class);
     $services->set(VersionParser::class);
 
     // console
