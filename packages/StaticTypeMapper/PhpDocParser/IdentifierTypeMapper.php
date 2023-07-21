@@ -52,7 +52,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
     /**
      * @param IdentifierTypeNode $typeNode
      */
-    public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
+    public function mapToPHPStanType(TypeNode $typeNode, Node $node, ?NameScope $nameScope): Type
     {
         $type = $this->scalarStringToTypeMapper->mapScalarStringToType($typeNode->name);
         if (! $type instanceof MixedType) {

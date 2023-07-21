@@ -15,6 +15,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
@@ -25,6 +26,7 @@ use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
+use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 
 /**
  * Maps PhpParser <=> PHPStan <=> PHPStan doc <=> string type nodes between all possible formats
@@ -44,7 +46,8 @@ final class StaticTypeMapper
         private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
         private readonly PhpDocTypeMapper $phpDocTypeMapper,
         private readonly PhpParserNodeMapper $phpParserNodeMapper,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly IdentifierTypeMapper $identifierTypeMapper,
     ) {
     }
 
@@ -111,5 +114,10 @@ final class StaticTypeMapper
     {
         $nameScope = $this->nameScopeFactory->createNameScopeFromNode($node);
         return $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $node, $nameScope);
+    }
+
+    public function mapIdentifierTypeNodeToPHPStanType(IdentifierTypeNode $typeNode, Node $node): Type
+    {
+        return $this->identifierTypeMapper->mapToPHPStanType($typeNode, $node, null);
     }
 }
