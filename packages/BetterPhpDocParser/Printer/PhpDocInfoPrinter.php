@@ -15,29 +15,6 @@ use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
  */
 final class PhpDocInfoPrinter
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/Ab0Vey/1
-     */
-    private const CLOSING_DOCBLOCK_REGEX = '#\*\/(\s+)?$#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/mVmOCY/2
-     */
-    private const OPENING_DOCBLOCK_REGEX = '#^(/\*\*)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/LLWiPl/1
-     */
-    private const DOCBLOCK_START_REGEX = '#^(\/\/|\/\*\*|\/\*|\#)#';
-
-    /**
-     * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
-     */
-    private const NEWLINE_WITH_ASTERISK = "\n" . ' *';
-
     public function __construct(
         private readonly DocBlockInliner $docBlockInliner,
         private readonly ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
