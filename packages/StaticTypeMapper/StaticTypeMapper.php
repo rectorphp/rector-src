@@ -118,6 +118,6 @@ final class StaticTypeMapper
 
     public function mapIdentifierTypeNodeToPHPStanType(IdentifierTypeNode $typeNode, Node $node): Type
     {
-        return $this->identifierTypeMapper->mapToPHPStanType($typeNode, $node, null);
+        return $this->identifierTypeMapper->mapToPHPStanTypeNew($typeNode, $node);
     }
 }
