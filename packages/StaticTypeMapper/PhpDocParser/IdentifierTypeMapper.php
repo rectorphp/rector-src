@@ -57,9 +57,9 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
         return $this->mapIdentifierTypeNode($typeNode, $node);
     }
 
-    public function mapIdentifierTypeNode(IdentifierTypeNode $typeNode, Node $node): Type
+    public function mapIdentifierTypeNode(IdentifierTypeNode $identifierTypeNode, Node $node): Type
     {
-        $type = $this->scalarStringToTypeMapper->mapScalarStringToType($typeNode->name);
+        $type = $this->scalarStringToTypeMapper->mapScalarStringToType($identifierTypeNode->name);
         if (! $type instanceof MixedType) {
             return $type;
         }
@@ -68,7 +68,7 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return $type;
         }
 
-        $loweredName = strtolower($typeNode->name);
+        $loweredName = strtolower($identifierTypeNode->name);
         if ($loweredName === ObjectReference::SELF) {
             return $this->mapSelf($node);
         }
@@ -85,17 +85,17 @@ final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             return new IterableType(new MixedType(), new MixedType());
         }
 
-        if (str_starts_with($typeNode->name, '\\')) {
-            $typeWithoutPreslash = Strings::substring($typeNode->name, 1);
+        if (str_starts_with($identifierTypeNode->name, '\\')) {
+            $typeWithoutPreslash = Strings::substring($identifierTypeNode->name, 1);
             $objectType = new FullyQualifiedObjectType($typeWithoutPreslash);
         } else {
-            if ($typeNode->name === 'scalar') {
+            if ($identifierTypeNode->name === 'scalar') {
                 // pseudo type, see https://www.php.net/manual/en/language.types.intro.php
                 $scalarTypes = [new BooleanType(), new StringType(), new IntegerType(), new FloatType()];
                 return new UnionType($scalarTypes);
             }
 
-            $objectType = new ObjectType($typeNode->name);
+            $objectType = new ObjectType($identifierTypeNode->name);
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
