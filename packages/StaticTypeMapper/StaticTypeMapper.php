@@ -46,8 +46,7 @@ final class StaticTypeMapper
         private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
         private readonly PhpDocTypeMapper $phpDocTypeMapper,
         private readonly PhpParserNodeMapper $phpParserNodeMapper,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly IdentifierTypeMapper $identifierTypeMapper,
+        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -114,10 +113,5 @@ final class StaticTypeMapper
     {
         $nameScope = $this->nameScopeFactory->createNameScopeFromNode($node);
         return $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $node, $nameScope);
-    }
-
-    public function mapIdentifierTypeNodeToPHPStanType(IdentifierTypeNode $typeNode, Node $node): Type
-    {
-        return $this->identifierTypeMapper->mapToPHPStanTypeNew($typeNode, $node);
     }
 }

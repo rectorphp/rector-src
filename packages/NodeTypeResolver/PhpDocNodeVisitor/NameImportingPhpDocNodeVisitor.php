@@ -22,6 +22,7 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -30,11 +31,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     private ?PhpParserNode $currentPhpParserNode = null;
 
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly IdentifierTypeMapper $identifierTypeMapper,
     ) {
     }
 
@@ -60,7 +61,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $staticType = $this->staticTypeMapper->mapIdentifierTypeNodeToPHPStanType(
+        $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode(
             $node,
             $this->currentPhpParserNode
         );
