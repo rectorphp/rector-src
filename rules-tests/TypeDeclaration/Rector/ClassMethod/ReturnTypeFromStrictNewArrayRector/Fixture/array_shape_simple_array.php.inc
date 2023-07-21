@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Fixture;
 
-final class IncludeSimpleArrayShape
+final class ArrayShapeSimpleArray
 {
     public function run()
     {
@@ -12,7 +12,6 @@ final class IncludeSimpleArrayShape
 
         $items['one'] = 1;
         $items['two'] = 1;
-        $items['three'] = 1;
 
         return $items;
     }
@@ -26,18 +25,14 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Fixture;
 
-final class IncludeSimpleArrayShape
+final class ArrayShapeSimpleArray
 {
-    /**
-     * @return array{one: int, two: int, three: int}
-     */
     public function run(): array
     {
         $items = [];
 
         $items['one'] = 1;
         $items['two'] = 1;
-        $items['three'] = 1;
 
         return $items;
     }
