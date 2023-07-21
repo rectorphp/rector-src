@@ -89,7 +89,7 @@ final class UnionTypeMapper implements TypeMapperInterface
                 continue;
             }
 
-            $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
+            $unionTypesNodes[] = $unionedType->toPhpDocNode();
         }
 
         $unionTypesNodes = array_unique($unionTypesNodes);
