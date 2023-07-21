@@ -19,11 +19,6 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class NameImporter
 {
-    /**
-     * @var string[]
-     */
-    private array $aliasedUses = [];
-
     public function __construct(
         private readonly AliasUsesResolver $aliasUsesResolver,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
@@ -35,7 +30,7 @@ final class NameImporter
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    public function importName(Name $name, File $file, array $uses): ?Name
+    public function importName(Name $name, File $file): ?Name
     {
         if ($this->shouldSkipName($name)) {
             return null;
@@ -47,11 +42,6 @@ final class NameImporter
         }
 
         $className = $staticType->getClassName();
-        // class has \, no need to search in aliases, mark aliasedUses as empty
-        $this->aliasedUses = str_contains($className, '\\')
-            ? []
-            : $this->aliasUsesResolver->resolveFromStmts($uses);
-
         return $this->importNameAndCollectNewUseStatement($file, $name, $staticType, $className);
     }
 
@@ -112,18 +102,6 @@ final class NameImporter
         }
 
         $this->addUseImport($file, $name, $fullyQualifiedObjectType);
-
-        if ($this->aliasedUses === []) {
-            return $fullyQualifiedObjectType->getShortNameNode();
-        }
-
-        // possibly aliased
-        foreach ($this->aliasedUses as $aliasedUse) {
-            if ($className === $aliasedUse) {
-                return null;
-            }
-        }
-
         return $fullyQualifiedObjectType->getShortNameNode();
     }
 
