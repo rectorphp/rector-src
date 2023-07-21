@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Node;
 
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -25,9 +23,6 @@ final class NameImporter
     ) {
     }
 
-    /**
-     * @param Use_[]|GroupUse[] $uses
-     */
     public function importName(Name $name, File $file): ?Name
     {
         if ($this->shouldSkipName($name)) {
