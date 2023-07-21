@@ -13,6 +13,7 @@ use PHPStan\DependencyInjection\ContainerFactory;
 use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
+use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -71,6 +72,14 @@ final class PHPStanServicesFactory
     public function createReflectionProvider(): ReflectionProvider
     {
         return $this->container->getByType(ReflectionProvider::class);
+    }
+
+    /**
+     * @api
+     */
+    public function createPhpDocPrinter(): Printer
+    {
+        return $this->container->getByType(Printer::class);
     }
 
     /**

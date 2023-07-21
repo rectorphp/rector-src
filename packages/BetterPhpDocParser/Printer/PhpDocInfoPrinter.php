@@ -15,6 +15,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Printer\Printer;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -75,6 +76,7 @@ final class PhpDocInfoPrinter
         private readonly DocBlockInliner $docBlockInliner,
         private readonly RemoveNodesStartAndEndResolver $removeNodesStartAndEndResolver,
         private readonly ChangedPhpDocNodeVisitor $changedPhpDocNodeVisitor,
+        private readonly Printer $printer,
     ) {
         $changedPhpDocNodeTraverser = new PhpDocNodeTraverser();
         $changedPhpDocNodeTraverser->addPhpDocNodeVisitor($this->changedPhpDocNodeVisitor);
@@ -121,18 +123,26 @@ final class PhpDocInfoPrinter
             return (string) $phpDocInfo->getPhpDocNode();
         }
 
-        $phpDocNode = $phpDocInfo->getPhpDocNode();
-        $this->tokens = $phpDocInfo->getTokens();
+        //$phpDocNode = $phpDocInfo->getPhpDocNode();
+        return $this->printer->printFormatPreserving(
+            $phpDocInfo->getPhpDocNode(),
+            $phpDocInfo->getOriginalPhpDocNode(),
+            $phpDocInfo->getTokenIterator()
+        );
 
-        $this->tokenCount = $phpDocInfo->getTokenCount();
-        $this->phpDocInfo = $phpDocInfo;
-
-        $this->currentTokenPosition = 0;
-
-        $phpDocString = $this->printPhpDocNode($phpDocNode);
-
-        // hotfix of extra space with callable ()
-        return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
+//        return $phpdocContents;
+//
+//        $this->tokens = $phpDocInfo->getTokens();
+//
+//        $this->tokenCount = $phpDocInfo->getTokenCount();
+//        $this->phpDocInfo = $phpDocInfo;
+//
+//        $this->currentTokenPosition = 0;
+//
+//        $phpDocString = $this->printPhpDocNode($phpDocNode);
+//
+//        // hotfix of extra space with callable ()
+//        return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
     }
 
     private function getCurrentPhpDocInfo(): PhpDocInfo

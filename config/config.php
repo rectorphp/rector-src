@@ -196,6 +196,9 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(Lexer::class)
         ->factory([service(PHPStanServicesFactory::class), 'createEmulativeLexer']);
 
+    $services->set(\PHPStan\PhpDocParser\Printer\Printer::class)
+        ->factory([service(PHPStanServicesFactory::class), 'createPhpDocPrinter']);
+
     $services->set(ParameterProvider::class)
         ->arg('$container', service('service_container'));
 
@@ -203,6 +206,7 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(Inflector::class)
         ->factory([service(InflectorFactory::class), 'build']);
 
+    $services->set(\PHPStan\PhpDocParser\Printer\Printer::class);
     $services->set(VersionParser::class);
 
     // console

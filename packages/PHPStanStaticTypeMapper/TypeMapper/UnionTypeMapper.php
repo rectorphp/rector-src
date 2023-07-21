@@ -14,6 +14,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
@@ -57,7 +58,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         private readonly BoolUnionTypeAnalyzer $boolUnionTypeAnalyzer,
         private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory,
     ) {
     }
 
@@ -80,20 +81,22 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        // note: cannot be handled by PHPStan as uses no-space around |
-        $unionTypesNodes = [];
-        $skipIterable = $this->shouldSkipIterable($type);
-
-        foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType instanceof IterableType && $skipIterable) {
-                continue;
-            }
-
-            $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
-        }
-
-        $unionTypesNodes = array_unique($unionTypesNodes);
-        return new BracketsAwareUnionTypeNode($unionTypesNodes);
+        return $type->toPhpDocNode();
+//
+//        // note: cannot be handled by PHPStan as uses no-space around |
+//        $unionTypesNodes = [];
+//        $skipIterable = $this->shouldSkipIterable($type);
+//
+//        foreach ($type->getTypes() as $unionedType) {
+//            if ($unionedType instanceof IterableType && $skipIterable) {
+//                continue;
+//            }
+//
+//            $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
+//        }
+//
+//        $unionTypesNodes = array_unique($unionTypesNodes);
+//        return new BracketsAwareUnionTypeNode($unionTypesNodes);
     }
 
     /**

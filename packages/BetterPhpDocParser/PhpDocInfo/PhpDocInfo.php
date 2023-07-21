@@ -21,6 +21,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use PHPStan\PhpDocParser\Parser\TokenIterator;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
@@ -103,6 +104,11 @@ final class PhpDocInfo
     public function getTokens(): array
     {
         return $this->betterTokenIterator->getTokens();
+    }
+
+    public function getTokenIterator(): TokenIterator
+    {
+        return $this->betterTokenIterator;
     }
 
     public function getTokenCount(): int
