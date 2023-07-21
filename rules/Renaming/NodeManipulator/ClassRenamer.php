@@ -90,8 +90,12 @@ final class ClassRenamer
      * @param OldToNewType[] $oldToNewTypes
      * @param array<string, string> $oldToNewClasses
      */
-    private function refactorPhpDoc(Node $node, array $oldToNewTypes, array $oldToNewClasses, PhpDocInfo $phpDocInfo): void
-    {
+    private function refactorPhpDoc(
+        Node $node,
+        array $oldToNewTypes,
+        array $oldToNewClasses,
+        PhpDocInfo $phpDocInfo
+    ): void {
         if (! $phpDocInfo->hasByTypes(NodeTypes::TYPE_AWARE_NODES) && ! $phpDocInfo->hasByAnnotationClasses(
             NodeTypes::TYPE_AWARE_DOCTRINE_ANNOTATION_CLASSES
         )) {
