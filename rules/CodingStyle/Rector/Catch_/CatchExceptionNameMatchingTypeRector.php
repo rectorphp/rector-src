@@ -107,7 +107,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $uses = $this->useImportsResolver->resolve();
+        $uses = null;
 
         foreach ($node->stmts as $key => $stmt) {
             if ($this->shouldSkip($stmt)) {
@@ -128,6 +128,10 @@ CODE_SAMPLE
 
             /** @var string $oldVariableName */
             $oldVariableName = (string) $this->getName($catchVar);
+
+            if ($uses === null) {
+                $uses = $this->useImportsResolver->resolve();
+            }
 
             $type = $catch->types[0];
             $typeShortName = $this->nodeNameResolver->getShortName($type);
