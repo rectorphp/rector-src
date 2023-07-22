@@ -45,9 +45,9 @@ final class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
         });
     }
 
-    private function resolveFullyQualifiedClass(ConstFetchNode $constExprNode, PhpNode $phpNode): ?string
+    private function resolveFullyQualifiedClass(ConstFetchNode $constFetchNode, PhpNode $phpNode): ?string
     {
         $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($phpNode);
-        return $nameScope->resolveStringName($constExprNode->className);
+        return $nameScope->resolveStringName($constFetchNode->className);
     }
 }
