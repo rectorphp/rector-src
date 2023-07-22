@@ -22,6 +22,7 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -39,7 +40,8 @@ final class CatchExceptionNameMatchingTypeRector extends AbstractRector
 
     public function __construct(
         private readonly PropertyNaming $propertyNaming,
-        private readonly AliasNameResolver $aliasNameResolver
+        private readonly AliasNameResolver $aliasNameResolver,
+        private readonly UseImportsResolver $useImportsResolver
     ) {
     }
 
@@ -105,6 +107,8 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $uses = $this->useImportsResolver->resolve();
+
         foreach ($node->stmts as $key => $stmt) {
             if ($this->shouldSkip($stmt)) {
                 continue;
@@ -127,8 +131,8 @@ CODE_SAMPLE
 
             $type = $catch->types[0];
             $typeShortName = $this->nodeNameResolver->getShortName($type);
+            $aliasName = $this->aliasNameResolver->resolveByName($type, $uses);
 
-            $aliasName = $this->aliasNameResolver->resolveByName($type);
             if (is_string($aliasName)) {
                 $typeShortName = $aliasName;
             }

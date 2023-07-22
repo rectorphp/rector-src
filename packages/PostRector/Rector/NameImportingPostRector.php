@@ -149,7 +149,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $aliasName = $this->aliasNameResolver->resolveByName($name);
+        $aliasName = $this->aliasNameResolver->resolveByName($name, $currentUses);
         if (is_string($aliasName)) {
             return new Name($aliasName);
         }
