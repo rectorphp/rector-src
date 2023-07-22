@@ -127,6 +127,10 @@ CODE_SAMPLE
             $if->else = null;
             $stmt->expr = $assign->expr;
 
+            $lastStmt = array_pop($node->stmts);
+            $elseStmtsExceptLast = array_slice($elseStmts, 0, -1);
+            $node->stmts = [...$node->stmts, ...$elseStmtsExceptLast, $lastStmt];
+
             return $node;
         }
 
