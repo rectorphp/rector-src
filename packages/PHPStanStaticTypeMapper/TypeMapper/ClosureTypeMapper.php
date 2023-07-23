@@ -41,9 +41,11 @@ final class ClosureTypeMapper implements TypeMapperInterface
             if (! $astNode instanceof IdentifierTypeNode) {
                 return null;
             }
+
             if ($astNode->name !== 'Closure') {
                 return null;
             }
+
             $astNode = new FullyQualifiedIdentifierTypeNode('Closure');
             return $astNode;
         });
