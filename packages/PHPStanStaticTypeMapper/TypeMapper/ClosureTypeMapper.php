@@ -46,8 +46,7 @@ final class ClosureTypeMapper implements TypeMapperInterface
                 return null;
             }
 
-            $astNode = new FullyQualifiedIdentifierTypeNode('Closure');
-            return $astNode;
+            return new FullyQualifiedIdentifierTypeNode('Closure');
         });
 
         return $typeNode;
