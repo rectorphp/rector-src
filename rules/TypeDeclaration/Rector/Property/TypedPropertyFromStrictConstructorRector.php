@@ -19,11 +19,9 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
-use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\Guard\PropertyTypeOverrideGuard;
-use Rector\TypeDeclaration\TypeAnalyzer\PropertyTypeDefaultValueAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -40,9 +38,7 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private readonly PropertyTypeDefaultValueAnalyzer $propertyTypeDefaultValueAnalyzer
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -92,22 +88,17 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod) {
+        if (! $constructClassMethod instanceof ClassMethod || $node->getProperties() === []) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
         $hasChanged = false;
-        $classReflection = null;
-
         foreach ($node->getProperties() as $property) {
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
-            }
-
             if (! $this->propertyTypeOverrideGuard->isLegal($property, $classReflection)) {
                 continue;
             }
