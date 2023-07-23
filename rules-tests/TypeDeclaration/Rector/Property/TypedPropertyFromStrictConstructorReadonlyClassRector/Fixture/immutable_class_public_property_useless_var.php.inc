@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictCo
 /**
  * @immutable
  */
-class ImmutableClassPublicProperty
+class ImmutableClassPublicPropertyUselessVar
 {
     /**
      * @var string
@@ -27,7 +27,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictCo
 /**
  * @immutable
  */
-class ImmutableClassPublicProperty
+class ImmutableClassPublicPropertyUselessVar
 {
     public string $config;
 
