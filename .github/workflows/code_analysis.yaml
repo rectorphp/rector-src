@@ -43,7 +43,13 @@ jobs:
 
                     -
                         name: 'Active Classes'
-                        run: vendor/bin/class-leak check bin config src rules packages --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" --skip-type="Rector\\Core\\Contract\\Processor\\FileProcessorInterface" --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface"
+                        run: |
+                            vendor/bin/class-leak check bin config src rules packages \
+                                --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" \
+                                --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" \
+                                --skip-type="Rector\\Core\\Contract\\Processor\\FileProcessorInterface" \
+                                --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface" \
+                                --skip-type="Rector\\BetterPhpDocParser\\ValueObject\\Type\\FullyQualifiedIdentifierTypeNode"
 
                     -
                         name: 'Compatible PHPStan versions'
