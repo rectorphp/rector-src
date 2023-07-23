@@ -19,6 +19,7 @@ use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\Guard\PropertyTypeOverrideGuard;
@@ -38,7 +39,8 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer
     ) {
     }
 
@@ -179,22 +181,12 @@ CODE_SAMPLE
             ->yes();
     }
 
-    private function isDoctrineCollectionType(Type $type): bool
-    {
-        if (! $type instanceof ObjectType) {
-            return false;
-        }
-
-        return $type->isInstanceOf('Doctrine\Common\Collections\Collection')
-            ->yes();
-    }
-
     private function shouldSkipPropertyType(Type $propertyType): bool
     {
         if ($propertyType instanceof MixedType) {
             return true;
         }
 
-        return $this->isDoctrineCollectionType($propertyType);
+        return $this->doctrineTypeAnalyzer->isDoctrineCollectionType($propertyType);
     }
 }
