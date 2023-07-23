@@ -27,6 +27,7 @@ use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\Guard\PropertyTypeOverrideGuard;
+use Rector\TypeDeclaration\TypeAnalyzer\PropertyTypeDefaultValueAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -43,7 +44,8 @@ final class TypedPropertyFromStrictConstructorReadonlyClassRector extends Abstra
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer
+        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
+        private readonly PropertyTypeDefaultValueAnalyzer $propertyTypeDefaultValueAnalyzer
     ) {
     }
 
@@ -142,7 +144,7 @@ CODE_SAMPLE
                 $hasChanged = true;
             }
 
-            if ($this->doesConflictWithDefaultValue($propertyProperty, $propertyType)) {
+            if ($this->propertyTypeDefaultValueAnalyzer->doesConflictWithDefaultValue($propertyProperty, $propertyType)) {
                 continue;
             }
 
@@ -162,20 +164,6 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::TYPED_PROPERTIES;
-    }
-
-    private function doesConflictWithDefaultValue(PropertyProperty $propertyProperty, Type $propertyType): bool
-    {
-        if (! $propertyProperty->default instanceof Expr) {
-            return false;
-        }
-
-        // the defaults can be in conflict
-        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($propertyProperty->default);
-
-        // type is not matching, skip it
-        return ! $defaultType->isSuperTypeOf($propertyType)
-            ->yes();
     }
 
     private function shouldSkipProperty(Property $property, Type $propertyType, ClassReflection $classReflection, Scope $scope): bool
