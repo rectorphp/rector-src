@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictCo
 
 final class SkipDefaultFalseInParam
 {
-    private $someString = false;
+    public $someString = false;
 
     public function __construct(string $someString)
     {
