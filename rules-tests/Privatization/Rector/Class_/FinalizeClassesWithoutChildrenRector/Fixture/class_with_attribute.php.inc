@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
+namespace Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector\Fixture;
 
 #[SomeAttribute]
 class ClassWithAttribute
@@ -11,7 +11,7 @@ class ClassWithAttribute
 -----
 <?php
 
-namespace Rector\Tests\Php82\Rector\Class_\ReadOnlyClassRector\Fixture;
+namespace Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector\Fixture;
 
 #[SomeAttribute]
 final class ClassWithAttribute
