@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -118,20 +119,11 @@ CODE_SAMPLE
                 $constructClassMethod
             );
 
-            if ($this->shouldSkipPropertyType($propertyType)) {
+            if ($this->shouldSkipProperty($property, $propertyType, $classReflection, $scope)) {
                 continue;
             }
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-
-            // public property can be anything
-            if ($this->shouldSkipPublicProperty($property, $classReflection, $scope)) {
-                // we can't judge about non-readonly properties, therefore only infer a weaker phpdoc type
-                $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
-                $hasChanged = true;
-
-                continue;
-            }
 
             $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                 $propertyType,
@@ -195,31 +187,32 @@ CODE_SAMPLE
             ->yes();
     }
 
-    private function shouldSkipPropertyType(Type $propertyType): bool
+    private function shouldSkipProperty(Property $property, Type $propertyType, ClassReflection $classReflection, Scope $scope): bool
     {
+        if (!$property->isPublic()) {
+            return true;
+        }
+
         if ($propertyType instanceof MixedType) {
             return true;
         }
 
-        return $this->isDoctrineCollectionType($propertyType);
-    }
+        if ($this->isDoctrineCollectionType($propertyType)) {
+            return true;
+        }
 
-    private function shouldSkipPublicProperty(Node\Stmt\Property $property, ClassReflection $classReflection, Scope $scope): bool
-    {
-        if ($property->isPublic()) {
-            $isReadOnlyByPhpdoc = false;
-            $propertyName = $this->nodeNameResolver->getName($property);
-            if ($classReflection->hasProperty($propertyName)) {
-                $propertyReflection = $classReflection->getProperty($propertyName, $scope);
+        $isReadOnlyByPhpdoc = false;
+        $propertyName = $this->nodeNameResolver->getName($property);
+        if ($classReflection->hasProperty($propertyName)) {
+            $propertyReflection = $classReflection->getProperty($propertyName, $scope);
 
-                if ($propertyReflection instanceof PhpPropertyReflection) {
-                    $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
-                }
+            if ($propertyReflection instanceof PhpPropertyReflection) {
+                $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
             }
+        }
 
-            if (!$isReadOnlyByPhpdoc) {
-                return true;
-            }
+        if (!$isReadOnlyByPhpdoc) {
+            return true;
         }
 
         return false;
