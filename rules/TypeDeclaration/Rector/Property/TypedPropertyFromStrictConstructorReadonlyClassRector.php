@@ -5,19 +5,14 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
@@ -51,7 +46,9 @@ final class TypedPropertyFromStrictConstructorReadonlyClassRector extends Abstra
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add typed public properties based only on strict constructor types in readonly classes', [
+        return new RuleDefinition(
+            'Add typed public properties based only on strict constructor types in readonly classes',
+            [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 /**
@@ -84,6 +81,7 @@ class SomeObject
 }
 CODE_SAMPLE
             ),
+        
         ]);
     }
 
@@ -144,7 +142,10 @@ CODE_SAMPLE
                 $hasChanged = true;
             }
 
-            if ($this->propertyTypeDefaultValueAnalyzer->doesConflictWithDefaultValue($propertyProperty, $propertyType)) {
+            if ($this->propertyTypeDefaultValueAnalyzer->doesConflictWithDefaultValue(
+                $propertyProperty,
+                $propertyType
+            )) {
                 continue;
             }
 
@@ -166,9 +167,13 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function shouldSkipProperty(Property $property, Type $propertyType, ClassReflection $classReflection, Scope $scope): bool
-    {
-        if (!$property->isPublic()) {
+    private function shouldSkipProperty(
+        Property $property,
+        Type $propertyType,
+        ClassReflection $classReflection,
+        Scope $scope
+    ): bool {
+        if (! $property->isPublic()) {
             return true;
         }
 
@@ -190,7 +195,7 @@ CODE_SAMPLE
             }
         }
 
-        if (!$isReadOnlyByPhpdoc) {
+        if (! $isReadOnlyByPhpdoc) {
             return true;
         }
 

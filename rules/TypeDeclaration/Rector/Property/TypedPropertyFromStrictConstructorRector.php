@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Property;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
@@ -142,7 +139,10 @@ CODE_SAMPLE
                 $hasChanged = true;
             }
 
-            if ($this->propertyTypeDefaultValueAnalyzer->doesConflictWithDefaultValue($propertyProperty, $propertyType)) {
+            if ($this->propertyTypeDefaultValueAnalyzer->doesConflictWithDefaultValue(
+                $propertyProperty,
+                $propertyType
+            )) {
                 continue;
             }
 

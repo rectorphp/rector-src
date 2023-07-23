@@ -9,11 +9,12 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class PropertyTypeDefaultValueAnalyzer {
+final class PropertyTypeDefaultValueAnalyzer
+{
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper
-    )
-    {}
+    ) {
+    }
 
     public function doesConflictWithDefaultValue(PropertyProperty $propertyProperty, Type $propertyType): bool
     {
