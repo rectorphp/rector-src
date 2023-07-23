@@ -20,7 +20,7 @@ use Closure;
 
 final class VarClosureAnnotationMissingNullPreferPrepend
 {
-    /** @var null|Closure(string, int, Closure(float): int): string */
+    /** @var null|\Closure(string, int, \Closure(float): int): string */
     private ?Closure $tooltipGenerator = null;
 }
 
