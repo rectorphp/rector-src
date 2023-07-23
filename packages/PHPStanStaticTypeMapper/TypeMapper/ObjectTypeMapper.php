@@ -41,6 +41,10 @@ final class ObjectTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
+        if ($type instanceof FullyQualifiedObjectType && ! str_starts_with($type->getClassName(), '\\')) {
+            return new IdentifierTypeNode('\\' . $type->getClassName());
+        }
+
         return $type->toPhpDocNode();
     }
 
