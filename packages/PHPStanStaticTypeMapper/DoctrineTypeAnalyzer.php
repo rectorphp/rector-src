@@ -46,7 +46,7 @@ final class DoctrineTypeAnalyzer
         return $type->getClassName() === 'Doctrine\Common\Collections\Collection';
     }
 
-    public function isDoctrineCollectionType(Type $type): bool
+    public function isInstanceOfCollectionType(Type $type): bool
     {
         if (! $type instanceof ObjectType) {
             return false;

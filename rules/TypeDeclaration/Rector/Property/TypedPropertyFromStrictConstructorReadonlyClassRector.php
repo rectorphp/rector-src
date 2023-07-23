@@ -176,7 +176,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->doctrineTypeAnalyzer->isDoctrineCollectionType($propertyType)) {
+        if ($this->doctrineTypeAnalyzer->isInstanceOfCollectionType($propertyType)) {
             return true;
         }
 
