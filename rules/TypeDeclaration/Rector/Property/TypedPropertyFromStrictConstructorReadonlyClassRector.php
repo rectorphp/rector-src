@@ -194,6 +194,7 @@ CODE_SAMPLE
                 $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
             }
         }
+
         return ! $isReadOnlyByPhpdoc;
     }
 }
