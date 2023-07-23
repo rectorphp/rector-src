@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -20,7 +19,6 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
@@ -32,13 +30,6 @@ use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
  */
 final class StaticTypeMapper
 {
-    /**
-     * @var array<string, string>
-     */
-    private const STANDALONE_MAPS = [
-        'false' => 'bool',
-    ];
-
     public function __construct(
         private readonly NameScopeFactory $nameScopeFactory,
         private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
@@ -59,28 +50,7 @@ final class StaticTypeMapper
      */
     public function mapPHPStanTypeToPhpParserNode(Type $phpStanType, string $typeKind): ?Node
     {
-        $node = $this->phpStanStaticTypeMapper->mapToPhpParserNode($phpStanType, $typeKind);
-        if (! $node instanceof Node) {
-            return null;
-        }
-
-        if ($node instanceof UnionType) {
-            return $node;
-        }
-
-        if (! $node instanceof Name) {
-            return $node;
-        }
-
-        $nodeName = $this->nodeNameResolver->getName($node);
-
-        foreach (self::STANDALONE_MAPS as $key => $type) {
-            if ($nodeName === $key) {
-                return new Name($type);
-            }
-        }
-
-        return $node;
+        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($phpStanType, $typeKind);
     }
 
     public function mapPhpParserNodePHPStanType(Node $node): Type
