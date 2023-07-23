@@ -2,12 +2,10 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
-use Closure;
-
-final class VarClosureAnnotationMissingNullPreferPrepend
+final class FqcnVarClosureVarAnnotationMissingNull
 {
-    /** @var Closure(string, int, Closure(float):int):string */
-    private ?Closure $tooltipGenerator = null;
+    /** @var \Closure(string, int, \Closure(float):int):string */
+    private ?\Closure $tooltipGenerator = null;
 }
 
 ?>
@@ -16,12 +14,10 @@ final class VarClosureAnnotationMissingNullPreferPrepend
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector\Fixture;
 
-use Closure;
-
-final class VarClosureAnnotationMissingNullPreferPrepend
+final class FqcnVarClosureVarAnnotationMissingNull
 {
     /** @var null|\Closure(string, int, \Closure(float): int): string */
-    private ?Closure $tooltipGenerator = null;
+    private ?\Closure $tooltipGenerator = null;
 }
 
 ?>

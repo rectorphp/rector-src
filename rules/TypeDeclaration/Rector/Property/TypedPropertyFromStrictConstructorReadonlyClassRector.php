@@ -195,10 +195,6 @@ CODE_SAMPLE
             }
         }
 
-        if (! $isReadOnlyByPhpdoc) {
-            return true;
-        }
-
-        return false;
+        return ! $isReadOnlyByPhpdoc;
     }
 }
