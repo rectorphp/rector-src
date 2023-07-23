@@ -64,7 +64,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
         if ($type instanceof FullyQualifiedObjectType) {
             $className = $type->getClassName();
 
-            if (str_starts_with((string) $className, '\\')) {
+            if (str_starts_with($className, '\\')) {
                 // skip leading \
                 return new FullyQualified(Strings::substring($className, 1));
             }
