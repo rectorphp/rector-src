@@ -49,7 +49,7 @@ jobs:
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" \
                                 --skip-type="Rector\\Core\\Contract\\Processor\\FileProcessorInterface"
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface"
-                                --skip-type="Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode"
+                                --skip-type="Rector\\BetterPhpDocParser\\ValueObject\\Type\\FullyQualifiedIdentifierTypeNode"
 
                     -
                         name: 'Compatible PHPStan versions'
