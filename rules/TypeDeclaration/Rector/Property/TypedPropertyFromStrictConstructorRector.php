@@ -9,15 +9,12 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\PropertyProperty;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -33,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\TypedPropertyFromStrictConstructorRectorTest
  */
-final class TypedPropertyFromStrictConstructorRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class TypedPropertyFromStrictConstructorRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer,
@@ -88,20 +85,25 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
-        if (! $constructClassMethod instanceof ClassMethod || $node->getProperties() === []) {
-            return null;
-        }
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
+        if (! $constructClassMethod instanceof ClassMethod) {
             return null;
         }
 
         $hasChanged = false;
+        $classReflection = null;
+
         foreach ($node->getProperties() as $property) {
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                return null;
+            }
+
             if (! $this->propertyTypeOverrideGuard->isLegal($property, $classReflection)) {
                 continue;
             }
@@ -119,11 +121,9 @@ CODE_SAMPLE
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
 
             // public property can be anything
-            if ($this->shouldSkipPublicProperty($property, $classReflection, $scope)) {
-                // we can't judge about non-readonly properties, therefore only infer a weaker phpdoc type
+            if ($property->isPublic()) {
                 $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
                 $hasChanged = true;
-
                 continue;
             }
 
@@ -196,26 +196,5 @@ CODE_SAMPLE
         }
 
         return $this->isDoctrineCollectionType($propertyType);
-    }
-
-    private function shouldSkipPublicProperty(Node\Stmt\Property $property, ClassReflection $classReflection, Scope $scope): bool
-    {
-        if ($property->isPublic()) {
-            $isReadOnlyByPhpdoc = false;
-            $propertyName = $this->nodeNameResolver->getName($property);
-            if ($classReflection->hasProperty($propertyName)) {
-                $propertyReflection = $classReflection->getProperty($propertyName, $scope);
-
-                if ($propertyReflection instanceof PhpPropertyReflection) {
-                    $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
-                }
-            }
-
-            if (!$isReadOnlyByPhpdoc) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
