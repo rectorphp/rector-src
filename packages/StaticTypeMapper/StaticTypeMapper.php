@@ -18,7 +18,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
@@ -34,8 +33,7 @@ final class StaticTypeMapper
         private readonly NameScopeFactory $nameScopeFactory,
         private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
         private readonly PhpDocTypeMapper $phpDocTypeMapper,
-        private readonly PhpParserNodeMapper $phpParserNodeMapper,
-        private readonly NodeNameResolver $nodeNameResolver
+        private readonly PhpParserNodeMapper $phpParserNodeMapper
     ) {
     }
 
