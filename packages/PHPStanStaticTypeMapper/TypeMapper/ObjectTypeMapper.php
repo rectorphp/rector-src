@@ -45,28 +45,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        if ($type instanceof ShortenedObjectType) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
-
-        if ($type instanceof AliasedObjectType) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
-
-        if ($type instanceof GenericObjectType) {
-            return $this->mapGenericObjectType($type);
-        }
-
-        if ($type instanceof NonExistingObjectType) {
-            // possibly generic type
-            return new IdentifierTypeNode($type->getClassName());
-        }
-
-        if ($type instanceof FullyQualifiedObjectType && str_starts_with($type->getClassName(), '\\')) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
-
-        return new IdentifierTypeNode('\\' . $type->getClassName());
+        return $type->toPhpDocNode();
     }
 
     /**
