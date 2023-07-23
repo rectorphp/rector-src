@@ -16,7 +16,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNul
 
 final class FqcnVarClosureVarAnnotationMissingNull
 {
-    /** @var null|\Closure(string, int, \Closure(float):int):string */
+    /** @var null|\Closure(string, int, \Closure(float): int): string */
     private ?Closure $tooltipGenerator = null;
 }
 
