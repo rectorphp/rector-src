@@ -15,6 +15,7 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeWithClassName;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
@@ -41,7 +42,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        if ($type instanceof FullyQualifiedObjectType && ! str_starts_with($type->getClassName(), '\\')) {
+        if ($type instanceof TypeWithClassName && ! str_starts_with($type->getClassName(), '\\')) {
             return new IdentifierTypeNode('\\' . $type->getClassName());
         }
 
