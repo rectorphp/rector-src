@@ -18,6 +18,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Core\Exception\NotImplementedYetException;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
