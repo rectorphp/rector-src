@@ -8,13 +8,17 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -30,14 +34,13 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\TypedPropertyFromStrictConstructorRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorReadonlyClassRector\TypedPropertyFromStrictConstructorReadonlyClassRectorTest
  */
-final class TypedPropertyFromStrictConstructorRector extends AbstractRector implements MinPhpVersionInterface
+final class TypedPropertyFromStrictConstructorReadonlyClassRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer,
         private readonly VarTagRemover $varTagRemover,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
         private readonly ReflectionResolver $reflectionResolver,
@@ -48,12 +51,15 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add typed properties based only on strict constructor types', [
+        return new RuleDefinition('Add typed public properties based only on strict constructor types in readonly classes', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
+/**
+ * @immutable
+ */
 class SomeObject
 {
-    private $name;
+    public $name;
 
     public function __construct(string $name)
     {
@@ -64,9 +70,12 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
+/**
+ * @immutable
+ */
 class SomeObject
 {
-    private string $name;
+    public string $name;
 
     public function __construct(string $name)
     {
@@ -89,7 +98,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         $constructClassMethod = $node->getMethod(MethodName::CONSTRUCT);
         if (! $constructClassMethod instanceof ClassMethod || $node->getProperties() === []) {
@@ -113,18 +122,11 @@ CODE_SAMPLE
                 $constructClassMethod
             );
 
-            if ($this->shouldSkipPropertyType($propertyType)) {
+            if ($this->shouldSkipProperty($property, $propertyType, $classReflection, $scope)) {
                 continue;
             }
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-
-            // public property can be anything
-            if ($property->isPublic()) {
-                $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
-                $hasChanged = true;
-                continue;
-            }
 
             $propertyTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
                 $propertyType,
@@ -164,12 +166,34 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function shouldSkipPropertyType(Type $propertyType): bool
+    private function shouldSkipProperty(Property $property, Type $propertyType, ClassReflection $classReflection, Scope $scope): bool
     {
+        if (!$property->isPublic()) {
+            return true;
+        }
+
         if ($propertyType instanceof MixedType) {
             return true;
         }
 
-        return $this->doctrineTypeAnalyzer->isInstanceOfCollectionType($propertyType);
+        if ($this->doctrineTypeAnalyzer->isInstanceOfCollectionType($propertyType)) {
+            return true;
+        }
+
+        $isReadOnlyByPhpdoc = false;
+        $propertyName = $this->nodeNameResolver->getName($property);
+        if ($classReflection->hasProperty($propertyName)) {
+            $propertyReflection = $classReflection->getProperty($propertyName, $scope);
+
+            if ($propertyReflection instanceof PhpPropertyReflection) {
+                $isReadOnlyByPhpdoc = $propertyReflection->isReadOnlyByPhpDoc();
+            }
+        }
+
+        if (!$isReadOnlyByPhpdoc) {
+            return true;
+        }
+
+        return false;
     }
 }
