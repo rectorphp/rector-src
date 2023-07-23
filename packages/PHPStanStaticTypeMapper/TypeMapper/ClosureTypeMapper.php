@@ -37,15 +37,13 @@ final class ClosureTypeMapper implements TypeMapperInterface
         $typeNode = $type->toPhpDocNode();
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($typeNode, '', function (AstNode $astNode) {
+        $phpDocNodeTraverser->traverseWithCallable($typeNode, '', static function (AstNode $astNode) : ?FullyQualifiedIdentifierTypeNode {
             if (! $astNode instanceof IdentifierTypeNode) {
                 return null;
             }
-
             if ($astNode->name !== 'Closure') {
                 return null;
             }
-
             $astNode = new FullyQualifiedIdentifierTypeNode('Closure');
             return $astNode;
         });
