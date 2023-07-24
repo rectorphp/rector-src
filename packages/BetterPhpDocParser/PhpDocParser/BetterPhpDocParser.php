@@ -54,10 +54,8 @@ final class BetterPhpDocParser extends PhpDocParser
             // parseDoctrineAnnotations
             false,
             // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
-            // should be can used for
-            // @param int $a
-            //     paramA description
-            true
+            // @todo: make it true to allow next doc line text as part of current docblock
+            false
         );
     }
 
