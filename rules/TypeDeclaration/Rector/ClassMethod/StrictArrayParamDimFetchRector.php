@@ -106,21 +106,9 @@ CODE_SAMPLE
             $paramName,
             &$isParamAccessedArrayDimFetch,
         ): int|null {
-            if ($node instanceof FuncCall && $this->isNames(
-                $node,
-                ['is_array', 'is_string', 'is_int', 'is_bool', 'is_float']
-            )) {
-                $firstArg = $node->getArgs()[0];
-                if ($this->isName($firstArg->value, $paramName)) {
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-            }
-
-            if ($node instanceof Coalesce && $node->left instanceof Variable && $this->isName($node->left, $paramName)) {
-                return NodeTraverser::STOP_TRAVERSAL;
-            }
-
-            if ($node instanceof AssignOpCoalesce && $node->var instanceof Variable && $this->isName($node->var, $paramName)) {
+            if ($this->shouldStop($node, $paramName)) {
+                // force set to false to avoid too early replaced
+                $isParamAccessedArrayDimFetch = false;
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
@@ -141,5 +129,22 @@ CODE_SAMPLE
         });
 
         return $isParamAccessedArrayDimFetch;
+    }
+
+    private function shouldStop(Node $node, string $paramName): bool
+    {
+        if ($node instanceof FuncCall
+            && ! $node->isFirstClassCallable()
+            && $this->isNames($node, ['is_array', 'is_string', 'is_int', 'is_bool', 'is_float'])) {
+
+            $firstArg = $node->getArgs()[0];
+            return $firstArg->value instanceof Variable && $this->isName($firstArg->value, $paramName);
+        }
+
+        if ($node instanceof Coalesce && $node->left instanceof Variable && $this->isName($node->left, $paramName)) {
+            return true;
+        }
+
+        return $node instanceof AssignOpCoalesce && $node->var instanceof Variable && $this->isName($node->var, $paramName);
     }
 }
