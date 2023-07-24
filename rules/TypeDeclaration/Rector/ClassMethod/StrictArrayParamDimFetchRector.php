@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
@@ -100,10 +101,12 @@ CODE_SAMPLE
         $paramName = $this->getName($param);
 
         $isParamAccessedArrayDimFetch = false;
+        $coalesceVariableNames = [];
 
         $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
             $paramName,
-            &$isParamAccessedArrayDimFetch
+            &$isParamAccessedArrayDimFetch,
+            &$coalesceVariableNames
         ): int|null {
             if ($node instanceof FuncCall && $this->isNames(
                 $node,
@@ -115,6 +118,11 @@ CODE_SAMPLE
                 }
             }
 
+            if ($node instanceof Coalesce && $node->left instanceof Variable) {
+                $coalesceVariableNames[] = (string) $this->getName($node->left);
+                return null;
+            }
+
             if (! $node instanceof ArrayDimFetch) {
                 return null;
             }
@@ -124,6 +132,10 @@ CODE_SAMPLE
             }
 
             if (! $this->isName($node->var, $paramName)) {
+                return null;
+            }
+
+            if (in_array($node->var->name, $coalesceVariableNames, true)) {
                 return null;
             }
 
