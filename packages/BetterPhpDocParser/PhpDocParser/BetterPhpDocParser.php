@@ -40,7 +40,23 @@ final class BetterPhpDocParser extends PhpDocParser
         private readonly iterable $phpDocNodeDecorators,
         private readonly PrivatesAccessor $privatesAccessor = new PrivatesAccessor(),
     ) {
-        parent::__construct($typeParser, $constExprParser);
+        parent::__construct(
+            // TypeParser
+            $typeParser,
+            // ConstExprParser
+            $constExprParser,
+            // requireWhitespaceBeforeDescription
+            false,
+            // preserveTypeAliasesWithInvalidTypes
+            false,
+            // usedAttributes
+            ['lines' => true, 'indexes' => true],
+            // parseDoctrineAnnotations
+            false,
+            // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
+            // @todo: make it true to allow next doc line text as part of current docblock
+            false
+        );
     }
 
     public function parse(TokenIterator $tokenIterator): PhpDocNode

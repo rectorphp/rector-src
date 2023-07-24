@@ -262,8 +262,10 @@ return static function (RectorConfig $rectorConfig): void {
     $services->alias(PhpDocParser::class, BetterPhpDocParser::class);
 
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
-    $services->set(TypeParser::class);
-    $services->set(ConstExprParser::class);
+    $services->set(TypeParser::class)
+        ->arg('$usedAttributes', ['lines' => true, 'indexes' => true]);
+    $services->set(ConstExprParser::class)
+        ->arg('$usedAttributes', ['lines' => true, 'indexes' => true]);
 
     // tagged services
     $services->set(PhpDocNodeMapper::class)
