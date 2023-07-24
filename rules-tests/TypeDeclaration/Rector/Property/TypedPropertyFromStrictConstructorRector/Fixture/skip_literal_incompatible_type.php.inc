@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Fixture;
 
-final class SkipLiteralStringType
+final class SkipLiteralIncompatibleType
 {
     /**
      * @var string
@@ -11,6 +11,6 @@ final class SkipLiteralStringType
 
     public function __construct()
     {
-        $this->due_date = '';
+        $this->due_date = true;
     }
 }
