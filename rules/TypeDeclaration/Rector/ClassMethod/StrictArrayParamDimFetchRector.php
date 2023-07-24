@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
@@ -120,6 +121,11 @@ CODE_SAMPLE
 
             if ($node instanceof Coalesce && $node->left instanceof Variable) {
                 $coalesceVariableNames[] = (string) $this->getName($node->left);
+                return null;
+            }
+
+            if ($node instanceof AssignOpCoalesce && $node->var instanceof Variable) {
+                $coalesceVariableNames[] = (string) $this->getName($node->var);
                 return null;
             }
 
