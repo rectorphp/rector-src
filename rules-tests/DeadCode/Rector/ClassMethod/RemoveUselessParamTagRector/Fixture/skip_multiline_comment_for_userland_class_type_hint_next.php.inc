@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
 
-final class SkipMultilineCommentForUserlandClassTypeHintNext
+final class MultilineCommentForUserlandClassTypeHintNext
 {
     /**
      * @param string $primitiveValue
