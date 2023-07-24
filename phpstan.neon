@@ -661,3 +661,19 @@ parameters:
 
         # deprecated
         - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\ClassMethod\\ArrayShapeFromConstantArrayReturnRector#'
+
+        -
+            message: '#Public method "AutoloadIncluder\:\:.*\(\)" is never used#'
+            path: bin/rector.php
+
+        -
+            message: '#Public method "Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:provide\(\)" is never used#'
+            path: src/Bootstrap/RectorConfigsResolver.php
+
+        -
+            message: '#Public method "Rector\\Core\\Console\\Style\\RectorConsoleOutputStyleFactory\:\:create\(\)" is never used#'
+            path: src/Console/Style/RectorConsoleOutputStyleFactory.php
+
+        -
+            message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
+            path: src/DependencyInjection/RectorContainerFactory.php
