@@ -102,12 +102,9 @@ CODE_SAMPLE
         $paramName = $this->getName($param);
 
         $isParamAccessedArrayDimFetch = false;
-        $coalesceVariableNames = [];
-
         $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
             $paramName,
             &$isParamAccessedArrayDimFetch,
-            &$coalesceVariableNames
         ): int|null {
             if ($node instanceof FuncCall && $this->isNames(
                 $node,
@@ -119,14 +116,12 @@ CODE_SAMPLE
                 }
             }
 
-            if ($node instanceof Coalesce && $node->left instanceof Variable) {
-                $coalesceVariableNames[] = (string) $this->getName($node->left);
-                return null;
+            if ($node instanceof Coalesce && $node->left instanceof Variable && $this->isName($node->left, $paramName)) {
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            if ($node instanceof AssignOpCoalesce && $node->var instanceof Variable) {
-                $coalesceVariableNames[] = (string) $this->getName($node->var);
-                return null;
+            if ($node instanceof AssignOpCoalesce && $node->var instanceof Variable && $this->isName($node->var, $paramName)) {
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             if (! $node instanceof ArrayDimFetch) {
@@ -138,10 +133,6 @@ CODE_SAMPLE
             }
 
             if (! $this->isName($node->var, $paramName)) {
-                return null;
-            }
-
-            if (in_array($node->var->name, $coalesceVariableNames, true)) {
                 return null;
             }
 
