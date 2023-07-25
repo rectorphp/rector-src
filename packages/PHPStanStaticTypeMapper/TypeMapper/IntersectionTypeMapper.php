@@ -7,6 +7,8 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PHPStan\PhpDocParser\Ast\Node as AstNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
@@ -16,6 +18,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -61,7 +64,23 @@ final class IntersectionTypeMapper implements TypeMapperInterface
             return $traverse($type);
         });
 
-        return $type->toPhpDocNode();
+        $typeNode = $type->toPhpDocNode();
+
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $phpDocNodeTraverser->traverseWithCallable(
+            $typeNode,
+            '',
+            static function (AstNode $astNode) {
+                if ($astNode instanceof IdentifierTypeNode) {
+                    $astNode->name = '\\' . $astNode->name;
+                    return $astNode;
+                }
+
+                return null;
+            }
+        );
+
+        return $typeNode;
     }
 
     /**
