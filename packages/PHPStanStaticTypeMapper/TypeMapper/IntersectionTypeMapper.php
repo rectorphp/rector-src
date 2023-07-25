@@ -15,7 +15,6 @@ use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeTraverser;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
@@ -32,8 +31,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ObjectTypeMapper $objectTypeMapper
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -62,7 +60,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         $phpDocNodeTraverser->traverseWithCallable(
             $typeNode,
             '',
-            static function (AstNode $astNode) {
+            static function (AstNode $astNode): ?IdentifierTypeNode {
                 if ($astNode instanceof IdentifierTypeNode) {
                     $astNode->name = '\\' . $astNode->name;
                     return $astNode;
