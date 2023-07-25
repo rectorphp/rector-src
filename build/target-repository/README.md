@@ -155,11 +155,9 @@ dump_node($node, 1);
 
 ## Known Drawbacks
 
-Rector uses [nikic/php-parser](https://github.com/nikic/PHP-Parser/), built on technology called an *abstract syntax tree* (AST).
-
 ### How to Apply Coding Standards?
 
-An AST doesn't know about spaces and when written to a file it produces poorly formatted code in both PHP and docblock annotations. **That's why your project needs to have a coding standard tool** and a set of formatting rules, so it can make Rector's output code nice and shiny again.
+Rector uses [nikic/php-parser](https://github.com/nikic/PHP-Parser/), built on technology called an *abstract syntax tree* (AST). An AST doesn't know about spaces and when written to a file it produces poorly formatted code in both PHP and docblock annotations. **That's why your project needs to have a coding standard tool** and a set of formatting rules, so it can make Rector's output code nice and shiny again.
 
 We're using [ECS](https://github.com/symplify/easy-coding-standard) with [this setup](https://github.com/rectorphp/rector-src/blob/main/ecs.php).
 
