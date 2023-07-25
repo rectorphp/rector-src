@@ -3,9 +3,6 @@
 declare(strict_types=1);
 
 use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
-use PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer;
-use PhpCsFixer\Fixer\FunctionNotation\StaticLambdaFixer;
-use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoEmptyReturnFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
@@ -28,31 +25,13 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/utils-tests',
         __DIR__ . '/config',
         __DIR__ . '/ecs.php',
-        __DIR__ . '/easy-ci.php',
         __DIR__ . '/rector.php',
-        __DIR__ . '/scoper.php',
         __DIR__ . '/build/build-preload.php',
     ]);
 
     $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [
         'allow_mixed' => true,
     ]);
-
-    $ecsConfig->ruleWithConfiguration(GeneralPhpdocAnnotationRemoveFixer::class, [
-        'annotations' => [
-            'throw',
-            'throws',
-            'author',
-            'authors',
-            'package',
-            'group',
-            'required',
-            'phpstan-ignore-line',
-            'phpstan-ignore-next-line',
-        ],
-    ]);
-
-    $ecsConfig->rule(StaticLambdaFixer::class);
 
     $ecsConfig->skip([
         '*/Source/*',
@@ -68,12 +47,6 @@ return static function (ECSConfig $ecsConfig): void {
 
         // breaking and handled better by Rector PHPUnit code quality set, removed in symplify dev-main
         PhpUnitStrictFixer::class,
-
-        // skip add space on &$variable
-        FunctionTypehintSpaceFixer::class => [
-            __DIR__ . '/src/PhpParser/Printer/BetterStandardPrinter.php',
-            __DIR__ . '/rules/Php70/EregToPcreTransformer.php',
-        ],
 
         AssignmentInConditionSniff::class . '.FoundInWhileCondition',
 
