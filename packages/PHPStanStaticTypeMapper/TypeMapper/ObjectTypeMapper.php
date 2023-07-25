@@ -8,30 +8,23 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements TypeMapperInterface<ObjectType>
  */
 final class ObjectTypeMapper implements TypeMapperInterface
 {
-    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
-
     /**
      * @return class-string<Type>
      */
@@ -45,28 +38,30 @@ final class ObjectTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        if ($type instanceof ShortenedObjectType) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
+        $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
+            if (! $type instanceof ObjectType) {
+                return $traverse($type);
+            }
 
-        if ($type instanceof AliasedObjectType) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
+            $typeClass = $type::class;
 
-        if ($type instanceof GenericObjectType) {
-            return $this->mapGenericObjectType($type);
-        }
+            // early native ObjectType check
+            if ($typeClass === 'PHPStan\Type\ObjectType') {
+                return new ObjectType('\\' . $type->getClassName());
+            }
 
-        if ($type instanceof NonExistingObjectType) {
-            // possibly generic type
-            return new IdentifierTypeNode($type->getClassName());
-        }
+            if ($type instanceof FullyQualifiedObjectType) {
+                return new ObjectType('\\' . $type->getClassName());
+            }
 
-        if ($type instanceof FullyQualifiedObjectType && str_starts_with($type->getClassName(), '\\')) {
-            return new IdentifierTypeNode($type->getClassName());
-        }
+            if ($type instanceof GenericObjectType) {
+                return $traverse(new GenericObjectType('\\' . $type->getClassName(), $type->getTypes()));
+            }
 
-        return new IdentifierTypeNode('\\' . $type->getClassName());
+            return $traverse($type);
+        });
+
+        return $type->toPhpDocNode();
     }
 
     /**
@@ -102,47 +97,5 @@ final class ObjectTypeMapper implements TypeMapperInterface
         }
 
         return new FullyQualified($type->getClassName());
-    }
-
-    #[Required]
-    public function autowire(PHPStanStaticTypeMapper $phpStanStaticTypeMapper): void
-    {
-        $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
-    }
-
-    private function mapGenericObjectType(GenericObjectType $genericObjectType): TypeNode
-    {
-        $name = $this->resolveGenericObjectTypeName($genericObjectType);
-        $identifierTypeNode = new IdentifierTypeNode($name);
-
-        $genericTypeNodes = [];
-        foreach ($genericObjectType->getTypes() as $key => $genericType) {
-            // mixed type on 1st item in iterator has no value
-            if ($name === 'Iterator' && $genericType instanceof MixedType && $key === 0) {
-                continue;
-            }
-
-            $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType);
-            $genericTypeNodes[] = $typeNode;
-        }
-
-        if ($genericTypeNodes === []) {
-            return $identifierTypeNode;
-        }
-
-        return new GenericTypeNode($identifierTypeNode, $genericTypeNodes);
-    }
-
-    private function resolveGenericObjectTypeName(GenericObjectType $genericObjectType): string
-    {
-        if ($genericObjectType instanceof FullyQualifiedGenericObjectType) {
-            return '\\' . $genericObjectType->getClassName();
-        }
-
-        if (\str_contains($genericObjectType->getClassName(), '\\')) {
-            return '\\' . $genericObjectType->getClassName();
-        }
-
-        return $genericObjectType->getClassName();
     }
 }
