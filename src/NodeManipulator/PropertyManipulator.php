@@ -208,7 +208,6 @@ final class PropertyManipulator
             return true;
         }
 
-        // args most likely do not change properties
         if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE)) {
             $caller = $this->resolveCaller($propertyFetch, $classMethod);
             return $this->isFoundByRefParam($caller, $scope);
