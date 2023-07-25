@@ -6,7 +6,6 @@ namespace Rector\Core\NodeManipulator;
 
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
@@ -16,10 +15,9 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
-use PHPStan\Analyser\Scope;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -34,7 +32,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyResolver;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
 /**
@@ -64,13 +61,15 @@ final class PropertyManipulator
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly ClassLikeAstResolver $classLikeAstResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
-    public function isPropertyChangeableExceptConstructor(Class_ $class, Property | Param $propertyOrParam, Scope $scope): bool
-    {
+    public function isPropertyChangeableExceptConstructor(
+        Class_ $class,
+        Property | Param $propertyOrParam,
+        Scope $scope
+    ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
 
         if ($this->hasAllowedNotReadonlyAnnotationOrAttribute($phpDocInfo, $class)) {
@@ -170,39 +169,60 @@ final class PropertyManipulator
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
     }
 
-    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch, Scope $scope, ?ClassMethod $classMethod): bool
-    {
+    private function resolveCaller(
+        PropertyFetch|StaticPropertyFetch $propertyFetch,
+        ?ClassMethod $classMethod
+    ): MethodCall | StaticCall | null {
+        if (! $classMethod instanceof ClassMethod || $classMethod->stmts === null) {
+            return null;
+        }
+
+        return $this->betterNodeFinder->findFirst(
+            $classMethod->stmts,
+            static function (Node $subNode) use ($propertyFetch): bool {
+                if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
+                    return false;
+                }
+
+                if ($subNode->isFirstClassCallable()) {
+                    return false;
+                }
+
+                foreach ($subNode->getArgs() as $arg) {
+                    if ($arg->value === $propertyFetch) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        );
+    }
+
+    private function isChangeableContext(
+        PropertyFetch | StaticPropertyFetch $propertyFetch,
+        Scope $scope,
+        ?ClassMethod $classMethod
+    ): bool {
         if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;
         }
 
         // args most likely do not change properties
-        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE) && ($classMethod instanceof ClassMethod && $classMethod->stmts !== null)) {
-            $parentArg = null;
-            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                $classMethod->stmts,
-                static function (Node $subNode) use ($propertyFetch, &$parentArg) {
-                    if ($subNode instanceof CallLike && ! $subNode->isFirstClassCallable()) {
-                        foreach ($subNode->getArgs() as $arg) {
-                            if ($arg->value === $propertyFetch) {
-                                $parentArg = $subNode;
-                                return NodeTraverser::STOP_TRAVERSAL;
-                            }
-                        }
-                    }
-                });
-            if (! $parentArg instanceof CallLike) {
-                return false;
-            }
-
-            return $this->isFoundByRefParam($parentArg, $scope);
+        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE)) {
+            $caller = $this->resolveCaller($propertyFetch, $classMethod);
+            return $this->isFoundByRefParam($caller, $scope);
         }
 
         return $propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false);
     }
 
-    private function isFoundByRefParam(MethodCall | StaticCall $node, Scope $scope): bool
+    private function isFoundByRefParam(MethodCall | StaticCall | null $node, Scope $scope): bool
     {
+        if ($node === null) {
+            return false;
+        }
+
         $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
         if ($functionLikeReflection === null) {
             return false;
