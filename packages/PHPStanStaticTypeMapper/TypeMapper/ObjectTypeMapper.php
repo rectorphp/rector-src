@@ -39,18 +39,23 @@ final class ObjectTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
+            if (! $type instanceof ObjectType) {
+                return $traverse($type);
+            }
+
             $typeClass = $type::class;
 
+            // early native ObjectType check
             if ($typeClass === 'PHPStan\Type\ObjectType') {
                 return new ObjectType('\\' . $type->getClassName());
             }
 
-            if ($typeClass === 'Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType') {
+            if ($type instanceof \Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType) {
                 return new ObjectType('\\' . $type->getClassName());
             }
 
-            if ($typeClass === 'PHPStan\Type\Generic\GenericObjectType') {
-                $type = new GenericObjectType('\\' . $type->getClassName(), $type->getTypes());
+            if ($type instanceof \PHPStan\Type\Generic\GenericObjectType) {
+                return $traverse(new GenericObjectType('\\' . $type->getClassName(), $type->getTypes()));
             }
 
             return $traverse($type);
