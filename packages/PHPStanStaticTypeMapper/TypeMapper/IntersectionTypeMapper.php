@@ -53,7 +53,7 @@ final class IntersectionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
+        $type = TypeTraverser::map($type, function (Type $type, callable $traverse): Type {
             if ($type instanceof ObjectType) {
                 return $this->objectTypeMapper->mapToPHPStanPhpDocTypeNode($type);
             }
