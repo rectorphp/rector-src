@@ -173,7 +173,7 @@ final class PropertyManipulator
         PropertyFetch|StaticPropertyFetch $propertyFetch,
         ?ClassMethod $classMethod
     ): MethodCall | StaticCall | null {
-        if (! $classMethod instanceof ClassMethod || $classMethod->stmts === null) {
+        if (! $classMethod instanceof ClassMethod) {
             return null;
         }
 
