@@ -177,8 +177,8 @@ final class PropertyManipulator
             return null;
         }
 
-        return $this->betterNodeFinder->findFirst(
-            $classMethod->stmts,
+        return $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $classMethod,
             static function (Node $subNode) use ($propertyFetch): bool {
                 if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
                     return false;
