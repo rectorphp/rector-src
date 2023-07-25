@@ -7,7 +7,7 @@ namespace Rector\Core\Autoloading;
 use Nette\Neon\Neon;
 use PHPStan\DependencyInjection\Container;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanExtensionsConfigResolver;
 use RecursiveDirectoryIterator;
@@ -27,7 +27,6 @@ final class BootstrapFilesIncluder
     private array $configCache = [];
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
     ) {
     }
@@ -49,7 +48,7 @@ final class BootstrapFilesIncluder
      */
     public function includeBootstrapFiles(): void
     {
-        $bootstrapFiles = $this->parameterProvider->provideArrayParameter(Option::BOOTSTRAP_FILES);
+        $bootstrapFiles = SimpleParameterProvider::provideArrayParameter(Option::BOOTSTRAP_FILES);
 
         Assert::allString($bootstrapFiles);
 
