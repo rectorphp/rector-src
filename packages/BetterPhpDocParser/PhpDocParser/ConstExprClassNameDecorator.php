@@ -27,6 +27,11 @@ final class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
 
     public function decorate(PhpDocNode $phpDocNode, PhpNode $phpNode): void
     {
+        // iterating all phpdocs has big overhead. peek into the phpdoc to exit early
+        if (str_contains($phpDocNode->__toString(), '::') === false) {
+            return;
+        }
+        
         $this->phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function (Node $node) use (
             $phpNode
         ): Node|null {
