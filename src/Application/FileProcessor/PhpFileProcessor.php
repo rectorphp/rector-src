@@ -22,7 +22,6 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
@@ -41,8 +40,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
-        private readonly FilePathHelper $filePathHelper,
-        private readonly SymfonyStyle $symfonyStyle
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -91,14 +89,6 @@ final class PhpFileProcessor implements FileProcessorInterface
                 $fileHasChanged = true;
             }
         } while ($fileHasChangedInCurrentPass);
-
-        // show warning on has InlineHTML node if file has changed
-        if ($fileHasChanged && $file->hasInlineHTMLNode()) {
-            $this->symfonyStyle->warning(sprintf(
-                'File %s has InlineHTML node, this may cause unexpected output, you may need to manually verify the changed file',
-                $this->filePathHelper->relativePath($file->getFilePath())
-            ));
-        }
 
         // 5. add as cacheable if not changed at all
         if (! $fileHasChanged) {
