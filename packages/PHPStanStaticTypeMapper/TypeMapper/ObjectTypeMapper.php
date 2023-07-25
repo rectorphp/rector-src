@@ -50,11 +50,11 @@ final class ObjectTypeMapper implements TypeMapperInterface
                 return new ObjectType('\\' . $type->getClassName());
             }
 
-            if ($type instanceof \Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType) {
+            if ($type instanceof FullyQualifiedObjectType) {
                 return new ObjectType('\\' . $type->getClassName());
             }
 
-            if ($type instanceof \PHPStan\Type\Generic\GenericObjectType) {
+            if ($type instanceof GenericObjectType) {
                 return $traverse(new GenericObjectType('\\' . $type->getClassName(), $type->getTypes()));
             }
 
