@@ -40,8 +40,9 @@ final class ObjectTypeMapper implements TypeMapperInterface
     {
         $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
             $typeClass = $type::class;
+
             if ($typeClass === 'PHPStan\Type\ObjectType') {
-                return new ObjectType('\\' . $type->getClassName());
+                $type = new ObjectType('\\' . $type->getClassName());
             }
 
             if ($typeClass === 'PHPStan\Type\Generic\GenericObjectType') {
