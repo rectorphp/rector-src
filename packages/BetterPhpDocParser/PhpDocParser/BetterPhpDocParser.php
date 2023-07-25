@@ -52,7 +52,7 @@ final class BetterPhpDocParser extends PhpDocParser
             // usedAttributes
             [
                 'lines' => true,
-                'indexes' => true
+                'indexes' => true,
             ],
             // parseDoctrineAnnotations
             false,
