@@ -50,7 +50,10 @@ final class BetterPhpDocParser extends PhpDocParser
             // preserveTypeAliasesWithInvalidTypes
             false,
             // usedAttributes
-            ['lines' => true, 'indexes' => true],
+            [
+                'lines' => true,
+                'indexes' => true
+            ],
             // parseDoctrineAnnotations
             false,
             // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
