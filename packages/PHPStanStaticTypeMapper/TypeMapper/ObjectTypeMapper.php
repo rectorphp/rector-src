@@ -8,19 +8,13 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PHPStan\PhpDocParser\Ast\Node as AstNode;
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
-use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
+use PHPStan\Type\TypeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
@@ -44,11 +38,18 @@ final class ObjectTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        $typeClass = $type::class;
+        $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
+            $typeClass = $type::class;
+            if ($typeClass === 'PHPStan\Type\ObjectType') {
+                return new ObjectType('\\' . $type->getClassName());
+            }
 
-        if ($type instanceof FullyQualifiedObjectType || $typeClass === 'PHPStan\Type\ObjectType') {
-            return new FullyQualifiedIdentifierTypeNode($type->getClassName());
-        }
+            if ($typeClass === 'PHPStan\Type\Generic\GenericObjectType') {
+                $type = new GenericObjectType('\\' . $type->getClassName(), $type->getTypes());
+            }
+
+            return $traverse($type);
+        });
 
         return $type->toPhpDocNode();
     }
