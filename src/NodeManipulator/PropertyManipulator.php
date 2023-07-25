@@ -194,6 +194,7 @@ final class PropertyManipulator
             if (! $parentArg instanceof CallLike) {
                 return false;
             }
+
             return $this->isFoundByRefParam($parentArg, $scope);
         }
 
