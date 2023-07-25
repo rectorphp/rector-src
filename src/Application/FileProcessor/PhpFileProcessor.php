@@ -22,7 +22,6 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
@@ -41,8 +40,7 @@ final class PhpFileProcessor implements FileProcessorInterface
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly ErrorFactory $errorFactory,
-        private readonly FilePathHelper $filePathHelper,
-        private readonly SymfonyStyle $symfonyStyle
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
