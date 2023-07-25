@@ -7,12 +7,12 @@ namespace Rector\Core\Console\Command;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use OndraM\CiDetector\CiDetector;
-use function sprintf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
+use function sprintf;
 
 final class SetupCICommand extends Command
 {

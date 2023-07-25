@@ -118,10 +118,9 @@ CODE_SAMPLE
 
             // public property can be anything
             if ($property->isPublic()) {
-                if (!$phpDocInfo->getVarType() instanceof MixedType) {
+                if (! $phpDocInfo->getVarType() instanceof MixedType) {
                     continue;
                 }
-
 
                 $this->phpDocTypeChanger->changeVarType($property, $phpDocInfo, $propertyType);
                 $hasChanged = true;

@@ -49,8 +49,8 @@ final class TypedPropertyFromStrictConstructorReadonlyClassRector extends Abstra
         return new RuleDefinition(
             'Add typed public properties based only on strict constructor types in readonly classes',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 /**
  * @immutable
  */
@@ -65,8 +65,8 @@ class SomeObject
 }
 CODE_SAMPLE
 
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 /**
  * @immutable
  */
@@ -80,9 +80,10 @@ class SomeObject
     }
 }
 CODE_SAMPLE
-            ),
-        
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**

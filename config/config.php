@@ -78,10 +78,10 @@ use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 return static function (RectorConfig $rectorConfig): void {
     // make use of https://github.com/symplify/easy-parallel
@@ -263,9 +263,15 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(\PHPStan\PhpDocParser\Lexer\Lexer::class);
     $services->set(TypeParser::class)
-        ->arg('$usedAttributes', ['lines' => true, 'indexes' => true]);
+        ->arg('$usedAttributes', [
+            'lines' => true,
+            'indexes' => true,
+        ]);
     $services->set(ConstExprParser::class)
-        ->arg('$usedAttributes', ['lines' => true, 'indexes' => true]);
+        ->arg('$usedAttributes', [
+            'lines' => true,
+            'indexes' => true,
+        ]);
 
     // tagged services
     $services->set(PhpDocNodeMapper::class)

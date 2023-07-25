@@ -10,12 +10,11 @@ use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoEmptyReturnFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
-use Symplify\CodingStandard\Fixer\LineLength\DocBlockLineLengthFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
-    $ecsConfig->sets([SetList::PSR_12, SetList::SYMPLIFY, SetList::COMMON, SetList::CLEAN_CODE]);
+    $ecsConfig->sets([SetList::SYMPLIFY, SetList::COMMON, SetList::CLEAN_CODE, SetList::PSR_12]);
 
     $ecsConfig->paths([
         __DIR__ . '/bin',
@@ -59,9 +58,6 @@ return static function (ECSConfig $ecsConfig): void {
         '*/Source/*',
         '*/Fixture/*',
         '*/Expected/*',
-
-        // buggy - @todo fix on Symplify master
-        DocBlockLineLengthFixer::class,
 
         PhpdocTypesFixer::class => [
             // double to Double false positive
