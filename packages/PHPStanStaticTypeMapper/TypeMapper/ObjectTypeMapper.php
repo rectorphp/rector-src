@@ -46,7 +46,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
             }
 
             if ($typeClass === 'PHPStan\Type\Generic\GenericObjectType') {
-                return new GenericObjectType('\\' . $type->getClassName(), $type->getTypes());
+                $type = new GenericObjectType('\\' . $type->getClassName(), $type->getTypes());
             }
 
             return $traverse($type);
