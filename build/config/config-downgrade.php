@@ -6,8 +6,6 @@ use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 
 require_once  __DIR__ . '/../target-repository/stubs-rector/PHPUnit/Framework/TestCase.php';
-require_once  __DIR__ . '/../../stubs/Composer/EventDispatcher/EventSubscriberInterface.php';
-require_once  __DIR__ . '/../../stubs/Composer/Plugin/PluginInterface.php';
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->parallel();
