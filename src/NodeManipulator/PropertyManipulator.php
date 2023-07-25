@@ -177,29 +177,24 @@ final class PropertyManipulator
         }
 
         // args most likely do not change properties
-        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE)) {
-            if ($classMethod instanceof ClassMethod && $classMethod->stmts !== null) {
-                $parentArg = null;
-
-                $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-                    $classMethod->stmts,
-                    function (Node $subNode) use ($propertyFetch, &$parentArg) {
-                        if ($subNode instanceof CallLike && ! $subNode->isFirstClassCallable()) {
-                            foreach ($subNode->getArgs() as $arg) {
-                                if ($arg->value === $propertyFetch) {
-                                    $parentArg = $subNode;
-                                    return NodeTraverser::STOP_TRAVERSAL;
-                                }
+        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE) && ($classMethod instanceof ClassMethod && $classMethod->stmts !== null)) {
+            $parentArg = null;
+            $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+                $classMethod->stmts,
+                static function (Node $subNode) use ($propertyFetch, &$parentArg) {
+                    if ($subNode instanceof CallLike && ! $subNode->isFirstClassCallable()) {
+                        foreach ($subNode->getArgs() as $arg) {
+                            if ($arg->value === $propertyFetch) {
+                                $parentArg = $subNode;
+                                return NodeTraverser::STOP_TRAVERSAL;
                             }
                         }
-                    });
-
-                if (! $parentArg instanceof CallLike) {
-                    return false;
-                }
-
-                return $this->isFoundByRefParam($parentArg, $scope);
+                    }
+                });
+            if (! $parentArg instanceof CallLike) {
+                return false;
             }
+            return $this->isFoundByRefParam($parentArg, $scope);
         }
 
         return $propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false);
