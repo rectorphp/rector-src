@@ -38,7 +38,7 @@ final class DocBlockUpdater
         }
 
         // this is needed to remove duplicated // commentsAsText
-        $node->setDocComment(new Doc($phpDoc));
+        $node->setDocComment(new Doc($this->phpDocParserPrinter->print($phpDocInfo->getPhpDocNode())));
     }
 
     public function updateRefactoredNodeWithPhpDocInfo(Node $node): void
