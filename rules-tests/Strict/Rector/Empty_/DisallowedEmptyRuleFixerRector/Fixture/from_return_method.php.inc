@@ -9,6 +9,11 @@ final class FromReturnCall
         return empty($this->getProperty());
     }
 
+    public function run2()
+    {
+        return ! empty($this->getProperty());
+    }
+
     public function getProperty(): string
     {
         return '';
@@ -26,6 +31,11 @@ final class FromReturnCall
     public function run()
     {
         return $this->getProperty() === '';
+    }
+
+    public function run2()
+    {
+        return $this->getProperty() !== '';
     }
 
     public function getProperty(): string
