@@ -1,0 +1,37 @@
+<?php
+
+namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
+
+final class FromReturnCall
+{
+    public function run()
+    {
+        return empty($this->getProperty());
+    }
+
+    public function getProperty(): string
+    {
+        return '';
+    }
+}
+
+?>
+-----
+<?php
+
+namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
+
+final class FromReturnCall
+{
+    public function run()
+    {
+        return $this->getProperty() === '';
+    }
+
+    public function getProperty(): string
+    {
+        return '';
+    }
+}
+
+?>
