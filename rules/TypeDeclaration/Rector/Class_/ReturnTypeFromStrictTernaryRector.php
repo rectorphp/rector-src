@@ -14,6 +14,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -97,6 +98,10 @@ CODE_SAMPLE
         $ternary = $return->expr;
 
         $returnScope = $return->expr->getAttribute(AttributeKey::SCOPE);
+        if ($returnScope === null) {
+            throw new ShouldNotHappenException();
+        }
+        
         $nativeTernaryType = $returnScope->getNativeType($ternary);
         if ($nativeTernaryType instanceof MixedType) {
             return null;
