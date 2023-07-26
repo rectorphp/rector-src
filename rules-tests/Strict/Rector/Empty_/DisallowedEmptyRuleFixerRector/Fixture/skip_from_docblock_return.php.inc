@@ -9,6 +9,11 @@ final class SkipFromDocblockReturn
         return empty($this->getProperty());
     }
 
+    public function run2()
+    {
+        return ! empty($this->getProperty());
+    }
+
     /**
      * @return string
      */
