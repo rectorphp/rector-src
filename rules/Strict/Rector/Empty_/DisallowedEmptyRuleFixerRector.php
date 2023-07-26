@@ -104,7 +104,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $emptyExprType = $scope->getType($empty->expr);
+        $emptyExprType = $scope->getNativeType($empty->expr);
 
         return $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $emptyExprType,
@@ -119,7 +119,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $exprType = $scope->getType($empty->expr);
+        $exprType = $scope->getNativeType($empty->expr);
         return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
     }
 
