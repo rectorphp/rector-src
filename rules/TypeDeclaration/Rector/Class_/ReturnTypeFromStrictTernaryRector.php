@@ -99,7 +99,7 @@ CODE_SAMPLE
 
         $returnScope = $return->expr->getAttribute(AttributeKey::SCOPE);
         if ($returnScope === null) {
-            throw new ShouldNotHappenException();
+            return null;
         }
 
         $nativeTernaryType = $returnScope->getNativeType($ternary);
