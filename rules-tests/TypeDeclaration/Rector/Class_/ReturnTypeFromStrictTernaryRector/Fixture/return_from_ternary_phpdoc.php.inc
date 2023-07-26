@@ -34,7 +34,7 @@ class AppointmentFromPhpdoc
         return false;
     }
 
-    public function getRent(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\Appointment
+    public function getRent(): ?\Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture\AppointmentFromPhpdoc
     {
         $rent = $this->find_one();
 
