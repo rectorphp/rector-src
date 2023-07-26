@@ -7,6 +7,7 @@ namespace Rector\Comments\NodeDocBlock;
 use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
+use PHPStan\PhpDocParser\Printer\Printer;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -14,7 +15,8 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class DocBlockUpdater
 {
     public function __construct(
-        private readonly PhpDocInfoPrinter $phpDocInfoPrinter
+        private readonly PhpDocInfoPrinter $phpDocInfoPrinter,
+        private readonly Printer $phpDocParserPrinter
     ) {
     }
 
@@ -53,7 +55,7 @@ final class DocBlockUpdater
             return;
         }
 
-        $node->setDocComment(new Doc((string) $phpDocNode));
+        $node->setDocComment(new Doc($this->phpDocParserPrinter->print($phpDocNode)));
     }
 
     private function setCommentsAttribute(Node $node): void

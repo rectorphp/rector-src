@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Composer\Semver\VersionParser;
 
 use Doctrine\Inflector\Inflector;
+
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use OndraM\CiDetector\CiDetector;
 use PhpParser\BuilderFactory;
@@ -21,6 +22,7 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\Printer\Printer;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
@@ -324,4 +326,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(AnnotationToAttributeMapper::class)
         ->arg('$annotationToAttributeMappers', tagged_iterator(AnnotationToAttributeMapperInterface::class));
+
+    $services->set(Printer::class);
 };
