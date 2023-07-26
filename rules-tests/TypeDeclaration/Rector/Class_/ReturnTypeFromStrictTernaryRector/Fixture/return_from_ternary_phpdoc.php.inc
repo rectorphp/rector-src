@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
-class Appointment
+class AppointmentFromPhpdoc
 {
     /**
      * @return false|self
@@ -25,7 +25,7 @@ class Appointment
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
-class Appointment
+class AppointmentFromPhpdoc
 {
     /**
      * @return false|self

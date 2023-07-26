@@ -101,7 +101,7 @@ CODE_SAMPLE
         if ($returnScope === null) {
             throw new ShouldNotHappenException();
         }
-        
+
         $nativeTernaryType = $returnScope->getNativeType($ternary);
         if ($nativeTernaryType instanceof MixedType) {
             return null;
