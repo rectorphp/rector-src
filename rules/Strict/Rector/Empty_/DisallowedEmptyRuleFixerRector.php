@@ -97,7 +97,7 @@ CODE_SAMPLE
 
         $empty = $booleanNot->expr;
         if ($empty->expr instanceof ArrayDimFetch) {
-            return null;
+            return $this->createDimFetchBooleanAnd($empty);
         }
 
         if ($this->exprAnalyzer->isNonTypedFromParam($empty->expr)) {
