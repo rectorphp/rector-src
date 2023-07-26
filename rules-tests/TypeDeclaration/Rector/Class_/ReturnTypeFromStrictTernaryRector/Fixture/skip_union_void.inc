@@ -1,4 +1,4 @@
--<?php
+<?php
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector\Fixture;
 
