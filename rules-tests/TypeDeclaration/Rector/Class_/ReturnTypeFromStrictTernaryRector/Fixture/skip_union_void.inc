@@ -4,10 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernary
 
 class SkipUnionVoid
 {
-    /**
-     * @return false|self
-     */
-    private function find_one() {
+    private function find_one(): self|false {
         return false;
     }
 
