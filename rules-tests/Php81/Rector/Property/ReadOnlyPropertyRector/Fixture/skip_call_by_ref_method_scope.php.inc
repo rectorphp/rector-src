@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
+
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
-namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
 final class Simulation
 {
@@ -25,8 +25,6 @@ final class Simulation
         );
     }
 }
-
-namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
 final class Composer
 {
