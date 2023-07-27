@@ -61,7 +61,8 @@ final class PropertyManipulator
 
     public function isPropertyChangeableExceptConstructor(
         Class_ $class,
-        Property | Param $propertyOrParam
+        Property | Param $propertyOrParam,
+        \PHPStan\Analyser\Scope $scope
     ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
 
@@ -69,7 +70,7 @@ final class PropertyManipulator
             return true;
         }
 
-        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam);
+        $propertyFetches = $this->propertyFetchFinder->findPrivatePropertyFetches($class, $propertyOrParam, $scope);
         $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {

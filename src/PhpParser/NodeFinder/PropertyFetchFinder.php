@@ -47,7 +47,7 @@ final class PropertyFetchFinder
     /**
      * @return array<PropertyFetch|StaticPropertyFetch>
      */
-    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam): array
+    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam, \PHPStan\Analyser\Scope $scope): array
     {
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
@@ -61,7 +61,7 @@ final class PropertyFetchFinder
         $hasTrait = $nodesTrait !== [];
         $nodes = array_merge($nodes, $nodesTrait);
 
-        return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait);
+        return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait, $scope);
     }
 
     /**
@@ -155,14 +155,14 @@ final class PropertyFetchFinder
         Class_|Trait_ $class,
         array $stmts,
         string $propertyName,
-        bool $hasTrait
+        bool $hasTrait,
+        \PHPStan\Analyser\Scope $scope
     ): array {
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->find(
             $stmts,
-            function (Node $subNode) use ($class, $hasTrait, $propertyName): bool {
+            function (Node $subNode) use ($class, $hasTrait, $propertyName, $scope): bool {
                 if ($subNode instanceof MethodCall || $subNode instanceof StaticCall) {
-                    $scope = $subNode->getAttribute(AttributeKey::SCOPE);
                     $this->decoratePropertyFetch($subNode, $scope);
                     return false;
                 }
