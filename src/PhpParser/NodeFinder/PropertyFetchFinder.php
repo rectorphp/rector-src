@@ -197,7 +197,7 @@ final class PropertyFetchFinder
         }
 
         foreach ($node->getArgs() as $key => $arg) {
-            if ($arg->value instanceof PropertyFetch || $arg->value instanceof StaticPropertyFetch && $this->isFoundByRefParam($node, $key, $scope)) {
+            if (($arg->value instanceof PropertyFetch || $arg->value instanceof StaticPropertyFetch) && $this->isFoundByRefParam($node, $key, $scope)) {
                 $arg->value->setAttribute(AttributeKey::IS_USED_AS_ARG_BY_REF_VALUE, true);
             }
         }
