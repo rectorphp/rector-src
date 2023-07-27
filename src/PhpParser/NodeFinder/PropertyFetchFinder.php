@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\PhpParser\NodeFinder;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
