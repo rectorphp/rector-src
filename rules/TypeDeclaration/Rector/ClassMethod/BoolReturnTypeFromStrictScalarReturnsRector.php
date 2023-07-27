@@ -16,6 +16,7 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -83,11 +84,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -113,7 +114,7 @@ CODE_SAMPLE
     /**
      * @param Return_[] $returns
      */
-    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_ $functionLike): bool
+    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_|Closure $functionLike): bool
     {
         if ($returns === []) {
             return false;
