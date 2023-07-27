@@ -200,9 +200,11 @@ final class PropertyFetchFinder
             if (!$arg->value instanceof PropertyFetch && !$arg->value instanceof StaticPropertyFetch) {
                 continue;
             }
+
             if (!$this->isFoundByRefParam($node, $key, $scope)) {
                 continue;
             }
+
             $arg->value->setAttribute(AttributeKey::IS_USED_AS_ARG_BY_REF_VALUE, true);
         }
     }
