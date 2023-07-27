@@ -188,31 +188,22 @@ final class UseImportsAdder
         ?string $namespaceName
     ): array {
         $newUses = [];
-        foreach ($useImportTypes as $useImportType) {
-            if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $useImportType)) {
-                continue;
+        // ["getter" => [object types]]
+        $importsMapping = [
+            'getUseNode' => $useImportTypes,
+            'getConstantUseNode' => $constantUseImportTypes,
+            'getFunctionUseNode' => $functionUseImportTypes,
+        ];
+
+        foreach ($importsMapping as $nodeGetter => $objectTypes) {
+            foreach ($objectTypes as $objectType) {
+                if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $objectType)) {
+                    continue;
+                }
+
+                // already imported in previous cycle
+                $newUses[] = $objectType->{$nodeGetter}();
             }
-
-            // already imported in previous cycle
-            $newUses[] = $useImportType->getUseNode();
-        }
-
-        foreach ($constantUseImportTypes as $constantUseImportType) {
-            if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $constantUseImportType)) {
-                continue;
-            }
-
-            // already imported in previous cycle
-            $newUses[] = $constantUseImportType->getConstantUseNode();
-        }
-
-        foreach ($functionUseImportTypes as $functionUseImportType) {
-            if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $functionUseImportType)) {
-                continue;
-            }
-
-            // already imported in previous cycle
-            $newUses[] = $functionUseImportType->getFunctionUseNode();
         }
 
         return $newUses;
