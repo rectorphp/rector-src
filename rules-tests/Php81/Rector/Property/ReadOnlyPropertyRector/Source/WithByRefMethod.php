@@ -6,7 +6,7 @@ namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Source;
 
 final class WithByRefMethod
 {
-    public function install(&$output = null)
+    public function install(&$output)
     {
     }
 }

@@ -80,7 +80,7 @@ final class PropertyManipulator
         $classMethod = $class->getMethod(MethodName::CONSTRUCT);
 
         foreach ($propertyFetches as $propertyFetch) {
-            if ($this->isChangeableContext($propertyFetch, $scope, $classMethod)) {
+            if ($this->isChangeableContext($propertyFetch)) {
                 return true;
             }
 
@@ -199,47 +199,19 @@ final class PropertyManipulator
         );
     }
 
-    private function isChangeableContext(
-        PropertyFetch | StaticPropertyFetch $propertyFetch,
-        Scope $scope,
-        ?ClassMethod $classMethod
-    ): bool {
+    private function isChangeableContext(PropertyFetch | StaticPropertyFetch $propertyFetch): bool
+    {
         if ($propertyFetch->getAttribute(AttributeKey::IS_UNSET_VAR, false)) {
             return true;
         }
 
-        if ($propertyFetch->getAttribute(AttributeKey::IS_ARG_VALUE)) {
-            $caller = $this->resolveCaller($propertyFetch, $classMethod);
-            return $this->isFoundByRefParam($caller, $scope);
+        if ($propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false)) {
+            return true;
         }
 
-        return $propertyFetch->getAttribute(AttributeKey::INSIDE_ARRAY_DIM_FETCH, false);
+        return $propertyFetch->getAttribute(AttributeKey::IS_USED_AS_ARG_BY_REF_VALUE, false) === true;
     }
 
-    private function isFoundByRefParam(MethodCall | StaticCall | null $node, Scope $scope): bool
-    {
-        if ($node === null) {
-            return false;
-        }
-
-        $functionLikeReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($node);
-        if ($functionLikeReflection === null) {
-            return false;
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionLikeReflection,
-            $node,
-            $scope
-        );
-        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-            if ($parameterReflection->passedByReference()->yes()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private function hasAllowedNotReadonlyAnnotationOrAttribute(PhpDocInfo $phpDocInfo, Class_ $class): bool
     {
