@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
+use PHPStan\Analyser\Scope;
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -62,7 +63,7 @@ final class PropertyManipulator
     public function isPropertyChangeableExceptConstructor(
         Class_ $class,
         Property | Param $propertyOrParam,
-        \PHPStan\Analyser\Scope $scope
+        Scope $scope
     ): bool {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
 

@@ -47,7 +47,7 @@ final class PropertyFetchFinder
     /**
      * @return array<PropertyFetch|StaticPropertyFetch>
      */
-    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam, \PHPStan\Analyser\Scope $scope): array
+    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam, Scope $scope): array
     {
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
@@ -156,7 +156,7 @@ final class PropertyFetchFinder
         array $stmts,
         string $propertyName,
         bool $hasTrait,
-        \PHPStan\Analyser\Scope $scope
+        Scope $scope
     ): array {
         /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
         $propertyFetches = $this->betterNodeFinder->find(
