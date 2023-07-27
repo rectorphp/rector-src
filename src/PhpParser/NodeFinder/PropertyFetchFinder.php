@@ -186,7 +186,7 @@ final class PropertyFetchFinder
         return $propertyFetches;
     }
 
-    private function decoratePropertyFetch(Node $node, ?Scope $scope): void
+    private function decoratePropertyFetch(Node $node, Scope $scope): void
     {
         if (! $node instanceof MethodCall && ! $node instanceof StaticCall) {
             return;
