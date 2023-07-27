@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\PhpParser\NodeFinder\LocalMethodCallFinder;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\CallTypesResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodParamTypeCompleter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -88,7 +89,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $method->isPrivate()) {
+            $isPrivate =
+                ($node->isFinal()
+                && $node->extends === null
+                && $method->isProtected())
+                || $method->isPrivate();
+
+            if (!$isPrivate) {
                 continue;
             }
 
