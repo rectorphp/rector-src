@@ -58,6 +58,24 @@ final class UsedImportsResolver
      * @param Stmt[] $stmts
      * @return FullyQualifiedObjectType[]
      */
+    public function resolveConstantImportsForStmts(array $stmts): array
+    {
+        $usedFunctionImports = [];
+
+        $this->useImportsTraverser->traverserStmtsForConstants($stmts, static function (
+            UseUse $useUse,
+            string $name
+        ) use (&$usedFunctionImports): void {
+            $usedFunctionImports[] = new FullyQualifiedObjectType($name);
+        });
+
+        return $usedFunctionImports;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @return FullyQualifiedObjectType[]
+     */
     public function resolveFunctionImportsForStmts(array $stmts): array
     {
         $usedFunctionImports = [];

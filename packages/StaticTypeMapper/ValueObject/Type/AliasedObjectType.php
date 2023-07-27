@@ -48,6 +48,19 @@ final class AliasedObjectType extends ObjectType
         return $this->getShortName() === $comparedObjectType->getShortName();
     }
 
+    public function getConstantUseNode(): Use_
+    {
+        $name = new Name($this->fullyQualifiedClass);
+        $name->setAttribute(AttributeKey::IS_USEUSE_NAME, true);
+
+        $useUse = new UseUse($name, $this->getClassName());
+
+        $use = new Use_([$useUse]);
+        $use->type = Use_::TYPE_CONSTANT;
+
+        return $use;
+    }
+
     public function getFunctionUseNode(): Use_
     {
         $name = new Name($this->fullyQualifiedClass);
