@@ -94,6 +94,10 @@ CODE_SAMPLE
                 && $node->extends === null
                 && $node->implements === []
                 && $method->isProtected())
+                || ($method->isFinal()
+                    && $node->extends === null
+                    && $node->implements === []
+                )
                 || $method->isPrivate();
 
             if (!$isPrivate) {
