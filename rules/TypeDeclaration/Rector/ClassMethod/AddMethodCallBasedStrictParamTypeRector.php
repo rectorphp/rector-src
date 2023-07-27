@@ -92,6 +92,7 @@ CODE_SAMPLE
             $isPrivate =
                 ($node->isFinal()
                 && $node->extends === null
+                && $node->implements === []
                 && $method->isProtected())
                 || $method->isPrivate();
 
