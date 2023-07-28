@@ -66,7 +66,7 @@ final class UsedImportsResolver
             UseUse $useUse,
             string $name
         ) use (&$usedConstImports): void {
-            $usedFunctionImports[] = new FullyQualifiedObjectType($name);
+            $usedConstImports[] = new FullyQualifiedObjectType($name);
         });
 
         return $usedFunctionImports;
