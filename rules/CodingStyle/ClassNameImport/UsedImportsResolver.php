@@ -65,7 +65,7 @@ final class UsedImportsResolver
         $this->useImportsTraverser->traverserStmtsForConstants($stmts, static function (
             UseUse $useUse,
             string $name
-        ) use (&$usedFunctionImports): void {
+        ) use (&$usedConstImports): void {
             $usedFunctionImports[] = new FullyQualifiedObjectType($name);
         });
 
