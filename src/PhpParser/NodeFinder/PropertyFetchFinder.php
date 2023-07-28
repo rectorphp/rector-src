@@ -141,10 +141,11 @@ final class PropertyFetchFinder
         }
 
         $type = $this->nodeTypeResolver->getType($expr->var);
-        return $type instanceof FullyQualifiedObjectType && $this->nodeNameResolver->isName(
-            $class,
-            $type->getClassName()
-        );
+        if ($type instanceof \PHPStan\Type\StaticType || $type instanceof FullyQualifiedObjectType) {
+            return $this->nodeNameResolver->isName($class, $type->getClassName());
+        }
+
+        return false;
     }
 
     /**
