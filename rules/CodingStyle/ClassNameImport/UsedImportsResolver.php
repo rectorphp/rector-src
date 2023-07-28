@@ -60,7 +60,7 @@ final class UsedImportsResolver
      */
     public function resolveConstantImportsForStmts(array $stmts): array
     {
-        $usedFunctionImports = [];
+        $usedConstImports = [];
 
         $this->useImportsTraverser->traverserStmtsForConstants($stmts, static function (
             UseUse $useUse,
