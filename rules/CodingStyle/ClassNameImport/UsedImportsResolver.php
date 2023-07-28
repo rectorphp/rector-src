@@ -69,7 +69,7 @@ final class UsedImportsResolver
             $usedConstImports[] = new FullyQualifiedObjectType($name);
         });
 
-        return $usedFunctionImports;
+        return $usedConstImports;
     }
 
     /**
