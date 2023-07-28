@@ -97,7 +97,7 @@ CODE_SAMPLE
         $ternary = $return->expr;
 
         $returnScope = $return->expr->getAttribute(AttributeKey::SCOPE);
-        if (!$returnScope instanceof Scope) {
+        if (! $returnScope instanceof Scope) {
             return null;
         }
 

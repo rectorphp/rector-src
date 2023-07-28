@@ -14,6 +14,7 @@ use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 final class ImportFullyQualifiedNamesRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
+    #[DataProvider('provideDataConstant')]
     #[DataProvider('provideDataFunction')]
     #[DataProvider('provideDataGeneric')]
     public function test(string $filePath): void
@@ -24,6 +25,11 @@ final class ImportFullyQualifiedNamesRectorTest extends AbstractRectorTestCase
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
+    }
+
+    public static function provideDataConstant(): Iterator
+    {
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureConstant');
     }
 
     public static function provideDataFunction(): Iterator
