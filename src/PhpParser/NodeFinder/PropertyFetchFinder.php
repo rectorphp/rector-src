@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
+use PHPStan\Type\StaticType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -141,7 +142,7 @@ final class PropertyFetchFinder
         }
 
         $type = $this->nodeTypeResolver->getType($expr->var);
-        if ($type instanceof \PHPStan\Type\StaticType || $type instanceof FullyQualifiedObjectType) {
+        if ($type instanceof StaticType || $type instanceof FullyQualifiedObjectType) {
             return $this->nodeNameResolver->isName($class, $type->getClassName());
         }
 
