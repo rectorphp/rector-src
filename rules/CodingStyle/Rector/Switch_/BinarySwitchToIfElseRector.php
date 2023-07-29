@@ -69,7 +69,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (count($node->cases) > 2) {
+        if ($node->cases === [] || count($node->cases) > 2) {
             return null;
         }
 
