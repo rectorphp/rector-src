@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeManipulator;
 
-use PHPStan\Analyser\Scope;
 use Doctrine\ORM\Mapping\Table;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -14,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -176,7 +176,6 @@ final class PropertyManipulator
 
         return $propertyFetch->getAttribute(AttributeKey::IS_USED_AS_ARG_BY_REF_VALUE, false) === true;
     }
-
 
     private function hasAllowedNotReadonlyAnnotationOrAttribute(PhpDocInfo $phpDocInfo, Class_ $class): bool
     {
