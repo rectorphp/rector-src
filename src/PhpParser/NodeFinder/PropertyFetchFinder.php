@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\PhpParser\NodeFinder;
 
-use PHPStan\Type\StaticType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -20,6 +19,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
@@ -48,8 +48,11 @@ final class PropertyFetchFinder
     /**
      * @return array<PropertyFetch|StaticPropertyFetch>
      */
-    public function findPrivatePropertyFetches(Class_ $class, Property | Param $propertyOrPromotedParam, Scope $scope): array
-    {
+    public function findPrivatePropertyFetches(
+        Class_ $class,
+        Property | Param $propertyOrPromotedParam,
+        Scope $scope
+    ): array {
         $propertyName = $this->resolvePropertyName($propertyOrPromotedParam);
         if ($propertyName === null) {
             return [];
@@ -199,11 +202,11 @@ final class PropertyFetchFinder
         }
 
         foreach ($node->getArgs() as $key => $arg) {
-            if (!$arg->value instanceof PropertyFetch && !$arg->value instanceof StaticPropertyFetch) {
+            if (! $arg->value instanceof PropertyFetch && ! $arg->value instanceof StaticPropertyFetch) {
                 continue;
             }
 
-            if (!$this->isFoundByRefParam($node, $key, $scope)) {
+            if (! $this->isFoundByRefParam($node, $key, $scope)) {
                 continue;
             }
 
