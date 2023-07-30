@@ -124,6 +124,12 @@ CODE_SAMPLE
                 return null;
             }
 
+            // skip possible strings
+            $variableType = $this->getType($node->var);
+            if ($variableType->isString()->yes()) {
+                return null;
+            }
+
             $isParamAccessedArrayDimFetch = true;
             return null;
         });
