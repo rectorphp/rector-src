@@ -604,7 +604,6 @@ parameters:
         - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
 
         # WIP
-        - '#Fetching deprecated class constant PARENT_NODE#'
         - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
@@ -639,7 +638,6 @@ parameters:
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
 
         - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
-        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
 
         # refactor in next PR
         - '#(.*?) has typehint with deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
@@ -677,3 +675,5 @@ parameters:
         -
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
+
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\StrictStringParamConcatRector\:\:isParamConcatted\(\)" is 12, keep it under 11#'
