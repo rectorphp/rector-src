@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ConditionalType;
@@ -13,6 +14,7 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Symfony\Contracts\Service\Attribute\Required;
+use PHPStan\Type\TypeTraverser;
 
 /**
  * @implements TypeMapperInterface<ConditionalType>
@@ -40,6 +42,15 @@ final class ConditionalTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
+        $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
+            if ($type instanceof \PHPStan\Type\ObjectType && $type->getClassReflection() === null) {
+                $newClassName = Strings::after($type->getClassName(), '\\', -1);
+                $type = new \PHPStan\Type\ObjectType($newClassName);
+            }
+
+            return $traverse($type);
+        });
+
         return $type->toPhpDocNode();
     }
 
