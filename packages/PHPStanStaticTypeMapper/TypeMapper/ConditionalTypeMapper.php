@@ -46,8 +46,8 @@ final class ConditionalTypeMapper implements TypeMapperInterface
     {
         $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
             if ($type instanceof ObjectType && !$type->getClassReflection() instanceof ClassReflection) {
-                $newClassName = Strings::after($type->getClassName(), '\\', -1);
-                $type = new ObjectType($newClassName);
+                $newClassName = (string) Strings::after($type->getClassName(), '\\', -1);
+                return $traverse(new ObjectType($newClassName));
             }
 
             return $traverse($type);
