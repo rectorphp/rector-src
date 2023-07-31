@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use PHPStan\Type\ObjectType;
+use PHPStan\Reflection\ClassReflection;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -43,9 +45,9 @@ final class ConditionalTypeMapper implements TypeMapperInterface
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
         $type = TypeTraverser::map($type, static function (Type $type, callable $traverse): Type {
-            if ($type instanceof \PHPStan\Type\ObjectType && $type->getClassReflection() === null) {
+            if ($type instanceof ObjectType && !$type->getClassReflection() instanceof ClassReflection) {
                 $newClassName = Strings::after($type->getClassName(), '\\', -1);
-                $type = new \PHPStan\Type\ObjectType($newClassName);
+                $type = new ObjectType($newClassName);
             }
 
             return $traverse($type);
