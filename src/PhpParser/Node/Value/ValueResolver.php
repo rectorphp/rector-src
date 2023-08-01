@@ -28,6 +28,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use TypeError;
 
 /**
  * @see \Rector\Core\Tests\PhpParser\Node\Value\ValueResolverTest
@@ -156,7 +157,7 @@ final class ValueResolver
         try {
             $constExprEvaluator = $this->getConstExprEvaluator();
             return $constExprEvaluator->evaluateDirectly($expr);
-        } catch (ConstExprEvaluationException) {
+        } catch (ConstExprEvaluationException|TypeError) {
         }
 
         return null;
