@@ -18,6 +18,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,6 +37,7 @@ final class AddParamTypeFromPropertyTypeRector extends AbstractRector implements
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly TypeFactory $typeFactory,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
     ) {
     }
 
@@ -119,6 +121,10 @@ CODE_SAMPLE
             $paramType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($possibleParamType, TypeKind::PARAM);
             if (! $paramType instanceof Node) {
                 continue;
+            }
+
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
+                return null;
             }
 
             $param->type = $paramType;
