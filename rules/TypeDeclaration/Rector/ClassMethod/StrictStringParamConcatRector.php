@@ -162,7 +162,7 @@ CODE_SAMPLE
         return $this->isName($expr, $paramName);
     }
 
-    private function resolveAssignConcatVariable(Node $node, string $paramName): ?Variable
+    private function resolveAssignConcatVariable(Node $node, string $paramName): ?Expr
     {
         if (! $node instanceof Concat) {
             return null;
@@ -179,7 +179,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function resolveBinaryConcatVariable(Node $node, string $paramName): ?Variable
+    private function resolveBinaryConcatVariable(Node $node, string $paramName): ?Expr
     {
         if (! $node instanceof Expr\BinaryOp\Concat) {
             return null;
