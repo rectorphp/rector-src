@@ -11,11 +11,15 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
+use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use Rector\Core\Rector\AbstractRector;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -82,11 +86,21 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isParamConcatted($param, $node)) {
+            $variableConcattedFromParam = $this->resolveVariableConcattedFromParam($param, $node);
+            if (! $variableConcattedFromParam instanceof Variable) {
                 continue;
             }
 
-            $param->type = new Identifier('string');
+            $nativeType = $this->nodeTypeResolver->getNativeType($variableConcattedFromParam);
+
+            if ($nativeType instanceof MixedType && $nativeType->getSubtractedType() instanceof Type && TypeCombinator::containsNull(
+                $nativeType->getSubtractedType()
+            )) {
+                $param->type = new NullableType(new Identifier('string'));
+            } else {
+                $param->type = new Identifier('string');
+            }
+
             $hasChanged = true;
         }
 
@@ -97,40 +111,46 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isParamConcatted(Param $param, ClassMethod|Function_|Closure $functionLike): bool
-    {
+    private function resolveVariableConcattedFromParam(
+        Param $param,
+        ClassMethod|Function_|Closure $functionLike
+    ): ?Variable {
         if ($functionLike->stmts === null) {
-            return false;
+            return null;
         }
 
         if ($param->default instanceof Expr && ! $this->getType($param->default)->isString()->yes()) {
-            return false;
+            return null;
         }
 
         $paramName = $this->getName($param);
-        $isParamConcatted = false;
+        $variableConcatted = null;
 
         $this->traverseNodesWithCallable($functionLike->stmts, function (Node $node) use (
             $paramName,
-            &$isParamConcatted,
+            &$variableConcatted,
         ): int|null {
             // skip nested class and function nodes
             if ($node instanceof FunctionLike || $node instanceof Class_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if ($this->isAssignConcat($node, $paramName)) {
-                $isParamConcatted = true;
+            $expr = $this->resolveAssignConcatVariable($node, $paramName);
+            if ($expr instanceof Variable) {
+                $variableConcatted = $node;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            if ($this->isBinaryConcat($node, $paramName)) {
-                $isParamConcatted = true;
+            $variableBinaryConcat = $this->resolveBinaryConcatVariable($node, $paramName);
+            if ($variableBinaryConcat instanceof Variable) {
+                $variableConcatted = $variableBinaryConcat;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             return null;
         });
 
-        return $isParamConcatted;
+        return $variableConcatted;
     }
 
     private function isVariableWithSameParam(Expr $expr, string $paramName): bool
@@ -142,29 +162,37 @@ CODE_SAMPLE
         return $this->isName($expr, $paramName);
     }
 
-    private function isAssignConcat(Node $node, string $paramName): bool
+    private function resolveAssignConcatVariable(Node $node, string $paramName): ?Expr
     {
         if (! $node instanceof Concat) {
-            return false;
+            return null;
         }
 
         if ($this->isVariableWithSameParam($node->var, $paramName)) {
-            return true;
+            return $node->var;
         }
 
-        return $this->isVariableWithSameParam($node->expr, $paramName);
+        if ($this->isVariableWithSameParam($node->expr, $paramName)) {
+            return $node->expr;
+        }
+
+        return null;
     }
 
-    private function isBinaryConcat(Node $node, string $paramName): bool
+    private function resolveBinaryConcatVariable(Node $node, string $paramName): ?Expr
     {
         if (! $node instanceof Expr\BinaryOp\Concat) {
-            return false;
+            return null;
         }
 
         if ($this->isVariableWithSameParam($node->left, $paramName)) {
-            return true;
+            return $node->left;
         }
 
-        return $this->isVariableWithSameParam($node->right, $paramName);
+        if ($this->isVariableWithSameParam($node->right, $paramName)) {
+            return $node->right;
+        }
+
+        return null;
     }
 }
