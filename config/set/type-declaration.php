@@ -30,7 +30,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRecto
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
@@ -44,7 +43,6 @@ use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-        AddClosureReturnTypeRector::class,
         AddArrowFunctionReturnTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
