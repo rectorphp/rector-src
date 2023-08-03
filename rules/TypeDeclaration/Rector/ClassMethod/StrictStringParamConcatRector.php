@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignOp\Concat;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
@@ -62,11 +63,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -96,7 +97,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isParamConcatted(Param $param, ClassMethod|Function_ $functionLike): bool
+    private function isParamConcatted(Param $param, ClassMethod|Function_|Closure $functionLike): bool
     {
         if ($functionLike->stmts === null) {
             return false;
