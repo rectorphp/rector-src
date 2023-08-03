@@ -135,8 +135,8 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            $variableAssignConcat = $this->resolveAssignConcatVariable($node, $paramName);
-            if ($variableAssignConcat instanceof Variable) {
+            $expr = $this->resolveAssignConcatVariable($node, $paramName);
+            if ($expr instanceof Variable) {
                 $variableConcatted = $node;
                 return NodeTraverser::STOP_TRAVERSAL;
             }
