@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\BinaryOp\Mul;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\BinaryOp\ShiftLeft;
 use PhpParser\Node\Expr\BinaryOp\ShiftRight;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PostDec;
 use PhpParser\Node\Expr\PostInc;
 use PhpParser\Node\Expr\PreDec;
@@ -25,7 +26,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
-use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -37,11 +37,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change numeric return type based on strict returns type operations', [
@@ -75,11 +70,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -101,7 +96,7 @@ CODE_SAMPLE
             || $return->expr instanceof PostDec
             || $return->expr instanceof PreDec
         ) {
-            $exprType = $this->getType($return->expr);
+            $exprType = $this->nodeTypeResolver->getNativeType($return->expr);
             if ($exprType instanceof IntegerType) {
                 $node->returnType = new Identifier('int');
                 return $node;
@@ -120,10 +115,6 @@ CODE_SAMPLE
             || $return->expr instanceof ShiftLeft
             || $return->expr instanceof BitwiseOr
         ) {
-            if ($this->isBinaryOpContainingNonTypedParam($return->expr)) {
-                return null;
-            }
-
             return $this->refactorBinaryOp($return->expr, $node);
         }
 
@@ -135,7 +126,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function matchRootReturnWithExpr(ClassMethod|Function_ $functionLike): ?Return_
+    private function matchRootReturnWithExpr(ClassMethod|Function_|Closure $functionLike): ?Return_
     {
         if ($functionLike->stmts === null) {
             return null;
@@ -158,10 +149,10 @@ CODE_SAMPLE
 
     private function refactorBinaryOp(
         BinaryOp $binaryOp,
-        ClassMethod|Function_ $functionLike
-    ): null|Function_|ClassMethod {
-        $leftType = $this->getType($binaryOp->left);
-        $rightType = $this->getType($binaryOp->right);
+        ClassMethod|Function_|Closure $functionLike
+    ): null|Function_|ClassMethod|Closure {
+        $leftType = $this->nodeTypeResolver->getNativeType($binaryOp->left);
+        $rightType = $this->nodeTypeResolver->getNativeType($binaryOp->right);
 
         if ($leftType instanceof IntegerType && $rightType instanceof IntegerType) {
             $functionLike->returnType = new Identifier('int');
@@ -186,14 +177,5 @@ CODE_SAMPLE
         }
 
         return null;
-    }
-
-    private function isBinaryOpContainingNonTypedParam(BinaryOp $binaryOp): bool
-    {
-        if ($this->exprAnalyzer->isNonTypedFromParam($binaryOp->left)) {
-            return true;
-        }
-
-        return $this->exprAnalyzer->isNonTypedFromParam($binaryOp->right);
     }
 }
