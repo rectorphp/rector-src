@@ -79,7 +79,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $exprType = $scope->getType($node->cond);
+        $exprType = $scope->getNativeType($node->cond);
 
         $expr = $this->exactCompareFactory->createNotIdenticalFalsyCompare(
             $exprType,
