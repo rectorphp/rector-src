@@ -103,6 +103,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($param->default instanceof Expr && ! $this->getType($param->default)->isString()->yes()) {
+            return false;
+        }
+
         $paramName = $this->getName($param);
         $isParamConcatted = false;
 
