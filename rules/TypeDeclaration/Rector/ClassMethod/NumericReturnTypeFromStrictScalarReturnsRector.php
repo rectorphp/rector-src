@@ -102,7 +102,7 @@ CODE_SAMPLE
             || $return->expr instanceof PostDec
             || $return->expr instanceof PreDec
         ) {
-            $exprType = $this->getType($return->expr);
+            $exprType = $this->nodeTypeResolver->getNativeType($return->expr);
             if ($exprType instanceof IntegerType) {
                 $node->returnType = new Identifier('int');
                 return $node;
@@ -161,8 +161,8 @@ CODE_SAMPLE
         BinaryOp $binaryOp,
         ClassMethod|Function_|Closure $functionLike
     ): null|Function_|ClassMethod|Closure {
-        $leftType = $this->getType($binaryOp->left);
-        $rightType = $this->getType($binaryOp->right);
+        $leftType = $this->nodeTypeResolver->getNativeType($binaryOp->left);
+        $rightType = $this->nodeTypeResolver->getNativeType($binaryOp->right);
 
         if ($leftType instanceof IntegerType && $rightType instanceof IntegerType) {
             $functionLike->returnType = new Identifier('int');
