@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
+use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -155,6 +156,10 @@ final class BetterStandardPrinter extends Standard
 
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
+        while ($node instanceof AlwaysRememberedExpr) {
+            $node = $node->getExpr();
+        }
+
         $content = parent::p($node, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
