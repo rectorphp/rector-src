@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\BinaryOp\Mul;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\BinaryOp\ShiftLeft;
 use PhpParser\Node\Expr\BinaryOp\ShiftRight;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\PostDec;
 use PhpParser\Node\Expr\PostInc;
 use PhpParser\Node\Expr\PreDec;
@@ -75,11 +76,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -135,7 +136,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function matchRootReturnWithExpr(ClassMethod|Function_ $functionLike): ?Return_
+    private function matchRootReturnWithExpr(ClassMethod|Function_|Closure $functionLike): ?Return_
     {
         if ($functionLike->stmts === null) {
             return null;
@@ -158,8 +159,8 @@ CODE_SAMPLE
 
     private function refactorBinaryOp(
         BinaryOp $binaryOp,
-        ClassMethod|Function_ $functionLike
-    ): null|Function_|ClassMethod {
+        ClassMethod|Function_|Closure $functionLike
+    ): null|Function_|ClassMethod|Closure {
         $leftType = $this->getType($binaryOp->left);
         $rightType = $this->getType($binaryOp->right);
 
