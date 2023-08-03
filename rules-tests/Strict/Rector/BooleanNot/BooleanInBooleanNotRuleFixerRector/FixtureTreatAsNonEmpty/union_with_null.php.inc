@@ -6,10 +6,7 @@ namespace Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRect
 
 final class UnionWithNull
 {
-    /**
-     * @var string|null
-     */
-    private $value;
+    private string|null $value = null;
 
     public function run()
     {
@@ -31,10 +28,7 @@ namespace Rector\Tests\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRect
 
 final class UnionWithNull
 {
-    /**
-     * @var string|null
-     */
-    private $value;
+    private string|null $value = null;
 
     public function run()
     {
