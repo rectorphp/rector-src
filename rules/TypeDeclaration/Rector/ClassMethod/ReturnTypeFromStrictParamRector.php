@@ -8,10 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignRef;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
@@ -72,7 +74,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class];
+        return [ClassMethod::class, Function_::class, Closure::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -81,7 +83,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_ $node
+     * @param ClassMethod|Function_|Closure $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -130,14 +132,14 @@ CODE_SAMPLE
         $return = null;
 
         $this->traverseNodesWithCallable($stmts, static function (Node $node) use (&$return): ?int {
-            if (! $node instanceof Return_) {
-                return null;
-            }
-
             // skip scope nesting
-            if ($node instanceof FunctionLike) {
+            if ($node instanceof Class_ || $node instanceof FunctionLike) {
                 $return = null;
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            if (! $node instanceof Return_) {
+                return null;
             }
 
             if (! $node->expr instanceof Variable) {
@@ -164,6 +166,11 @@ CODE_SAMPLE
             $paramName,
             &$isParamModified
         ): int|null {
+            // skip scope nesting
+            if ($node instanceof Class_ || $node instanceof FunctionLike) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
             if ($node instanceof AssignRef && $this->isName($node->expr, $paramName)) {
                 $isParamModified = true;
                 return NodeTraverser::STOP_TRAVERSAL;
@@ -188,7 +195,7 @@ CODE_SAMPLE
         return $isParamModified;
     }
 
-    private function shouldSkipNode(ClassMethod|Function_ $node): bool
+    private function shouldSkipNode(ClassMethod|Function_|Closure $node): bool
     {
         if ($node->returnType !== null) {
             return true;
