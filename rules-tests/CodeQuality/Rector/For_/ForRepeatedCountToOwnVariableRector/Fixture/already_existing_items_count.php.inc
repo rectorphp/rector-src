@@ -27,9 +27,9 @@ class AlreadyExistingItemsCount
     public function run($items, \stdClass $someObject)
     {
         $itemsCount = 500000;
-        $itemsCount2 = count($someObject->getItems() + 10);
+        $counter = count($someObject->getItems() + 10);
 
-        for ($i = 5; $i <= $itemsCount2; $i++) {
+        for ($i = 5; $i <= $counter; $i++) {
             echo $items[$i];
         }
 

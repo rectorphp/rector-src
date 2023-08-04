@@ -22,8 +22,8 @@ class FallbackForComplex
 {
     public function run($items, \stdClass $someObject)
     {
-        $itemsCount = count($someObject->getItems() + 10);
-        for ($i = 5; $i <= $itemsCount; $i++) {
+        $counter = count($someObject->getItems() + 10);
+        for ($i = 5; $i <= $counter; $i++) {
             echo $items[$i];
         }
     }
