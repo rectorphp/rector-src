@@ -7,7 +7,9 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -20,6 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FollowParentReturnTypeDeclarationRector extends AbstractRector implements MinPhpVersionInterface
 {
+    public function __construct(private readonly AstResolver $astResolver)
+    {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Copy return type declaration from parent method', [
@@ -72,7 +78,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // a class, no extends/implements, skip
-        if ($node instanceof Class_ && (! $node->extends instanceof FullyQualified || $node->implements === [])) {
+        if ($node instanceof Class_ && ! $node->extends instanceof FullyQualified && $node->implements === []) {
             return null;
         }
 
@@ -81,6 +87,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         foreach ($node->getMethods() as $classMethod) {
             // private scope is only local
             if ($classMethod->isPrivate()) {
@@ -95,6 +102,36 @@ CODE_SAMPLE
             // already return typed
             if ($classMethod->returnType instanceof Node) {
                 continue;
+            }
+
+            $parentReturnType = $this->resolveParentReturnType($node, $classMethod);
+            if (! $parentReturnType instanceof Node) {
+                continue;
+            }
+
+            $classMethod->returnType = $parentReturnType;
+            $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function resolveParentReturnType(Class_|Interface_ $node, ClassMethod $classMethod): ?Node
+    {
+        $classMethodName = $classMethod->name->toString();
+
+        if ($node instanceof Class_ && $node->extends instanceof FullyQualified) {
+            $parentClass = $this->astResolver->resolveClassFromName($node->extends->toString());
+            if ($parentClass instanceof Class_) {
+                foreach ($parentClass->getMethods() as $method) {
+                    if ($method->returnType instanceof Node && $method->name->toString() === $classMethodName) {
+                        return $method->returnType;
+                    }
+                }
             }
         }
 
