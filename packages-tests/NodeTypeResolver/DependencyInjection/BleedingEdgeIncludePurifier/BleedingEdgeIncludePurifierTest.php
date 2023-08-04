@@ -34,6 +34,7 @@ final class BleedingEdgeIncludePurifierTest extends AbstractTestCase
         );
 
         $this->assertNotNull($purifiedConfigFilePath);
+        $this->assertNotEmpty($purifiedConfigFilePath);
 
         $this->assertFileEquals(__DIR__ . '/Expected/some_file_including.neon', $purifiedConfigFilePath);
 
