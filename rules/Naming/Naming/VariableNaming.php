@@ -23,6 +23,9 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Component\String\UnicodeString;
 
+/**
+ * @api used in downgrade
+ */
 final class VariableNaming
 {
     /**
@@ -42,6 +45,9 @@ final class VariableNaming
         ];
     }
 
+    /**
+     * @api used in downgrade
+     */
     public function createCountedValueName(string $valueName, ?Scope $scope): string
     {
         if (! $scope instanceof Scope) {

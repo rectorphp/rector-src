@@ -20,8 +20,7 @@ class Fixture
 {
     public function run($value)
     {
-        $roundedValue = round($value, 2, PHP_ROUND_HALF_ODD);
-        $value = number_format($roundedValue, 2, '.', '');
+        $value = number_format(round($value, 2, PHP_ROUND_HALF_ODD), 2, '.', '');
     }
 }
 
