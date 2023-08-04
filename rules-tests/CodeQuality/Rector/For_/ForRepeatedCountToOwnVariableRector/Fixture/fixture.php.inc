@@ -22,8 +22,8 @@ class Fixture
 {
     public function run($items)
     {
-        $itemsCount = count($items);
-        for ($i = 5; $i <= $itemsCount; $i++) {
+        $counter = count($items);
+        for ($i = 5; $i <= $counter; $i++) {
             echo $items[$i];
         }
     }

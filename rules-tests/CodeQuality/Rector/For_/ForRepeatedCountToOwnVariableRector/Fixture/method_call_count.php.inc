@@ -22,8 +22,8 @@ class MethodCallCount
 {
     public function run($items, \stdClass $someObject)
     {
-        $getItemsCount = count($someObject->getItems());
-        for ($i = 5; $i <= $getItemsCount; $i++) {
+        $counter = count($someObject->getItems());
+        for ($i = 5; $i <= $counter; $i++) {
             echo $items[$i];
         }
     }

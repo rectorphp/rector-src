@@ -15,9 +15,9 @@ for ($i = 0; $i < sizeof($psychiatry); $i++) {
 namespace Rector\Core\Tests\Issues\IndentationCrash\Fixture;
 
 $psychiatry = [1, 2, 3];
-$psychiatryCount = count($psychiatry);
+$counter = count($psychiatry);
 
-for ($i = 0; $i < $psychiatryCount; $i++) {
+for ($i = 0; $i < $counter; $i++) {
     $psychiatry[$i]["sufficient_cancellation_notice"] = mt_rand(1, 3) ? 1 : 0;
 }
 
