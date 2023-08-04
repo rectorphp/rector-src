@@ -101,7 +101,7 @@ CODE_SAMPLE
         return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
     }
 
-    private function isEnumConstant(string $className, string $constant)
+    private function isEnumConstant(string $className, string $constant): bool
     {
         $classReflection = $this->reflectionProvider->getClass($className);
 
@@ -189,21 +189,42 @@ CODE_SAMPLE
         return new Identical($expr, $right);
     }
 
+    private function isCallerClassEnum(StaticCall|MethodCall $node): bool
+    {
+        if ($node instanceof StaticCall) {
+            return $this->isObjectType($node->class, new ObjectType('MyCLabs\Enum\Enum'));
+        }
+
+        return $this->isObjectType($node->var, new ObjectType('MyCLabs\Enum\Enum'));
+    }
+
     private function getNonEnumReturnTypeExpr(Node $node): null|ClassConstFetch|Expr
     {
         if (! $node instanceof StaticCall && ! $node instanceof MethodCall) {
             return null;
         }
 
-        if ($this->isObjectType($node->class ?? $node->var, new ObjectType('MyCLabs\Enum\Enum'))) {
+        if ($this->isCallerClassEnum($node)) {
             $methodName = $this->getName($node->name);
             if ($methodName === null) {
                 return null;
             }
 
-            $classReflection = $this->reflectionProvider->getClass($this->getName($node->class ?? $node->var));
+            if ($node instanceof StaticCall) {
+                $className = $this->getName($node->class);
+            }
+
+            if ($node instanceof MethodCall) {
+                $className = $this->getName($node->var);
+            }
+
+            if ($className === null) {
+                return null;
+            }
+
+            $classReflection = $this->reflectionProvider->getClass($className);
             // method self::getValidEnumExpr process enum static methods from constants
-            if ($classReflection->hasConstant($this->getName($node->name))) {
+            if ($classReflection->hasConstant($methodName)) {
                 return null;
             }
         }
