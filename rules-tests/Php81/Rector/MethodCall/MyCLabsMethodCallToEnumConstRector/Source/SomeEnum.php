@@ -12,4 +12,9 @@ use MyCLabs\Enum\Enum;
 final class SomeEnum extends Enum
 {
     const USED_TO_BE_CONST = 'value';
+
+    public static function create(): self
+    {
+        return SomeEnum::USED_TO_BE_CONST();
+    }
 }
