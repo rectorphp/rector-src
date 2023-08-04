@@ -17,7 +17,8 @@ final class FixtureFileFinder
         $finder = (new Finder())
             ->in($directory)
             ->files()
-            ->name($suffix);
+            ->name($suffix)
+            ->sortByName();
 
         foreach ($finder as $fileInfo) {
             yield [$fileInfo->getRealPath()];
