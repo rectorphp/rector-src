@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -18,10 +17,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class FollowParentReturnTypeDeclarationRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly PhpVersionProvider $phpVersionProvider)
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Copy return type declaration from parent method', [
