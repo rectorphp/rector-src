@@ -46,7 +46,6 @@ final class Fixture
 {
     use TraitA;
     use TraitB;
-
     public const PUBLIC_CONST = 2;
 
     private const PRIVATE_CONST = 1;
