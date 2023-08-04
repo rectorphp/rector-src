@@ -81,19 +81,19 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($node->getMethods() as $method) {
+        foreach ($node->getMethods() as $classMethod) {
             // private scope is only local
-            if ($method->isPrivate()) {
+            if ($classMethod->isPrivate()) {
                 continue;
             }
 
             // __construct don't have return type
-            if ($this->isName($method, MethodName::CONSTRUCT)) {
+            if ($this->isName($classMethod, MethodName::CONSTRUCT)) {
                 continue;
             }
 
             // already return typed
-            if ($method->returnType instanceof Node) {
+            if ($classMethod->returnType instanceof Node) {
                 continue;
             }
         }
