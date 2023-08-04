@@ -59,7 +59,6 @@ CODE_SAMPLE
 
     /**
      * @param FileWithoutNamespace|Namespace_|Class_ $node
-     * @return Use_[]|TraitUse[]|null
      */
     public function refactor(Node $node): FileWithoutNamespace|Namespace_|Class_|null
     {
