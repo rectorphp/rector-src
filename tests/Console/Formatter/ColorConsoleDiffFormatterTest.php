@@ -23,6 +23,7 @@ final class ColorConsoleDiffFormatterTest extends TestCase
     public function test(string $content, string $expectedFormatedFileContent): void
     {
         $formattedContent = $this->colorConsoleDiffFormatter->format($content);
+        $this->assertNotEmpty($expectedFormatedFileContent);
 
         $this->assertStringEqualsFile($expectedFormatedFileContent, $formattedContent);
     }
