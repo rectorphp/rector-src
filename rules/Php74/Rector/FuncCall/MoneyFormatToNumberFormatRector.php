@@ -7,21 +7,14 @@ namespace Rector\Php74\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Return_;
-use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\ArgsAnalyzer;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\Naming\Naming\VariableNaming;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -31,11 +24,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector\MoneyFormatToNumberFormatRectorTest
  */
-final class MoneyFormatToNumberFormatRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class MoneyFormatToNumberFormatRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ArgsAnalyzer $argsAnalyzer,
-        private readonly VariableNaming $variableNaming
     ) {
     }
 
@@ -55,8 +47,7 @@ $value = money_format('%i', $value);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-$roundedValue = round($value, 2, PHP_ROUND_HALF_ODD);
-$value = number_format($roundedValue, 2, '.', '');
+$value = number_format(round($value, 2, PHP_ROUND_HALF_ODD), 2, '.', '');
 CODE_SAMPLE
                 ),
             ]
@@ -68,29 +59,23 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Expression::class, Return_::class];
+        return [FuncCall::class];
     }
 
     /**
-     * @param Expression|Return_ $node
-     * @return Stmt[]|null
+     * @param FuncCall $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?array
+    public function refactor(Node $node): ?FuncCall
     {
-        $funcCall = $this->matchFunCall($node);
-        if (! $funcCall instanceof FuncCall) {
+        if (! $this->isName($node, 'money_format')) {
             return null;
         }
 
-        if (! $this->isName($funcCall, 'money_format')) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        if ($funcCall->isFirstClassCallable()) {
-            return null;
-        }
-
-        $args = $funcCall->getArgs();
+        $args = $node->getArgs();
         if ($this->argsAnalyzer->hasNamedArg($args)) {
             return null;
         }
@@ -100,48 +85,24 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->resolveNumberFormat($funcCall, $args[1]->value, $scope, $node);
+        return $this->warpInNumberFormatFuncCall($node, $args[1]->value);
     }
 
-    /**
-     * @return Stmt[]
-     */
-    private function resolveNumberFormat(FuncCall $funcCall, Expr $expr, Scope $scope, Expression|Return_ $stmt): array
+    private function warpInNumberFormatFuncCall(FuncCall $funcCall, Expr $expr): FuncCall
     {
-        $newValue = $this->nodeFactory->createFuncCall(
+        $roundFuncCall = $this->nodeFactory->createFuncCall(
             'round',
             [$expr, new LNumber(2), new ConstFetch(new Name('PHP_ROUND_HALF_ODD'))]
         );
 
-        $countedVariableName = $this->variableNaming->createCountedValueName('roundedValue', $scope);
-        $variable = new Variable($countedVariableName);
-
         $funcCall->name = new Name('number_format');
         $funcCall->args = [
-            new Arg($variable),
+            new Arg($roundFuncCall),
             new Arg(new LNumber(2)),
             new Arg(new String_('.')),
             new Arg(new String_('')),
         ];
 
-        return [new Expression(new Assign($variable, $newValue)), $stmt];
-    }
-
-    private function matchFunCall(Expression|Return_ $node): null|FuncCall
-    {
-        if ($node->expr instanceof Assign) {
-            $assign = $node->expr;
-            if ($assign->expr instanceof FuncCall) {
-                return $assign->expr;
-            }
-
-            return null;
-        }
-
-        if ($node->expr instanceof FuncCall) {
-            return $node->expr;
-        }
-
-        return null;
+        return $funcCall;
     }
 }

@@ -20,8 +20,7 @@ final class ReturnStmt
 {
     public function run($value)
     {
-        $roundedValue = round($value, 2, PHP_ROUND_HALF_ODD);
-        return number_format($roundedValue, 2, '.', '');
+        return number_format(round($value, 2, PHP_ROUND_HALF_ODD), 2, '.', '');
     }
 }
 
