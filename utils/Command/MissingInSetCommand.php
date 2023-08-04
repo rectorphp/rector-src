@@ -63,7 +63,6 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../vendor/rector/rector-phpunit/rules/CodeQuality' => __DIR__ . '/../../vendor/rector/rector-phpunit/config/sets/phpunit-code-quality.php',
 
         // rector-downgrade
-        __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp71' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php71.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp72' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php72.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp73' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php73.php',
         __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp74' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php74.php',
