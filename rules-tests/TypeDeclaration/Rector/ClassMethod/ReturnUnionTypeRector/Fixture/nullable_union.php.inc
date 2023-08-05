@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\
 
 use stdClass;
 
-final class SomeClass
+final class NullableUnion
 {
     public function run()
     {
@@ -24,7 +24,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\
 
 use stdClass;
 
-final class SomeClass
+final class NullableUnion
 {
     public function run(): ?\stdClass
     {
