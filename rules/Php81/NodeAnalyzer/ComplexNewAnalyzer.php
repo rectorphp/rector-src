@@ -10,12 +10,10 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
-use Rector\Core\NodeManipulator\ArrayManipulator;
 
 final class ComplexNewAnalyzer
 {
     public function __construct(
-        private readonly ArrayManipulator $arrayManipulator,
         private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
@@ -65,7 +63,7 @@ final class ComplexNewAnalyzer
 
     private function isAllowedArray(Array_ $array): bool
     {
-        if (! $this->arrayManipulator->isDynamicArray($array)) {
+        if (! $this->exprAnalyzer->isDynamicArray($array)) {
             return true;
         }
 
