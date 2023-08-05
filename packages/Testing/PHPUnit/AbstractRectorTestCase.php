@@ -15,7 +15,6 @@ use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\Application\File;
@@ -29,8 +28,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 {
     protected static ?ContainerInterface $allRectorContainer = null;
 
-    private ParameterProvider $parameterProvider;
-
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
@@ -39,7 +36,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     protected function setUp(): void
     {
-        // speed up
         @ini_set('memory_limit', '-1');
 
         $this->includePreloadFilesAndScoperAutoload();
@@ -48,7 +44,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $this->bootFromConfigFiles([$configFile]);
 
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
-        $this->parameterProvider = $this->getService(ParameterProvider::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
 
         /** @var AdditionalAutoloader $additionalAutoloader */
@@ -71,7 +66,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         // free memory to reduce memory peak consumption on windows
         unset(
             $this->applicationFileProcessor,
-            $this->parameterProvider,
             $this->dynamicSourceLocatorProvider,
         );
     }
@@ -146,7 +140,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         string $expectedFileContents,
         string $fixtureFilePath
     ): void {
-        $this->parameterProvider->changeParameter(Option::SOURCE, [$originalFilePath]);
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);

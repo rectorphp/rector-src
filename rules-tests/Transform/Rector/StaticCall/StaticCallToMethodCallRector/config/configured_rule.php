@@ -3,11 +3,15 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+
+use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\TargetFileSystem;
 use Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector;
 use Rector\Transform\ValueObject\StaticCallToMethodCall;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->phpVersion(PhpVersionFeature::PROPERTY_PROMOTION);
+
     $rectorConfig
         ->ruleWithConfiguration(StaticCallToMethodCallRector::class, [
             new StaticCallToMethodCall('Nette\Utils\FileSystem', 'write', TargetFileSystem::class, 'dumpFile'),

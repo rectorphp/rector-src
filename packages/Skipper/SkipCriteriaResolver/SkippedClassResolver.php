@@ -6,7 +6,7 @@ namespace Rector\Skipper\SkipCriteriaResolver;
 
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 
 final class SkippedClassResolver
 {
@@ -16,7 +16,6 @@ final class SkippedClassResolver
     private array $skippedClasses = [];
 
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly ReflectionProvider $reflectionProvider
     ) {
     }
@@ -30,7 +29,7 @@ final class SkippedClassResolver
             return $this->skippedClasses;
         }
 
-        $skip = $this->parameterProvider->provideArrayParameter(Option::SKIP);
+        $skip = SimpleParameterProvider::provideArrayParameter(Option::SKIP);
 
         foreach ($skip as $key => $value) {
             // e.g. [SomeClass::class] → shift values to [SomeClass::class => null]
