@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector\Fixture;
 
-abstract class SkipPublicMethodWithDefaultValue
+abstract class SkipPublicMethod
 {
     public function toJson()
     {
