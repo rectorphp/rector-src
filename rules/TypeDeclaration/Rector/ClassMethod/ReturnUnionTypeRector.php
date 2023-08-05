@@ -106,8 +106,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($inferReturnType->isVoid()->yes()) {
-            return null;
+        foreach ($inferReturnType->getTypes() as $type) {
+            if ($type->isVoid()->yes()) {
+                return null;
+            }
         }
 
         if ($this->unionTypeAnalyzer->isNullable($inferReturnType)) {
