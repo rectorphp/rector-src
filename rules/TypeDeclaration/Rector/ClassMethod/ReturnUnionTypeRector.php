@@ -111,12 +111,6 @@ CODE_SAMPLE
             return null;
         }
 
-        foreach ($inferReturnType->getTypes() as $type) {
-            if ($type->isVoid()->yes()) {
-                return null;
-            }
-        }
-
         $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferReturnType, TypeKind::RETURN);
         if (! $returnType instanceof Node) {
             return null;
