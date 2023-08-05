@@ -6,7 +6,6 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
-use Rector\CodingStyle\Rector\Property\NullifyUnionNullableRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
@@ -95,7 +94,6 @@ final class MissingInSetCommand extends Command
     private const SKIPPED_RULES = [
         ConfigurableRectorInterface::class,
         RemoveJustPropertyFetchRector::class,
-        NullifyUnionNullableRector::class,
         DeclareStrictTypesRector::class,
         // optional
         DataProviderArrayItemsNewlinedRector::class,
