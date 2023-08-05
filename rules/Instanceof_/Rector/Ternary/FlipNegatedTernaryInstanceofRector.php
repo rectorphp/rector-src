@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\Rector\Ternary;
+namespace Rector\Instanceof_\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;

@@ -9,7 +9,6 @@ use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
-use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Finder\RectorClassFinder;
 use Rector\Utils\Finder\SetRectorClassesResolver;
@@ -94,7 +93,6 @@ final class MissingInSetCommand extends Command
         DeclareStrictTypesRector::class,
         // optional
         DataProviderArrayItemsNewlinedRector::class,
-        FlipNegatedTernaryInstanceofRector::class,
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
     ];
