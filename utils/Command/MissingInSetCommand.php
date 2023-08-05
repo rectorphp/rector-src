@@ -44,6 +44,7 @@ final class MissingInSetCommand extends Command
         __DIR__ . '/../../rules/Php81/Rector' => __DIR__ . '/../../config/set/php81.php',
         __DIR__ . '/../../rules/Php82/Rector' => __DIR__ . '/../../config/set/php82.php',
         __DIR__ . '/../../rules/Strict/Rector' => __DIR__ . '/../../config/set/strict-booleans.php',
+        __DIR__ . '/../../rules/Instanceof_/Rector' => __DIR__ . '/../../config/set/instanceof.php',
 
         // doctrine
         __DIR__ . '/../../vendor/rector/rector-doctrine/rules/CodeQuality' => __DIR__ . '/../../vendor/rector/rector-doctrine/config/sets/doctrine-code-quality.php',
