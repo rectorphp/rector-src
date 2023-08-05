@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ArrayShapeFromConstantArrayReturnRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
@@ -98,8 +97,6 @@ final class MissingInSetCommand extends Command
         FlipNegatedTernaryInstanceofRector::class,
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
-        // deprecated
-        ArrayShapeFromConstantArrayReturnRector::class,
     ];
 
     public function __construct(
