@@ -101,7 +101,7 @@ CODE_SAMPLE
                 )
                 || $method->isPrivate();
 
-            if (! $isPrivate) {
+            if (! $isPrivate || $method->isPublic()) {
                 continue;
             }
 
