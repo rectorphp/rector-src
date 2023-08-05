@@ -188,7 +188,7 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
             $variableName,
             &$assignedArrayDimFetches
-        ): ?void {
+        ) {
             if (! $node instanceof Assign) {
                 return null;
             }

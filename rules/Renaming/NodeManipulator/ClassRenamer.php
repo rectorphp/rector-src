@@ -321,7 +321,7 @@ final class ClassRenamer
 
     private function changeNameToFullyQualifiedName(ClassLike $classLike): void
     {
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike, static function (Node $node): ?void {
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($classLike, static function (Node $node) {
             if (! $node instanceof FullyQualified) {
                 return null;
             }
