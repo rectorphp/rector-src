@@ -106,13 +106,13 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($inferReturnType->isVoid()->yes()) {
+            return null;
+        }
+
         if ($this->unionTypeAnalyzer->isNullable($inferReturnType)) {
             $bareType = TypeCombinator::removeNull($inferReturnType);
             $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($bareType, TypeKind::RETURN);
-
-            if ($bareType->isVoid()->yes()) {
-                return null;
-            }
 
             if ($returnTypeNode instanceof Identifier || $returnTypeNode instanceof  Name) {
                 $node->returnType =  new NullableType($returnTypeNode);
