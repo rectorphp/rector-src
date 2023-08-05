@@ -110,6 +110,10 @@ CODE_SAMPLE
             $bareType = TypeCombinator::removeNull($inferReturnType);
             $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($bareType, TypeKind::RETURN);
 
+            if ($bareType->isVoid()->yes()) {
+                return null;
+            }
+
             if ($returnTypeNode instanceof Identifier || $returnTypeNode instanceof  Name) {
                 $node->returnType =  new NullableType($returnTypeNode);
                 return $node;
