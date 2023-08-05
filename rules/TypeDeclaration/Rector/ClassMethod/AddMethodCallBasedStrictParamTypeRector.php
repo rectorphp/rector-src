@@ -100,8 +100,10 @@ CODE_SAMPLE
                     && $node->implements === []
                 )
                 || $method->isPrivate();
-
-            if (! $isPrivate || $method->isPublic()) {
+            if (! $isPrivate) {
+                continue;
+            }
+            if ($method->isPublic()) {
                 continue;
             }
 
