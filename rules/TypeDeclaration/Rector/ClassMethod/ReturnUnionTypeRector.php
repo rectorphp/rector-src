@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PHPStan\Type\TypeCombinator;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
@@ -108,7 +110,7 @@ CODE_SAMPLE
             $bareType = TypeCombinator::removeNull($inferReturnType);
             $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($bareType, TypeKind::RETURN);
 
-            if ($returnTypeNode instanceof Node\Identifier || $returnTypeNode instanceof  Node\Name) {
+            if ($returnTypeNode instanceof Identifier || $returnTypeNode instanceof  Name) {
                 $node->returnType =  new NullableType($returnTypeNode);
                 return $node;
             }
