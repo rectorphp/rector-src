@@ -13,6 +13,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -26,7 +27,8 @@ final class ReturnUnionTypeRector extends AbstractScopeAwareRector implements Mi
 {
     public function __construct(
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly UnionTypeMapper $unionTypeMapper
     ) {
     }
 
@@ -111,7 +113,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferReturnType, TypeKind::RETURN);
+        $returnType = $this->unionTypeMapper->mapToPhpParserNode($inferReturnType, TypeKind::RETURN);
         if (! $returnType instanceof Node) {
             return null;
         }
