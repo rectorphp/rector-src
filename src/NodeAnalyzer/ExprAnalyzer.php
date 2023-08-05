@@ -17,13 +17,13 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\NodeManipulator\ArrayManipulator;
+use Rector\Core\NodeManipulator\ArrayAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class ExprAnalyzer
 {
     public function __construct(
-        private readonly ArrayManipulator $arrayManipulator
+        private readonly ArrayAnalyzer $arrayManipulator
     ) {
     }
 

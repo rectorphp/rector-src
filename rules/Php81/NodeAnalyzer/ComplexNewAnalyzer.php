@@ -10,13 +10,13 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
-use Rector\Core\NodeManipulator\ArrayManipulator;
+use Rector\Core\NodeManipulator\ArrayAnalyzer;
 
 final class ComplexNewAnalyzer
 {
     public function __construct(
-        private readonly ArrayManipulator $arrayManipulator,
-        private readonly ExprAnalyzer $exprAnalyzer
+        private readonly ArrayAnalyzer $arrayManipulator,
+        private readonly ExprAnalyzer  $exprAnalyzer
     ) {
     }
 
