@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\List_;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeManipulator\AssignManipulator;
@@ -65,8 +66,9 @@ CODE_SAMPLE
 
     /**
      * @param Expression $node
+     * @return null|Expression|Stmt[]
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): null|Expression|array
     {
         if (! $node->expr instanceof Assign) {
             return null;

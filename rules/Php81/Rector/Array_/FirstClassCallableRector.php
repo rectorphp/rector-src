@@ -86,7 +86,7 @@ CODE_SAMPLE
     /**
      * @param Array_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope)
+    public function refactorWithScope(Node $node, Scope $scope): null|StaticCall|MethodCall
     {
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
         if (! $arrayCallable instanceof ArrayCallable) {
