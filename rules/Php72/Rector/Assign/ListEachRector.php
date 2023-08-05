@@ -66,7 +66,7 @@ CODE_SAMPLE
     /**
      * @param Expression $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): null|Expression|array
     {
         if (! $node->expr instanceof Assign) {
             return null;

@@ -92,7 +92,7 @@ CODE_SAMPLE
     /**
      * @param FuncCall|Expression|Assign|Expr\ArrayItem|Node\Arg $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): null|int|Expression|Assign|Cast
     {
         if ($node instanceof Arg || $node instanceof ArrayItem) {
             if ($this->isSetTypeFuncCall($node->value)) {
