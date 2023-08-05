@@ -142,7 +142,7 @@ CODE_SAMPLE
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
             &$names
-        ) {
+        ): ?void {
             if (! $node->hasAttribute(AttributeKey::COMMENTS)) {
                 return null;
             }
