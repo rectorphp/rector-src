@@ -103,6 +103,7 @@ CODE_SAMPLE
             if (! $isPrivate) {
                 continue;
             }
+
             if ($method->isPublic()) {
                 continue;
             }
