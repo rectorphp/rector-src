@@ -38,7 +38,7 @@ final class ReturnUnionTypeRector extends AbstractScopeAwareRector implements Mi
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add return type nullable', [
+        return new RuleDefinition('Add union return type', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -49,6 +49,10 @@ final class SomeClass
             return null;
         }
 
+        if (rand(0, 1)) {
+            return new DateTime('now');
+        }
+
         return new stdClass;
     }
 }
@@ -57,10 +61,14 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function getData(): ?stdClass
+    public function getData(): null|\DateTime|\stdClass
     {
         if (rand(0, 1)) {
             return null;
+        }
+
+        if (rand(0, 1)) {
+            return new DateTime('now');
         }
 
         return new stdClass;
