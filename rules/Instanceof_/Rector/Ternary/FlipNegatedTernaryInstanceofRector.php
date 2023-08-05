@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\TypeDeclaration\Rector\Ternary;
+namespace Rector\Instanceof_\Rector\Ternary;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -14,7 +14,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector\FlipNegatedTernaryInstanceofRectorTest
+ * @see \Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\FlipNegatedTernaryInstanceofRectorTest
  */
 final class FlipNegatedTernaryInstanceofRector extends AbstractRector
 {

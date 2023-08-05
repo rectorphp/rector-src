@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
+namespace Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
