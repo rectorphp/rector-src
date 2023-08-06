@@ -18,9 +18,9 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class TestModifyReprintTest extends AbstractTestCase
+final class TestModifyReprintTest extends AbstractLazyTestCase
 {
     private FileInfoParser $fileInfoParser;
 
@@ -32,13 +32,10 @@ final class TestModifyReprintTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->fileInfoParser = $this->getService(FileInfoParser::class);
-
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
-        $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
-        $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
+        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
+        $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
+        $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
     }
 
     public function test(): void
@@ -49,10 +46,10 @@ final class TestModifyReprintTest extends AbstractTestCase
 
         $phpDocInfo = $this->parseFileAndGetFirstNodeOfType($inputContent, ClassMethod::class);
 
-        /** @var DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode */
         $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
             'Symfony\Component\Routing\Annotation\Route'
         );
+        $this->assertInstanceOf(DoctrineAnnotationTagValueNode::class, $doctrineAnnotationTagValueNode);
 
         // this will extended tokens of first node
         $methodsCurlyListNode = new CurlyListNode([
