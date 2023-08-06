@@ -28,7 +28,7 @@ final class AnnotationToAttributeMapper
     /**
      * @param RewindableGenerator<AnnotationToAttributeMapperInterface>|AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers
      */
-    public function __construct(iterable $annotationToAttributeMappers)
+    public function __construct(array $annotationToAttributeMappers)
     {
         if ($annotationToAttributeMappers instanceof RewindableGenerator) {
             $this->annotationToAttributeMappers = iterator_to_array($annotationToAttributeMappers->getIterator());
