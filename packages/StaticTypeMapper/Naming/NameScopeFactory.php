@@ -31,11 +31,14 @@ final class NameScopeFactory
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
-    private UseImportsResolver $useImportsResolver;
-
     private ReflectionResolver $reflectionResolver;
 
     private ClassLikeAstResolver $classLikeAstResolver;
+
+    public function __construct(
+        private readonly UseImportsResolver $useImportsResolver,
+    ) {
+    }
 
     // This is needed to avoid circular references
 
@@ -43,13 +46,11 @@ final class NameScopeFactory
     public function autowire(
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
-        UseImportsResolver $useImportsResolver,
         ReflectionResolver $reflectionResolver,
         ClassLikeAstResolver $classLikeAstResolver
     ): void {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
-        $this->useImportsResolver = $useImportsResolver;
         $this->reflectionResolver = $reflectionResolver;
         $this->classLikeAstResolver = $classLikeAstResolver;
     }

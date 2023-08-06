@@ -13,9 +13,9 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
-use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Testing\PHPUnit\AbstractTestCase;
 
-final class PhpDocInfoTest extends AbstractLazyTestCase
+final class PhpDocInfoTest extends AbstractTestCase
 {
     private PhpDocInfo $phpDocInfo;
 
@@ -25,8 +25,12 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
-        $this->docBlockTagReplacer = $this->make(DocBlockTagReplacer::class);
+        parent::setUp();
+
+        $this->boot();
+
+        $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
+        $this->docBlockTagReplacer = $this->getService(DocBlockTagReplacer::class);
 
         $phpDocInfo = $this->createPhpDocInfoFromFile(__DIR__ . '/Source/doc.txt');
         $this->assertInstanceOf(PhpDocInfo::class, $phpDocInfo);
@@ -77,7 +81,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     private function createPhpDocInfoFromFile(string $path): ?PhpDocInfo
     {
-        $phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
+        $phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
         $phpDocContent = FileSystem::read($path);
 
         $nop = new Nop();
