@@ -29,7 +29,7 @@ final class PlainValueParser
 
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
-        private readonly CurrentNodeProvider $currentNodeProvider
+        private readonly CurrentNodeProvider $currentNodeProvider,
     ) {
     }
 

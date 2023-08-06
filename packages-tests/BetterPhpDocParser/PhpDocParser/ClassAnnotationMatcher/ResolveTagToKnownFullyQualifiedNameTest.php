@@ -14,10 +14,10 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Testing\Fixture\FixtureFileFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 
-final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
+final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractLazyTestCase
 {
     private ClassAnnotationMatcher $classAnnotationMatcher;
 
@@ -31,13 +31,11 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->classAnnotationMatcher = $this->getService(ClassAnnotationMatcher::class);
-        $this->testingParser = $this->getService(TestingParser::class);
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
-        $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
-        $this->nodeNameResolver = $this->getService(NodeNameResolver::class);
+        $this->classAnnotationMatcher = $this->make(ClassAnnotationMatcher::class);
+        $this->testingParser = $this->make(TestingParser::class);
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
+        $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
+        $this->nodeNameResolver = $this->make(NodeNameResolver::class);
     }
 
     #[DataProvider('provideData')]

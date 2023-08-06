@@ -20,6 +20,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -31,7 +32,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class PropertyFetchFinder
 {
@@ -146,7 +146,8 @@ final class PropertyFetchFinder
         }
 
         $type = $this->nodeTypeResolver->getType($expr->var);
-        if ($type instanceof StaticType || $type instanceof FullyQualifiedObjectType) {
+
+        if ($type instanceof ObjectType || $type instanceof StaticType) {
             return $this->nodeNameResolver->isName($class, $type->getClassName());
         }
 

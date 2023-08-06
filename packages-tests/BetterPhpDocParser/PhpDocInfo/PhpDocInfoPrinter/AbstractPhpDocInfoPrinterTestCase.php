@@ -12,9 +12,9 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Testing\Fixture\FixtureFileFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractTestCase
+abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase
 {
     protected FilePathHelper $filePathHelper;
 
@@ -24,11 +24,9 @@ abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->filePathHelper = $this->getService(FilePathHelper::class);
-        $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
-        $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
+        $this->filePathHelper = $this->make(FilePathHelper::class);
+        $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
+        $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
     }
 
     protected function createPhpDocInfoFromDocCommentAndNode(string $docComment, Node $node): PhpDocInfo
