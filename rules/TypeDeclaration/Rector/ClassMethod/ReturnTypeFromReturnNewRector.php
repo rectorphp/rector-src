@@ -139,10 +139,6 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($new->class);
-        if ($className === null) {
-            throw new ShouldNotHappenException();
-        }
-
         if ($className === ObjectReference::STATIC || $className === ObjectReference::SELF) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($new);
             if (! $classReflection instanceof ClassReflection) {
