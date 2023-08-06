@@ -19,8 +19,6 @@ final class PhpDocNodeMapperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->phpDocNodeMapper = $this->make(PhpDocNodeMapper::class);
     }
 

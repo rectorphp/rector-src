@@ -15,8 +15,6 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->inflectorSingularResolver = $this->make(InflectorSingularResolver::class);
     }
 

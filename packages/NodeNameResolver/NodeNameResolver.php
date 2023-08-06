@@ -19,7 +19,6 @@ use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\Regex\RegexPatternDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Webmozart\Assert\Assert;
 
 final class NodeNameResolver
 {
@@ -45,7 +44,6 @@ final class NodeNameResolver
         private readonly CallAnalyzer $callAnalyzer,
         private readonly iterable $nodeNameResolvers = []
     ) {
-        Assert::notEmpty($nodeNameResolvers);
     }
 
     /**

@@ -19,8 +19,20 @@ use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\ClassConstNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\ClassNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\EmptyNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\FuncCallNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\FunctionNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\NameNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\ParamNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\PropertyNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\UseNameResolver;
+use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -30,6 +42,7 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
+use Symfony\Component\Console\Application;
 
 final class LazyContainerFactory
 {
@@ -37,17 +50,17 @@ final class LazyContainerFactory
      * @var array<class-string<NodeNameResolverInterface>>
      */
     private const NODE_NAME_RESOLVER_CLASSES = [
-        NodeNameResolver\ClassConstFetchNameResolver::class,
-        NodeNameResolver\ClassConstNameResolver::class,
-        NodeNameResolver\ClassNameResolver::class,
-        NodeNameResolver\EmptyNameResolver::class,
-        NodeNameResolver\FuncCallNameResolver::class,
-        NodeNameResolver\FunctionNameResolver::class,
-        NodeNameResolver\NameNameResolver::class,
-        NodeNameResolver\ParamNameResolver::class,
-        NodeNameResolver\PropertyNameResolver::class,
-        NodeNameResolver\UseNameResolver::class,
-        NodeNameResolver\VariableNameResolver::class,
+        ClassConstFetchNameResolver::class,
+        ClassConstNameResolver::class,
+        ClassNameResolver::class,
+        EmptyNameResolver::class,
+        FuncCallNameResolver::class,
+        FunctionNameResolver::class,
+        NameNameResolver::class,
+        ParamNameResolver::class,
+        PropertyNameResolver::class,
+        UseNameResolver::class,
+        VariableNameResolver::class,
     ];
 
     /**
@@ -60,6 +73,21 @@ final class LazyContainerFactory
         // setup base parameters - from RectorConfig
         SimpleParameterProvider::setParameter(Option::CACHE_DIR, sys_get_temp_dir() . '/rector_cached_files');
         SimpleParameterProvider::setParameter(Option::CONTAINER_CACHE_DIRECTORY, sys_get_temp_dir());
+
+        $container->singleton(Application::class, static function (): Application {
+            $application = new Application();
+
+            // @todo inject commands
+
+            $privatesAccessor = new PrivatesAccessor();
+            $privatesAccessor->propertyClosure($application, 'commands', static function (array $commands): array {
+                unset($commands['completion']);
+                unset($commands['help']);
+                return $commands;
+            });
+
+            return $application;
+        });
 
         $container->singleton(Inflector::class, static function (): Inflector {
             $inflectorFactory = new InflectorFactory();
@@ -104,31 +132,31 @@ final class LazyContainerFactory
             $container->tag($nodeNameResolverClass, NodeNameResolverInterface::class);
         }
 
-        $container->singleton(Parser::class, function (Container $container) {
+        $container->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
         });
 
         // phpstan factory
         $container->singleton(
-            \PHPStan\Reflection\ReflectionProvider::class,
-            function (Container $container): ReflectionProvider {
+            ReflectionProvider::class,
+            static function (Container $container): ReflectionProvider {
                 $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
                 return $phpstanServiceFactory->createReflectionProvider();
             }
         );
 
-        $container->singleton(Parser::class, function (Container $container) {
+        $container->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
         });
 
-        $container->singleton(Lexer::class, function (Container $container) {
+        $container->singleton(Lexer::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createEmulativeLexer();
         });
 
-        $container->singleton(TypeNodeResolver::class, function (Container $container) {
+        $container->singleton(TypeNodeResolver::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createTypeNodeResolver();
         });

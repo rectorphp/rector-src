@@ -10,24 +10,12 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class BootstrapFilesIncluderTest extends AbstractLazyTestCase
 {
-    private BootstrapFilesIncluder $bootstrapFilesIncluder;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
-    }
-
     #[DoesNotPerformAssertions]
     public function test(): void
     {
-        $this->bootstrapFilesIncluder->includeBootstrapFiles();
-    }
+        $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
 
-    #[DoesNotPerformAssertions]
-    public function testPHPStan(): void
-    {
-        $this->bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
+        $bootstrapFilesIncluder->includeBootstrapFiles();
+        $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
     }
 }

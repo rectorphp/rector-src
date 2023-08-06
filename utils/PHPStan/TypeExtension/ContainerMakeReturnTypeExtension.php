@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Rector\Utils\PHPStan\TypeExtension;
 
 use Illuminate\Container\Container;
+use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\Type;
 use Rector\Utils\PHPStan\ClassConstFetchReturnTypeResolver;
 
 final class ContainerMakeReturnTypeExtension implements DynamicMethodReturnTypeExtension
@@ -29,9 +31,9 @@ final class ContainerMakeReturnTypeExtension implements DynamicMethodReturnTypeE
 
     public function getTypeFromMethodCall(
         MethodReflection $methodReflection,
-        \PhpParser\Node\Expr\MethodCall $methodCall,
+        MethodCall $methodCall,
         Scope $scope
-    ): \PHPStan\Type\Type {
+    ): Type {
         return $this->classConstFetchReturnTypeResolver->resolve($methodReflection, $methodCall);
     }
 }

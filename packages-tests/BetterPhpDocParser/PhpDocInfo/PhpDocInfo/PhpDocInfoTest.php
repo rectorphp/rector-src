@@ -25,8 +25,6 @@ final class PhpDocInfoTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->boot();
 
         $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
