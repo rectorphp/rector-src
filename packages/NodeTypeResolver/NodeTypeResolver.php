@@ -222,6 +222,7 @@ final class NodeTypeResolver
         }
 
         $type = $scope->getNativeType($expr);
+        dump($type);
         return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
     }
 
