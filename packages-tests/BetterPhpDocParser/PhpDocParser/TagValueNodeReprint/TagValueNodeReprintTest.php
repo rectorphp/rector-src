@@ -18,9 +18,9 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class TagValueNodeReprintTest extends AbstractTestCase
+final class TagValueNodeReprintTest extends AbstractLazyTestCase
 {
     /**
      * @var string
@@ -40,13 +40,11 @@ final class TagValueNodeReprintTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->fileInfoParser = $this->getService(FileInfoParser::class);
-        $this->filePathHelper = $this->getService(FilePathHelper::class);
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
-        $this->phpDocInfoPrinter = $this->getService(PhpDocInfoPrinter::class);
-        $this->phpDocInfoFactory = $this->getService(PhpDocInfoFactory::class);
+        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->filePathHelper = $this->make(FilePathHelper::class);
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
+        $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
+        $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
     }
 
     #[DataProvider('provideData')]

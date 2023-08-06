@@ -12,20 +12,18 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ParentConnectingPhpDocNodeVisitorTest extends AbstractTestCase
+final class ParentConnectingPhpDocNodeVisitorTest extends AbstractLazyTestCase
 {
     private PhpDocNodeTraverser $phpDocNodeTraverser;
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->phpDocNodeTraverser = $this->getService(PhpDocNodeTraverser::class);
+        $this->phpDocNodeTraverser = $this->make(PhpDocNodeTraverser::class);
 
         /** @var ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor */
-        $parentConnectingPhpDocNodeVisitor = $this->getService(ParentConnectingPhpDocNodeVisitor::class);
+        $parentConnectingPhpDocNodeVisitor = $this->make(ParentConnectingPhpDocNodeVisitor::class);
         $this->phpDocNodeTraverser->addPhpDocNodeVisitor($parentConnectingPhpDocNodeVisitor);
     }
 
