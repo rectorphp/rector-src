@@ -155,6 +155,8 @@ final class NodeNameResolver
     }
 
     /**
+     * @api
+     *
      * @param Name[]|Node[] $nodes
      * @return string[]
      */
