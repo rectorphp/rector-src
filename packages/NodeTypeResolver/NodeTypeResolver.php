@@ -326,12 +326,10 @@ final class NodeTypeResolver
 
     private function resolveByNodeTypeResolvers(Node $node): ?Type
     {
-        foreach ($this->nodeTypeResolvers as $nodeClass => $nodeTypeResolver) {
-            if (! $node instanceof $nodeClass) {
-                continue;
-            }
+        $nodeClass = $node::class;
 
-            return $nodeTypeResolver->resolve($node);
+        if (isset($this->nodeTypeResolvers[$nodeClass])) {
+            return $this->nodeTypeResolvers[$nodeClass]->resolve($node);
         }
 
         return null;
