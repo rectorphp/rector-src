@@ -11,7 +11,6 @@ use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\ParamTypeResolver\ParamTypeResolverTest
@@ -22,7 +21,6 @@ final class ParamTypeResolver implements NodeTypeResolverInterface, NodeTypeReso
 {
     private NodeTypeResolver $nodeTypeResolver;
 
-    #[Required]
     public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;

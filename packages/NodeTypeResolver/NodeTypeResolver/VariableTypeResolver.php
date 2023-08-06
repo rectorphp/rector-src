@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -23,7 +22,6 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        //        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -46,13 +44,6 @@ final class VariableTypeResolver implements NodeTypeResolverInterface
         }
 
         return $this->resolveTypesFromScope($node, $variableName);
-        //        if (! $scopeType instanceof MixedType) {
-        //            return $scopeType;
-        //        }
-
-        //        // get from annotation
-        //        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        //        return $phpDocInfo->getVarType();
     }
 
     private function resolveTypesFromScope(Variable $variable, string $variableName): Type

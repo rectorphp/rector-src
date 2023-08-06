@@ -16,7 +16,6 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyFetchTypeResolver\PropertyFetchTypeResolverTest
@@ -33,7 +32,6 @@ final class PropertyFetchTypeResolver implements NodeTypeResolverInterface, Node
     ) {
     }
 
-    #[Required]
     public function autowire(NodeTypeResolver $nodeTypeResolver): void
     {
         $this->nodeTypeResolver = $nodeTypeResolver;

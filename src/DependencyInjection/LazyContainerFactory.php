@@ -44,6 +44,20 @@ use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\CastTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ClassMethodOrClassConstTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\NameTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ParamTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\PropertyFetchTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ReturnTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\VariableTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
@@ -219,20 +233,20 @@ final class LazyContainerFactory
      * @var array<class-string<NodeTypeResolverInterface>>
      */
     private const NODE_TYPE_RESOLVER_CLASSES = [
-        NodeTypeResolver\CastTypeResolver::class,
-        NodeTypeResolver\ClassAndInterfaceTypeResolver::class,
-        NodeTypeResolver\ClassMethodOrClassConstTypeResolver::class,
-        NodeTypeResolver\IdentifierTypeResolver::class,
-        NodeTypeResolver\NameTypeResolver::class,
-        NodeTypeResolver\NewTypeResolver::class,
-        NodeTypeResolver\ParamTypeResolver::class,
-        NodeTypeResolver\PropertyFetchTypeResolver::class,
-        NodeTypeResolver\PropertyTypeResolver::class,
-        NodeTypeResolver\ReturnTypeResolver::class,
-        NodeTypeResolver\ScalarTypeResolver::class,
-        NodeTypeResolver\StaticCallMethodCallTypeResolver::class,
-        NodeTypeResolver\TraitTypeResolver::class,
-        NodeTypeResolver\VariableTypeResolver::class,
+        CastTypeResolver::class,
+        ClassAndInterfaceTypeResolver::class,
+        ClassMethodOrClassConstTypeResolver::class,
+        IdentifierTypeResolver::class,
+        NameTypeResolver::class,
+        NewTypeResolver::class,
+        ParamTypeResolver::class,
+        PropertyFetchTypeResolver::class,
+        PropertyTypeResolver::class,
+        ReturnTypeResolver::class,
+        ScalarTypeResolver::class,
+        StaticCallMethodCallTypeResolver::class,
+        TraitTypeResolver::class,
+        VariableTypeResolver::class,
     ];
 
     /**
