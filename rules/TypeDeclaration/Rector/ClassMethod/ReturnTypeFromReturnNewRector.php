@@ -123,10 +123,14 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType
+    private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType|null
     {
         if ($this->classAnalyzer->isAnonymousClass($new->class)) {
             return $this->newTypeResolver->resolve($new);
+        }
+
+        if (! $new->class instanceof Name) {
+            return null;
         }
 
         $className = $this->getName($new->class);
@@ -200,11 +204,13 @@ CODE_SAMPLE
             }
 
             $new = $return->expr;
-            if (! $new->class instanceof Name) {
+            $newType = $this->createObjectTypeFromNew($new);
+
+            if ($newType === null) {
                 return null;
             }
 
-            $newTypes[] = $this->createObjectTypeFromNew($new);
+            $newTypes[] = $newType;
         }
 
         return $newTypes;
