@@ -26,6 +26,7 @@ use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
@@ -48,7 +49,8 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly NewTypeResolver $newTypeResolver
     ) {
     }
 
@@ -123,7 +125,7 @@ CODE_SAMPLE
     private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType
     {
         if ($this->classAnalyzer->isAnonymousClass($new->class)) {
-            return new ObjectWithoutClassType();
+            return $this->newTypeResolver->resolve($new);
         }
 
         $className = $this->getName($new->class);
