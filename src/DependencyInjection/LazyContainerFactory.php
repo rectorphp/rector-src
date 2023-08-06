@@ -36,6 +36,8 @@ use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpAttribute\AnnotationToAttributeMapper;
+use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
@@ -126,6 +128,10 @@ final class LazyContainerFactory
         $container->when(NodeNameResolver::class)
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
+
+        $container->when(AnnotationToAttributeMapper::class)
+            ->needs('$annotationToAttributeMappers')
+            ->giveTagged(AnnotationToAttributeMapperInterface::class);
 
         foreach (self::NODE_NAME_RESOLVER_CLASSES as $nodeNameResolverClass) {
             $container->singleton($nodeNameResolverClass);
