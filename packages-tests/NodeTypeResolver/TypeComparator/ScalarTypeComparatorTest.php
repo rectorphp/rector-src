@@ -13,16 +13,15 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\NodeTypeResolver\TypeComparator\ScalarTypeComparator;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ScalarTypeComparatorTest extends AbstractTestCase
+final class ScalarTypeComparatorTest extends AbstractLazyTestCase
 {
     private ScalarTypeComparator $scalarTypeComparator;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->scalarTypeComparator = $this->getService(ScalarTypeComparator::class);
+        $this->scalarTypeComparator = $this->make(ScalarTypeComparator::class);
     }
 
     #[DataProvider('provideData')]
