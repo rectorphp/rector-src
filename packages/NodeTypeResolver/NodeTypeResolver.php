@@ -218,7 +218,10 @@ final class NodeTypeResolver
 
         // cover anonymous class
         if ($expr instanceof New_) {
-            return $this->resolveByNodeTypeResolvers($expr);
+            $type = $this->resolveByNodeTypeResolvers($expr);
+            if ($type instanceof ObjectWithoutClassType) {
+                return $type;
+            }
         }
 
         $type = $scope->getNativeType($expr);
