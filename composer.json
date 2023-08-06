@@ -10,7 +10,7 @@
         "automation",
         "migration"
     ],
-    "homepage": "https://getrector.org",
+    "homepage": "https://getrector.com",
     "require": {
         "php": "^8.1",
         "ext-json": "*",
