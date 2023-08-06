@@ -249,11 +249,6 @@ final class NodeTypeResolver
         return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
     }
 
-    private function isAnonymousObjectType(Type $type): bool
-    {
-        return $type instanceof ObjectType && $this->classAnalyzer->isAnonymousClassName($type->getClassName());
-    }
-
     public function isNumberType(Expr $expr): bool
     {
         $nodeType = $this->getType($expr);
@@ -324,6 +319,11 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function isAnonymousObjectType(Type $type): bool
+    {
+        return $type instanceof ObjectType && $this->classAnalyzer->isAnonymousClassName($type->getClassName());
     }
 
     private function isUnionTypeable(Type $first, Type $second): bool
