@@ -17,14 +17,17 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
@@ -46,7 +49,9 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly ReflectionResolver $reflectionResolver,
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly NewTypeResolver $newTypeResolver
     ) {
     }
 
@@ -118,13 +123,22 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function createObjectTypeFromNew(New_ $new): ObjectType|StaticType
+    private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType|null
     {
-        $className = $this->getName($new->class);
-        if ($className === null) {
-            throw new ShouldNotHappenException();
+        if ($this->classAnalyzer->isAnonymousClass($new->class)) {
+            $newType = $this->newTypeResolver->resolve($new);
+            if (! $newType instanceof ObjectWithoutClassType) {
+                return null;
+            }
+
+            return $newType;
         }
 
+        if (! $new->class instanceof Name) {
+            return null;
+        }
+
+        $className = $this->getName($new->class);
         if ($className === ObjectReference::STATIC || $className === ObjectReference::SELF) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($new);
             if (! $classReflection instanceof ClassReflection) {
@@ -191,11 +205,13 @@ CODE_SAMPLE
             }
 
             $new = $return->expr;
-            if (! $new->class instanceof Name) {
+            $newType = $this->createObjectTypeFromNew($new);
+
+            if ($newType === null) {
                 return null;
             }
 
-            $newTypes[] = $this->createObjectTypeFromNew($new);
+            $newTypes[] = $newType;
         }
 
         return $newTypes;
