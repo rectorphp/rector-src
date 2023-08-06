@@ -18,19 +18,18 @@ use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class StaticTypeMapperTest extends AbstractTestCase
+final class StaticTypeMapperTest extends AbstractLazyTestCase
 {
     private StaticTypeMapper $staticTypeMapper;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->staticTypeMapper = $this->getService(StaticTypeMapper::class);
+        $this->staticTypeMapper = $this->make(StaticTypeMapper::class);
     }
 
-    #[DataProvider('provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType')]
+    #[DataProvider('provideData')]
     public function testMapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, string $expectedType): void
     {
         $string = new String_('hey');
@@ -40,7 +39,7 @@ final class StaticTypeMapperTest extends AbstractTestCase
         $this->assertInstanceOf($expectedType, $phpStanType);
     }
 
-    public static function provideDataForMapPHPStanPhpDocTypeNodeToPHPStanType(): Iterator
+    public static function provideData(): Iterator
     {
         $genericTypeNode = new GenericTypeNode(new IdentifierTypeNode('Traversable'), []);
         yield [$genericTypeNode, GenericObjectType::class];
