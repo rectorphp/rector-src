@@ -13,13 +13,16 @@ use PHPStan\Reflection\ReflectionProvider;
  */
 final class OverrideByParentClassGuard
 {
-    public function __construct(private readonly ReflectionProvider $reflectionProvider)
-    {
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider
+    ) {
     }
 
     public function isLegal(Class_ $class): bool
     {
-        if ($class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass($class->extends->toString())) {
+        if ($class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+            $class->extends->toString()
+        )) {
             return false;
         }
 
