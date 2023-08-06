@@ -61,8 +61,6 @@ parameters:
     ignoreErrors:
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 
-        - '#Fetching class constant class of deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
-
         -
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
@@ -641,9 +639,6 @@ parameters:
 
         - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
 
-        # refactor in next PR
-        - '#(.*?) has typehint with deprecated class Rector\\Core\\Configuration\\Parameter\\ParameterProvider#'
-
         -
             message: '#Do not use static property#'
             path: src/Configuration/Parameter/SimpleParameterProvider.php
@@ -674,5 +669,3 @@ parameters:
         -
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
-
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\StrictStringParamConcatRector\:\:isParamConcatted\(\)" is 12, keep it under 11#'

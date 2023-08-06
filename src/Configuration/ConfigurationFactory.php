@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\ValueObject\Configuration;
@@ -14,7 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 final class ConfigurationFactory
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly OutputStyleInterface $rectorOutputStyle
     ) {
     }
@@ -25,7 +23,7 @@ final class ConfigurationFactory
      */
     public function createForTests(array $paths): Configuration
     {
-        $fileExtensions = $this->parameterProvider->provideArrayParameter(Option::FILE_EXTENSIONS);
+        $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
         return new Configuration(true, true, false, ConsoleOutputFormatter::NAME, $fileExtensions, $paths);
     }
@@ -45,7 +43,7 @@ final class ConfigurationFactory
 
         $paths = $this->resolvePaths($input);
 
-        $fileExtensions = $this->parameterProvider->provideArrayParameter(Option::FILE_EXTENSIONS);
+        $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
@@ -106,7 +104,7 @@ final class ConfigurationFactory
         }
 
         // fallback to parameter
-        return $this->parameterProvider->provideArrayParameter(Option::PATHS);
+        return SimpleParameterProvider::provideArrayParameter(Option::PATHS);
     }
 
     private function resolveMemoryLimit(InputInterface $input): string | null

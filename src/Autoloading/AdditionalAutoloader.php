@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Autoloading;
 
 use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\ParameterProvider;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\Assert\Assert;
@@ -16,7 +16,6 @@ use Webmozart\Assert\Assert;
 final class AdditionalAutoloader
 {
     public function __construct(
-        private readonly ParameterProvider $parameterProvider,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
     ) {
     }
@@ -40,7 +39,7 @@ final class AdditionalAutoloader
 
     public function autoloadPaths(): void
     {
-        $autoloadPaths = $this->parameterProvider->provideArrayParameter(Option::AUTOLOAD_PATHS);
+        $autoloadPaths = SimpleParameterProvider::provideArrayParameter(Option::AUTOLOAD_PATHS);
         $this->dynamicSourceLocatorDecorator->addPaths($autoloadPaths);
     }
 }
