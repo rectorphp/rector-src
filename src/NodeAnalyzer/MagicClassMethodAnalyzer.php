@@ -10,8 +10,9 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final class MagicClassMethodAnalyzer
 {
-    public function __construct(private readonly NodeNameResolver $nodeNameResolver)
-    {
+    public function __construct(
+        private readonly NodeNameResolver $nodeNameResolver
+    ) {
     }
 
     public function isUnsafeOverridden(ClassMethod $classMethod): bool
