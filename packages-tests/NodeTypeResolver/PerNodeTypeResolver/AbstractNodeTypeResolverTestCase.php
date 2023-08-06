@@ -7,10 +7,10 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver;
 use PhpParser\Node;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 
-abstract class AbstractNodeTypeResolverTestCase extends AbstractTestCase
+abstract class AbstractNodeTypeResolverTestCase extends AbstractLazyTestCase
 {
     protected NodeTypeResolver $nodeTypeResolver;
 
@@ -20,11 +20,9 @@ abstract class AbstractNodeTypeResolverTestCase extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
-        $this->testingParser = $this->getService(TestingParser::class);
-        $this->nodeTypeResolver = $this->getService(NodeTypeResolver::class);
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
+        $this->testingParser = $this->make(TestingParser::class);
+        $this->nodeTypeResolver = $this->make(NodeTypeResolver::class);
     }
 
     /**

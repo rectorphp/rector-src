@@ -685,3 +685,8 @@ parameters:
 
         # false positives
         - '#Property Rector\\PhpAttribute\\AnnotationToAttributeMapper\:\:\$annotationToAttributeMappers \(array<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>\) does not accept iterable<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>#'
+
+        # avoid circular dependency
+        -
+            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
+            path: packages/NodeTypeResolver/NodeTypeResolver.php

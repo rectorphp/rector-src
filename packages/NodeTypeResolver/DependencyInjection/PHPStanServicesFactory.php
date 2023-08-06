@@ -106,6 +106,17 @@ final class PHPStanServicesFactory
     }
 
     /**
+     * @template TObject as Object
+     *
+     * @param class-string<TObject> $type
+     * @return TObject
+     */
+    public function getByType(string $type): object
+    {
+        return $this->container->getByType($type);
+    }
+
+    /**
      * @api
      */
     public function createDependencyResolver(): DependencyResolver
