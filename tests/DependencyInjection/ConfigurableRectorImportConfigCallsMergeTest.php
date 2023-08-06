@@ -39,5 +39,56 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
                 'old_4' => 'new_4',
             ],
         ];
+<<<<<<< HEAD
+=======
+
+        yield [
+<<<<<<< HEAD
+=======
+            __DIR__ . '/config/one_set.php', [
+                'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
+                'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
+                'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
+                'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
+                'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
+                'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
+            ],
+        ];
+
+        yield [
+>>>>>>> 10306a6c2c (simplify)
+            __DIR__ . '/config/one_set_with_own_rename.php', [
+                'Old' => 'New',
+                'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
+                'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
+                'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
+                'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
+                'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
+                'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
+            ],
+        ];
+<<<<<<< HEAD
+=======
+
+        yield [
+<<<<<<< HEAD
+            __DIR__ . '/config/two_sets_with_own_rename.php', [
+                'Old' => 'New',
+=======
+            __DIR__ . '/config/two_sets.php', [
+>>>>>>> 10306a6c2c (simplify)
+                'Twig_SimpleFilter' => 'Twig_Filter',
+                'Twig_SimpleFunction' => 'Twig_Function',
+                'Twig_SimpleTest' => 'Twig_Test',
+                'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
+                'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
+                'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
+                'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
+                'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
+                'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
+            ],
+        ];
+>>>>>>> 1e53612c86 (simplify)
+>>>>>>> 2cb7da5085 (simplify)
     }
 }
