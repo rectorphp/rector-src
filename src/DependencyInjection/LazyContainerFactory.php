@@ -20,6 +20,11 @@ use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
+use Rector\BetterPhpDocParser\PhpDocParser\ConstExprClassNameDecorator;
+use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
+use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
+use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
+use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
 use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
@@ -57,7 +62,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\ReturnTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver\VariableTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
@@ -230,6 +234,14 @@ final class LazyContainerFactory
     ];
 
     /**
+     * @var array<class-string<PhpDocNodeDecoratorInterface>>
+     */
+    private const PHP_DOC_NODE_DECORATOR_CLASSES = [
+        ConstExprClassNameDecorator::class,
+        DoctrineAnnotationDecorator::class,
+    ];
+
+    /**
      * @var array<class-string<NodeTypeResolverInterface>>
      */
     private const NODE_TYPE_RESOLVER_CLASSES = [
@@ -246,7 +258,6 @@ final class LazyContainerFactory
         ScalarTypeResolver::class,
         StaticCallMethodCallTypeResolver::class,
         TraitTypeResolver::class,
-        VariableTypeResolver::class,
     ];
 
     /**
@@ -314,6 +325,7 @@ final class LazyContainerFactory
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
 
+        $this->registerTagged($container, self::PHP_DOC_NODE_DECORATOR_CLASSES, PhpDocNodeDecoratorInterface::class);
         $this->registerTagged($container, self::TYPE_MAPPER_CLASSES, TypeMapperInterface::class);
         $this->registerTagged($container, self::PHPDOC_TYPE_MAPPER_CLASSES, PhpDocTypeMapperInterface::class);
         $this->registerTagged($container, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
@@ -367,6 +379,16 @@ final class LazyContainerFactory
                     $container->make(StaticTypeMapper::class),
                     $container->make(ReflectionResolver::class),
                     $container->make(ClassLikeAstResolver::class),
+                );
+            }
+        );
+
+        $container->afterResolving(
+            PlainValueParser::class,
+            static function (PlainValueParser $plainValueParser, Container $container): void {
+                $plainValueParser->autowire(
+                    $container->make(StaticDoctrineAnnotationParser::class),
+                    $container->make(ArrayParser::class),
                 );
             }
         );

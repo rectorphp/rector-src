@@ -10,11 +10,6 @@ class SkipAssignedInNamedConstructor
         $this->date = new \DateTime();
     }
 
-    public function getDate(): \DateTimeInterface
-    {
-        return $this->date;
-    }
-
     public static function create(\DateTimeInterface $date): self
     {
         $ack = new self();

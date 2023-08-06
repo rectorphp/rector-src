@@ -59,7 +59,7 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase
         $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($inputFileContents, new Nop());
         $printedDocComment = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
 
-        $filePathHelper = $this->getService(FilePathHelper::class);
+        $filePathHelper = $this->make(FilePathHelper::class);
         $relativeInputFilePath = $filePathHelper->relativePath($inputFilePath);
 
         $this->assertSame($expectedFileContents, $printedDocComment, $relativeInputFilePath);
