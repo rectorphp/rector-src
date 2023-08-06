@@ -6,17 +6,17 @@ namespace Rector\Core\Tests\Autoloading;
 
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class BootstrapFilesIncluderTest extends AbstractTestCase
+final class BootstrapFilesIncluderTest extends AbstractLazyTestCase
 {
     private BootstrapFilesIncluder $bootstrapFilesIncluder;
 
     protected function setUp(): void
     {
-        $this->boot();
+        parent::setUp();
 
-        $this->bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
+        $this->bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
     }
 
     #[DoesNotPerformAssertions]

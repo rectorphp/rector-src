@@ -7,16 +7,17 @@ namespace Rector\Core\Tests\Naming\ExpectedNameResolver;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class InflectorSingularResolverTest extends AbstractTestCase
+final class InflectorSingularResolverTest extends AbstractLazyTestCase
 {
     private InflectorSingularResolver $inflectorSingularResolver;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->inflectorSingularResolver = $this->getService(InflectorSingularResolver::class);
+        parent::setUp();
+
+        $this->inflectorSingularResolver = $this->make(InflectorSingularResolver::class);
     }
 
     #[DataProvider('provideData')]
@@ -33,6 +34,7 @@ final class InflectorSingularResolverTest extends AbstractTestCase
         yield ['news', 'new'];
         yield ['property', 'property'];
         yield ['argsOrOptions', 'argOrOption'];
+
         // news and plural
         yield ['staticCallsToNews', 'staticCallToNew'];
         yield ['newsToMethodCalls', 'newToMethodCall'];

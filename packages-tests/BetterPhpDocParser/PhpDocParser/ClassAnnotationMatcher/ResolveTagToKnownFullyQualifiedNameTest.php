@@ -56,14 +56,14 @@ final class ResolveTagToKnownFullyQualifiedNameTest extends AbstractTestCase
             $value = $varTagValueNode->type->__toString();
             $propertyName = strtolower($this->nodeNameResolver->getName($property));
 
-            $result = $this->classAnnotationMatcher->resolveTagToKnownFullyQualifiedName($value, $property);
+            $result = $this->classAnnotationMatcher->resolveTagFullyQualifiedName($value, $property);
             if (str_starts_with($propertyName, 'unknown')) {
-                $this->assertNull($result);
+                $this->assertStringContainsString('Unknown', $result);
             } elseif (str_contains($propertyName, 'aliased')) {
                 $unaliasedClass = str_replace('Aliased', '', $value);
-                $this->assertStringEndsWith($unaliasedClass, $result ?? '');
+                $this->assertStringEndsWith($unaliasedClass, $result);
             } elseif (str_starts_with($propertyName, 'known')) {
-                $this->assertStringEndsWith($value, $result ?? '');
+                $this->assertStringEndsWith($value, $result);
             } else {
                 throw new ShouldNotHappenException('All Variables should start with "known" or "unknown"!');
             }

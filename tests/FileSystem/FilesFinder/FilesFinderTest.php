@@ -6,32 +6,31 @@ namespace Rector\Core\Tests\FileSystem\FilesFinder;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\FileSystem\FilesFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class FilesFinderTest extends AbstractTestCase
+final class FilesFinderTest extends AbstractLazyTestCase
 {
     private FilesFinder $filesFinder;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->filesFinder = $this->getService(FilesFinder::class);
+        $this->filesFinder = $this->make(FilesFinder::class);
     }
 
     public function testDefault(): void
     {
-        $this->bootFromConfigFiles([__DIR__ . '/config/default.php']);
-        $filesFinder = $this->getService(FilesFinder::class);
-        $foundFiles = $filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSymlinks'], ['txt']);
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSymlinks'], ['txt']);
         $this->assertCount(1, $foundFiles);
     }
 
     public function testWithFollowingBrokenSymlinks(): void
     {
-        $this->bootFromConfigFiles([__DIR__ . '/config/test_broken_symlinks.php']);
-        $filesFinder = $this->getService(FilesFinder::class);
-        $foundFiles = $filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithBrokenSymlinks']);
+        SimpleParameterProvider::setParameter(Option::SKIP, [__DIR__ . '/../SourceWithBrokenSymlinks/folder1']);
+
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithBrokenSymlinks']);
         $this->assertCount(0, $foundFiles);
     }
 
