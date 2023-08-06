@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -97,6 +98,10 @@ CODE_SAMPLE
             $node,
             $scope
         )) {
+            return null;
+        }
+
+        if ($returnTypeNode instanceof UnionType) {
             return null;
         }
 
