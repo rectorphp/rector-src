@@ -7,10 +7,10 @@ namespace Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 
-final class ShortNameResolverTest extends AbstractTestCase
+final class ShortNameResolverTest extends AbstractLazyTestCase
 {
     private ShortNameResolver $shortNameResolver;
 
@@ -18,9 +18,8 @@ final class ShortNameResolverTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->shortNameResolver = $this->getService(ShortNameResolver::class);
-        $this->testingParser = $this->getService(TestingParser::class);
+        $this->shortNameResolver = $this->make(ShortNameResolver::class);
+        $this->testingParser = $this->make(TestingParser::class);
     }
 
     /**
