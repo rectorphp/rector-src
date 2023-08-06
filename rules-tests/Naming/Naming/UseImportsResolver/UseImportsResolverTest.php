@@ -11,12 +11,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Testing\Fixture\FixtureFileFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 use Rector\Tests\Naming\Naming\UseImportsResolver\Source\FirstClass;
 use Rector\Tests\Naming\Naming\UseImportsResolver\Source\SecondClass;
 
-final class UseImportsResolverTest extends AbstractTestCase
+final class UseImportsResolverTest extends AbstractLazyTestCase
 {
     private UseImportsResolver $useImportsResolver;
 
@@ -26,10 +26,9 @@ final class UseImportsResolverTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->useImportsResolver = $this->getService(UseImportsResolver::class);
-        $this->testingParser = $this->getService(TestingParser::class);
-        $this->betterNodeFinder = $this->getService(BetterNodeFinder::class);
+        $this->useImportsResolver = $this->make(UseImportsResolver::class);
+        $this->testingParser = $this->make(TestingParser::class);
+        $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
     }
 
     #[DataProvider('provideData')]

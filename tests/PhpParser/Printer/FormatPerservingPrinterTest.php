@@ -6,9 +6,9 @@ namespace Rector\Core\Tests\PhpParser\Printer;
 
 use Nette\Utils\FileSystem;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class FormatPerservingPrinterTest extends AbstractTestCase
+final class FormatPerservingPrinterTest extends AbstractLazyTestCase
 {
     /**
      * @var int
@@ -19,8 +19,7 @@ final class FormatPerservingPrinterTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->formatPerservingPrinter = $this->getService(FormatPerservingPrinter::class);
+        $this->formatPerservingPrinter = $this->make(FormatPerservingPrinter::class);
     }
 
     protected function tearDown(): void
