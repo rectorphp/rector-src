@@ -12,9 +12,9 @@ use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class CommentRemoverTest extends AbstractTestCase
+final class CommentRemoverTest extends AbstractLazyTestCase
 {
     private CommentRemover $commentRemover;
 
@@ -24,11 +24,9 @@ final class CommentRemoverTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->commentRemover = $this->getService(CommentRemover::class);
-        $this->fileInfoParser = $this->getService(FileInfoParser::class);
-        $this->betterStandardPrinter = $this->getService(BetterStandardPrinter::class);
+        $this->commentRemover = $this->make(CommentRemover::class);
+        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->betterStandardPrinter = $this->make(BetterStandardPrinter::class);
     }
 
     #[DataProvider('provideData')]

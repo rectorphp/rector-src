@@ -8,6 +8,10 @@ use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
 use PhpParser\Lexer;
+use PHPStan\Analyser\NodeScopeResolver;
+use PHPStan\Analyser\ScopeFactory;
+use PHPStan\Dependency\DependencyResolver;
+use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
@@ -36,6 +40,17 @@ use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefReturnNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ByRefVariableNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ContextNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\GlobalVariableNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\NameNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
+use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayAnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper;
@@ -88,6 +103,21 @@ final class LazyContainerFactory
     ];
 
     /**
+     * @var array<class-string<ScopeResolverNodeVisitorInterface>>
+     */
+    private const SCOPE_RESOLVER_NODE_VISITOR_CLASSES = [
+        ArgNodeVisitor::class,
+        AssignedToNodeVisitor::class,
+        ByRefReturnNodeVisitor::class,
+        ByRefVariableNodeVisitor::class,
+        ContextNodeVisitor::class,
+        GlobalVariableNodeVisitor::class,
+        NameNodeVisitor::class,
+        StaticVariableNodeVisitor::class,
+        StmtKeyNodeVisitor::class,
+    ];
+
+    /**
      * @api used as next container factory
      */
     public function create(): Container
@@ -97,6 +127,8 @@ final class LazyContainerFactory
         // setup base parameters - from RectorConfig
         SimpleParameterProvider::setParameter(Option::CACHE_DIR, sys_get_temp_dir() . '/rector_cached_files');
         SimpleParameterProvider::setParameter(Option::CONTAINER_CACHE_DIRECTORY, sys_get_temp_dir());
+
+        SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
 
         $container->singleton(Application::class, static function (): Application {
             $application = new Application();
@@ -180,7 +212,41 @@ final class LazyContainerFactory
             return $phpstanServiceFactory->createPHPStanParser();
         });
 
+        $container->when(PHPStanNodeScopeResolver::class)
+            ->needs('$nodeVisitors')
+            ->giveTagged(ScopeResolverNodeVisitorInterface::class);
+
+        $this->registerTagged(
+            $container,
+            self::SCOPE_RESOLVER_NODE_VISITOR_CLASSES,
+            ScopeResolverNodeVisitorInterface::class
+        );
+
         // phpstan factory
+        $this->createPhpstanServices($container);
+
+        // @todo add base node visitors
+        $container->when(PhpDocNodeMapper::class)
+            ->needs('$phpDocNodeVisitors')
+            ->giveTagged(BasePhpDocNodeVisitorInterface::class);
+
+        return $container;
+    }
+
+    /**
+     * @param array<class-string> $classes
+     * @param class-string $tagInterface
+     */
+    private function registerTagged(Container $container, array $classes, string $tagInterface): void
+    {
+        foreach ($classes as $class) {
+            $container->singleton($class);
+            $container->tag($class, $tagInterface);
+        }
+    }
+
+    private function createPhpstanServices(Container $container): void
+    {
         $container->singleton(
             ReflectionProvider::class,
             static function (Container $container): ReflectionProvider {
@@ -204,24 +270,24 @@ final class LazyContainerFactory
             return $phpstanServiceFactory->createTypeNodeResolver();
         });
 
-        // @todo add base node visitors
-        $container->singleton(PhpDocNodeMapper::class, PhpDocNodeMapper::class);
-        $container->when(PhpDocNodeMapper::class)
-            ->needs('$phpDocNodeVisitors')
-            ->giveTagged(BasePhpDocNodeVisitorInterface::class);
+        $container->singleton(NodeScopeResolver::class, static function (Container $container) {
+            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpstanServiceFactory->createNodeScopeResolver();
+        });
 
-        return $container;
-    }
+        $container->singleton(FileHelper::class, static function (Container $container) {
+            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpstanServiceFactory->createFileHelper();
+        });
 
-    /**
-     * @param array<class-string> $classes
-     * @param class-string $tagInterface
-     */
-    private function registerTagged(Container $container, array $classes, string $tagInterface): void
-    {
-        foreach ($classes as $class) {
-            $container->singleton($class);
-            $container->tag($class, $tagInterface);
-        }
+        $container->singleton(DependencyResolver::class, static function (Container $container) {
+            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpstanServiceFactory->createDependencyResolver();
+        });
+
+        $container->singleton(ScopeFactory::class, static function (Container $container) {
+            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
+            return $phpstanServiceFactory->createScopeFactory();
+        });
     }
 }
