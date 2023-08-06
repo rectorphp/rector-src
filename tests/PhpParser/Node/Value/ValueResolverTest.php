@@ -10,16 +10,15 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ValueResolverTest extends AbstractTestCase
+final class ValueResolverTest extends AbstractLazyTestCase
 {
     private ValueResolver $valueResolver;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->valueResolver = $this->getService(ValueResolver::class);
+        $this->valueResolver = $this->make(ValueResolver::class);
     }
 
     #[DataProvider('dataProvider')]
@@ -37,6 +36,7 @@ final class ValueResolverTest extends AbstractTestCase
         $builderFactory = new BuilderFactory();
 
         $classConstFetchNode = $builderFactory->classConstFetch('SomeClass', 'SOME_CONSTANT');
+
         yield [$classConstFetchNode, 'SomeClass::SOME_CONSTANT'];
         yield [$builderFactory->val(true), true];
         yield [$builderFactory->val(1), 1];
