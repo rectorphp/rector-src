@@ -25,6 +25,8 @@ use Rector\Caching\CacheFactory;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\PhpParser\ClassLikeAstResolver;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -102,11 +104,13 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
+use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IntersectionTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\NullableTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\UnionTypeMapper;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Application;
 use Webmozart\Assert\Assert;
 
@@ -321,11 +325,6 @@ final class LazyContainerFactory
             }
         );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 85a1ba5996 (fixup! move tyoe mapper classes)
         $container->afterResolving(
             NameScopeFactory::class,
             static function (NameScopeFactory $nameScopeFactory, Container $container): void {
@@ -338,10 +337,6 @@ final class LazyContainerFactory
             }
         );
 
-<<<<<<< HEAD
->>>>>>> 116c0e4738 (fixup! move tyoe mapper classes)
-=======
->>>>>>> 85a1ba5996 (fixup! move tyoe mapper classes)
         $container->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
