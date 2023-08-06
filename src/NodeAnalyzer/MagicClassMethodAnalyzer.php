@@ -10,7 +10,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 
 final class MagicClassMethodAnalyzer
 {
-    public function __construct(private NodeNameResolver $nodeNameResolver)
+    public function __construct(private readonly NodeNameResolver $nodeNameResolver)
     {
     }
 
