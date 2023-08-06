@@ -20,7 +20,7 @@ class UnionTypeWithAnonymousClass
 {
     public function run()
     {
-        fn () => rand(0, 1) ? new class {} : true;
+        fn (): object|bool => rand(0, 1) ? new class {} : true;
     }
 }
 
