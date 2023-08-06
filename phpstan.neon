@@ -682,3 +682,6 @@ parameters:
         -
             message: '#Parameters should use "Symfony\\Component\\Console\\Application\|string\|callable" types as the only types passed to this method#'
             path: src/Util/Reflection/PrivatesAccessor.php
+
+        # false positives
+        - '#Property Rector\\PhpAttribute\\AnnotationToAttributeMapper\:\:\$annotationToAttributeMappers \(array<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>\) does not accept iterable<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>#'

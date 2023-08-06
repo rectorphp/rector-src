@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\Util;
 
 use Rector\Core\Util\FileHasher;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class FileHasherTest extends AbstractTestCase
+final class FileHasherTest extends AbstractLazyTestCase
 {
     private FileHasher $fileHasher;
 
@@ -16,10 +16,8 @@ final class FileHasherTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->fileHasher = $this->getService(FileHasher::class);
-        $this->filesystem = new Filesystem();
+        $this->fileHasher = $this->make(FileHasher::class);
+        $this->filesystem = $this->make(Filesystem::class);
     }
 
     public function testHash(): void

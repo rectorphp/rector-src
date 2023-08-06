@@ -6,17 +6,15 @@ namespace Rector\Tests\NodeTypeResolver\DependencyInjection\BleedingEdgeIncludeP
 
 use Nette\Utils\FileSystem;
 use Rector\NodeTypeResolver\DependencyInjection\BleedingEdgeIncludePurifier;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class BleedingEdgeIncludePurifierTest extends AbstractTestCase
+final class BleedingEdgeIncludePurifierTest extends AbstractLazyTestCase
 {
     private BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier;
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->bleedingEdgeIncludePurifier = $this->getService(BleedingEdgeIncludePurifier::class);
+        $this->bleedingEdgeIncludePurifier = $this->make(BleedingEdgeIncludePurifier::class);
     }
 
     public function testNothing(): void

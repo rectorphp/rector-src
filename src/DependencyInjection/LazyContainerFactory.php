@@ -38,6 +38,13 @@ use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ClassConstFetchAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ConstExprNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\CurlyListNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\DoctrineAnnotationAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\StringAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\StringNodeAnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
@@ -71,13 +78,13 @@ final class LazyContainerFactory
      */
     private const ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES = [
         ArrayAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\ClassConstFetchAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\ConstExprNodeAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\CurlyListNodeAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\DoctrineAnnotationAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\StringAnnotationToAttributeMapper::class,
-        AnnotationToAttributeMapper\StringNodeAnnotationToAttributeMapper::class,
+        ArrayItemNodeAnnotationToAttributeMapper::class,
+        ClassConstFetchAnnotationToAttributeMapper::class,
+        ConstExprNodeAnnotationToAttributeMapper::class,
+        CurlyListNodeAnnotationToAttributeMapper::class,
+        DoctrineAnnotationAnnotationToAttributeMapper::class,
+        StringAnnotationToAttributeMapper::class,
+        StringNodeAnnotationToAttributeMapper::class,
     ];
 
     /**
@@ -159,7 +166,10 @@ final class LazyContainerFactory
         // #[Required]-like setter
         $container->afterResolving(
             ArrayAnnotationToAttributeMapper::class,
-            function (ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper, Container $container) {
+            static function (
+                ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper,
+                Container $container
+            ): void {
                 $annotationToAttributesMapper = $container->make(AnnotationToAttributeMapper::class);
                 $arrayAnnotationToAttributeMapper->autowire($annotationToAttributesMapper);
             }
