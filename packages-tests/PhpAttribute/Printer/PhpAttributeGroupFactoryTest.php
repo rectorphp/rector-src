@@ -9,16 +9,15 @@ use PhpParser\Node\AttributeGroup;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PhpAttributeGroupFactoryTest extends AbstractTestCase
+final class PhpAttributeGroupFactoryTest extends AbstractLazyTestCase
 {
     private PhpAttributeGroupFactory $phpAttributeGroupFactory;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->phpAttributeGroupFactory = $this->getService(PhpAttributeGroupFactory::class);
+        $this->phpAttributeGroupFactory = $this->make(PhpAttributeGroupFactory::class);
     }
 
     public function testCreateFromClassWithItems(): void
