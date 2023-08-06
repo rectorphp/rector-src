@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -17,11 +16,13 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -46,7 +47,8 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly ReflectionResolver $reflectionResolver,
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly ClassAnalyzer $classAnalyzer
     ) {
     }
 
@@ -118,8 +120,12 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function createObjectTypeFromNew(New_ $new): ObjectType|StaticType
+    private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType
     {
+        if ($this->classAnalyzer->isAnonymousClass($new->class)) {
+            return new ObjectWithoutClassType();
+        }
+
         $className = $this->getName($new->class);
         if ($className === null) {
             throw new ShouldNotHappenException();
@@ -191,10 +197,6 @@ CODE_SAMPLE
             }
 
             $new = $return->expr;
-            if (! $new->class instanceof Name) {
-                return null;
-            }
-
             $newTypes[] = $this->createObjectTypeFromNew($new);
         }
 
