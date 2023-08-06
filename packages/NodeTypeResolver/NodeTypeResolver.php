@@ -222,7 +222,10 @@ final class NodeTypeResolver
         }
 
         $type = $scope->getNativeType($expr);
-        dump($type);
+        if ($type instanceof ObjectType && $this->classAnalyzer->isAnonymousClassName($type->getClassName())) {
+            return new ObjectWithoutClassType();
+        }
+
         return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
     }
 
