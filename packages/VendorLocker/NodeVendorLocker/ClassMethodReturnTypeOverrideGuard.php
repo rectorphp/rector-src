@@ -15,6 +15,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use Rector\Core\FileSystem\FilePathHelper;
+use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -42,14 +43,15 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly FilePathHelper $filePathHelper
+        private readonly FilePathHelper $filePathHelper,
+        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer
     ) {
     }
 
     public function shouldSkipClassMethod(ClassMethod $classMethod, Scope $scope): bool
     {
         // 1. skip magic methods
-        if ($classMethod->isMagic()) {
+        if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
             return true;
         }
 

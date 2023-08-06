@@ -170,10 +170,6 @@ CODE_SAMPLE
             if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
                 return true;
             }
-
-            if ($node->isMagic()) {
-                return true;
-            }
         }
 
         return $this->isUnionPossibleReturnsVoid($node);
