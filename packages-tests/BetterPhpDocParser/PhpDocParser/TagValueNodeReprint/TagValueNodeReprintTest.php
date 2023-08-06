@@ -19,7 +19,6 @@ use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class TagValueNodeReprintTest extends AbstractLazyTestCase
 {

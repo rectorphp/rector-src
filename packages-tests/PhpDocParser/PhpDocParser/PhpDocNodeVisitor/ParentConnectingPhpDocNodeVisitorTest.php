@@ -13,7 +13,6 @@ use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class ParentConnectingPhpDocNodeVisitorTest extends AbstractLazyTestCase
 {

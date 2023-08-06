@@ -17,7 +17,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\Testing\PHPUnit\AbstractTestCase;
 
 final class BetterStandardPrinterTest extends AbstractLazyTestCase
 {
