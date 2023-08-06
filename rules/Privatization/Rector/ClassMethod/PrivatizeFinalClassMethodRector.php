@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Privatization\Guard\OverrideByParentClassGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,6 +24,7 @@ final class PrivatizeFinalClassMethodRector extends AbstractScopeAwareRector
     public function __construct(
         private readonly ClassMethodVisibilityGuard $classMethodVisibilityGuard,
         private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly OverrideByParentClassGuard $overrideByParentClassGuard
     ) {
     }
 
@@ -68,6 +70,10 @@ CODE_SAMPLE
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if (! $node->isFinal()) {
+            return null;
+        }
+
+        if (! $this->overrideByParentClassGuard->isLegal($node)) {
             return null;
         }
 
