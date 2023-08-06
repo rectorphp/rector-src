@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -199,6 +200,10 @@ CODE_SAMPLE
             }
 
             $new = $return->expr;
+            if (! $new->class instanceof Name) {
+                return null;
+            }
+
             $newTypes[] = $this->createObjectTypeFromNew($new);
         }
 
