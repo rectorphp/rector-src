@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class MultiReturn
+final class MultiScalar
 {
     public function run($value)
     {
@@ -18,9 +18,9 @@ final class MultiReturn
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class MultiReturn
+final class MultiScalar
 {
     public function run($value): bool|string
     {
