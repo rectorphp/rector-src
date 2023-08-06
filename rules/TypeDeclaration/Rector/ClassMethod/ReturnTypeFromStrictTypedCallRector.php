@@ -166,10 +166,8 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($node instanceof ClassMethod) {
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-                return true;
-            }
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+            return true;
         }
 
         return $this->isUnionPossibleReturnsVoid($node);
