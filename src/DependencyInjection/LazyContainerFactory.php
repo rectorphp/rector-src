@@ -57,7 +57,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\ReturnTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver\VariableTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\ArgNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
@@ -246,7 +245,6 @@ final class LazyContainerFactory
         ScalarTypeResolver::class,
         StaticCallMethodCallTypeResolver::class,
         TraitTypeResolver::class,
-        VariableTypeResolver::class,
     ];
 
     /**
