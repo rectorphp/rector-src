@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -16,7 +17,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 /**
  * @implements NodeTypeResolverInterface<Return_>
  */
-final class ReturnTypeResolver implements NodeTypeResolverInterface
+final class ReturnTypeResolver implements NodeTypeResolverInterface, NodeTypeResolverAwareInterface
 {
     private NodeTypeResolver $nodeTypeResolver;
 

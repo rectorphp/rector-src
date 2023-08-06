@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\NodeTypeResolver\Contract\NodeTypeResolverAwareInterface;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -17,7 +18,7 @@ use Symfony\Contracts\Service\Attribute\Required;
  *
  * @implements NodeTypeResolverInterface<Param>
  */
-final class ParamTypeResolver implements NodeTypeResolverInterface
+final class ParamTypeResolver implements NodeTypeResolverInterface, NodeTypeResolverAwareInterface
 {
     private NodeTypeResolver $nodeTypeResolver;
 
