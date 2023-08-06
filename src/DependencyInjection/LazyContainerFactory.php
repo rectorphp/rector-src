@@ -207,6 +207,17 @@ final class LazyContainerFactory
             }
         );
 
+        $container->afterResolving(
+            ArrayItemNodeAnnotationToAttributeMapper::class,
+            function (
+                ArrayItemNodeAnnotationToAttributeMapper $arrayItemNodeAnnotationToAttributeMapper,
+                Container $container
+            ) {
+                $annotationToAttributeMapper = $container->make(AnnotationToAttributeMapper::class);
+                $arrayItemNodeAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
+            }
+        );
+
         $container->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();

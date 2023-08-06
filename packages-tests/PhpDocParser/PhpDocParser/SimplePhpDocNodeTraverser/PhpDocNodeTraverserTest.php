@@ -10,9 +10,9 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PhpDocNodeTraverserTest extends AbstractTestCase
+final class PhpDocNodeTraverserTest extends AbstractLazyTestCase
 {
     /**
      * @var string
@@ -23,8 +23,7 @@ final class PhpDocNodeTraverserTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->phpDocNodeTraverser = $this->getService(PhpDocNodeTraverser::class);
+        $this->phpDocNodeTraverser = $this->make(PhpDocNodeTraverser::class);
     }
 
     public function test(): void
