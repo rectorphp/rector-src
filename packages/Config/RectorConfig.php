@@ -253,7 +253,6 @@ final class RectorConfig extends ContainerConfigurator
     public function indent(string $character, int $count): void
     {
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, $character);
-
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, $count);
     }
 

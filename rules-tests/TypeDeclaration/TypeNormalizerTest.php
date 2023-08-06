@@ -11,35 +11,26 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\TypeDeclaration\TypeNormalizer;
 
-final class TypeNormalizerTest extends AbstractTestCase
+final class TypeNormalizerTest extends AbstractLazyTestCase
 {
     private TypeNormalizer $typeNormalizer;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->typeNormalizer = $this->getService(TypeNormalizer::class);
+        $this->typeNormalizer = $this->make(TypeNormalizer::class);
     }
 
-    protected function tearDown(): void
-    {
-        unset($this->typeNormalizer);
-    }
-
-    #[DataProvider('provideDataNormalizeArrayOfUnionToUnionArray')]
+    #[DataProvider('provideData')]
     public function testNormalizeArrayOfUnionToUnionArray(ArrayType $arrayType, string $expectedDocString): void
     {
         $unionType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($arrayType);
         $this->assertInstanceOf(UnionType::class, $unionType);
     }
 
-    /**
-     * @return Iterator<mixed>
-     */
-    public static function provideDataNormalizeArrayOfUnionToUnionArray(): Iterator
+    public static function provideData(): Iterator
     {
         $unionType = new UnionType([new StringType(), new IntegerType()]);
         $arrayType = new ArrayType(new MixedType(), $unionType);
