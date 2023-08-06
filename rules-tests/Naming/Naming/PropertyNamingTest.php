@@ -9,16 +9,15 @@ use PHPStan\Type\ObjectType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PropertyNamingTest extends AbstractTestCase
+final class PropertyNamingTest extends AbstractLazyTestCase
 {
     private PropertyNaming $propertyNaming;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->propertyNaming = $this->getService(PropertyNaming::class);
+        $this->propertyNaming = $this->make(PropertyNaming::class);
     }
 
     #[DataProvider('getExpectedNameFromMethodNameDataProvider')]

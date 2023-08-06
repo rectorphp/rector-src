@@ -29,9 +29,6 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
     ) {
     }
 
-    /**
-     * Avoid circular reference
-     */
     #[Required]
     public function autowire(AnnotationToAttributeMapper $annotationToAttributeMapper): void
     {

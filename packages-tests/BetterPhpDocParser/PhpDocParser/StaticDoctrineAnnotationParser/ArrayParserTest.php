@@ -10,9 +10,9 @@ use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ArrayParserTest extends AbstractTestCase
+final class ArrayParserTest extends AbstractLazyTestCase
 {
     private ArrayParser $arrayParser;
 
@@ -20,10 +20,8 @@ final class ArrayParserTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->arrayParser = $this->getService(ArrayParser::class);
-        $this->tokenIteratorFactory = $this->getService(TokenIteratorFactory::class);
+        $this->arrayParser = $this->make(ArrayParser::class);
+        $this->tokenIteratorFactory = $this->make(TokenIteratorFactory::class);
     }
 
     /**

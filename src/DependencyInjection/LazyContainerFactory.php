@@ -36,6 +36,16 @@ use Rector\NodeNameResolver\NodeNameResolver\VariableNameResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpAttribute\AnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ClassConstFetchAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\ConstExprNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\CurlyListNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\DoctrineAnnotationAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\StringAnnotationToAttributeMapper;
+use Rector\PhpAttribute\AnnotationToAttributeMapper\StringNodeAnnotationToAttributeMapper;
+use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
@@ -61,6 +71,20 @@ final class LazyContainerFactory
         PropertyNameResolver::class,
         UseNameResolver::class,
         VariableNameResolver::class,
+    ];
+
+    /**
+     * @var array<class-string<AnnotationToAttributeMapperInterface>>
+     */
+    private const ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES = [
+        ArrayAnnotationToAttributeMapper::class,
+        ArrayItemNodeAnnotationToAttributeMapper::class,
+        ClassConstFetchAnnotationToAttributeMapper::class,
+        ConstExprNodeAnnotationToAttributeMapper::class,
+        CurlyListNodeAnnotationToAttributeMapper::class,
+        DoctrineAnnotationAnnotationToAttributeMapper::class,
+        StringAnnotationToAttributeMapper::class,
+        StringNodeAnnotationToAttributeMapper::class,
     ];
 
     /**
@@ -127,10 +151,29 @@ final class LazyContainerFactory
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
 
-        foreach (self::NODE_NAME_RESOLVER_CLASSES as $nodeNameResolverClass) {
-            $container->singleton($nodeNameResolverClass);
-            $container->tag($nodeNameResolverClass, NodeNameResolverInterface::class);
-        }
+        $this->registerTagged($container, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
+
+        $container->when(AnnotationToAttributeMapper::class)
+            ->needs('$annotationToAttributeMappers')
+            ->giveTagged(AnnotationToAttributeMapperInterface::class);
+
+        $this->registerTagged(
+            $container,
+            self::ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES,
+            AnnotationToAttributeMapperInterface::class
+        );
+
+        // #[Required]-like setter
+        $container->afterResolving(
+            ArrayAnnotationToAttributeMapper::class,
+            static function (
+                ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper,
+                Container $container
+            ): void {
+                $annotationToAttributesMapper = $container->make(AnnotationToAttributeMapper::class);
+                $arrayAnnotationToAttributeMapper->autowire($annotationToAttributesMapper);
+            }
+        );
 
         $container->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
@@ -168,5 +211,17 @@ final class LazyContainerFactory
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
 
         return $container;
+    }
+
+    /**
+     * @param array<class-string> $classes
+     * @param class-string $tagInterface
+     */
+    private function registerTagged(Container $container, array $classes, string $tagInterface): void
+    {
+        foreach ($classes as $class) {
+            $container->singleton($class);
+            $container->tag($class, $tagInterface);
+        }
     }
 }

@@ -11,9 +11,9 @@ use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
+final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
 {
     private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser;
 
@@ -21,10 +21,8 @@ final class StaticDoctrineAnnotationParserTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->tokenIteratorFactory = $this->getService(TokenIteratorFactory::class);
-        $this->staticDoctrineAnnotationParser = $this->getService(StaticDoctrineAnnotationParser::class);
+        $this->tokenIteratorFactory = $this->make(TokenIteratorFactory::class);
+        $this->staticDoctrineAnnotationParser = $this->make(StaticDoctrineAnnotationParser::class);
     }
 
     /**

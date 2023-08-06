@@ -13,17 +13,15 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class NodeFactoryTest extends AbstractTestCase
+final class NodeFactoryTest extends AbstractLazyTestCase
 {
     private NodeFactory $nodeFactory;
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->nodeFactory = $this->getService(NodeFactory::class);
+        $this->nodeFactory = $this->make(NodeFactory::class);
     }
 
     /**

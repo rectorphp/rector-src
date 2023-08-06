@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\FileSystem\FilesFinder\ExcludePaths;
 
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\FileSystem\FilesFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ExcludePathsTest extends AbstractTestCase
+final class ExcludePathsTest extends AbstractLazyTestCase
 {
-    public function testShouldFail(): void
+    public function test(): void
     {
-        $this->bootFromConfigFiles([__DIR__ . '/config/config-with-excluded-paths.php']);
+        SimpleParameterProvider::setParameter(Option::SKIP, ['*/ShouldBeExcluded/*']);
 
-        $filesFinder = $this->getService(FilesFinder::class);
+        $filesFinder = $this->make(FilesFinder::class);
 
         $foundFileInfos = $filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['php']);
         $this->assertCount(1, $foundFileInfos);
