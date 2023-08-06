@@ -14,7 +14,6 @@ use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelf
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
-use Rector\CodeQuality\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
@@ -179,7 +178,6 @@ return static function (RectorConfig $rectorConfig): void {
         InlineIsAInstanceOfRector::class,
         TernaryFalseExpressionToIfRector::class,
         InlineConstructorDefaultToPropertyRector::class,
-        ReturnTypeFromStrictScalarReturnExprRector::class,
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
