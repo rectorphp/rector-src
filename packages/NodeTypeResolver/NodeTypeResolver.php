@@ -222,7 +222,7 @@ final class NodeTypeResolver
         }
 
         $type = $scope->getNativeType($expr);
-        // ObjectType may be assigned first, fallback to ObjectWithoutClassType
+        // ObjectType anonymous may be assigned first, fallback to ObjectWithoutClassType
         if ($type instanceof ObjectType && $this->classAnalyzer->isAnonymousClassName($type->getClassName())) {
             return new ObjectWithoutClassType();
         }
