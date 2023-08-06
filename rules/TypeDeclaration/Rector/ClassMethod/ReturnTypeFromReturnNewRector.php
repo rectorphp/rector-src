@@ -126,7 +126,12 @@ CODE_SAMPLE
     private function createObjectTypeFromNew(New_ $new): ObjectType|ObjectWithoutClassType|StaticType|null
     {
         if ($this->classAnalyzer->isAnonymousClass($new->class)) {
-            return $this->newTypeResolver->resolve($new);
+            $newType = $this->newTypeResolver->resolve($new);
+            if (! $newType instanceof ObjectWithoutClassType) {
+                return null;
+            }
+
+            return $newType;
         }
 
         if (! $new->class instanceof Name) {
