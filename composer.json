@@ -5,7 +5,11 @@
         "bin/rector"
     ],
     "license": "MIT",
-    "keywords": ["refactoring", "automation", "migration"],
+    "keywords": [
+        "refactoring",
+        "automation",
+        "migration"
+    ],
     "homepage": "https://getrector.org",
     "require": {
         "php": "^8.1",
@@ -133,6 +137,9 @@
     },
     "extra": {
         "patches": {
+            "illuminate/container": [
+                "patches/illuminate-container-container-php.patch"
+            ],
             "nikic/php-parser": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-expr-closure-php.patch",
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/nikic-php-parser-lib-phpparser-node-stmt-finally-php.patch",

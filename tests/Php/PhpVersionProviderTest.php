@@ -4,29 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Php;
 
-use Iterator;
-use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Php\PhpVersionProvider;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PhpVersionProviderTest extends AbstractTestCase
+final class PhpVersionProviderTest extends AbstractLazyTestCase
 {
-    #[DataProvider('provideValidConfigData')]
-    public function testValidInput(string $invalidFilePath): void
+    public function test(): void
     {
-        $this->bootFromConfigFiles([$invalidFilePath]);
+        SimpleParameterProvider::setParameter(Option::PHP_VERSION_FEATURES, 100000);
 
-        $phpVersionProvider = $this->getService(PhpVersionProvider::class);
+        $phpVersionProvider = $this->make(PhpVersionProvider::class);
         $phpVersion = $phpVersionProvider->provide();
 
-        $this->assertIsInt($phpVersion);
-    }
-
-    /**
-     * @return Iterator<string[]>
-     */
-    public static function provideValidConfigData(): Iterator
-    {
-        yield [__DIR__ . '/config/valid_explicit_value.php'];
+        $this->assertSame(100000, $phpVersion);
     }
 }

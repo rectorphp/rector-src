@@ -11,16 +11,15 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PhpDocNodeMapperTest extends AbstractTestCase
+final class PhpDocNodeMapperTest extends AbstractLazyTestCase
 {
     private PhpDocNodeMapper $phpDocNodeMapper;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->phpDocNodeMapper = $this->getService(PhpDocNodeMapper::class);
+        $this->phpDocNodeMapper = $this->make(PhpDocNodeMapper::class);
     }
 
     public function testParamTag(): void

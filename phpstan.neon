@@ -1,6 +1,14 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
+services:
+    # makes $container->make() generic type
+    - Rector\Utils\PHPStan\ClassConstFetchReturnTypeResolver
+    -
+        class: Rector\Utils\PHPStan\TypeExtension\ContainerMakeReturnTypeExtension
+        tags:
+            - phpstan.broker.dynamicMethodReturnTypeExtension
+
 parameters:
     reportUnmatchedIgnoredErrors: false
 
@@ -669,3 +677,8 @@ parameters:
         -
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
+
+        # will be more generic later
+        -
+            message: '#Parameters should use "Symfony\\Component\\Console\\Application\|string\|callable" types as the only types passed to this method#'
+            path: src/Util/Reflection/PrivatesAccessor.php

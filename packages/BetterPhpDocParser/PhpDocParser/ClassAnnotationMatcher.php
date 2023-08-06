@@ -7,7 +7,6 @@ namespace Rector\BetterPhpDocParser\PhpDocParser;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -32,24 +31,8 @@ final class ClassAnnotationMatcher
     ) {
     }
 
-    /**
-     * @api doctrine
-     */
-    public function resolveTagToKnownFullyQualifiedName(string $tag, Property $property): ?string
+    public function resolveTagFullyQualifiedName(string $tag, Node $node): string
     {
-        return $this->_resolveTagFullyQualifiedName($tag, $property, true);
-    }
-
-    public function resolveTagFullyQualifiedName(string $tag, Node $node): ?string
-    {
-        return $this->_resolveTagFullyQualifiedName($tag, $node, false);
-    }
-
-    private function _resolveTagFullyQualifiedName(
-        string $tag,
-        Node $node,
-        bool $returnNullOnUnknownClass
-    ): ?string {
         $uniqueHash = $tag . spl_object_hash($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
             return $this->fullyQualifiedNameByHash[$uniqueHash];
@@ -58,13 +41,9 @@ final class ClassAnnotationMatcher
         $tag = ltrim($tag, '@');
 
         $uses = $this->useImportsResolver->resolve();
-        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag, $returnNullOnUnknownClass);
+        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag, false);
 
         if ($fullyQualifiedClass === null) {
-            if ($returnNullOnUnknownClass) {
-                return null;
-            }
-
             $fullyQualifiedClass = $tag;
         }
 

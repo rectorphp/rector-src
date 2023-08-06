@@ -175,7 +175,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             }
 
             // known doc tag to annotation class
-            $fullyQualifiedAnnotationClass = (string) $this->classAnnotationMatcher->resolveTagFullyQualifiedName(
+            $fullyQualifiedAnnotationClass = $this->classAnnotationMatcher->resolveTagFullyQualifiedName(
                 $phpDocChildNode->name,
                 $currentPhpNode
             );
