@@ -7,16 +7,15 @@ namespace Rector\Core\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersion
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ProjectComposerJsonPhpVersionResolverTest extends AbstractTestCase
+final class ProjectComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase
 {
     private ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver;
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->projectComposerJsonPhpVersionResolver = $this->getService(ProjectComposerJsonPhpVersionResolver::class);
+        $this->projectComposerJsonPhpVersionResolver = $this->make(ProjectComposerJsonPhpVersionResolver::class);
     }
 
     #[DataProvider('provideData')]

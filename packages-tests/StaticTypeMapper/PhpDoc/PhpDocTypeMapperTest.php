@@ -14,9 +14,9 @@ use PHPStan\Type\ArrayType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class PhpDocTypeMapperTest extends AbstractTestCase
+final class PhpDocTypeMapperTest extends AbstractLazyTestCase
 {
     private PhpDocTypeMapper $phpDocTypeMapper;
 
@@ -24,9 +24,8 @@ final class PhpDocTypeMapperTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->phpDocTypeMapper = $this->getService(PhpDocTypeMapper::class);
-        $this->nameScopeFactory = $this->getService(NameScopeFactory::class);
+        $this->phpDocTypeMapper = $this->make(PhpDocTypeMapper::class);
+        $this->nameScopeFactory = $this->make(NameScopeFactory::class);
     }
 
     /**

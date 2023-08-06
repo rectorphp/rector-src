@@ -12,17 +12,15 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ArrayTypeMapper;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ArrayTypeMapperTest extends AbstractTestCase
+final class ArrayTypeMapperTest extends AbstractLazyTestCase
 {
     private ArrayTypeMapper $arrayTypeMapper;
 
     protected function setUp(): void
     {
-        $this->boot();
-
-        $this->arrayTypeMapper = $this->getService(ArrayTypeMapper::class);
+        $this->arrayTypeMapper = $this->make(ArrayTypeMapper::class);
     }
 
     #[DataProvider('provideDataWithoutKeys')]

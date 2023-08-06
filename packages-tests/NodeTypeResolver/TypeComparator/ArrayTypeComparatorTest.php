@@ -15,10 +15,10 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\ArrayTypeComparator;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\NodeTypeResolver\TypeComparator\Source\SomeGenericTypeObject;
 
-final class ArrayTypeComparatorTest extends AbstractTestCase
+final class ArrayTypeComparatorTest extends AbstractLazyTestCase
 {
     private ArrayTypeComparator $arrayTypeComparator;
 
@@ -26,9 +26,8 @@ final class ArrayTypeComparatorTest extends AbstractTestCase
 
     protected function setUp(): void
     {
-        $this->boot();
-        $this->arrayTypeComparator = $this->getService(ArrayTypeComparator::class);
-        $this->reflectionProvider = $this->getService(ReflectionProvider::class);
+        $this->arrayTypeComparator = $this->make(ArrayTypeComparator::class);
+        $this->reflectionProvider = $this->make(ReflectionProvider::class);
     }
 
     public function testClassStringSubtype(): void
