@@ -21,7 +21,7 @@ use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 
-abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
+abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements RectorTestInterface
 {
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
@@ -40,6 +40,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $configFile = $this->provideConfigFilePath();
 
+<<<<<<< HEAD
         // boot once for config + test case to avoid booting again and again for every test fixture
         $cacheKey = sha1($configFile . static::class);
 
@@ -60,6 +61,21 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
+=======
+        $this->bootFromConfigFiles([$configFile]);
+
+        $this->applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
+        $this->dynamicSourceLocatorProvider = $this->make(DynamicSourceLocatorProvider::class);
+
+        /** @var AdditionalAutoloader $additionalAutoloader */
+        $additionalAutoloader = $this->make(AdditionalAutoloader::class);
+        $additionalAutoloader->autoloadPaths();
+
+        /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
+        $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
+        $bootstrapFilesIncluder->includeBootstrapFiles();
+        $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
+>>>>>>> 56834d58a6 (refactor RectorConfig to Laravel container)
     }
 
     protected function tearDown(): void
@@ -155,8 +171,16 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
+<<<<<<< HEAD
+=======
+        // needed for PHPStan, because the analyzed file is just created in /temp - need for trait and similar deps
+        /** @var NodeScopeResolver $nodeScopeResolver */
+        $nodeScopeResolver = $this->make(NodeScopeResolver::class);
+        $nodeScopeResolver->setAnalysedFiles([$filePath]);
+
+>>>>>>> a5ac74037b (refactor RectorConfig to Laravel container)
         /** @var ConfigurationFactory $configurationFactory */
-        $configurationFactory = $this->getService(ConfigurationFactory::class);
+        $configurationFactory = $this->make(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);
 
         $this->applicationFileProcessor->processFiles([$filePath], $configuration);

@@ -17,6 +17,16 @@ abstract class AbstractLazyTestCase extends TestCase
 {
     private static ?Container $container = null;
 
+    protected static function getContainer(): Container
+    {
+        if (! self::$container instanceof Container) {
+            $lazyContainerFactory = new LazyContainerFactory();
+            self::$container = $lazyContainerFactory->create();
+        }
+
+        return self::$container;
+    }
+
     /**
      * @api
      * @param string[] $configFiles
@@ -40,6 +50,7 @@ abstract class AbstractLazyTestCase extends TestCase
      */
     protected function make(string $class): object
     {
+<<<<<<< HEAD
         return self::getContainer()->make($class);
     }
 
@@ -51,6 +62,10 @@ abstract class AbstractLazyTestCase extends TestCase
         }
 
         return self::$container;
+=======
+        $container = self::getContainer();
+        return $container->make($class);
+>>>>>>> 2958bc3d19 (refactor RectorConfig to Laravel container)
     }
 
     /**
