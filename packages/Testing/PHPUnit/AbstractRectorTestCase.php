@@ -26,8 +26,6 @@ use Rector\Testing\Fixture\FixtureSplitter;
 
 abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
 {
-    protected static ?ContainerInterface $allRectorContainer = null;
-
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
