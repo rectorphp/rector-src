@@ -31,7 +31,7 @@ final class ListRulesCommand extends Command
     public function __construct(
         private readonly RectorOutputStyle $rectorOutputStyle,
         private readonly SkippedClassResolver $skippedClassResolver,
-        RewindableGenerator $rectors
+        iterable $rectors
     ) {
         parent::__construct();
         $this->rectors = iterator_to_array($rectors);

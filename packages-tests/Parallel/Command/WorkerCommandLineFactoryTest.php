@@ -6,17 +6,16 @@ namespace Rector\Tests\Parallel\Command;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\Command\ProcessCommand;
-use Rector\Core\Kernel\RectorKernel;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 
-final class WorkerCommandLineFactoryTest extends TestCase
+final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 {
     /**
      * @var string
@@ -34,11 +33,8 @@ final class WorkerCommandLineFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->create();
-
-        $this->workerCommandLineFactory = $containerBuilder->get(WorkerCommandLineFactory::class);
-        $this->processCommand = $containerBuilder->get(ProcessCommand::class);
+        $this->workerCommandLineFactory = $this->make(WorkerCommandLineFactory::class);
+        $this->processCommand = $this->make(ProcessCommand::class);
     }
 
     /**

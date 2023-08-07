@@ -6,20 +6,16 @@ namespace Rector\Tests\Skipper\FileSystem;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use Rector\Core\Kernel\RectorKernel;
 use Rector\Skipper\FileSystem\FnMatchPathNormalizer;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class FnMatchPathNormalizerTest extends TestCase
+final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
 {
     private FnMatchPathNormalizer $fnMatchPathNormalizer;
 
     protected function setUp(): void
     {
-        $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->create();
-
-        $this->fnMatchPathNormalizer = $containerBuilder->get(FnMatchPathNormalizer::class);
+        $this->fnMatchPathNormalizer = $this->make(FnMatchPathNormalizer::class);
     }
 
     #[DataProvider('providePaths')]
