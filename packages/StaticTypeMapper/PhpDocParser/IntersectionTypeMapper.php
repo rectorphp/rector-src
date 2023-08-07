@@ -6,30 +6,27 @@ namespace Rector\StaticTypeMapper\PhpDocParser;
 
 use PhpParser\Node;
 use PHPStan\Analyser\NameScope;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
-use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements PhpDocTypeMapperInterface<IntersectionTypeNode>
  */
 final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
 {
-    private PhpDocTypeMapper $phpDocTypeMapper;
+    public function __construct(
+        private readonly IdentifierTypeMapper $identifierTypeMapper
+    ) {
+    }
 
     public function getNodeType(): string
     {
         return IntersectionTypeNode::class;
-    }
-
-    #[Required]
-    public function autowire(PhpDocTypeMapper $phpDocTypeMapper): void
-    {
-        $this->phpDocTypeMapper = $phpDocTypeMapper;
     }
 
     /**
@@ -39,10 +36,13 @@ final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
     {
         $intersectionedTypes = [];
         foreach ($typeNode->types as $intersectionedTypeNode) {
-            $intersectionedTypes[] = $this->phpDocTypeMapper->mapToPHPStanType(
+            if (! $intersectionedTypeNode instanceof IdentifierTypeNode) {
+                return new MixedType();
+            }
+
+            $intersectionedTypes[] = $this->identifierTypeMapper->mapIdentifierTypeNode(
                 $intersectionedTypeNode,
-                $node,
-                $nameScope
+                $node
             );
         }
 
