@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
+use PHPStan\Analyser\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -35,7 +36,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
     private function resolveClassReflection(Name|FullyQualified $node): ?ClassReflection
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+        if (! $scope instanceof Scope) {
             return null;
         }
 
