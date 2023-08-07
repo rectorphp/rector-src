@@ -696,3 +696,9 @@ parameters:
         - '#Call to an undefined method Illuminate\\Container\\Container\:\:(.*?)\(\)#'
         - '#Parameter 1 should use "Illuminate\\Container\\Container" type as the only type passed to this method#'
         - '#Parameter \#1 \$container of method Rector\\Core\\DependencyInjection\\LazyContainerFactory\:\:createPHPStanServices\(\) expects Rector\\Config\\RectorConfig, Illuminate\\Container\\Container given#'
+
+        -
+            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
+            paths:
+                - packages/Config/RectorConfig.php
+                - packages/Config/LazyRectorConfig.php
