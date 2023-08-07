@@ -6,14 +6,14 @@ namespace Rector\Core\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ConfigurationFactory
 {
     public function __construct(
-        private readonly OutputStyleInterface $rectorOutputStyle
+        private readonly SymfonyStyle $symfonyStyle
     ) {
     }
 
@@ -73,7 +73,7 @@ final class ConfigurationFactory
             return false;
         }
 
-        if ($this->rectorOutputStyle->isVerbose()) {
+        if ($this->symfonyStyle->isVerbose()) {
             return false;
         }
 

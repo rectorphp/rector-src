@@ -7,7 +7,6 @@ namespace Rector\Core\Console\Command;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Console\Output\RectorOutputStyle;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
@@ -16,6 +15,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 final class ListRulesCommand extends Command
@@ -29,9 +29,9 @@ final class ListRulesCommand extends Command
      * @param RewindableGenerator<RectorInterface>|RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly RectorOutputStyle $rectorOutputStyle,
+        private readonly SymfonyStyle         $symfonyStyle,
         private readonly SkippedClassResolver $skippedClassResolver,
-        iterable $rectors
+        iterable                              $rectors
     ) {
         parent::__construct();
         if ($rectors instanceof RewindableGenerator) {
@@ -72,12 +72,12 @@ final class ListRulesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->rectorOutputStyle->title('Loaded Rector rules');
-        $this->rectorOutputStyle->listing($rectorClasses);
+        $this->symfonyStyle->title('Loaded Rector rules');
+        $this->symfonyStyle->listing($rectorClasses);
 
         if ($skippedClasses !== []) {
-            $this->rectorOutputStyle->title('Skipped Rector rules');
-            $this->rectorOutputStyle->listing($skippedClasses);
+            $this->symfonyStyle->title('Skipped Rector rules');
+            $this->symfonyStyle->listing($skippedClasses);
         }
 
         return Command::SUCCESS;

@@ -9,7 +9,6 @@ use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Util\ArrayParametersMerger;
@@ -22,6 +21,7 @@ use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\ScheduleFactory;
@@ -43,16 +43,16 @@ final class ApplicationFileProcessor
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
-        private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly FileFactory $fileFactory,
-        private readonly NodeScopeResolver $nodeScopeResolver,
+        private readonly SymfonyStyle          $symfonyStyle,
+        private readonly FileFactory           $fileFactory,
+        private readonly NodeScopeResolver     $nodeScopeResolver,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
-        private readonly ScheduleFactory $scheduleFactory,
-        private readonly CpuCoreCountProvider $cpuCoreCountProvider,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly iterable $fileProcessors,
+        private readonly ScheduleFactory       $scheduleFactory,
+        private readonly CpuCoreCountProvider  $cpuCoreCountProvider,
+        private readonly ChangedFilesDetector  $changedFilesDetector,
+        private readonly CurrentFileProvider   $currentFileProvider,
+        private readonly iterable              $fileProcessors,
     ) {
     }
 
@@ -103,8 +103,8 @@ final class ApplicationFileProcessor
         // progress bar on parallel handled on runParallel()
         if (! $isParallel && $shouldShowProgressBar) {
             $fileCount = count($filePaths);
-            $this->rectorOutputStyle->progressStart($fileCount);
-            $this->rectorOutputStyle->progressAdvance(0);
+            $this->symfonyStyle->progressStart($fileCount);
+            $this->symfonyStyle->progressAdvance(0);
         }
 
         $systemErrorsAndFileDiffs = [
@@ -124,7 +124,7 @@ final class ApplicationFileProcessor
                 // progress bar +1,
                 // progress bar on parallel handled on runParallel()
                 if (! $isParallel && $shouldShowProgressBar) {
-                    $this->rectorOutputStyle->progressAdvance();
+                    $this->symfonyStyle->progressAdvance();
                 }
             } catch (Throwable $throwable) {
                 $this->invalidateFile($file);
@@ -173,7 +173,7 @@ final class ApplicationFileProcessor
             ? $filePath->getFilePath()
             : $filePath;
 
-        if ($this->rectorOutputStyle->isDebug()) {
+        if ($this->symfonyStyle->isDebug()) {
             return new SystemError(
                 $errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(),
                 $filePath,
@@ -242,11 +242,11 @@ final class ApplicationFileProcessor
 
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($filePaths);
-            $this->rectorOutputStyle->progressStart($fileCount);
-            $this->rectorOutputStyle->progressAdvance(0);
+            $this->symfonyStyle->progressStart($fileCount);
+            $this->symfonyStyle->progressAdvance(0);
 
             $postFileCallback = function (int $stepCount): void {
-                $this->rectorOutputStyle->progressAdvance($stepCount);
+                $this->symfonyStyle->progressAdvance($stepCount);
                 // running in parallel here → nothing else to do
             };
         }

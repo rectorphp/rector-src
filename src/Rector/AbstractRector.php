@@ -19,7 +19,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\Core\Console\Output\RectorOutputStyle;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
@@ -38,6 +37,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
@@ -98,7 +98,7 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private RectorOutputStyle $rectorOutputStyle;
+    private SymfonyStyle $symfonyStyle;
 
     private FilePathHelper $filePathHelper;
 
@@ -122,7 +122,7 @@ CODE_SAMPLE;
         RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        RectorOutputStyle $rectorOutputStyle,
+        SymfonyStyle $symfonyStyle,
         FilePathHelper $filePathHelper,
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
@@ -141,7 +141,7 @@ CODE_SAMPLE;
         $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
-        $this->rectorOutputStyle = $rectorOutputStyle;
+        $this->symfonyStyle = $symfonyStyle;
         $this->filePathHelper = $filePathHelper;
     }
 
@@ -173,7 +173,7 @@ CODE_SAMPLE;
             return null;
         }
 
-        $isDebug = $this->rectorOutputStyle->isDebug();
+        $isDebug = $this->symfonyStyle->isDebug();
 
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
@@ -398,8 +398,8 @@ CODE_SAMPLE;
     {
         $relativeFilePath = $this->filePathHelper->relativePath($this->file->getFilePath());
 
-        $this->rectorOutputStyle->writeln('[file] ' . $relativeFilePath);
-        $this->rectorOutputStyle->writeln('[rule] ' . static::class);
+        $this->symfonyStyle->writeln('[file] ' . $relativeFilePath);
+        $this->symfonyStyle->writeln('[rule] ' . static::class);
     }
 
     private function printConsumptions(float $startTime, int $previousMemory): void
@@ -413,7 +413,7 @@ CODE_SAMPLE;
             BytesHelper::bytes($currentTotalMemory),
             $elapsedTime
         );
-        $this->rectorOutputStyle->writeln($consumed);
-        $this->rectorOutputStyle->newLine(1);
+        $this->symfonyStyle->writeln($consumed);
+        $this->symfonyStyle->newLine(1);
     }
 }
