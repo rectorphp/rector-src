@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallT
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\Source\GoOneWayInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\Source\SomeTypedService;
 
-final class SkipUnknownParent implements UnknownParentClass
+final class SkipUnknownParent extends UnknownParentClass
 {
     public function __construct(
         private SomeTypedService $someTypedService

@@ -91,6 +91,7 @@ final class ParentClassMethodTypeOverrideGuard
     }
 
     private function hasClassParent(ClassReflection $classReflection):bool {
+        // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
         $nativeReflection = $classReflection->getNativeReflection();
         $betterReflectionClass = $this->privatesAccessor->getPrivateProperty($nativeReflection, 'betterReflectionClass');
         $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
