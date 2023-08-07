@@ -40,7 +40,6 @@ use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Console\Command\ListRulesCommand;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
 use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
@@ -187,9 +186,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(CloningVisitor::class);
     $services->set(NodeFinder::class);
 
-    $services->set(RectorStyle::class)
-        ->factory([service(RectorConsoleOutputStyleFactory::class), 'create']);
-
     $services->set(Parser::class)
         ->factory([service(PHPStanServicesFactory::class), 'createPHPStanParser']);
 
@@ -204,6 +200,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     // console
     $services->set(SymfonyStyleFactory::class);
+
+    $services->alias(RectorStyle::class, SymfonyStyle::class);
     $services->set(SymfonyStyle::class)
         ->factory([service(SymfonyStyleFactory::class), 'create']);
 

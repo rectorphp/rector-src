@@ -29,11 +29,12 @@ final class ListRulesCommand extends Command
      * @param RewindableGenerator<RectorInterface>|RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly SymfonyStyle         $symfonyStyle,
+        private readonly SymfonyStyle $symfonyStyle,
         private readonly SkippedClassResolver $skippedClassResolver,
-        iterable                              $rectors
+        iterable $rectors
     ) {
         parent::__construct();
+
         if ($rectors instanceof RewindableGenerator) {
             $rectors = iterator_to_array($rectors->getIterator());
         }
