@@ -35,10 +35,10 @@ final class ListRulesCommand extends Command
     ) {
         parent::__construct();
         if ($rectors instanceof RewindableGenerator) {
-            $rectors = $rectors->getIterator();
+            $rectors = iterator_to_array($rectors->getIterator());
         }
 
-        $this->rectors = iterator_to_array($rectors);
+        $this->rectors = $rectors;
     }
 
     protected function configure(): void
