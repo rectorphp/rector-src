@@ -25,7 +25,6 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
-use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +36,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictParamRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
@@ -92,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipNode($node, $scope)) {
+        if ($this->shouldSkipNode($node)) {
             return null;
         }
 
@@ -196,14 +195,14 @@ CODE_SAMPLE
         return $isParamModified;
     }
 
-    private function shouldSkipNode(ClassMethod|Function_|Closure $node, Scope $scope): bool
+    private function shouldSkipNode(ClassMethod|Function_|Closure $node): bool
     {
         if ($node->returnType !== null) {
             return true;
         }
 
         if ($node instanceof ClassMethod) {
-            if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node) !== false) {
                 return true;
             }
 
