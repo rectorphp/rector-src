@@ -396,9 +396,7 @@ final class LazyContainerFactory
         $container->afterResolving(
             ArrayTypeMapper::class,
             static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
-                $arrayTypeMapper->autowire(
-                    $container->make(PHPStanStaticTypeMapper::class)
-                );
+                $arrayTypeMapper->autowire($container->make(PHPStanStaticTypeMapper::class));
             }
         );
 

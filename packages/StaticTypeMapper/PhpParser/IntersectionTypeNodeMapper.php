@@ -20,8 +20,7 @@ final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
         private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
         private readonly NameNodeMapper $nameNodeMapper,
         private readonly IdentifierNodeMapper $identifierNodeMapper
-    )
-    {
+    ) {
     }
 
     public function getNodeType(): string
