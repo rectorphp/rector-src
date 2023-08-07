@@ -20,7 +20,7 @@ final class SkipSkipperTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        SimpleParameterProvider::addParameter(Option::SKIP, [
+        SimpleParameterProvider::setParameter(Option::SKIP, [
             // classes
             SomeClassToSkip::class,
 
@@ -42,7 +42,7 @@ final class SkipSkipperTest extends AbstractLazyTestCase
     }
 
     #[DataProvider('provideCheckerAndFile')]
-    #[DataProvider('provideAnythingAndFilePath')]
+    #[DataProvider('provideFilePath')]
     public function test(string $element, string $filePath, bool $expectedSkip): void
     {
         $resolvedSkip = $this->skipper->shouldSkipElementAndFilePath($element, $filePath);
@@ -61,7 +61,7 @@ final class SkipSkipperTest extends AbstractLazyTestCase
         yield [NotSkippedClass::class, __DIR__ . '/Fixture/someOtherFile', false];
     }
 
-    public static function provideAnythingAndFilePath(): Iterator
+    public static function provideFilePath(): Iterator
     {
         yield ['anything', __DIR__ . '/Fixture/AlwaysSkippedPath/some_file.txt', true];
         yield ['anything', __DIR__ . '/Fixture/PathSkippedWithMask/another_file.txt', true];
