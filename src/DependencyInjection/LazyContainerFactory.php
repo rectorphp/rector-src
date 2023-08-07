@@ -29,7 +29,6 @@ use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -393,7 +392,6 @@ final class LazyContainerFactory
                 $nameScopeFactory->autowire(
                     $container->make(PhpDocInfoFactory::class),
                     $container->make(StaticTypeMapper::class),
-                    $container->make(ReflectionResolver::class),
                 );
             }
         );

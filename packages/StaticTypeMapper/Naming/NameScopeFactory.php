@@ -31,11 +31,10 @@ final class NameScopeFactory
 
     private PhpDocInfoFactory $phpDocInfoFactory;
 
-    private ReflectionResolver $reflectionResolver;
-
     public function __construct(
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -44,12 +43,10 @@ final class NameScopeFactory
     #[Required]
     public function autowire(
         PhpDocInfoFactory $phpDocInfoFactory,
-        StaticTypeMapper $staticTypeMapper,
-        ReflectionResolver $reflectionResolver
+        StaticTypeMapper $staticTypeMapper
     ): void {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
-        $this->reflectionResolver = $reflectionResolver;
     }
 
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
