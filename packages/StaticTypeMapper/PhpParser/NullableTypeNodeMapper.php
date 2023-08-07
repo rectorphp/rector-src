@@ -5,30 +5,25 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
-use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements PhpParserNodeMapperInterface<NullableType>
  */
 final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
 {
-    private PhpParserNodeMapper $phpParserNodeMapper;
-
     public function __construct(
-        private readonly TypeFactory $typeFactory
+        private readonly TypeFactory $typeFactory,
+        private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
+        private readonly NameNodeMapper $nameNodeMapper,
+        private readonly IdentifierNodeMapper $identifierNodeMapper
     ) {
-    }
-
-    #[Required]
-    public function autowire(PhpParserNodeMapper $phpParserNodeMapper): void
-    {
-        $this->phpParserNodeMapper = $phpParserNodeMapper;
     }
 
     public function getNodeType(): string
@@ -41,7 +36,15 @@ final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
-        $types = [$this->phpParserNodeMapper->mapToPHPStanType($node->type), new NullType()];
+        if ($node->type instanceof FullyQualified) {
+            $type = $this->fullyQualifiedNodeMapper->mapToPHPStan($node->type);
+        } elseif ($node->type instanceof Name) {
+            $type = $this->nameNodeMapper->mapToPHPStan($node->type);
+        } else {
+            $type = $this->identifierNodeMapper->mapToPHPStan($node->type);
+        }
+
+        $types = [$type, new NullType()];
 
         return $this->typeFactory->createMixedPassedOrUnionType($types);
     }
