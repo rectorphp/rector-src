@@ -389,14 +389,6 @@ final class LazyContainerFactory
         );
 
         $container->afterResolving(
-            ShortNameResolver::class,
-            static function (ShortNameResolver $shortNameResolver, Container $container): void {
-                $phpDocInfoFactory = $container->make(PhpDocInfoFactory::class);
-                $shortNameResolver->autowire($phpDocInfoFactory);
-            }
-        );
-
-        $container->afterResolving(
             NameScopeFactory::class,
             static function (NameScopeFactory $nameScopeFactory, Container $container): void {
                 $nameScopeFactory->autowire(
