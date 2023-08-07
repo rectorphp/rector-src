@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -24,7 +25,8 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 {
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ObjectTypeMapper $objectTypeMapper
+        private readonly ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
+        private readonly ObjectTypeMapper $objectTypeMapper,
     ) {
     }
 
@@ -71,6 +73,10 @@ final class IntersectionTypeMapper implements TypeMapperInterface
 
         $intersectionedTypeNodes = [];
         foreach ($type->getTypes() as $type) {
+            if ($type instanceof ObjectWithoutClassType) {
+                return $this->objectWithoutClassTypeMapper->mapToPhpParserNode($type, $typeKind);
+            }
+
             if (! $type instanceof ObjectType) {
                 return null;
             }
