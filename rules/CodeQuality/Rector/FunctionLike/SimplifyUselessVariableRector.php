@@ -144,9 +144,6 @@ CODE_SAMPLE
             return true;
         }
 
-        /** @var Variable $variable */
-        $variable = $return->expr;
-
         if (! $previousStmt instanceof Expression) {
             return true;
         }
@@ -158,6 +155,7 @@ CODE_SAMPLE
             return true;
         }
 
+        $variable = $return->expr;
         // is the same variable
         if (! $this->nodeComparator->areNodesEqual($previousNode->var, $variable)) {
             return true;
@@ -167,7 +165,9 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->callAnalyzer->isNewInstance($previousNode->var, $this->reflectionProvider)) {
+        /** @var Variable $previousVar */
+        $previousVar = $previousNode->var;
+        if ($this->callAnalyzer->isNewInstance($previousVar, $this->reflectionProvider)) {
             return true;
         }
 
