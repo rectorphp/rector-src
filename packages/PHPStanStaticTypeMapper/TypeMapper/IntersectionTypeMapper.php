@@ -81,13 +81,13 @@ final class IntersectionTypeMapper implements TypeMapperInterface
                 return null;
             }
 
-            $fullyQualifiedNode = $this->objectTypeMapper->mapToPhpParserNode($type, $typeKind);
+            $resolvedType = $this->objectTypeMapper->mapToPhpParserNode($type, $typeKind);
 
-            if (! $fullyQualifiedNode instanceof FullyQualified) {
+            if (! $resolvedType instanceof FullyQualified) {
                 return null;
             }
 
-            $intersectionedTypeNodes[] = $fullyQualifiedNode;
+            $intersectionedTypeNodes[] = $resolvedType;
         }
 
         if ($intersectionedTypeNodes === []) {
