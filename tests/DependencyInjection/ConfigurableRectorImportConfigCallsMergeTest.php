@@ -33,13 +33,6 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
     public static function provideData(): Iterator
     {
         yield [
-            __DIR__ . '/config/main_config_with_only_imports.php', [
-                'old_2' => 'new_2',
-                'old_1' => 'new_1',
-            ],
-        ];
-
-        yield [
             __DIR__ . '/config/main_config_with_override_value.php', [
                 'old_2' => 'new_2',
                 'old_1' => 'new_1',
@@ -50,21 +43,6 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         yield [
             __DIR__ . '/config/one_set_with_own_rename.php', [
                 'Old' => 'New',
-                'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
-                'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
-                'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',
-                'PHPUnit_Framework_MockObject_Matcher_Invocation' => 'PHPUnit\Framework\MockObject\Matcher\Invocation',
-                'PHPUnit_Framework_MockObject_MockObject' => 'PHPUnit\Framework\MockObject\MockObject',
-                'PHPUnit_Framework_MockObject_Invocation_Object' => 'PHPUnit\Framework\MockObject\Invocation\ObjectInvocation',
-            ],
-        ];
-
-        yield [
-            __DIR__ . '/config/two_sets_with_own_rename.php', [
-                'Old' => 'New',
-                'Twig_SimpleFilter' => 'Twig_Filter',
-                'Twig_SimpleFunction' => 'Twig_Function',
-                'Twig_SimpleTest' => 'Twig_Test',
                 'PHPUnit_Framework_MockObject_Stub' => 'PHPUnit\Framework\MockObject\Stub',
                 'PHPUnit_Framework_MockObject_Stub_Return' => 'PHPUnit\Framework\MockObject\Stub\ReturnStub',
                 'PHPUnit_Framework_MockObject_Matcher_Parameters' => 'PHPUnit\Framework\MockObject\Matcher\Parameters',

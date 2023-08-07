@@ -704,3 +704,6 @@ parameters:
                 - packages/Config/LazyRectorConfig.php
 
         - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
+
+        # false positive
+        - '#Parameter \#1 \$commands of method Symfony\\Component\\Console\\Application\:\:addCommands\(\) expects array<Symfony\\Component\\Console\\Command\\Command>, iterable<Symfony\\Component\\Console\\Command\\Command> given#'
