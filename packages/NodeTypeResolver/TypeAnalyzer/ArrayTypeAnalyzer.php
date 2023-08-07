@@ -22,7 +22,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\ClassLikeAstResolver;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -34,7 +34,7 @@ final class ArrayTypeAnalyzer
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver
+        private readonly AstResolver $astResolver
     ) {
     }
 
@@ -112,7 +112,7 @@ final class ArrayTypeAnalyzer
         }
 
         /** @var ClassLike $classLike */
-        $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+        $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
         $property = $classLike->getProperty($propertyName);
 
         if (! $property instanceof Property) {
@@ -148,7 +148,7 @@ final class ArrayTypeAnalyzer
         }
 
         /** @var ClassLike $classLike */
-        $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+        $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
         $propertyName = $this->nodeNameResolver->getName($expr->name);
 
         if ($propertyName === null) {

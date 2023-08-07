@@ -15,7 +15,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\ClassLikeAstResolver;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -33,10 +33,9 @@ final class NameScopeFactory
 
     private ReflectionResolver $reflectionResolver;
 
-    private ClassLikeAstResolver $classLikeAstResolver;
-
     public function __construct(
         private readonly UseImportsResolver $useImportsResolver,
+        private readonly AstResolver $astResolver
     ) {
     }
 
@@ -46,13 +45,11 @@ final class NameScopeFactory
     public function autowire(
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
-        ReflectionResolver $reflectionResolver,
-        ClassLikeAstResolver $classLikeAstResolver
+        ReflectionResolver $reflectionResolver
     ): void {
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
         $this->reflectionResolver = $reflectionResolver;
-        $this->classLikeAstResolver = $classLikeAstResolver;
     }
 
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
@@ -120,7 +117,7 @@ final class NameScopeFactory
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if ($classReflection instanceof ClassReflection) {
-            $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+            $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
 
             if ($classLike instanceof ClassLike) {
                 $classTemplateTypes = $this->resolveTemplateTypesFromNode($classLike);

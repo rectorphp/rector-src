@@ -13,26 +13,21 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * @internal called from AstResolver
+ */
 final class ClassLikeAstResolver
 {
-    private AstResolver $astResolver;
-
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
-    #[Required]
-    public function autowire(AstResolver $astResolver): void
-    {
-        $this->astResolver = $astResolver;
-    }
-
     public function resolveClassFromClassReflection(
-        ClassReflection $classReflection
+        ClassReflection $classReflection,
+        AstResolver $astResolver
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
         if ($classReflection->isBuiltin()) {
             return null;
@@ -45,7 +40,7 @@ final class ClassLikeAstResolver
             return null;
         }
 
-        $stmts = $this->astResolver->parseFileNameToDecoratedNodes($fileName);
+        $stmts = $astResolver->parseFileNameToDecoratedNodes($fileName);
         if ($stmts === []) {
             return null;
         }

@@ -201,7 +201,7 @@ final class AstResolver
     public function resolveClassFromClassReflection(
         ClassReflection $classReflection
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
-        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection, $this);
     }
 
     /**

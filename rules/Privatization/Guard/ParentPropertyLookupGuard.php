@@ -15,6 +15,7 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
@@ -26,7 +27,7 @@ final class ParentPropertyLookupGuard
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly ClassLikeAstResolver $classLikeAstResolver,
+        private readonly AstResolver $astResolver,
         private readonly PropertyManipulator $propertyManipulator,
         private readonly PrivatesAccessor $privatesAccessor
     ) {
@@ -74,7 +75,7 @@ final class ParentPropertyLookupGuard
         string $propertyName,
         string $className
     ): bool {
-        $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($parentClassReflection);
+        $classLike = $this->astResolver->resolveClassFromClassReflection($parentClassReflection);
         if (! $classLike instanceof Class_) {
             return false;
         }
