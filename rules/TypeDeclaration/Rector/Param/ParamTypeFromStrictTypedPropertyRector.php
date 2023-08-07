@@ -115,7 +115,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod)) {
+        if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod) !== false) {
             return null;
         }
 

@@ -333,6 +333,7 @@ final class ValueResolver
             );
         }
 
+        // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
         // ensure parent class name still resolved even not autoloaded
         $nativeReflection = $classReflection->getNativeReflection();
         $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
