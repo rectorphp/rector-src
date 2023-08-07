@@ -67,7 +67,7 @@ final class ObjectTypeMapper implements TypeMapperInterface
     /**
      * @param ObjectType $type
      */
-    public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
+    public function mapToPhpParserNode(Type $type, string $typeKind): null|Name|FullyQualified
     {
         if ($type instanceof SelfObjectType) {
             return new Name('self');
