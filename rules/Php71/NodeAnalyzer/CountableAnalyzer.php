@@ -20,6 +20,7 @@ use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\ClassLikeAstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -35,7 +36,7 @@ final class CountableAnalyzer
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver
+        private readonly AstResolver $astResolver
     ) {
     }
 
@@ -122,7 +123,7 @@ final class CountableAnalyzer
             return false;
         }
 
-        $classLike = $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection);
+        $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
 
         if (! $classLike instanceof ClassLike) {
             return false;
