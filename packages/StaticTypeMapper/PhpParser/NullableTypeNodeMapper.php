@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -36,9 +37,9 @@ final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
-        if ($node instanceof FullyQualified) {
+        if ($node->type instanceof FullyQualified) {
             $type = $this->fullyQualifiedNodeMapper->mapToPHPStan($node->type);
-        } elseif ($node instanceof Name) {
+        } elseif ($node->type instanceof Name) {
             $type = $this->nameNodeMapper->mapToPHPStan($node->type);
         } else {
             $type = $this->identifierNodeMapper->mapToPHPStan($node->type);
