@@ -6,23 +6,39 @@ namespace Rector\Tests\Skipper\Skipper\Skipper;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use Rector\Core\Kernel\RectorKernel;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\FifthElement;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\SixthSense;
 use Rector\Tests\Skipper\Skipper\Skipper\Fixture\Element\ThreeMan;
 
-final class SkipperTest extends TestCase
+final class SkipperTest extends AbstractLazyTestCase
 {
     private Skipper $skipper;
 
     protected function setUp(): void
     {
-        $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
+        SimpleParameterProvider::setParameter(Option::SKIP, [
+            // windows like path
+            '*\SomeSkipped\*',
 
-        $this->skipper = $containerBuilder->get(Skipper::class);
+            __DIR__ . '/Fixture/SomeSkippedPath',
+            __DIR__ . '/Fixture/SomeSkippedPathToFile/any.txt',
+
+            // elements
+            FifthElement::class,
+            SixthSense::class,
+        ]);
+
+        $this->skipper = $this->make(Skipper::class);
+    }
+
+    protected function tearDown(): void
+    {
+        // cleanup configuration
+        SimpleParameterProvider::setParameter(Option::SKIP, []);
     }
 
     #[DataProvider('provideDataShouldSkipFileInfo')]

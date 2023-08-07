@@ -25,7 +25,8 @@ final class SkippedClassResolver
      */
     public function resolve(): array
     {
-        if ($this->skippedClasses !== []) {
+        // skip cache in tests
+        if ($this->skippedClasses !== [] && ! defined('PHPUNIT_COMPOSER_INSTALL')) {
             return $this->skippedClasses;
         }
 

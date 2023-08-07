@@ -707,3 +707,5 @@ parameters:
 
         # false positive
         - '#Parameter \#1 \$commands of method Symfony\\Component\\Console\\Application\:\:addCommands\(\) expects array<Symfony\\Component\\Console\\Command\\Command>, iterable<Symfony\\Component\\Console\\Command\\Command> given#'
+
+        - '#Property Rector\\Core\\Console\\Command\\ListRulesCommand\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
