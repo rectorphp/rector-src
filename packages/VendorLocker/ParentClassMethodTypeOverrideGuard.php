@@ -34,7 +34,8 @@ final class ParentClassMethodTypeOverrideGuard
 
             return $parentClassMethod instanceof MethodReflection;
         } catch (UnresolvableClassException) {
-            // we don't know all involved parents, marking as parent exists
+            // we don't know all involved parents,
+            // marking as parent exists which usually means the method is guarded against overrides.
             return true;
         }
     }
