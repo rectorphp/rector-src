@@ -14,7 +14,7 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\VendorLocker\Exception\UnresolvableClassParentException;
+use Rector\VendorLocker\Exception\UnresolvableClassException;
 
 final class ParentClassMethodTypeOverrideGuard
 {
@@ -33,7 +33,7 @@ final class ParentClassMethodTypeOverrideGuard
             $parentClassMethod = $this->resolveParentClassMethod($classMethod);
 
             return $parentClassMethod instanceof MethodReflection;
-        } catch (UnresolvableClassParentException) {
+        } catch (UnresolvableClassException) {
             // we don't know all involved parents.
             return null;
         }
@@ -45,21 +45,21 @@ final class ParentClassMethodTypeOverrideGuard
             $parentClassMethod = $this->resolveParentClassMethod($classMethod);
 
             return $parentClassMethod;
-        } catch (UnresolvableClassParentException) {
+        } catch (UnresolvableClassException) {
             // we don't know all involved parents.
             throw new ShouldNotHappenException('Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().');
         }
     }
 
     /**
-     * @throws UnresolvableClassParentException
+     * @throws UnresolvableClassException
      */
     private function resolveParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             // we can't resolve the class, so we don't know.
-            throw new UnresolvableClassParentException();
+            throw new UnresolvableClassException();
         }
 
         /** @var string $methodName */
@@ -69,7 +69,7 @@ final class ParentClassMethodTypeOverrideGuard
             $parentClassReflection = $currentClassReflection->getParentClass();
             if (!$parentClassReflection instanceof ClassReflection) {
                 // per AST we have a parent class, but our reflection classes are not able to load its class definition/signature
-                throw new UnresolvableClassParentException();
+                throw new UnresolvableClassException();
             }
 
             if ($parentClassReflection->hasNativeMethod($methodName)) {
