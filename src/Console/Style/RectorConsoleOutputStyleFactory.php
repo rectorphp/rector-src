@@ -17,7 +17,7 @@ final class RectorConsoleOutputStyleFactory
     ) {
     }
 
-    public function create(): RectorConsoleOutputStyle
+    public function create(): RectorStyle
     {
         $argvInput = new ArgvInput();
         $consoleOutput = new ConsoleOutput();
@@ -30,6 +30,6 @@ final class RectorConsoleOutputStyleFactory
             $consoleOutput->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
         }
 
-        return new RectorConsoleOutputStyle($argvInput, $consoleOutput);
+        return new RectorStyle($argvInput, $consoleOutput);
     }
 }

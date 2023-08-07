@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class RectorConsoleOutputStyle extends SymfonyStyle
+final class RectorStyle extends SymfonyStyle
 {
     private ?ProgressBar $progressBar = null;
 

@@ -43,8 +43,8 @@ use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Console\Style\RectorConsoleOutputStyle;
 use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
+use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
@@ -421,8 +421,8 @@ final class LazyContainerFactory
             ->giveTagged(RectorInterface::class);
 
         $lazyRectorConfig->singleton(
-            RectorConsoleOutputStyle::class,
-            static function (Container $container): RectorConsoleOutputStyle {
+            RectorStyle::class,
+            static function (Container $container): RectorStyle {
                 $rectorConsoleOutputStyleFactory = $container->make(RectorConsoleOutputStyleFactory::class);
                 return $rectorConsoleOutputStyleFactory->create();
             }
@@ -493,7 +493,7 @@ final class LazyContainerFactory
                     $container->make(RectifiedAnalyzer::class),
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
-                    $container->make(RectorConsoleOutputStyle::class),
+                    $container->make(RectorStyle::class),
                     $container->make(FilePathHelper::class),
                 );
             }
