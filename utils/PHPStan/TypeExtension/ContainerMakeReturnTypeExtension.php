@@ -26,7 +26,7 @@ final class ContainerMakeReturnTypeExtension implements DynamicMethodReturnTypeE
 
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        return $methodReflection->getName() === 'make';
+        return in_array($methodReflection->getName(), ['make', 'get'], true);
     }
 
     public function getTypeFromMethodCall(

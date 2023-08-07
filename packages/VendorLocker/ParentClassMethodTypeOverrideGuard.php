@@ -66,7 +66,6 @@ final class ParentClassMethodTypeOverrideGuard
         return $this->typeComparator->areTypesEqual($currentReturnType, $parentType);
     }
 
-
     private function resolveParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);

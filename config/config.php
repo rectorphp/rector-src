@@ -165,6 +165,7 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/../src/Exception',
             __DIR__ . '/../src/DependencyInjection/CompilerPass',
             __DIR__ . '/../src/DependencyInjection/Loader',
+            __DIR__ . '/../src/DependencyInjection/LazyContainerFactory.php',
             __DIR__ . '/../src/Kernel',
             __DIR__ . '/../src/ValueObject',
             __DIR__ . '/../src/Bootstrap',

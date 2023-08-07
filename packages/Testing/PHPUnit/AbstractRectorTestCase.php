@@ -9,7 +9,6 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPUnit\Framework\ExpectationFailedException;
-use Psr\Container\ContainerInterface;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
@@ -26,8 +25,6 @@ use Rector\Testing\Fixture\FixtureSplitter;
 
 abstract class AbstractRectorTestCase extends AbstractTestCase implements RectorTestInterface
 {
-    protected static ?ContainerInterface $allRectorContainer = null;
-
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;
 
     private ApplicationFileProcessor $applicationFileProcessor;
