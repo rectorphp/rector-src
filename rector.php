@@ -61,7 +61,7 @@ return static function (RectorConfig $rectorConfig): void {
         RenameParamToMatchTypeRector::class => [
             __DIR__ . '/src/Console/Command/ListRulesCommand.php',
             __DIR__ . '/src/Configuration/ConfigInitializer.php',
-            __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php'
+            __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php',
         ],
 
         RenameVariableToMatchMethodCallReturnTypeRector::class => [__DIR__ . '/packages/Config/RectorConfig.php'],
