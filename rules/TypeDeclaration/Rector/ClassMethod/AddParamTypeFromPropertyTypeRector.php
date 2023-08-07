@@ -123,7 +123,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node) !== false) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
                 return null;
             }
 

@@ -27,15 +27,15 @@ final class ParentClassMethodTypeOverrideGuard
     ) {
     }
 
-    public function hasParentClassMethod(ClassMethod $classMethod): ?bool
+    public function hasParentClassMethod(ClassMethod $classMethod): bool
     {
         try {
             $parentClassMethod = $this->resolveParentClassMethod($classMethod);
 
             return $parentClassMethod instanceof MethodReflection;
         } catch (UnresolvableClassException) {
-            // we don't know all involved parents.
-            return null;
+            // we don't know all involved parents, marking as parent exists
+            return true;
         }
     }
 
@@ -44,10 +44,7 @@ final class ParentClassMethodTypeOverrideGuard
         try {
             return $this->resolveParentClassMethod($classMethod);
         } catch (UnresolvableClassException) {
-            // we don't know all involved parents.
-            throw new ShouldNotHappenException(
-                'Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().'
-            );
+            return null;
         }
     }
 
