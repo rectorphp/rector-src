@@ -6,10 +6,12 @@ namespace Rector\StaticTypeMapper\PhpDocParser;
 
 use PhpParser\Node;
 use PHPStan\Analyser\NameScope;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 
 /**
@@ -33,6 +35,10 @@ final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
     {
         $intersectionedTypes = [];
         foreach ($typeNode->types as $intersectionedTypeNode) {
+            if (! $intersectionedTypeNode instanceof IdentifierTypeNode) {
+                throw new ShouldNotHappenException();
+            }
+
             $intersectionedTypes[] = $this->identifierTypeMapper->mapIdentifierTypeNode(
                 $intersectionedTypeNode,
                 $node
