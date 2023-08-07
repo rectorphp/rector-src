@@ -297,6 +297,18 @@ final class LazyContainerFactory
     ];
 
     /**
+     * @var class-string<object>
+     */
+    private const PUBLIC_PHPSTAN_SERVICE_TYPES = [
+        DependencyResolver::class,
+        ScopeFactory::class,
+        TypeNodeResolver::class,
+        FileHelper::class,
+        NodeScopeResolver::class,
+        ReflectionProvider::class,
+    ];
+
+    /**
      * @var array<class-string<OutputFormatterInterface>>
      */
     private const OUTPUT_FORMATTER_CLASSES = [ConsoleOutputFormatter::class, JsonOutputFormatter::class];
@@ -626,15 +638,6 @@ final class LazyContainerFactory
 
     private function createPHPStanServices(LazyRectorConfig $lazyRectorConfig): void
     {
-        $lazyRectorConfig->singleton(
-            ReflectionProvider::class,
-            static function (Container $container): ReflectionProvider {
-                $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-                return $phpstanServiceFactory->createReflectionProvider();
-            }
-        );
-
-        // @todo make generic
         $lazyRectorConfig->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
@@ -645,30 +648,13 @@ final class LazyContainerFactory
             return $phpstanServiceFactory->createEmulativeLexer();
         });
 
-        $lazyRectorConfig->singleton(TypeNodeResolver::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createTypeNodeResolver();
-        });
-
-        $lazyRectorConfig->singleton(NodeScopeResolver::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createNodeScopeResolver();
-        });
-
-        $lazyRectorConfig->singleton(FileHelper::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createFileHelper();
-        });
-
-        $lazyRectorConfig->singleton(DependencyResolver::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createDependencyResolver();
-        });
-
-        // @todo make generic
-        $lazyRectorConfig->singleton(ScopeFactory::class, static function (Container $container): ScopeFactory {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->getByType(ScopeFactory::class);
-        });
+        foreach (self::PUBLIC_PHPSTAN_SERVICE_TYPES as $publicPhpstanServiceType) {
+            $lazyRectorConfig->singleton($publicPhpstanServiceType, static function (Container $container) use (
+                $publicPhpstanServiceType
+            ) {
+                $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
+                return $phpstanServiceFactory->getByType($publicPhpstanServiceType);
+            });
+        }
     }
 }
