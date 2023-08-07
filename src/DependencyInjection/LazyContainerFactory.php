@@ -397,19 +397,6 @@ final class LazyContainerFactory
         );
 
         $container->afterResolving(
-            ArrayTypeMapper::class,
-            static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
-                $arrayTypeMapper->autowire(
-                    $container->make(PHPStanStaticTypeMapper::class),
-                    $container->make(UnionTypeCommonTypeNarrower::class),
-                    $container->make(ReflectionProvider::class),
-                    $container->make(GenericClassStringTypeNormalizer::class),
-                    $container->make(DetailedTypeAnalyzer::class),
-                );
-            }
-        );
-
-        $container->afterResolving(
             PlainValueParser::class,
             static function (PlainValueParser $plainValueParser, Container $container): void {
                 $plainValueParser->autowire(
