@@ -7,23 +7,20 @@ namespace Rector\Tests\Caching\Detector;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ChangedFilesDetectorTest extends AbstractRectorTestCase
+final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 {
     private ChangedFilesDetector $changedFilesDetector;
 
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->changedFilesDetector = $this->getService(ChangedFilesDetector::class);
+        $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-
         $this->changedFilesDetector->clear();
     }
 
