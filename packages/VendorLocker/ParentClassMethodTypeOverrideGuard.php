@@ -42,9 +42,7 @@ final class ParentClassMethodTypeOverrideGuard
     public function getParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
         try {
-            $parentClassMethod = $this->resolveParentClassMethod($classMethod);
-
-            return $parentClassMethod;
+            return $this->resolveParentClassMethod($classMethod);
         } catch (UnresolvableClassException) {
             // we don't know all involved parents.
             throw new ShouldNotHappenException('Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().');
