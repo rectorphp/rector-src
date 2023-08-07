@@ -14,9 +14,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
-use Symfony\Contracts\Service\Attribute\Required;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NameTypeResolver\NameTypeResolverTest
@@ -25,20 +24,22 @@ use Symfony\Contracts\Service\Attribute\Required;
  */
 final class NameTypeResolver implements NodeTypeResolverInterface
 {
-    private ReflectionResolver $reflectionResolver;
-
-    #[Required]
-    public function autowire(ReflectionResolver $reflectionResolver): void
-    {
-        $this->reflectionResolver = $reflectionResolver;
-    }
-
     /**
      * @return array<class-string<Node>>
      */
     public function getNodeClasses(): array
     {
         return [Name::class, FullyQualified::class];
+    }
+
+    private function resolveClassReflection(Name|FullyQualified $node): ?ClassReflection
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof \PHPStan\Analyser\Scope) {
+            return null;
+        }
+
+        return $scope->getClassReflection();
     }
 
     /**
@@ -61,7 +62,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
 
     private function resolveParent(Name $name): MixedType | ObjectType | UnionType
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($name);
+        $classReflection = $this->resolveClassReflection($name);
         if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
             return new MixedType();
         }
@@ -91,7 +92,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         $nameValue = $name->toString();
 
         if (in_array($nameValue, [ObjectReference::SELF, ObjectReference::STATIC, 'this'], true)) {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($name);
+            $classReflection = $this->resolveClassReflection($name);
             if (! $classReflection instanceof ClassReflection || $classReflection->isAnonymous()) {
                 return $name->toString();
             }
