@@ -122,7 +122,9 @@ final class LazyRectorConfig extends Container
         });
 
         $this->singleton($rectorClass);
-        $this->extend($rectorClass, function (ConfigurableRectorInterface $configurableRector) use ($configuration) {
+        $this->extend($rectorClass, static function (ConfigurableRectorInterface $configurableRector) use (
+            $configuration
+        ): void {
             $configurableRector->configure($configuration);
         });
 
