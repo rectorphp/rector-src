@@ -26,7 +26,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use ReflectionClass;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @see \Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\ShortNameResolverTest
@@ -44,23 +43,14 @@ final class ShortNameResolver
      */
     private array $shortNamesByFilePath = [];
 
-    private PhpDocInfoFactory $phpDocInfoFactory;
-
     public function __construct(
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly UseImportNameMatcher $useImportNameMatcher
+        private readonly UseImportNameMatcher $useImportNameMatcher,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
-    }
-
-    // Avoids circular reference
-
-    #[Required]
-    public function autowire(PhpDocInfoFactory $phpDocInfoFactory): void
-    {
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
     }
 
     /**
