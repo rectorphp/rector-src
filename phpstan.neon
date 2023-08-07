@@ -702,3 +702,5 @@ parameters:
             paths:
                 - packages/Config/RectorConfig.php
                 - packages/Config/LazyRectorConfig.php
+
+        - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'

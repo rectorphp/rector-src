@@ -20,13 +20,14 @@ final class RectorNodeTraverser extends NodeTraverser
     private array $phpRectors = [];
 
     /**
-     * @param RewindableGenerator<PhpRectorInterface> $phpRectors
+     * @param RewindableGenerator<PhpRectorInterface>|PhpRectorInterface[] $phpRectors
      */
     public function __construct(
-        RewindableGenerator $phpRectors,
+        iterable $phpRectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
-        $this->phpRectors = iterator_to_array($phpRectors);
+        $this->phpRectors = is_array($phpRectors) ? $phpRectors : iterator_to_array($phpRectors);
+
         parent::__construct();
     }
 

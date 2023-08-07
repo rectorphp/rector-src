@@ -22,15 +22,19 @@ final class ConfigInitializer
     private array $rectors = [];
 
     /**
-     * @param RewindableGenerator<RectorInterface> $rectors
+     * @param RewindableGenerator<RectorInterface>|RectorInterface[] $rectors
      */
     public function __construct(
-        RewindableGenerator $rectors,
+        iterable $rectors,
         private readonly InitFilePathsResolver $initFilePathsResolver,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
-        $this->rectors = iterator_to_array($rectors);
+        if ($rectors instanceof RewindableGenerator) {
+            $this->rectors = iterator_to_array($rectors->getIterator());
+        } else {
+            $this->rectors = $rectors;
+        }
     }
 
     public function createConfig(string $projectDirectory): void

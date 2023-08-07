@@ -6,8 +6,6 @@ namespace Rector\Tests\Skipper\FileSystem;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use Rector\Core\Kernel\RectorKernel;
 use Rector\Skipper\FileSystem\FnMatchPathNormalizer;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
