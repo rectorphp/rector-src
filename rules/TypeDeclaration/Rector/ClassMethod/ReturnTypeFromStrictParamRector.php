@@ -202,7 +202,7 @@ CODE_SAMPLE
         }
 
         if ($node instanceof ClassMethod) {
-            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node) !== false) {
+            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
                 return true;
             }
 

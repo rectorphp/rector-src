@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\Type;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -27,15 +26,16 @@ final class ParentClassMethodTypeOverrideGuard
     ) {
     }
 
-    public function hasParentClassMethod(ClassMethod $classMethod): ?bool
+    public function hasParentClassMethod(ClassMethod $classMethod): bool
     {
         try {
             $parentClassMethod = $this->resolveParentClassMethod($classMethod);
 
             return $parentClassMethod instanceof MethodReflection;
         } catch (UnresolvableClassException) {
-            // we don't know all involved parents.
-            return null;
+            // we don't know all involved parents,
+            // marking as parent exists which usually means the method is guarded against overrides.
+            return true;
         }
     }
 
@@ -44,10 +44,7 @@ final class ParentClassMethodTypeOverrideGuard
         try {
             return $this->resolveParentClassMethod($classMethod);
         } catch (UnresolvableClassException) {
-            // we don't know all involved parents.
-            throw new ShouldNotHappenException(
-                'Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().'
-            );
+            return null;
         }
     }
 
