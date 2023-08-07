@@ -10,8 +10,8 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 
 /**
@@ -19,8 +19,9 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
  */
 final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
 {
-    public function __construct(private readonly IdentifierTypeMapper $identifierTypeMapper)
-    {
+    public function __construct(
+        private readonly IdentifierTypeMapper $identifierTypeMapper
+    ) {
     }
 
     public function getNodeType(): string
@@ -36,7 +37,7 @@ final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
         $intersectionedTypes = [];
         foreach ($typeNode->types as $intersectionedTypeNode) {
             if (! $intersectionedTypeNode instanceof IdentifierTypeNode) {
-                throw new ShouldNotHappenException();
+                return new MixedType();
             }
 
             $intersectionedTypes[] = $this->identifierTypeMapper->mapIdentifierTypeNode(
