@@ -82,7 +82,6 @@ use Rector\PhpAttribute\AnnotationToAttributeMapper\StringNodeAnnotationToAttrib
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryLiteralStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryNonEmptyStringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\AccessoryNonFalsyStringTypeMapper;
@@ -135,8 +134,6 @@ use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
-use Rector\TypeDeclaration\TypeAnalyzer\GenericClassStringTypeNormalizer;
 use Symfony\Component\Console\Application;
 use Webmozart\Assert\Assert;
 
