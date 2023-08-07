@@ -26,7 +26,7 @@ final class ListRulesCommand extends Command
     private array $rectors = [];
 
     /**
-     * @param RewindableGenerator<RectorInterface> $rectors
+     * @param RewindableGenerator<RectorInterface>|RectorInterface[] $rectors
      */
     public function __construct(
         private readonly RectorOutputStyle $rectorOutputStyle,
@@ -34,6 +34,10 @@ final class ListRulesCommand extends Command
         iterable $rectors
     ) {
         parent::__construct();
+        if ($rectors instanceof RewindableGenerator) {
+            $rectors = $rectors->getIterator();
+        }
+
         $this->rectors = iterator_to_array($rectors);
     }
 

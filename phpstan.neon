@@ -703,9 +703,7 @@ parameters:
                 - packages/Config/RectorConfig.php
                 - packages/Config/LazyRectorConfig.php
 
-<<<<<<< HEAD
         - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
-=======
+
         # false positive
         - '#Parameter \#1 \$commands of method Symfony\\Component\\Console\\Application\:\:addCommands\(\) expects array<Symfony\\Component\\Console\\Command\\Command>, iterable<Symfony\\Component\\Console\\Command\\Command> given#'
->>>>>>> 7230a9c5ab (open commands to be injected)
