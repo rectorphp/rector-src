@@ -62,6 +62,7 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__ . '/src/Console/Command/ListRulesCommand.php',
             __DIR__ . '/src/Configuration/ConfigInitializer.php',
             __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php',
+            __DIR__ . '/src/DependencyInjection/LazyContainerFactory.php',
         ],
 
         RenameVariableToMatchMethodCallReturnTypeRector::class => [__DIR__ . '/packages/Config/RectorConfig.php'],
