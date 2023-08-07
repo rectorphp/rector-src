@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -71,17 +70,18 @@ final class IntersectionTypeMapper implements TypeMapperInterface
         }
 
         $intersectionedTypeNodes = [];
-        foreach ($type->getObjectClassNames() as $className) {
-            $nameNode = $this->objectTypeMapper->mapToPhpParserNode(
-                new ObjectType($className),
-                $typeKind
-            );
-
-            if (! $nameNode instanceof Name) {
+        foreach ($type->getTypes() as $type) {
+            if (! $type instanceof ObjectType) {
                 return null;
             }
 
-            $intersectionedTypeNodes[] = $nameNode;
+            $fullyQualifiedNode = $this->objectTypeMapper->mapToPhpParserNode($type, $typeKind);
+
+            if (! $fullyQualifiedNode instanceof FullyQualified) {
+                return null;
+            }
+
+            $intersectionedTypeNodes[] = $fullyQualifiedNode;
         }
 
         if ($intersectionedTypeNodes === []) {
