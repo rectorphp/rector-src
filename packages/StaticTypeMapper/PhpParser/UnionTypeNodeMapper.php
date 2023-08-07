@@ -22,8 +22,8 @@ final class UnionTypeNodeMapper implements PhpParserNodeMapperInterface
         private readonly TypeFactory $typeFactory,
         private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
         private readonly NameNodeMapper $nameNodeMapper,
-        private readonly IdentifierNodeMapper $identifierTypeMapper,
-        private readonly IntersectionTypeNodeMapper $intersectionTypeMapper
+        private readonly IdentifierNodeMapper $identifierNodeMapper,
+        private readonly IntersectionTypeNodeMapper $intersectionTypeNodeMapper
     ) {
     }
 
@@ -50,11 +50,11 @@ final class UnionTypeNodeMapper implements PhpParserNodeMapperInterface
             }
 
             if ($unionedType instanceof Identifier) {
-                $types[] = $this->identifierTypeMapper->mapToPHPStan($unionedType);
+                $types[] = $this->identifierNodeMapper->mapToPHPStan($unionedType);
                 continue;
             }
 
-            $types[] = $this->intersectionTypeMapper->mapToPHPStan($unionedType);
+            $types[] = $this->intersectionTypeNodeMapper->mapToPHPStan($unionedType);
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($types, true);
