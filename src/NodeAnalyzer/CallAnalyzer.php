@@ -24,6 +24,10 @@ final class CallAnalyzer
      */
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
+    public function __construct(private readonly ReflectionProvider $reflectionProvider)
+    {
+    }
+
     public function isObjectCall(Expr $expr): bool
     {
         if ($expr instanceof BooleanNot) {
@@ -60,7 +64,7 @@ final class CallAnalyzer
         return false;
     }
 
-    public function isNewInstance(Variable $variable, ReflectionProvider $reflectionProvider): bool
+    public function isNewInstance(Variable $variable): bool
     {
         $scope = $variable->getAttribute(AttributeKey::SCOPE);
         if (! $scope instanceof Scope) {
@@ -73,11 +77,11 @@ final class CallAnalyzer
         }
 
         $className = $type->getClassName();
-        if (! $reflectionProvider->hasClass($className)) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return false;
         }
 
-        $classReflection = $reflectionProvider->getClass($className);
+        $classReflection = $this->reflectionProvider->getClass($className);
         return $classReflection->getNativeReflection()
             ->isInstantiable();
     }
