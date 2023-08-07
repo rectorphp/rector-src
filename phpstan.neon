@@ -112,7 +112,7 @@ parameters:
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
             paths:
                 - src/Rector/AbstractRector.php
-                - src/Rector/AbstractRector.php
+                - src/PhpParser/AstResolver.php
 
         - '#Property Rector\\Core\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
 
