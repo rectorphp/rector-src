@@ -35,8 +35,7 @@ final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
         foreach ($typeNode->types as $intersectionedTypeNode) {
             $intersectionedTypes[] = $this->identifierTypeMapper->mapIdentifierTypeNode(
                 $intersectionedTypeNode,
-                $node,
-                $nameScope
+                $node
             );
         }
 
