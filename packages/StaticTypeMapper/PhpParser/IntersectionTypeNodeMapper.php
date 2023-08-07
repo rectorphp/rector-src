@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
-use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements PhpParserNodeMapperInterface<Node\IntersectionType>
  */
 final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
 {
-    private PhpParserNodeMapper $phpParserNodeMapper;
-
-    #[Required]
-    public function autowire(PhpParserNodeMapper $phpParserNodeMapper): void
+    public function __construct(
+        private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
+        private readonly NameNodeMapper $nameNodeMapper,
+        private readonly IdentifierNodeMapper $identifierNodeMapper
+    )
     {
-        $this->phpParserNodeMapper = $phpParserNodeMapper;
     }
 
     public function getNodeType(): string
@@ -36,7 +36,17 @@ final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
     {
         $types = [];
         foreach ($node->types as $intersectionedType) {
-            $types[] = $this->phpParserNodeMapper->mapToPHPStanType($intersectionedType);
+            if ($intersectionedType instanceof FullyQualified) {
+                $types[] = $this->fullyQualifiedNodeMapper->mapToPHPStan($intersectionedType);
+                continue;
+            }
+
+            if ($intersectionedType instanceof Name) {
+                $types[] = $this->nameNodeMapper->mapToPHPStan($intersectionedType);
+                continue;
+            }
+
+            $types[] = $this->identifierNodeMapper->mapToPHPStan($intersectionedType);
         }
 
         return new IntersectionType($types);
