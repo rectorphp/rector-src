@@ -76,7 +76,9 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node) !== false) {
+        if ($node instanceof ClassMethod && $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod(
+            $node
+        ) !== false) {
             return null;
         }
 

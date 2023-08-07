@@ -41,6 +41,8 @@ final class ArrayTypeMapper implements TypeMapperInterface
      */
     public const HAS_GENERIC_TYPE_PARENT = 'has_generic_type_parent';
 
+    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
+
     public function __construct(
         private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         private readonly ReflectionProvider $reflectionProvider,
@@ -48,8 +50,6 @@ final class ArrayTypeMapper implements TypeMapperInterface
         private readonly DetailedTypeAnalyzer $detailedTypeAnalyzer
     ) {
     }
-
-    private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     // To avoid circular dependency
 

@@ -45,13 +45,28 @@ final class ParentClassMethodTypeOverrideGuard
             return $this->resolveParentClassMethod($classMethod);
         } catch (UnresolvableClassException) {
             // we don't know all involved parents.
-            throw new ShouldNotHappenException('Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().');
+            throw new ShouldNotHappenException(
+                'Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().'
+            );
         }
     }
 
-    /**
-     * @throws UnresolvableClassException
-     */
+    public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
+    {
+        if ($classMethod->returnType === null) {
+            return false;
+        }
+
+        $currentReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
+
+        if ($this->typeComparator->isSubtype($currentReturnType, $parentType)) {
+            return true;
+        }
+
+        return $this->typeComparator->areTypesEqual($currentReturnType, $parentType);
+    }
+
+
     private function resolveParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
@@ -65,7 +80,7 @@ final class ParentClassMethodTypeOverrideGuard
         $currentClassReflection = $classReflection;
         while ($this->hasClassParent($currentClassReflection)) {
             $parentClassReflection = $currentClassReflection->getParentClass();
-            if (!$parentClassReflection instanceof ClassReflection) {
+            if (! $parentClassReflection instanceof ClassReflection) {
                 // per AST we have a parent class, but our reflection classes are not able to load its class definition/signature
                 throw new UnresolvableClassException();
             }
@@ -88,26 +103,15 @@ final class ParentClassMethodTypeOverrideGuard
         return null;
     }
 
-    private function hasClassParent(ClassReflection $classReflection):bool {
+    private function hasClassParent(ClassReflection $classReflection): bool
+    {
         // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
         $nativeReflection = $classReflection->getNativeReflection();
-        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty($nativeReflection, 'betterReflectionClass');
+        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
+            $nativeReflection,
+            'betterReflectionClass'
+        );
         $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
         return $parentClassName !== null;
-    }
-
-    public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
-    {
-        if ($classMethod->returnType === null) {
-            return false;
-        }
-
-        $currentReturnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($classMethod->returnType);
-
-        if ($this->typeComparator->isSubtype($currentReturnType, $parentType)) {
-            return true;
-        }
-
-        return $this->typeComparator->areTypesEqual($currentReturnType, $parentType);
     }
 }

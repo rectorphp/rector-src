@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\NodeTypeResolver;
 
-use PHPStan\Analyser\Scope;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
@@ -33,16 +33,6 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         return [Name::class, FullyQualified::class];
     }
 
-    private function resolveClassReflection(Name|FullyQualified $node): ?ClassReflection
-    {
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        return $scope->getClassReflection();
-    }
-
     /**
      * @param Name $node
      */
@@ -59,6 +49,16 @@ final class NameTypeResolver implements NodeTypeResolverInterface
         }
 
         return new ObjectType($fullyQualifiedName);
+    }
+
+    private function resolveClassReflection(Name|FullyQualified $node): ?ClassReflection
+    {
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        return $scope->getClassReflection();
     }
 
     private function resolveParent(Name $name): MixedType | ObjectType | UnionType
