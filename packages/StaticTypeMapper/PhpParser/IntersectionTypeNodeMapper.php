@@ -16,7 +16,7 @@ use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private readonly NameNodeMapper $nameNodeMapper,
+        private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
         private readonly IdentifierNodeMapper $identifierNodeMapper
     )
     {
@@ -36,7 +36,7 @@ final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
         foreach ($node->types as $intersectionedType) {
             $types[] = $intersectionedType instanceof Identifier
                 ? $this->identifierNodeMapper->mapToPHPStan($intersectionedType)
-                : $this->nameNodeMapper->mapToPHPStan($intersectionedType);
+                : $this->fullyQualifiedNodeMapper->mapToPHPStan($intersectionedType);
         }
 
         return new IntersectionType($types);
