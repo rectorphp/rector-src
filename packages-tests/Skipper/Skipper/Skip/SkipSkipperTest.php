@@ -6,23 +6,39 @@ namespace Rector\Tests\Skipper\Skipper\Skip;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use Rector\Core\Kernel\RectorKernel;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Skip\Source\AnotherClassToSkip;
 use Rector\Tests\Skipper\Skipper\Skip\Source\NotSkippedClass;
 use Rector\Tests\Skipper\Skipper\Skip\Source\SomeClassToSkip;
 
-final class SkipSkipperTest extends TestCase
+final class SkipSkipperTest extends AbstractLazyTestCase
 {
     private Skipper $skipper;
 
     protected function setUp(): void
     {
-        $rectorKernel = new RectorKernel();
-        $containerBuilder = $rectorKernel->createFromConfigs([__DIR__ . '/config/config.php']);
+        SimpleParameterProvider::addParameter(Option::SKIP, [
+            // classes
+            SomeClassToSkip::class,
 
-        $this->skipper = $containerBuilder->get(Skipper::class);
+            // classes only in specific paths
+            AnotherClassToSkip::class => ['Fixture/someFile', '*/someDirectory/*'],
+
+            // file paths
+            __DIR__ . '/Fixture/AlwaysSkippedPath',
+            '*\PathSkippedWithMask\*',
+        ]);
+
+        $this->skipper = $this->make(Skipper::class);
+    }
+
+    protected function tearDown(): void
+    {
+        // null the parameter
+        SimpleParameterProvider::setParameter(Option::SKIP, []);
     }
 
     #[DataProvider('provideCheckerAndFile')]
@@ -33,9 +49,6 @@ final class SkipSkipperTest extends TestCase
         $this->assertSame($expectedSkip, $resolvedSkip);
     }
 
-    /**
-     * @return Iterator<string[]|bool[]|class-string<AnotherClassToSkip>[]|class-string<NotSkippedClass>[]|class-string<SomeClassToSkip>[]>
-     */
     public static function provideCheckerAndFile(): Iterator
     {
         yield [SomeClassToSkip::class, __DIR__ . '/Fixture', true];
@@ -48,9 +61,6 @@ final class SkipSkipperTest extends TestCase
         yield [NotSkippedClass::class, __DIR__ . '/Fixture/someOtherFile', false];
     }
 
-    /**
-     * @return Iterator<string[]|bool[]>
-     */
     public static function provideAnythingAndFilePath(): Iterator
     {
         yield ['anything', __DIR__ . '/Fixture/AlwaysSkippedPath/some_file.txt', true];
