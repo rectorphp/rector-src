@@ -25,15 +25,17 @@ final class ConsoleApplication extends Application
     private const NAME = 'Rector';
 
     /**
-     * @param RewindableGenerator<int, Command> $commands
+     * @param RewindableGenerator<int, Command>|Command[] $commands
      */
     public function __construct(iterable $commands)
     {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
 
-        $commands = iterator_to_array($commands->getIterator());
-        Assert::allIsInstanceOf($commands, Command::class);
+        if ($commands instanceof RewindableGenerator) {
+            $commands = iterator_to_array($commands->getIterator());
+        }
 
+        Assert::allIsInstanceOf($commands, Command::class);
         $this->addCommands($commands);
 
         // run this command, if no command name is provided

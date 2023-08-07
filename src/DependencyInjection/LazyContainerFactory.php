@@ -297,7 +297,7 @@ final class LazyContainerFactory
     ];
 
     /**
-     * @var class-string<object>
+     * @var array<class-string>
      */
     private const PUBLIC_PHPSTAN_SERVICE_TYPES = [
         DependencyResolver::class,
