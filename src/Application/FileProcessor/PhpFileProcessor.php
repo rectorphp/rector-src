@@ -10,7 +10,6 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Core\Application\FileProcessor;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
@@ -22,6 +21,7 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 final class PhpFileProcessor implements FileProcessorInterface
@@ -34,13 +34,13 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
-        private readonly FileProcessor $fileProcessor,
-        private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly FileDiffFactory $fileDiffFactory,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly PostFileProcessor $postFileProcessor,
-        private readonly ErrorFactory $errorFactory,
-        private readonly FilePathHelper $filePathHelper
+        private readonly FileProcessor           $fileProcessor,
+        private readonly SymfonyStyle            $symfonyStyle,
+        private readonly FileDiffFactory         $fileDiffFactory,
+        private readonly ChangedFilesDetector    $changedFilesDetector,
+        private readonly PostFileProcessor       $postFileProcessor,
+        private readonly ErrorFactory            $errorFactory,
+        private readonly FilePathHelper          $filePathHelper
     ) {
     }
 
@@ -153,7 +153,7 @@ final class PhpFileProcessor implements FileProcessorInterface
             );
             return [$autoloadSystemError];
         } catch (Throwable $throwable) {
-            if ($this->rectorOutputStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
+            if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;
             }
 
@@ -209,11 +209,11 @@ final class PhpFileProcessor implements FileProcessorInterface
 
     private function notifyFile(File $file): void
     {
-        if (! $this->rectorOutputStyle->isVerbose()) {
+        if (! $this->symfonyStyle->isVerbose()) {
             return;
         }
 
         $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
-        $this->rectorOutputStyle->writeln($relativeFilePath);
+        $this->symfonyStyle->writeln($relativeFilePath);
     }
 }

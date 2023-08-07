@@ -43,11 +43,8 @@ use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Console\Output\RectorOutputStyle;
-use Rector\Core\Console\Style\RectorConsoleOutputStyle;
-use Rector\Core\Console\Style\RectorConsoleOutputStyleFactory;
+use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
@@ -396,8 +393,6 @@ final class LazyContainerFactory
             return $inflectorFactory->build();
         });
 
-        $lazyRectorConfig->singleton(OutputStyleInterface::class, RectorOutputStyle::class);
-
         $lazyRectorConfig->singleton(PhpFileProcessor::class);
         $lazyRectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
 
@@ -423,14 +418,6 @@ final class LazyContainerFactory
         $lazyRectorConfig->when(ConfigInitializer::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
-
-        $lazyRectorConfig->singleton(
-            RectorConsoleOutputStyle::class,
-            static function (Container $container): RectorConsoleOutputStyle {
-                $rectorConsoleOutputStyleFactory = $container->make(RectorConsoleOutputStyleFactory::class);
-                return $rectorConsoleOutputStyleFactory->create();
-            }
-        );
 
         $lazyRectorConfig->when(ClassNameImportSkipper::class)
             ->needs('$classNameImportSkipVoters')
@@ -497,7 +484,7 @@ final class LazyContainerFactory
                     $container->make(RectifiedAnalyzer::class),
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
-                    $container->make(RectorOutputStyle::class),
+                    $container->make(RectorStyle::class),
                     $container->make(FilePathHelper::class),
                 );
             }
@@ -523,6 +510,8 @@ final class LazyContainerFactory
             self::CLASS_NAME_IMPORT_SKIPPER_CLASSES,
             ClassNameImportSkipVoterInterface::class
         );
+
+        $lazyRectorConfig->alias(RectorStyle::class, SymfonyStyle::class);
 
         $lazyRectorConfig->singleton(
             SymfonyStyle::class,

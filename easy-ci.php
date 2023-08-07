@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\Contract\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
@@ -43,7 +42,6 @@ return static function (EasyCIConfig $easyCiConfig): void {
         RectorBetterReflectionSourceLocatorFactory::class,
         AbstractTestCase::class,
         PHPStanServicesFactory::class,
-        OutputStyleInterface::class,
         // fix later - rector-symfony
         // used in tests
         FileInfoParser::class,

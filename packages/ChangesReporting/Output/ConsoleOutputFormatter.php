@@ -7,11 +7,11 @@ namespace Rector\ChangesReporting\Output;
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObject\Reporting\FileDiff;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ConsoleOutputFormatter implements OutputFormatterInterface
 {
@@ -27,7 +27,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     private const ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private readonly OutputStyleInterface $rectorOutputStyle,
+        private readonly SymfonyStyle             $symfonyStyle,
         private readonly RectorsChangelogResolver $rectorsChangelogResolver,
     ) {
     }
@@ -46,11 +46,11 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
 
         // to keep space between progress bar and success message
         if ($configuration->shouldShowProgressBar() && $processResult->getFileDiffs() === []) {
-            $this->rectorOutputStyle->newLine();
+            $this->symfonyStyle->newLine();
         }
 
         $message = $this->createSuccessMessage($processResult, $configuration);
-        $this->rectorOutputStyle->success($message);
+        $this->symfonyStyle->success($message);
     }
 
     public function getName(): string
@@ -71,7 +71,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
         ksort($fileDiffs);
         $message = sprintf('%d file%s with changes', count($fileDiffs), count($fileDiffs) === 1 ? '' : 's');
 
-        $this->rectorOutputStyle->title($message);
+        $this->symfonyStyle->title($message);
 
         $i = 0;
         foreach ($fileDiffs as $fileDiff) {
@@ -85,16 +85,16 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
 
             $message = sprintf('<options=bold>%d) %s</>', ++$i, $relativeFilePath);
 
-            $this->rectorOutputStyle->writeln($message);
-            $this->rectorOutputStyle->newLine();
-            $this->rectorOutputStyle->writeln($fileDiff->getDiffConsoleFormatted());
+            $this->symfonyStyle->writeln($message);
+            $this->symfonyStyle->newLine();
+            $this->symfonyStyle->writeln($fileDiff->getDiffConsoleFormatted());
 
             $rectorsChangelogsLines = $this->createRectorChangelogLines($fileDiff);
 
             if ($fileDiff->getRectorChanges() !== []) {
-                $this->rectorOutputStyle->writeln('<options=underscore>Applied rules:</>');
-                $this->rectorOutputStyle->listing($rectorsChangelogsLines);
-                $this->rectorOutputStyle->newLine();
+                $this->symfonyStyle->writeln('<options=underscore>Applied rules:</>');
+                $this->symfonyStyle->listing($rectorsChangelogsLines);
+                $this->symfonyStyle->newLine();
             }
         }
     }
@@ -120,7 +120,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
                 $message .= ' On line: ' . $error->getLine();
             }
 
-            $this->rectorOutputStyle->error($message);
+            $this->symfonyStyle->error($message);
         }
     }
 

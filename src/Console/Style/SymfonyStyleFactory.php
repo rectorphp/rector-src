@@ -44,7 +44,7 @@ final class SymfonyStyleFactory
             $consoleOutput->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
-        return new SymfonyStyle($argvInput, $consoleOutput);
+        return new RectorStyle($argvInput, $consoleOutput);
     }
 
     /**

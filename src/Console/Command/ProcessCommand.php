@@ -12,7 +12,6 @@ use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Contract\Console\OutputStyleInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
@@ -22,6 +21,7 @@ use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ProcessCommand extends AbstractProcessCommand
 {
@@ -30,11 +30,11 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly ConfigInitializer $configInitializer,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly ProcessResultFactory $processResultFactory,
+        private readonly ProcessResultFactory          $processResultFactory,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly OutputFormatterCollector $outputFormatterCollector,
-        private readonly OutputStyleInterface $rectorOutputStyle,
-        private readonly MemoryLimiter $memoryLimiter,
+        private readonly OutputFormatterCollector      $outputFormatterCollector,
+        private readonly SymfonyStyle                  $symfonyStyle,
+        private readonly MemoryLimiter                 $memoryLimiter,
     ) {
         parent::__construct();
     }
@@ -60,7 +60,7 @@ final class ProcessCommand extends AbstractProcessCommand
 
         // disable console output in case of json output formatter
         if ($configuration->getOutputFormat() === JsonOutputFormatter::NAME) {
-            $this->rectorOutputStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+            $this->symfonyStyle->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         }
 
         $this->additionalAutoloader->autoloadInput($input);
@@ -71,7 +71,7 @@ final class ProcessCommand extends AbstractProcessCommand
         // 1. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
         if ($this->dynamicSourceLocatorDecorator->isPathsEmpty()) {
-            $this->rectorOutputStyle->error('The given paths do not match any files');
+            $this->symfonyStyle->error('The given paths do not match any files');
             return ExitCode::FAILURE;
         }
 
