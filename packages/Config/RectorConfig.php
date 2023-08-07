@@ -14,26 +14,19 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\PhpVersion;
-//use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
-//use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Webmozart\Assert\Assert;
 
 /**
  * @api
- * Same as Symfony container configurator, with patched return type for "set()" method for easier DX.
- * It is an alias for internal class that is prefixed during build, so it's basically for keeping stable public API.
  */
 final class RectorConfig extends Container
 {
-    //    private ?ServicesConfigurator $servicesConfigurator = null;
-
     /**
      * @param string[] $paths
      */
     public function paths(array $paths): void
     {
         Assert::allString($paths);
-
         SimpleParameterProvider::setParameter(Option::PATHS, $paths);
     }
 
@@ -158,16 +151,14 @@ final class RectorConfig extends Container
         Assert::isAOf($rectorClass, RectorInterface::class);
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
-        // decorate with value object inliner so Symfony understands, see https://getrector.com/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
-        //        array_walk_recursive($configuration, static function (&$value) {
-
-
         $this->singleton($rectorClass);
-        $this->tagRectorService($rectorClass);
-
-        $this->extend($rectorClass, function (ConfigurableRectorInterface $configurableRector) use ($configuration) {
-            $configurableRector->configure([$configuration]);
+        $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
+            $configuration
+        ) {
+            $configurableRector->configure($configuration);
         });
+
+        $this->tagRectorService($rectorClass);
     }
 
     /**
@@ -180,6 +171,16 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
         $this->tagRectorService($rectorClass);
+    }
+
+    public function import(string $setFilePath): void
+    {
+        $self = $this;
+        $callable = (require $setFilePath);
+
+        Assert::isCallable($callable);
+        /** @var callable(Container $container): void $callable */
+        $callable($self);
     }
 
     /**
@@ -250,11 +251,12 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::CACHE_DIR, $directoryPath);
     }
 
-    /**
-     * @deprecated Needed only for removed symfony di
-     */
     public function containerCacheDirectory(string $directoryPath): void
     {
+        // container cache directory path must be a directory on the first place
+        Assert::directory($directoryPath);
+
+        SimpleParameterProvider::setParameter(Option::CONTAINER_CACHE_DIRECTORY, $directoryPath);
     }
 
     /**
@@ -276,6 +278,7 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, $count);
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     private function isRuleNoLongerExists(mixed $skipRule): bool
     {
@@ -300,6 +303,8 @@ final class RectorConfig extends Container
 >>>>>>> d6cb3cc836 (refactor RectorConfig to Laravel container)
     }
 
+=======
+>>>>>>> c745ea9c35 (remove ValueObjectInliner as no longer used)
     /**
      * @param string[] $values
      * @return string[]

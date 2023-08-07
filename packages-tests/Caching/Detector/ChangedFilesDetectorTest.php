@@ -13,11 +13,6 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-<<<<<<< HEAD
-=======
-        parent::setUp();
-
->>>>>>> 4026092892 (refactor RectorConfig to Laravel container)
         $this->changedFilesDetector = $this->make(ChangedFilesDetector::class);
     }
 

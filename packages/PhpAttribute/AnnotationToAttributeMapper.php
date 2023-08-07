@@ -13,8 +13,11 @@ use Rector\BetterPhpDocParser\PhpDoc\StringNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
+<<<<<<< HEAD
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Webmozart\Assert\Assert;
+=======
+>>>>>>> 8c66710a92 (remove ValueObjectInliner as no longer used)
 
 /**
  * @see \Rector\Tests\PhpAttribute\AnnotationToAttributeMapper\AnnotationToAttributeMapperTest
@@ -22,8 +25,9 @@ use Webmozart\Assert\Assert;
 final class AnnotationToAttributeMapper
 {
     /**
-     * @var AnnotationToAttributeMapperInterface[]
+     * @param AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers
      */
+<<<<<<< HEAD
     private array $annotationToAttributeMappers = [];
 
     /**
@@ -38,6 +42,11 @@ final class AnnotationToAttributeMapper
         }
 
         Assert::notEmpty($this->annotationToAttributeMappers);
+=======
+    public function __construct(
+        private readonly array $annotationToAttributeMappers
+    ) {
+>>>>>>> 8c66710a92 (remove ValueObjectInliner as no longer used)
     }
 
     /**

@@ -33,6 +33,7 @@ final class PathSkipVoter implements SkipVoterInterface
         }
 
         $skippedPaths = $this->skippedPathsResolver->resolve();
+
         return $this->skippedFiles[$filePath] = $this->fileInfoMatcher->doesFileInfoMatchPatterns(
             $filePath,
             $skippedPaths

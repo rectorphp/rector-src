@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Testing\PHPUnit;
 
+use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
@@ -14,7 +15,13 @@ use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+<<<<<<< HEAD
+=======
+use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\Core\ValueObject\Application\File;
+>>>>>>> 9887f30fff (remove ValueObjectInliner as no longer used)
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -38,7 +45,9 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     {
         @ini_set('memory_limit', '-1');
 
+<<<<<<< HEAD
         $configFile = $this->provideConfigFilePath();
+<<<<<<< HEAD
 
 <<<<<<< HEAD
         // boot once for config + test case to avoid booting again and again for every test fixture
@@ -62,7 +71,42 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
         $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
 =======
+=======
+>>>>>>> dc15b210a6 (remove ValueObjectInliner as no longer used)
         $this->bootFromConfigFiles([$configFile]);
+=======
+        $this->includePreloadFilesAndScoperAutoload();
+>>>>>>> 0a5c9dc021 (resetting rectors wip)
+
+        // cleanup all registered rectors, so you can use only the new ones
+
+        $container = self::getContainer();
+
+        $configFile = $this->provideConfigFilePath();
+
+        // boot once for config + test case to avoid booting again and again for every test fixture
+        $cacheKey = sha1($configFile . static::class);
+
+        if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
+            $this->forgetRectorsRules();
+
+            // always empty
+            $this->assertEmpty($container->tagged(PhpRectorInterface::class));
+
+            $this->bootFromConfigFiles([$configFile]);
+
+            $phpRectorsGenerator = $container->tagged(PhpRectorInterface::class);
+
+            if ($phpRectorsGenerator instanceof RewindableGenerator) {
+                $phpRectors = iterator_to_array($phpRectorsGenerator->getIterator());
+
+                $rectorNodeTraverser = $container->make(RectorNodeTraverser::class);
+                $rectorNodeTraverser->refreshPhpRectors($phpRectors);
+            }
+
+            // store cache
+            self::$cacheByRuleAndConfig[$cacheKey] = true;
+        }
 
         $this->applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
         $this->dynamicSourceLocatorProvider = $this->make(DynamicSourceLocatorProvider::class);

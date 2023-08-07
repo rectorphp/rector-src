@@ -75,9 +75,17 @@ final class FilePathHelper
     private function relativeFilePathFromDirectory(string $fileRealPath, string $directory): string
     {
         Assert::directory($directory);
+<<<<<<< HEAD
         $normalizedFileRealPath = $this->normalizePath($fileRealPath);
 
         $relativeFilePath = $this->filesystem->makePathRelative($normalizedFileRealPath, $directory);
+=======
+
+        $normalizedFileRealPath = $this->normalizePath($fileRealPath);
+
+        $relativeFilePath = $this->filesystem->makePathRelative($normalizedFileRealPath, $directory);
+
+>>>>>>> 236a780169 (remove ValueObjectInliner as no longer used)
         return rtrim($relativeFilePath, '/');
     }
 

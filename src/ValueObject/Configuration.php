@@ -49,6 +49,7 @@ final class Configuration
     public function getFileExtensions(): array
     {
         Assert::notEmpty($this->fileExtensions);
+
         return $this->fileExtensions;
     }
 

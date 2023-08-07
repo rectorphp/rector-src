@@ -27,8 +27,18 @@ final class RectorNodeTraverser extends NodeTraverser
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
         $this->phpRectors = is_array($phpRectors) ? $phpRectors : iterator_to_array($phpRectors);
-
         parent::__construct();
+    }
+
+    /**
+     * @api used in tests to update the active rules
+     * @param PhpRectorInterface[] $phpRectors
+     */
+    public function refreshPhpRectors(array $phpRectors): void
+    {
+        $this->phpRectors = $phpRectors;
+        $this->visitors = [];
+        $this->areNodeVisitorsPrepared = false;
     }
 
     /**

@@ -42,7 +42,7 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\ClassLikeNameCla
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\FullyQualifiedNameClassNameImportSkipVoter;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\UsesClassNameImportSkipVoter;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Config\LazyRectorConfig;
+use Rector\Config\RectorConfig;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
@@ -363,39 +363,49 @@ final class LazyContainerFactory
     ];
 
     /**
-     * @api used as next container factory
+     * @api used as next rectorConfig factory
      */
+<<<<<<< HEAD
     public function create(): LazyRectorConfig
+=======
+    public function create(): RectorConfig
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
     {
-        $lazyRectorConfig = new LazyRectorConfig();
+        $rectorConfig = new RectorConfig();
 
         // setup base parameters - from RectorConfig
         // make use of https://github.com/symplify/easy-parallel
         // $lazyRectorConfig->import(EasyParallelConfig::FILE_PATH);
 
-        $lazyRectorConfig->paths([]);
-        $lazyRectorConfig->skip([]);
+        $rectorConfig->paths([]);
+        $rectorConfig->skip([]);
 
-        $lazyRectorConfig->autoloadPaths([]);
-        $lazyRectorConfig->bootstrapFiles([]);
-        $lazyRectorConfig->parallel(120, 16, 20);
+        $rectorConfig->autoloadPaths([]);
+        $rectorConfig->bootstrapFiles([]);
+        $rectorConfig->parallel(120, 16, 20);
 
         // to avoid autoimporting out of the box
-        $lazyRectorConfig->importNames(false, false);
-        $lazyRectorConfig->removeUnusedImports(false);
+        $rectorConfig->importNames(false, false);
+        $rectorConfig->removeUnusedImports(false);
 
-        $lazyRectorConfig->importShortClasses();
-        $lazyRectorConfig->indent(' ', 4);
+        $rectorConfig->importShortClasses();
+        $rectorConfig->indent(' ', 4);
 
-        $lazyRectorConfig->fileExtensions(['php']);
+        $rectorConfig->fileExtensions(['php']);
 
-        $lazyRectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
-        $lazyRectorConfig->containerCacheDirectory(sys_get_temp_dir());
+        $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
+        $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
 
         // make use of https://github.com/symplify/easy-parallel
+<<<<<<< HEAD
         //        $lazyRectorConfig->import(EasyParallelConfig::FILE_PATH);
 
         $lazyRectorConfig->singleton(Application::class, static function (): Application {
+=======
+        //        $rectorConfig->import(EasyParallelConfig::FILE_PATH);
+
+        $rectorConfig->singleton(Application::class, static function (): Application {
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
             $application = new Application();
 
             // @todo inject commands
@@ -410,11 +420,12 @@ final class LazyContainerFactory
             return $application;
         });
 
-        $lazyRectorConfig->singleton(Inflector::class, static function (): Inflector {
+        $rectorConfig->singleton(Inflector::class, static function (): Inflector {
             $inflectorFactory = new InflectorFactory();
             return $inflectorFactory->build();
         });
 
+<<<<<<< HEAD
         $lazyRectorConfig->singleton(ConsoleApplication::class, ConsoleApplication::class);
         $lazyRectorConfig->when(ConsoleApplication::class)
             ->needs('$commands')
@@ -437,27 +448,44 @@ final class LazyContainerFactory
         $lazyRectorConfig->tag(MissingInSetCommand::class, Command::class);
         $lazyRectorConfig->tag(OutsideAnySetCommand::class, Command::class);
 
+<<<<<<< HEAD
         $lazyRectorConfig->when(ApplicationFileProcessor::class)
+=======
+        $lazyRectorConfig->when(NonPhpFileProcessor::class)
+=======
+        $rectorConfig->singleton(PhpFileProcessor::class);
+        $rectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
+
+        $rectorConfig->singleton(NonPhpFileProcessor::class);
+        $rectorConfig->tag(NonPhpFileProcessor::class, FileProcessorInterface::class);
+
+        $rectorConfig->when(NonPhpFileProcessor::class)
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
+            ->needs('$nonPhpRectors')
+            ->giveTagged(NonPhpRectorInterface::class);
+
+        $rectorConfig->when(ApplicationFileProcessor::class)
+>>>>>>> a3f90f21fa (remove ValueObjectInliner as no longer used)
             ->needs('$fileProcessors')
             ->giveTagged(FileProcessorInterface::class);
 
-        $lazyRectorConfig->when(FileFactory::class)
+        $rectorConfig->when(FileFactory::class)
             ->needs('$fileProcessors')
             ->giveTagged(FileProcessorInterface::class);
 
-        $lazyRectorConfig->when(RectorNodeTraverser::class)
+        $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$phpRectors')
             ->giveTagged(PhpRectorInterface::class);
 
-        $lazyRectorConfig->when(ConfigInitializer::class)
+        $rectorConfig->when(ConfigInitializer::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
 
-        $lazyRectorConfig->when(ClassNameImportSkipper::class)
+        $rectorConfig->when(ClassNameImportSkipper::class)
             ->needs('$classNameImportSkipVoters')
             ->giveTagged(ClassNameImportSkipVoterInterface::class);
 
-        $lazyRectorConfig->singleton(
+        $rectorConfig->singleton(
             DynamicSourceLocatorProvider::class,
             static function (Container $container): DynamicSourceLocatorProvider {
                 $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
@@ -466,17 +494,18 @@ final class LazyContainerFactory
         );
 
         // caching
-        $lazyRectorConfig->singleton(Cache::class, static function (Container $container): Cache {
+        $rectorConfig->singleton(Cache::class, static function (Container $container): Cache {
             /** @var CacheFactory $cacheFactory */
             $cacheFactory = $container->make(CacheFactory::class);
             return $cacheFactory->create();
         });
 
         // tagged services
-        $lazyRectorConfig->when(BetterPhpDocParser::class)
+        $rectorConfig->when(BetterPhpDocParser::class)
             ->needs('$phpDocNodeDecorators')
             ->giveTagged(PhpDocNodeDecoratorInterface::class);
 
+<<<<<<< HEAD
         $lazyRectorConfig->afterResolving(
             ConditionalTypeForParameterMapper::class,
             static function (
@@ -489,27 +518,30 @@ final class LazyContainerFactory
         );
 
         $lazyRectorConfig->when(PHPStanStaticTypeMapper::class)
+=======
+        $rectorConfig->when(PHPStanStaticTypeMapper::class)
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
             ->needs('$typeMappers')
             ->giveTagged(TypeMapperInterface::class);
 
-        $lazyRectorConfig->when(PhpDocTypeMapper::class)
+        $rectorConfig->when(PhpDocTypeMapper::class)
             ->needs('$phpDocTypeMappers')
             ->giveTagged(PhpDocTypeMapperInterface::class);
 
-        $lazyRectorConfig->when(PhpParserNodeMapper::class)
+        $rectorConfig->when(PhpParserNodeMapper::class)
             ->needs('$phpParserNodeMappers')
             ->giveTagged(PhpParserNodeMapperInterface::class);
 
-        $lazyRectorConfig->when(NodeTypeResolver::class)
+        $rectorConfig->when(NodeTypeResolver::class)
             ->needs('$nodeTypeResolvers')
             ->giveTagged(NodeTypeResolverInterface::class);
 
         // node name resolvers
-        $lazyRectorConfig->when(NodeNameResolver::class)
+        $rectorConfig->when(NodeNameResolver::class)
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
 
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             AbstractRector::class,
             static function (AbstractRector $rector, Container $container): void {
                 $rector->autowire(
@@ -534,16 +566,17 @@ final class LazyContainerFactory
         );
 
         $this->registerTagged(
-            $lazyRectorConfig,
+            $rectorConfig,
             self::PHP_PARSER_NODE_MAPPER_CLASSES,
             PhpParserNodeMapperInterface::class
         );
 
         $this->registerTagged(
-            $lazyRectorConfig,
+            $rectorConfig,
             self::PHP_DOC_NODE_DECORATOR_CLASSES,
             PhpDocNodeDecoratorInterface::class
         );
+<<<<<<< HEAD
 
         $this->registerTagged(
             $lazyRectorConfig,
@@ -556,15 +589,26 @@ final class LazyContainerFactory
         $this->registerTagged($lazyRectorConfig, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
         $this->registerTagged($lazyRectorConfig, self::NODE_TYPE_RESOLVER_CLASSES, NodeTypeResolverInterface::class);
         $this->registerTagged($lazyRectorConfig, self::OUTPUT_FORMATTER_CLASSES, OutputFormatterInterface::class);
+=======
+        $this->registerTagged($rectorConfig, self::TYPE_MAPPER_CLASSES, TypeMapperInterface::class);
+        $this->registerTagged($rectorConfig, self::PHPDOC_TYPE_MAPPER_CLASSES, PhpDocTypeMapperInterface::class);
+        $this->registerTagged($rectorConfig, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
+        $this->registerTagged($rectorConfig, self::NODE_TYPE_RESOLVER_CLASSES, NodeTypeResolverInterface::class);
+        $this->registerTagged($rectorConfig, self::OUTPUT_FORMATTER_CLASSES, OutputFormatterInterface::class);
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
         $this->registerTagged(
-            $lazyRectorConfig,
+            $rectorConfig,
             self::CLASS_NAME_IMPORT_SKIPPER_CLASSES,
             ClassNameImportSkipVoterInterface::class
         );
 
+<<<<<<< HEAD
         $lazyRectorConfig->alias(SymfonyStyle::class, RectorStyle::class);
+=======
+        $rectorConfig->alias(SymfonyStyle::class, RectorStyle::class);
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
 
-        $lazyRectorConfig->singleton(
+        $rectorConfig->singleton(
             SymfonyStyle::class,
             static function (Container $container): SymfonyStyle {
                 $symfonyStyleFactory = $container->make(SymfonyStyleFactory::class);
@@ -573,21 +617,21 @@ final class LazyContainerFactory
         );
 
         $this->registerTagged(
-            $lazyRectorConfig,
+            $rectorConfig,
             self::ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES,
             AnnotationToAttributeMapperInterface::class
         );
 
-        $lazyRectorConfig->when(AnnotationToAttributeMapper::class)
+        $rectorConfig->when(AnnotationToAttributeMapper::class)
             ->needs('$annotationToAttributeMappers')
             ->giveTagged(AnnotationToAttributeMapperInterface::class);
 
-        $lazyRectorConfig->when(OutputFormatterCollector::class)
+        $rectorConfig->when(OutputFormatterCollector::class)
             ->needs('$outputFormatters')
             ->giveTagged(OutputFormatterInterface::class);
 
         // #[Required]-like setter
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             ArrayAnnotationToAttributeMapper::class,
             static function (
                 ArrayAnnotationToAttributeMapper $arrayAnnotationToAttributeMapper,
@@ -598,7 +642,7 @@ final class LazyContainerFactory
             }
         );
 
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             ArrayItemNodeAnnotationToAttributeMapper::class,
             static function (
                 ArrayItemNodeAnnotationToAttributeMapper $arrayItemNodeAnnotationToAttributeMapper,
@@ -609,7 +653,7 @@ final class LazyContainerFactory
             }
         );
 
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             NameScopeFactory::class,
             static function (NameScopeFactory $nameScopeFactory, Container $container): void {
                 $nameScopeFactory->autowire(
@@ -619,14 +663,14 @@ final class LazyContainerFactory
             }
         );
 
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             ArrayTypeMapper::class,
             static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
                 $arrayTypeMapper->autowire($container->make(PHPStanStaticTypeMapper::class));
             }
         );
 
-        $lazyRectorConfig->afterResolving(
+        $rectorConfig->afterResolving(
             PlainValueParser::class,
             static function (PlainValueParser $plainValueParser, Container $container): void {
                 $plainValueParser->autowire(
@@ -636,6 +680,7 @@ final class LazyContainerFactory
             }
         );
 
+<<<<<<< HEAD
         $lazyRectorConfig->afterResolving(
             \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
             static function (
@@ -643,15 +688,31 @@ final class LazyContainerFactory
                 Container $container
             ): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
+=======
+        $rectorConfig->afterResolving(
+            \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
+            function (
+                \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
+                Container $container
+            ): void {
+                $phpStanStaticTypeMapper = $container->make(
+                    \Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper::class
+                );
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
                 $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }
         );
 
+<<<<<<< HEAD
         $lazyRectorConfig->singleton(Parser::class, static function (Container $container) {
+=======
+        $rectorConfig->singleton(Parser::class, static function (Container $container) {
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
         });
 
+<<<<<<< HEAD
         $lazyRectorConfig->afterResolving(
             CurlyListNodeAnnotationToAttributeMapper::class,
             static function (
@@ -675,24 +736,27 @@ final class LazyContainerFactory
         );
 
         $lazyRectorConfig->when(PHPStanNodeScopeResolver::class)
+=======
+        $rectorConfig->when(PHPStanNodeScopeResolver::class)
+>>>>>>> d3fd4c8350 (remove ValueObjectInliner as no longer used)
             ->needs('$nodeVisitors')
             ->giveTagged(ScopeResolverNodeVisitorInterface::class);
 
         $this->registerTagged(
-            $lazyRectorConfig,
+            $rectorConfig,
             self::SCOPE_RESOLVER_NODE_VISITOR_CLASSES,
             ScopeResolverNodeVisitorInterface::class
         );
 
         // phpstan factory
-        $this->createPHPStanServices($lazyRectorConfig);
+        $this->createPHPStanServices($rectorConfig);
 
         // @todo add base node visitors
-        $lazyRectorConfig->when(PhpDocNodeMapper::class)
+        $rectorConfig->when(PhpDocNodeMapper::class)
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
 
-        return $lazyRectorConfig;
+        return $rectorConfig;
     }
 
     /**
@@ -709,20 +773,20 @@ final class LazyContainerFactory
         }
     }
 
-    private function createPHPStanServices(LazyRectorConfig $lazyRectorConfig): void
+    private function createPHPStanServices(RectorConfig $rectorConfig): void
     {
-        $lazyRectorConfig->singleton(Parser::class, static function (Container $container) {
+        $rectorConfig->singleton(Parser::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createPHPStanParser();
         });
 
-        $lazyRectorConfig->singleton(Lexer::class, static function (Container $container) {
+        $rectorConfig->singleton(Lexer::class, static function (Container $container) {
             $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
             return $phpstanServiceFactory->createEmulativeLexer();
         });
 
         foreach (self::PUBLIC_PHPSTAN_SERVICE_TYPES as $publicPhpstanServiceType) {
-            $lazyRectorConfig->singleton($publicPhpstanServiceType, static function (Container $container) use (
+            $rectorConfig->singleton($publicPhpstanServiceType, static function (Container $container) use (
                 $publicPhpstanServiceType
             ) {
                 $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
