@@ -146,7 +146,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod);
+        return $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod) !== false;
     }
 
     private function mirrorParamType(

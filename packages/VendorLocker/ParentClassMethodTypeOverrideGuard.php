@@ -8,10 +8,13 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\Type;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\VendorLocker\Exception\UnresolvableClassParentException;
 
 final class ParentClassMethodTypeOverrideGuard
 {
@@ -20,30 +23,60 @@ final class ParentClassMethodTypeOverrideGuard
         private readonly ReflectionResolver $reflectionResolver,
         private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly PrivatesAccessor $privatesAccessor,
     ) {
     }
 
-    public function hasParentClassMethod(ClassMethod $classMethod): bool
+    public function hasParentClassMethod(ClassMethod $classMethod): ?bool
     {
-        return $this->getParentClassMethod($classMethod) instanceof MethodReflection;
+        try {
+            $parentClassMethod = $this->resolveParentClassMethod($classMethod);
+
+            return $parentClassMethod instanceof MethodReflection;
+        } catch (UnresolvableClassParentException) {
+            // we don't know all involved parents.
+            return null;
+        }
     }
 
     public function getParentClassMethod(ClassMethod $classMethod): ?MethodReflection
     {
+        try {
+            $parentClassMethod = $this->resolveParentClassMethod($classMethod);
+
+            return $parentClassMethod;
+        } catch (UnresolvableClassParentException) {
+            // we don't know all involved parents.
+            throw new ShouldNotHappenException('Unable to resolve involved class. You are likely missing hasParentClassMethod() before calling getParentClassMethod().');
+        }
+    }
+
+    /**
+     * @throws UnresolvableClassParentException
+     */
+    private function resolveParentClassMethod(ClassMethod $classMethod): ?MethodReflection
+    {
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
-            return null;
+            // we can't resolve the class, so we don't know.
+            throw new UnresolvableClassParentException();
         }
 
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
-        $parentClassReflection = $classReflection->getParentClass();
-        while ($parentClassReflection instanceof ClassReflection) {
+        $currentClassReflection = $classReflection;
+        while ($this->hasClassParent($currentClassReflection)) {
+            $parentClassReflection = $currentClassReflection->getParentClass();
+            if (!$parentClassReflection instanceof ClassReflection) {
+                // per AST we have a parent class, but our reflection classes are not able to load its class definition/signature
+                throw new UnresolvableClassParentException();
+            }
+
             if ($parentClassReflection->hasNativeMethod($methodName)) {
                 return $parentClassReflection->getNativeMethod($methodName);
             }
 
-            $parentClassReflection = $parentClassReflection->getParentClass();
+            $currentClassReflection = $parentClassReflection;
         }
 
         foreach ($classReflection->getInterfaces() as $interfaceReflection) {
@@ -55,6 +88,13 @@ final class ParentClassMethodTypeOverrideGuard
         }
 
         return null;
+    }
+
+    private function hasClassParent(ClassReflection $classReflection):bool {
+        $nativeReflection = $classReflection->getNativeReflection();
+        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty($nativeReflection, 'betterReflectionClass');
+        $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
+        return $parentClassName !== null;
     }
 
     public function shouldSkipReturnTypeChange(ClassMethod $classMethod, Type $parentType): bool
