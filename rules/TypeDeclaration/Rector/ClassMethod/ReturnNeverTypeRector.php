@@ -93,6 +93,10 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
+        if ($node->returnType instanceof Node && ! $this->isNames($node->returnType, ['void', 'return'])) {
+            return true;
+        }
+
         $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
         if ($hasReturn) {
             return true;
