@@ -78,7 +78,7 @@ final class StaticTypeMapper
 
     public function mapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, Node $node): Type
     {
-        $nameScope = $this->nameScopeFactory->createNameScopeFromNode($node);
+        $nameScope = $this->nameScopeFactory->createNameScopeFromNode($node, $this);
         return $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $node, $nameScope);
     }
 }

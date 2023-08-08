@@ -14,6 +14,7 @@ use PHPStan\Type\ArrayType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class PhpDocTypeMapperTest extends AbstractLazyTestCase
@@ -22,10 +23,13 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
 
     private NameScopeFactory $nameScopeFactory;
 
+    private StaticTypeMapper $staticTypeMapper;
+
     protected function setUp(): void
     {
         $this->phpDocTypeMapper = $this->make(PhpDocTypeMapper::class);
         $this->nameScopeFactory = $this->make(NameScopeFactory::class);
+        $this->staticTypeMapper = $this->make(StaticTypeMapper::class);
     }
 
     /**
@@ -35,7 +39,7 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
     public function test(TypeNode $typeNode, string $expectedPHPStanType): void
     {
         $nop = new Nop();
-        $nameScope = $this->nameScopeFactory->createNameScopeFromNode($nop);
+        $nameScope = $this->nameScopeFactory->createNameScopeFromNode($nop, $this->staticTypeMapper);
 
         $phpStanType = $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $nop, $nameScope);
         $this->assertInstanceOf($expectedPHPStanType, $phpStanType);
