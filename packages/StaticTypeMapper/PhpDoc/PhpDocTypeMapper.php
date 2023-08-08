@@ -10,6 +10,7 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\StaticTypeMapper\PhpDoc\PhpDocTypeMapperTest
@@ -23,6 +24,7 @@ final class PhpDocTypeMapper
         private readonly iterable $phpDocTypeMappers,
         private readonly TypeNodeResolver $typeNodeResolver
     ) {
+        Assert::notEmpty($phpDocTypeMappers);
     }
 
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
