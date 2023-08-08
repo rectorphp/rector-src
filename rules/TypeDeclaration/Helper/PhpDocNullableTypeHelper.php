@@ -4,26 +4,15 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Helper;
 
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Param;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class PhpDocNullableTypeHelper
 {
-    public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ValueResolver $valueResolver
-    ) {
-    }
-
     /**
      * @return Type|null Returns null if it was not possible to resolve new php doc type or if update is not required
      */
@@ -39,51 +28,6 @@ final class PhpDocNullableTypeHelper
             $phpDocType,
             $this->isParserTypeContainingNullType($phpParserType)
         );
-    }
-
-    /**
-     * @return Type|null Returns null if it was not possible to resolve new php doc param type or if update is not required
-     */
-    public function resolveUpdatedPhpDocTypeFromPhpDocTypeAndParamNode(Type $phpDocType, Param $param): ?Type
-    {
-        if ($param->type === null) {
-            return null;
-        }
-
-        $phpParserType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-
-        if ($phpParserType instanceof UnionType) {
-            $isPhpParserTypeContainingNullType = TypeCombinator::containsNull($phpParserType);
-        } elseif ($param->default instanceof Expr) {
-            $value = $this->valueResolver->getValue($param->default);
-            $isPhpParserTypeContainingNullType = $value === null || ($param->default instanceof ConstFetch && $value === 'null');
-        } else {
-            $isPhpParserTypeContainingNullType = false;
-        }
-
-        $resolvedType = $this->resolveUpdatedPhpDocTypeFromPhpDocTypeAndPhpParserTypeNullInfo(
-            $phpDocType,
-            $isPhpParserTypeContainingNullType
-        );
-
-        if ($resolvedType instanceof UnionType) {
-            return $this->cleanNullableMixed($resolvedType);
-        }
-
-        if ($resolvedType instanceof Type) {
-            return $resolvedType;
-        }
-
-        if (! $phpDocType instanceof UnionType) {
-            return null;
-        }
-
-        $cleanNullableMixed = $this->cleanNullableMixed($phpDocType);
-        if ($cleanNullableMixed === $phpDocType) {
-            return null;
-        }
-
-        return $cleanNullableMixed;
     }
 
     /**
@@ -154,23 +98,6 @@ final class PhpDocNullableTypeHelper
         }
 
         return $updatedDocTypes;
-    }
-
-    private function cleanNullableMixed(UnionType $unionType): Type
-    {
-        if (! TypeCombinator::containsNull($unionType)) {
-            return $unionType;
-        }
-
-        $types = $unionType->getTypes();
-
-        foreach ($types as $type) {
-            if ($type instanceof MixedType) {
-                return TypeCombinator::removeNull($unionType);
-            }
-        }
-
-        return $unionType;
     }
 
     private function isItRequiredToRemoveOrAddNullTypeToUnion(

@@ -13,7 +13,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnPar
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ParamAnnotationIncorrectNullableRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnAnnotationIncorrectNullableRector;
@@ -49,7 +48,6 @@ return static function (RectorConfig $rectorConfig): void {
         TypedPropertyFromAssignsRector::class,
         ReturnAnnotationIncorrectNullableRector::class,
         VarAnnotationIncorrectNullableRector::class,
-        ParamAnnotationIncorrectNullableRector::class,
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
         ReturnTypeFromStrictTypedPropertyRector::class,
         TypedPropertyFromStrictConstructorRector::class,
