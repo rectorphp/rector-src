@@ -113,6 +113,7 @@ parameters:
             paths:
                 - src/Rector/AbstractRector.php
                 - src/PhpParser/AstResolver.php
+                - packages/StaticTypeMapper/StaticTypeMapper.php
 
         - '#Property Rector\\Core\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
 
