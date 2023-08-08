@@ -25,7 +25,7 @@ final class PhpDocNodeMapper
         private readonly CurrentTokenIteratorProvider $currentTokenIteratorProvider,
         private readonly ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
         private readonly CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
-        private readonly iterable $phpDocNodeVisitors
+        private readonly array $phpDocNodeVisitors
     ) {
         Assert::notEmpty($phpDocNodeVisitors);
     }

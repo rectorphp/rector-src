@@ -31,17 +31,6 @@ final class RectorNodeTraverser extends NodeTraverser
     }
 
     /**
-     * @api used in tests to update the active rules
-     * @param PhpRectorInterface[] $phpRectors
-     */
-    public function refreshPhpRectors(array $phpRectors): void
-    {
-        $this->phpRectors = $phpRectors;
-        $this->visitors = [];
-        $this->areNodeVisitorsPrepared = false;
-    }
-
-    /**
      * @template TNode as Node
      * @param TNode[] $nodes
      * @return TNode[]

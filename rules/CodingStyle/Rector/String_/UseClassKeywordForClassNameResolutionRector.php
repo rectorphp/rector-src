@@ -80,6 +80,7 @@ CODE_SAMPLE
         }
 
         $exprsToConcat = $this->createExpressionsToConcat($parts);
+
         return $this->nodeFactory->createConcat($exprsToConcat);
     }
 

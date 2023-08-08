@@ -58,6 +58,7 @@ final class PhpDocInfoFactory
     public function createFromNode(Node $node): ?PhpDocInfo
     {
         $objectHash = spl_object_hash($node);
+
         if (isset($this->phpDocInfosByObjectHash[$objectHash])) {
             return $this->phpDocInfosByObjectHash[$objectHash];
         }

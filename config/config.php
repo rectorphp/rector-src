@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-use Composer\Semver\VersionParser;
-
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\Rules\English\InflectorFactory;
 use OndraM\CiDetector\CiDetector;
+<<<<<<< HEAD
 use PhpParser\BuilderFactory;
 use PhpParser\ConstExprEvaluator;
 use PhpParser\Lexer;
@@ -28,60 +25,13 @@ use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
 use Rector\Caching\Cache;
 use Rector\Caching\CacheFactory;
+=======
+>>>>>>> a2066862e5 (fix order of cleanup, remove closures first)
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
-use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
-use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
-use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\RectorConfig;
-use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Bootstrap\ExtensionConfigResolver;
-use Rector\Core\Configuration\ConfigInitializer;
-use Rector\Core\Console\Command\ListRulesCommand;
-use Rector\Core\Console\ConsoleApplication;
-use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Console\Style\RectorStyle;
-use Rector\Core\Console\Style\SymfonyStyleFactory;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
-use Rector\Core\Contract\Rector\PhpRectorInterface;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\ValueObjectFactory\Application\FileFactory;
-use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
-use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
-use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
-use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
-use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocator\IntermediateSourceLocator;
-use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Rector\PhpAttribute\AnnotationToAttributeMapper;
-use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\PhpDocParser\PhpParser\SmartPhpParser;
-use Rector\PhpDocParser\PhpParser\SmartPhpParserFactory;
-use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\RectorGenerator\Command\GenerateCommand;
-use Rector\RectorGenerator\Command\InitRecipeCommand;
-use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
-use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
-use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
-use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
-use Rector\Utils\Command\MissingInSetCommand;
-use Rector\Utils\Command\OutsideAnySetCommand;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
-use Symplify\EasyParallel\ValueObject\EasyParallelConfig;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 return static function (RectorConfig $rectorConfig): void {
-    // make use of https://github.com/symplify/easy-parallel
-    $rectorConfig->import(EasyParallelConfig::FILE_PATH);
-
     $rectorConfig->paths([]);
     $rectorConfig->skip([]);
 
@@ -101,49 +51,9 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
     $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
 
-    $services = $rectorConfig->services();
-    $services->defaults()
-        ->public()
-        ->autowire()
-        ->autoconfigure();
-
-    $services->load('Rector\\', __DIR__ . '/../packages')
-        ->exclude([
-            __DIR__ . '/../packages/Config/RectorConfig.php',
-            __DIR__ . '/../packages/*/{ValueObject,Contract,Exception}',
-            __DIR__ . '/../packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php',
-            __DIR__ . '/../packages/Testing/PHPUnit',
-            __DIR__ . '/../packages/BetterPhpDocParser/PhpDoc',
-
-            __DIR__ . '/../packages/PhpDocParser/NodeVisitor',
-            __DIR__ . '/../packages/PhpDocParser/PhpParser/SmartPhpParser.php',
-            __DIR__ . '/../packages/PhpDocParser/ValueObject',
-            __DIR__ . '/../packages/PhpDocParser/PhpDocParser/PhpDocNodeVisitor/CallablePhpDocNodeVisitor.php',
-
-            __DIR__ . '/../packages/PHPStanStaticTypeMapper/Enum',
-            __DIR__ . '/../packages/Caching/Cache.php',
-            __DIR__ . '/../packages/NodeTypeResolver/PHPStan/ObjectWithoutClassTypeWithParentTypes.php',
-
-            // used in PHPStan
-            __DIR__ . '/../packages/NodeTypeResolver/Reflection/BetterReflection/RectorBetterReflectionSourceLocatorFactory.php',
-            __DIR__ . '/../packages/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php',
-        ]);
-
-    $services->load('Rector\\', __DIR__ . '/../rules')
-        ->exclude([
-            __DIR__ . '/../rules/*/ValueObject/*',
-            __DIR__ . '/../rules/*/Rector/*',
-            __DIR__ . '/../rules/*/Contract/*',
-            __DIR__ . '/../rules/*/Exception/*',
-            __DIR__ . '/../rules/*/Enum/*',
-        ]);
-
-    $services->set(Filesystem::class);
-
     // use faster in-memory cache in CI.
     // CI always starts from scratch, therefore IO intensive caching is not worth it
-    $ciDetector = new CiDetector();
-    if ($ciDetector->isCiDetected()) {
+    if ((new CiDetector())->isCiDetected()) {
         $rectorConfig->cacheClass(MemoryCacheStorage::class);
     }
 
@@ -152,6 +62,7 @@ return static function (RectorConfig $rectorConfig): void {
     foreach ($extensionConfigFiles as $extensionConfigFile) {
         $rectorConfig->import($extensionConfigFile);
     }
+<<<<<<< HEAD
 
     $services->load('Rector\Core\\', __DIR__ . '/../src')
         ->exclude([
@@ -309,4 +220,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $services->set(AnnotationToAttributeMapper::class)
         ->arg('$annotationToAttributeMappers', tagged_iterator(AnnotationToAttributeMapperInterface::class));
+=======
+>>>>>>> a2066862e5 (fix order of cleanup, remove closures first)
 };

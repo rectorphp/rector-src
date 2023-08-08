@@ -21,7 +21,7 @@ final class PhpDocTypeMapper
      * @param PhpDocTypeMapperInterface[] $phpDocTypeMappers
      */
     public function __construct(
-        private readonly iterable $phpDocTypeMappers,
+        private readonly array $phpDocTypeMappers,
         private readonly TypeNodeResolver $typeNodeResolver
     ) {
         Assert::notEmpty($phpDocTypeMappers);

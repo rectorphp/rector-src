@@ -13,6 +13,8 @@ use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Webmozart\Assert\Assert;
 
@@ -171,6 +173,18 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
         $this->tagRectorService($rectorClass);
+
+        if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
+            $this->extend(
+                $rectorClass,
+                function (AbstractScopeAwareRector $scopeAwareRector, Container $container) {
+                    $scopeAnalyzer = $container->make(ScopeAnalyzer::class);
+                    $scopeAwareRector->autowireAbstractScopeAwareRector($scopeAnalyzer);
+
+                    return $scopeAwareRector;
+                }
+            );
+        }
     }
 
     public function import(string $setFilePath): void
@@ -278,8 +292,6 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, $count);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     private function isRuleNoLongerExists(mixed $skipRule): bool
     {
         return // only validate string
@@ -292,19 +304,8 @@ final class RectorConfig extends Container
             && str_ends_with($skipRule, 'Rector')
             // class not exists
             && ! class_exists($skipRule);
-=======
-    public function import(string $setFilePath): void
-    {
-        $self = $this;
-        $closureFilePath = (require $setFilePath);
-
-        \Webmozart\Assert\Assert::isCallable($closureFilePath);
-        $closureFilePath($self);
->>>>>>> d6cb3cc836 (refactor RectorConfig to Laravel container)
     }
 
-=======
->>>>>>> c745ea9c35 (remove ValueObjectInliner as no longer used)
     /**
      * @param string[] $values
      * @return string[]
@@ -333,16 +334,12 @@ final class RectorConfig extends Container
         if (is_a($rectorClass, PhpRectorInterface::class, true)) {
             $this->tag($rectorClass, PhpRectorInterface::class);
         } elseif (is_a($rectorClass, NonPhpRectorInterface::class, true)) {
-<<<<<<< HEAD
             trigger_error(sprintf(
                 'The "%s" interface of "%s" rule is deprecated. Rector will only PHP code, as designed to with AST. For another file format, use custom tooling.',
                 NonPhpRectorInterface::class,
                 $rectorClass,
             ));
             exit();
-=======
-            $this->tag($rectorClass, NonPhpRectorInterface::class);
->>>>>>> ffecf2aecf (refactor RectorConfig to Laravel container)
         }
     }
 

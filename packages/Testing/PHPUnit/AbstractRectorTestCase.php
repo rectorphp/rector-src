@@ -16,12 +16,10 @@ use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
-<<<<<<< HEAD
-=======
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\ValueObject\Application\File;
->>>>>>> 9887f30fff (remove ValueObjectInliner as no longer used)
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -41,10 +39,24 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      */
     private static array $cacheByRuleAndConfig = [];
 
+    /**
+     * Restore default parameters
+     */
+    public static function tearDownAfterClass(): void
+    {
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
+
+        SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
+        SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
+    }
+
     protected function setUp(): void
     {
         @ini_set('memory_limit', '-1');
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         $configFile = $this->provideConfigFilePath();
 <<<<<<< HEAD
@@ -78,8 +90,9 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $this->includePreloadFilesAndScoperAutoload();
 >>>>>>> 0a5c9dc021 (resetting rectors wip)
 
+=======
+>>>>>>> f1b597bffa (move away from symfony dependency injection)
         // cleanup all registered rectors, so you can use only the new ones
-
         $container = self::getContainer();
 
         $configFile = $this->provideConfigFilePath();
@@ -90,7 +103,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
             $this->forgetRectorsRules();
 
-            // always empty
+            // this has to be always empty, so we can add new rules with their configuration
+            $this->assertEmpty($container->tagged(RectorInterface::class));
             $this->assertEmpty($container->tagged(PhpRectorInterface::class));
 
             $this->bootFromConfigFiles([$configFile]);
@@ -99,10 +113,13 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             if ($phpRectorsGenerator instanceof RewindableGenerator) {
                 $phpRectors = iterator_to_array($phpRectorsGenerator->getIterator());
-
-                $rectorNodeTraverser = $container->make(RectorNodeTraverser::class);
-                $rectorNodeTraverser->refreshPhpRectors($phpRectors);
+            } else {
+                // no rules at all, e.g. in case of only post rector run
+                $phpRectors = [];
             }
+
+            $rectorNodeTraverser = $container->make(RectorNodeTraverser::class);
+            $rectorNodeTraverser->refreshPhpRectors($phpRectors);
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
@@ -119,7 +136,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
         $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
->>>>>>> 56834d58a6 (refactor RectorConfig to Laravel container)
     }
 
     protected function tearDown(): void

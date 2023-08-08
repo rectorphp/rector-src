@@ -9,7 +9,6 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
-use Rector\Core\Kernel\RectorKernel;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -39,7 +38,7 @@ final class AutoloadIncluder
     public function includeDependencyOrRepositoryVendorAutoloadIfExists(): void
     {
         // Rector's vendor is already loaded
-        if (class_exists(RectorKernel::class)) {
+        if (class_exists(\Rector\Core\DependencyInjection\LazyContainerFactory::class)) {
             return;
         }
 

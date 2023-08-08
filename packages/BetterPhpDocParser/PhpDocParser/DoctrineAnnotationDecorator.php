@@ -269,6 +269,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         $identifierTypeNode = new IdentifierTypeNode($tagName);
         $identifierTypeNode->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $fullyQualifiedAnnotationClass);
 
+        // passes well
         $doctrineAnnotationTagValueNode = new DoctrineAnnotationTagValueNode(
             $identifierTypeNode,
             $annotationContent,
