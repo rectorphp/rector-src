@@ -162,10 +162,7 @@
             ]
         },
         "composer-exit-on-patch-failure": true,
-        "enable-patching": true,
-        "branch-alias": {
-            "dev-main": "0.15-dev"
-        }
+        "enable-patching": true
     },
     "config": {
         "sort-packages": true,
