@@ -10,8 +10,9 @@ use PHPStan\Reflection\ReflectionProvider;
 
 final class MethodReflectionResolver
 {
-    public function __construct(private readonly ReflectionProvider $reflectionProvider)
-    {
+    public function __construct(
+        private readonly ReflectionProvider $reflectionProvider
+    ) {
     }
 
     /**
