@@ -554,7 +554,6 @@ parameters:
             paths:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
-                - src/Console/Command/AbstractProcessCommand.php
                 - src/Rector/AbstractRector.php
 
         # useless

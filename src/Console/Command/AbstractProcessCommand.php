@@ -5,23 +5,13 @@ declare(strict_types=1);
 namespace Rector\Core\Console\Command;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractProcessCommand extends Command
 {
-    protected ConfigurationFactory $configurationFactory;
-
-    #[Required]
-    public function autowire(ConfigurationFactory $configurationFactory): void
-    {
-        $this->configurationFactory = $configurationFactory;
-    }
-
     protected function configure(): void
     {
         $this->addArgument(

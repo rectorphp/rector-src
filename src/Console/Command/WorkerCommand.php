@@ -9,6 +9,7 @@ use Clue\React\NDJson\Encoder;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
+use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Parallel\WorkerRunner;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,6 +29,7 @@ final class WorkerCommand extends AbstractProcessCommand
     public function __construct(
         private readonly WorkerRunner $workerRunner,
         private readonly MemoryLimiter $memoryLimiter,
+        private readonly ConfigurationFactory $configurationFactory
     ) {
         parent::__construct();
     }
