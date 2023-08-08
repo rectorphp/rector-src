@@ -27,7 +27,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Reflection\MethodReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -55,9 +55,9 @@ final class AstResolver
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver
+        private readonly ClassLikeAstResolver $classLikeAstResolver,
+        private readonly MethodReflectionResolver $methodReflectionResolver
     ) {
     }
 
@@ -166,7 +166,7 @@ final class AstResolver
      */
     public function resolveClassMethod(string $className, string $methodName): ?ClassMethod
     {
-        $methodReflection = $this->reflectionResolver->resolveMethodReflection($className, $methodName, null);
+        $methodReflection = $this->methodReflectionResolver->resolveMethodReflection($className, $methodName, null);
         if (! $methodReflection instanceof MethodReflection) {
             return null;
         }
