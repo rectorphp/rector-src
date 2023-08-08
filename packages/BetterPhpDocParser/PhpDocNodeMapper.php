@@ -11,6 +11,7 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\CloningPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\ParentConnectingPhpDocNodeVisitor;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocNodeMapperTest
@@ -26,6 +27,7 @@ final class PhpDocNodeMapper
         private readonly CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
         private readonly iterable $phpDocNodeVisitors
     ) {
+        Assert::notEmpty($phpDocNodeVisitors);
     }
 
     public function transform(PhpDocNode $phpDocNode, BetterTokenIterator $betterTokenIterator): void
