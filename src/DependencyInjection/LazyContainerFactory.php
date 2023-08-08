@@ -42,7 +42,6 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\FullyQualifiedNa
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\UsesClassNameImportSkipVoter;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\LazyRectorConfig;
-use Rector\Config\RectorConfig;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
@@ -488,7 +487,10 @@ final class LazyContainerFactory
 
         $lazyRectorConfig->afterResolving(
             ConditionalTypeForParameterMapper::class,
-            function (ConditionalTypeForParameterMapper $conditionalTypeForParameterMapper, Container $container) {
+            static function (
+                ConditionalTypeForParameterMapper $conditionalTypeForParameterMapper,
+                Container $container
+            ): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
                 $conditionalTypeForParameterMapper->autowire($phpStanStaticTypeMapper);
             }
@@ -646,7 +648,7 @@ final class LazyContainerFactory
 
         $lazyRectorConfig->afterResolving(
             \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
-            function (
+            static function (
                 \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
                 Container $container
             ): void {
@@ -662,10 +664,10 @@ final class LazyContainerFactory
 
         $lazyRectorConfig->afterResolving(
             CurlyListNodeAnnotationToAttributeMapper::class,
-            function (
+            static function (
                 CurlyListNodeAnnotationToAttributeMapper $curlyListNodeAnnotationToAttributeMapper,
                 Container $container
-            ) {
+            ): void {
                 $annotationToAttributeMapper = $container->make(AnnotationToAttributeMapper::class);
                 $curlyListNodeAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
             }
@@ -673,10 +675,10 @@ final class LazyContainerFactory
 
         $lazyRectorConfig->afterResolving(
             DoctrineAnnotationAnnotationToAttributeMapper::class,
-            function (
+            static function (
                 DoctrineAnnotationAnnotationToAttributeMapper $doctrineAnnotationAnnotationToAttributeMapper,
                 Container $container
-            ) {
+            ): void {
                 $annotationToAttributeMapper = $container->make(AnnotationToAttributeMapper::class);
                 $doctrineAnnotationAnnotationToAttributeMapper->autowire($annotationToAttributeMapper);
             }

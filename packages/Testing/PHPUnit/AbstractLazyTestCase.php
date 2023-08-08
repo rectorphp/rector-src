@@ -63,17 +63,16 @@ abstract class AbstractLazyTestCase extends TestCase
 
         // remove all tagged rules
         $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure($container, 'tags', function (array $tags): array {
+        $privatesAccessor->propertyClosure($container, 'tags', static function (array $tags): array {
             unset($tags[RectorInterface::class]);
             unset($tags[PhpRectorInterface::class]);
             unset($tags[ConfigurableRectorInterface::class]);
-
             return $tags;
         });
 
         $rectors = $container->tagged(RectorInterface::class);
         foreach ($rectors as $rector) {
-            $container->offsetUnset(get_class($rector));
+            $container->offsetUnset($rector::class);
         }
 
         // remove after binding too, to avoid setting configuration over and over again
@@ -81,8 +80,8 @@ abstract class AbstractLazyTestCase extends TestCase
         $privatesAccessor->propertyClosure(
             $container,
             'afterResolvingCallbacks',
-            function (array $afterResolvingCallbacks): array {
-                foreach ($afterResolvingCallbacks as $key => $closure) {
+            static function (array $afterResolvingCallbacks): array {
+                foreach (array_keys($afterResolvingCallbacks) as $key) {
                     if ($key === AbstractRector::class) {
                         continue;
                     }
@@ -91,7 +90,6 @@ abstract class AbstractLazyTestCase extends TestCase
                         unset($afterResolvingCallbacks[$key]);
                     }
                 }
-
                 return $afterResolvingCallbacks;
             }
         );
