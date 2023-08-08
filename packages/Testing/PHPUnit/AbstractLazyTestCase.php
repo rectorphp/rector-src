@@ -90,6 +90,7 @@ abstract class AbstractLazyTestCase extends TestCase
                         unset($afterResolvingCallbacks[$key]);
                     }
                 }
+
                 return $afterResolvingCallbacks;
             }
         );
