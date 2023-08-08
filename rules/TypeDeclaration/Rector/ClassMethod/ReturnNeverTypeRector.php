@@ -141,7 +141,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $stmtType = $this->getType($stmt);
+            $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
             if ($stmtType instanceof NeverType) {
                 $hasNeverType = true;
             }
