@@ -9,6 +9,7 @@ use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
 use Rector\Core\Configuration\ConfigInitializer;
+use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
@@ -35,6 +36,7 @@ final class ProcessCommand extends AbstractProcessCommand
         private readonly OutputFormatterCollector      $outputFormatterCollector,
         private readonly SymfonyStyle                  $symfonyStyle,
         private readonly MemoryLimiter                 $memoryLimiter,
+        private readonly ConfigurationFactory $configurationFactory
     ) {
         parent::__construct();
     }
