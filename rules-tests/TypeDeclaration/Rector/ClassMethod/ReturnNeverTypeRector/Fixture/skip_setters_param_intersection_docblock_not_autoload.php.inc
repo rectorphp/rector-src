@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\Fixture;
 
-final class DemoFile
+final class SkipSettersParamIntersectionDocblockNotAutoload
 {
     /**
      * @param Type&Parts[] $value
@@ -12,5 +12,3 @@ final class DemoFile
         $this->prop = $value;
     }
 }
-
-?>
