@@ -38,14 +38,12 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRea
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
-use Rector\TypeDeclaration\Rector\Property\VarAnnotationIncorrectNullableRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         AddArrowFunctionReturnTypeRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
-        VarAnnotationIncorrectNullableRector::class,
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
         ReturnTypeFromStrictTypedPropertyRector::class,
         TypedPropertyFromStrictConstructorRector::class,
