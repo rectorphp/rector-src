@@ -22,7 +22,7 @@ final class RectorOutput
         return $this->symfonyStyle->isDebug();
     }
 
-    public function printCurrentFileAndRule(string $filePath)
+    public function printCurrentFileAndRule(string $filePath): void
     {
         $relativeFilePath = $this->filePathHelper->relativePath($filePath);
 
