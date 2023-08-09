@@ -157,7 +157,8 @@ CODE_SAMPLE;
             return null;
         }
 
-        if ($this->shouldSkipCurrentNode($node)) {
+        $filePath = $this->file->getFilePath();
+        if ($this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node)) {
             return null;
         }
 
@@ -168,7 +169,6 @@ CODE_SAMPLE;
         $this->currentNodeProvider->setNode($node);
 
         if ($isDebug) {
-            $filePath = $this->file->getFilePath();
             $this->rectorOutput->printCurrentFileAndRule($filePath, static::class);
         }
 
@@ -217,7 +217,7 @@ CODE_SAMPLE;
             throw new ShouldNotHappenException($errorMessage);
         }
 
-        return $this->postRefactorProcess($originalNode, $node, $refactoredNode);
+        return $this->postRefactorProcess($originalNode, $node, $refactoredNode, $filePath);
     }
 
     /**
@@ -295,7 +295,7 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode): Node
+    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode, string $filePath): Node
     {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
@@ -305,7 +305,6 @@ CODE_SAMPLE;
 
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-        $filePath = $this->file->getFilePath();
 
         // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
         $originalNodeHash = spl_object_hash($originalNode);
@@ -356,11 +355,5 @@ CODE_SAMPLE;
         }
 
         return false;
-    }
-
-    private function shouldSkipCurrentNode(Node $node): bool
-    {
-        $filePath = $this->file->getFilePath();
-        return $this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node);
     }
 }
