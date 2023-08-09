@@ -80,7 +80,7 @@ final class CallUserMethodRector extends AbstractRector implements MinPhpVersion
         unset($oldArgs[0]);
         unset($oldArgs[1]);
 
-        $node->args = $this->appendArgs($newArgs, $oldArgs);
+        $node->args = array_merge($newArgs, $oldArgs);
 
         return $node;
     }
