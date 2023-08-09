@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Core\Logging;
 
+use PHPStan\Internal\BytesHelper;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\FileSystem\FilePathHelper;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use PHPStan\Internal\BytesHelper;
 
 final class RectorOutput
 {
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
         private readonly FilePathHelper $filePathHelper
-    )
-    {
+    ) {
     }
 
     public function isDebug(): bool
@@ -23,7 +23,7 @@ final class RectorOutput
     }
 
     /**
-     * @param class-string<RectorInterface>
+     * @param class-string<RectorInterface> $rectorClass
      */
     public function printCurrentFileAndRule(string $filePath, string $rectorClass): void
     {
