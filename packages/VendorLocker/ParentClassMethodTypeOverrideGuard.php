@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker;
 
+use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
@@ -107,7 +108,7 @@ final class ParentClassMethodTypeOverrideGuard
             $nativeReflection,
             'betterReflectionClass'
         );
-        /** @var \PHPStan\BetterReflection\Reflection\ReflectionClass $betterReflectionClass */
+        /** @var ReflectionClass $betterReflectionClass */
         $parentClassName = $betterReflectionClass->getParentClassName();
         return $parentClassName !== null;
     }
