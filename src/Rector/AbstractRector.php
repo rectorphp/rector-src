@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
-use PHPStan\Internal\BytesHelper;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -20,8 +19,8 @@ use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Logging\CurrentRectorProvider;
+use Rector\Core\Logging\RectorOutput;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -35,7 +34,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements PhpRectorInterface
@@ -94,9 +92,7 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private SymfonyStyle $symfonyStyle;
-
-    private FilePathHelper $filePathHelper;
+    private RectorOutput $rectorOutput;
 
     private ?string $toBeRemovedNodeHash = null;
 
@@ -117,8 +113,7 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        SymfonyStyle $symfonyStyle,
-        FilePathHelper $filePathHelper,
+        RectorOutput $rectorOutput
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -135,8 +130,7 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
-        $this->symfonyStyle = $symfonyStyle;
-        $this->filePathHelper = $filePathHelper;
+        $this->rectorOutput = $rectorOutput;
     }
 
     /**
@@ -167,21 +161,21 @@ CODE_SAMPLE;
             return null;
         }
 
-        $isDebug = $this->symfonyStyle->isDebug();
+        $isDebug = $this->rectorOutput->isDebug();
 
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
 
         if ($isDebug) {
-            $this->printCurrentFileAndRule();
+            $filePath = $this->file->getFilePath();
+            $this->rectorOutput->printCurrentFileAndRule($filePath, static::class);
         }
 
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         if ($isDebug) {
-            $startTime = microtime(true);
-            $previousMemory = memory_get_peak_usage(true);
+            $this->rectorOutput->startConsumptions();
         }
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
@@ -189,7 +183,7 @@ CODE_SAMPLE;
         $refactoredNode = $this->refactor($node);
 
         if ($isDebug) {
-            $this->printConsumptions($startTime, $previousMemory);
+            $this->rectorOutput->printConsumptions();
         }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
@@ -368,28 +362,5 @@ CODE_SAMPLE;
     {
         $filePath = $this->file->getFilePath();
         return $this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node);
-    }
-
-    private function printCurrentFileAndRule(): void
-    {
-        $relativeFilePath = $this->filePathHelper->relativePath($this->file->getFilePath());
-
-        $this->symfonyStyle->writeln('[file] ' . $relativeFilePath);
-        $this->symfonyStyle->writeln('[rule] ' . static::class);
-    }
-
-    private function printConsumptions(float $startTime, int $previousMemory): void
-    {
-        $elapsedTime = microtime(true) - $startTime;
-        $currentTotalMemory = memory_get_peak_usage(true);
-
-        $consumed = sprintf(
-            '--- consumed %s, total %s, took %.2f s',
-            BytesHelper::bytes($currentTotalMemory - $previousMemory),
-            BytesHelper::bytes($currentTotalMemory),
-            $elapsedTime
-        );
-        $this->symfonyStyle->writeln($consumed);
-        $this->symfonyStyle->newLine(1);
     }
 }
