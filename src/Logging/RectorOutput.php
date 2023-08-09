@@ -27,7 +27,7 @@ final class RectorOutput
         $relativeFilePath = $this->filePathHelper->relativePath($filePath);
 
         $this->symfonyStyle->writeln('[file] ' . $relativeFilePath);
-        $this->symfonyStyle->writeln('[rule] ' . static::class);
+        $this->symfonyStyle->writeln('[rule] ' . self::class);
     }
 
     public function printConsumptions(float $startTime, int $previousMemory): void
