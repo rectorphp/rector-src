@@ -95,6 +95,7 @@ final class SimpleParameterProvider
     }
 
     /**
+     * @api
      * For cache invalidation
      */
     public static function hash(): string
