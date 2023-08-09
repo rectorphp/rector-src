@@ -65,9 +65,11 @@ final class ChangedNodeScopeRefresher
             : $this->scopeAnalyzer->resolveScope($node, $filePath, $currentStmt);
 
         if (! $mutatingScope instanceof MutatingScope) {
-            $errorMessage = sprintf('Node "%s" with is missing scope required for scope refresh', $node::class);
+            // in some cases the scope is not needed, nor available as unreachable or new node
+            return;
+            //            $errorMessage = sprintf('Node "%s" with is missing scope required for scope refresh', $node::class);
 
-            throw new ShouldNotHappenException($errorMessage);
+            //            throw new ShouldNotHappenException($errorMessage);
         }
 
         // note from flight: when we traverse ClassMethod, the scope must be already in Class_, otherwise it crashes

@@ -47,6 +47,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
+use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
@@ -73,7 +74,7 @@ final class PHPStanNodeScopeResolver
 
     private readonly NodeTraverser $nodeTraverser;
 
-    private bool $hasUnreachableStatementNode = false;
+    //    private bool $hasUnreachableStatementNode = false;
 
     /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
@@ -184,21 +185,25 @@ final class PHPStanNodeScopeResolver
             }
 
             // special case for unreachable nodes
-            $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($node instanceof UnreachableStatementNode) {
+                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+            } else {
+                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
         };
 
         return $this->processNodesWithDependentFiles($stmts, $scope, $nodeCallback);
     }
 
-    public function hasUnreachableStatementNode(): bool
-    {
-        return $this->hasUnreachableStatementNode;
-    }
-
-    public function resetHasUnreachableStatementNode(): void
-    {
-        $this->hasUnreachableStatementNode = false;
-    }
+    //    public function hasUnreachableStatementNode(): bool
+    //    {
+    //        return $this->hasUnreachableStatementNode;
+    //    }
+    //
+    //    public function resetHasUnreachableStatementNode(): void
+    //    {
+    //        $this->hasUnreachableStatementNode = false;
+    //    }
 
     private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
     {
@@ -270,12 +275,25 @@ final class PHPStanNodeScopeResolver
             );
 
             $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-            $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
+            //            $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
         }
 
         if ($tryCatch->finally instanceof Finally_) {
             $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
+    }
+
+    private function processUnreachableStatementNode(
+        UnreachableStatementNode $unreachableStatementNode,
+        string $filePath,
+        MutatingScope $mutatingScope
+    ): void {
+        $originalStmt = $unreachableStatementNode->getOriginalStatement();
+        $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+
+        //$this->processNodes([$originalStmt], $filePath, $mutatingScope);
+
+        // $this->hasUnreachableStatementNode = true;
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
