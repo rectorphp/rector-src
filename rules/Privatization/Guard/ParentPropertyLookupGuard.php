@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Guard;
 
+use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -53,7 +54,8 @@ final class ParentPropertyLookupGuard
             $nativeReflection,
             'betterReflectionClass'
         );
-        $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
+        /** @var ReflectionClass $betterReflectionClass */
+        $parentClassName = $betterReflectionClass->getParentClassName();
 
         if ($parentClassName === null) {
             return true;
