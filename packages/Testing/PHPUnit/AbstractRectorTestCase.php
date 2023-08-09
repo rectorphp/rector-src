@@ -120,7 +120,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $this->doTestFileMatchesExpectedContent(
             $inputFilePath,
-            $inputFileContents,
             $expectedFileContents,
             $fixtureFilePath
         );
@@ -144,7 +143,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private function doTestFileMatchesExpectedContent(
         string $originalFilePath,
-        string $inputFileContents,
         string $expectedFileContents,
         string $fixtureFilePath
     ): void {
