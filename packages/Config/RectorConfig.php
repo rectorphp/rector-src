@@ -74,11 +74,64 @@ final class RectorConfig extends ContainerConfigurator
         SimpleParameterProvider::setParameter(Option::MEMORY_LIMIT, $memoryLimit);
     }
 
+    private function isRuleNoLongerExists(int|null|string $skipRule): bool
+    {
+        return
+            // direct string in list
+            is_string($skipRule)
+            // not regex path
+            && ! str_contains($skipRule, '*')
+            // not realpath
+            && realpath($skipRule) === false
+            // a Rector end
+            && str_ends_with($skipRule, 'Rector')
+            // class not exists
+            && ! class_exists($skipRule);
+    }
+
     /**
      * @param array<int|string, mixed> $criteria
      */
     public function skip(array $criteria): void
     {
+        $notExistsRules = [];
+        foreach ($criteria as $key => $value) {
+            /**
+             * Cover define rule then list of files
+             *
+             * $rectorConfig->skip([
+             *      RenameVariableToMatchMethodCallReturnTypeRector::class => [
+             *          __DIR__ . '/packages/Config/RectorConfig.php'
+             *      ],
+             * ]);
+             */
+            if ($this->isRuleNoLongerExists($key)) {
+                $notExistsRules[] = $key;
+            }
+
+            if (! is_string($value)) {
+                continue;
+            }
+
+            /**
+             * Cover direct value without array list of files, eg:
+             *
+             * $rectorConfig->skip([
+             *      StringClassNameToClassConstantRector::class,
+             * ]);
+             */
+            if ($this->isRuleNoLongerExists($value)) {
+                $notExistsRules[] = $value;
+            }
+        }
+
+        if ($notExistsRules !== []) {
+            throw new ShouldNotHappenException('Following skipped rules on $rectorConfig->skip() are no longer exists or changed to different namespace: ' . implode(
+                ', ',
+                $notExistsRules
+            ));
+        }
+
         SimpleParameterProvider::addParameter(Option::SKIP, $criteria);
     }
 
