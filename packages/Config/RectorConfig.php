@@ -74,10 +74,10 @@ final class RectorConfig extends ContainerConfigurator
         SimpleParameterProvider::setParameter(Option::MEMORY_LIMIT, $memoryLimit);
     }
 
-    private function isRuleNoLongerExists(int|null|string $skipRule): bool
+    private function isRuleNoLongerExists(mixed $skipRule): bool
     {
         return
-            // direct string in list
+            // only validate string
             is_string($skipRule)
             // not regex path
             && ! str_contains($skipRule, '*')

@@ -312,6 +312,7 @@ parameters:
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - config/config.php
+                - packages/Config/RectorConfig.php
 
         # use of internal phpstan classes
         -
