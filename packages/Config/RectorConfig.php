@@ -74,21 +74,6 @@ final class RectorConfig extends ContainerConfigurator
         SimpleParameterProvider::setParameter(Option::MEMORY_LIMIT, $memoryLimit);
     }
 
-    private function isRuleNoLongerExists(mixed $skipRule): bool
-    {
-        return
-            // only validate string
-            is_string($skipRule)
-            // not regex path
-            && ! str_contains($skipRule, '*')
-            // not realpath
-            && realpath($skipRule) === false
-            // a Rector end
-            && str_ends_with($skipRule, 'Rector')
-            // class not exists
-            && ! class_exists($skipRule);
-    }
-
     /**
      * @param array<int|string, mixed> $criteria
      */
@@ -126,10 +111,12 @@ final class RectorConfig extends ContainerConfigurator
         }
 
         if ($notExistsRules !== []) {
-            throw new ShouldNotHappenException('Following skipped rules on $rectorConfig->skip() are no longer exists or changed to different namespace: ' . implode(
-                ', ',
-                $notExistsRules
-            ));
+            throw new ShouldNotHappenException(
+                'Following skipped rules on $rectorConfig->skip() are no longer exists or changed to different namespace: ' . implode(
+                    ', ',
+                    $notExistsRules
+                )
+            );
         }
 
         SimpleParameterProvider::addParameter(Option::SKIP, $criteria);
@@ -307,6 +294,20 @@ final class RectorConfig extends ContainerConfigurator
     {
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, $character);
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, $count);
+    }
+
+    private function isRuleNoLongerExists(mixed $skipRule): bool
+    {
+        return // only validate string
+            is_string($skipRule)
+            // not regex path
+            && ! str_contains($skipRule, '*')
+            // not realpath
+            && realpath($skipRule) === false
+            // a Rector end
+            && str_ends_with($skipRule, 'Rector')
+            // class not exists
+            && ! class_exists($skipRule);
     }
 
     /**
