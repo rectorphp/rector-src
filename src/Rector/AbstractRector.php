@@ -295,8 +295,12 @@ CODE_SAMPLE;
     /**
      * @param Node|Node[] $refactoredNode
      */
-    private function postRefactorProcess(Node $originalNode, Node $node, Node|array|int $refactoredNode, string $filePath): Node
-    {
+    private function postRefactorProcess(
+        Node $originalNode,
+        Node $node,
+        Node|array|int $refactoredNode,
+        string $filePath
+    ): Node {
         /** @var non-empty-array<Node>|Node $refactoredNode */
         $this->createdByRuleDecorator->decorate($refactoredNode, $originalNode, static::class);
 
