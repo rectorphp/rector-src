@@ -14,6 +14,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\PhpAttribute\AnnotationToAttributeMapper\AnnotationToAttributeMapperTest
@@ -35,6 +36,8 @@ final class AnnotationToAttributeMapper
         } else {
             $this->annotationToAttributeMappers = $annotationToAttributeMappers;
         }
+
+        Assert::notEmpty($this->annotationToAttributeMappers);
     }
 
     /**

@@ -76,7 +76,7 @@ final class PlainValueParser
             $tokenIterator->next();
         }
 
-        // nested entity!
+        // nested entity!, supported in attribute since PHP 8.1
         if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
             return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
         }
