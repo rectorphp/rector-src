@@ -2,25 +2,13 @@
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
 
-class ClassToInterface extends \DateTime
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime;
+
+class ClassToInterface extends SomeBasicDateTime
 {
-    public function run(\DateTime $dateTime): \DateTime
+    public function run(\Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface $dateTime): \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface
     {
-        $oldClassWithTypo = new \DateTime();
-    }
-}
-
-?>
------
-<?php
-
-namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture;
-
-class ClassToInterface extends \DateTime
-{
-    public function run(\DateTimeInterface $dateTime): \DateTimeInterface
-    {
-        $oldClassWithTypo = new \DateTime();
+        $oldClassWithTypo = new SomeBasicDateTime;
     }
 }
 
