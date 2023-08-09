@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Privatization\Guard;
 
-use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -12,6 +11,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;

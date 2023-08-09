@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php56\Rector\FuncCall\PowToExpRector;
-use Rector\Php56\Rector\FunctionLike\AddDefaultValueForUndefinedVariableRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -48,7 +47,4 @@ return static function (RectorConfig $rectorConfig): void {
             'ocisetprefetch' => 'oci_set_prefetch',
             'ocistatementtype' => 'oci_statement_type',
         ]);
-
-    # inspired by level in psalm - https://github.com/vimeo/psalm/blob/82e0bcafac723fdf5007a31a7ae74af1736c9f6f/tests/FileManipulationTest.php#L1063
-    $rectorConfig->rule(AddDefaultValueForUndefinedVariableRector::class);
 };

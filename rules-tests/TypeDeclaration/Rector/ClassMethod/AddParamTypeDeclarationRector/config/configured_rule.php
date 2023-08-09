@@ -23,12 +23,7 @@ return static function (RectorConfig $rectorConfig): void {
                 0,
                 new StringType()
             ),
-            new AddParamTypeDeclaration(
-                ParentInterfaceWithChangeTypeInterface::class,
-                'run',
-                0,
-                new StringType()
-            ),
+            new AddParamTypeDeclaration(ParentInterfaceWithChangeTypeInterface::class, 'run', 0, new StringType()),
             new AddParamTypeDeclaration(ParserInterface::class, 'parse', 0, new StringType()),
             new AddParamTypeDeclaration(
                 ClassMetadataFactory::class,
