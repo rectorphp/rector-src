@@ -107,7 +107,8 @@ final class ParentClassMethodTypeOverrideGuard
             $nativeReflection,
             'betterReflectionClass'
         );
-        $parentClassName = $this->privatesAccessor->getPrivateProperty($betterReflectionClass, 'parentClassName');
+        /** @var \PHPStan\BetterReflection\Reflection\ReflectionClass $betterReflectionClass */
+        $parentClassName = $betterReflectionClass->getParentClassName();
         return $parentClassName !== null;
     }
 }
