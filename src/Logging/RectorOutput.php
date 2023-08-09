@@ -11,6 +11,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class RectorOutput
 {
+    private ?float $startTime = null;
+
+    private ?int $previousMemory = null;
+
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
         private readonly FilePathHelper $filePathHelper
@@ -33,11 +37,22 @@ final class RectorOutput
         $this->symfonyStyle->writeln('[rule] ' . $rectorClass);
     }
 
-    public function printConsumptions(float $startTime, int $previousMemory): void
+    public function startConsumptions(): void
     {
-        $elapsedTime = microtime(true) - $startTime;
+        $this->startTime = microtime(true);
+        $this->previousMemory = memory_get_peak_usage(true);
+    }
+
+    public function printConsumptions(): void
+    {
+        if ($this->startTime === null || $this->previousMemory === null) {
+            return;
+        }
+
+        $elapsedTime = microtime(true) - $this->startTime;
         $currentTotalMemory = memory_get_peak_usage(true);
 
+        $previousMemory = $this->previousMemory;
         $consumed = sprintf(
             '--- consumed %s, total %s, took %.2f s',
             BytesHelper::bytes($currentTotalMemory - $previousMemory),

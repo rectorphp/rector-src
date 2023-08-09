@@ -175,8 +175,7 @@ CODE_SAMPLE;
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         if ($isDebug) {
-            $startTime = microtime(true);
-            $previousMemory = memory_get_peak_usage(true);
+            $this->rectorOutput->startConsumptions();
         }
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
@@ -184,7 +183,7 @@ CODE_SAMPLE;
         $refactoredNode = $this->refactor($node);
 
         if ($isDebug) {
-            $this->rectorOutput->printConsumptions($startTime, $previousMemory);
+            $this->rectorOutput->printConsumptions();
         }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
