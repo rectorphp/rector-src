@@ -7,6 +7,7 @@ namespace Rector\Core\Logging;
 use Rector\Core\FileSystem\FilePathHelper;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use PHPStan\Internal\BytesHelper;
+use Rector\Core\Contract\Rector\RectorInterface;
 
 final class RectorOutput
 {
@@ -22,6 +23,9 @@ final class RectorOutput
         return $this->symfonyStyle->isDebug();
     }
 
+    /**
+     * @param class-string<RectorInterface>
+     */
     public function printCurrentFileAndRule(string $filePath, string $rectorClass): void
     {
         $relativeFilePath = $this->filePathHelper->relativePath($filePath);
