@@ -16,7 +16,6 @@ use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -121,7 +120,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $this->doTestFileMatchesExpectedContent(
             $inputFilePath,
-            $inputFileContents,
             $expectedFileContents,
             $fixtureFilePath
         );
@@ -145,13 +143,12 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
     private function doTestFileMatchesExpectedContent(
         string $originalFilePath,
-        string $inputFileContents,
         string $expectedFileContents,
         string $fixtureFilePath
     ): void {
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
-        $changedContent = $this->processFilePath($originalFilePath, $inputFileContents);
+        $changedContent = $this->processFilePath($originalFilePath);
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -166,7 +163,7 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         }
     }
 
-    private function processFilePath(string $filePath, string $inputFileContents): string
+    private function processFilePath(string $filePath): string
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
@@ -179,10 +176,8 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         $configurationFactory = $this->getService(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);
 
-        $file = new File($filePath, $inputFileContents);
-        $this->applicationFileProcessor->processFiles([$file], $configuration);
-
-        return $file->getFileContent();
+        $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+        return FileSystem::read($filePath);
     }
 
     private function createInputFilePath(string $fixtureFilePath): string

@@ -93,7 +93,7 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param string[]|File[] $filePaths
+     * @param string[] $filePaths
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
      */
     public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
@@ -114,11 +114,9 @@ final class ApplicationFileProcessor
         ];
 
         foreach ($filePaths as $filePath) {
-            $file = null;
+            $file = new File($filePath, UtilsFileSystem::read($filePath));
+
             try {
-                $file = $filePath instanceof File
-                    ? $filePath
-                    : new File($filePath, UtilsFileSystem::read($filePath));
                 $systemErrorsAndFileDiffs = $this->processFile($file, $systemErrorsAndFileDiffs, $configuration);
 
                 // progress bar +1,
@@ -127,7 +125,7 @@ final class ApplicationFileProcessor
                     $this->symfonyStyle->progressAdvance();
                 }
             } catch (Throwable $throwable) {
-                $this->invalidateFile($file);
+                $this->changedFilesDetector->invalidateFile($filePath);
 
                 if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
                     throw $throwable;
@@ -184,15 +182,6 @@ final class ApplicationFileProcessor
         $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
 
         return new SystemError($errorMessage, $filePath, $throwable->getLine());
-    }
-
-    private function invalidateFile(?File $file): void
-    {
-        if (! $file instanceof File) {
-            return;
-        }
-
-        $this->changedFilesDetector->invalidateFile($file->getFilePath());
     }
 
     /**

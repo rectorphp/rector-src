@@ -25,7 +25,7 @@ final class ConfigurationFactory
     {
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
-        return new Configuration(true, true, false, ConsoleOutputFormatter::NAME, $fileExtensions, $paths);
+        return new Configuration(false, true, false, ConsoleOutputFormatter::NAME, $fileExtensions, $paths);
     }
 
     /**
