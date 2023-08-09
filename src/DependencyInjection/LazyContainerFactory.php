@@ -59,7 +59,6 @@ use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\NonPhpFile\NonPhpFileProcessor;
@@ -538,7 +537,6 @@ final class LazyContainerFactory
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
                     $container->make(RectorStyle::class),
-                    $container->make(FilePathHelper::class),
                 );
             }
         );
