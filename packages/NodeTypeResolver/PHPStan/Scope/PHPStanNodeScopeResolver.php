@@ -47,7 +47,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
-use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
@@ -185,11 +184,7 @@ final class PHPStanNodeScopeResolver
             }
 
             // special case for unreachable nodes
-            if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
-            } else {
-                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
+            $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         };
 
         return $this->processNodesWithDependentFiles($stmts, $scope, $nodeCallback);
@@ -281,20 +276,6 @@ final class PHPStanNodeScopeResolver
         if ($tryCatch->finally instanceof Finally_) {
             $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
-    }
-
-    private function processUnreachableStatementNode(
-        UnreachableStatementNode $unreachableStatementNode,
-        string $filePath,
-        MutatingScope $mutatingScope
-    ): void {
-        $originalStmt = $unreachableStatementNode->getOriginalStatement();
-        $originalStmt->setAttribute(AttributeKey::IS_UNREACHABLE, true);
-        $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-
-        $this->processNodes([$originalStmt], $filePath, $mutatingScope);
-
-        $this->hasUnreachableStatementNode = true;
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
