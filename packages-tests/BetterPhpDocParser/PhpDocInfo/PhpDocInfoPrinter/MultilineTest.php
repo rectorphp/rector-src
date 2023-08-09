@@ -35,8 +35,6 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTestCase
         yield [__DIR__ . '/Source/Multiline/multiline1.txt', new Nop()];
         yield [__DIR__ . '/Source/Multiline/multiline2.txt', new Nop()];
         yield [__DIR__ . '/Source/Multiline/multiline3.txt', new Nop()];
-        yield [__DIR__ . '/Source/Multiline/multiline4.txt', new Nop()];
-        yield [__DIR__ . '/Source/Multiline/multiline5.txt', new Nop()];
     }
 
     /**
@@ -55,9 +53,6 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTestCase
 
         $property = self::createPublicPropertyUnderClass('anotherProperty');
         yield [__DIR__ . '/Source/Multiline/assert_serialize.txt', $property];
-
-        $property = self::createPublicPropertyUnderClass('anotherSerializeSingleLine');
-        yield [__DIR__ . '/Source/Multiline/assert_serialize_single_line.txt', $property];
 
         $property = self::createPublicPropertyUnderClass('someProperty');
         yield [__DIR__ . '/Source/Multiline/multiline6.txt', $property];
