@@ -7,11 +7,9 @@ namespace Rector\Skipper\Skipper;
 use PhpParser\Node;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipVoter\ClassSkipVoter;
 use Rector\Skipper\SkipVoter\PathSkipVoter;
-use Webmozart\Assert\Assert;
 
 /**
  * @api
