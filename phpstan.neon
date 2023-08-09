@@ -393,14 +393,6 @@ parameters:
         # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
 
-        # simple array filters
-        -
-            message: '#Use separate function calls with readable variable names#'
-            paths:
-                - utils/RuleDocGenerator/PostRectorOutFilter.php
-                - src/FileSystem/FileAndDirectoryFilter.php
-                - utils/Finder/RectorClassFinder.php
-
         # phpdoc node traversing
         -
             message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
@@ -716,3 +708,6 @@ parameters:
             paths:
                 - src/Console/ConsoleApplication.php
                 - src/Console/Command
+
+        # not practical
+        - '#Use separate function calls with readable variable names#'
