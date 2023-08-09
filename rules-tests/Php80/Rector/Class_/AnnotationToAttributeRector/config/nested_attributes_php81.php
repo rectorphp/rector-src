@@ -9,7 +9,6 @@ use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericAnnotation;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\All;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\Length;
-use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNull;
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81\NotNumber;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -19,7 +18,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
         new AnnotationToAttribute(All::class),
         new AnnotationToAttribute(Length::class),
-        new AnnotationToAttribute(NotNull::class),
         new AnnotationToAttribute(NotNumber::class),
         new AnnotationToAttribute(GenericAnnotation::class),
     ]);

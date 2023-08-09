@@ -90,7 +90,7 @@ final class PhpDocInfoFactory
     }
 
     /**
-     * @api
+     * @api downgrade
      */
     public function createEmpty(Node $node): PhpDocInfo
     {

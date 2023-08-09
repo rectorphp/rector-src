@@ -6,7 +6,7 @@ namespace Rector\Testing\PHPUnit;
 
 use Illuminate\Container\Container;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\LazyContainerFactory;
@@ -61,12 +61,18 @@ abstract class AbstractLazyTestCase extends TestCase
     {
         $container = self::getContainer();
 
-        // remove all tagged rules
+        // 1. forget instance first! then remove tags
+        $rectors = $container->tagged(RectorInterface::class);
+        foreach ($rectors as $rector) {
+            $container->offsetUnset($rector::class);
+        }
+
+        // 2. remove all tagged rules
         $privatesAccessor = new PrivatesAccessor();
         $privatesAccessor->propertyClosure($container, 'tags', static function (array $tags): array {
             unset($tags[RectorInterface::class]);
             unset($tags[PhpRectorInterface::class]);
-            unset($tags[ConfigurableRectorInterface::class]);
+            unset($tags[NonPhpRectorInterface::class]);
             return $tags;
         });
 
@@ -75,8 +81,7 @@ abstract class AbstractLazyTestCase extends TestCase
             $container->offsetUnset($rector::class);
         }
 
-        // remove after binding too, to avoid setting configuration over and over again
-
+        // 3. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor->propertyClosure(
             $container,
             'afterResolvingCallbacks',
