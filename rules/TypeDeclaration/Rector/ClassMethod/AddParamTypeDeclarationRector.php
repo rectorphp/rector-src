@@ -99,10 +99,10 @@ CODE_SAMPLE
 
                 $this->refactorClassMethodWithTypehintByParameterPosition($classMethod, $addParamTypeDeclaration);
             }
+        }
 
-            if (! $this->hasChanged) {
-                return null;
-            }
+        if (! $this->hasChanged) {
+            return null;
         }
 
         return $node;
