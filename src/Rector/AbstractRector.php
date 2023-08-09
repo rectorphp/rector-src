@@ -27,7 +27,6 @@ use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -93,8 +92,6 @@ CODE_SAMPLE;
      */
     private array $nodesToReturn = [];
 
-    private RectifiedAnalyzer $rectifiedAnalyzer;
-
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
     private SymfonyStyle $symfonyStyle;
@@ -118,7 +115,6 @@ CODE_SAMPLE;
         BetterNodeFinder $betterNodeFinder,
         NodeComparator $nodeComparator,
         CurrentFileProvider $currentFileProvider,
-        RectifiedAnalyzer $rectifiedAnalyzer,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
         SymfonyStyle $symfonyStyle,
@@ -137,7 +133,6 @@ CODE_SAMPLE;
         $this->betterNodeFinder = $betterNodeFinder;
         $this->nodeComparator = $nodeComparator;
         $this->currentFileProvider = $currentFileProvider;
-        $this->rectifiedAnalyzer = $rectifiedAnalyzer;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
         $this->symfonyStyle = $symfonyStyle;
@@ -372,11 +367,7 @@ CODE_SAMPLE;
     private function shouldSkipCurrentNode(Node $node): bool
     {
         $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipElementAndFilePath($this, $filePath)) {
-            return true;
-        }
-
-        return $this->rectifiedAnalyzer->hasRectified(static::class, $node);
+        return $this->skipper->shouldSkipCurrentNode($this, $filePath, static::class, $node);
     }
 
     private function printCurrentFileAndRule(): void

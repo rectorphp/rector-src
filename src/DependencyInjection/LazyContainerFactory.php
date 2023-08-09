@@ -68,7 +68,6 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
@@ -534,11 +533,10 @@ final class LazyContainerFactory
                     $container->make(BetterNodeFinder::class),
                     $container->make(NodeComparator::class),
                     $container->make(CurrentFileProvider::class),
-                    $container->make(RectifiedAnalyzer::class),
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
                     $container->make(RectorStyle::class),
-                    $container->make(FilePathHelper::class),
+                    $container->make(FilePathHelper::class)
                 );
             }
         );

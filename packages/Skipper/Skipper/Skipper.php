@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\Skipper;
 
+use PhpParser\Node;
+use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipVoter\ClassSkipVoter;
 use Rector\Skipper\SkipVoter\PathSkipVoter;
@@ -24,8 +27,11 @@ final class Skipper
      */
     private array $skipVoters = [];
 
-    public function __construct(ClassSkipVoter $classSkipVoter, PathSkipVoter $pathSkipVoter)
-    {
+    public function __construct(
+        ClassSkipVoter $classSkipVoter,
+        PathSkipVoter $pathSkipVoter,
+        private readonly RectifiedAnalyzer $rectifiedAnalyzer
+    ) {
         $this->skipVoters = [$classSkipVoter, $pathSkipVoter];
     }
 
@@ -54,5 +60,17 @@ final class Skipper
         }
 
         return false;
+    }
+
+    /**
+     * @param class-string<RectorInterface> $rectorClass
+     */
+    public function shouldSkipCurrentNode(string | object $element, string $filePath, string $rectorClass, Node $node): bool
+    {
+        if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
+            return true;
+        }
+
+        return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
     }
 }
