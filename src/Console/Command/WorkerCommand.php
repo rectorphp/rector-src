@@ -10,8 +10,10 @@ use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
 use Rector\Core\Configuration\ConfigurationFactory;
+use Rector\Core\Console\ProcessConfigureDecorator;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Parallel\WorkerRunner;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symplify\EasyParallel\Enum\Action;
@@ -24,7 +26,7 @@ use Symplify\EasyParallel\Enum\ReactCommand;
  * ↓↓↓
  * https://github.com/phpstan/phpstan-src/commit/b84acd2e3eadf66189a64fdbc6dd18ff76323f67#diff-7f625777f1ce5384046df08abffd6c911cfbb1cfc8fcb2bdeaf78f337689e3e2
  */
-final class WorkerCommand extends AbstractProcessCommand
+final class WorkerCommand extends Command
 {
     public function __construct(
         private readonly WorkerRunner $workerRunner,
@@ -38,6 +40,9 @@ final class WorkerCommand extends AbstractProcessCommand
     {
         $this->setName('worker');
         $this->setDescription('[INTERNAL] Support for parallel process');
+
+        ProcessConfigureDecorator::decorate($this);
+
         parent::configure();
     }
 

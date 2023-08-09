@@ -13,6 +13,7 @@ use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
+use Rector\Core\Console\ProcessConfigureDecorator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
@@ -20,11 +21,12 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ProcessCommand extends AbstractProcessCommand
+final class ProcessCommand extends Command
 {
     public function __construct(
         private readonly AdditionalAutoloader $additionalAutoloader,
@@ -45,6 +47,8 @@ final class ProcessCommand extends AbstractProcessCommand
     {
         $this->setName('process');
         $this->setDescription('Upgrades or refactors source code with provided rectors');
+
+        ProcessConfigureDecorator::decorate($this);
 
         parent::configure();
     }

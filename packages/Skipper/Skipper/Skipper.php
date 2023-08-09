@@ -65,8 +65,12 @@ final class Skipper
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
-    public function shouldSkipCurrentNode(string | object $element, string $filePath, string $rectorClass, Node $node): bool
-    {
+    public function shouldSkipCurrentNode(
+        string | object $element,
+        string $filePath,
+        string $rectorClass,
+        Node $node
+    ): bool {
         if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
             return true;
         }

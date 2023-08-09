@@ -713,4 +713,6 @@ parameters:
         # reflection property change
         -
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            path: src/Console/ConsoleApplication.php
+            paths:
+                - src/Console/ConsoleApplication.php
+                - src/Console/Command
