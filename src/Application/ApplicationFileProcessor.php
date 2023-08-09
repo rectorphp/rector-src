@@ -26,6 +26,7 @@ use Symplify\EasyParallel\CpuCoreCountProvider;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
 use Symplify\EasyParallel\ScheduleFactory;
 use Throwable;
+use Webmozart\Assert\Assert;
 
 final class ApplicationFileProcessor
 {
@@ -54,6 +55,12 @@ final class ApplicationFileProcessor
         private readonly CurrentFileProvider   $currentFileProvider,
         private readonly iterable              $fileProcessors,
     ) {
+        $fileProcessorClasses = [];
+        foreach ($fileProcessors as $fileProcessor) {
+            $fileProcessorClasses[] = $fileProcessor::class;
+        }
+
+        Assert::uniqueValues($fileProcessorClasses);
     }
 
     /**
@@ -152,6 +159,7 @@ final class ApplicationFileProcessor
             }
 
             $result = $fileProcessor->process($file, $configuration);
+
             $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
         }
 
