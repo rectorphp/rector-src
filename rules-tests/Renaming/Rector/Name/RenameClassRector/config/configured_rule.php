@@ -23,6 +23,10 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(RenameClassRector::class, [
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
+            // interface to class
+            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime::class =>
+            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface::class,
+
             // test casing
             OldClassWithTypo::class => NewClassWithoutTypo::class,
             'Countable' => 'stdClass',
