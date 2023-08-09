@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToMethodCallRector\Source\TargetFileSystem;
 use Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector;
