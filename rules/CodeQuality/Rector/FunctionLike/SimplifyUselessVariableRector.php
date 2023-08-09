@@ -19,7 +19,7 @@ use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\SimplifyUselessVariableRectorTest
  */
-final class SimplifyUselessVariableRector extends AbstractScopeAwareRector
+final class SimplifyUselessVariableRector extends AbstractRector
 {
     public function __construct(
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
@@ -67,7 +67,7 @@ CODE_SAMPLE
     /**
      * @param StmtsAwareInterface $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         $stmts = $node->stmts;
         if ($stmts === null) {
@@ -85,7 +85,7 @@ CODE_SAMPLE
             }
 
             $previousStmt = $stmts[$key - 1];
-            if ($this->shouldSkipStmt($stmt, $previousStmt, $scope)) {
+            if ($this->shouldSkipStmt($stmt, $previousStmt)) {
                 return null;
             }
 
@@ -127,9 +127,14 @@ CODE_SAMPLE
         return $stmtsAware;
     }
 
-    private function shouldSkipStmt(Return_ $return, Stmt $previousStmt, Scope $scope): bool
+    private function shouldSkipStmt(Return_ $return, Stmt $previousStmt): bool
     {
         if (! $return->expr instanceof Variable) {
+            return true;
+        }
+
+        $scope = $previousStmt->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
             return true;
         }
 
