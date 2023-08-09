@@ -6,7 +6,15 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRecto
 
 class DetectedByParentInterface implements ParentInterfaceWithChangeTypeInterface
 {
+    public function notChanged($name)
+    {
+    }
+
     public function process($name)
+    {
+    }
+
+    public function run($name)
     {
     }
 }
@@ -21,7 +29,15 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRecto
 
 class DetectedByParentInterface implements ParentInterfaceWithChangeTypeInterface
 {
+    public function notChanged($name)
+    {
+    }
+
     public function process(string $name)
+    {
+    }
+
+    public function run(string $name)
     {
     }
 }
