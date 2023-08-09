@@ -30,8 +30,8 @@ final class Skipper
     private array $skipVoters = [];
 
     public function __construct(
-        private readonly ClassSkipVoter $classSkipVoter,
-        private readonly PathSkipVoter $pathSkipVoter,
+        ClassSkipVoter $classSkipVoter,
+        PathSkipVoter $pathSkipVoter,
         private readonly RectifiedAnalyzer $rectifiedAnalyzer
     ) {
         $this->skipVoters = [$classSkipVoter, $pathSkipVoter];
