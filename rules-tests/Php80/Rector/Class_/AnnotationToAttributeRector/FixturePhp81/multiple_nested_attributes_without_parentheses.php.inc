@@ -8,7 +8,6 @@ final class MultipleNestedAttributeWithoutParentheses
 {
     /**
      * @Assert\All({
-     *     @Assert\NotNull,
      *     @Assert\NotNumber(secondValue=1000),
      *     @Assert\NotNumber(hey=10, hi="hello"),
      * })
@@ -26,7 +25,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\SourcePhp81 as 
 
 final class MultipleNestedAttributeWithoutParentheses
 {
-    #[Assert\All([new Assert\NotNull(), new Assert\NotNumber(secondValue: 1000), new Assert\NotNumber(hey: 10, hi: 'hello')])]
+    #[Assert\All([new Assert\NotNumber(secondValue: 1000), new Assert\NotNumber(hey: 10, hi: 'hello')])]
     public $value;
 }
 
