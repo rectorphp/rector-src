@@ -169,7 +169,7 @@ CODE_SAMPLE;
 
         if ($isDebug) {
             $filePath = $this->file->getFilePath();
-            $this->rectorOutput->printCurrentFileAndRule($filePath);
+            $this->rectorOutput->printCurrentFileAndRule($filePath, static::class);
         }
 
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);

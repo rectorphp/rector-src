@@ -22,12 +22,12 @@ final class RectorOutput
         return $this->symfonyStyle->isDebug();
     }
 
-    public function printCurrentFileAndRule(string $filePath): void
+    public function printCurrentFileAndRule(string $filePath, string $rectorClass): void
     {
         $relativeFilePath = $this->filePathHelper->relativePath($filePath);
 
         $this->symfonyStyle->writeln('[file] ' . $relativeFilePath);
-        $this->symfonyStyle->writeln('[rule] ' . self::class);
+        $this->symfonyStyle->writeln('[rule] ' . $rectorClass);
     }
 
     public function printConsumptions(float $startTime, int $previousMemory): void
