@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PHPStan\BetterReflection\Reflection\ReflectionClass;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -19,7 +18,6 @@ use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ClassReflectionAnalyzer;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final class ParentPropertyLookupGuard
@@ -30,7 +28,6 @@ final class ParentPropertyLookupGuard
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly AstResolver $astResolver,
         private readonly PropertyManipulator $propertyManipulator,
-        private readonly PrivatesAccessor $privatesAccessor,
         private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
