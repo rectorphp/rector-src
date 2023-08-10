@@ -79,13 +79,10 @@ final class PostFileProcessor
             return true;
         }
 
-        if ($postRector instanceof ClassRenamingPostRector) {
-            // skip renaming if rename class rector is skipped
-            if ($this->skipper->shouldSkipElementAndFilePath(RenameClassRector::class, $filePath)) {
-                return true;
-            }
-        }
-
-        return false;
+        // skip renaming if rename class rector is skipped
+        return $postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipElementAndFilePath(
+            RenameClassRector::class,
+            $filePath
+        );
     }
 }
