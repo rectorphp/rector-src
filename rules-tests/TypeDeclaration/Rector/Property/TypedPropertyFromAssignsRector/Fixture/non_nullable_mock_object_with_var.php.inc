@@ -4,13 +4,16 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 use PHPUnit\Framework\TestCase;
 
-final class NonNullableMockObject extends TestCase
+final class NonNullableMockObjectWithVar extends TestCase
 {
+    /**
+     * @var DateTime&MockObject
+     */
     private $someValue;
 
     protected function setUp(): void
     {
-        $this->someValue = $this->createMock('SomeClass');
+        $this->someValue = $this->createMock('DateTime');
     }
 }
 
@@ -22,13 +25,16 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 use PHPUnit\Framework\TestCase;
 
-final class NonNullableMockObject extends TestCase
+final class NonNullableMockObjectWithVar extends TestCase
 {
+    /**
+     * @var DateTime&MockObject
+     */
     private \PHPUnit\Framework\MockObject\MockObject $someValue;
 
     protected function setUp(): void
     {
-        $this->someValue = $this->createMock('SomeClass');
+        $this->someValue = $this->createMock('DateTime');
     }
 }
 
