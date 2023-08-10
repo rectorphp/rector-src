@@ -30,7 +30,7 @@ final class DeadVarTagValueNodeAnalyzer
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
 
         if ($propertyType instanceof UnionType && ! $docType instanceof UnionType) {
-            return ! $docType instanceof IntersectionType;
+            return $this->typeComparator->isSubtype($docType, $propertyType);
         }
 
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
