@@ -9,7 +9,6 @@ use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\FileSystem\InitFilePathsResolver;
 use Rector\Core\Php\PhpVersionProvider;
-use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
@@ -78,11 +77,7 @@ final class ConfigInitializer
         return array_filter(
             $rectors,
             static function (RectorInterface $rector): bool {
-                if ($rector instanceof PostRectorInterface) {
-                    return false;
-                }
-
-                return ! $rector instanceof ComplementaryRectorInterface;
+                return ! $rector instanceof PostRectorInterface;
             }
         );
     }
