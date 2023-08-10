@@ -665,3 +665,23 @@ parameters:
 
         # iterable mix
         - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
+
+        # false positive
+        - '#Parameter \#2 \$colors of method Tracy\\Dumper\\Renderer\:\:renderAsText\(\) expects array, array\|null given#'
+
+        # chicken/egg
+        -
+            message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
+            path: tests/debug_functions.php
+
+        # debug functions
+        -
+            message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: tests/debug_functions.php
+
+        -
+            message: '#Do not name "d", shorter than 2 chars#'
+            path: tests/debug_functions.php
+
+        # not relevant
+        - '#Do not use static property#'
