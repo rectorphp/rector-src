@@ -662,3 +662,6 @@ parameters:
 
         # deprecated
         - '#Class "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector" is missing @see annotation with test case class reference#'
+
+        # iterable mix
+        - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
