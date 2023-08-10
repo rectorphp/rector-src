@@ -66,6 +66,8 @@ parameters:
         # tests
         - tests/DependencyInjection/config
 
+        - src/functions
+
     ignoreErrors:
         - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
 

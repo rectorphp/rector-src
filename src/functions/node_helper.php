@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
-use Tracy\Dumper;
 
 // @deprecated, use dump() or dd() instead
 if (! function_exists('dump_node')) {
@@ -29,7 +28,7 @@ if (! function_exists('print_node')) {
 
         foreach ($nodes as $node) {
             $printedContent = $standard->prettyPrint([$node]);
-            Dumper::dump($printedContent);
+            var_dump($printedContent);
         }
     }
 }
