@@ -8,7 +8,6 @@ use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Symfony\Component\Console\Command\Command;
@@ -91,13 +90,7 @@ final class ListRulesCommand extends Command
     {
         $customRectors = array_filter(
             $this->rectors,
-            static function (RectorInterface $rector): bool {
-                if ($rector instanceof PostRectorInterface) {
-                    return false;
-                }
-
-                return ! $rector instanceof ComplementaryRectorInterface;
-            }
+            static fn(RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
         );
 
         $rectorClasses = array_map(static fn (RectorInterface $rector): string => $rector::class, $customRectors);

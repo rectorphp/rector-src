@@ -9,7 +9,6 @@ use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\FileSystem\InitFilePathsResolver;
 use Rector\Core\Php\PhpVersionProvider;
-use Rector\PostRector\Contract\Rector\ComplementaryRectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
@@ -30,11 +29,7 @@ final class ConfigInitializer
         private readonly SymfonyStyle $symfonyStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
-        if ($rectors instanceof RewindableGenerator) {
-            $this->rectors = iterator_to_array($rectors->getIterator());
-        } else {
-            $this->rectors = $rectors;
-        }
+        $this->rectors = $rectors instanceof RewindableGenerator ? iterator_to_array($rectors->getIterator()) : $rectors;
     }
 
     public function createConfig(string $projectDirectory): void
@@ -77,13 +72,7 @@ final class ConfigInitializer
     {
         return array_filter(
             $rectors,
-            static function (RectorInterface $rector): bool {
-                if ($rector instanceof PostRectorInterface) {
-                    return false;
-                }
-
-                return ! $rector instanceof ComplementaryRectorInterface;
-            }
+            static fn(RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
         );
     }
 
