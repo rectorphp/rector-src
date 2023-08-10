@@ -29,7 +29,9 @@ final class ConfigInitializer
         private readonly SymfonyStyle $symfonyStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
-        $this->rectors = $rectors instanceof RewindableGenerator ? iterator_to_array($rectors->getIterator()) : $rectors;
+        $this->rectors = $rectors instanceof RewindableGenerator ? iterator_to_array(
+            $rectors->getIterator()
+        ) : $rectors;
     }
 
     public function createConfig(string $projectDirectory): void
@@ -72,7 +74,7 @@ final class ConfigInitializer
     {
         return array_filter(
             $rectors,
-            static fn(RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
+            static fn (RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
         );
     }
 
