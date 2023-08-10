@@ -33,7 +33,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 final class PropertyWithDefaultNull
 {
-    private ?string $cacheFile = null;
+    private $cacheFile = null;
     private ?array $cacheFiles = null;
 
     /**
