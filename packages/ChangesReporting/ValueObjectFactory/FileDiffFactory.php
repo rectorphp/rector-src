@@ -20,16 +20,6 @@ final class FileDiffFactory
     ) {
     }
 
-    public function createFileDiff(File $file, string $oldContent, string $newContent): FileDiff
-    {
-        return $this->createFileDiffWithLineChanges(
-            $file,
-            $oldContent,
-            $newContent,
-            $file->getRectorWithLineChanges()
-        );
-    }
-
     /**
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */

@@ -6,7 +6,6 @@ namespace Rector\Testing\PHPUnit;
 
 use Illuminate\Container\Container;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\LazyContainerFactory;
@@ -72,7 +71,6 @@ abstract class AbstractLazyTestCase extends TestCase
         $privatesAccessor->propertyClosure($container, 'tags', static function (array $tags): array {
             unset($tags[RectorInterface::class]);
             unset($tags[PhpRectorInterface::class]);
-            unset($tags[NonPhpRectorInterface::class]);
             return $tags;
         });
 

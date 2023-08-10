@@ -274,7 +274,7 @@ final class LazyRectorConfig extends Container
     }
 
     /**
-     * @param class-string<RectorInterface|PhpRectorInterface|NonPhpRectorInterface> $rectorClass
+     * @param class-string<RectorInterface|PhpRectorInterface> $rectorClass
      */
     private function tagRectorService(string $rectorClass): void
     {
@@ -283,7 +283,12 @@ final class LazyRectorConfig extends Container
         if (is_a($rectorClass, PhpRectorInterface::class, true)) {
             $this->tag($rectorClass, PhpRectorInterface::class);
         } elseif (is_a($rectorClass, NonPhpRectorInterface::class, true)) {
-            $this->tag($rectorClass, NonPhpRectorInterface::class);
+            trigger_error(sprintf(
+                'The "%s" interface of "%s" rule is deprecated. Rector will only PHP code, as designed to with AST. For another file format, use custom tooling.',
+                NonPhpRectorInterface::class,
+                $rectorClass,
+            ));
+            exit();
         }
     }
 }
