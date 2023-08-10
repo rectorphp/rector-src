@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Renaming\ValueObject;
 
+/**
+ * @api deprecated, soon to be removed
+ */
 final class PseudoNamespaceToNamespace
 {
     /**
