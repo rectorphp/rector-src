@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use Acme\Bar\DoNotUpdateExistingTargetNamespace;
 use Rector\Config\RectorConfig;
+
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture\DuplicatedClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\FirstInterface;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\SecondInterface;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\ThirdInterface;
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime;
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClassWithoutTypo;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass;
@@ -24,8 +27,8 @@ return static function (RectorConfig $rectorConfig): void {
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
             // interface to class
-            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime::class =>
-            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface::class,
+            SomeBasicDateTime::class =>
+            SomeBasicDateTimeInterface::class,
 
             // test casing
             OldClassWithTypo::class => NewClassWithoutTypo::class,
