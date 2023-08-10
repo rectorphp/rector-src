@@ -90,9 +90,7 @@ final class ListRulesCommand extends Command
     {
         $customRectors = array_filter(
             $this->rectors,
-            static function (RectorInterface $rector): bool {
-                return ! $rector instanceof PostRectorInterface;
-            }
+            static fn(RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
         );
 
         $rectorClasses = array_map(static fn (RectorInterface $rector): string => $rector::class, $customRectors);
