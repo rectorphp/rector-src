@@ -101,7 +101,6 @@ final class ParentClassMethodTypeOverrideGuard
 
     private function hasClassParent(ClassReflection $classReflection): bool
     {
-        // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
         return $this->classReflectionAnalyzer->resolveParentClassName($classReflection) !== null;
     }
 }
