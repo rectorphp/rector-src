@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime;
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface;
 
 use Acme\Bar\DoNotUpdateExistingTargetNamespace;
 use Rector\Config\RectorConfig;
@@ -24,8 +26,8 @@ return static function (RectorConfig $rectorConfig): void {
             'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
             // interface to class
-            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTime::class =>
-            \Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\InterfaceAndClass\SomeBasicDateTimeInterface::class,
+            SomeBasicDateTime::class =>
+            SomeBasicDateTimeInterface::class,
 
             // test casing
             OldClassWithTypo::class => NewClassWithoutTypo::class,
