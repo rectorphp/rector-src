@@ -687,3 +687,8 @@ parameters:
 
         # not relevant
         - '#Do not use static property#'
+
+        # deprecated
+        -
+            message: '#Fetching class constant class of deprecated class Rector\\Core\\Contract\\Rector\\NonPhpRectorInterface#'
+            path: packages/Config/*

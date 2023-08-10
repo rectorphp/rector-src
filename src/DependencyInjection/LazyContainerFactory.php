@@ -56,13 +56,11 @@ use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
-use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Logging\RectorOutput;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\Core\NonPhpFile\NonPhpFileProcessor;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
@@ -425,7 +423,6 @@ final class LazyContainerFactory
             ->giveTagged(Command::class);
 
         $lazyRectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
-        $lazyRectorConfig->tag(NonPhpFileProcessor::class, FileProcessorInterface::class);
 
         $lazyRectorConfig->tag(ProcessCommand::class, Command::class);
         $lazyRectorConfig->tag(WorkerCommand::class, Command::class);
@@ -439,10 +436,6 @@ final class LazyContainerFactory
         // dev
         $lazyRectorConfig->tag(MissingInSetCommand::class, Command::class);
         $lazyRectorConfig->tag(OutsideAnySetCommand::class, Command::class);
-
-        $lazyRectorConfig->when(NonPhpFileProcessor::class)
-            ->needs('$nonPhpRectors')
-            ->giveTagged(NonPhpRectorInterface::class);
 
         $lazyRectorConfig->when(ApplicationFileProcessor::class)
             ->needs('$fileProcessors')

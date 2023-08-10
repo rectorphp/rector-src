@@ -10,7 +10,6 @@ use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Config\Loader\ConfigureCallMergingLoaderFactory;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
-use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
@@ -43,7 +42,6 @@ final class ContainerBuilderFactory
         Command::class,
         RectorInterface::class,
         OutputFormatterInterface::class,
-        NonPhpRectorInterface::class,
         PhpRectorInterface::class,
         NodeNameResolverInterface::class,
         FileProcessorInterface::class,

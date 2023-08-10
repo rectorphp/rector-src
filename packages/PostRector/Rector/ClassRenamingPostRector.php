@@ -15,17 +15,13 @@ use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\NonPhpFile\Rector\RenameClassNonPhpRector;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
-use Rector\Renaming\Rector\Name\RenameClassRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class ClassRenamingPostRector extends AbstractPostRector implements PostRectorDependencyInterface
+final class ClassRenamingPostRector extends AbstractPostRector
 {
     private FileWithoutNamespace|Namespace_|null $rootNode = null;
 
@@ -53,14 +49,6 @@ final class ClassRenamingPostRector extends AbstractPostRector implements PostRe
         }
 
         return $nodes;
-    }
-
-    /**
-     * @return class-string<RectorInterface>[]
-     */
-    public function getRectorDependencies(): array
-    {
-        return [RenameClassRector::class, RenameClassNonPhpRector::class];
     }
 
     public function enterNode(Node $node): ?Node
