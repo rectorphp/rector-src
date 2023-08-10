@@ -43,7 +43,6 @@
         "symfony/process": "^6.3",
         "symplify/easy-parallel": "^11.1",
         "symplify/rule-doc-generator-contracts": "^11.1",
-        "tracy/tracy": "^2.9",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
@@ -68,13 +67,17 @@
         "symplify/vendor-patches": "^11.2",
         "tomasvotruba/class-leak": "^0.1",
         "tomasvotruba/cognitive-complexity": "^0.1",
+        "tomasvotruba/lines": "0.3.1.72",
         "tomasvotruba/type-coverage": "^0.2",
-        "tomasvotruba/unused-public": "^0.2"
+        "tomasvotruba/unused-public": "^0.2",
+        "tracy/tracy": "^2.9"
     },
     "replace": {
         "rector/rector": "self.version",
         "symfony/polyfill-ctype": "*",
-        "symfony/polyfill-intl-grapheme": "*"
+        "symfony/polyfill-intl-grapheme": "*",
+        "symfony/error-handler": "*",
+        "symfony/var-dumper": "*"
     },
     "autoload": {
         "psr-4": {
@@ -110,6 +113,7 @@
             "rules-tests/Renaming/Rector/Name/RenameClassRector/Source"
         ],
         "files": [
+            "tests/debug_functions.php",
             "stubs/Directory.php",
             "rules-tests/Transform/Rector/FuncCall/FuncCallToMethodCallRector/Source/some_view_function.php",
             "rules-tests/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector/Source/FunctionTyped.php"

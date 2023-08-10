@@ -6,39 +6,16 @@ use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 use Tracy\Dumper;
 
-if (! function_exists('dump_with_depth')) {
-    function dump_with_depth(mixed $value, int $depth = 2): void
-    {
-        Dumper::dump($value, [
-            Dumper::DEPTH => $depth,
-        ]);
-    }
-}
-
-if (! function_exists('dn')) {
-    function dn(Node $node, int $depth = 2): void
-    {
-        dump_node($node, $depth);
-    }
-}
-
-
+// @deprecated, use dump() or dd() instead
 if (! function_exists('dump_node')) {
-    /**
-     * @param Node|Node[] $node
-     */
-    function dump_node(Node | array $node, int $depth = 2): void
+    function dump_node(mixed $variable, int $depth = 2): never
     {
-        $nodes = is_array($node) ? $node : [$node];
-
-        foreach ($nodes as $node) {
-            Dumper::dump($node, [
-                Dumper::DEPTH => $depth,
-            ]);
-        }
+        trigger_error(
+            'This function is deprecated, to avoid enforcing of Rector debug package. Use your own favorite debugging package instead'
+        );
+        exit;
     }
 }
-
 
 if (! function_exists('print_node')) {
     /**
