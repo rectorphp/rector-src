@@ -90,12 +90,6 @@ parameters:
             message: '#Array (with keys|destruct) is not allowed\. Use value object to pass data instead#'
             path: rules/Php70/EregToPcreTransformer.php
 
-        -
-            message: '#Use explicit return value over magic &reference#'
-            paths:
-                - rules/Php56/NodeAnalyzer/UndefinedVariableResolver.php
-                - rules/Php70/EregToPcreTransformer.php
-
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
@@ -129,9 +123,10 @@ parameters:
         - '#(.*?) class\-string, string given#'
 
         -
-            message: '#Array destruct is not allowed\. Use value object to pass data instead#'
+            message: '#Use explicit return value over magic &reference#'
             paths:
-                - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                - rules/Php70/EregToPcreTransformer.php
 
         -
             message: '#\$this as argument is not allowed\. Refactor method to service composition#'
@@ -258,7 +253,6 @@ parameters:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
-                - rules/Renaming/NodeManipulator/ClassRenamer.php
 
         - '#Method Rector\\Core\\Application\\ApplicationFileProcessor\:\:runParallel\(\) should return array\{system_errors\: array<Rector\\Core\\ValueObject\\Error\\SystemError\>, file_diffs\: array<Rector\\Core\\ValueObject\\Reporting\\FileDiff\>\} but returns array#'
 
@@ -421,37 +415,10 @@ parameters:
             message: '#Only booleans are allowed in a negated boolean, string\|false given#'
             path: packages/Testing/Fixture/FixtureFileUpdater.php
 
-        -
-            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
-            paths:
-                - packages/NodeTypeResolver/NodeTypeResolver.php
-                - packages/NodeTypeResolver/PHPStan/TypeHasher.php
-
-        -
-            message: '#Content of method "refactor\(\)" is duplicated\. Use unique content or service instead#'
-            paths:
-                - rules/CodingStyle/Rector/ArrowFunction/StaticArrowFunctionRector.php
-                - rules/CodingStyle/Rector/Closure/StaticClosureRector.php
-
-        -
-            message: '#Content of method "resolveAssignVar\(\)" is duplicated\. Use unique content or service instead#'
-            paths:
-                - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
-                - rules/Php80/NodeFactory/MatchFactory.php
-
-        -
-            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
-            path:  rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php
-
         # known existing class
         -
             message: '#Instead of "instanceof/is_a\(\)" use ReflectionProvider service or "\(new ObjectType\(<desired_type>\)\)\->isSuperTypeOf\(<element_type>\)" for static reflection to work#'
             path: packages/Skipper/Skipper/SkipSkipper.php
-
-        # split of string schema
-        -
-            message: '#Array destruct is not allowed\. Use value object to pass data instead#'
-            path: src/FileSystem/FilePathHelper.php
 
         # the local instanceof for known types
         - '#Instead of "instanceof/is_a\(\)" use ReflectionProvider service or "\(new ObjectType\(<desired_type>\)\)\->isSuperTypeOf\(<element_type>\)" for static reflection to work#'
@@ -460,10 +427,6 @@ parameters:
         -
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
-
-        -
-            message: '#Use explicit return value over magic &reference#'
-            path: packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
         # for reflection
         -
@@ -563,9 +526,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
             path: src/functions/node_helper.php
 
-        # nullable in external package
-        - '#Parameters should use "PhpParser\\Node\\Expr\\FuncCall\|string\|string\|PHPStan\\Analyser\\Scope" types as the only types passed to this method#'
-
         - '#Call to method PHPUnit\\Framework\\Assert\:\:assert(.*?) will always evaluate to (true|false)#'
 
         - '#Doing instanceof PHPStan\\Type\\.* is error\-prone and deprecated(\. Use Type\:\:.*\(\) (or .* )?instead)?#'
@@ -638,8 +598,6 @@ parameters:
         # for symfony configs check
         - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
 
-        - '#The "Rector\\Core\\ValueObject\\Application\\File" class always calls "hydrateStmtsAndTokens\(\)" setters, better move it to constructor#'
-
         -
             message: '#Do not use static property#'
             path: src/Configuration/Parameter/SimpleParameterProvider.php
@@ -664,10 +622,6 @@ parameters:
             path: src/Bootstrap/RectorConfigsResolver.php
 
         -
-            message: '#Public method "Rector\\Core\\Console\\Style\\RectorConsoleOutputStyleFactory\:\:create\(\)" is never used#'
-            path: src/Console/Style/RectorConsoleOutputStyleFactory.php
-
-        -
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
 
@@ -688,12 +642,6 @@ parameters:
         - '#Call to an undefined method Illuminate\\Container\\Container\:\:(.*?)\(\)#'
         - '#Parameter 1 should use "Illuminate\\Container\\Container" type as the only type passed to this method#'
         - '#Parameter \#1 \$container of method Rector\\Core\\DependencyInjection\\LazyContainerFactory\:\:createPHPStanServices\(\) expects Rector\\Config\\RectorConfig, Illuminate\\Container\\Container given#'
-
-        -
-            message: '#Content of method "(.*?)" is duplicated\. Use unique content or service instead#'
-            paths:
-                - packages/Config/RectorConfig.php
-                - packages/Config/LazyRectorConfig.php
 
         - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
 
