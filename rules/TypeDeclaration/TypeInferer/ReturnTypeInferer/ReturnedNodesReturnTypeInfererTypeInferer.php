@@ -65,7 +65,7 @@ final class ReturnedNodesReturnTypeInfererTypeInferer
         foreach ($localReturnNodes as $localReturnNode) {
             $returnedExprType = $localReturnNode->expr instanceof Expr
                 ? $this->nodeTypeResolver->getNativeType($localReturnNode->expr)
-                : $this->nodeTypeResolver->getType($localReturnNode);
+                : new VoidType();
             $returnedExprType = $this->correctWithNestedType($returnedExprType, $localReturnNode, $functionLike);
 
             $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
