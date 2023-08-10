@@ -9,12 +9,12 @@ use PhpParser\NodeTraverser;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
-use Rector\PostRector\Contract\Rector\PostRectorDependencyInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\PostRector\Rector\UnusedImportRemovingPostRector;
 use Rector\PostRector\Rector\UseAddingPostRector;
+use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Skipper\Skipper\Skipper;
 
 final class PostFileProcessor
@@ -79,12 +79,10 @@ final class PostFileProcessor
             return true;
         }
 
-        if ($postRector instanceof PostRectorDependencyInterface) {
-            $dependencies = $postRector->getRectorDependencies();
-            foreach ($dependencies as $dependency) {
-                if ($this->skipper->shouldSkipElementAndFilePath($dependency, $filePath)) {
-                    return true;
-                }
+        if ($postRector instanceof ClassRenamingPostRector) {
+            // skip renaming if rename class rector is skipped
+            if ($this->skipper->shouldSkipElementAndFilePath(RenameClassRector::class, $filePath)) {
+                return true;
             }
         }
 
