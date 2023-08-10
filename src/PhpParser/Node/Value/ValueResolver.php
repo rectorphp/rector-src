@@ -24,6 +24,7 @@ use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ConstFetchAnalyzer;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\Reflection\ClassReflectionAnalyzer;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -46,7 +47,8 @@ final class ValueResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PrivatesAccessor $privatesAccessor
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 
@@ -334,16 +336,8 @@ final class ValueResolver
             );
         }
 
-        // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
         // ensure parent class name still resolved even not autoloaded
-        $nativeReflection = $classReflection->getNativeReflection();
-        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
-            $nativeReflection,
-            'betterReflectionClass'
-        );
-        /** @var ReflectionClass $betterReflectionClass */
-        $parentClassName = $betterReflectionClass->getParentClassName();
-
+        $parentClassName = $this->classReflectionAnalyzer->resolveParentClassName($classReflection);
         if ($parentClassName === null) {
             throw new ShouldNotHappenException();
         }

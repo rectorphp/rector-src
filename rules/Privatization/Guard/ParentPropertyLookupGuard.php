@@ -18,6 +18,7 @@ use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\PropertyManipulator;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Core\Reflection\ClassReflectionAnalyzer;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -29,7 +30,8 @@ final class ParentPropertyLookupGuard
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly AstResolver $astResolver,
         private readonly PropertyManipulator $propertyManipulator,
-        private readonly PrivatesAccessor $privatesAccessor
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 
@@ -48,15 +50,7 @@ final class ParentPropertyLookupGuard
             return false;
         }
 
-        // XXX rework this hack, after https://github.com/phpstan/phpstan-src/pull/2563 landed
-        $nativeReflection = $classReflection->getNativeReflection();
-        $betterReflectionClass = $this->privatesAccessor->getPrivateProperty(
-            $nativeReflection,
-            'betterReflectionClass'
-        );
-        /** @var ReflectionClass $betterReflectionClass */
-        $parentClassName = $betterReflectionClass->getParentClassName();
-
+        $parentClassName = $this->classReflectionAnalyzer->resolveParentClassName($classReflection);
         if ($parentClassName === null) {
             return true;
         }
