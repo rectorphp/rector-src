@@ -37,7 +37,10 @@ use PHPUnit\Framework\TestCase;
 
 class IntersectionTypeWithSetup extends TestCase
 {
-    private \DateTime&\PHPUnit\Framework\MockObject\MockObject $property;
+    /**
+     * @var DateTime&MockObject
+     */
+    private \PHPUnit\Framework\MockObject\MockObject $property;
 
     public function setUp(): void
     {
