@@ -14,8 +14,6 @@ final class BootstrapFilesIncluderTest extends AbstractLazyTestCase
     public function test(): void
     {
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
-
         $bootstrapFilesIncluder->includeBootstrapFiles();
-        $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
     }
 }

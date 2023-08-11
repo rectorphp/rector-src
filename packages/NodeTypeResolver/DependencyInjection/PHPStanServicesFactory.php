@@ -28,7 +28,6 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
         BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
         $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
@@ -57,11 +56,6 @@ final class PHPStanServicesFactory
         // clear temporary files, after container is created
         $filesystem = new Filesystem();
         $filesystem->remove($purifiedConfigFiles);
-    }
-
-    public function provideContainer(): Container
-    {
-        return $this->container;
     }
 
     /**
@@ -153,9 +147,6 @@ final class PHPStanServicesFactory
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
-
-        $extensionConfigFiles = $this->phpStanExtensionsConfigResolver->resolve();
-        $additionalConfigFiles = array_merge($additionalConfigFiles, $extensionConfigFiles);
 
         return array_filter($additionalConfigFiles, 'file_exists');
     }

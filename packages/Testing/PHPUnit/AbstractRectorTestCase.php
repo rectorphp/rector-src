@@ -54,7 +54,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
             /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
             $bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
             $bootstrapFilesIncluder->includeBootstrapFiles();
-            $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
 
             self::$cacheByRuleAndConfig[$cacheKey] = true;
         }
