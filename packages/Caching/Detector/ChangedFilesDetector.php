@@ -17,11 +17,6 @@ use Rector\Core\Util\FileHasher;
 final class ChangedFilesDetector
 {
     /**
-     * @var array<string, string[]>
-     */
-    private array $dependentFiles = [];
-
-    /**
      * @var array<string, true>
      */
     private array $cachableFiles = [];
@@ -33,16 +28,7 @@ final class ChangedFilesDetector
     ) {
     }
 
-    /**
-     * @param string[] $dependentFiles
-     */
-    public function addFileDependentFiles(string $filePath, array $dependentFiles): void
-    {
-        $filePathCacheKey = $this->getFilePathCacheKey($filePath);
-        $this->dependentFiles[$filePathCacheKey] = $dependentFiles;
-    }
-
-    public function cacheFileWithDependencies(string $filePath): void
+    public function cacheFile(string $filePath): void
     {
         $filePathCacheKey = $this->getFilePathCacheKey($filePath);
 
@@ -53,16 +39,6 @@ final class ChangedFilesDetector
         $hash = $this->hashFile($filePath);
 
         $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
-
-        if (! isset($this->dependentFiles[$filePathCacheKey])) {
-            return;
-        }
-
-        $this->cache->save(
-            $filePathCacheKey . '_files',
-            CacheKey::DEPENDENT_FILES_KEY,
-            $this->dependentFiles[$filePathCacheKey],
-        );
     }
 
     public function addCachableFile(string $filePath): void
@@ -95,32 +71,6 @@ final class ChangedFilesDetector
     public function clear(): void
     {
         $this->cache->clear();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getDependentFilePaths(string $filePath): array
-    {
-        $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
-
-        $cacheValue = $this->cache->load($fileInfoCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY);
-        if ($cacheValue === null) {
-            return [];
-        }
-
-        $existingDependentFiles = [];
-
-        $dependentFiles = $cacheValue;
-        foreach ($dependentFiles as $dependentFile) {
-            if (! file_exists($dependentFile)) {
-                continue;
-            }
-
-            $existingDependentFiles[] = $dependentFile;
-        }
-
-        return $existingDependentFiles;
     }
 
     /**

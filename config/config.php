@@ -14,7 +14,6 @@ use PhpParser\NodeFinder;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
-use PHPStan\Dependency\DependencyResolver;
 use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
@@ -202,9 +201,6 @@ return static function (RectorConfig $rectorConfig): void {
     $services->set(SymfonyStyle::class)
         ->factory([service(SymfonyStyleFactory::class), 'create']);
 
-    // cache
-    $services->set(DependencyResolver::class)
-        ->factory([service(PHPStanServicesFactory::class), 'createDependencyResolver']);
     $services->set(FileHelper::class)
         ->factory([service(PHPStanServicesFactory::class), 'createFileHelper']);
 

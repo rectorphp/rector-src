@@ -35,7 +35,7 @@ final class FilesFinder
         $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
 
-        $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
+        $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
 
         return array_merge(
             $currentAndDependentFilePaths,
@@ -83,7 +83,7 @@ final class FilesFinder
             }
         }
 
-        return $this->unchangedFilesFilter->filterAndJoinWithDependentFileInfos($filePaths);
+        return $this->unchangedFilesFilter->filterFileInfos($filePaths);
     }
 
     /**
