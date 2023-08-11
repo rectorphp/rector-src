@@ -10,6 +10,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\Core\Tests\PhpParser\Node\Value\Source\ClassForConstant;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ValueResolverTest extends AbstractLazyTestCase
@@ -35,9 +36,9 @@ final class ValueResolverTest extends AbstractLazyTestCase
     {
         $builderFactory = new BuilderFactory();
 
-        $classConstFetchNode = $builderFactory->classConstFetch('SomeClass', 'SOME_CONSTANT');
+        $classConstFetchNode = $builderFactory->classConstFetch(ClassForConstant::class, 'SOME_CONSTANT');
 
-        yield [$classConstFetchNode, 'SomeClass::SOME_CONSTANT'];
+        yield [$classConstFetchNode, ClassForConstant::class . '::SOME_CONSTANT'];
         yield [$builderFactory->val(true), true];
         yield [$builderFactory->val(1), 1];
         yield [$builderFactory->val(1.0), 1.0];

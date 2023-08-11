@@ -30,7 +30,6 @@ final class UnchangedFilesFilter
             $this->changedFilesDetector->invalidateFile($filePath);
         }
 
-
         return array_unique($changedFileInfos);
     }
 }

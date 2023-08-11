@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\UndefinedStmtIndex\Fixture;
 
-class Fixture
+final class UndefinedStmtsIndex
 {
     public function fetchIdentities(array $data, array $identities)
     {
@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\UndefinedStmtIndex\Fixture;
 
-class Fixture
+final class UndefinedStmtsIndex
 {
     public function fetchIdentities(array $data, array $identities)
     {

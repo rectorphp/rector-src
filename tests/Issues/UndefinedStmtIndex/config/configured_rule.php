@@ -7,6 +7,5 @@ use Rector\DeadCode\Rector\StmtsAwareInterface\RemoveJustPropertyFetchForAssignR
 use Rector\PHPUnit\CodeQuality\Rector\Foreach_\SimplifyForeachInstanceOfRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(RemoveJustPropertyFetchForAssignRector::class);
-    $rectorConfig->rule(SimplifyForeachInstanceOfRector::class);
+    $rectorConfig->rules([RemoveJustPropertyFetchForAssignRector::class, SimplifyForeachInstanceOfRector::class]);
 };

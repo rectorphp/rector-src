@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
 
-final class Fixture
+final class InlinedTypedProperty
 {
     private $url;
 
@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
 
-final class Fixture
+final class InlinedTypedProperty
 {
     private string $url = 'https://website.tld';
 
