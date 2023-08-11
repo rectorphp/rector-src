@@ -21,26 +21,15 @@ use Webmozart\Assert\Assert;
  */
 final class BootstrapFilesIncluder
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $configCache = [];
-
-    public function __construct(
-        private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
-    ) {
-    }
-
-    public function includePHPStanExtensionsBoostrapFiles(?Container $container = null): void
-    {
-        $extensionConfigFiles = $this->phpStanExtensionsConfigResolver->resolve();
-
-        $absoluteBootstrapFilePaths = $this->resolveAbsoluteBootstrapFilePaths($extensionConfigFiles);
-
-        foreach ($absoluteBootstrapFilePaths as $absoluteBootstrapFilePath) {
-            $this->tryRequireFile($absoluteBootstrapFilePath, $container);
-        }
-    }
+    //    /**
+    //     * @var array<string, mixed>
+    //     */
+    //    private array $configCache = [];
+    //
+    //    public function __construct(
+    //        private readonly PHPStanExtensionsConfigResolver $phpStanExtensionsConfigResolver,
+    //    ) {
+    //    }
 
     /**
      * Inspired by
@@ -58,69 +47,70 @@ final class BootstrapFilesIncluder
                 throw new ShouldNotHappenException(sprintf('Bootstrap file "%s" does not exist.', $bootstrapFile));
             }
 
-            $this->tryRequireFile($bootstrapFile);
+            require_once $bootstrapFile;
+            //            $this->tryRequireFile($bootstrapFile);
         }
 
         $this->requireRectorStubs();
     }
 
-    /**
-     * @param string[] $extensionConfigFiles
-     * @return string[]
-     */
-    private function resolveAbsoluteBootstrapFilePaths(array $extensionConfigFiles): array
-    {
-        $absoluteBootstrapFilePaths = [];
-
-        foreach ($extensionConfigFiles as $extensionConfigFile) {
-            if (! array_key_exists($extensionConfigFile, $this->configCache)) {
-                $extensionConfigContents = Neon::decodeFile($extensionConfigFile);
-
-                $this->configCache[$extensionConfigFile] = $extensionConfigContents;
-            } else {
-                $extensionConfigContents = $this->configCache[$extensionConfigFile];
-            }
-
-            $configDirectory = dirname($extensionConfigFile);
-
-            $bootstrapFiles = $extensionConfigContents['parameters']['bootstrapFiles'] ?? [];
-
-            foreach ($bootstrapFiles as $bootstrapFile) {
-                $absoluteBootstrapFilePath = realpath($configDirectory . '/' . $bootstrapFile);
-                if (! is_string($absoluteBootstrapFilePath)) {
-                    continue;
-                }
-
-                $absoluteBootstrapFilePaths[] = $absoluteBootstrapFilePath;
-            }
-        }
-
-        return $absoluteBootstrapFilePaths;
-    }
-
-    /**
-     * PHPStan container mimics:
-     * https://github.com/phpstan/phpstan-src/blob/34881e682e36e30917dcfa8dc69c70e857143436/src/Command/CommandHelper.php#L513-L515
-     */
-    private function tryRequireFile(string $bootstrapFile, ?Container $container = null): void
-    {
-        try {
-            (static function (string $bootstrapFile) use ($container): void {
-                require_once $bootstrapFile;
-            })($bootstrapFile);
-        } catch (Throwable $throwable) {
-            $errorMessage = sprintf(
-                '"%s" thrown in "%s" on line %d while loading bootstrap file %s: %s',
-                $throwable::class,
-                $throwable->getFile(),
-                $throwable->getLine(),
-                $bootstrapFile,
-                $throwable->getMessage()
-            );
-
-            throw new ShouldNotHappenException($errorMessage, $throwable->getCode(), $throwable);
-        }
-    }
+    //    /**
+    //     * @param string[] $extensionConfigFiles
+    //     * @return string[]
+    //     */
+    //    private function resolveAbsoluteBootstrapFilePaths(array $extensionConfigFiles): array
+    //    {
+    //        $absoluteBootstrapFilePaths = [];
+    //
+    //        foreach ($extensionConfigFiles as $extensionConfigFile) {
+    //            if (! array_key_exists($extensionConfigFile, $this->configCache)) {
+    //                $extensionConfigContents = Neon::decodeFile($extensionConfigFile);
+    //
+    //                $this->configCache[$extensionConfigFile] = $extensionConfigContents;
+    //            } else {
+    //                $extensionConfigContents = $this->configCache[$extensionConfigFile];
+    //            }
+    //
+    //            $configDirectory = dirname($extensionConfigFile);
+    //
+    //            $bootstrapFiles = $extensionConfigContents['parameters']['bootstrapFiles'] ?? [];
+    //
+    //            foreach ($bootstrapFiles as $bootstrapFile) {
+    //                $absoluteBootstrapFilePath = realpath($configDirectory . '/' . $bootstrapFile);
+    //                if (! is_string($absoluteBootstrapFilePath)) {
+    //                    continue;
+    //                }
+    //
+    //                $absoluteBootstrapFilePaths[] = $absoluteBootstrapFilePath;
+    //            }
+    //        }
+    //
+    //        return $absoluteBootstrapFilePaths;
+    //    }
+    //
+    //    /**
+    //     * PHPStan container mimics:
+    //     * https://github.com/phpstan/phpstan-src/blob/34881e682e36e30917dcfa8dc69c70e857143436/src/Command/CommandHelper.php#L513-L515
+    //     */
+    //    private function tryRequireFile(string $bootstrapFile, ?Container $container = null): void
+    //    {
+    //        try {
+    //            (static function (string $bootstrapFile) use ($container): void {
+    //                require_once $bootstrapFile;
+    //            })($bootstrapFile);
+    //        } catch (Throwable $throwable) {
+    //            $errorMessage = sprintf(
+    //                '"%s" thrown in "%s" on line %d while loading bootstrap file %s: %s',
+    //                $throwable::class,
+    //                $throwable->getFile(),
+    //                $throwable->getLine(),
+    //                $bootstrapFile,
+    //                $throwable->getMessage()
+    //            );
+    //
+    //            throw new ShouldNotHappenException($errorMessage, $throwable->getCode(), $throwable);
+    //        }
+    //    }
 
     private function requireRectorStubs(): void
     {
