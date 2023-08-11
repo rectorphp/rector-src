@@ -31,6 +31,7 @@ jobs:
                     - 'e2e/parallel-reflection-resolver'
                     - 'e2e/applied-rule-removed-node'
                     - 'e2e/parallel with space'
+                    - 'e2e/wildcards-path-config'
 
         name: End to end test - ${{ matrix.directory }}
 

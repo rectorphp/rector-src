@@ -1,0 +1,40 @@
+2 files with changes
+====================
+
+1) packages/target/src/UselessVarTag.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class UselessVarTag
+ {
+-    /**
+-     * @var string
+-     */
+     public string $name = 'name';
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUselessVarTagRector
+
+
+2) packages/target/src/RenameDocblock.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+ /**
+- * @param DateTime $someOldClass
++ * @param \DateTimeInterface $someOldClass
+  */
+ function someFunction($someOldClass)
+ {
+    ----------- end diff -----------
+
+Applied rules:
+ * RenameClassRector
+
+
+ [OK] 2 files would have changed (dry-run) by Rector
