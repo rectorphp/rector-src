@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector\Fixture;
 
-class ConcatParamAppendReturnedUsedAsArg
+class SkipConcatParamAppendReturnedUsedAsArg
 {
     function formatSizeUnits($bytes): string
     {
