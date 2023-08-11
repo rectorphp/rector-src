@@ -20,7 +20,6 @@
         "doctrine/inflector": "^2.0.6",
         "fidry/cpu-core-counter": "^0.5.1",
         "illuminate/container": "^10.13",
-        "nette/neon": "^3.4",
         "nette/utils": "^3.2",
         "nikic/php-parser": "^4.16.0",
         "ondram/ci-detector": "^4.1",
