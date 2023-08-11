@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Nette\Utils\Json;
-
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Option;

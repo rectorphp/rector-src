@@ -78,6 +78,7 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         $transformOnNamespaces = $configuration;
+
         Assert::allString($transformOnNamespaces);
 
         $this->transformOnNamespaces = $transformOnNamespaces;

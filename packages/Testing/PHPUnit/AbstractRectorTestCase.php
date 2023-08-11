@@ -8,6 +8,7 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PHPStan\Analyser\NodeScopeResolver;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
@@ -46,6 +47,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
         SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
+        SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, true);
 
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
@@ -55,51 +57,17 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     {
         @ini_set('memory_limit', '-1');
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         $configFile = $this->provideConfigFilePath();
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-        // boot once for config + test case to avoid booting again and again for every test fixture
-        $cacheKey = sha1($configFile . static::class);
-
-        if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
-            $this->includePreloadFilesAndScoperAutoload();
-            $this->bootFromConfigFiles([$configFile]);
-
-            /** @var AdditionalAutoloader $additionalAutoloader */
-            $additionalAutoloader = $this->getService(AdditionalAutoloader::class);
-            $additionalAutoloader->autoloadPaths();
-
-            /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
-            $bootstrapFilesIncluder = $this->getService(BootstrapFilesIncluder::class);
-            $bootstrapFilesIncluder->includeBootstrapFiles();
-
-            self::$cacheByRuleAndConfig[$cacheKey] = true;
-        }
-
-        $this->applicationFileProcessor = $this->getService(ApplicationFileProcessor::class);
-        $this->dynamicSourceLocatorProvider = $this->getService(DynamicSourceLocatorProvider::class);
-=======
-=======
->>>>>>> dc15b210a6 (remove ValueObjectInliner as no longer used)
-        $this->bootFromConfigFiles([$configFile]);
-=======
-        $this->includePreloadFilesAndScoperAutoload();
->>>>>>> 0a5c9dc021 (resetting rectors wip)
-
-=======
->>>>>>> f1b597bffa (move away from symfony dependency injection)
         // cleanup all registered rectors, so you can use only the new ones
         $rectorConfig = self::getContainer();
 
-        $configFile = $this->provideConfigFilePath();
-
         // boot once for config + test case to avoid booting again and again for every test fixture
         $cacheKey = sha1($configFile . static::class);
 
         if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
+            $this->bootFromConfigFiles([$configFile]);
+
             $this->forgetRectorsRules();
 
             // this has to be always empty, so we can add new rules with their configuration
@@ -122,6 +90,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
+
+            self::$cacheByRuleAndConfig[$cacheKey] = true;
         }
 
         $this->applicationFileProcessor = $this->make(ApplicationFileProcessor::class);
@@ -134,7 +104,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
-        $bootstrapFilesIncluder->includePHPStanExtensionsBoostrapFiles();
     }
 
     protected function tearDown(): void
@@ -214,14 +183,11 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
-<<<<<<< HEAD
-=======
         // needed for PHPStan, because the analyzed file is just created in /temp - need for trait and similar deps
         /** @var NodeScopeResolver $nodeScopeResolver */
         $nodeScopeResolver = $this->make(NodeScopeResolver::class);
         $nodeScopeResolver->setAnalysedFiles([$filePath]);
 
->>>>>>> a5ac74037b (refactor RectorConfig to Laravel container)
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->make(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);

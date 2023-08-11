@@ -160,16 +160,38 @@ final class PHPStanNodeScopeResolver
                 foreach ($node->types as $type) {
                     $type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 }
+<<<<<<< HEAD
             } elseif ($node instanceof StaticPropertyFetch || $node instanceof ClassConstFetch) {
+=======
+<<<<<<< HEAD
+            } elseif ($node instanceof StaticPropertyFetch) {
+=======
+            } elseif ($node instanceof StaticPropertyFetch || $node instanceof ClassConstFetch) {
+>>>>>>> fbb1c7e10f (make scope resolver faster with if / else early cond)
+>>>>>>> fc90512c9d (make scope resolver faster with if / else early cond)
                 $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             } elseif ($node instanceof PropertyFetch) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof ConstFetch) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+<<<<<<< HEAD
+=======
             } elseif ($node instanceof CallLike) {
                 $this->processCallike($node, $mutatingScope);
+>>>>>>> fc90512c9d (make scope resolver faster with if / else early cond)
+            } elseif ($node instanceof ConstFetch) {
+<<<<<<< HEAD
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+<<<<<<< HEAD
+            } elseif ($node instanceof CallLike) {
+                $this->processCallike($node, $mutatingScope);
+=======
+            } elseif ($node instanceof ClassConstFetch) {
+                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+=======
+>>>>>>> fbb1c7e10f (make scope resolver faster with if / else early cond)
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+>>>>>>> fc90512c9d (make scope resolver faster with if / else early cond)
             }
 
             if ($node instanceof Trait_) {
@@ -210,13 +232,30 @@ final class PHPStanNodeScopeResolver
         if ($callLike instanceof StaticCall) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+<<<<<<< HEAD
         } elseif ($callLike instanceof MethodCall || $callLike instanceof NullsafeMethodCall) {
+=======
+<<<<<<< HEAD
+        } elseif ($callLike instanceof MethodCall) {
+=======
+        } elseif ($callLike instanceof MethodCall || $callLike instanceof NullsafeMethodCall) {
+>>>>>>> fc90512c9d (make scope resolver faster with if / else early cond)
+>>>>>>> 816058741e (fix namespace and type in test fixtures to invoke phpstan reflreciton load correctly)
             $callLike->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         } elseif ($callLike instanceof FuncCall) {
             $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         } elseif ($callLike instanceof New_ && ! $callLike->class instanceof Class_) {
             $callLike->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        } elseif ($callLike instanceof NullsafeMethodCall) {
+            $callLike->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $callLike->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+=======
+>>>>>>> fc90512c9d (make scope resolver faster with if / else early cond)
+>>>>>>> 816058741e (fix namespace and type in test fixtures to invoke phpstan reflreciton load correctly)
         }
     }
 
