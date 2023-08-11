@@ -15,4 +15,11 @@ trait TraitConsumer
     {
         self::hello();
     }
+
+    public function some()
+    {
+        function () {
+            $this->world();
+        };
+    }
 }
