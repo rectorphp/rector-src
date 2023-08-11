@@ -199,7 +199,7 @@ final class IsClassMethodUsedAnalyzer
                     }
 
                     if ($subNode->class->isSpecialClassName() || $subNode->class->toString() === $className) {
-                        return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
+                        return $this->nodeNameResolver->isName($subNode->name, $classMethodName);
                     }
 
                     return false;
