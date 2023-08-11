@@ -10,4 +10,9 @@ trait TraitConsumer
     {
         $this->run();
     }
+
+    public static function helloExecute()
+    {
+        self::hello();
+    }
 }
