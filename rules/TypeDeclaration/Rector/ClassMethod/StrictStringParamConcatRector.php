@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignOp\Concat;
 use PhpParser\Node\Expr\Closure;
@@ -133,6 +134,16 @@ CODE_SAMPLE
             // skip nested class and function nodes
             if ($node instanceof FunctionLike || $node instanceof Class_) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
+            if ($node instanceof Arg) {
+                $isVariableExists = (bool) $this->betterNodeFinder->findFirst(
+                    $node->value,
+                    fn (Node $subNode): bool => $subNode instanceof Variable && $this->isName($subNode, $paramName));
+                if ($isVariableExists) {
+                    $variableConcatted = null;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
             }
 
             $expr = $this->resolveAssignConcatVariable($node, $paramName);
