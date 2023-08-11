@@ -62,9 +62,4 @@ final class ClassMethodManipulator
 
         return false;
     }
-
-    public function isUsedByTrait(Class_ $class, string $methodName): bool
-    {
-        $class->getTraitUses();
-    }
 }
