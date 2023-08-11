@@ -18,7 +18,6 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
         $this->changedFilesDetector->clear();
     }
 
