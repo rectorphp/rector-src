@@ -51,7 +51,6 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
-use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -81,7 +80,6 @@ final class PHPStanNodeScopeResolver
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
      */
     public function __construct(
-        private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
         iterable $nodeVisitors,

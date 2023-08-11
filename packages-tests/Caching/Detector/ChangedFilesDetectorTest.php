@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\Detector;
 
-use Iterator;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
