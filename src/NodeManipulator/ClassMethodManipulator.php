@@ -65,9 +65,6 @@ final class ClassMethodManipulator
 
     public function isUsedByTrait(Class_ $class, string $methodName): bool
     {
-        $traitUses = $class->getTraitUses();
-        foreach ($traitUses as $traitUse) {
-
-        }
+        $class->getTraitUses();
     }
 }
