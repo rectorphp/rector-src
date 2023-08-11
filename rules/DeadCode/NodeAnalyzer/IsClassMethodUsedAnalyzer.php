@@ -185,18 +185,20 @@ final class IsClassMethodUsedAnalyzer
                         return $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
                     }
 
-                    if ($subNode instanceof StaticCall) {
-                        if (! $subNode->class instanceof Name) {
-                            return false;
-                        }
-
-                        if ($subNode->class->isSpecialClassName() ||$subNode->class->toString() === $className)
-                            return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
-                        }
-
+                    if (! $subNode instanceof StaticCall) {
                         return false;
                     }
-            );
+
+                    if (! $subNode->class instanceof Name) {
+                        return false;
+                    }
+
+                    if ($subNode->class->isSpecialClassName() ||$subNode->class->toString() === $className) {
+                        return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
+                    }
+
+                    return false;
+            });
 
             if ($callMethod instanceof CallLike) {
                 return true;
