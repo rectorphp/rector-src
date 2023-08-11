@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -149,11 +150,24 @@ final class IsClassMethodUsedAnalyzer
         $traits = $this->astResolver->parseClassReflectionTraits($classReflection);
         foreach ($traits as $trait) {
             $method = $trait->getMethod($classMethodName);
-            if (! $method instanceof ClassMethod) {
-                continue;
+            if ($method instanceof ClassMethod) {
+                return true;
             }
 
-            return true;
+            foreach ($trait->getMethods() as $method) {
+                if ($method->isAbstract()) {
+                    continue;
+                }
+
+                $isFound = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                    $method,
+                    fn (Node $subNode): bool => $subNode instanceof MethodCall && $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName)
+                );
+
+                if ($isFound) {
+                    return true;
+                }
+            }
         }
 
         return false;
