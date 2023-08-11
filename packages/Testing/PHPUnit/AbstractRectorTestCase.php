@@ -34,6 +34,20 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
      */
     private static array $cacheByRuleAndConfig = [];
 
+    /**
+     * Restore default parameters
+     */
+    public static function tearDownAfterClass(): void
+    {
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
+        SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, true);
+
+        SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
+        SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
+    }
+
     protected function setUp(): void
     {
         @ini_set('memory_limit', '-1');
@@ -176,19 +190,5 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
         return $inputFileDirectory . '/' . $fixtureBasename;
-    }
-
-    /**
-     * Restore default parameters
-     */
-    public static function tearDownAfterClass(): void
-    {
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
-        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
-        SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
-        SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, true);
-
-        SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
-        SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
     }
 }

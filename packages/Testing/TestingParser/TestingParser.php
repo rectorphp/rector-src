@@ -12,6 +12,7 @@ use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 /**
  * @api
@@ -21,12 +22,16 @@ final class TestingParser
     public function __construct(
         private readonly RectorParser $rectorParser,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
     ) {
     }
 
     public function parseFilePathToFile(string $filePath): File
     {
+        // needed for PHPStan reflection, as it caches the last processed file
+        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+
         $file = new File($filePath, FileSystem::read($filePath));
 
         $stmts = $this->rectorParser->parseFile($filePath);
@@ -43,6 +48,9 @@ final class TestingParser
      */
     public function parseFileToDecoratedNodes(string $filePath): array
     {
+        // needed for PHPStan reflection, as it caches the last processed file
+        $this->dynamicSourceLocatorProvider->setFilePath($filePath);
+
         SimpleParameterProvider::setParameter(Option::SOURCE, [$filePath]);
 
         $stmts = $this->rectorParser->parseFile($filePath);

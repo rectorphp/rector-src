@@ -179,10 +179,7 @@ final class IsClassMethodUsedAnalyzer
                         return $this->nodeNameResolver->isName(
                             $subNode->var,
                             'this'
-                        ) && $this->nodeNameResolver->isName(
-                            $subNode->name,
-                            $classMethodName
-                        );
+                        ) && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
                     }
 
                     if (! $subNode instanceof StaticCall) {
