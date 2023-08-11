@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
@@ -159,37 +160,46 @@ final class IsClassMethodUsedAnalyzer
                 return true;
             }
 
-            foreach ($trait->getMethods() as $method) {
-                if ($method->isAbstract()) {
-                    continue;
-                }
+            if ($this->isUsedInsideMethodTrait($trait, $classMethodName, $className)) {
+                return true;
+            }
+        }
 
-                /**
-                 * Trait can't detect class type, so it rely on "this" or "self" or "static" or "ClassName::methodName()" usage...
-                 */
-                $callMethod = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-                    $method,
-                    function (Node $subNode) use ($className, $classMethodName): bool {
-                        if ($subNode instanceof MethodCall) {
-                            return $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
-                        }
+        return false;
+    }
 
-                        if ($subNode instanceof StaticCall) {
-                            if (! $subNode->class instanceof Name) {
-                                return false;
-                            }
+    private function isUsedInsideMethodTrait(Trait_ $trait, string $classMethodName, string $className): bool
+    {
+        foreach ($trait->getMethods() as $method) {
+            if ($method->isAbstract()) {
+                continue;
+            }
 
-                            if ($subNode->class->isSpecialClassName() ||$subNode->class->toString() === $className)
-                                return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
-                            }
+            /**
+             * Trait can't detect class type, so it rely on "this" or "self" or "static" or "ClassName::methodName()" usage...
+             */
+            $callMethod = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                $method,
+                function (Node $subNode) use ($className, $classMethodName): bool {
+                    if ($subNode instanceof MethodCall) {
+                        return $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
+                    }
 
+                    if ($subNode instanceof StaticCall) {
+                        if (! $subNode->class instanceof Name) {
                             return false;
                         }
-                );
 
-                if ($callMethod instanceof CallLike) {
-                    return true;
-                }
+                        if ($subNode->class->isSpecialClassName() ||$subNode->class->toString() === $className)
+                            return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
+                        }
+
+                        return false;
+                    }
+            );
+
+            if ($callMethod instanceof CallLike) {
+                return true;
             }
         }
 
