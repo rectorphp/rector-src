@@ -4,27 +4,26 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArra
 
 use PhpParser\Node;
 use PHPStan\Analyser\MutatingScope;
-use PHPStan\Dependency\DependencyResolver;
 
 class SkipForeachAssign
 {
     /**
      * @var mixed[]
      */
-    private $dependentFiles = [];
+    private $files = [];
 
     public function processNodes()
     {
-        $this->dependentFiles = [];
+        $this->files = [];
     }
 
     private function resolveDependentFiles(
-        DependencyResolver $dependencyResolver,
+        SomeDependency $someDependency,
         Node $node,
         MutatingScope $mutatingScope
     ): void {
-        foreach ($dependencyResolver->resolveDependencies($node, $mutatingScope) as $dependentFile) {
-            $this->dependentFiles[] = $dependentFile;
+        foreach ($someDependency->resolve($node, $mutatingScope) as $file) {
+            $this->files[] = $file;
         }
     }
 }

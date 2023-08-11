@@ -17,10 +17,9 @@ final class UnchangedFilesFilter
      * @param string[] $filePaths
      * @return string[]
      */
-    public function filterAndJoinWithDependentFileInfos(array $filePaths): array
+    public function filterFileInfos(array $filePaths): array
     {
         $changedFileInfos = [];
-        $dependentFileInfos = [];
 
         foreach ($filePaths as $filePath) {
             if (! $this->changedFilesDetector->hasFileChanged($filePath)) {
@@ -29,16 +28,9 @@ final class UnchangedFilesFilter
 
             $changedFileInfos[] = $filePath;
             $this->changedFilesDetector->invalidateFile($filePath);
-
-            $dependentFileInfos = array_merge(
-                $dependentFileInfos,
-                $this->changedFilesDetector->getDependentFilePaths($filePath)
-            );
         }
 
-        // add dependent files
-        $dependentFileInfos = array_merge($dependentFileInfos, $changedFileInfos);
 
-        return array_unique($dependentFileInfos);
+        return array_unique($changedFileInfos);
     }
 }

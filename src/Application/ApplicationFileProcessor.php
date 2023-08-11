@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
-use PHPStan\Analyser\NodeScopeResolver;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -46,7 +45,6 @@ final class ApplicationFileProcessor
     public function __construct(
         private readonly SymfonyStyle          $symfonyStyle,
         private readonly FileFactory           $fileFactory,
-        private readonly NodeScopeResolver     $nodeScopeResolver,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ScheduleFactory       $scheduleFactory,
@@ -83,9 +81,6 @@ final class ApplicationFileProcessor
         if ($configuration->isParallel()) {
             $systemErrorsAndFileDiffs = $this->runParallel($filePaths, $configuration, $input);
         } else {
-            // 1. allow PHPStan to work with static reflection on provided files
-            $this->nodeScopeResolver->setAnalysedFiles($filePaths);
-
             $systemErrorsAndFileDiffs = $this->processFiles($filePaths, $configuration, false);
         }
 

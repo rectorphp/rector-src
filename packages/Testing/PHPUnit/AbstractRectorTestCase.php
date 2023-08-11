@@ -163,11 +163,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
-        // needed for PHPStan, because the analyzed file is just created in /temp - need for trait and similar deps
-        /** @var NodeScopeResolver $nodeScopeResolver */
-        $nodeScopeResolver = $this->getService(NodeScopeResolver::class);
-        $nodeScopeResolver->setAnalysedFiles([$filePath]);
-
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->getService(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);

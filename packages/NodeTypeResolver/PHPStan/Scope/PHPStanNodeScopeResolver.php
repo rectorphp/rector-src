@@ -44,7 +44,6 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeTraverser;
-use PHPStan\AnalysedCodeException;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
@@ -53,7 +52,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Caching\FileSystem\DependencyResolver;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -84,7 +82,6 @@ final class PHPStanNodeScopeResolver
      */
     public function __construct(
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly DependencyResolver $dependencyResolver,
         private readonly NodeScopeResolver $nodeScopeResolver,
         private readonly ReflectionProvider $reflectionProvider,
         iterable $nodeVisitors,
@@ -257,7 +254,7 @@ final class PHPStanNodeScopeResolver
             }
         };
 
-        return $this->processNodesWithDependentFiles($filePath, $stmts, $scope, $nodeCallback);
+        return $this->processNodesWithDependentFiles($stmts, $scope, $nodeCallback);
     }
 
     public function hasUnreachableStatementNode(): bool
@@ -411,13 +408,11 @@ final class PHPStanNodeScopeResolver
      * @return Stmt[]
      */
     private function processNodesWithDependentFiles(
-        string $filePath,
         array $stmts,
         MutatingScope $mutatingScope,
         callable $nodeCallback
     ): array {
         $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-        $this->resolveAndSaveDependentFiles($stmts, $mutatingScope, $filePath);
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
@@ -464,26 +459,5 @@ final class PHPStanNodeScopeResolver
         }
 
         return $classLike->name->toString();
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     */
-    private function resolveAndSaveDependentFiles(
-        array $stmts,
-        MutatingScope $mutatingScope,
-        string $filePath
-    ): void {
-        $dependentFiles = [];
-        foreach ($stmts as $stmt) {
-            try {
-                $nodeDependentFiles = $this->dependencyResolver->resolveDependencies($stmt, $mutatingScope);
-                $dependentFiles = array_merge($dependentFiles, $nodeDependentFiles);
-            } catch (AnalysedCodeException) {
-                // @ignoreException
-            }
-        }
-
-        $this->changedFilesDetector->addFileDependentFiles($filePath, $dependentFiles);
     }
 }

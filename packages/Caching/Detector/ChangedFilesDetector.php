@@ -53,16 +53,6 @@ final class ChangedFilesDetector
         $hash = $this->hashFile($filePath);
 
         $this->cache->save($filePathCacheKey, CacheKey::FILE_HASH_KEY, $hash);
-
-        if (! isset($this->dependentFiles[$filePathCacheKey])) {
-            return;
-        }
-
-        $this->cache->save(
-            $filePathCacheKey . '_files',
-            CacheKey::DEPENDENT_FILES_KEY,
-            $this->dependentFiles[$filePathCacheKey],
-        );
     }
 
     public function addCachableFile(string $filePath): void
@@ -95,32 +85,6 @@ final class ChangedFilesDetector
     public function clear(): void
     {
         $this->cache->clear();
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getDependentFilePaths(string $filePath): array
-    {
-        $fileInfoCacheKey = $this->getFilePathCacheKey($filePath);
-
-        $cacheValue = $this->cache->load($fileInfoCacheKey . '_files', CacheKey::DEPENDENT_FILES_KEY);
-        if ($cacheValue === null) {
-            return [];
-        }
-
-        $existingDependentFiles = [];
-
-        $dependentFiles = $cacheValue;
-        foreach ($dependentFiles as $dependentFile) {
-            if (! file_exists($dependentFile)) {
-                continue;
-            }
-
-            $existingDependentFiles[] = $dependentFile;
-        }
-
-        return $existingDependentFiles;
     }
 
     /**
