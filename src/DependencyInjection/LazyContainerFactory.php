@@ -13,10 +13,7 @@ use PHPStan\Analyser\ScopeFactory;
 use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
-<<<<<<< HEAD
-=======
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
->>>>>>> 926c23350b (fix order of cleanup, remove closures first)
 use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
@@ -425,40 +422,6 @@ final class LazyContainerFactory
             ->needs('$commands')
             ->giveTagged(Command::class);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $lazyRectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
-
-        $lazyRectorConfig->tag(ProcessCommand::class, Command::class);
-        $lazyRectorConfig->tag(WorkerCommand::class, Command::class);
-        $lazyRectorConfig->tag(SetupCICommand::class, Command::class);
-        $lazyRectorConfig->tag(ListRulesCommand::class, Command::class);
-
-        $lazyRectorConfig->when(ListRulesCommand::class)
-            ->needs('$rectors')
-            ->giveTagged(RectorInterface::class);
-
-        $lazyRectorConfig->alias(TypeParser::class, BetterTypeParser::class);
-
-        // dev
-        $lazyRectorConfig->tag(MissingInSetCommand::class, Command::class);
-        $lazyRectorConfig->tag(OutsideAnySetCommand::class, Command::class);
-
-<<<<<<< HEAD
-        $lazyRectorConfig->when(ApplicationFileProcessor::class)
-=======
-        $lazyRectorConfig->when(NonPhpFileProcessor::class)
-=======
-=======
->>>>>>> 53e58d02fc (move away from symfony dependency injection)
-        $rectorConfig->singleton(PhpFileProcessor::class);
-        $rectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
-
-        $rectorConfig->singleton(NonPhpFileProcessor::class);
-        $rectorConfig->tag(NonPhpFileProcessor::class, FileProcessorInterface::class);
-
-=======
->>>>>>> 926c23350b (fix order of cleanup, remove closures first)
         $rectorConfig->tag(ProcessCommand::class, Command::class);
         $rectorConfig->tag(WorkerCommand::class, Command::class);
         $rectorConfig->tag(SetupCICommand::class, Command::class);
@@ -472,21 +435,16 @@ final class LazyContainerFactory
         $rectorConfig->tag(MissingInSetCommand::class, Command::class);
         $rectorConfig->tag(OutsideAnySetCommand::class, Command::class);
 
-        $rectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
-        $rectorConfig->singleton(PostFileProcessor::class);
+        $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
-        $rectorConfig->tag(ProcessCommand::class, Command::class);
-        $rectorConfig->tag(WorkerCommand::class, Command::class);
-        $rectorConfig->tag(SetupCICommand::class, Command::class);
-        $rectorConfig->tag(ListRulesCommand::class, Command::class);
+        $rectorConfig->singleton(PhpFileProcessor::class);
+        $rectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
+
+        $rectorConfig->singleton(PostFileProcessor::class);
 
         if (class_exists(InitRecipeCommand::class)) {
             $rectorConfig->tag(InitRecipeCommand::class, Command::class);
         }
-
-        $rectorConfig->when(ListRulesCommand::class)
-            ->needs('$rectors')
-            ->giveTagged(RectorInterface::class);
 
         // phpdoc-parser
         $rectorConfig->when(TypeParser::class)
@@ -502,6 +460,8 @@ final class LazyContainerFactory
                 'lines' => true,
                 'indexes' => true,
             ]);
+
+        $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
         // dev
         $rectorConfig->tag(MissingInSetCommand::class, Command::class);
@@ -709,7 +669,7 @@ final class LazyContainerFactory
 
         $rectorConfig->afterResolving(
             \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
-            function (
+            static function (
                 \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
                 Container $container
             ): void {

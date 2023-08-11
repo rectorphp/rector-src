@@ -154,9 +154,9 @@ final class RectorConfig extends Container
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
         $this->singleton($rectorClass);
-        $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
+        $this->afterResolving($rectorClass, static function (ConfigurableRectorInterface $configurableRector) use (
             $configuration
-        ) {
+        ): void {
             $configurableRector->configure($configuration);
         });
 
@@ -177,10 +177,12 @@ final class RectorConfig extends Container
         if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
             $this->extend(
                 $rectorClass,
-                function (AbstractScopeAwareRector $scopeAwareRector, Container $container) {
+                static function (
+                    AbstractScopeAwareRector $scopeAwareRector,
+                    Container $container
+                ): AbstractScopeAwareRector {
                     $scopeAnalyzer = $container->make(ScopeAnalyzer::class);
                     $scopeAwareRector->autowireAbstractScopeAwareRector($scopeAnalyzer);
-
                     return $scopeAwareRector;
                 }
             );

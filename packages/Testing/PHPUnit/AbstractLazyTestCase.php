@@ -15,7 +15,7 @@ use Webmozart\Assert\Assert;
 
 abstract class AbstractLazyTestCase extends TestCase
 {
-    private static ?RectorConfig $container = null;
+    private static ?RectorConfig $rectorConfig = null;
 
     /**
      * @api
@@ -23,13 +23,13 @@ abstract class AbstractLazyTestCase extends TestCase
      */
     protected function bootFromConfigFiles(array $configFiles): void
     {
-        $container = self::getContainer();
+        $rectorConfig = self::getContainer();
 
         foreach ($configFiles as $configFile) {
             $configClosure = require $configFile;
             Assert::isCallable($configClosure);
 
-            $configClosure($container);
+            $configClosure($rectorConfig);
         }
     }
 
@@ -45,39 +45,38 @@ abstract class AbstractLazyTestCase extends TestCase
 
     protected static function getContainer(): RectorConfig
     {
-        if (! self::$container instanceof RectorConfig) {
+        if (! self::$rectorConfig instanceof RectorConfig) {
             $lazyContainerFactory = new LazyContainerFactory();
-            self::$container = $lazyContainerFactory->create();
+            self::$rectorConfig = $lazyContainerFactory->create();
         }
 
-        return self::$container;
+        return self::$rectorConfig;
     }
 
     protected function forgetRectorsRules(): void
     {
-        $container = self::getContainer();
+        $rectorConfig = self::getContainer();
 
         // 1. forget instance first, then remove tags
-        $rectors = $container->tagged(RectorInterface::class);
+        $rectors = $rectorConfig->tagged(RectorInterface::class);
         foreach ($rectors as $rector) {
-            $container->offsetUnset(get_class($rector));
+            $rectorConfig->offsetUnset($rector::class);
         }
 
         // 2. remove all tagged rules
         $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure($container, 'tags', function (array $tags): array {
+        $privatesAccessor->propertyClosure($rectorConfig, 'tags', static function (array $tags): array {
             unset($tags[RectorInterface::class]);
             unset($tags[PhpRectorInterface::class]);
-
             return $tags;
         });
 
         // 3. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor->propertyClosure(
-            $container,
+            $rectorConfig,
             'afterResolvingCallbacks',
-            function (array $afterResolvingCallbacks): array {
-                foreach ($afterResolvingCallbacks as $key => $closure) {
+            static function (array $afterResolvingCallbacks): array {
+                foreach (array_keys($afterResolvingCallbacks) as $key) {
                     if ($key === AbstractRector::class) {
                         continue;
                     }
@@ -86,7 +85,6 @@ abstract class AbstractLazyTestCase extends TestCase
                         unset($afterResolvingCallbacks[$key]);
                     }
                 }
-
                 return $afterResolvingCallbacks;
             }
         );

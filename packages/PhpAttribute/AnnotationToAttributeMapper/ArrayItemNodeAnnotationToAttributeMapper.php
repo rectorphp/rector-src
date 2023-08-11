@@ -59,8 +59,6 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
                     RectorAssert::className(ltrim((string) $arrayItemNode->value, '@'));
 
                     $identifierTypeNode = new IdentifierTypeNode($arrayItemNode->value);
-
-                    // checked
                     $arrayItemNode->value = new DoctrineAnnotationTagValueNode($identifierTypeNode);
 
                     return $this->map($arrayItemNode);

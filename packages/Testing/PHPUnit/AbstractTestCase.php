@@ -18,11 +18,11 @@ abstract class AbstractTestCase extends AbstractLazyTestCase
      */
     protected function bootFromConfigFiles(array $configFiles): void
     {
-        $container = self::getContainer();
+        $rectorConfig = self::getContainer();
 
         foreach ($configFiles as $configFile) {
             $callable = require $configFile;
-            $callable($container);
+            $callable($rectorConfig);
         }
     }
 

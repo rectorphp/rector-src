@@ -19,7 +19,6 @@ use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -93,7 +92,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 =======
 >>>>>>> f1b597bffa (move away from symfony dependency injection)
         // cleanup all registered rectors, so you can use only the new ones
-        $container = self::getContainer();
+        $rectorConfig = self::getContainer();
 
         $configFile = $this->provideConfigFilePath();
 
@@ -104,12 +103,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->forgetRectorsRules();
 
             // this has to be always empty, so we can add new rules with their configuration
-            $this->assertEmpty($container->tagged(RectorInterface::class));
-            $this->assertEmpty($container->tagged(PhpRectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(PhpRectorInterface::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
-            $phpRectorsGenerator = $container->tagged(PhpRectorInterface::class);
+            $phpRectorsGenerator = $rectorConfig->tagged(PhpRectorInterface::class);
 
             if ($phpRectorsGenerator instanceof RewindableGenerator) {
                 $phpRectors = iterator_to_array($phpRectorsGenerator->getIterator());
@@ -118,7 +117,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 $phpRectors = [];
             }
 
-            $rectorNodeTraverser = $container->make(RectorNodeTraverser::class);
+            $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
             $rectorNodeTraverser->refreshPhpRectors($phpRectors);
 
             // store cache
@@ -187,22 +186,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         FileSystem::write($inputFilePath, $inputFileContents);
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
-    }
-
-    private function includePreloadFilesAndScoperAutoload(): void
-    {
-        if (file_exists(__DIR__ . '/../../../preload.php')) {
-            if (file_exists(__DIR__ . '/../../../vendor')) {
-                require_once __DIR__ . '/../../../preload.php';
-                // test case in rector split package
-            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
-                require_once __DIR__ . '/../../../preload-split-package.php';
-            }
-        }
-
-        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
-            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
-        }
     }
 
     private function doTestFileMatchesExpectedContent(

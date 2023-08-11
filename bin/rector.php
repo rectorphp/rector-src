@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use Nette\Utils\Json;
+
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Core\DependencyInjection\LazyContainerFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
@@ -38,7 +40,7 @@ final class AutoloadIncluder
     public function includeDependencyOrRepositoryVendorAutoloadIfExists(): void
     {
         // Rector's vendor is already loaded
-        if (class_exists(\Rector\Core\DependencyInjection\LazyContainerFactory::class)) {
+        if (class_exists(LazyContainerFactory::class)) {
             return;
         }
 
