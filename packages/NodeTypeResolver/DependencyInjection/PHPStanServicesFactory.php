@@ -157,9 +157,6 @@ final class PHPStanServicesFactory
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
 
-        //        $extensionConfigFiles = $this->phpStanExtensionsConfigResolver->resolve();
-        //        $additionalConfigFiles = array_merge($additionalConfigFiles, $extensionConfigFiles);
-        //
         return array_filter($additionalConfigFiles, 'file_exists');
     }
 }

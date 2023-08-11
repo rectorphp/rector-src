@@ -304,7 +304,6 @@ parameters:
             paths:
                 # autoload check in bin file
                 - bin/rector.php
-                - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - config/config.php
@@ -371,7 +370,6 @@ parameters:
             paths:
                 - bin/rector.php
                 - src/Bootstrap/RectorConfigsResolver.php
-                - src/NonPhpFile/NonPhpFileProcessor.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
 
         # false postive, on trait use in multiple classes
@@ -454,7 +452,6 @@ parameters:
             message: '#Offset (.*?)includes(.*?) always exists and is not nullable#'
             paths:
                 - src/Bootstrap/ExtensionConfigResolver.php
-                - packages/NodeTypeResolver/DependencyInjection/PHPStanExtensionsConfigResolver.php
 
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
@@ -668,9 +665,6 @@ parameters:
         # iterable mix
         - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
 
-        # false positive
-        - '#Parameter \#2 \$colors of method Tracy\\Dumper\\Renderer\:\:renderAsText\(\) expects array, array\|null given#'
-
         # chicken/egg
         -
             message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
@@ -684,9 +678,6 @@ parameters:
         -
             message: '#Do not name "d", shorter than 2 chars#'
             path: tests/debug_functions.php
-
-        # not relevant
-        - '#Do not use static property#'
 
         # deprecated
         -
