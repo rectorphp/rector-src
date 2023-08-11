@@ -8,13 +8,16 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\Enum\ObjectReference;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
@@ -148,6 +151,8 @@ final class IsClassMethodUsedAnalyzer
         }
 
         $traits = $this->astResolver->parseClassReflectionTraits($classReflection);
+        $className = $classReflection->getName();
+
         foreach ($traits as $trait) {
             $method = $trait->getMethod($classMethodName);
             if ($method instanceof ClassMethod) {
@@ -159,12 +164,30 @@ final class IsClassMethodUsedAnalyzer
                     continue;
                 }
 
-                $isFound = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+                /**
+                 * Trait can't detect class type, so it rely on "this" or "self" or "static" or "ClassName::methodName()" usage...
+                 */
+                $callMethod = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                     $method,
-                    fn (Node $subNode): bool => $subNode instanceof MethodCall && $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName)
+                    function (Node $subNode) use ($className, $classMethodName): bool {
+                        if ($subNode instanceof MethodCall) {
+                            return $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
+                        }
+
+                        if ($subNode instanceof StaticCall) {
+                            if (! $subNode->class instanceof Name) {
+                                return false;
+                            }
+
+                            if ($subNode->class->isSpecialClassName() ||$subNode->class->toString() === $className)
+                                return $this->nodeNameResolver->isName($subNode->class, $classMethodName);
+                            }
+
+                            return false;
+                        }
                 );
 
-                if ($isFound instanceof Node) {
+                if ($callMethod instanceof CallLike) {
                     return true;
                 }
             }
