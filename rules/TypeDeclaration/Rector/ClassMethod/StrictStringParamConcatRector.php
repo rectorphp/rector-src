@@ -137,7 +137,7 @@ CODE_SAMPLE
 
             $expr = $this->resolveAssignConcatVariable($node, $paramName);
             if ($expr instanceof Variable) {
-                $variableConcatted = $node;
+                $variableConcatted = $expr;
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
