@@ -68,12 +68,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         if (is_string($this->inputFilePath)) {
             FileSystem::delete($this->inputFilePath);
         }
-
-        // free memory to reduce memory peak consumption on windows
-        unset(
-            $this->applicationFileProcessor,
-            $this->dynamicSourceLocatorProvider,
-        );
     }
 
     /**
@@ -182,5 +176,19 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
 
         $fixtureBasename = pathinfo($trimmedFixtureFilePath, PATHINFO_BASENAME);
         return $inputFileDirectory . '/' . $fixtureBasename;
+    }
+
+    /**
+     * Restore default parameters
+     */
+    public static function tearDownAfterClass(): void
+    {
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
+        SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
+        SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, true);
+
+        SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
+        SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
     }
 }
