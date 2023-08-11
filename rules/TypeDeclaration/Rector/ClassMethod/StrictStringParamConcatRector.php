@@ -136,14 +136,9 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if ($node instanceof Arg) {
-                $isVariableExists = (bool) $this->betterNodeFinder->findFirst(
-                    $node->value,
-                    fn (Node $subNode): bool => $subNode instanceof Variable && $this->isName($subNode, $paramName));
-                if ($isVariableExists) {
-                    $variableConcatted = null;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
+            if ($node instanceof Arg && $this->isVariableInArg($node, $paramName)) {
+                $variableConcatted = null;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             $expr = $this->resolveAssignConcatVariable($node, $paramName);
@@ -162,6 +157,14 @@ CODE_SAMPLE
         });
 
         return $variableConcatted;
+    }
+
+    private function isVariableInArg(Arg $arg, string $paramName): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst(
+            $arg->value,
+            fn (Node $subNode): bool => $subNode instanceof Variable && $this->isName($subNode, $paramName)
+        );
     }
 
     private function isVariableWithSameParam(Expr $expr, string $paramName): bool
