@@ -164,7 +164,7 @@ final class IsClassMethodUsedAnalyzer
                     fn (Node $subNode): bool => $subNode instanceof MethodCall && $this->nodeNameResolver->isName($subNode->var, 'this') && $this->nodeNameResolver->isName($subNode->name, $classMethodName)
                 );
 
-                if ($isFound) {
+                if ($isFound instanceof Node) {
                     return true;
                 }
             }
