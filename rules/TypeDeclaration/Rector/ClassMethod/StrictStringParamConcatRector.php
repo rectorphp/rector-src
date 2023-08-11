@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\AssignOp\Concat;
 use PhpParser\Node\Expr\Closure;
@@ -135,9 +136,14 @@ CODE_SAMPLE
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
+            if ($node instanceof Arg && $this->isVariableInArg($node, $paramName)) {
+                $variableConcatted = null;
+                return NodeTraverser::STOP_TRAVERSAL;
+            }
+
             $expr = $this->resolveAssignConcatVariable($node, $paramName);
             if ($expr instanceof Variable) {
-                $variableConcatted = $node;
+                $variableConcatted = $expr;
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
@@ -151,6 +157,14 @@ CODE_SAMPLE
         });
 
         return $variableConcatted;
+    }
+
+    private function isVariableInArg(Arg $arg, string $paramName): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst(
+            $arg->value,
+            fn (Node $subNode): bool => $subNode instanceof Variable && $this->isName($subNode, $paramName)
+        );
     }
 
     private function isVariableWithSameParam(Expr $expr, string $paramName): bool
