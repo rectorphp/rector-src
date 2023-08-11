@@ -192,18 +192,7 @@ final class IsClassMethodUsedAnalyzer
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
 
-                    if (! $subNode instanceof StaticCall) {
-                        return null;
-                    }
-
-                    if (! $subNode->class instanceof Name) {
-                        return null;
-                    }
-
-                    if (($subNode->class->isSpecialClassName() || $subNode->class->toString() === $className) && $this->nodeNameResolver->isName(
-                        $subNode->name,
-                        $classMethodName
-                    )) {
+                    if ($this->isStaticCallMatch($subNode, $className, $classMethodName)) {
                         $callMethod = $subNode;
                         return NodeTraverser::STOP_TRAVERSAL;
                     }
@@ -218,5 +207,19 @@ final class IsClassMethodUsedAnalyzer
         }
 
         return false;
+    }
+
+    private function isStaticCallMatch(Node $subNode, string $className, string $classMethodName): bool
+    {
+        if (! $subNode instanceof StaticCall) {
+            return false;
+        }
+
+        if (! $subNode->class instanceof Name) {
+            return false;
+        }
+
+        return ($subNode->class->isSpecialClassName() || $subNode->class->toString() === $className)
+            && $this->nodeNameResolver->isName($subNode->name, $classMethodName);
     }
 }
