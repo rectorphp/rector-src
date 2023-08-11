@@ -200,14 +200,7 @@ final class RectorConfig extends ContainerConfigurator
     public function rules(array $rectorClasses): void
     {
         Assert::allString($rectorClasses);
-
-        $duplicatedRectorClasses = $this->resolveDuplicatedValues($rectorClasses);
-        if ($duplicatedRectorClasses !== []) {
-            throw new ShouldNotHappenException('Following rules are registered twice: ' . implode(
-                ', ',
-                $duplicatedRectorClasses
-            ));
-        }
+        $this->ensureNotDuplicatedClasses($rectorClasses);
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
@@ -355,5 +348,21 @@ final class RectorConfig extends ContainerConfigurator
             ));
             exit();
         }
+    }
+
+    /**
+     * @param string[] $rectorClasses
+     */
+    private function ensureNotDuplicatedClasses(array $rectorClasses): void
+    {
+        $duplicatedRectorClasses = $this->resolveDuplicatedValues($rectorClasses);
+        if ($duplicatedRectorClasses === []) {
+            return;
+        }
+
+        throw new ShouldNotHappenException('Following rules are registered twice: ' . implode(
+            ', ',
+            $duplicatedRectorClasses
+        ));
     }
 }
