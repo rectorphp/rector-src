@@ -33,8 +33,8 @@ final class TestingParser
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
         $file = new File($filePath, FileSystem::read($filePath));
-
         $stmts = $this->rectorParser->parseFile($filePath);
+
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);

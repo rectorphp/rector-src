@@ -1,7 +1,6 @@
 <?php
 
 namespace Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Fixture;
-<<<<<<< HEAD
 
 use Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Source\TypeForCheck;
 
@@ -12,16 +11,3 @@ final class SkipNoCond
         echo ! $object instanceof TypeForCheck ?: null;
     }
 }
-=======
-
-use Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Source\TypeForCheck;
-
-final class SkipNoCond
-{
-    public function run($object)
-    {
-        echo ! $object instanceof TypeForCheck ?: null;
-    }
-}
-
->>>>>>> 816058741e (fix namespace and type in test fixtures to invoke phpstan reflreciton load correctly)

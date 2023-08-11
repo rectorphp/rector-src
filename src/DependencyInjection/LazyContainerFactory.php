@@ -15,6 +15,7 @@ use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\Reflection\BetterReflection\SourceLocator\CachingVisitor;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
@@ -325,6 +326,7 @@ final class LazyContainerFactory
         FileHelper::class,
         NodeScopeResolver::class,
         ReflectionProvider::class,
+        CachingVisitor::class,
     ];
 
     /**

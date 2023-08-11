@@ -12,6 +12,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -25,6 +26,10 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
+        // to avoid reflection parsing previous files
+        $dynamicSourceLocatorProvider = $this->make(DynamicSourceLocatorProvider::class);
+        $dynamicSourceLocatorProvider->reset();
+
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
         $this->docBlockTagReplacer = $this->make(DocBlockTagReplacer::class);
 
