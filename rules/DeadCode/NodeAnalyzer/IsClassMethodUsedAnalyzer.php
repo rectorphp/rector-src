@@ -154,12 +154,7 @@ final class IsClassMethodUsedAnalyzer
         $className = $classReflection->getName();
 
         foreach ($traits as $trait) {
-            $method = $trait->getMethod($classMethodName);
-            if ($method instanceof ClassMethod) {
-                return true;
-            }
-
-            if ($this->isUsedInsideMethodTrait($trait, $classMethodName, $className)) {
+            if ($this->isUsedByTrait($trait, $classMethodName, $className)) {
                 return true;
             }
         }
@@ -167,11 +162,11 @@ final class IsClassMethodUsedAnalyzer
         return false;
     }
 
-    private function isUsedInsideMethodTrait(Trait_ $trait, string $classMethodName, string $className): bool
+    private function isUsedByTrait(Trait_ $trait, string $classMethodName, string $className): bool
     {
         foreach ($trait->getMethods() as $classMethod) {
-            if ($classMethod->isAbstract()) {
-                continue;
+            if ($classMethod->name->toString() === $classMethodName) {
+                return true;
             }
 
             /**
