@@ -28,7 +28,7 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
 
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
         $this->changedFilesDetector->addCachableFile($filePath);
-        $this->changedFilesDetector->cacheFileWithDependencies($filePath);
+        $this->changedFilesDetector->cacheFile($filePath);
 
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
         $this->changedFilesDetector->invalidateFile($filePath);

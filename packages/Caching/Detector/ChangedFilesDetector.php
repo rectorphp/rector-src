@@ -17,11 +17,6 @@ use Rector\Core\Util\FileHasher;
 final class ChangedFilesDetector
 {
     /**
-     * @var array<string, string[]>
-     */
-    private array $dependentFiles = [];
-
-    /**
      * @var array<string, true>
      */
     private array $cachableFiles = [];
@@ -33,16 +28,7 @@ final class ChangedFilesDetector
     ) {
     }
 
-    /**
-     * @param string[] $dependentFiles
-     */
-    public function addFileDependentFiles(string $filePath, array $dependentFiles): void
-    {
-        $filePathCacheKey = $this->getFilePathCacheKey($filePath);
-        $this->dependentFiles[$filePathCacheKey] = $dependentFiles;
-    }
-
-    public function cacheFileWithDependencies(string $filePath): void
+    public function cacheFile(string $filePath): void
     {
         $filePathCacheKey = $this->getFilePathCacheKey($filePath);
 

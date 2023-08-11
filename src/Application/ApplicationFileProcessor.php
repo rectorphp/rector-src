@@ -161,7 +161,7 @@ final class ApplicationFileProcessor
         if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
         } elseif (! $configuration->isDryRun() || $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] === []) {
-            $this->changedFilesDetector->cacheFileWithDependencies($file->getFilePath());
+            $this->changedFilesDetector->cacheFile($file->getFilePath());
         }
 
         return $systemErrorsAndFileDiffs;
