@@ -68,12 +68,6 @@ abstract class AbstractRectorTestCase extends AbstractTestCase implements Rector
         if (is_string($this->inputFilePath)) {
             FileSystem::delete($this->inputFilePath);
         }
-
-        // free memory to reduce memory peak consumption on windows
-        unset(
-            $this->applicationFileProcessor,
-            $this->dynamicSourceLocatorProvider,
-        );
     }
 
     /**
