@@ -29,6 +29,7 @@ final class TestingParser
 
     public function parseFilePathToFile(string $filePath): File
     {
+        // needed for PHPStan reflection, as it caches the last processed file
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
         $file = new File($filePath, FileSystem::read($filePath));
@@ -47,6 +48,7 @@ final class TestingParser
      */
     public function parseFileToDecoratedNodes(string $filePath): array
     {
+        // needed for PHPStan reflection, as it caches the last processed file
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
         SimpleParameterProvider::setParameter(Option::SOURCE, [$filePath]);
