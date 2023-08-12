@@ -129,7 +129,7 @@
         "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
         "phpstan-config": "vendor/bin/phpstan analyse config --ansi --error-format symplify",
         "docs": [
-            "vendor/bin/rule-doc-generator generate rules --output-file build/rector_rules_overview.md --ansi --categorize 2",
+            "vendor/bin/rule-doc-generator generate rules --output-file build/rector_rules_overview.md --ansi --categorize 3",
             "mv build/rector_rules_overview.md build/target-repository/docs/rector_rules_overview.md"
         ],
         "rector": "bin/rector process --ansi",
