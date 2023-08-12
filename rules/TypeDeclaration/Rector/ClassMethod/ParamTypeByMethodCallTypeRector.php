@@ -184,7 +184,10 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable(
             (array) $classMethod->stmts,
             function (Node $subNode) use (&$isParamConditioned, $paramName): ?int {
-                if ($subNode instanceof Assign && $subNode->var instanceof Variable && $this->isName($subNode->var, $paramName)) {
+                if ($subNode instanceof Assign && $subNode->var instanceof Variable && $this->isName(
+                    $subNode->var,
+                    $paramName
+                )) {
                     $isParamConditioned = true;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }
