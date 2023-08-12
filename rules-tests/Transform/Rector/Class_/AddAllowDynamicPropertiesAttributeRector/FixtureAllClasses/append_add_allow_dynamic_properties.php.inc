@@ -3,7 +3,7 @@
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\FixtureAllClasses;
 
 #[\Immutable]
-class AppendAttribute
+final class AppendAddAllowDynamicProperties
 {
     public string $someProperty = 'hello world';
 }
@@ -16,7 +16,7 @@ namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttribut
 
 #[\Immutable]
 #[\AllowDynamicProperties]
-class AppendAttribute
+final class AppendAddAllowDynamicProperties
 {
     public string $someProperty = 'hello world';
 }

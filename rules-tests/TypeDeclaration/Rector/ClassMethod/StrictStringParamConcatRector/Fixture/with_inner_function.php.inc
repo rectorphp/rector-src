@@ -2,11 +2,18 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector\Fixture;
 
-function foo($item) {
-    function bar($item) {
-        return $item . ' world';
+final class WithInnerFunction
+{
+    public function run()
+    {
+        function foo($item) {
+            function bar($item) {
+                return $item . ' world';
+            }
+        }
     }
 }
+
 
 ?>
 -----
@@ -14,10 +21,17 @@ function foo($item) {
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector\Fixture;
 
-function foo($item) {
-    function bar(string $item) {
-        return $item . ' world';
+final class WithInnerFunction
+{
+    public function run()
+    {
+        function foo($item) {
+            function bar(string $item) {
+                return $item . ' world';
+            }
+        }
     }
 }
+
 
 ?>

@@ -1,5 +1,13 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Fixture;
+namespace Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Fixture;
 
-echo ! $object instanceof Product ?: null;
+use Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Source\TypeForCheck;
+
+final class SkipNoCond
+{
+    public function run($object)
+    {
+        echo ! $object instanceof TypeForCheck ?: null;
+    }
+}
