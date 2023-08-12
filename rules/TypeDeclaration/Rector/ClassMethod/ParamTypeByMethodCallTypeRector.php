@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -183,6 +184,11 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable(
             (array) $classMethod->stmts,
             function (Node $subNode) use (&$isParamConditioned, $paramName): ?int {
+                if ($subNode instanceof Assign && $subNode->var instanceof Variable && $this->isName($subNode->var, $paramName)) {
+                    $isParamConditioned = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 if ($subNode instanceof If_ && (bool) $this->betterNodeFinder->findFirst(
                     $subNode->cond,
                     fn (Node $node): bool => $node instanceof Variable && $this->isName($node, $paramName)
