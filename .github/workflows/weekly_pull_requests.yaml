@@ -19,11 +19,6 @@ jobs:
             matrix:
                 actions:
                     -
-                        name: "Re-Generate Nodes/Rectors Documentation"
-                        run: "composer docs"
-                        branch: 'automated-regenerated-nodes-rectors-documentation'
-
-                    -
                         name: 'Apply Coding Standard'
                         run: "composer fix-cs"
                         branch: 'automated-apply-coding-standards'
