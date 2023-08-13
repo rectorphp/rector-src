@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -25,7 +26,7 @@ final class ParamTypeAddGuard
     ) {
     }
 
-    public function isLegal(Param $param, FunctionLike $functionLike): bool
+    public function isLegal(Param $param, ClassMethod $functionLike): bool
     {
         $paramName = $this->nodeNameResolver->getName($param->var);
         if ($paramName === null) {
