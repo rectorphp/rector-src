@@ -4,10 +4,12 @@ namespace Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRe
 
 use Rector\Tests\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector\Source\TypeForCheck;
 
-final class SkipNoCond
+final class CorrectCase
 {
     public function run($object)
     {
-        echo ! $object instanceof TypeForCheck ?: null;
+        echo $object instanceof TypeForCheck ? $object->getPrice() : null;
     }
 }
+
+?>

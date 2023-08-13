@@ -6,10 +6,10 @@ namespace Rector\Tests\Caching\ValueObject\Storage;
 
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\Testing\PHPUnit\AbstractRectorTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class FileCacheStorageTest extends AbstractRectorTestCase
+final class FileCacheStorageTest extends AbstractLazyTestCase
 {
     private FileCacheStorage $fileCacheStorage;
 

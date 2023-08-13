@@ -14,7 +14,7 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericA
 use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericSingleImplicitAnnotation;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::NEW_INITIALIZERS - 1);
+    $rectorConfig->phpVersion(PhpVersionFeature::ATTRIBUTES);
 
     $rectorConfig
         ->ruleWithConfiguration(AnnotationToAttributeRector::class, [

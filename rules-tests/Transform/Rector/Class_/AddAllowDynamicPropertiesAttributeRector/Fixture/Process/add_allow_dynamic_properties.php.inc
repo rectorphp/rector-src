@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
-class WantsAttribute
+final class AddAllowDynamicProperties
 {
     public string $someProperty = 'hello world';
 }
@@ -14,7 +14,7 @@ class WantsAttribute
 namespace Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\Process;
 
 #[\AllowDynamicProperties]
-class WantsAttribute
+final class AddAllowDynamicProperties
 {
     public string $someProperty = 'hello world';
 }
