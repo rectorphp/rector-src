@@ -16,6 +16,7 @@ use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -55,6 +56,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
     protected function setUp(): void
     {
+        $this->includePreloadFilesAndScoperAutoload();
+
         @ini_set('memory_limit', '-1');
 
         $configFile = $this->provideConfigFilePath();
@@ -66,7 +69,9 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $cacheKey = sha1($configFile . static::class);
 
         if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
-            $this->bootFromConfigFiles([$configFile]);
+            // reset class rename
+            $renamedClassesDataCollector = $rectorConfig->make(RenamedClassesDataCollector::class);
+            $renamedClassesDataCollector->reset();
 
             $this->forgetRectorsRules();
 
@@ -155,6 +160,22 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         FileSystem::write($inputFilePath, $inputFileContents);
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
+    }
+
+    private function includePreloadFilesAndScoperAutoload(): void
+    {
+        if (file_exists(__DIR__ . '/../../../preload.php')) {
+            if (file_exists(__DIR__ . '/../../../vendor')) {
+                require_once __DIR__ . '/../../../preload.php';
+                // test case in rector split package
+            } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
+                require_once __DIR__ . '/../../../preload-split-package.php';
+            }
+        }
+
+        if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
+            require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
+        }
     }
 
     private function doTestFileMatchesExpectedContent(

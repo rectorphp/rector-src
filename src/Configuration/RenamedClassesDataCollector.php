@@ -13,6 +13,14 @@ final class RenamedClassesDataCollector
      */
     private array $oldToNewClasses = [];
 
+    /**
+     * @api for fast tests with single container
+     */
+    public function reset(): void
+    {
+        $this->oldToNewClasses = [];
+    }
+
     public function hasOldClass(string $oldClass): bool
     {
         return isset($this->oldToNewClasses[$oldClass]);

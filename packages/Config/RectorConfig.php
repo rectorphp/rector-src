@@ -189,10 +189,12 @@ final class RectorConfig extends Container
         }
     }
 
-    public function import(string $setFilePath): void
+    public function import(string $filePath): void
     {
+        Assert::fileExists($filePath);
+
         $self = $this;
-        $callable = (require $setFilePath);
+        $callable = (require $filePath);
 
         Assert::isCallable($callable);
         /** @var callable(Container $container): void $callable */
