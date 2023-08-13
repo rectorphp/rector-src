@@ -166,10 +166,10 @@ final class PHPStanNodeScopeResolver
             } elseif ($node instanceof PropertyFetch) {
                 $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof CallLike) {
-                $this->processCallike($node, $mutatingScope);
             } elseif ($node instanceof ConstFetch) {
                 $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            } elseif ($node instanceof CallLike) {
+                $this->processCallike($node, $mutatingScope);
             }
 
             if ($node instanceof Trait_) {

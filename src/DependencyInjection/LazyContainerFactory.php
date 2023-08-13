@@ -161,6 +161,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ThisTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\TypeWithClassNameTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
+use Rector\RectorGenerator\Command\GenerateCommand;
 use Rector\RectorGenerator\Command\InitRecipeCommand;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
@@ -446,6 +447,7 @@ final class LazyContainerFactory
 
         if (class_exists(InitRecipeCommand::class)) {
             $rectorConfig->tag(InitRecipeCommand::class, Command::class);
+            $rectorConfig->tag(GenerateCommand::class, Command::class);
         }
 
         // phpdoc-parser
