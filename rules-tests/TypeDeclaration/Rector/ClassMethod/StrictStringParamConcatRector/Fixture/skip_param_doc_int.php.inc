@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\StrictStringParamConca
 class SkipParamDocInt
 {
     /**
-     * @param int
+     * @param int $total
      */
     public function resolve($total)
     {
