@@ -94,7 +94,7 @@ CODE_SAMPLE
             }
 
             $paramDocType = $phpDocInfo->getParamType($this->getName($param));
-            if ($paramDocType->isInteger()->yes()) {
+            if (! $paramDocType instanceof MixedType && ! $paramDocType->isString()->yes()) {
                 continue;
             }
 
