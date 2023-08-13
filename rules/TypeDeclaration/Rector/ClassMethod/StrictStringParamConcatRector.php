@@ -81,6 +81,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         foreach ($node->getParams() as $param) {
             if ($param->type instanceof Node) {
@@ -89,6 +90,11 @@ CODE_SAMPLE
 
             $variableConcattedFromParam = $this->resolveVariableConcattedFromParam($param, $node);
             if (! $variableConcattedFromParam instanceof Variable) {
+                continue;
+            }
+
+            $paramDocType = $phpDocInfo->getParamType($this->getName($param));
+            if (! $paramDocType instanceof MixedType && ! $paramDocType->isString()->yes()) {
                 continue;
             }
 
