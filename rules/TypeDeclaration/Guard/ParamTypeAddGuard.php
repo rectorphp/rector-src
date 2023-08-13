@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\If_;
@@ -26,7 +25,7 @@ final class ParamTypeAddGuard
     ) {
     }
 
-    public function isLegal(Param $param, ClassMethod $functionLike): bool
+    public function isLegal(Param $param, ClassMethod $classMethod): bool
     {
         $paramName = $this->nodeNameResolver->getName($param->var);
         if ($paramName === null) {
@@ -36,7 +35,7 @@ final class ParamTypeAddGuard
         $isLegal = true;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            (array) $classMethod->stmts,
             function (Node $subNode) use (&$isLegal, $paramName): ?int {
                 if ($subNode instanceof Assign && $subNode->var instanceof Variable && $this->nodeNameResolver->isName(
                     $subNode->var,
