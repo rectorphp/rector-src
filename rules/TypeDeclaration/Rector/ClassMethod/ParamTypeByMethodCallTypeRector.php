@@ -24,6 +24,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\TypeDeclaration\NodeAnalyzer\CallerParamMatcher;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,6 +38,7 @@ final class ParamTypeByMethodCallTypeRector extends AbstractScopeAwareRector
     public function __construct(
         private readonly CallerParamMatcher $callerParamMatcher,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ParamTypeAddGuard $paramTypeAddGuard
     ) {
     }
 
@@ -217,7 +219,7 @@ CODE_SAMPLE
 
     private function shouldSkipParam(Param $param, ClassMethod $classMethod): bool
     {
-        if ($this->isParamConditioned($param, $classMethod)) {
+        if (! $this->paramTypeAddGuard->isLegal($param, $classMethod)) {
             return true;
         }
 

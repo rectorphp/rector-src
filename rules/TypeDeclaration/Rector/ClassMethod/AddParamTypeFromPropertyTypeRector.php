@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -18,6 +17,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +37,8 @@ final class AddParamTypeFromPropertyTypeRector extends AbstractRector implements
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly TypeFactory $typeFactory,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ParamTypeAddGuard $paramTypeAddGuard
     ) {
     }
 
@@ -93,28 +94,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramName = $this->getName($param);
-
-            // has param override? skip it
-            $hasParamOverride = (bool) $this->betterNodeFinder->findFirst(
-                $node,
-                function (Node $node) use ($paramName): bool {
-                    if (! $node instanceof Assign) {
-                        return false;
-                    }
-
-                    if (! $node->var instanceof Variable) {
-                        return false;
-                    }
-
-                    return $this->isName($node->var, $paramName);
-                }
-            );
-
-            if ($hasParamOverride) {
+            if (! $this->paramTypeAddGuard->isLegal($param, $node)) {
                 continue;
             }
 
+            $paramName = $this->getName($param);
             $propertyStaticTypes = $this->resolvePropertyStaticTypesByParamName($node, $paramName);
             $possibleParamType = $this->typeFactory->createMixedPassedOrUnionType($propertyStaticTypes);
 
