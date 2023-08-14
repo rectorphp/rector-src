@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
+namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
 final class NonStringParamTypeInUseClosure
 {
@@ -16,7 +16,7 @@ final class NonStringParamTypeInUseClosure
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
+namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
 final class NonStringParamTypeInUseClosure
 {
