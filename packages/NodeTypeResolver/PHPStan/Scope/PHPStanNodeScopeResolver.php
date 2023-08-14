@@ -173,30 +173,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Trait_) {
-                $traitName = $this->resolveClassName($node);
-
-                $traitClassReflection = $this->reflectionProvider->getClass($traitName);
-
-                $traitScope = clone $mutatingScope;
-
-                /** @var ScopeContext $scopeContext */
-                $scopeContext = $this->privatesAccessor->getPrivateProperty($traitScope, self::CONTEXT);
-
-                $traitContext = clone $scopeContext;
-
-                // before entering the class/trait again, we have to tell scope no class was set, otherwise it crashes
-                $this->privatesAccessor->setPrivateProperty(
-                    $traitContext,
-                    'classReflection',
-                    $traitClassReflection,
-                );
-
-                $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
-
-                $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
-                $this->decorateTraitAttrGroups($node, $traitScope);
-
+                $this->processTrait($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -409,5 +386,30 @@ final class PHPStanNodeScopeResolver
         }
 
         return $classLike->name->toString();
+    }
+
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function processTrait(Trait_ $node, MutatingScope $mutatingScope, callable $nodeCallback): void
+    {
+        $traitName = $this->resolveClassName($node);
+
+        $traitClassReflection = $this->reflectionProvider->getClass($traitName);
+
+        $traitScope = clone $mutatingScope;
+
+        /** @var ScopeContext $scopeContext */
+        $scopeContext = $this->privatesAccessor->getPrivateProperty($traitScope, self::CONTEXT);
+        $traitContext = clone $scopeContext;
+
+        // before entering the class/trait again, we have to tell scope no class was set, otherwise it crashes
+        $this->privatesAccessor->setPrivateProperty($traitContext, 'classReflection', $traitClassReflection);
+
+        $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
+
+        $node->setAttribute(AttributeKey::SCOPE, $traitScope);
+        $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
+        $this->decorateTraitAttrGroups($node, $traitScope);
     }
 }
