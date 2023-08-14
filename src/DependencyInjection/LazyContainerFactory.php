@@ -76,7 +76,6 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\ClassConstNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\ClassNameResolver;
-use Rector\NodeNameResolver\NodeNameResolver\EmptyNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\FuncCallNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\FunctionNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\NameNameResolver;
@@ -194,7 +193,6 @@ final class LazyContainerFactory
         ClassConstFetchNameResolver::class,
         ClassConstNameResolver::class,
         ClassNameResolver::class,
-        EmptyNameResolver::class,
         FuncCallNameResolver::class,
         FunctionNameResolver::class,
         NameNameResolver::class,
