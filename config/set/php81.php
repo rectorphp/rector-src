@@ -9,7 +9,6 @@ use Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Php81\Rector\FunctionLike\IntersectionTypesRector;
 use Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector;
 use Rector\Php81\Rector\MethodCall\SpatieEnumMethodCallToEnumConstRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
@@ -25,7 +24,6 @@ return static function (RectorConfig $rectorConfig): void {
         SpatieEnumClassToEnumRector::class,
         SpatieEnumMethodCallToEnumConstRector::class,
         NewInInitializerRector::class,
-        IntersectionTypesRector::class,
         NullToStrictStringFuncCallArgRector::class,
         FirstClassCallableRector::class,
     ]);
