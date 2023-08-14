@@ -45,7 +45,6 @@ final class NullTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        // ref https://3v4l.org/kI7KP
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE)) {
             return null;
         }
