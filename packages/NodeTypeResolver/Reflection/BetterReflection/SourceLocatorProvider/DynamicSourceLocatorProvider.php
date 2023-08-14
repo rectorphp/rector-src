@@ -10,13 +10,14 @@ use PHPStan\Php\PhpVersion;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
+use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Webmozart\Assert\Assert;
 
 /**
  * @api phpstan external
  */
-final class DynamicSourceLocatorProvider
+final class DynamicSourceLocatorProvider implements ResetableInterface
 {
     /**
      * @var string[]
