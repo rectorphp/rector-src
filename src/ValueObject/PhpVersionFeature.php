@@ -42,6 +42,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const ANONYMOUS_FUNCTION_PARAM_TYPE = PhpVersion::PHP_53;
+
+    /**
+     * @var int
+     */
     public const NO_ZERO_BREAK = PhpVersion::PHP_54;
 
     /**
@@ -181,6 +186,11 @@ final class PhpVersionFeature
      * @var int
      */
     public const WRAP_VARIABLE_VARIABLE = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
+    public const ANONYMOUS_FUNCTION_RETURN_TYPE = PhpVersion::PHP_70;
 
     /**
      * @var int
