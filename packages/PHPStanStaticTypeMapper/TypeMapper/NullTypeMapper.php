@@ -19,8 +19,9 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
  */
 final class NullTypeMapper implements TypeMapperInterface
 {
-    public function __construct(private readonly PhpVersionProvider $phpVersionProvider)
-    {
+    public function __construct(
+        private readonly PhpVersionProvider $phpVersionProvider
+    ) {
     }
 
     /**
