@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\NodeAnalyzer;
 
-use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\CallableType;
 use PHPStan\Type\NullType;
