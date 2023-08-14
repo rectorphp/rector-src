@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Rector\Core\Configuration;
 
 use PHPStan\Type\ObjectType;
+use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 
-final class RenamedClassesDataCollector
+final class RenamedClassesDataCollector implements ResetableInterface
 {
     /**
      * @var array<string, string>
@@ -54,5 +55,10 @@ final class RenamedClassesDataCollector
     public function getOldClasses(): array
     {
         return array_keys($this->oldToNewClasses);
+    }
+
+    public function reset(): void
+    {
+        $this->oldToNewClasses = [];
     }
 }
