@@ -151,7 +151,7 @@ final class PHPStanNodeScopeResolver
             } elseif ($node instanceof Switch_) {
                 $this->processSwitch($node, $mutatingScope);
             } elseif ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $filePath, $mutatingScope);
+                $this->processTryCatch($node, $mutatingScope);
             } elseif ($node instanceof ArrayItem) {
                 $this->processArrayItem($node, $mutatingScope);
             } elseif ($node instanceof NullableType) {
@@ -186,7 +186,7 @@ final class PHPStanNodeScopeResolver
 
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+                $this->processUnreachableStatementNode($node, $mutatingScope);
             } else {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
@@ -263,7 +263,7 @@ final class PHPStanNodeScopeResolver
         }
     }
 
-    private function processTryCatch(TryCatch $tryCatch, string $filePath, MutatingScope $mutatingScope): void
+    private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
     {
         foreach ($tryCatch->catches as $catch) {
             $varName = $catch->var instanceof Variable
@@ -285,7 +285,6 @@ final class PHPStanNodeScopeResolver
 
     private function processUnreachableStatementNode(
         UnreachableStatementNode $unreachableStatementNode,
-        string $filePath,
         MutatingScope $mutatingScope
     ): void {
         $originalStmt = $unreachableStatementNode->getOriginalStatement();
