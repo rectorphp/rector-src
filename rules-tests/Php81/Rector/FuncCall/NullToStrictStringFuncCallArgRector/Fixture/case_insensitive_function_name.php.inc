@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
+namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
 final class CaseInsensitiveFunctionName
 {
@@ -14,7 +14,7 @@ final class CaseInsensitiveFunctionName
 -----
 <?php
 
-namespace Rector\Tests\Php80\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
+namespace Rector\Tests\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector\Fixture;
 
 final class CaseInsensitiveFunctionName
 {
