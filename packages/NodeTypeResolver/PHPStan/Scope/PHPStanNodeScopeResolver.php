@@ -389,11 +389,11 @@ final class PHPStanNodeScopeResolver
     }
 
     /**
-     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     * @param callable(Node $trait, MutatingScope $scope): void $nodeCallback
      */
-    private function processTrait(Trait_ $node, MutatingScope $mutatingScope, callable $nodeCallback): void
+    private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
-        $traitName = $this->resolveClassName($node);
+        $traitName = $this->resolveClassName($trait);
 
         $traitClassReflection = $this->reflectionProvider->getClass($traitName);
 
@@ -408,8 +408,8 @@ final class PHPStanNodeScopeResolver
 
         $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
 
-        $node->setAttribute(AttributeKey::SCOPE, $traitScope);
-        $this->nodeScopeResolver->processNodes($node->stmts, $traitScope, $nodeCallback);
-        $this->decorateTraitAttrGroups($node, $traitScope);
+        $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
+        $this->nodeScopeResolver->processNodes($trait->stmts, $traitScope, $nodeCallback);
+        $this->decorateTraitAttrGroups($trait, $traitScope);
     }
 }
