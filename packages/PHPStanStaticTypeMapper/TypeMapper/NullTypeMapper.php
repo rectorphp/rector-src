@@ -50,6 +50,10 @@ final class NullTypeMapper implements TypeMapperInterface
             return null;
         }
 
+        if ($typeKind !== TypeKind::RETURN) {
+            return null;
+        }
+
         return new Identifier('null');
     }
 }

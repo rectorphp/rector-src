@@ -15,7 +15,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsR
 
 final class TrueDefaultValue
 {
-    private true $isEnabled = true;
+    private bool $isEnabled = true;
 }
 
 ?>
