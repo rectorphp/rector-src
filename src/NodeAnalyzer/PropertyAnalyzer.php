@@ -29,7 +29,7 @@ final class PropertyAnalyzer
             return true;
         }
 
-        if ($this->isForbiddenType($property, $propertyType)) {
+        if ($this->isForbiddenType($propertyType)) {
             return true;
         }
 
@@ -39,7 +39,7 @@ final class PropertyAnalyzer
 
         $types = $propertyType->getTypes();
         foreach ($types as $type) {
-            if ($this->isForbiddenType($property, $type)) {
+            if ($this->isForbiddenType($type)) {
                 return true;
             }
         }
@@ -47,19 +47,19 @@ final class PropertyAnalyzer
         return false;
     }
 
-    private function isForbiddenType(Property $property, Type $type): bool
+    private function isForbiddenType(Type $type): bool
     {
         if ($type instanceof NonExistingObjectType) {
             return true;
         }
 
-        return $this->isCallableType($property, $type);
+        return $this->isCallableType($type);
     }
 
-    private function isCallableType(Property $property, Type $type): bool
+    private function isCallableType(Type $type): bool
     {
         if ($type instanceof TypeWithClassName && $type->getClassName() === 'Closure') {
-            return ! $property->type instanceof Node && ! current($property->props)->default instanceof Expr;
+            return false;
         }
 
         return $type instanceof CallableType;
