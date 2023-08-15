@@ -20,13 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
                 'SomeClass::SOME_CONSTANT'
             ),
 
-            new ReplaceArgumentDefaultValue(
-                'Symfony\Component\DependencyInjection\Definition',
-                'setScope',
-                0,
-                'Symfony\Component\DependencyInjection\ContainerBuilder::SCOPE_PROTOTYPE',
-                false
-            ),
             new ReplaceArgumentDefaultValue('Symfony\Component\Yaml\Yaml', 'parse', 1, [
                 false,
                 false,

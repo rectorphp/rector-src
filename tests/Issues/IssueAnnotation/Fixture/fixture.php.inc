@@ -2,9 +2,9 @@
 
 namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture;
 
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Rector\Core\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
 
-final class Anything extends Autoconfigure
+final class Anything extends SomeAttributes
 {
     public function __construct()
     {
@@ -20,9 +20,9 @@ final class Anything extends Autoconfigure
 
 namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture;
 
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Rector\Core\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
 
-final class Anything extends Autoconfigure
+final class Anything extends SomeAttributes
 {
     public function __construct()
     {

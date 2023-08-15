@@ -14,7 +14,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
-use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * @implements AnnotationToAttributeMapperInterface<DoctrineAnnotationTagValueNode>
@@ -32,7 +31,6 @@ final class DoctrineAnnotationAnnotationToAttributeMapper implements AnnotationT
     /**
      * Avoid circular reference
      */
-    #[Required]
     public function autowire(AnnotationToAttributeMapper $annotationToAttributeMapper): void
     {
         $this->annotationToAttributeMapper = $annotationToAttributeMapper;

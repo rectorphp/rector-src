@@ -11,7 +11,6 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
-use Symfony\Contracts\Service\Attribute\Required;
 use Webmozart\Assert\Assert;
 
 /**
@@ -24,7 +23,6 @@ final class CurlyListNodeAnnotationToAttributeMapper implements AnnotationToAttr
     /**
      * Avoid circular reference
      */
-    #[Required]
     public function autowire(AnnotationToAttributeMapper $annotationToAttributeMapper): void
     {
         $this->annotationToAttributeMapper = $annotationToAttributeMapper;

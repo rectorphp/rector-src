@@ -11,27 +11,18 @@ use Rector\Core\FileSystem\InitFilePathsResolver;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 
 final class ConfigInitializer
 {
     /**
-     * @var RectorInterface[]
-     */
-    private array $rectors = [];
-
-    /**
-     * @param RewindableGenerator<RectorInterface>|RectorInterface[] $rectors
+     * @param RectorInterface[] $rectors
      */
     public function __construct(
-        iterable $rectors,
+        private readonly array $rectors,
         private readonly InitFilePathsResolver $initFilePathsResolver,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
-        $this->rectors = $rectors instanceof RewindableGenerator ? iterator_to_array(
-            $rectors->getIterator()
-        ) : $rectors;
     }
 
     public function createConfig(string $projectDirectory): void
