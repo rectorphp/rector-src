@@ -154,7 +154,7 @@ CODE_SAMPLE
         }
 
         $parents = $this->resolveParentClassReflections($scope);
-        if (! $class->isFinal()) {
+        if (! $class->isFinal() && !empty($parents)) {
             return ! $this->isExtendsReadonlyClass($parents);
         }
 
