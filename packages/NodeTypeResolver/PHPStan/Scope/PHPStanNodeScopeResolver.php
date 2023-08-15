@@ -10,8 +10,11 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
@@ -24,9 +27,13 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PHPStan\NodeVisitor\ScopeFromCurrentStmtNodeVisitor;
 use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Webmozart\Assert\Assert;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\TypeCombinator;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 
 /**
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
@@ -52,7 +59,9 @@ final class PHPStanNodeScopeResolver
         iterable $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
-        private readonly ClassAnalyzer $classAnalyzer
+        private readonly ClassAnalyzer $classAnalyzer,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly ScopeAnalyzer $scopeAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
@@ -89,6 +98,14 @@ final class PHPStanNodeScopeResolver
                 return;
             }
 
+            if ($node instanceof Switch_) {
+                $this->processSwitch($node, $mutatingScope);
+            }
+
+            if ($node instanceof TryCatch) {
+                $this->processTryCatch($node, $filePath, $mutatingScope);
+            }
+
             if ($node instanceof Trait_) {
                 $this->processTrait($node, $mutatingScope, $nodeCallback);
                 return;
@@ -114,6 +131,34 @@ final class PHPStanNodeScopeResolver
         };
 
         return $this->processNodesWithDependentFiles($stmts, $scope, $nodeCallback);
+    }
+
+    private function processSwitch(Switch_ $switch, MutatingScope $mutatingScope): void
+    {
+        // decorate value as well
+        foreach ($switch->cases as $case) {
+            $case->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
+    }
+
+    private function processTryCatch(TryCatch $tryCatch, string $filePath, MutatingScope $mutatingScope): void
+    {
+        foreach ($tryCatch->catches as $catch) {
+            $varName = $catch->var instanceof Variable
+                ? $this->nodeNameResolver->getName($catch->var)
+                : null;
+
+            $type = TypeCombinator::union(
+                ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
+            );
+
+            $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
+            $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
+        }
+
+        if ($tryCatch->finally instanceof Finally_) {
+            $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        }
     }
 
     public function hasUnreachableStatementNode(): bool
@@ -154,7 +199,7 @@ final class PHPStanNodeScopeResolver
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
-        $nodeTraverser->addVisitor(new ScopeFromCurrentStmtNodeVisitor());
+        $nodeTraverser->addVisitor(new ScopeFromCurrentStmtNodeVisitor($this->scopeAnalyzer));
         $nodeTraverser->traverse($stmts);
 
         return $stmts;
