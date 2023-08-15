@@ -217,6 +217,15 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         }
 
         do {
+            if (
+                $composedTokenIterator->isCurrentTokenType(
+                    Lexer::TOKEN_CLOSE_CURLY_BRACKET,
+                    Lexer::TOKEN_CLOSE_PARENTHESES
+                    // sometimes it gets mixed int    ")
+                ) || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
+                ++$closeBracketCount;
+            }
+
             if ($composedTokenIterator->isCurrentTokenType(
                 Lexer::TOKEN_OPEN_CURLY_BRACKET,
                 Lexer::TOKEN_OPEN_PARENTHESES
@@ -227,17 +236,9 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             if ($composedTokenIterator->isCurrentTokenType(Lexer::TOKEN_PHPDOC_EOL)
                 && $composedTokenIterator->getContentBetween($composedTokenIterator->currentPosition() -1, $composedTokenIterator->currentPosition()) === '('
                 && $isNewLined
+                && $openBracketCount > $closeBracketCount
             ) {
                 --$openBracketCount;
-            }
-
-            if (
-                $composedTokenIterator->isCurrentTokenType(
-                    Lexer::TOKEN_CLOSE_CURLY_BRACKET,
-                    Lexer::TOKEN_CLOSE_PARENTHESES
-                    // sometimes it gets mixed int    ")
-                ) || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
-                ++$closeBracketCount;
             }
 
             $composedTokenIterator->next();
