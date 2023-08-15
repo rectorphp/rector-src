@@ -223,7 +223,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 ++$openBracketCount;
             }
 
-            if (str_contains($composedTokenIterator->currentTokenValue(), "\n")) {
+            if (str_contains($composedTokenIterator->currentTokenValue(), "\n")
+                && trim($composedTokenIterator->currentTokenValue()) === ''
+                && $composedTokenIterator->getContentBetween($composedTokenIterator->currentPosition() -1, $composedTokenIterator->currentPosition()) === '('
+            ) {
                 --$openBracketCount;
             }
 
