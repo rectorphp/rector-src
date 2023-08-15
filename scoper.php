@@ -57,7 +57,6 @@ return [
     'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
-        'vendor/symfony/deprecation-contracts/function.php',
     ],
 
     // expose
