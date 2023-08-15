@@ -7,5 +7,7 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
+    $rectorConfig->importShortClasses();
+
     $rectorConfig->rule(RenameClassRector::class);
 };

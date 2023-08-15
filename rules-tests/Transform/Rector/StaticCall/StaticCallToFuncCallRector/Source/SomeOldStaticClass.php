@@ -6,5 +6,7 @@ namespace Rector\Tests\Transform\Rector\StaticCall\StaticCallToFuncCallRector\So
 
 final class SomeOldStaticClass
 {
-
+    public static function render()
+    {
+    }
 }

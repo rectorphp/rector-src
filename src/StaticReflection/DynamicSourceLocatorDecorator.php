@@ -34,6 +34,7 @@ final class DynamicSourceLocatorDecorator
 
         $paths = $this->filesystemTweaker->resolveWithFnmatch($paths);
         $files = $this->fileAndDirectoryFilter->filterFiles($paths);
+
         $this->dynamicSourceLocatorProvider->addFiles($files);
 
         $directories = $this->fileAndDirectoryFilter->filterDirectories($paths);

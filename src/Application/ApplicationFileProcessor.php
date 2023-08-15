@@ -51,13 +51,14 @@ final class ApplicationFileProcessor
         private readonly CpuCoreCountProvider  $cpuCoreCountProvider,
         private readonly ChangedFilesDetector  $changedFilesDetector,
         private readonly CurrentFileProvider   $currentFileProvider,
-        private readonly iterable              $fileProcessors,
+        private readonly array $fileProcessors,
     ) {
         $fileProcessorClasses = [];
         foreach ($fileProcessors as $fileProcessor) {
             $fileProcessorClasses[] = $fileProcessor::class;
         }
 
+        Assert::notEmpty($fileProcessorClasses);
         Assert::uniqueValues($fileProcessorClasses);
     }
 

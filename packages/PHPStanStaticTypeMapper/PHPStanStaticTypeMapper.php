@@ -20,7 +20,7 @@ final class PHPStanStaticTypeMapper
      * @param TypeMapperInterface[] $typeMappers
      */
     public function __construct(
-        private readonly iterable $typeMappers
+        private readonly array $typeMappers
     ) {
         Assert::notEmpty($typeMappers);
     }

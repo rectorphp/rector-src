@@ -45,6 +45,9 @@ parameters:
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
 
+        # handle later after di transition
+        - packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfoPrinter/MultilineTest.
+
         # CI test
         - tests/Fixtures/*
 
@@ -306,6 +309,7 @@ parameters:
                 - bin/rector.php
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
+                - src/DependencyInjection/LazyContainerFactory.php
                 - config/config.php
                 - packages/Config/RectorConfig.php
 
@@ -659,7 +663,6 @@ parameters:
         # not practical
         - '#Use separate function calls with readable variable names#'
 
-        # deprecated
         - '#Class "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector" is missing @see annotation with test case class reference#'
 
         # iterable mix
@@ -683,3 +686,9 @@ parameters:
         -
             message: '#Fetching class constant class of deprecated class Rector\\Core\\Contract\\Rector\\NonPhpRectorInterface#'
             path: packages/Config/*
+
+        -
+            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
+            path: packages/Config/RectorConfig.php
+
+        - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) has parameter \$phpRectors with no value type specified in iterable type iterable#'

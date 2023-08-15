@@ -8,9 +8,9 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCase
+final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractLazyTestCase
 {
     /**
      * @param array<string, string> $expectedConfiguration
@@ -21,11 +21,11 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         $this->bootFromConfigFiles([$configFile]);
 
         // to invoke configure() method call
-        $renameClassRector = $this->getService(RenameClassRector::class);
+        $renameClassRector = $this->make(RenameClassRector::class);
         $this->assertInstanceOf(RenameClassRector::class, $renameClassRector);
 
         /** @var RenamedClassesDataCollector $renamedClassesDataCollector */
-        $renamedClassesDataCollector = $this->getService(RenamedClassesDataCollector::class);
+        $renamedClassesDataCollector = $this->make(RenamedClassesDataCollector::class);
 
         $this->assertSame($expectedConfiguration, $renamedClassesDataCollector->getOldToNewClasses());
     }
@@ -35,8 +35,8 @@ final class ConfigurableRectorImportConfigCallsMergeTest extends AbstractTestCas
         yield [
             __DIR__ . '/config/main_config_with_override_value.php', [
                 'old_2' => 'new_2',
-                'old_1' => 'new_1',
                 'old_4' => 'new_4',
+                'old_1' => 'new_1',
             ],
         ];
     }

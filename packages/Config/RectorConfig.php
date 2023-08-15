@@ -4,37 +4,31 @@ declare(strict_types=1);
 
 namespace Rector\Config;
 
+use Illuminate\Container\Container;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Configuration\ValueObjectInliner;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Webmozart\Assert\Assert;
 
 /**
  * @api
- * Same as Symfony container configurator, with patched return type for "set()" method for easier DX.
- * It is an alias for internal class that is prefixed during build, so it's basically for keeping stable public API.
  */
-final class RectorConfig extends ContainerConfigurator
+final class RectorConfig extends Container
 {
-    private ?ServicesConfigurator $servicesConfigurator = null;
-
     /**
      * @param string[] $paths
      */
     public function paths(array $paths): void
     {
         Assert::allString($paths);
-
         SimpleParameterProvider::setParameter(Option::PATHS, $paths);
     }
 
@@ -159,22 +153,14 @@ final class RectorConfig extends ContainerConfigurator
         Assert::isAOf($rectorClass, RectorInterface::class);
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
-        // decorate with value object inliner so Symfony understands, see https://getrector.com/blog/2020/09/07/how-to-inline-value-object-in-symfony-php-config
-        array_walk_recursive($configuration, static function (&$value) {
-            if (is_object($value)) {
-                $value = ValueObjectInliner::inline($value);
-            }
-
-            return $value;
+        $this->singleton($rectorClass);
+        $this->afterResolving($rectorClass, static function (ConfigurableRectorInterface $configurableRector) use (
+            $configuration
+        ): void {
+            $configurableRector->configure($configuration);
         });
 
-        $servicesConfigurator = $this->getServices();
-
-        $rectorService = $servicesConfigurator->set($rectorClass)
-            ->public()
-            ->autowire()
-            ->call('configure', [$configuration]);
-        $this->tagRectorService($rectorService, $rectorClass);
+        $this->tagRectorService($rectorClass);
     }
 
     /**
@@ -185,13 +171,34 @@ final class RectorConfig extends ContainerConfigurator
         Assert::classExists($rectorClass);
         Assert::isAOf($rectorClass, RectorInterface::class);
 
-        $servicesConfigurator = $this->getServices();
+        $this->singleton($rectorClass);
+        $this->tagRectorService($rectorClass);
 
-        $rectorService = $servicesConfigurator->set($rectorClass)
-            ->public()
-            ->autowire();
+        if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
+            $this->extend(
+                $rectorClass,
+                static function (
+                    AbstractScopeAwareRector $scopeAwareRector,
+                    Container $container
+                ): AbstractScopeAwareRector {
+                    $scopeAnalyzer = $container->make(ScopeAnalyzer::class);
+                    $scopeAwareRector->autowireAbstractScopeAwareRector($scopeAnalyzer);
+                    return $scopeAwareRector;
+                }
+            );
+        }
+    }
 
-        $this->tagRectorService($rectorService, $rectorClass);
+    public function import(string $filePath): void
+    {
+        Assert::fileExists($filePath);
+
+        $self = $this;
+        $callable = (require $filePath);
+
+        Assert::isCallable($callable);
+        /** @var callable(Container $container): void $callable */
+        $callable($self);
     }
 
     /**
@@ -321,25 +328,15 @@ final class RectorConfig extends ContainerConfigurator
         return array_unique($duplicates);
     }
 
-    private function getServices(): ServicesConfigurator
-    {
-        if ($this->servicesConfigurator instanceof ServicesConfigurator) {
-            return $this->servicesConfigurator;
-        }
-
-        $this->servicesConfigurator = $this->services();
-        return $this->servicesConfigurator;
-    }
-
     /**
      * @param class-string<RectorInterface|PhpRectorInterface> $rectorClass
      */
-    private function tagRectorService(ServiceConfigurator $rectorServiceConfigurator, string $rectorClass): void
+    private function tagRectorService(string $rectorClass): void
     {
-        $rectorServiceConfigurator->tag(RectorInterface::class);
+        $this->tag($rectorClass, RectorInterface::class);
 
         if (is_a($rectorClass, PhpRectorInterface::class, true)) {
-            $rectorServiceConfigurator->tag(PhpRectorInterface::class);
+            $this->tag($rectorClass, PhpRectorInterface::class);
         } elseif (is_a($rectorClass, NonPhpRectorInterface::class, true)) {
             trigger_error(sprintf(
                 'The "%s" interface of "%s" rule is deprecated. Rector will only PHP code, as designed to with AST. For another file format, use custom tooling.',

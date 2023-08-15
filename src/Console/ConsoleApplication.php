@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Webmozart\Assert\Assert;
 
 final class ConsoleApplication extends Application
@@ -26,15 +25,11 @@ final class ConsoleApplication extends Application
     private const NAME = 'Rector';
 
     /**
-     * @param RewindableGenerator<int, Command>|Command[] $commands
+     * @param Command[] $commands
      */
-    public function __construct(iterable $commands)
+    public function __construct(array $commands)
     {
         parent::__construct(self::NAME, VersionResolver::PACKAGE_VERSION);
-
-        if ($commands instanceof RewindableGenerator) {
-            $commands = iterator_to_array($commands->getIterator());
-        }
 
         Assert::notEmpty($commands);
         Assert::allIsInstanceOf($commands, Command::class);
