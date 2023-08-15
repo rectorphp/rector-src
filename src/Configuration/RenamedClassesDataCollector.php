@@ -64,9 +64,4 @@ final class RenamedClassesDataCollector implements ResetableInterface
     {
         return array_keys($this->oldToNewClasses);
     }
-
-    public function reset(): void
-    {
-        $this->oldToNewClasses = [];
-    }
 }
