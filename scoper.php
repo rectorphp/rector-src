@@ -72,27 +72,9 @@ return [
             $content
         ),
 
-        // fix autoconfigure instanceof child to non child class magic conversion
         static function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with(
-                $filePath,
-                'vendor/symfony/dependency-injection/Compiler/ResolveInstanceofConditionalsPass.php'
-            )) {
-                return $content;
-            }
-
-            $content = str_replace("'53'", "'72'", $content);
-            return str_replace(', 44,', ', 63, ', $content);
-        },
-
-        // fix symfony deprecation reports, @see https://github.com/rectorphp/rector/issues/7434
-        static function (string $filePath, string $prefix, string $content): string {
-            if (! \str_ends_with($filePath, 'vendor/symfony/contracts/Deprecation/function.php')) {
-                return $content;
-            }
-
             // comment out
-            return str_replace('@\trigger_error', '// @\trigger_error', $content);
+            return str_replace('\trigger_deprecation(', '// \trigger_deprecation', $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {
@@ -147,21 +129,6 @@ return [
             }
 
             return Unprefixer::unprefixQuoted($content, $prefix);
-        },
-
-        // scoper missed PSR-4 autodiscovery in Symfony
-        static function (string $filePath, string $prefix, string $content): string {
-            // scoper missed PSR-4 autodiscovery in Symfony
-            if (! \str_ends_with($filePath, 'config.php') && ! \str_ends_with($filePath, 'services.php')) {
-                return $content;
-            }
-
-            // skip "Rector\\" namespace
-            if (\str_contains($content, '$services->load(\'Rector')) {
-                return $content;
-            }
-
-            return Strings::replace($content, '#services\->load\(\'#', "services->load('" . $prefix . '\\');
         },
     ],
 ];
