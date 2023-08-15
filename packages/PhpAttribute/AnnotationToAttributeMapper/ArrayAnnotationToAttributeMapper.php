@@ -14,7 +14,6 @@ use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
-use Symfony\Contracts\Service\Attribute\Required;
 use Webmozart\Assert\Assert;
 
 /**
@@ -29,7 +28,6 @@ final class ArrayAnnotationToAttributeMapper implements AnnotationToAttributeMap
     ) {
     }
 
-    #[Required]
     public function autowire(AnnotationToAttributeMapper $annotationToAttributeMapper): void
     {
         $this->annotationToAttributeMapper = $annotationToAttributeMapper;

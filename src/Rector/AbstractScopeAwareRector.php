@@ -12,13 +12,11 @@ use Rector\Core\Contract\Rector\ScopeAwarePhpRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwarePhpRectorInterface
 {
     private ScopeAnalyzer $scopeAnalyzer;
 
-    #[Required]
     public function autowireAbstractScopeAwareRector(ScopeAnalyzer $scopeAnalyzer): void
     {
         $this->scopeAnalyzer = $scopeAnalyzer;

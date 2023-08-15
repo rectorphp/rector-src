@@ -15,7 +15,6 @@ use Rector\Core\Validation\RectorAssert;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
-use Symfony\Contracts\Service\Attribute\Required;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**
@@ -28,7 +27,6 @@ final class ArrayItemNodeAnnotationToAttributeMapper implements AnnotationToAttr
     /**
      * Avoid circular reference
      */
-    #[Required]
     public function autowire(AnnotationToAttributeMapper $annotationToAttributeMapper): void
     {
         $this->annotationToAttributeMapper = $annotationToAttributeMapper;
