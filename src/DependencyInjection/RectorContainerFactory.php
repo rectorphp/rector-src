@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection;
 
-use Psr\Container\ContainerInterface;
+use Illuminate\Container\Container;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;
 use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
 
 final class RectorContainerFactory
 {
-    public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): ContainerInterface
+    public function createFromBootstrapConfigs(BootstrapConfigs $bootstrapConfigs): Container
     {
         $container = $this->createFromConfigs($bootstrapConfigs->getConfigFiles());
 
@@ -19,7 +19,7 @@ final class RectorContainerFactory
 
         if ($mainConfigFile !== null) {
             /** @var ChangedFilesDetector $changedFilesDetector */
-            $changedFilesDetector = $container->get(ChangedFilesDetector::class);
+            $changedFilesDetector = $container->make(ChangedFilesDetector::class);
             $changedFilesDetector->setFirstResolvedConfigFileInfo($mainConfigFile);
         }
 
@@ -33,7 +33,7 @@ final class RectorContainerFactory
     /**
      * @param string[] $configFiles
      */
-    private function createFromConfigs(array $configFiles): ContainerInterface
+    private function createFromConfigs(array $configFiles): Container
     {
         $lazyContainerFactory = new LazyContainerFactory();
         $container = $lazyContainerFactory->create();
