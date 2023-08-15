@@ -115,7 +115,9 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                     continue;
                 }
 
-                if ($this->isClosedContent($genericTagValueNode->value)) {
+                $isNewLinedGenericTagValueNode = str_starts_with($genericTagValueNode->value, '(')
+                    && ! str_ends_with($genericTagValueNode->value, ')');
+                if ($this->isClosedContent($genericTagValueNode->value, $isNewLinedGenericTagValueNode)) {
                     break;
                 }
 
@@ -204,7 +206,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
      * This is closed block, e.g. {( ... )},
      * false on: {( ... )
      */
-    private function isClosedContent(string $composedContent): bool
+    private function isClosedContent(string $composedContent, bool $isNewLined): bool
     {
         $composedTokenIterator = $this->tokenIteratorFactory->create($composedContent);
         $tokenCount = $composedTokenIterator->count();
@@ -216,13 +218,6 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         }
 
         do {
-            if ($composedTokenIterator->isCurrentTokenType(
-                Lexer::TOKEN_OPEN_CURLY_BRACKET,
-                Lexer::TOKEN_OPEN_PARENTHESES
-            ) || \str_contains($composedTokenIterator->currentTokenValue(), '(')) {
-                ++$openBracketCount;
-            }
-
             if (
                 $composedTokenIterator->isCurrentTokenType(
                     Lexer::TOKEN_CLOSE_CURLY_BRACKET,
@@ -230,6 +225,24 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                     // sometimes it gets mixed int    ")
                 ) || \str_contains($composedTokenIterator->currentTokenValue(), ')')) {
                 ++$closeBracketCount;
+            }
+
+            if ($composedTokenIterator->isCurrentTokenType(
+                Lexer::TOKEN_OPEN_CURLY_BRACKET,
+                Lexer::TOKEN_OPEN_PARENTHESES
+            ) || \str_contains($composedTokenIterator->currentTokenValue(), '(')) {
+                ++$openBracketCount;
+            }
+
+            if ($composedTokenIterator->isCurrentTokenType(Lexer::TOKEN_PHPDOC_EOL)
+                && $composedTokenIterator->getContentBetween(
+                    $composedTokenIterator->currentPosition() - 1,
+                    $composedTokenIterator->currentPosition()
+                ) === '('
+                && $isNewLined
+                && $openBracketCount > $closeBracketCount
+            ) {
+                --$openBracketCount;
             }
 
             $composedTokenIterator->next();
