@@ -223,6 +223,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 ++$openBracketCount;
             }
 
+            if (str_contains($composedTokenIterator->currentTokenValue(), "\n")) {
+                --$openBracketCount;
+            }
+
             if (
                 $composedTokenIterator->isCurrentTokenType(
                     Lexer::TOKEN_CLOSE_CURLY_BRACKET,
