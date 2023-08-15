@@ -74,7 +74,7 @@ return [
 
         static function (string $filePath, string $prefix, string $content): string {
             // comment out
-            return str_replace($prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content);
+            return str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content);
         },
 
         static function (string $filePath, string $prefix, string $content): string {
