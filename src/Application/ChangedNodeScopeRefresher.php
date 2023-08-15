@@ -46,8 +46,7 @@ final class ChangedNodeScopeRefresher
     public function refresh(
         Node $node,
         ?MutatingScope $mutatingScope,
-        ?string $filePath = null,
-        ?Stmt $currentStmt = null
+        ?string $filePath = null
     ): void {
         // nothing to refresh
         if (! $this->scopeAnalyzer->isRefreshable($node)) {
@@ -62,7 +61,7 @@ final class ChangedNodeScopeRefresher
 
         $mutatingScope = $mutatingScope instanceof MutatingScope
             ? $mutatingScope
-            : $this->scopeAnalyzer->resolveScope($node, $filePath, $currentStmt);
+            : $this->scopeAnalyzer->resolveScope($node, $filePath);
 
         if (! $mutatingScope instanceof MutatingScope) {
             $errorMessage = sprintf('Node "%s" with is missing scope required for scope refresh', $node::class);
