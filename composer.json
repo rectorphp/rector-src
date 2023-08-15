@@ -72,8 +72,7 @@
         "rector/rector": "self.version",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-grapheme": "*",
-        "symfony/error-handler": "*",
-        "symfony/var-dumper": "*"
+        "symfony/deprecation-contracts": "*"
     },
     "autoload": {
         "psr-4": {
