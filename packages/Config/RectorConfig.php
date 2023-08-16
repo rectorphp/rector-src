@@ -133,29 +133,29 @@ final class RectorConfig extends Container
     }
 
     /**
-     * Set PHPStan custom config to load extensions and custom configuration to Rector.
-     * By default, the "phpstan.neon" path is used.
+     * Add PHPStan custom config to load extensions and custom configuration to Rector.
      */
     public function phpstanConfig(string $filePath): void
     {
         Assert::fileExists($filePath);
 
-        SimpleParameterProvider::setParameter(Option::PHPSTAN_FOR_RECTOR_PATH, $filePath);
+        $paths = SimpleParameterProvider::provideArrayParameter(Option::PHPSTAN_FOR_RECTOR_PATHS);
+
+        $paths[] = $filePath;
+
+        SimpleParameterProvider::setParameter(Option::PHPSTAN_FOR_RECTOR_PATHS, $paths);
     }
 
     /**
-     * Set PHPStan custom config to load extensions and custom configuration to Rector.
-     * By default, the "phpstan.neon" path is used.
+     * Add PHPStan custom configs to load extensions and custom configuration to Rector.
      *
-     * @param string[] $filePath
+     * @param string[] $filePaths
      */
     public function phpstanConfigs(array $filePaths): void
     {
         foreach ($filePaths as $filePath) {
-            Assert::fileExists($filePaths);
+            $this->phpstanConfig($filePath);
         }
-
-        SimpleParameterProvider::setParameter(Option::PHPSTAN_FOR_RECTOR_PATHS, $filePaths);
     }
 
     /**

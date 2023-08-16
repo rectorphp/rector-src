@@ -141,10 +141,6 @@ final class PHPStanServicesFactory
     {
         $additionalConfigFiles = [];
 
-        if (SimpleParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATH)) {
-            $additionalConfigFiles[] = SimpleParameterProvider::provideStringParameter(Option::PHPSTAN_FOR_RECTOR_PATH);
-        }
-
         if (SimpleParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATHS)) {
             $paths = SimpleParameterProvider::provideArrayParameter(Option::PHPSTAN_FOR_RECTOR_PATHS);
             foreach ($paths as $path) {
