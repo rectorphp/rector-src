@@ -147,8 +147,6 @@ final class Option
     public const CONFIG = 'config';
 
     /**
-     * @deprecated Use PHPSTAN_FOR_RECTOR_PATHS instead.
-     *
      * @internal Use @see \Rector\Config\RectorConfig::phpstanConfig() instead
      * @var string
      */
@@ -158,7 +156,7 @@ final class Option
      * @internal Use @see \Rector\Config\RectorConfig::phpstanConfigs() instead
      * @var string
      */
-    public const PHPSTAN_FOR_RECTOR_PATHS = 'phpstan_for_rector_path';
+    public const PHPSTAN_FOR_RECTOR_PATHS = 'phpstan_for_rector_paths';
 
     /**
      * @var string

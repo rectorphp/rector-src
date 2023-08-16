@@ -17,6 +17,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Assert\Assert;
 
 /**
  * Factory so Symfony app can use services from PHPStan container
@@ -147,6 +148,7 @@ final class PHPStanServicesFactory
         if (SimpleParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATHS)) {
             $paths = SimpleParameterProvider::provideArrayParameter(Option::PHPSTAN_FOR_RECTOR_PATHS);
             foreach ($paths as $path) {
+                Assert::string($path);
                 $additionalConfigFiles[] = $path;
             }
         }
