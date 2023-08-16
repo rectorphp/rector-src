@@ -24,12 +24,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implements MinPhpVersionInterface
 {
-    /**
-     * @api
-     * @var string using phpdoc instead of a native void type can ease the migration path for consumers of code being processed.
-     */
-    public const USE_PHPDOC = 'use_phpdoc';
-
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
