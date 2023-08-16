@@ -12,7 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip(DowngradeRectorConfig::DEPENDENCY_EXCLUDE_PATHS);
 
-    $rectorConfig->phpstanConfigs([__DIR__ . '/phpstan-for-downgrade.neon']);
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-downgrade.neon');
 
     $rectorConfig->import(DowngradeLevelSetList::DOWN_TO_PHP_72);
 };
