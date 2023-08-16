@@ -144,6 +144,13 @@ final class PHPStanServicesFactory
             $additionalConfigFiles[] = SimpleParameterProvider::provideStringParameter(Option::PHPSTAN_FOR_RECTOR_PATH);
         }
 
+        if (SimpleParameterProvider::hasParameter(Option::PHPSTAN_FOR_RECTOR_PATHS)) {
+            $paths = SimpleParameterProvider::provideArrayParameter(Option::PHPSTAN_FOR_RECTOR_PATHS);
+            foreach ($paths as $path) {
+                $additionalConfigFiles[] = $path;
+            }
+        }
+
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/static-reflection.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
