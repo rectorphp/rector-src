@@ -692,3 +692,8 @@ parameters:
             path: packages/Config/RectorConfig.php
 
         - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) has parameter \$phpRectors with no value type specified in iterable type iterable#'
+
+        # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
+        -
+            message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
+            path: packages/VendorLocker/ParentClassMethodTypeOverrideGuard.php
