@@ -25,7 +25,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->fileExtensions(['php']);
 
     $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
-    $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
 
     // use faster in-memory cache in CI.
     // CI always starts from scratch, therefore IO intensive caching is not worth it

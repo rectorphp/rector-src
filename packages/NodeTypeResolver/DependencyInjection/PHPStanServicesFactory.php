@@ -49,7 +49,7 @@ final class PHPStanServicesFactory
 
         $containerFactory = new ContainerFactory(getcwd());
         $this->container = $containerFactory->create(
-            SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+            sys_get_temp_dir() . '/phpstan-container-for-rector',
             $additionalConfigFiles,
             []
         );

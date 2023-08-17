@@ -279,6 +279,10 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::CACHE_DIR, $directoryPath);
     }
 
+    /**
+     * @info Rector no longer user compiled container, but Laravel lazy one.
+     * This option is for PHPStan container in case the sys_get_temp_dir() is not available for the current user.
+     */
     public function containerCacheDirectory(string $directoryPath): void
     {
         // container cache directory path must be a directory on the first place

@@ -398,6 +398,8 @@ final class LazyContainerFactory
         $rectorConfig->fileExtensions(['php']);
 
         $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
+
+        // cache directory for PHPStan container
         $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
 
         // make use of https://github.com/symplify/easy-parallel
