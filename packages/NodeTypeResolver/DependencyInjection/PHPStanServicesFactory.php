@@ -47,12 +47,13 @@ final class PHPStanServicesFactory
             $purifiedConfigFiles[] = $purifiedConfigFile;
         }
 
+        $cacheDirectory = SimpleParameterProvider::provideStringParameter(Option::CACHE_DIR);
+
+        // make sure directory exists as PHPStan Nette container will not create it and crash
+        \Nette\Utils\FileSystem::createDir($cacheDirectory);
+
         $containerFactory = new ContainerFactory(getcwd());
-        $this->container = $containerFactory->create(
-            sys_get_temp_dir() . '/phpstan-container-for-rector',
-            $additionalConfigFiles,
-            []
-        );
+        $this->container = $containerFactory->create($cacheDirectory, $additionalConfigFiles, []);
 
         // clear temporary files, after container is created
         $filesystem = new Filesystem();

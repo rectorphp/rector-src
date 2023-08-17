@@ -399,9 +399,6 @@ final class LazyContainerFactory
 
         $rectorConfig->cacheDirectory(sys_get_temp_dir() . '/rector_cached_files');
 
-        // cache directory for PHPStan container
-        $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
-
         // make use of https://github.com/symplify/easy-parallel
         $rectorConfig->singleton(Application::class, static function (): Application {
             $application = new Application();
