@@ -645,3 +645,8 @@ parameters:
         -
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: packages/VendorLocker/ParentClassMethodTypeOverrideGuard.php
+
+        # checks for rector always autoloaded rules only
+        -
+            message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
+            path: packages/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
