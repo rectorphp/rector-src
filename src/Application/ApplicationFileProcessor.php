@@ -6,6 +6,7 @@ namespace Rector\Core\Application;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
@@ -43,22 +44,36 @@ final class ApplicationFileProcessor
      * @param FileProcessorInterface[] $fileProcessors
      */
     public function __construct(
-        private readonly SymfonyStyle          $symfonyStyle,
-        private readonly FileFactory           $fileFactory,
+        private readonly SymfonyStyle $symfonyStyle,
+        private readonly FileFactory $fileFactory,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
-        private readonly ScheduleFactory       $scheduleFactory,
-        private readonly CpuCoreCountProvider  $cpuCoreCountProvider,
-        private readonly ChangedFilesDetector  $changedFilesDetector,
-        private readonly CurrentFileProvider   $currentFileProvider,
+        private readonly ScheduleFactory $scheduleFactory,
+        private readonly CpuCoreCountProvider $cpuCoreCountProvider,
+        private readonly ChangedFilesDetector $changedFilesDetector,
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly PhpFileProcessor $phpFileProcessor,
         private readonly array $fileProcessors,
     ) {
         $fileProcessorClasses = [];
+
+        foreach ($this->fileProcessors as $fileProcessor) {
+            trigger_error(
+                sprintf(
+                    'Rector will support only PHP, as that is the only code the AST can handle.%sThe custom "%s" file processor will not be supported, and should be refactored into own tool with file finder/printer.',
+                    PHP_EOL,
+                    $fileProcessor::class
+                ) . PHP_EOL . PHP_EOL,
+                E_USER_WARNING
+            );
+            // to notice
+            sleep(2);
+        }
+
         foreach ($fileProcessors as $fileProcessor) {
             $fileProcessorClasses[] = $fileProcessor::class;
         }
 
-        Assert::notEmpty($fileProcessorClasses);
         Assert::uniqueValues($fileProcessorClasses);
     }
 
@@ -149,15 +164,22 @@ final class ApplicationFileProcessor
     {
         $this->currentFileProvider->setFile($file);
 
-        foreach ($this->fileProcessors as $fileProcessor) {
-            if (! $fileProcessor->supports($file, $configuration)) {
-                continue;
-            }
+        // BC layer, soon the file processors will be removed
+        $otherSystemErrorsAndFileDiffs = $this->processWithFileProcessors(
+            $file,
+            $configuration,
+            $systemErrorsAndFileDiffs
+        );
+        $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge(
+            $systemErrorsAndFileDiffs,
+            $otherSystemErrorsAndFileDiffs
+        );
 
-            $result = $fileProcessor->process($file, $configuration);
-
-            $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
-        }
+        $phpSystemErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
+        $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge(
+            $systemErrorsAndFileDiffs,
+            $phpSystemErrorsAndFileDiffs
+        );
 
         if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
@@ -269,5 +291,28 @@ final class ApplicationFileProcessor
         }
 
         return $potentialEcsBinaryPath;
+    }
+
+    /**
+     * @deprecated Custom file processors are deprecated. Use custom tool instead.
+     *
+     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int} $systemErrorsAndFileDiffs
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
+     */
+    private function processWithFileProcessors(
+        File $file,
+        Configuration $configuration,
+        array $systemErrorsAndFileDiffs
+    ): mixed {
+        foreach ($this->fileProcessors as $fileProcessor) {
+            if (! $fileProcessor->supports($file, $configuration)) {
+                continue;
+            }
+
+            $result = $fileProcessor->process($file, $configuration);
+            $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge($systemErrorsAndFileDiffs, $result);
+        }
+
+        return $systemErrorsAndFileDiffs;
     }
 }
