@@ -104,12 +104,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
-        if (! $parentClassMethod instanceof ClassMethod) {
+        if ($parentMethodReflection->isPrivate()) {
             return null;
         }
 
-        if ($parentClassMethod->isPrivate()) {
+        $parentClassMethod = $this->astResolver->resolveClassMethodFromMethodReflection($parentMethodReflection);
+        if (! $parentClassMethod instanceof ClassMethod) {
             return null;
         }
 
