@@ -317,14 +317,6 @@ final class RectorConfig extends Container
         );
     }
 
-    /**
-     * @api deprecated, just for BC layer warning
-     */
-    public function defaults(): void
-    {
-        trigger_error('The defaults() method is deprecated. You can remove it.', E_USER_ERROR);
-    }
-
     private function isRuleNoLongerExists(mixed $skipRule): bool
     {
         return // only validate string
