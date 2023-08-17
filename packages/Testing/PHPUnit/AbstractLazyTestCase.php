@@ -11,7 +11,6 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\LazyContainerFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
-use Webmozart\Assert\Assert;
 
 abstract class AbstractLazyTestCase extends TestCase
 {
@@ -26,10 +25,7 @@ abstract class AbstractLazyTestCase extends TestCase
         $rectorConfig = self::getContainer();
 
         foreach ($configFiles as $configFile) {
-            $configClosure = require $configFile;
-            Assert::isCallable($configClosure);
-
-            $configClosure($rectorConfig);
+            $rectorConfig->import($configFile);
         }
     }
 

@@ -63,6 +63,7 @@ use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Logging\RectorOutput;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
@@ -165,6 +166,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\RectorGenerator\Command\GenerateCommand;
 use Rector\RectorGenerator\Command\InitRecipeCommand;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
@@ -401,10 +403,9 @@ final class LazyContainerFactory
         $rectorConfig->containerCacheDirectory(sys_get_temp_dir());
 
         // make use of https://github.com/symplify/easy-parallel
+
         $rectorConfig->singleton(Application::class, static function (): Application {
             $application = new Application();
-
-            // @todo inject commands
 
             $privatesAccessor = new PrivatesAccessor();
             $privatesAccessor->propertyClosure($application, 'commands', static function (array $commands): array {
@@ -416,16 +417,16 @@ final class LazyContainerFactory
             return $application;
         });
 
-        $rectorConfig->singleton(Inflector::class, static function (): Inflector {
-            $inflectorFactory = new InflectorFactory();
-            return $inflectorFactory->build();
-        });
-
         $rectorConfig->singleton(ConsoleApplication::class, ConsoleApplication::class);
 
         $rectorConfig->when(ConsoleApplication::class)
             ->needs('$commands')
             ->giveTagged(Command::class);
+
+        $rectorConfig->singleton(Inflector::class, static function (): Inflector {
+            $inflectorFactory = new InflectorFactory();
+            return $inflectorFactory->build();
+        });
 
         $rectorConfig->tag(ProcessCommand::class, Command::class);
         $rectorConfig->tag(WorkerCommand::class, Command::class);
@@ -730,6 +731,25 @@ final class LazyContainerFactory
         $rectorConfig->when(PhpDocNodeMapper::class)
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
+
+        /** @param mixed $parameters */
+        $hasForgotten = false;
+        $rectorConfig->beforeResolving(static function (string $abstract, array $parameters, Container $container) use (
+            &$hasForgotten
+        ): void {
+            // run only once
+            if ($hasForgotten && ! defined('PHPUNIT_COMPOSER_INSTALL')) {
+                return;
+            }
+
+            $skippedClassResolver = new SkippedClassResolver();
+            $skippedClasses = array_keys($skippedClassResolver->resolve());
+            foreach ($skippedClasses as $skippedClass) {
+                ContainerMemento::forgetService($container, $skippedClass);
+            }
+
+            $hasForgotten = true;
+        });
 
         return $rectorConfig;
     }
