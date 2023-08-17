@@ -11,6 +11,8 @@ use Rector\Core\ValueObject\Reporting\FileDiff;
 
 /**
  * @internal
+ *
+ * @deprecated This interface should not be used, as Rector will handle PHP code only. Use custom file processor with own finder instead for any non-PHP changes.
  */
 interface FileProcessorInterface
 {

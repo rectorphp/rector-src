@@ -446,8 +446,6 @@ final class LazyContainerFactory
         $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
         $rectorConfig->singleton(PhpFileProcessor::class);
-        $rectorConfig->tag(PhpFileProcessor::class, FileProcessorInterface::class);
-
         $rectorConfig->singleton(PostFileProcessor::class);
 
         if (class_exists(InitRecipeCommand::class)) {
