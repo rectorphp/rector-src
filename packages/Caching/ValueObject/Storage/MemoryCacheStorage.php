@@ -20,7 +20,7 @@ final class MemoryCacheStorage implements CacheStorageInterface
     /**
      * @return null|mixed
      */
-    public function load(string $key, string $variableKey)
+    public function load(string $key, string $variableKey): mixed
     {
         if (! isset($this->storage[$key])) {
             return null;

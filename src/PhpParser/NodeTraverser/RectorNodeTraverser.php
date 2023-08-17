@@ -24,9 +24,8 @@ final class RectorNodeTraverser extends NodeTraverser
     }
 
     /**
-     * @template TNode as Node
-     * @param TNode[] $nodes
-     * @return TNode[]
+     * @param Node[] $nodes
+     * @return Node[]
      */
     public function traverse(array $nodes): array
     {
