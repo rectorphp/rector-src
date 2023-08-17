@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject\Application;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -21,12 +22,12 @@ final class File
     private ?FileDiff $fileDiff = null;
 
     /**
-     * @var \PhpParser\Node[]
+     * @var Node[]
      */
     private array $oldStmts = [];
 
     /**
-     * @var \PhpParser\Node[]
+     * @var Node[]
      */
     private array $newStmts = [];
 
@@ -133,7 +134,7 @@ final class File
     }
 
     /**
-     * @param \PhpParser\Node[] $newStmts
+     * @param Node[] $newStmts
      */
     public function changeNewStmts(array $newStmts): void
     {
