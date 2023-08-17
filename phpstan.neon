@@ -213,7 +213,6 @@ parameters:
         - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:refactor\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\PhpRectorInterface\:\:refactor\(\)#'
 
         # generics
-        - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:traverse\(\) should return array<TNode of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
         - '#Parameter \#1 \$stmts of class Rector\\Core\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
 
         # strict - resolve later
@@ -375,6 +374,7 @@ parameters:
                 - bin/rector.php
                 - src/Bootstrap/RectorConfigsResolver.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
+                - packages-tests/Skipper/Skipper/SkipperTest.php
 
         # false postive, on trait use in multiple classes
         -
@@ -491,14 +491,8 @@ parameters:
             paths:
                 - *Test.php
 
-        -
-            message: '#Relative file path "(.*?)" is not allowed, use absolute one with __DIR__#'
-            paths:
-                - packages-tests/Skipper/Skipper/Skipper/SkipperTest.php
         -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
 
-        # @todo fix in symplify
-        - '#Relative file path "mearie\\\.org" is not allowed, use absolute one with __DIR__#'
         - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
 
         # trusted items
@@ -536,9 +530,6 @@ parameters:
         # phpstan 1.10.0
         - '#Call to deprecated method getDirectClassNames\(\) of class PHPStan\\Type\\TypeUtils.*#'
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
-
-        # various usage
-        - '#Parameters should use "PHPStan\\DependencyInjection\\Container" types as the only types passed to this method#'
 
         # actually used in global scope
         -
@@ -598,9 +589,6 @@ parameters:
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: packages/VersionBonding/PhpVersionedFilter.php
 
-        # for symfony configs check
-        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\tagged_iterator not found#'
-
         -
             message: '#Do not use static property#'
             path: src/Configuration/Parameter/SimpleParameterProvider.php
@@ -628,45 +616,7 @@ parameters:
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
 
-        # will be more generic later
-        -
-            message: '#Parameters should use "Symfony\\Component\\Console\\Application\|string\|callable" types as the only types passed to this method#'
-            path: src/Util/Reflection/PrivatesAccessor.php
-
-        # false positives
-        - '#Property Rector\\PhpAttribute\\AnnotationToAttributeMapper\:\:\$annotationToAttributeMappers \(array<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>\) does not accept iterable<Rector\\PhpAttribute\\Contract\\AnnotationToAttributeMapperInterface>#'
-
-        # avoid circular dependency
-        -
-            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            path: packages/NodeTypeResolver/NodeTypeResolver.php
-
-        - '#Call to an undefined method Rector\\Config\\RectorConfig\:\:(.*?)\(\)#'
-        - '#Call to an undefined method Illuminate\\Container\\Container\:\:(.*?)\(\)#'
-        - '#Parameter 1 should use "Illuminate\\Container\\Container" type as the only type passed to this method#'
-        - '#Parameter \#1 \$container of method Rector\\Core\\DependencyInjection\\LazyContainerFactory\:\:createPHPStanServices\(\) expects Rector\\Config\\RectorConfig, Illuminate\\Container\\Container given#'
-
-        - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
-
-        # false positive
-        - '#Parameter \#1 \$commands of method Symfony\\Component\\Console\\Application\:\:addCommands\(\) expects array<Symfony\\Component\\Console\\Command\\Command>, iterable<Symfony\\Component\\Console\\Command\\Command> given#'
-
-        - '#Property Rector\\Core\\Console\\Command\\ListRulesCommand\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
-
-        # reflection property change
-        -
-            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            paths:
-                - src/Console/ConsoleApplication.php
-                - src/Console/Command
-
-        # not practical
-        - '#Use separate function calls with readable variable names#'
-
         - '#Class "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector" is missing @see annotation with test case class reference#'
-
-        # iterable mix
-        - '#Property Rector\\Core\\Configuration\\ConfigInitializer\:\:\$rectors \(array<Rector\\Core\\Contract\\Rector\\RectorInterface>\) does not accept array\|iterable<Rector\\Core\\Contract\\Rector\\RectorInterface>#'
 
         # chicken/egg
         -
@@ -690,8 +640,6 @@ parameters:
         -
             message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
             path: packages/Config/RectorConfig.php
-
-        - '#Method Rector\\Core\\PhpParser\\NodeTraverser\\RectorNodeTraverser\:\:__construct\(\) has parameter \$phpRectors with no value type specified in iterable type iterable#'
 
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
         -
