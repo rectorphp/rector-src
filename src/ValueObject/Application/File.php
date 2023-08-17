@@ -21,12 +21,12 @@ final class File
     private ?FileDiff $fileDiff = null;
 
     /**
-     * @var Stmt[]
+     * @var \PhpParser\Node[]
      */
     private array $oldStmts = [];
 
     /**
-     * @var Stmt[]
+     * @var \PhpParser\Node[]
      */
     private array $newStmts = [];
 
@@ -133,7 +133,7 @@ final class File
     }
 
     /**
-     * @param Stmt[] $newStmts
+     * @param \PhpParser\Node[] $newStmts
      */
     public function changeNewStmts(array $newStmts): void
     {

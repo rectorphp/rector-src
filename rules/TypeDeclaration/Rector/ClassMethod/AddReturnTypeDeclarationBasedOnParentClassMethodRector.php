@@ -139,6 +139,7 @@ CODE_SAMPLE
             if (! $parentReturnType instanceof MixedType) {
                 return $parentReturnType;
             }
+
             if ($parentReturnType->isExplicitMixed()) {
                 return $parentReturnType;
             }

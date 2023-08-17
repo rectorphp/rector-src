@@ -13,7 +13,7 @@ use Rector\Skipper\SkipVoter\PathSkipVoter;
 
 /**
  * @api
- * @see \Rector\Tests\Skipper\Skipper\Skipper\SkipperTest
+ * @see \Rector\Tests\Skipper\Skipper\SkipperTest
  */
 final class Skipper
 {

@@ -26,18 +26,12 @@ final class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaul
         return $this->position;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValueBefore()
+    public function getValueBefore(): mixed
     {
         return $this->valueBefore;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValueAfter()
+    public function getValueAfter(): mixed
     {
         return $this->valueAfter;
     }

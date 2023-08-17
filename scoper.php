@@ -72,10 +72,9 @@ return [
             $content
         ),
 
-        static function (string $filePath, string $prefix, string $content): string {
+        static fn(string $filePath, string $prefix, string $content): string =>
             // comment out
-            return str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content);
-        },
+            str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content),
 
         static function (string $filePath, string $prefix, string $content): string {
             if (! \str_ends_with($filePath, 'src/Application/VersionResolver.php')) {

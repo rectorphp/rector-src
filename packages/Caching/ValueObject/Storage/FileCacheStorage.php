@@ -24,7 +24,7 @@ final class FileCacheStorage implements CacheStorageInterface
     ) {
     }
 
-    public function load(string $key, string $variableKey)
+    public function load(string $key, string $variableKey): mixed
     {
         return (function (string $key, string $variableKey) {
             $cacheFilePaths = $this->getCacheFilePaths($key);

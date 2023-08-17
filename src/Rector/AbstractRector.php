@@ -149,7 +149,7 @@ CODE_SAMPLE;
         return parent::beforeTraverse($nodes);
     }
 
-    final public function enterNode(Node $node)
+    final public function enterNode(Node $node): int|Node|null
     {
         if (! $this->isMatchingNodeType($node)) {
             return null;
@@ -222,7 +222,7 @@ CODE_SAMPLE;
      * Replacing nodes in leaveNode() method avoids infinite recursion
      * see"infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
      */
-    public function leaveNode(Node $node)
+    public function leaveNode(Node $node): array|int|Node|null
     {
         if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === spl_object_hash($node)) {
             $this->toBeRemovedNodeHash = null;
