@@ -31,7 +31,6 @@ final class AddReturnTypeDeclarationBasedOnParentClassMethodRector extends Abstr
 {
     public function __construct(
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly AstResolver $astResolver,
         private readonly PhpVersionProvider $phpVersionProvider,
     ) {
     }
