@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -135,7 +136,7 @@ CODE_SAMPLE
 
             $parentReturnType = ParametersAcceptorSelector::selectSingle(
                 $parentMethodReflection->getVariants()
-            )->getReturnType();
+            )->getNativeReturnType();
             if (! $parentReturnType instanceof MixedType) {
                 return $parentReturnType;
             }
