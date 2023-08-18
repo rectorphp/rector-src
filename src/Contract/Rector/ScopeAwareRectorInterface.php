@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 
-interface ScopeAwarePhpRectorInterface extends PhpRectorInterface
+interface ScopeAwareRectorInterface extends RectorInterface
 {
     /**
      * Process Node of matched type with its PHPStan scope

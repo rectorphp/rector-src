@@ -61,7 +61,6 @@ use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Core\Contract\Processor\FileProcessorInterface;
-use Rector\Core\Contract\Rector\PhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Logging\CurrentRectorProvider;
@@ -479,8 +478,8 @@ final class LazyContainerFactory
             ->giveTagged(FileProcessorInterface::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
-            ->needs('$phpRectors')
-            ->giveTagged(PhpRectorInterface::class);
+            ->needs('$rectors')
+            ->giveTagged(RectorInterface::class);
 
         $rectorConfig->when(ConfigInitializer::class)
             ->needs('$rectors')
