@@ -60,8 +60,6 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        echo $workerCommandLine . PHP_EOL;
-
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
 
