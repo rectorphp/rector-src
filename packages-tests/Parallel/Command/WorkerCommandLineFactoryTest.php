@@ -30,7 +30,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     /**
      * @var string
      */
-    private const SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\CodeIgniter4\rector.php';
+    private const SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
 
     private WorkerCommandLineFactory $workerCommandLineFactory;
 
