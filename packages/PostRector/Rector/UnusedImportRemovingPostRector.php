@@ -19,8 +19,6 @@ use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UnusedImportRemovingPostRector extends AbstractPostRector
 {
@@ -71,31 +69,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         $node->stmts = array_values($node->stmts);
         return $node;
-    }
-
-    public function getRuleDefinition(): RuleDefinition
-    {
-        return new RuleDefinition('Removes unused import names', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
-namespace App;
-
-use App\SomeUnusedClass;
-
-class SomeClass
-{
-}
-CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-namespace App;
-
-class SomeClass
-{
-}
-CODE_SAMPLE
-            ),
-        ]);
     }
 
     /**

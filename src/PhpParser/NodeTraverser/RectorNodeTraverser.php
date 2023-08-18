@@ -6,7 +6,7 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use Rector\Core\Contract\Rector\PhpRectorInterface;
+use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
@@ -14,10 +14,10 @@ final class RectorNodeTraverser extends NodeTraverser
     private bool $areNodeVisitorsPrepared = false;
 
     /**
-     * @param PhpRectorInterface[] $phpRectors
+     * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private array $phpRectors,
+        private array $rectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
         parent::__construct();
@@ -34,12 +34,12 @@ final class RectorNodeTraverser extends NodeTraverser
     }
 
     /**
+     * @param RectorInterface[] $rectors
      * @api used in tests to update the active rules
-     * @param PhpRectorInterface[] $phpRectors
      */
-    public function refreshPhpRectors(array $phpRectors): void
+    public function refreshPhpRectors(array $rectors): void
     {
-        $this->phpRectors = $phpRectors;
+        $this->rectors = $rectors;
         $this->visitors = [];
         $this->areNodeVisitorsPrepared = false;
     }
@@ -57,7 +57,7 @@ final class RectorNodeTraverser extends NodeTraverser
         }
 
         // filer out by version
-        $activePhpRectors = $this->phpVersionedFilter->filter($this->phpRectors);
+        $activePhpRectors = $this->phpVersionedFilter->filter($this->rectors);
 
         $this->visitors = $this->visitors === []
             ? $activePhpRectors
