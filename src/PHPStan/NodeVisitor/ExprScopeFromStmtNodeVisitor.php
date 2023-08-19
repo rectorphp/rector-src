@@ -29,16 +29,23 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
-        if ($node instanceof Expr && $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) >= 2) {
-            $filePath = $this->filePath;
-            $scope = $this->currentStmt instanceof Stmt
-                ? $this->currentStmt->getAttribute(AttributeKey::SCOPE)
-                : $this->scopeFactory->createFromFile($filePath);
-
-            $scope = $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
-            $node->setAttribute(AttributeKey::SCOPE, $scope);
+        if (! $node instanceof Expr || $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2) {
+            return null;
         }
+
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        if ($scope instanceof Scope) {
+            return null;
+        }
+
+        // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
+        $filePath = $this->filePath;
+        $scope = $this->currentStmt instanceof Stmt
+            ? $this->currentStmt->getAttribute(AttributeKey::SCOPE)
+            : $this->scopeFactory->createFromFile($filePath);
+
+        $scope = $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
+        $node->setAttribute(AttributeKey::SCOPE, $scope);
 
         return null;
     }
