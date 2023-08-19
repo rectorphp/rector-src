@@ -29,15 +29,6 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if (! $node instanceof Expr) {
-            return null;
-        }
-
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if ($scope instanceof Scope) {
-            return null;
-        }
-
         // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
         if ($node instanceof Expr && $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) >= 2) {
             $filePath = $this->filePath;
