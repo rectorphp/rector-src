@@ -146,6 +146,6 @@ CODE_SAMPLE
      */
     private function filterOurShortClasses(array $classNames): array
     {
-        return array_filter($classNames, static fn (string $className): bool => str_contains($className, '\\'));
+        return array_filter($classNames, static fn (string $className): bool => str_contains((string) $className, '\\'));
     }
 }

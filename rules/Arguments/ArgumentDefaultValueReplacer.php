@@ -117,7 +117,7 @@ final class ArgumentDefaultValueReplacer
     private function normalizeValue(mixed $value): ClassConstFetch|Expr
     {
         // class constants → turn string to composite
-        if (is_string($value) && \str_contains($value, '::')) {
+        if (is_string($value) && \str_contains((string) $value, '::')) {
             [$class, $constant] = explode('::', $value);
             return $this->nodeFactory->createClassConstFetch($class, $constant);
         }

@@ -168,7 +168,7 @@ CODE_SAMPLE
         }
 
         // can handle only exactly 1-type array
-        if ($arrayType instanceof ConstantArrayType && count($arrayType->getValueTypes()) !== 1) {
+        if ($arrayType instanceof ConstantArrayType && (is_countable($arrayType->getValueTypes()) ? count($arrayType->getValueTypes()) : 0) !== 1) {
             return;
         }
 
