@@ -192,7 +192,13 @@ final class PHPStanNodeScopeResolver
             }
         };
 
-        return $this->processNodesWithDependentFiles($stmts, $scope, $nodeCallback);
+        $this->nodeScopeResolver->processNodes($stmts, $scope, $nodeCallback);
+
+        $nodeTraverser = new NodeTraverser();
+        $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
+        $nodeTraverser->traverse($stmts);
+
+        return $stmts;
     }
 
     public function hasUnreachableStatementNode(): bool
@@ -327,25 +333,6 @@ final class PHPStanNodeScopeResolver
         }
 
         $ternary->else->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
-     * @return Stmt[]
-     */
-    private function processNodesWithDependentFiles(
-        array $stmts,
-        MutatingScope $mutatingScope,
-        callable $nodeCallback
-    ): array {
-        $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-
-        $nodeTraverser = new NodeTraverser();
-        $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
-        $nodeTraverser->traverse($stmts);
-
-        return $stmts;
     }
 
     private function resolveClassOrInterfaceScope(
