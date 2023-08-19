@@ -321,11 +321,11 @@ final class RectorConfig extends Container
         return // only validate string
             is_string($skipRule)
             // not regex path
-            && ! str_contains((string) $skipRule, '*')
+            && ! str_contains($skipRule, '*')
             // not realpath
             && realpath($skipRule) === false
             // a Rector end
-            && str_ends_with((string) $skipRule, 'Rector')
+            && str_ends_with($skipRule, 'Rector')
             // class not exists
             && ! class_exists($skipRule);
     }
