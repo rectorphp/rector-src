@@ -6,7 +6,6 @@ namespace Rector\Core\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -39,20 +38,11 @@ final class ScopeAnalyzer
         return true;
     }
 
-    public function resolveScope(Node $node, string $filePath, ?Stmt $currentStmt = null): ?Scope
+    public function resolveScope(Node $node, string $filePath): ?Scope
     {
         // on File level
         if ($node instanceof Stmt && $node->getAttribute(AttributeKey::STATEMENT_DEPTH) === 0) {
             return $this->scopeFactory->createFromFile($filePath);
-        }
-
-        // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
-        if ($node instanceof Expr && $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) >= 2) {
-            $scope = $currentStmt instanceof Stmt
-                ? $currentStmt->getAttribute(AttributeKey::SCOPE)
-                : $this->scopeFactory->createFromFile($filePath);
-
-            return $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
         }
 
         /**

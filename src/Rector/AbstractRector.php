@@ -70,8 +70,6 @@ CODE_SAMPLE;
 
     protected File $file;
 
-    protected ?Stmt $currentStmt = null;
-
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
@@ -337,7 +335,7 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath, $this->currentStmt);
+            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
     }
 
@@ -345,15 +343,9 @@ CODE_SAMPLE;
     {
         $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
-            if (! is_a($nodeClass, $nodeType, true)) {
-                if ($node instanceof Stmt) {
-                    $this->currentStmt = $node;
-                }
-
-                continue;
+            if (is_a($nodeClass, $nodeType, true)) {
+                return true;
             }
-
-            return true;
         }
 
         return false;
