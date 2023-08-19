@@ -45,6 +45,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             : $this->scopeFactory->createFromFile($filePath);
 
         $scope = $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
+
         $node->setAttribute(AttributeKey::SCOPE, $scope);
 
         return null;
