@@ -140,11 +140,11 @@ final class InlineCodeParser
     private function resolveConcatValue(Concat $concat): string
     {
         if ($concat->left instanceof Concat &&
-            $concat->right instanceof String_ && str_starts_with($concat->right->value, '$')) {
+            $concat->right instanceof String_ && str_starts_with((string) $concat->right->value, '$')) {
             $concat->right->value = '.' . $concat->right->value;
         }
 
-        if ($concat->right instanceof String_ && str_starts_with($concat->right->value, '($')) {
+        if ($concat->right instanceof String_ && str_starts_with((string) $concat->right->value, '($')) {
             $concat->right->value .= '.';
         }
 
