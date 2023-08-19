@@ -54,6 +54,7 @@ use PHPStan\Type\TypeCombinator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Core\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
 use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -196,6 +197,7 @@ final class PHPStanNodeScopeResolver
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
+        $nodeTraverser->addVisitor(new ExprScopeFromStmtNodeVisitor($this->scopeFactory, $filePath));
         $nodeTraverser->traverse($stmts);
 
         return $stmts;

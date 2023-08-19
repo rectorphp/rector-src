@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
@@ -69,8 +68,6 @@ CODE_SAMPLE;
     protected NodeComparator $nodeComparator;
 
     protected File $file;
-
-    protected ?Stmt $currentStmt = null;
 
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
@@ -337,7 +334,7 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath, $this->currentStmt);
+            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
         }
     }
 
@@ -345,15 +342,9 @@ CODE_SAMPLE;
     {
         $nodeClass = $node::class;
         foreach ($this->getNodeTypes() as $nodeType) {
-            if (! is_a($nodeClass, $nodeType, true)) {
-                if ($node instanceof Stmt) {
-                    $this->currentStmt = $node;
-                }
-
-                continue;
+            if (is_a($nodeClass, $nodeType, true)) {
+                return true;
             }
-
-            return true;
         }
 
         return false;
