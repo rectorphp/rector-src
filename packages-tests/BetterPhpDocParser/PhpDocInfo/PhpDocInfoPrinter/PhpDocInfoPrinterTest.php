@@ -9,6 +9,7 @@ use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt\Nop;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\FileSystem\FilePathHelper;
+use Rector\Testing\Fixture\FixtureFileFinder;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase
 {
@@ -29,12 +30,12 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureBasic', '*.txt');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureBasic', '*.txt');
     }
 
     public static function provideDataCallable(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureCallable', '*.txt');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureCallable', '*.txt');
     }
 
     #[DataProvider('provideDataEmpty')]
@@ -48,7 +49,7 @@ final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase
 
     public static function provideDataEmpty(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
+        return FixtureFileFinder::yieldDirectory(__DIR__ . '/FixtureEmpty', '*.txt');
     }
 
     private function doComparePrintedFileEquals(string $inputFilePath, string $expectedFilePath): void

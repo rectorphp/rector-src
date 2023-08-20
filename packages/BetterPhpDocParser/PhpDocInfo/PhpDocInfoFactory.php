@@ -58,6 +58,7 @@ final class PhpDocInfoFactory
     public function createFromNode(Node $node): ?PhpDocInfo
     {
         $objectHash = spl_object_hash($node);
+
         if (isset($this->phpDocInfosByObjectHash[$objectHash])) {
             return $this->phpDocInfosByObjectHash[$objectHash];
         }
@@ -66,7 +67,6 @@ final class PhpDocInfoFactory
         $this->currentNodeProvider->setNode($node);
 
         $docComment = $node->getDocComment();
-
         if (! $docComment instanceof Doc) {
             if ($node->getComments() === []) {
                 return null;
