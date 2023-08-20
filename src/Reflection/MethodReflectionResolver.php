@@ -18,20 +18,14 @@ final class MethodReflectionResolver
     /**
      * @param class-string $className
      */
-    public function resolveMethodReflection(string $className, string $methodName, ?Scope $scope): ?MethodReflection
+    public function resolveMethodReflection(string $className, string $methodName): ?MethodReflection
     {
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-
-        // better, with support for "@method" annotation methods
-        if ($scope instanceof Scope) {
-            if ($classReflection->hasMethod($methodName)) {
-                return $classReflection->getMethod($methodName, $scope);
-            }
-        } elseif ($classReflection->hasNativeMethod($methodName)) {
+        if ($classReflection->hasNativeMethod($methodName)) {
             return $classReflection->getNativeMethod($methodName);
         }
 

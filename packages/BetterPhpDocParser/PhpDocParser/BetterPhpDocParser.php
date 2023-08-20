@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
@@ -57,8 +58,7 @@ final class BetterPhpDocParser extends PhpDocParser
             // parseDoctrineAnnotations
             false,
             // textBetweenTagsBelongsToDescription, default to false, exists since 1.23.0
-            // @todo: make it true to allow next doc line text as part of current docblock
-            false
+            true
         );
     }
 
@@ -104,8 +104,8 @@ final class BetterPhpDocParser extends PhpDocParser
         }
 
         $tag = $this->resolveTag($tokenIterator);
-
         $phpDocTagValueNode = $this->parseTagValue($tokenIterator, $tag);
+
         return new PhpDocTagNode($tag, $phpDocTagValueNode);
     }
 
@@ -114,10 +114,16 @@ final class BetterPhpDocParser extends PhpDocParser
      */
     public function parseTagValue(TokenIterator $tokenIterator, string $tag): PhpDocTagValueNode
     {
+        $isPrecededByHorizontalWhitespace = $tokenIterator->isPrecededByHorizontalWhitespace();
+
         $startPosition = $tokenIterator->currentPosition();
         $phpDocTagValueNode = parent::parseTagValue($tokenIterator, $tag);
 
         $endPosition = $tokenIterator->currentPosition();
+
+        if ($isPrecededByHorizontalWhitespace) {
+            $phpDocTagValueNode->description = str_replace("\n", "\n * ", $phpDocTagValueNode->description);
+        }
 
         $startAndEnd = new StartAndEnd($startPosition, $endPosition);
         $phpDocTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
