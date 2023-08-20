@@ -2,10 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
+use stdClass;
+
 class SkipMultilineCommentDescription
 {
     /**
-     * @return UserlandClass
+     * @return stdClass
      *   A userland class is fine.
      */
     public function userland(): callable
@@ -27,10 +29,6 @@ class SkipMultilineCommentDescription
     public function primitive(): string
     {
     }
-}
-
-class UserlandClass
-{
 }
 
 ?>
