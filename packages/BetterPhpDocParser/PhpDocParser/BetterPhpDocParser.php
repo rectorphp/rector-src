@@ -6,11 +6,15 @@ namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
 use PHPStan\PhpDocParser\Parser\PhpDocParser;
@@ -121,7 +125,13 @@ final class BetterPhpDocParser extends PhpDocParser
 
         $endPosition = $tokenIterator->currentPosition();
 
-        if ($isPrecededByHorizontalWhitespace) {
+        if ((
+                $phpDocTagValueNode instanceof ReturnTagValueNode
+                    || $phpDocTagValueNode instanceof ParamTagValueNode
+                    || $phpDocTagValueNode instanceof VarTagValueNode
+                    || $phpDocTagValueNode instanceof ThrowsTagValueNode
+            )
+            && $isPrecededByHorizontalWhitespace) {
             $phpDocTagValueNode->description = str_replace("\n", "\n * ", $phpDocTagValueNode->description);
         }
 
