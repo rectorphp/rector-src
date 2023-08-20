@@ -234,9 +234,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 ++$openBracketCount;
             }
 
-            if ($composedTokenIterator->isCurrentTokenType(Lexer::TOKEN_PHPDOC_EOL)
+            $previousPosition = $composedTokenIterator->currentPosition() - 1;
+            if ($previousPosition > 0 && $composedTokenIterator->isCurrentTokenType(Lexer::TOKEN_PHPDOC_EOL)
                 && $composedTokenIterator->getContentBetween(
-                    $composedTokenIterator->currentPosition() - 1,
+                    $previousPosition,
                     $composedTokenIterator->currentPosition()
                 ) === '('
                 && $isNewLined
