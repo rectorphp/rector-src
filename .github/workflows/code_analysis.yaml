@@ -70,7 +70,7 @@ jobs:
                         name: 'Detect unused dependencies'
                         # "default" format overrides default "github" in CI
                         run: |
-                            composer require icanhazstring/composer-unused --dev
+                            composer require symfony/strings icanhazstring/composer-unused --dev
                             vendor/bin/composer-unused --ansi --output-format=default
 
         name: ${{ matrix.actions.name }}
