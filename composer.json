@@ -136,7 +136,11 @@
     "extra": {
         "patches": {
             "symfony/console": [
+<<<<<<< HEAD
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches/symfony-console-helper-helper-php.patch"
+=======
+                "patches/symfony-console-helper-helper-php.patch"
+>>>>>>> 060ca9d667 (patch width/height in console helper)
             ],
             "illuminate/container": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches//illuminate-container-container-php.patch"
