@@ -29,8 +29,6 @@ class SkipMultilineCommentDescription
     }
 }
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
-
 class UserlandClass
 {
 }
