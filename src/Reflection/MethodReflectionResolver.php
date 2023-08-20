@@ -25,6 +25,7 @@ final class MethodReflectionResolver
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
+
         // better, with support for "@method" annotation methods
         if ($scope instanceof Scope) {
             if ($classReflection->hasMethod($methodName)) {
