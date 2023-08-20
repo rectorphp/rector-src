@@ -135,6 +135,9 @@
     },
     "extra": {
         "patches": {
+            "symfony/console": [
+                "patches/symfony-console-helper-helper-php.patch"
+            ],
             "illuminate/container": [
                 "https://raw.githubusercontent.com/rectorphp/vendor-patches/main/patches//illuminate-container-container-php.patch"
             ],
