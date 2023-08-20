@@ -52,7 +52,6 @@ jobs:
             -   run: composer install --no-dev --ansi
 
             # early downgrade individual functions
-            -   run: bin/rector process vendor/symfony/string/Resources/functions.php -c build/config/config-downgrade.php --ansi
             -   run: bin/rector process src/functions/node_helper.php -c build/config/config-downgrade.php --ansi
 
             # 1. copy files to $NESTED_DIRECTORY directory Exclude the scoped/nested directories to prevent rsync from copying in a loop
