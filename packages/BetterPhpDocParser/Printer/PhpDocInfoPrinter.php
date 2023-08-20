@@ -175,7 +175,7 @@ final class PhpDocInfoPrinter
             $output .= ' */';
         }
 
-        return $output;
+        return str_replace(" \n", "\n", $output);
     }
 
     private function printDocChildNode(
