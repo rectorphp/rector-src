@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
-class DemoFile
+class SkipMultilineCommentDescription
 {
     /**
      * @return UserlandClass
