@@ -70,6 +70,7 @@
     },
     "replace": {
         "rector/rector": "self.version",
+        "symfony/string": "*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-intl-grapheme": "*",
         "symfony/deprecation-contracts": "*"
