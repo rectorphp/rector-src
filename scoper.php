@@ -26,17 +26,6 @@ $polyfillsBootstraps = array_map(
     ),
 );
 
-$polyfillsStubs = array_map(
-    static fn (SplFileInfo $fileInfo): string => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*/Resources/stubs')
-            ->name('*.php'),
-        false,
-    ),
-);
-
 // see https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#configuration
 return [
     'prefix' => 'RectorPrefix' . $timestamp,
@@ -56,7 +45,6 @@ return [
     ],
     'exclude-files' => [
         ...$polyfillsBootstraps,
-        ...$polyfillsStubs,
     ],
 
     // expose
