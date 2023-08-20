@@ -120,7 +120,7 @@ final class BetterPhpDocParser extends PhpDocParser
 
         $endPosition = $tokenIterator->currentPosition();
 
-        if (property_exists($phpDocTagValueNode, 'description') && $isPrecededByHorizontalWhitespace) {
+        if ($isPrecededByHorizontalWhitespace && property_exists($phpDocTagValueNode, 'description')) {
             $phpDocTagValueNode->description = str_replace("\n", "\n * ", (string) $phpDocTagValueNode->description);
         }
 
