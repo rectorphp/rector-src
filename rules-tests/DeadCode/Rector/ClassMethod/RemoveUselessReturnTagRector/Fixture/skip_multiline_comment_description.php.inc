@@ -2,12 +2,12 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
-use stdClass;
+use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Source\SomeConstantType;
 
 class SkipMultilineCommentDescription
 {
     /**
-     * @return stdClass
+     * @return SomeConstantType
      *   A userland class is fine.
      */
     public function userland(): callable
