@@ -20,6 +20,8 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
@@ -158,6 +160,43 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         FileSystem::write($inputFilePath, $inputFileContents);
 
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
+    }
+
+    protected function forgetRectorsRules(): void
+    {
+        $rectorConfig = self::getContainer();
+
+        // 1. forget instance first, then remove tags
+        $rectors = $rectorConfig->tagged(RectorInterface::class);
+        foreach ($rectors as $rector) {
+            $rectorConfig->offsetUnset($rector::class);
+        }
+
+        // 2. remove all tagged rules
+        $privatesAccessor = new PrivatesAccessor();
+        $privatesAccessor->propertyClosure($rectorConfig, 'tags', static function (array $tags): array {
+            unset($tags[RectorInterface::class]);
+            return $tags;
+        });
+
+        // 3. remove after binding too, to avoid setting configuration over and over again
+        $privatesAccessor->propertyClosure(
+            $rectorConfig,
+            'afterResolvingCallbacks',
+            static function (array $afterResolvingCallbacks): array {
+                foreach (array_keys($afterResolvingCallbacks) as $key) {
+                    if ($key === AbstractRector::class) {
+                        continue;
+                    }
+
+                    if (is_a($key, RectorInterface::class, true)) {
+                        unset($afterResolvingCallbacks[$key]);
+                    }
+                }
+
+                return $afterResolvingCallbacks;
+            }
+        );
     }
 
     private function includePreloadFilesAndScoperAutoload(): void
