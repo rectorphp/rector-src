@@ -31,6 +31,9 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNe
 
 final class NewArrayReplace
 {
+    /**
+     * @return mixed[]
+     */
     public function getImagePaths($identifier = 'detail', $size = null): array
     {
         $imagePaths = [];
