@@ -23,13 +23,9 @@ jobs:
                 php: ['8.1']
                 path:
                     - "tests"
-                    - "--testsuite php-rules"
-                    - "--testsuite other-rules"
-                    - "--testsuite code-quality-rules"
-                    - "--testsuite dead-code-rules"
-                    - "--testsuite type-declaration-rules"
                     - "packages-tests"
                     - "utils-tests"
+                    - "rules-tests"
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
         steps:
