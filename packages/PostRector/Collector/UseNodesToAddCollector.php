@@ -116,6 +116,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         $fileConstantUseImportTypes = $this->constantUseImportTypesInFilePath[$filePath] ?? [];
 
         foreach ($fileConstantUseImportTypes as $fileConstantUseImportType) {
+            // don't compare strtolower for use const as insensitive is allowed, see https://3v4l.org/lteVa
             if ($fileConstantUseImportType->getShortName() === $shortName) {
                 return true;
             }
