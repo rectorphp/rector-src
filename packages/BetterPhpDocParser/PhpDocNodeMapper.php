@@ -34,12 +34,10 @@ final class PhpDocNodeMapper
     {
         $this->currentTokenIteratorProvider->setBetterTokenIterator($betterTokenIterator);
 
-        $connectingAndCloningPhpDocNodeTraverser = new PhpDocNodeTraverser();
-        $connectingAndCloningPhpDocNodeTraverser->addPhpDocNodeVisitor($this->parentConnectingPhpDocNodeVisitor);
-        $connectingAndCloningPhpDocNodeTraverser->addPhpDocNodeVisitor($this->cloningPhpDocNodeVisitor);
-        $connectingAndCloningPhpDocNodeTraverser->traverse($phpDocNode);
-
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $phpDocNodeTraverser->addPhpDocNodeVisitor($this->parentConnectingPhpDocNodeVisitor);
+        $phpDocNodeTraverser->addPhpDocNodeVisitor($this->cloningPhpDocNodeVisitor);
+
         foreach ($this->phpDocNodeVisitors as $phpDocNodeVisitor) {
             $phpDocNodeTraverser->addPhpDocNodeVisitor($phpDocNodeVisitor);
         }
