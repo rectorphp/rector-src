@@ -22,9 +22,7 @@ jobs:
             matrix:
                 php: ['8.1']
                 path:
-                    - "tests"
-                    - "packages-tests"
-                    - "utils-tests"
+                    - "tests packages-tests utils-tests"
                     - "rules-tests"
 
         name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
