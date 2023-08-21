@@ -124,7 +124,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         $fileFunctionUseImportTypes = $this->functionUseImportTypesInFilePath[$filePath] ?? [];
 
         foreach ($fileFunctionUseImportTypes as $fileFunctionUseImportType) {
-            if ($fileFunctionUseImportType->getShortName() === $shortName) {
+            if (strtolower($fileFunctionUseImportType->getShortName()) === strtolower($shortName)) {
                 return true;
             }
         }
@@ -189,7 +189,7 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         $fileUseImports = $this->useImportTypesInFilePath[$filePath] ?? [];
 
         foreach ($fileUseImports as $fileUseImport) {
-            if ($fileUseImport->getShortName() === $shortName) {
+            if (strtolower($fileUseImport->getShortName()) === strtolower($shortName)) {
                 return true;
             }
         }
