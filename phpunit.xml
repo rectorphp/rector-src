@@ -38,6 +38,12 @@
         </testsuite>
     </testsuites>
 
+    <extensions>
+        <bootstrap class="RobinIngelbrecht\PHPUnitPrettyPrint\PhpUnitExtension">
+            <parameter name="enableByDefault" value="false"/>
+        </bootstrap>
+    </extensions>
+
     <php>
         <ini name="memory_limit" value="-1"/>
     </php>

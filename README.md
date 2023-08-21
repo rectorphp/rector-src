@@ -21,6 +21,16 @@ Please read [contributing guideline](/CONTRIBUTING.md) for how to contribute to 
 
 <br>
 
+## Debug Tests
+
+Do you need to measure speed of particular test? Or just check which test fixture is failing? Make use of pretty print:
+
+```bash
+ vendor/bin/phpunit -d --enable-pretty-print
+```
+
+<br>
+
 ## Code of Conduct
 
 This project adheres to a [Contributor Code of Conduct](/CODE_OF_CONDUCT.md) By participating in this project and its community, you are expected to uphold this code.
