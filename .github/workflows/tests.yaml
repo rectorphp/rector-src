@@ -15,24 +15,16 @@ env:
 jobs:
     tests:
         runs-on: ubuntu-latest
-        timeout-minutes: 10
+        timeout-minutes: 3
 
-        strategy:
-            fail-fast: false
-            matrix:
-                php: ['8.1']
-                path:
-                    - "tests packages-tests utils-tests"
-                    - "rules-tests"
-
-        name: PHP ${{ matrix.php }} tests for ${{ matrix.path }}
+        name: PHP 8.1 tests
         steps:
             -   uses: actions/checkout@v3
 
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: 8.1
                     coverage: none
                     # to display warning when assert() is called, eg: on direct getArgs() on CallLike
                     # and check against first class callable strlen(...)
@@ -40,4 +32,4 @@ jobs:
 
             -   uses: "ramsey/composer-install@v2"
 
-            -   run: vendor/bin/phpunit ${{ matrix.path }} --colors
+            -   run: vendor/bin/phpunit --colors
