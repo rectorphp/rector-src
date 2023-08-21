@@ -192,7 +192,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $assign->expr instanceof Array_) {
+            if ($assign->expr instanceof Array_) {
+                continue;
+            }
+
+            $nativeType = $this->nodeTypeResolver->getNativeType($assign->expr);
+            if (! $nativeType->isArray()->yes()) {
                 return true;
             }
         }
