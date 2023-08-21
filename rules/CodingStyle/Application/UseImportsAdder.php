@@ -194,14 +194,29 @@ final class UseImportsAdder
             Use_::TYPE_FUNCTION => $functionUseImportTypes,
         ];
 
+        $useNames = [];
         foreach ($importsMapping as $type => $importTypes) {
             foreach ($importTypes as $importType) {
                 if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $importType)) {
                     continue;
                 }
 
+                $use = $importType->getUseNode($type);
+                $currentUse = current($use->uses);
+
+                if ($currentUse === false) {
+                    continue;
+                }
+
+                $currentUseName = strtolower($currentUse->name->getLast());
+                if (in_array($currentUseName, $useNames, true)) {
+                    continue;
+                }
+
+                $useNames[] = $currentUseName;
+
                 // already imported in previous cycle
-                $newUses[] = $importType->getUseNode($type);
+                $newUses[] = $use;
             }
         }
 
