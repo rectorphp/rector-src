@@ -10,7 +10,7 @@ use Rector\Core\DependencyInjection\LazyContainerFactory;
 
 abstract class AbstractLazyTestCase extends TestCase
 {
-    private static ?RectorConfig $rectorConfig = null;
+    protected static ?RectorConfig $rectorConfig = null;
 
     /**
      * @api
