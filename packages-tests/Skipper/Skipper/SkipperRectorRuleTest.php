@@ -14,6 +14,13 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class SkipperRectorRuleTest extends AbstractLazyTestCase
 {
+    protected function setUp(): void
+    {
+        // reset to make skip free and invoke resolving
+        self::$rectorConfig = null;
+    }
+
+
     protected function tearDown(): void
     {
         // cleanup configuration
