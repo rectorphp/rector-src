@@ -25,23 +25,22 @@ final class PhpDocNodeMapper
         private readonly CurrentTokenIteratorProvider $currentTokenIteratorProvider,
         private readonly ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
         private readonly CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
+        private readonly PhpDocNodeTraverser $phpDocNodeTraverser,
         private readonly array $phpDocNodeVisitors
     ) {
         Assert::notEmpty($phpDocNodeVisitors);
+
+        $this->phpDocNodeTraverser->addPhpDocNodeVisitor($this->parentConnectingPhpDocNodeVisitor);
+        $this->phpDocNodeTraverser->addPhpDocNodeVisitor($this->cloningPhpDocNodeVisitor);
+
+        foreach ($this->phpDocNodeVisitors as $phpDocNodeVisitor) {
+            $this->phpDocNodeTraverser->addPhpDocNodeVisitor($phpDocNodeVisitor);
+        }
     }
 
     public function transform(PhpDocNode $phpDocNode, BetterTokenIterator $betterTokenIterator): void
     {
         $this->currentTokenIteratorProvider->setBetterTokenIterator($betterTokenIterator);
-
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->addPhpDocNodeVisitor($this->parentConnectingPhpDocNodeVisitor);
-        $phpDocNodeTraverser->addPhpDocNodeVisitor($this->cloningPhpDocNodeVisitor);
-
-        foreach ($this->phpDocNodeVisitors as $phpDocNodeVisitor) {
-            $phpDocNodeTraverser->addPhpDocNodeVisitor($phpDocNodeVisitor);
-        }
-
-        $phpDocNodeTraverser->traverse($phpDocNode);
+        $this->phpDocNodeTraverser->traverse($phpDocNode);
     }
 }
