@@ -13,6 +13,6 @@ final class SkipCaseInsensitiveNameAlreadyInUseFunction
 
     public function aMethod2()
     {
-        \stuff\NeedProfile::doSomething();
+        \stuff\NeedProfile();
     }
 }
