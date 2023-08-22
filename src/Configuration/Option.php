@@ -153,6 +153,12 @@ final class Option
     public const PHPSTAN_FOR_RECTOR_PATHS = 'phpstan_for_rector_paths';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::ruleWithConfiguration() instead
+     * @var string
+     */
+    public const RECTOR_CONFIGURATION = 'rector_configuration';
+
+    /**
      * @var string
      */
     public const NO_DIFFS = 'no-diffs';

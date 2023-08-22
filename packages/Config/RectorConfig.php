@@ -165,9 +165,18 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
         $this->afterResolving($rectorClass, static function (ConfigurableRectorInterface $configurableRector) use (
-            $configuration
+            $configuration,
+            $rectorClass
         ): void {
+            $configuration = array_merge(
+                SimpleParameterProvider::provideArrayParameter(Option::RECTOR_CONFIGURATION)[$rectorClass] ?? [],
+                $configuration
+            );
             $configurableRector->configure($configuration);
+
+            SimpleParameterProvider::addParameter(Option::RECTOR_CONFIGURATION, [
+                $rectorClass => $configuration,
+            ]);
         });
 
         $this->tagRectorService($rectorClass);
