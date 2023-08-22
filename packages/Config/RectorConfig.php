@@ -24,6 +24,11 @@ use Webmozart\Assert\Assert;
 final class RectorConfig extends Container
 {
     /**
+     * @var array<class-string<RectorInterface>, mixed[]>>
+     */
+    private array $ruleConfigurations = [];
+
+    /**
      * @param string[] $paths
      */
     public function paths(array $paths): void
@@ -163,14 +168,28 @@ final class RectorConfig extends Container
         Assert::isAOf($rectorClass, RectorInterface::class);
         Assert::isAOf($rectorClass, ConfigurableRectorInterface::class);
 
-        $this->singleton($rectorClass);
-        $this->afterResolving($rectorClass, static function (ConfigurableRectorInterface $configurableRector) use (
+        // store configuration to cache
+        $this->ruleConfigurations[$rectorClass] = array_merge(
+            $this->ruleConfigurations[$rectorClass] ?? [],
             $configuration
-        ): void {
-            $configurableRector->configure($configuration);
-        });
+        );
 
+        $isBound = $this->bound($rectorClass);
+
+        // avoid double registration
+        if ($isBound) {
+            return;
+        }
+
+        $this->singleton($rectorClass);
         $this->tagRectorService($rectorClass);
+
+        $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
+            $rectorClass
+        ): void {
+            $ruleConfiguration = $this->ruleConfigurations[$rectorClass];
+            $configurableRector->configure($ruleConfiguration);
+        });
     }
 
     /**
@@ -199,23 +218,11 @@ final class RectorConfig extends Container
         }
     }
 
-    private function importFile(string $filePath): void
-    {
-        Assert::fileExists($filePath);
-
-        $self = $this;
-        $callable = (require $filePath);
-
-        Assert::isCallable($callable);
-        /** @var callable(Container $container): void $callable */
-        $callable($self);
-    }
-
     public function import(string $filePath): void
     {
         $paths = [$filePath];
 
-        $filesystemTweaker  = new FilesystemTweaker();
+        $filesystemTweaker = new FilesystemTweaker();
         $paths = $filesystemTweaker->resolveWithFnmatch($paths);
 
         foreach ($paths as $path) {
@@ -327,6 +334,18 @@ final class RectorConfig extends Container
             'The services() method is deprecated. Use $rectorConfig->singleton(ServiceType::class) instead',
             E_USER_ERROR
         );
+    }
+
+    private function importFile(string $filePath): void
+    {
+        Assert::fileExists($filePath);
+
+        $self = $this;
+        $callable = (require $filePath);
+
+        Assert::isCallable($callable);
+        /** @var callable(Container $container): void $callable */
+        $callable($self);
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
