@@ -20,7 +20,6 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
         self::$rectorConfig = null;
     }
 
-
     protected function tearDown(): void
     {
         // cleanup configuration
