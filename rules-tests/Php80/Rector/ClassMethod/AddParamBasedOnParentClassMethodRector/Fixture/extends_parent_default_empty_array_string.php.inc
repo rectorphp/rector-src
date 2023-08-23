@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
 
-class ExtendsParentDefaultArray extends ParentWithTypedParam {
+class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
     public function baz() {
         echo parent::baz();
     }
@@ -22,7 +22,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
 
-class ExtendsParentDefaultArray extends ParentWithTypedParam {
+class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
     public function baz($default = []) {
         echo parent::baz();
     }
