@@ -6,11 +6,12 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
     public function emptyArray() {
-        echo parent::emptyArray();
     }
 
     public function emptyString() {
-        echo parent::emptyString();
+    }
+
+    public function emptyString2() {
     }
 }
 
@@ -24,11 +25,12 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
     public function emptyArray($default = []) {
-        echo parent::emptyArray();
     }
 
     public function emptyString($default = '') {
-        echo parent::emptyString();
+    }
+
+    public function emptyString2($default = '') {
     }
 }
 

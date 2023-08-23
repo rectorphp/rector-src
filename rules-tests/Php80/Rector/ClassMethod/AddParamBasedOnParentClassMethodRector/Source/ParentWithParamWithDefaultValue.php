@@ -16,6 +16,10 @@ class ParentWithParamWithDefaultValue
         return $default;
     }
 
+    public function emptyString2($default = "") {
+        return $default;
+    }
+
     public function nonEmptyArray($default = ['some data']) {
         return implode('', $default);
     }

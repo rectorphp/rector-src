@@ -250,8 +250,8 @@ CODE_SAMPLE
             return new Array_([]);
         }
 
-        if ($printParamDefault === "''") {
-            return new String_('');
+        if ($expr instanceof String_ && $expr->value === '') {
+            return new String_($expr->value);
         }
 
         if ($expr instanceof LNumber) {
