@@ -12,6 +12,10 @@ class ParentWithParamWithDefaultValue
         return implode('', $default);
     }
 
+    public function emptyArray2($default = array()) {
+        return implode('', $default);
+    }
+
     public function emptyString($default = '') {
         return $default;
     }

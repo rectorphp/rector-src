@@ -8,6 +8,9 @@ class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultVal
     public function emptyArray() {
     }
 
+    public function emptyArray2() {
+    }
+
     public function emptyString() {
     }
 
@@ -25,6 +28,9 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
     public function emptyArray($default = []) {
+    }
+
+    public function emptyArray2($default = array()) {
     }
 
     public function emptyString($default = '') {
