@@ -217,7 +217,7 @@ CODE_SAMPLE
             $paramDefault = $parentClassMethodParam->default;
 
             if ($paramDefault instanceof Expr) {
-                $paramDefault = $this->resolveParamDefault($paramDefault, $parentClassMethodParam);
+                $paramDefault = $this->resolveParamDefault($paramDefault);
             }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
@@ -242,7 +242,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveParamDefault(Expr $expr, Param $param): Expr
+    private function resolveParamDefault(Expr $expr): Expr
     {
         // re-create to avoid TokenStream error
         $printParamDefault = $this->betterStandardPrinter->print($expr);
