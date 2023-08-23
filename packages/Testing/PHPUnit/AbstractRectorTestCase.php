@@ -80,6 +80,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             }
 
             $this->forgetRectorsRules();
+            $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));

@@ -412,4 +412,9 @@ final class RectorConfig extends Container
             $duplicatedRectorClasses
         ));
     }
+
+    public function resetRuleConfigurations(): void
+    {
+        $this->ruleConfigurations = [];
+    }
 }
