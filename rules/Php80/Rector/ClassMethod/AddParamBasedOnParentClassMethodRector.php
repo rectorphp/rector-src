@@ -242,8 +242,8 @@ CODE_SAMPLE
 
     private function resolveParamDefault(Expr $expr): Expr
     {
+        // re-create to avoid TokenStream error
         if ($expr instanceof Array_) {
-            // re-create array to avoid TokenStream error
             return new Array_($expr->items);
         }
 
