@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
 
-use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
+use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithParamWithDefaultValue;
 
-class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
+class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
     public function emptyArray() {
         echo parent::emptyArray();
     }
@@ -20,9 +20,9 @@ class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
 
 namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
 
-use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
+use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithParamWithDefaultValue;
 
-class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
+class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
     public function emptyArray($default = []) {
         echo parent::emptyArray();
     }

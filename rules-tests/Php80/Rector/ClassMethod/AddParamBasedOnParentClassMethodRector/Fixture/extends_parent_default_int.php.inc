@@ -5,12 +5,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithParamWithDefaultValue;
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
-    public function nonEmptyArray() {
-        echo parent::nonEmptyArray();
-    }
-
-    public function nonEmptyString() {
-        echo parent::nonEmptyString();
+    public function intParam() {
     }
 }
 
@@ -23,12 +18,7 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithParamWithDefaultValue;
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultValue {
-    public function nonEmptyArray($default = ['some data']) {
-        echo parent::nonEmptyArray();
-    }
-
-    public function nonEmptyString($default = 'some value') {
-        echo parent::nonEmptyString();
+    public function intParam($default = 123) {
     }
 }
 
