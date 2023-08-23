@@ -25,7 +25,7 @@ use Rector\Core\Tests\Issues\EmptyLongArraySyntax\Source\ParentWithEmptyLongArra
 
 final class EmptyLongArray extends ParentWithEmptyLongArray
 {
-    public function run()
+    public function run($default = array())
     {
     }
 }
