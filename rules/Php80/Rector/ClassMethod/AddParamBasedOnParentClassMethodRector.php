@@ -247,11 +247,11 @@ CODE_SAMPLE
             return new Array_($expr->items);
         }
 
-        $printParamDefault = $this->betterStandardPrinter->print($expr);
-        if ($printParamDefault === "''") {
-            return new String_('');
+        if ($expr instanceof String_) {
+            return new String_($expr->value);
         }
 
+        $printParamDefault = $this->betterStandardPrinter->print($expr);
         return new ConstFetch(new Name($printParamDefault));
     }
 
