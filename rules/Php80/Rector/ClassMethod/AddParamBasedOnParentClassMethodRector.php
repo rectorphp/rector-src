@@ -244,12 +244,6 @@ CODE_SAMPLE
 
     private function resolveParamDefault(Expr $expr): Expr
     {
-        // re-create to avoid TokenStream error
-        $printParamDefault = $this->betterStandardPrinter->print($expr);
-        if ($printParamDefault === '[]') {
-            return new Array_([]);
-        }
-
         if ($expr instanceof String_ && $expr->value === '') {
             return new String_($expr->value);
         }
@@ -260,6 +254,12 @@ CODE_SAMPLE
 
         if ($expr instanceof DNumber) {
             return new DNumber($expr->value);
+        }
+
+        // re-create to avoid TokenStream error
+        $printParamDefault = $this->betterStandardPrinter->print($expr);
+        if ($printParamDefault === '[]') {
+            return new Array_([]);
         }
 
         return new ConstFetch(new Name($printParamDefault));
