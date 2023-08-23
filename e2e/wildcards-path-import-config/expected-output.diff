@@ -1,7 +1,24 @@
-1 file with changes
-===================
+2 files with changes
+====================
 
-1) src/DeadConstructor.php:1
+1) src/GotUnreachableReturn.php:4
+
+    ---------- begin diff ----------
+@@ @@
+     public function run()
+     {
+         throw new Exception();
+-
+-        return 'test';
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnreachableStatementRector
+
+
+2) src/DeadConstructor.php:1
 
     ---------- begin diff ----------
 @@ @@
@@ -18,4 +35,4 @@ Applied rules:
  * RemoveEmptyClassMethodRector
 
 
- [OK] 1 file would have changed (dry-run) by Rector
+ [OK] 2 files would have changed (dry-run) by Rector
