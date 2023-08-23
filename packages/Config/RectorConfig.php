@@ -12,6 +12,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\FilesystemTweaker;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
@@ -200,6 +201,11 @@ final class RectorConfig extends Container
 
     public function import(string $filePath): void
     {
+        $paths = [$filePath];
+
+        $filesystemTweaker  = new FilesystemTweaker();
+        [$filePath] = $filesystemTweaker->resolveWithFnmatch($paths);
+
         Assert::fileExists($filePath);
 
         $self = $this;
