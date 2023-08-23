@@ -16,7 +16,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Assert\Assert;
 
 /**
@@ -29,34 +28,15 @@ final class PHPStanServicesFactory
     private readonly Container $container;
 
     public function __construct(
-        BleedingEdgeIncludePurifier $bleedingEdgeIncludePurifier,
     ) {
+        $containerFactory = new ContainerFactory(getcwd());
         $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
 
-        $purifiedConfigFiles = [];
-
-        foreach ($additionalConfigFiles as $key => $additionalConfigFile) {
-            $purifiedConfigFile = $bleedingEdgeIncludePurifier->purifyConfigFile($additionalConfigFile);
-
-            // nothing was changed
-            if ($purifiedConfigFile === null) {
-                continue;
-            }
-
-            $additionalConfigFiles[$key] = $purifiedConfigFile;
-            $purifiedConfigFiles[] = $purifiedConfigFile;
-        }
-
-        $containerFactory = new ContainerFactory(getcwd());
         $this->container = $containerFactory->create(
             SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
             $additionalConfigFiles,
             []
         );
-
-        // clear temporary files, after container is created
-        $filesystem = new Filesystem();
-        $filesystem->remove($purifiedConfigFiles);
     }
 
     /**
