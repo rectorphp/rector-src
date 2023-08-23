@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\ValueObjectFactory\Application;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Core\ValueObject\Configuration;
 
@@ -14,13 +13,9 @@ use Rector\Core\ValueObject\Configuration;
  */
 final class FileFactory
 {
-    /**
-     * @param FileProcessorInterface[] $fileProcessors
-     */
     public function __construct(
         private readonly FilesFinder $filesFinder,
         private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly iterable $fileProcessors
     ) {
     }
 
@@ -34,7 +29,7 @@ final class FileFactory
             $this->changedFilesDetector->clear();
         }
 
-        $supportedFileExtensions = $this->resolveSupportedFileExtensions($configuration);
+        $supportedFileExtensions = $configuration->getFileExtensions();
         $filePaths = $this->filesFinder->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
 
         $fileExtensions = $configuration->getFileExtensions();
@@ -44,25 +39,5 @@ final class FileFactory
         };
 
         return array_filter($filePaths, $fileWithExtensionsFilter);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function resolveSupportedFileExtensions(Configuration $configuration): array
-    {
-        $supportedFileExtensions = [];
-
-        foreach ($this->fileProcessors as $fileProcessor) {
-            $supportedFileExtensions = array_merge(
-                $supportedFileExtensions,
-                $fileProcessor->getSupportedFileExtensions()
-            );
-        }
-
-        // basic PHP extensions
-        $supportedFileExtensions = array_merge($supportedFileExtensions, $configuration->getFileExtensions());
-
-        return array_unique($supportedFileExtensions);
     }
 }
