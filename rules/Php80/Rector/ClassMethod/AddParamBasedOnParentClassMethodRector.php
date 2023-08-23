@@ -8,11 +8,13 @@ use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
 use Rector\Core\PhpParser\AstResolver;
@@ -213,8 +215,7 @@ CODE_SAMPLE
             $paramDefault = $parentClassMethodParam->default;
 
             if ($paramDefault instanceof Expr) {
-                $printParamDefault = $this->betterStandardPrinter->print($paramDefault);
-                $paramDefault = new ConstFetch(new Name($printParamDefault));
+                $paramDefault = $this->resolveParamDefault($paramDefault);
             }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
@@ -237,6 +238,21 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function resolveParamDefault(Expr $expr): Expr
+    {
+        if ($expr instanceof Array_) {
+            // re-create array to avoid TokenStream error
+            return new Array_($expr->items);
+        }
+
+        $printParamDefault = $this->betterStandardPrinter->print($expr);
+        if ($printParamDefault === "''") {
+            return new String_('');
+        }
+
+        return new ConstFetch(new Name($printParamDefault));
     }
 
     private function resolveParamType(Param $param): null|Identifier|Name|ComplexType

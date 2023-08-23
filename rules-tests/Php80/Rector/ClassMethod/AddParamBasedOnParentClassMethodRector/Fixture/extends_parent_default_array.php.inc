@@ -22,14 +22,12 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
 
-use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
-
 class ExtendsParentDefaultArray extends ParentWithTypedParam {
-    public function baz() {
+    public function baz($default = []) {
         echo parent::baz();
     }
 
-    public function boo() {
+    public function boo($default = '') {
         echo parent::boo();
     }
 }
