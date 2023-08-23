@@ -27,4 +27,8 @@ class ParentWithParamWithDefaultValue
     public function intParam($default = 123) {
         return $default;
     }
+
+    public function floatParam($default = 1.23) {
+        return $default;
+    }
 }
