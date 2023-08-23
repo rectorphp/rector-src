@@ -5,12 +5,12 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
-    public function baz() {
-        echo parent::baz();
+    public function emptyArray() {
+        echo parent::emptyArray();
     }
 
-    public function boo() {
-        echo parent::boo();
+    public function emptyString() {
+        echo parent::emptyString();
     }
 }
 
@@ -23,12 +23,12 @@ namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethod
 use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Source\ParentWithTypedParam;
 
 class ExtendsParentDefaultEmptyArrayString extends ParentWithTypedParam {
-    public function baz($default = []) {
-        echo parent::baz();
+    public function emptyArray($default = []) {
+        echo parent::emptyArray();
     }
 
-    public function boo($default = '') {
-        echo parent::boo();
+    public function emptyString($default = '') {
+        echo parent::emptyString();
     }
 }
 

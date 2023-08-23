@@ -8,11 +8,11 @@ class ParentWithTypedParam
     {
     }
 
-    public function baz($default = []) {
+    public function emptyArray($default = []) {
         return implode('', $default);
     }
 
-    public function boo($default = '') {
+    public function emptyString($default = '') {
         return $default;
     }
 
