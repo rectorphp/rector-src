@@ -23,6 +23,7 @@ use Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector
 class ExtendsParentDefaultIntOrFloat extends ParentWithParamWithDefaultValue {
     public function intParam($default = 123) {
     }
+
     public function floatParam($default = 1.23) {
     }
 }
