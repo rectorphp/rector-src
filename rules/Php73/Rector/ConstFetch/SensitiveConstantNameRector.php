@@ -84,7 +84,6 @@ final class SensitiveConstantNameRector extends AbstractScopeAwareRector impleme
         'TRUE',
         'FALSE',
         'NULL',
-        'ARRAY()'
     ];
 
     public function __construct(
@@ -155,6 +154,10 @@ CODE_SAMPLE
         }
 
         if (str_contains($uppercasedConstantName, '\\')) {
+            return null;
+        }
+
+        if (str_contains($uppercasedConstantName, '(')) {
             return null;
         }
 
