@@ -14,6 +14,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
@@ -215,7 +217,7 @@ CODE_SAMPLE
             $paramDefault = $parentClassMethodParam->default;
 
             if ($paramDefault instanceof Expr) {
-                $paramDefault = $this->resolveParamDefault($paramDefault);
+                $paramDefault = $this->resolveParamDefault($paramDefault, $parentClassMethodParam);
             }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
@@ -240,7 +242,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveParamDefault(Expr $expr): Expr
+    private function resolveParamDefault(Expr $expr, Param $param): Expr
     {
         // re-create to avoid TokenStream error
         $printParamDefault = $this->betterStandardPrinter->print($expr);
@@ -250,6 +252,10 @@ CODE_SAMPLE
 
         if ($printParamDefault === "''") {
             return new String_('');
+        }
+
+        if ($expr instanceof LNumber || $expr instanceof DNumber) {
+            return new LNumber($expr->value);
         }
 
         return new ConstFetch(new Name($printParamDefault));
