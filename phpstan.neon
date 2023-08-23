@@ -10,7 +10,7 @@ services:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     cognitive_complexity:
         class: 50
@@ -651,7 +651,3 @@ parameters:
         -
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: packages/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
-
-        # deprecated, remove later
-        - '#deprecated (interface|class) Rector\\Core\\Contract\\Processor\\FileProcessorInterface#'
-        - '#Call to deprecated method processWithFileProcessors\(\) of class Rector\\Core\\Application\\ApplicationFileProcessor#'

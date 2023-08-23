@@ -45,7 +45,6 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\FullyQualifiedNa
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\UsesClassNameImportSkipVoter;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\RectorConfig;
-use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\ConfigInitializer;
@@ -60,7 +59,6 @@ use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
-use Rector\Core\Contract\Processor\FileProcessorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Logging\CurrentRectorProvider;
@@ -74,7 +72,6 @@ use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
-use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
@@ -468,14 +465,6 @@ final class LazyContainerFactory
             ]);
 
         $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
-
-        $rectorConfig->when(ApplicationFileProcessor::class)
-            ->needs('$fileProcessors')
-            ->giveTagged(FileProcessorInterface::class);
-
-        $rectorConfig->when(FileFactory::class)
-            ->needs('$fileProcessors')
-            ->giveTagged(FileProcessorInterface::class);
 
         $rectorConfig->when(RectorNodeTraverser::class)
             ->needs('$rectors')
