@@ -1,0 +1,21 @@
+1 file with changes
+===================
+
+1) src/DeadConstructor.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class DeadConstructor
+ {
+-    public function __construct()
+-    {
+-    }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveEmptyClassMethodRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector
