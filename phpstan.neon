@@ -10,7 +10,7 @@ services:
             - phpstan.broker.dynamicMethodReturnTypeExtension
 
 parameters:
-    # reportUnmatchedIgnoredErrors: false
+    reportUnmatchedIgnoredErrors: false
 
     cognitive_complexity:
         class: 50
@@ -24,6 +24,7 @@ parameters:
     paths:
         - rector.php
         - bin
+        - config
         - src
         - rules
         - packages
@@ -33,8 +34,6 @@ parameters:
         - rules-tests
         - utils
         - utils-tests
-        # this cannot be put it, because it wipes PHPStan cache on each run :( - must run in separate
-        #- config
 
     scanDirectories:
         - stubs
@@ -90,11 +89,6 @@ parameters:
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
             path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
 
-        # 3rd party package
-        -
-            message: '#Array (with keys|destruct) is not allowed\. Use value object to pass data instead#'
-            path: rules/Php70/EregToPcreTransformer.php
-
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
@@ -106,12 +100,6 @@ parameters:
         # generics nullable bugs
         - '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
-
-        -
-            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            paths:
-                - src/Rector/AbstractRector.php
-                - src/PhpParser/AstResolver.php
 
         - '#Property Rector\\Core\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
 
@@ -133,11 +121,6 @@ parameters:
             paths:
                 - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/Php70/EregToPcreTransformer.php
-
-        -
-            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            paths:
-                - packages/BetterPhpDocParser/ValueObject/Parser/BetterTokenIterator.php
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
 
@@ -274,10 +257,6 @@ parameters:
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
-
-        -
-            message: '#Make callable type explicit#'
-            path: src/NodeManipulator/BinaryOpManipulator.php
 
         # stmts refactoring
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
@@ -433,21 +412,12 @@ parameters:
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
 
-        # for reflection
-        -
-            message: '#\$this as argument is not allowed\. Refactor method to service composition#'
-            path: packages/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
-
         -
             message: '#Offset \(int\|string\) on array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
         -
             message: '#Method Rector\\Core\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
-            path: src/Util/ArrayParametersMerger.php
-
-        -
-            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
             path: src/Util/ArrayParametersMerger.php
 
         # fixture class
@@ -513,9 +483,6 @@ parameters:
         # useless
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
 
-        # reported in configs
-        - '#Symfony\\Component\\DependencyInjection\\Loader\\Configurator\\service not found#'
-
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
@@ -531,11 +498,6 @@ parameters:
         # phpstan 1.10.0
         - '#Call to deprecated method getDirectClassNames\(\) of class PHPStan\\Type\\TypeUtils.*#'
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
-
-        # actually used in global scope
-        -
-            message: '#Anonymous function has an unused use \$container#'
-            path: src/Autoloading/BootstrapFilesIncluder.php
 
         # false positive on enums
         - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
@@ -558,9 +520,6 @@ parameters:
 
         - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
         - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
-
-        # WIP
-        - '#Return type \(int\|PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\Ternary\|null\) of method Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector\:\:refactorWithScope\(\) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
         -
@@ -637,10 +596,6 @@ parameters:
         -
             message: '#Fetching class constant class of deprecated class Rector\\Core\\Contract\\Rector\\NonPhpRectorInterface#'
             path: packages/Config/*
-
-        -
-            message: '#Make callable type explicit\. Here is how\: https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#callables#'
-            path: packages/Config/RectorConfig.php
 
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
         -
