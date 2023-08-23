@@ -73,12 +73,14 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             // reset
             /** @var RewindableGenerator<int, ResetableInterface> $resetables */
             $resetables = $rectorConfig->tagged(ResetableInterface::class);
+
             foreach ($resetables as $resetable) {
                 /** @var ResetableInterface $resetable */
                 $resetable->reset();
             }
 
             $this->forgetRectorsRules();
+            $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
@@ -86,7 +88,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->bootFromConfigFiles([$configFile]);
 
             $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
-
             if ($rectorsGenerator instanceof RewindableGenerator) {
                 $phpRectors = iterator_to_array($rectorsGenerator->getIterator());
             } else {
@@ -98,8 +99,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $rectorNodeTraverser->refreshPhpRectors($phpRectors);
 
             // store cache
-            self::$cacheByRuleAndConfig[$cacheKey] = true;
-
             self::$cacheByRuleAndConfig[$cacheKey] = true;
         }
 

@@ -19,7 +19,7 @@
         "composer/xdebug-handler": "^3.0.3",
         "doctrine/inflector": "^2.0.6",
         "fidry/cpu-core-counter": "^0.5.1",
-        "illuminate/container": "^10.13",
+        "illuminate/container": "^10.20",
         "nette/utils": "^3.2",
         "nikic/php-parser": "^4.17.0",
         "ondram/ci-detector": "^4.1",
