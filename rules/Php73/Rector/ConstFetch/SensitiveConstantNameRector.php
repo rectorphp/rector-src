@@ -153,7 +153,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (str_contains($uppercasedConstantName, '\\') || str_contains($uppercasedConstantName, '(') || str_contains($uppercasedConstantName, "'") || str_contains($uppercasedConstantName, '"')) {
+        if (
+            str_contains($uppercasedConstantName, '\\')
+            || str_contains($uppercasedConstantName, '(')
+            || str_contains($uppercasedConstantName, "'")
+        ) {
             return null;
         }
 
