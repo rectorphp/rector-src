@@ -15,4 +15,12 @@ class ParentWithTypedParam
     public function boo($default = '') {
         return $default;
     }
+
+    public function nonEmptyArray($default = ['some data']) {
+        return implode('', $default);
+    }
+
+    public function nonEmptyString($default = 'some value') {
+        return $default;
+    }
 }
