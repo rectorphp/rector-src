@@ -52,7 +52,7 @@
         "phpstan/phpstan-strict-rules": "^1.5",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
         "phpunit/phpunit": "^10.1",
-        "rector/phpstan-rules": "^0.6",
+        "rector/phpstan-rules": "^0.7.1",
         "rector/rector-generator": "dev-main",
         "robiningelbrecht/phpunit-pretty-print": "^1.2.2",
         "spatie/enum": "^3.13",
@@ -64,9 +64,9 @@
         "symplify/vendor-patches": "^11.2",
         "tomasvotruba/class-leak": "^0.1",
         "tomasvotruba/cognitive-complexity": "^0.1",
-        "tomasvotruba/lines": "^0.3",
+        "tomasvotruba/lines": "^0.5",
         "tomasvotruba/type-coverage": "^0.2",
-        "tomasvotruba/unused-public": "^0.2",
+        "tomasvotruba/unused-public": "^0.3",
         "tracy/tracy": "^2.9"
     },
     "replace": {
