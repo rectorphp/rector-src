@@ -254,8 +254,12 @@ CODE_SAMPLE
             return new String_('');
         }
 
-        if ($expr instanceof LNumber || $expr instanceof DNumber) {
+        if ($expr instanceof LNumber) {
             return new LNumber($expr->value);
+        }
+
+        if ($expr instanceof DNumber) {
+            return new DNumber($expr->value);
         }
 
         return new ConstFetch(new Name($printParamDefault));
