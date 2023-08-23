@@ -84,6 +84,7 @@ final class SensitiveConstantNameRector extends AbstractScopeAwareRector impleme
         'TRUE',
         'FALSE',
         'NULL',
+        'ARRAY()'
     ];
 
     public function __construct(
