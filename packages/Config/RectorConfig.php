@@ -336,6 +336,11 @@ final class RectorConfig extends Container
         );
     }
 
+    public function resetRuleConfigurations(): void
+    {
+        $this->ruleConfigurations = [];
+    }
+
     private function importFile(string $filePath): void
     {
         Assert::fileExists($filePath);
@@ -411,10 +416,5 @@ final class RectorConfig extends Container
             ', ',
             $duplicatedRectorClasses
         ));
-    }
-
-    public function resetRuleConfigurations(): void
-    {
-        $this->ruleConfigurations = [];
     }
 }
