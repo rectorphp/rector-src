@@ -243,15 +243,15 @@ CODE_SAMPLE
     private function resolveParamDefault(Expr $expr): Expr
     {
         // re-create to avoid TokenStream error
-        if ($expr instanceof Array_) {
-            return new Array_($expr->items);
-        }
-
-        if ($expr instanceof String_) {
-            return new String_($expr->value);
-        }
-
         $printParamDefault = $this->betterStandardPrinter->print($expr);
+        if ($printParamDefault === '[]') {
+            return new Array_([]);
+        }
+
+        if ($printParamDefault === "''") {
+            return new String_('');
+        }
+
         return new ConstFetch(new Name($printParamDefault));
     }
 
