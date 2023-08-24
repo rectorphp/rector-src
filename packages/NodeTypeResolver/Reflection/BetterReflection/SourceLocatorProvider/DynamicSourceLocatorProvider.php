@@ -33,7 +33,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
-        private readonly PhpVersion $phpVersion
+        private readonly PhpVersion $phpVersion,
+        private readonly \PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
     ) {
     }
 
@@ -64,8 +65,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
         }
 
-        foreach ($this->filesByDirectory as $files) {
-            $sourceLocators[] = new OptimizedDirectorySourceLocator($this->fileNodesFetcher, $this->phpVersion, $files);
+        foreach ($this->filesByDirectory as $directory => $files) {
+            $sourceLocators[] = $this->optimizedDirectorySourceLocatorFactory->createByDirectory($directory);
         }
 
         $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
