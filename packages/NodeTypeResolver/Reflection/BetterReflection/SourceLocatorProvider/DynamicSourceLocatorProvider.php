@@ -6,9 +6,7 @@ namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvi
 
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use PHPStan\Php\PhpVersion;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
-use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
