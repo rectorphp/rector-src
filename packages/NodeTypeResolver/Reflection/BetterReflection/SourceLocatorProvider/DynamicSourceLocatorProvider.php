@@ -13,6 +13,7 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceL
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Webmozart\Assert\Assert;
+use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 
 /**
  * @api phpstan external
@@ -33,8 +34,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
-        private readonly PhpVersion $phpVersion,
-        private readonly \PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
+        private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
     ) {
     }
 
