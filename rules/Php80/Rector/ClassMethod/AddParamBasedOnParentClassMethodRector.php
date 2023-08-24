@@ -217,7 +217,7 @@ CODE_SAMPLE
             $paramDefault = $parentClassMethodParam->default;
 
             if ($paramDefault instanceof Expr) {
-                $paramDefault = $this->resolveParamDefault($paramDefault);
+                $paramDefault = $this->resolveParamDefault($paramDefault, $parentClassMethodParam);
             }
 
             $paramName = $this->nodeNameResolver->getName($parentClassMethodParam);
@@ -242,11 +242,11 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function resolveParamDefault(Expr $expr): Expr
+    private function resolveParamDefault(Expr $expr, Param $param): Expr
     {
         // re-create to avoid TokenStream error
-        if ($expr instanceof String_ && $expr->value === '') {
-            return new String_($expr->value);
+        if ($expr instanceof String_) {
+            return new String_($expr->value, [AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND)]);
         }
 
         if ($expr instanceof LNumber) {
@@ -257,11 +257,11 @@ CODE_SAMPLE
             return new DNumber($expr->value);
         }
 
-        $printParamDefault = $this->betterStandardPrinter->print($expr);
-        if ($printParamDefault === '[]') {
-            return new Array_([]);
+        if ($expr instanceof Array_ && $expr->items === []) {
+            return new Array_($expr->items, [AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND)]);
         }
 
+        $printParamDefault = $this->betterStandardPrinter->print($expr);
         return new ConstFetch(new Name($printParamDefault));
     }
 
