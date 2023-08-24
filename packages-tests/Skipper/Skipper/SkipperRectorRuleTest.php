@@ -8,7 +8,6 @@ use Illuminate\Container\RewindableGenerator;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\FileSystem\PhpFilesFinder;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
