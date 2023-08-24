@@ -63,7 +63,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
         }
 
-        foreach ($this->filesByDirectory as $directory => $files) {
+        foreach (array_keys($this->filesByDirectory) as $directory) {
             $sourceLocators[] = $this->optimizedDirectorySourceLocatorFactory->createByDirectory($directory);
         }
 
