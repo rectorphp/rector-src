@@ -87,7 +87,7 @@ final class ListRulesCommand extends Command
         $rectorClasses = array_map(static fn (RectorInterface $rector): string => $rector::class, $customRectors);
         sort($rectorClasses);
 
-        return $rectorClasses;
+        return array_unique($rectorClasses);
     }
 
     /**
