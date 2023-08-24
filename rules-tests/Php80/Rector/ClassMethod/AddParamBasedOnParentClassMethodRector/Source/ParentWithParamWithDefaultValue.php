@@ -32,6 +32,10 @@ class ParentWithParamWithDefaultValue
         return $default;
     }
 
+    public function nonEmptyString2($default = "some value") {
+        return $default;
+    }
+
     public function intParam($default = 123) {
         return $default;
     }

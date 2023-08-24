@@ -10,6 +10,9 @@ class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultVal
 
     public function nonEmptyString() {
     }
+
+    public function nonEmptyString2() {
+    }
 }
 
 ?>
@@ -25,6 +28,9 @@ class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultVal
     }
 
     public function nonEmptyString($default = 'some value') {
+    }
+
+    public function nonEmptyString2($default = "some value") {
     }
 }
 
