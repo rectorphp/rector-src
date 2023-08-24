@@ -38,10 +38,7 @@ final class DynamicSourceLocatorDecorator
         $this->dynamicSourceLocatorProvider->addFiles($files);
 
         $directories = $this->fileAndDirectoryFilter->filterDirectories($paths);
-        foreach ($directories as $directory) {
-            $filesInDirectory = $this->phpFilesFinder->findInPaths([$directory]);
-            $this->dynamicSourceLocatorProvider->addFilesByDirectory($directory, $filesInDirectory);
-        }
+        $this->dynamicSourceLocatorProvider->addDirectories($directories);
     }
 
     public function isPathsEmpty(): bool
