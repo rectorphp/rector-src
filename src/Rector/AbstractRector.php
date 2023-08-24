@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
@@ -321,10 +318,6 @@ CODE_SAMPLE;
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
 
             return $originalNode;
-        }
-
-        if ($refactoredNode instanceof Expr && $originalNode instanceof Stmt) {
-            $refactoredNode = new Expression($refactoredNode);
         }
 
         $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
