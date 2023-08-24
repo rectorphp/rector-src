@@ -246,7 +246,9 @@ CODE_SAMPLE
     {
         // re-create to avoid TokenStream error
         if ($expr instanceof String_) {
-            return new String_($expr->value, [AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND)]);
+            return new String_($expr->value, [
+                AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND),
+            ]);
         }
 
         if ($expr instanceof LNumber) {
@@ -258,7 +260,9 @@ CODE_SAMPLE
         }
 
         if ($expr instanceof Array_ && $expr->items === []) {
-            return new Array_($expr->items, [AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND)]);
+            return new Array_($expr->items, [
+                AttributeKey::KIND => $expr->getAttribute(AttributeKey::KIND),
+            ]);
         }
 
         $printParamDefault = $this->betterStandardPrinter->print($expr);
