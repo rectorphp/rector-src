@@ -32,6 +32,9 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
 
         $container = self::getContainer();
 
+        // to invoke before resolving
+        $container->make(\PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher::class);
+
         // here 1 rule should be removed and 1 should remain
         /** @var RewindableGenerator<int, RectorInterface> $rectorsIterator */
         $rectorsIterator = $container->tagged(RectorInterface::class);
