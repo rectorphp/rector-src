@@ -6,6 +6,7 @@ namespace Rector\Core\StaticReflection;
 
 use Rector\Core\FileSystem\FileAndDirectoryFilter;
 use Rector\Core\FileSystem\FilesystemTweaker;
+use Rector\Core\FileSystem\PhpFilesFinder;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 /**
@@ -16,6 +17,7 @@ final class DynamicSourceLocatorDecorator
 {
     public function __construct(
         private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private readonly PhpFilesFinder $phpFilesFinder,
         private readonly FileAndDirectoryFilter $fileAndDirectoryFilter,
         private readonly FilesystemTweaker $filesystemTweaker
     ) {
@@ -36,7 +38,10 @@ final class DynamicSourceLocatorDecorator
         $this->dynamicSourceLocatorProvider->addFiles($files);
 
         $directories = $this->fileAndDirectoryFilter->filterDirectories($paths);
-        $this->dynamicSourceLocatorProvider->addDirectories($directories);
+        foreach ($directories as $directory) {
+            $filesInDirectory = $this->phpFilesFinder->findInPaths([$directory]);
+            $this->dynamicSourceLocatorProvider->addFilesByDirectory($directory, $filesInDirectory);
+        }
     }
 
     public function isPathsEmpty(): bool
