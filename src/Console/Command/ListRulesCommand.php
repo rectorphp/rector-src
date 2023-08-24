@@ -68,6 +68,9 @@ final class ListRulesCommand extends Command
             $this->symfonyStyle->listing($skippedClasses);
         }
 
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->note(sprintf('Loaded %d rules', count($rectorClasses)));
+
         return Command::SUCCESS;
     }
 
