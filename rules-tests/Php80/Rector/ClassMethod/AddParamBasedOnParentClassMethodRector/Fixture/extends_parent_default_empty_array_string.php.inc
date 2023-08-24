@@ -36,7 +36,7 @@ class ExtendsParentDefaultEmptyArrayString extends ParentWithParamWithDefaultVal
     public function emptyString($default = '') {
     }
 
-    public function emptyString2($default = '') {
+    public function emptyString2($default = "") {
     }
 }
 
