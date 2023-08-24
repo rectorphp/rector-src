@@ -6,13 +6,11 @@ namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvi
 
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use PHPStan\Php\PhpVersion;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
-use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocator;
+use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use Webmozart\Assert\Assert;
 
 /**
  * @api phpstan external
@@ -25,15 +23,15 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     private array $filePaths = [];
 
     /**
-     * @var array<string, string[]>
+     * @var string[]
      */
-    private array $filesByDirectory = [];
+    private array $directories = [];
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
-        private readonly PhpVersion $phpVersion
+        private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
     ) {
     }
 
@@ -50,6 +48,14 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $this->filePaths = array_merge($this->filePaths, $files);
     }
 
+    /**
+     * @param string[] $directories
+     */
+    public function addDirectories(array $directories): void
+    {
+        $this->directories = array_merge($this->directories, $directories);
+    }
+
     public function provide(): SourceLocator
     {
         // do not cache for PHPUnit, as in test every fixture is different
@@ -64,8 +70,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
         }
 
-        foreach ($this->filesByDirectory as $files) {
-            $sourceLocators[] = new OptimizedDirectorySourceLocator($this->fileNodesFetcher, $this->phpVersion, $files);
+        foreach ($this->directories as $directory) {
+            $sourceLocators[] = $this->optimizedDirectorySourceLocatorFactory->createByDirectory($directory);
         }
 
         $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
@@ -73,19 +79,9 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         return $this->aggregateSourceLocator;
     }
 
-    /**
-     * @param string[] $files
-     */
-    public function addFilesByDirectory(string $directory, array $files): void
-    {
-        Assert::allString($files);
-
-        $this->filesByDirectory[$directory] = $files;
-    }
-
     public function isPathsEmpty(): bool
     {
-        return $this->filePaths === [] && $this->filesByDirectory === [];
+        return $this->filePaths === [] && $this->directories === [];
     }
 
     /**
@@ -94,7 +90,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     public function reset(): void
     {
         $this->filePaths = [];
-        $this->filesByDirectory = [];
+        $this->directories = [];
         $this->aggregateSourceLocator = null;
     }
 }
