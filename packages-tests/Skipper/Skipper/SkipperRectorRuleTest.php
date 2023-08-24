@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Skipper\Skipper;
 
+use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use Illuminate\Container\RewindableGenerator;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -33,7 +34,7 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
         $container = self::getContainer();
 
         // to invoke before resolving
-        $container->make(\PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher::class);
+        $container->make(FileNodesFetcher::class);
 
         // here 1 rule should be removed and 1 should remain
         /** @var RewindableGenerator<int, RectorInterface> $rectorsIterator */
