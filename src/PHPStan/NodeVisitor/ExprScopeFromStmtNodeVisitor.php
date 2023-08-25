@@ -11,16 +11,14 @@ use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\VirtualNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
+use PHPStan\Analyser\MutatingScope;
 
 final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
 {
     private ?Stmt $currentStmt = null;
 
-    public function __construct(
-        private readonly ScopeFactory $scopeFactory,
-        private string $filePath
-    ) {
+    public function __construct(private readonly MutatingScope $mutatingScope)
+    {
     }
 
     public function enterNode(Node $node): ?Node
@@ -44,12 +42,11 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
         }
 
         // too deep Expr, eg: $$param = $$bar = self::decodeValue($result->getItem()->getTextContent());
-        $filePath = $this->filePath;
         $scope = $this->currentStmt instanceof Stmt
             ? $this->currentStmt->getAttribute(AttributeKey::SCOPE)
-            : $this->scopeFactory->createFromFile($filePath);
+            : $this->mutatingScope;
 
-        $scope = $scope instanceof Scope ? $scope : $this->scopeFactory->createFromFile($filePath);
+        $scope = $scope instanceof Scope ? $scope : $this->mutatingScope;
 
         $node->setAttribute(AttributeKey::SCOPE, $scope);
 
