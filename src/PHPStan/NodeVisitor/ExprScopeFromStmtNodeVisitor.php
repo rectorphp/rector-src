@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\VirtualNode;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
@@ -26,6 +27,10 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof Stmt) {
             $this->currentStmt = $node;
+            return null;
+        }
+
+        if ($node instanceof VirtualNode) {
             return null;
         }
 
