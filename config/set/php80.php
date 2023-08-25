@@ -100,4 +100,10 @@ return static function (RectorConfig $rectorConfig): void {
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'l', 'lt'),
             new ReplaceFuncCallArgumentDefaultValue('version_compare', 2, 'n', 'ne'),
         ]);
+
+    $rectorConfig
+        ->ruleWithConfiguration(FunctionArgumentDefaultValueReplacerRector::class, [
+            new ReplaceFuncCallArgumentDefaultValue('get_headers', 1, 0, false),
+            new ReplaceFuncCallArgumentDefaultValue('get_headers', 1, 1, true),
+        ]);
 };
