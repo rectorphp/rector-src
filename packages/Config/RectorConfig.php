@@ -222,8 +222,10 @@ final class RectorConfig extends Container
     {
         $paths = [$filePath];
 
-        $filesystemTweaker = new FilesystemTweaker();
-        $paths = $filesystemTweaker->resolveWithFnmatch($paths);
+        if (str_contains($filePath, '*')) {
+            $filesystemTweaker = new FilesystemTweaker();
+            $paths = $filesystemTweaker->resolveWithFnmatch($paths);
+        }
 
         foreach ($paths as $path) {
             $this->importFile($path);
