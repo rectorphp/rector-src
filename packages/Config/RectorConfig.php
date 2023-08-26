@@ -222,7 +222,7 @@ final class RectorConfig extends Container
     {
         $paths = [$filePath];
 
-        if (! str_contains($filePath, '*')) {
+        if (str_contains($filePath, '*')) {
             $filesystemTweaker = new FilesystemTweaker();
             $paths = $filesystemTweaker->resolveWithFnmatch($paths);
         }
