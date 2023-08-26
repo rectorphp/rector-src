@@ -27,7 +27,7 @@
         "phpstan/phpstan": "^1.10.31",
         "react/event-loop": "^1.3",
         "react/promise": "^2.10",
-        "react/socket": "^1.12",
+        "react/socket": "1.13.0",
         "rector/extension-installer": "^0.11.2",
         "rector/rector-doctrine": "dev-main",
         "rector/rector-downgrade-php": "dev-main",
