@@ -7,6 +7,8 @@ namespace Rector\PostRector\Rector;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Application\UseImportsAdder;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -33,6 +35,10 @@ final class UseAddingPostRector extends AbstractPostRector
     {
         // no nodes → just return
         if ($nodes === []) {
+            return $nodes;
+        }
+
+        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
             return $nodes;
         }
 
