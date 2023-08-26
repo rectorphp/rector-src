@@ -7,22 +7,37 @@ namespace Rector\Core\PHPStan\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
+use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\VirtualNode;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use PHPStan\Analyser\MutatingScope;
 
 final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
 {
     private ?Stmt $currentStmt = null;
 
-    public function __construct(private readonly MutatingScope $mutatingScope)
-    {
+    public function __construct(
+        private readonly MutatingScope $mutatingScope
+    ) {
     }
 
     public function enterNode(Node $node): ?Node
     {
+        if (
+            $node instanceof FileWithoutNamespace ||
+            $node instanceof Namespace_ ||
+            $node instanceof ClassLike ||
+            $node instanceof ClassMethod ||
+            $node instanceof Function_) {
+            return null;
+        }
+
         if ($node instanceof Stmt) {
             $this->currentStmt = $node;
             return null;
