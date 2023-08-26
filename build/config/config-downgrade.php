@@ -42,5 +42,11 @@ final class DowngradeRectorConfig
         'vendor/symfony/contracts/Cache/*',
 
         'vendor/rector/rector-generator/templates',
+
+        'vendor/rector/rector-symfony/config',
+        'vendor/rector/rector-doctrine/config',
+        'vendor/rector/rector-phpunit/config',
+        'vendor/rector/rector-generator/config',
+        'vendor/rector/rector-downgrade-php/config',
     ];
 }
