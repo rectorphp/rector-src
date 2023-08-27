@@ -82,7 +82,7 @@ CODE_SAMPLE;
     private CurrentFileProvider $currentFileProvider;
 
     /**
-     * @var array<string, Node[]|Node>
+     * @var array<string, Node[]>
      */
     private array $nodesToReturn = [];
 
