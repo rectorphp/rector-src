@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
@@ -234,11 +235,15 @@ CODE_SAMPLE;
             return $result;
         }
 
-        if ($result::class === $node::class) {
-            return $result;
+        if ($result instanceof Stmt && ! $node instanceof Stmt) {
+            return $node;
         }
 
-        return $node;
+        if (! $result instanceof Stmt && $node instanceof Stmt) {
+            return $node;
+        }
+
+        return $result;
     }
 
     protected function isName(Node $node, string $name): bool
