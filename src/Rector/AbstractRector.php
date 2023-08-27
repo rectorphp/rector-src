@@ -238,12 +238,13 @@ CODE_SAMPLE;
         if ($result instanceof Stmt && ! $node instanceof Stmt) {
             return $node;
         }
-
-        if (! $result instanceof Stmt && $node instanceof Stmt) {
-            return $node;
+        if ($result instanceof Stmt) {
+            return $result;
         }
-
-        return $result;
+        if (!$node instanceof Stmt) {
+            return $result;
+        }
+        return $node;
     }
 
     protected function isName(Node $node, string $name): bool
