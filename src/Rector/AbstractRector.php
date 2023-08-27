@@ -222,7 +222,7 @@ CODE_SAMPLE;
     public function leaveNode(Node $node): array|int|Node|null
     {
         $objectHash = spl_object_hash($node);
-        if ($this->toBeRemovedNodeHash !== null && $this->toBeRemovedNodeHash === $objectHash) {
+        if ($this->toBeRemovedNodeHash === $objectHash) {
             $this->toBeRemovedNodeHash = null;
 
             return NodeTraverser::REMOVE_NODE;
