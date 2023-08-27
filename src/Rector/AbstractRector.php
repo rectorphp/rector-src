@@ -228,11 +228,7 @@ CODE_SAMPLE;
             return NodeTraverser::REMOVE_NODE;
         }
 
-        if (isset($this->nodesToReturn[$objectHash])) {
-            return $this->nodesToReturn[$objectHash];
-        }
-
-        return $node;
+        return $this->nodesToReturn[$objectHash] ?? $node;
     }
 
     protected function isName(Node $node, string $name): bool
