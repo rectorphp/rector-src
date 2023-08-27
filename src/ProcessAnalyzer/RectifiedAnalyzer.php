@@ -51,7 +51,7 @@ final class RectifiedAnalyzer
     private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
     {
         if ($originalNode instanceof Node) {
-            return ! $originalNode instanceof Stmt && $node instanceof Stmt;
+            return false;
         }
 
         if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
