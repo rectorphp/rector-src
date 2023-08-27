@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
@@ -235,16 +236,12 @@ CODE_SAMPLE;
             return $result;
         }
 
-        if ($result instanceof Stmt && ! $node instanceof Stmt) {
+        if ($result instanceof Stmt && $node instanceof Expr) {
             return $node;
         }
 
-        if ($result instanceof Stmt) {
-            return $result;
-        }
-
-        if (! $node instanceof Stmt) {
-            return $result;
+        if ($result instanceof Expr && $node instanceof Stmt) {
+            return $node;
         }
 
         return $node;
