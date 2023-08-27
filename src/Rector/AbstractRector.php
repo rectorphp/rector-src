@@ -238,12 +238,15 @@ CODE_SAMPLE;
         if ($result instanceof Stmt && ! $node instanceof Stmt) {
             return $node;
         }
+
         if ($result instanceof Stmt) {
             return $result;
         }
+
         if (!$node instanceof Stmt) {
             return $result;
         }
+
         return $node;
     }
 
