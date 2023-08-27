@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -51,7 +52,7 @@ final class RectifiedAnalyzer
     private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
     {
         if ($originalNode instanceof Node) {
-            return $originalNode::class === $node::class;
+            return $originalNode instanceof Expr && $node instanceof Stmt;
         }
 
         if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
