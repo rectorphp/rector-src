@@ -243,7 +243,7 @@ CODE_SAMPLE;
             return $result;
         }
 
-        if (!$node instanceof Stmt) {
+        if (! $node instanceof Stmt) {
             return $result;
         }
 
