@@ -244,7 +244,7 @@ CODE_SAMPLE;
             return $node;
         }
 
-        return $node;
+        return $result;
     }
 
     protected function isName(Node $node, string $name): bool
