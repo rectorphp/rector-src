@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Skipper\Skipper;
 
-use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use Illuminate\Container\RewindableGenerator;
+use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Rector\RectorInterface;
