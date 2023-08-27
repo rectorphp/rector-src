@@ -240,11 +240,15 @@ CODE_SAMPLE;
             return $node;
         }
 
-        if ($result instanceof Expr && $node instanceof Stmt) {
-            return $node;
+        if (! $result instanceof Expr) {
+            return $result;
         }
 
-        return $result;
+        if (! $node instanceof Stmt) {
+            return $result;
+        }
+
+        return $node;
     }
 
     protected function isName(Node $node, string $name): bool
