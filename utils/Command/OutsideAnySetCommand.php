@@ -38,7 +38,7 @@ final class OutsideAnySetCommand extends Command
         // skip transform rules, as designed for custom use
         $filteredRectorClassesOutsideAnySet = array_filter(
             $rectorClassesOutsideAnySet,
-            function (string $rectorClass): bool {
+            static function (string $rectorClass): bool {
                 if (str_contains($rectorClass, '\\Transform\\')) {
                     return false;
                 }
