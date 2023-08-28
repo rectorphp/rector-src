@@ -230,6 +230,10 @@ CODE_SAMPLE;
      */
     public function leaveNode(Node $node): array|int|Node|null
     {
+        if ($node->hasAttribute(AttributeKey::ORIGINAL_NODE)) {
+            return null;
+        }
+
         $objectHash = spl_object_hash($node);
         if ($this->toBeRemovedNodeHash === $objectHash) {
             $this->toBeRemovedNodeHash = null;
