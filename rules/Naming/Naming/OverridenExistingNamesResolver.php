@@ -65,10 +65,10 @@ final class OverridenExistingNamesResolver
      */
     private function resolveOveriddenNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
     {
-        $classMethodHash = spl_object_id($functionLike);
+        $classMethodId = spl_object_id($functionLike);
 
-        if (isset($this->overridenExistingVariableNamesByClassMethod[$classMethodHash])) {
-            return $this->overridenExistingVariableNamesByClassMethod[$classMethodHash];
+        if (isset($this->overridenExistingVariableNamesByClassMethod[$classMethodId])) {
+            return $this->overridenExistingVariableNamesByClassMethod[$classMethodId];
         }
 
         $currentlyUsedNames = [];
@@ -90,7 +90,7 @@ final class OverridenExistingNamesResolver
         $currentlyUsedNames = array_values($currentlyUsedNames);
         $currentlyUsedNames = $this->arrayFilter->filterWithAtLeastTwoOccurences($currentlyUsedNames);
 
-        $this->overridenExistingVariableNamesByClassMethod[$classMethodHash] = $currentlyUsedNames;
+        $this->overridenExistingVariableNamesByClassMethod[$classMethodId] = $currentlyUsedNames;
 
         return $currentlyUsedNames;
     }

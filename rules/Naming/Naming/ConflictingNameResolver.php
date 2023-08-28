@@ -64,10 +64,10 @@ final class ConflictingNameResolver
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike
     ): array {
         // cache it!
-        $classMethodHash = spl_object_id($functionLike);
+        $classMethodId = spl_object_id($functionLike);
 
-        if (isset($this->conflictingVariableNamesByClassMethod[$classMethodHash])) {
-            return $this->conflictingVariableNamesByClassMethod[$classMethodHash];
+        if (isset($this->conflictingVariableNamesByClassMethod[$classMethodId])) {
+            return $this->conflictingVariableNamesByClassMethod[$classMethodId];
         }
 
         $paramNames = $this->functionLikeManipulator->resolveParamNames($functionLike);
@@ -77,7 +77,7 @@ final class ConflictingNameResolver
         $protectedNames = array_merge($paramNames, $newAssignNames, $nonNewAssignNames);
 
         $protectedNames = $this->arrayFilter->filterWithAtLeastTwoOccurences($protectedNames);
-        $this->conflictingVariableNamesByClassMethod[$classMethodHash] = $protectedNames;
+        $this->conflictingVariableNamesByClassMethod[$classMethodId] = $protectedNames;
 
         return $protectedNames;
     }

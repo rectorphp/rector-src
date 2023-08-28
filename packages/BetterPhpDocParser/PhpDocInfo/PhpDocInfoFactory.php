@@ -57,10 +57,10 @@ final class PhpDocInfoFactory
 
     public function createFromNode(Node $node): ?PhpDocInfo
     {
-        $objectHash = spl_object_id($node);
+        $objectId = spl_object_id($node);
 
-        if (isset($this->phpDocInfosByObjectHash[$objectHash])) {
-            return $this->phpDocInfosByObjectHash[$objectHash];
+        if (isset($this->phpDocInfosByObjectHash[$objectId])) {
+            return $this->phpDocInfosByObjectHash[$objectId];
         }
 
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
@@ -84,7 +84,7 @@ final class PhpDocInfoFactory
         }
 
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
-        $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
+        $this->phpDocInfosByObjectHash[$objectId] = $phpDocInfo;
 
         return $phpDocInfo;
     }
