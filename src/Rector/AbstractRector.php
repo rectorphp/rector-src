@@ -349,10 +349,10 @@ CODE_SAMPLE;
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-            $originalNodeHash = spl_object_id($originalNode);
+            $originalNodeId = spl_object_id($originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
-            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
+            $this->nodesToReturn[$originalNodeId] = $refactoredNode;
 
             return $originalNode;
         }
