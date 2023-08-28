@@ -23,7 +23,7 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 final class PhpDocInfoFactory
 {
     /**
-     * @var array<string, PhpDocInfo>
+     * @var array<int, PhpDocInfo>
      */
     private array $phpDocInfosByObjectHash = [];
 
