@@ -35,10 +35,25 @@ final class OutsideAnySetCommand extends Command
 
         $rectorClassesOutsideAnySet = array_diff($existingRectorClasses, $setDefinedRectorClasses);
 
-        sort($rectorClassesOutsideAnySet);
+        // skip transform rules, as designed for custom use
+        $filteredRectorClassesOutsideAnySet = array_filter(
+            $rectorClassesOutsideAnySet,
+            static function (string $rectorClass): bool {
+                if (str_contains($rectorClass, '\\Transform\\')) {
+                    return false;
+                }
 
-        $this->symfonyStyle->listing($rectorClassesOutsideAnySet);
-        $this->symfonyStyle->warning(sprintf('%d rules is outside any set', count($rectorClassesOutsideAnySet)));
+                // skip renaming rules too, as designed for custom use
+                return ! str_contains($rectorClass, '\\Renaming\\');
+            }
+        );
+
+        sort($filteredRectorClassesOutsideAnySet);
+
+        $this->symfonyStyle->listing($filteredRectorClassesOutsideAnySet);
+        $this->symfonyStyle->warning(
+            sprintf('%d rules is outside any set', count($filteredRectorClassesOutsideAnySet))
+        );
 
         return self::SUCCESS;
     }
