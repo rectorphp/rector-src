@@ -33,7 +33,7 @@ final class ClassAnnotationMatcher
 
     public function resolveTagFullyQualifiedName(string $tag, Node $node): string
     {
-        $uniqueHash = $tag . spl_object_hash($node);
+        $uniqueHash = $tag . spl_object_id($node);
         if (isset($this->fullyQualifiedNameByHash[$uniqueHash])) {
             return $this->fullyQualifiedNameByHash[$uniqueHash];
         }

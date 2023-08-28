@@ -64,7 +64,7 @@ final class ConflictingNameResolver
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike
     ): array {
         // cache it!
-        $classMethodHash = spl_object_hash($functionLike);
+        $classMethodHash = spl_object_id($functionLike);
 
         if (isset($this->conflictingVariableNamesByClassMethod[$classMethodHash])) {
             return $this->conflictingVariableNamesByClassMethod[$classMethodHash];

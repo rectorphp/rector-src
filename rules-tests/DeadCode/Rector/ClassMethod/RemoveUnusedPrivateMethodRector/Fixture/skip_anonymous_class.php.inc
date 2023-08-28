@@ -51,7 +51,7 @@ class SkipAnonymousClass
 
             private function processClassNode(Class_ $classNode): Class_
             {
-                $variableInfos = $this->propertiesByClass[spl_object_hash($classNode)] ?? [];
+                $variableInfos = $this->propertiesByClass[spl_object_id($classNode)] ?? [];
                 foreach ($variableInfos as $propertyInfo) {
                     $this->classManipulator->addConstructorDependency($classNode, $propertyInfo);
                 }

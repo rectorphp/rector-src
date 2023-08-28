@@ -37,7 +37,7 @@ final class ClassMethodAssignManipulator
         $classMethod->params[] = $this->nodeFactory->createParamFromNameAndType($name, $type);
         $classMethod->stmts[] = new Expression($assign);
 
-        $classMethodHash = spl_object_hash($classMethod);
+        $classMethodHash = spl_object_id($classMethod);
         $this->alreadyAddedClassMethodNames[$classMethodHash][] = $name;
     }
 
@@ -49,7 +49,7 @@ final class ClassMethodAssignManipulator
             }
         }
 
-        $classMethodHash = spl_object_hash($classMethod);
+        $classMethodHash = spl_object_id($classMethod);
         if (! isset($this->alreadyAddedClassMethodNames[$classMethodHash])) {
             return false;
         }

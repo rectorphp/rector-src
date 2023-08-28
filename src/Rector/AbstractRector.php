@@ -90,7 +90,7 @@ CODE_SAMPLE;
 
     private RectorOutput $rectorOutput;
 
-    private ?string $toBeRemovedNodeHash = null;
+    private ?int $toBeRemovedNodeHash = null;
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -183,7 +183,7 @@ CODE_SAMPLE;
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
         if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
-            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+            $this->toBeRemovedNodeHash = spl_object_id($originalNode);
 
             // notify this rule changing code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
@@ -234,7 +234,7 @@ CODE_SAMPLE;
             return null;
         }
 
-        $objectHash = spl_object_hash($node);
+        $objectHash = spl_object_id($node);
         if ($this->toBeRemovedNodeHash === $objectHash) {
             $this->toBeRemovedNodeHash = null;
 
@@ -349,7 +349,7 @@ CODE_SAMPLE;
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-            $originalNodeHash = spl_object_hash($originalNode);
+            $originalNodeHash = spl_object_id($originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
             $this->nodesToReturn[$originalNodeHash] = $refactoredNode;

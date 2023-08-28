@@ -65,7 +65,7 @@ final class OverridenExistingNamesResolver
      */
     private function resolveOveriddenNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
     {
-        $classMethodHash = spl_object_hash($functionLike);
+        $classMethodHash = spl_object_id($functionLike);
 
         if (isset($this->overridenExistingVariableNamesByClassMethod[$classMethodHash])) {
             return $this->overridenExistingVariableNamesByClassMethod[$classMethodHash];
