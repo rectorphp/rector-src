@@ -48,12 +48,6 @@ final class ClassMethodAssignManipulator
                 return true;
             }
         }
-
-        $classMethodHash = spl_object_id($classMethod);
-        if (! isset($this->alreadyAddedClassMethodNames[$classMethodHash])) {
-            return false;
-        }
-
-        return in_array($name, $this->alreadyAddedClassMethodNames[$classMethodHash], true);
+        return false;
     }
 }
