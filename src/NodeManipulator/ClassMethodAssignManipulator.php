@@ -48,6 +48,7 @@ final class ClassMethodAssignManipulator
                 return true;
             }
         }
+
         return false;
     }
 }
