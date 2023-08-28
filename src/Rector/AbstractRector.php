@@ -203,7 +203,7 @@ CODE_SAMPLE;
                 return $refactoredNode;
             }
 
-            $this->decorateCurrentAndChildren($node, $originalNode);
+            $this->decorateCurrentAndChildren($node);
             return null;
         }
 
