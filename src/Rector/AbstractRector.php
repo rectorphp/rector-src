@@ -226,12 +226,17 @@ CODE_SAMPLE;
         //    1. registered in getNodesTypes() method
         //    2. different with current node type, as already decorated above
         //
-        $types = array_filter(
+        $otherTypes = array_filter(
             $this->getNodeTypes(),
             static fn (string $nodeType): bool => $nodeType !== $node::class
         );
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($types) {
-            if (in_array($subNode::class, $types, true)) {
+
+        if ($otherTypes === []) {
+            return;
+        }
+
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes) {
+            if (in_array($subNode::class, $otherTypes, true)) {
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
             }
