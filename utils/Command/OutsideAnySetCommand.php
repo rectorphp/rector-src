@@ -39,7 +39,12 @@ final class OutsideAnySetCommand extends Command
         $filteredRectorClassesOutsideAnySet = array_filter(
             $rectorClassesOutsideAnySet,
             function (string $rectorClass): bool {
-                return ! str_contains($rectorClass, '\\Transform\\');
+                if (str_contains($rectorClass, '\\Transform\\')) {
+                    return false;
+                }
+
+                // skip renaming rules too, as designed for custom use
+                return ! str_contains($rectorClass, '\\Renaming\\');
             }
         );
 
