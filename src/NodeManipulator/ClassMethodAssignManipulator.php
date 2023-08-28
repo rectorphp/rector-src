@@ -14,7 +14,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class ClassMethodAssignManipulator
 {
     /**
-     * @var array<string, string[]>
+     * @var array<int, string[]>
      */
     private array $alreadyAddedClassMethodNames = [];
 
