@@ -27,7 +27,11 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        return $this->isJustReprintedOverlappedTokenStart($node, $originalNode);
+        if ($this->isJustReprintedOverlappedTokenStart($node, $originalNode)) {
+            return true;
+        }
+
+        return $node->getAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE) === $rectorClass;
     }
 
     /**
