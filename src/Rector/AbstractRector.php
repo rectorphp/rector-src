@@ -82,7 +82,7 @@ CODE_SAMPLE;
     private CurrentFileProvider $currentFileProvider;
 
     /**
-     * @var array<string, Node[]>
+     * @var array<int, Node[]>
      */
     private array $nodesToReturn = [];
 
@@ -90,7 +90,7 @@ CODE_SAMPLE;
 
     private RectorOutput $rectorOutput;
 
-    private ?string $toBeRemovedNodeHash = null;
+    private ?int $toBeRemovedNodeId = null;
 
     public function autowire(
         NodeNameResolver $nodeNameResolver,
@@ -183,7 +183,7 @@ CODE_SAMPLE;
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
         if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
-            $this->toBeRemovedNodeHash = spl_object_hash($originalNode);
+            $this->toBeRemovedNodeId = spl_object_id($originalNode);
 
             // notify this rule changing code
             $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
@@ -234,14 +234,14 @@ CODE_SAMPLE;
             return null;
         }
 
-        $objectHash = spl_object_hash($node);
-        if ($this->toBeRemovedNodeHash === $objectHash) {
-            $this->toBeRemovedNodeHash = null;
+        $objectId = spl_object_id($node);
+        if ($this->toBeRemovedNodeId === $objectId) {
+            $this->toBeRemovedNodeId = null;
 
             return NodeTraverser::REMOVE_NODE;
         }
 
-        return $this->nodesToReturn[$objectHash] ?? $node;
+        return $this->nodesToReturn[$objectId] ?? $node;
     }
 
     protected function isName(Node $node, string $name): bool
@@ -349,10 +349,10 @@ CODE_SAMPLE;
             $this->refreshScopeNodes($refactoredNode, $filePath, $currentScope);
 
             // search "infinite recursion" in https://github.com/nikic/PHP-Parser/blob/master/doc/component/Walking_the_AST.markdown
-            $originalNodeHash = spl_object_hash($originalNode);
+            $originalNodeId = spl_object_id($originalNode);
 
             // will be replaced in leaveNode() the original node must be passed
-            $this->nodesToReturn[$originalNodeHash] = $refactoredNode;
+            $this->nodesToReturn[$originalNodeId] = $refactoredNode;
 
             return $originalNode;
         }

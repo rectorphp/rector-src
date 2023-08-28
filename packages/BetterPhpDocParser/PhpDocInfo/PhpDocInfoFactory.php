@@ -23,9 +23,9 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 final class PhpDocInfoFactory
 {
     /**
-     * @var array<string, PhpDocInfo>
+     * @var array<int, PhpDocInfo>
      */
-    private array $phpDocInfosByObjectHash = [];
+    private array $phpDocInfosByObjectId = [];
 
     public function __construct(
         private readonly PhpDocNodeMapper $phpDocNodeMapper,
@@ -57,10 +57,10 @@ final class PhpDocInfoFactory
 
     public function createFromNode(Node $node): ?PhpDocInfo
     {
-        $objectHash = spl_object_hash($node);
+        $objectId = spl_object_id($node);
 
-        if (isset($this->phpDocInfosByObjectHash[$objectHash])) {
-            return $this->phpDocInfosByObjectHash[$objectHash];
+        if (isset($this->phpDocInfosByObjectId[$objectId])) {
+            return $this->phpDocInfosByObjectId[$objectId];
         }
 
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
@@ -84,7 +84,7 @@ final class PhpDocInfoFactory
         }
 
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
-        $this->phpDocInfosByObjectHash[$objectHash] = $phpDocInfo;
+        $this->phpDocInfosByObjectId[$objectId] = $phpDocInfo;
 
         return $phpDocInfo;
     }

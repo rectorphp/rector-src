@@ -14,7 +14,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class ClassMethodAssignManipulator
 {
     /**
-     * @var array<string, string[]>
+     * @var array<int, string[]>
      */
     private array $alreadyAddedClassMethodNames = [];
 
@@ -37,8 +37,8 @@ final class ClassMethodAssignManipulator
         $classMethod->params[] = $this->nodeFactory->createParamFromNameAndType($name, $type);
         $classMethod->stmts[] = new Expression($assign);
 
-        $classMethodHash = spl_object_hash($classMethod);
-        $this->alreadyAddedClassMethodNames[$classMethodHash][] = $name;
+        $classMethodId = spl_object_id($classMethod);
+        $this->alreadyAddedClassMethodNames[$classMethodId][] = $name;
     }
 
     private function hasMethodParameter(ClassMethod $classMethod, string $name): bool
@@ -49,11 +49,11 @@ final class ClassMethodAssignManipulator
             }
         }
 
-        $classMethodHash = spl_object_hash($classMethod);
-        if (! isset($this->alreadyAddedClassMethodNames[$classMethodHash])) {
+        $classMethodId = spl_object_id($classMethod);
+        if (! isset($this->alreadyAddedClassMethodNames[$classMethodId])) {
             return false;
         }
 
-        return in_array($name, $this->alreadyAddedClassMethodNames[$classMethodHash], true);
+        return in_array($name, $this->alreadyAddedClassMethodNames[$classMethodId], true);
     }
 }
