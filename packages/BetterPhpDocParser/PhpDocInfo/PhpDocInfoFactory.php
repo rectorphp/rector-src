@@ -25,7 +25,7 @@ final class PhpDocInfoFactory
     /**
      * @var array<int, PhpDocInfo>
      */
-    private array $phpDocInfosByObjectHash = [];
+    private array $phpDocInfosByObjectId = [];
 
     public function __construct(
         private readonly PhpDocNodeMapper $phpDocNodeMapper,
@@ -59,8 +59,8 @@ final class PhpDocInfoFactory
     {
         $objectId = spl_object_id($node);
 
-        if (isset($this->phpDocInfosByObjectHash[$objectId])) {
-            return $this->phpDocInfosByObjectHash[$objectId];
+        if (isset($this->phpDocInfosByObjectId[$objectId])) {
+            return $this->phpDocInfosByObjectId[$objectId];
         }
 
         /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
@@ -84,7 +84,7 @@ final class PhpDocInfoFactory
         }
 
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, $tokenIterator, $node);
-        $this->phpDocInfosByObjectHash[$objectId] = $phpDocInfo;
+        $this->phpDocInfosByObjectId[$objectId] = $phpDocInfo;
 
         return $phpDocInfo;
     }
