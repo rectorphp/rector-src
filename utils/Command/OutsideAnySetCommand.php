@@ -43,6 +43,10 @@ final class OutsideAnySetCommand extends Command
                     return false;
                 }
 
+                if (str_contains($rectorClass, '\\Removing\\')) {
+                    return false;
+                }
+
                 // skip renaming rules too, as designed for custom use
                 return ! str_contains($rectorClass, '\\Renaming\\');
             }
