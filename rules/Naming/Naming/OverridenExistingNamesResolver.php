@@ -17,7 +17,7 @@ use Rector\NodeNameResolver\NodeNameResolver;
 final class OverridenExistingNamesResolver
 {
     /**
-     * @var array<string, array<int, string>>
+     * @var array<int, array<int, string>>
      */
     private array $overridenExistingVariableNamesByClassMethod = [];
 

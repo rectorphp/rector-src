@@ -17,7 +17,7 @@ use Rector\Naming\PhpArray\ArrayFilter;
 final class ConflictingNameResolver
 {
     /**
-     * @var array<string, string[]>
+     * @var array<int, string[]>
      */
     private array $conflictingVariableNamesByClassMethod = [];
 
