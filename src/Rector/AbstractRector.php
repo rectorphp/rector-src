@@ -195,7 +195,11 @@ CODE_SAMPLE;
         if (is_int($refactoredNode)) {
             $this->createdByRuleDecorator->decorate($node, $originalNode, static::class);
 
-            if (! in_array($refactoredNode, [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN], true)) {
+            if (! in_array(
+                $refactoredNode,
+                [NodeTraverser::DONT_TRAVERSE_CHILDREN, NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN],
+                true
+            )) {
                 // notify this rule changing code
                 $rectorWithLineChange = new RectorWithLineChange(static::class, $originalNode->getLine());
                 $this->file->addRectorClassWithLine($rectorWithLineChange);
@@ -218,30 +222,6 @@ CODE_SAMPLE;
         }
 
         return $this->postRefactorProcess($originalNode, $node, $refactoredNode, $filePath);
-    }
-
-    private function decorateCurrentAndChildren(Node $node): void
-    {
-        // filter only types that
-        //    1. registered in getNodesTypes() method
-        //    2. different with current node type, as already decorated above
-        //
-        $otherTypes = array_filter(
-            $this->getNodeTypes(),
-            static fn (string $nodeType): bool => $nodeType !== $node::class
-        );
-
-        if ($otherTypes === []) {
-            return;
-        }
-
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes) {
-            if (in_array($subNode::class, $otherTypes, true)) {
-                $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
-            }
-
-            return null;
-        });
     }
 
     /**
@@ -314,6 +294,30 @@ CODE_SAMPLE;
         if (! $newNode instanceof Nop) {
             $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
         }
+    }
+
+    private function decorateCurrentAndChildren(Node $node): void
+    {
+        // filter only types that
+        //    1. registered in getNodesTypes() method
+        //    2. different with current node type, as already decorated above
+        //
+        $otherTypes = array_filter(
+            $this->getNodeTypes(),
+            static fn (string $nodeType): bool => $nodeType !== $node::class
+        );
+
+        if ($otherTypes === []) {
+            return;
+        }
+
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes) {
+            if (in_array($subNode::class, $otherTypes, true)) {
+                $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
+            }
+
+            return null;
+        });
     }
 
     /**
