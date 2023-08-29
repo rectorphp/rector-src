@@ -25,7 +25,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
-use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -36,7 +36,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnTypeFromStrictParamRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipNode($node)) {
+        if ($this->shouldSkipNode($node, $scope)) {
             return null;
         }
 
@@ -195,20 +195,14 @@ CODE_SAMPLE
         return $isParamModified;
     }
 
-    private function shouldSkipNode(ClassMethod|Function_|Closure $node): bool
+    private function shouldSkipNode(ClassMethod|Function_|Closure $node, Scope $scope): bool
     {
         if ($node->returnType !== null) {
             return true;
         }
 
-        if ($node instanceof ClassMethod) {
-            if ($this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($node)) {
-                return true;
-            }
-
-            if ($node->isMagic()) {
-                return true;
-            }
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+            return true;
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
