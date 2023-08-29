@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictPa
 
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector\Source\ParentHasReturn;
 
-class ParentHasReturn extends SourceParentHasReturn {
+class FromParentHasReturn extends ParentHasReturn {
     public function doFoo(int $param): int {
         return $param;
     }
