@@ -104,7 +104,7 @@ final class ClassMethodReturnTypeOverrideGuard
 
         // nothing to check
         if (! $parentClassMethodReflection instanceof MethodReflection) {
-            return true;
+            return ! $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod);
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
