@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RuleWithConfigurationAfterSet extends AbstractRectorTestCase
+final class RuleWithConfigurationAfterSetTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
