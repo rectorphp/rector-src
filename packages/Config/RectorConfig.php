@@ -174,13 +174,6 @@ final class RectorConfig extends Container
             $configuration
         );
 
-        $isBound = $this->bound($rectorClass);
-
-        // avoid double registration
-        if ($isBound) {
-            return;
-        }
-
         $this->singleton($rectorClass);
         $this->tagRectorService($rectorClass);
 
