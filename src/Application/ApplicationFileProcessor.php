@@ -154,12 +154,9 @@ final class ApplicationFileProcessor
         return $systemErrorsAndFileDiffs;
     }
 
-    private function resolveSystemError(Throwable $throwable, string|File $filePath): SystemError
+    private function resolveSystemError(Throwable $throwable, string $filePath): SystemError
     {
         $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
-        $filePath = $filePath instanceof File
-            ? $filePath->getFilePath()
-            : $filePath;
 
         if ($this->symfonyStyle->isDebug()) {
             return new SystemError(
