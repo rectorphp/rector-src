@@ -8,9 +8,9 @@ use Rector\Core\Tests\Issues\RemoveClosureUseByIndex\Source\RemoveClosureUseByIn
 
 return static function (RectorConfig $rectorConfig): void {
     /**
-     * index a, b, c
-     * - start with remove index 1 with key "b"
-     * - change index 1 to "d"
+     * index 0, 1, 2 with values a, b, c
+     * - start with remove index 1 with value "b"
+     * - change index 1 value "d"
      * - result: a, d
      */
     $rectorConfig->rules([

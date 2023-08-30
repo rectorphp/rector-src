@@ -11,11 +11,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RemoveClosureUseByIndexRector extends AbstractRector
 {
-    private bool $hasChanged = false;
-
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('remove closure use with index "b"', []);
+        return new RuleDefinition('remove closure use with index 1', []);
     }
 
     public function getNodeTypes(): array
