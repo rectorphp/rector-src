@@ -31,14 +31,14 @@ final class SkipperRectorRuleTest extends AbstractLazyTestCase
         // register 2 rules, but one is skipped
         $this->bootFromConfigFiles([__DIR__ . '/config/single_skipped_rule_config.php']);
 
-        $container = self::getContainer();
+        $rectorConfig = self::getContainer();
 
         // to invoke before resolving
-        $container->make(FileNodesFetcher::class);
+        $rectorConfig->make(FileNodesFetcher::class);
 
         // here 1 rule should be removed and 1 should remain
         /** @var RewindableGenerator<int, RectorInterface> $rectorsIterator */
-        $rectorsIterator = $container->tagged(RectorInterface::class);
+        $rectorsIterator = $rectorConfig->tagged(RectorInterface::class);
         $this->assertCount(1, $rectorsIterator);
 
         $rectors = iterator_to_array($rectorsIterator->getIterator());
