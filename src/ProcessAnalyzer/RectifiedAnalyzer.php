@@ -48,7 +48,12 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        return end($createdByRule) === $rectorClass;
+        if (end($createdByRule) === $rectorClass) {
+            return true;
+        }
+
+        // only 2 rules, flip-flop
+        return count($createdByRule) === 2 && $createdByRule[0] === $rectorClass;
     }
 
     private function isJustReprintedOverlappedTokenStart(Node $node, ?Node $originalNode): bool
