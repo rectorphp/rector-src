@@ -76,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        $this->returnTypeInferer->inferFunctionLike($node);
         return $node;
     }
 }
