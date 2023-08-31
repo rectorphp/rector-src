@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ThisType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -30,8 +30,7 @@ final class ReturnTypeFromStrictFluentReturnRector extends AbstractScopeAwareRec
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly PhpVersionProvider $phpVersionProvider
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -94,7 +93,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (!$classReflection instanceof ClassReflection) {
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
