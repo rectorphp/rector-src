@@ -93,7 +93,9 @@ CODE_SAMPLE
             if ($param->type instanceof Node) {
                 continue;
             }
-
+            if ($param->variadic) {
+                continue;
+            }
             if (! $this->paramTypeAddGuard->isLegal($param, $node)) {
                 continue;
             }
