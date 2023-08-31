@@ -93,6 +93,10 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if ($classReflection === null) {
+            return null;
+        }
+
         if ($classReflection->isAnonymous() || $classReflection->isFinalByKeyword()) {
             $node->returnType = new Name('self');
             return $node;
