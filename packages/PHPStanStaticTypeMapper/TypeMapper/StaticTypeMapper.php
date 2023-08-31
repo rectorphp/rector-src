@@ -50,6 +50,12 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
+        if ($type instanceof SimpleStaticType) {
+            return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)
+                ? new Name(ObjectReference::STATIC)
+                : new Name(ObjectReference::SELF);
+        }
+
         if ($type instanceof SelfStaticType) {
             return new Name(ObjectReference::SELF);
         }
