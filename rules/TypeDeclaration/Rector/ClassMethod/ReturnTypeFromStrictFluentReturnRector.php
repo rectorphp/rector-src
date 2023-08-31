@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -93,7 +94,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if ($classReflection === null) {
+        if (!$classReflection instanceof ClassReflection) {
             return null;
         }
 
