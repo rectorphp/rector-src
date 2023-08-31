@@ -97,6 +97,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const HAS_RETURN_TYPE = PhpVersion::PHP_70;
+
+    /**
+     * @var int
+     */
     public const NULL_COALESCE = PhpVersion::PHP_70;
 
     /**
