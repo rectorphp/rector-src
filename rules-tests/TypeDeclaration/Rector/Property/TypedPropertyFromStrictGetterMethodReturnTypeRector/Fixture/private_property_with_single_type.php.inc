@@ -24,7 +24,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGe
 
 final class PrivatePropertyWithSingleType
 {
-    private string $name;
+    private string $name = '';
 
     public function getName(): string
     {

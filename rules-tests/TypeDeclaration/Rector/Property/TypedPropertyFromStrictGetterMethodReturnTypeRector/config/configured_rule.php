@@ -9,5 +9,5 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodRe
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(TypedPropertyFromStrictGetterMethodReturnTypeRector::class);
 
-    $rectorConfig->phpVersion(PhpVersionFeature::TYPED_PROPERTIES);
+    $rectorConfig->phpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
 };
