@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
+use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -26,7 +27,8 @@ final class ReturnTypeFromStrictFluentReturnRector extends AbstractScopeAwareRec
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly PhpVersionProvider $phpVersionProvider
     )
     {
     }
@@ -91,16 +93,17 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if ($classReflection->isAnonymous()) {
+        if ($classReflection->isAnonymous() || $classReflection->isFinalByKeyword()) {
             $node->returnType = new Name('self');
             return $node;
         }
 
-        if ($classReflection->isFinalByKeyword()) {
-            $node->returnType = new Name('self');
+        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
+            $node->returnType = new Name('static');
             return $node;
         }
 
+        $node->returnType = new Name('self');
         return $node;
     }
 }
