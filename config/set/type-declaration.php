@@ -20,6 +20,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRec
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector;
@@ -75,6 +76,7 @@ return static function (RectorConfig $rectorConfig): void {
         NumericReturnTypeFromStrictScalarReturnsRector::class,
         StrictArrayParamDimFetchRector::class,
         ReturnUnionTypeRector::class,
+        ReturnTypeFromStrictFluentReturnRector::class,
     ]);
     $rectorConfig->rule(StrictStringParamConcatRector::class);
 };
