@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -74,7 +75,7 @@ CODE_SAMPLE
     {
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
 
-        if (! $returnType instanceof \PHPStan\Type\ThisType) {
+        if (! $returnType instanceof ThisType) {
             return null;
         }
 
