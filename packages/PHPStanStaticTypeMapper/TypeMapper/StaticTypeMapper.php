@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 
+use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -53,7 +54,7 @@ final class StaticTypeMapper implements TypeMapperInterface
             return new Name(ObjectReference::SELF);
         }
 
-        if ($type instanceof \PHPStan\Type\ThisType) {
+        if ($type instanceof ThisType) {
             return new Name(ObjectReference::SELF);
         }
 
