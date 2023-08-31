@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
@@ -153,7 +154,7 @@ CODE_SAMPLE
 
         // set default for string
         if ($propertyType instanceof StringType) {
-            $propertyProperty->default = new Node\Scalar\String_('');
+            $propertyProperty->default = new String_('');
         }
     }
 
