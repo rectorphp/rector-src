@@ -26,6 +26,7 @@ final class ContainerMemento
                 foreach ($taggedClasses as $key => $taggedClass) {
                     if (is_a($taggedClass, $typeToForget, true)) {
                         unset($tags[$tagName][$key]);
+                        break 2;
                     }
                 }
             }
