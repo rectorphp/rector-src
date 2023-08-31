@@ -104,7 +104,7 @@ CODE_SAMPLE
 
             $isAssignedInConstructor = $this->constructorAssignDetector->isPropertyAssigned(
                 $node,
-                (string) $this->getName($property)
+                $this->getName($property)
             );
 
             // if property is public, it should be nullable
