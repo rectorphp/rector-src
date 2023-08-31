@@ -77,6 +77,6 @@ return static function (RectorConfig $rectorConfig): void {
         StrictArrayParamDimFetchRector::class,
         ReturnUnionTypeRector::class,
         ReturnTypeFromStrictFluentReturnRector::class,
+        StrictStringParamConcatRector::class,
     ]);
-    $rectorConfig->rule(StrictStringParamConcatRector::class);
 };
