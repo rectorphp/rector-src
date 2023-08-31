@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -71,12 +72,18 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if ($classReflection->isAnonymous()) {
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+
+        if (! $returnType instanceof \PHPStan\Type\ThisType) {
             return null;
         }
 
-        $this->returnTypeInferer->inferFunctionLike($node);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if ($classReflection->isAnonymous()) {
+            $node->returnType = new Name('self');
+            return $node;
+        }
+
         return $node;
     }
 }
