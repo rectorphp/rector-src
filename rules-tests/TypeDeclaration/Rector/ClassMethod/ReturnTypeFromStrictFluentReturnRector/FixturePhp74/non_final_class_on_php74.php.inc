@@ -2,9 +2,9 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector\FixturePhp74;
 
-class NonFinalClass
+class NonFinalClassOnPhp74
 {
-    public function test()
+    public function run()
     {
         return $this;
     }
@@ -16,9 +16,9 @@ class NonFinalClass
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector\FixturePhp74;
 
-class NonFinalClass
+class NonFinalClassOnPhp74
 {
-    public function test(): self
+    public function run(): self
     {
         return $this;
     }
