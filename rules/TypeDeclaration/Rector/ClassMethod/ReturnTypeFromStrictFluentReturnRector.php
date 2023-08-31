@@ -97,17 +97,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($classReflection->isAnonymous() || $classReflection->isFinalByKeyword()) {
+        if ($classReflection->isAnonymous()
+            || $classReflection->isFinalByKeyword()
+            || ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
             $node->returnType = new Name('self');
-            return $node;
-        }
-
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
+        } else {
             $node->returnType = new Name('static');
-            return $node;
         }
 
-        $node->returnType = new Name('self');
         return $node;
     }
 }
