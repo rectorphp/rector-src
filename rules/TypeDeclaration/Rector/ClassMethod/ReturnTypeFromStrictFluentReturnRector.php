@@ -8,10 +8,13 @@ use PHPStan\Type\ThisType;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,9 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector\ReturnTypeFromStrictFluentReturnRectorTest
  */
-final class ReturnTypeFromStrictFluentReturnRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictFluentReturnRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer
     )
@@ -71,8 +75,16 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+            return null;
+        }
+
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
 
         if (! $returnType instanceof ThisType) {
@@ -81,6 +93,11 @@ CODE_SAMPLE
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if ($classReflection->isAnonymous()) {
+            $node->returnType = new Name('self');
+            return $node;
+        }
+
+        if ($classReflection->isFinalByKeyword()) {
             $node->returnType = new Name('self');
             return $node;
         }
