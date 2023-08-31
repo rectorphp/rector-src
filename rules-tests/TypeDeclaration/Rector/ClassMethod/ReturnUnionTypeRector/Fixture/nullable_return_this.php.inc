@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class NullableSelfFinalClass
+final class NullableReturnThis
 {
     public function run()
     {
@@ -20,7 +20,7 @@ final class NullableSelfFinalClass
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class NullableSelfFinalClass
+final class NullableReturnThis
 {
     public function run(): ?self
     {
