@@ -62,11 +62,6 @@ final class StaticTypeMapper implements TypeMapperInterface
             return new Name(ObjectReference::STATIC);
         }
 
-        // special case, for autocomplete of return type
-        if ($type instanceof SimpleStaticType) {
-            return new Name(ObjectReference::STATIC);
-        }
-
         return new Name(ObjectReference::SELF);
     }
 }
