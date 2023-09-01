@@ -225,6 +225,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     ): void {
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
+        $originalContents = FileSystem::read($originalFilePath);
         $changedContent = $this->processFilePath($originalFilePath);
 
         $fixtureFilename = basename($fixtureFilePath);
@@ -233,7 +234,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         try {
             $this->assertSame($expectedFileContents, $changedContent, $failureMessage);
         } catch (ExpectationFailedException) {
-            FixtureFileUpdater::updateFixtureContent($originalFilePath, $changedContent, $fixtureFilePath);
+            FixtureFileUpdater::updateFixtureContent($originalContents, $changedContent, $fixtureFilePath);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
             $this->assertStringMatchesFormat($expectedFileContents, $changedContent, $failureMessage);
@@ -254,6 +255,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $configuration = $configurationFactory->createForTests([$filePath]);
 
         $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+
         return FileSystem::read($filePath);
     }
 
