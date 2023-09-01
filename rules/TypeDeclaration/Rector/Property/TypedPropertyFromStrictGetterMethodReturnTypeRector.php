@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\MixedType;

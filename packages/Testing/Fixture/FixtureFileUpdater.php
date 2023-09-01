@@ -12,7 +12,7 @@ final class FixtureFileUpdater
      * @api
      */
     public static function updateFixtureContent(
-        string $originalFilePath,
+        string $originalContent,
         string $changedContent,
         string $fixtureFilePath
     ): void {
@@ -20,16 +20,15 @@ final class FixtureFileUpdater
             return;
         }
 
-        $newOriginalContent = self::resolveNewFixtureContent($originalFilePath, $changedContent);
+        $newOriginalContent = self::resolveNewFixtureContent($originalContent, $changedContent);
+
         FileSystem::write($fixtureFilePath, $newOriginalContent);
     }
 
     private static function resolveNewFixtureContent(
-        string $originalFilePath,
+        string $originalContent,
         string $changedContent
     ): string {
-        $originalContent = FileSystem::read($originalFilePath);
-
         if ($originalContent === $changedContent) {
             return $originalContent;
         }
