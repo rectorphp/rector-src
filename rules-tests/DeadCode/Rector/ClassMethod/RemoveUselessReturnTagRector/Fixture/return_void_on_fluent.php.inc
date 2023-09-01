@@ -7,7 +7,7 @@ final class ReturnVoidOnFluent
     /**
      * @return void
      */
-    public static function resolve(): self
+    public function resolve(): self
     {
         return $this;
     }
@@ -21,7 +21,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\
 
 final class ReturnVoidOnFluent
 {
-    public static function resolve(): self
+    public function resolve(): self
     {
         return $this;
     }
