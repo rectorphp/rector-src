@@ -339,12 +339,13 @@ final class NodeTypeResolver
     private function isMatchingUnionType(Type $resolvedType, ObjectType $requiredObjectType): bool
     {
         $type = TypeCombinator::removeNull($resolvedType);
+
         // for falsy nullables
         $type = TypeCombinator::remove($type, new ConstantBooleanType(false));
 
-        //        if ($type->isSuperTypeOf($resolvedType)->yes()) {
-        //            return true;
-        //        }
+        if ($type->isSuperTypeOf($requiredObjectType)->yes()) {
+            return true;
+        }
 
         if (! $type instanceof ObjectType) {
             return false;
