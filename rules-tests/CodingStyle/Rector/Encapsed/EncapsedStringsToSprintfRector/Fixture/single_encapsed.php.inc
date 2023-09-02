@@ -2,13 +2,13 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector\Fixture;
 
-final class Fixture2
+final class SingleEncapsed
 {
     private $format = 'json';
 
     public function run(string $format)
     {
-        return "Unsupported format {$this->format}";
+        return "{$this->format}";
     }
 }
 
@@ -18,13 +18,13 @@ final class Fixture2
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector\Fixture;
 
-final class Fixture2
+final class SingleEncapsed
 {
     private $format = 'json';
 
     public function run(string $format)
     {
-        return sprintf('Unsupported format %s', $this->format);
+        return $this->format;
     }
 }
 

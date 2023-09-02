@@ -53,11 +53,15 @@ final class EncapsedStringsToSprintfRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-echo "Unsupported format {$format}";
+echo "Unsupported format {$format} - use another";
+
+echo "Try {$allowed}";
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-echo sprintf('Unsupported format %s', $format);
+echo sprintf('Unsupported format %s - use another', $format);
+
+echo 'Try ' . $allowed;
 CODE_SAMPLE
                 ),
             ]
@@ -152,6 +156,11 @@ CODE_SAMPLE
             return $this->nodeFactory->createConcat($argumentVariables);
         }
 
+        $singleValueConcat = $this->createSingleValueEdgeConcat($argumentVariables, $mask);
+        if ($singleValueConcat instanceof Concat) {
+            return $singleValueConcat;
+        }
+
         // checks for windows or linux line ending. \n is contained in both.
         if (\str_contains($mask, "\n")) {
             return null;
@@ -163,5 +172,33 @@ CODE_SAMPLE
         }
 
         return new FuncCall(new Name('sprintf'), $arguments);
+    }
+
+    /**
+     * @param Expr[] $argumentVariables
+     */
+    private function createSingleValueEdgeConcat(array $argumentVariables, string $mask): ?Concat
+    {
+        if (count($argumentVariables) !== 1) {
+            return null;
+        }
+
+        if (substr_count($mask, '%s') !== 1) {
+            return null;
+        }
+
+        $cleanMask = Strings::replace($mask, '#\%\%#', '%');
+
+        if (str_ends_with($mask, '%s')) {
+            $bareString = new String_(substr($cleanMask, 0, -2));
+            return new Concat($bareString, $argumentVariables[0]);
+        }
+
+        if (str_starts_with($mask, '%s')) {
+            $bareString = new String_(substr($cleanMask, 2));
+            return new Concat($argumentVariables[0], $bareString);
+        }
+
+        return null;
     }
 }
