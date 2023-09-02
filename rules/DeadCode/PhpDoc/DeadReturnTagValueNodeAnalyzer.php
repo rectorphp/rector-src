@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
-use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -58,7 +57,7 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         if (! $returnTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return $this->isIdentiferRemovalAllowed($returnTagValueNode, $returnType);
+            return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $returnType);
         }
 
         if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
@@ -70,15 +69,6 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         return ! $this->hasTruePseudoType($returnTagValueNode->type);
-    }
-
-    private function isIdentiferRemovalAllowed(ReturnTagValueNode $returnTagValueNode, Node $node): bool
-    {
-        if ($returnTagValueNode->description === '') {
-            return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $node);
-        }
-
-        return false;
     }
 
     private function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
