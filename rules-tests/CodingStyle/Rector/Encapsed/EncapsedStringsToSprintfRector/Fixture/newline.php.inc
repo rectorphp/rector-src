@@ -6,7 +6,9 @@ final class Newline
 {
     public function run(string $format)
     {
-        return "${format}\n";
+        $result = "${format}\n";
+
+        $nextResult = "\n${format}";
     }
 }
 
@@ -20,7 +22,9 @@ final class Newline
 {
     public function run(string $format)
     {
-        return $format . PHP_EOL;
+        $result = $format . PHP_EOL;
+
+        $nextResult = PHP_EOL . $format;
     }
 }
 

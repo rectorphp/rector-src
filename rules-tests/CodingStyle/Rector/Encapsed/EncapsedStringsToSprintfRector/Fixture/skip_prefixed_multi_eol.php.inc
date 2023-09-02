@@ -9,5 +9,3 @@ final class SkipPrefixedMultiEol
         return "prefix {$format}\n\n";
     }
 }
-
-?>

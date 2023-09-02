@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector\Fixture;
 
-final class Newline2
+final class IncludeNumbers
 {
-    public function run(string $format)
+    public function run(int $number)
     {
-        return "\n${format}";
+        return "value {$number}";
     }
 }
 
@@ -16,11 +16,11 @@ final class Newline2
 
 namespace Rector\Tests\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector\Fixture;
 
-final class Newline2
+final class IncludeNumbers
 {
-    public function run(string $format)
+    public function run(int $number)
     {
-        return PHP_EOL . $format;
+        return 'value ' . $number;
     }
 }
 
