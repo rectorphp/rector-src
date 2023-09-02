@@ -50,11 +50,7 @@ final class DeadReturnTagValueNodeAnalyzer
             $returnTagValueNode->type,
             $classMethod,
         )) {
-            if ($returnType instanceof Name) {
-                return $returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type !== 'static';
-            }
-
-            return false;
+            return $returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type === 'void';
         }
 
         if ($this->phpDocTypeChanger->isAllowed($returnTagValueNode->type)) {
