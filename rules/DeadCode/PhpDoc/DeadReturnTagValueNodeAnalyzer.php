@@ -36,6 +36,10 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
+        if ($returnTagValueNode->description !== '') {
+            return false;
+        }
+
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope && $scope->isInTrait() && $returnTagValueNode->type instanceof ThisTypeNode) {
             return false;
@@ -65,11 +69,7 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if ($this->hasTruePseudoType($returnTagValueNode->type)) {
-            return false;
-        }
-
-        return $returnTagValueNode->description === '';
+        return ! $this->hasTruePseudoType($returnTagValueNode->type);
     }
 
     private function isIdentiferRemovalAllowed(ReturnTagValueNode $returnTagValueNode, Node $node): bool
