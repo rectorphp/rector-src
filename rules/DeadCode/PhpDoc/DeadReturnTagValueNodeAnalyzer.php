@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -49,6 +50,10 @@ final class DeadReturnTagValueNodeAnalyzer
             $returnTagValueNode->type,
             $classMethod,
         )) {
+            if ($returnType instanceof Name) {
+                return $returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type !== 'static';
+            }
+
             return false;
         }
 
