@@ -22,7 +22,7 @@ final class JustValue
     public function testCommand(): void
     {
         $flag = 'hey';
-        $expected = [sprintf('--%s', $flag)];
+        $expected = ['--' . $flag];
     }
 }
 
