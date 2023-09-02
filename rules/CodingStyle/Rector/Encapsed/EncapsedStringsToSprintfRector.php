@@ -183,18 +183,18 @@ CODE_SAMPLE
             return null;
         }
 
-        if (substr_count($mask, '%s') !== 1) {
+        if (substr_count($mask, '%s') !== 1 && substr_count($mask, '%d') !== 1) {
             return null;
         }
 
         $cleanMask = Strings::replace($mask, '#\%\%#', '%');
 
-        if (str_ends_with($mask, '%s')) {
+        if (str_ends_with($mask, '%s') || str_ends_with($mask, '%d')) {
             $bareString = new String_(substr($cleanMask, 0, -2));
             return new Concat($bareString, $argumentVariables[0]);
         }
 
-        if (str_starts_with($mask, '%s')) {
+        if (str_starts_with($mask, '%s') || str_starts_with($mask, '%d')) {
             $bareString = new String_(substr($cleanMask, 2));
             return new Concat($argumentVariables[0], $bareString);
         }
