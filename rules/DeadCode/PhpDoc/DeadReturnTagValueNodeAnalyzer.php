@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
-use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -36,6 +35,10 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
+        if ($returnTagValueNode->description !== '') {
+            return false;
+        }
+
         $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope && $scope->isInTrait() && $returnTagValueNode->type instanceof ThisTypeNode) {
             return false;
@@ -46,7 +49,7 @@ final class DeadReturnTagValueNodeAnalyzer
             $returnTagValueNode->type,
             $classMethod,
         )) {
-            return false;
+            return $returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type === 'void';
         }
 
         if ($this->phpDocTypeChanger->isAllowed($returnTagValueNode->type)) {
@@ -54,7 +57,7 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         if (! $returnTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return $this->isIdentiferRemovalAllowed($returnTagValueNode, $returnType);
+            return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $returnType);
         }
 
         if ($this->genericTypeNodeAnalyzer->hasGenericType($returnTagValueNode->type)) {
@@ -65,20 +68,7 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if ($this->hasTruePseudoType($returnTagValueNode->type)) {
-            return false;
-        }
-
-        return $returnTagValueNode->description === '';
-    }
-
-    private function isIdentiferRemovalAllowed(ReturnTagValueNode $returnTagValueNode, Node $node): bool
-    {
-        if ($returnTagValueNode->description === '') {
-            return $this->standaloneTypeRemovalGuard->isLegal($returnTagValueNode->type, $node);
-        }
-
-        return false;
+        return ! $this->hasTruePseudoType($returnTagValueNode->type);
     }
 
     private function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
