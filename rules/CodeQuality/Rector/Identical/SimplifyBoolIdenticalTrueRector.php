@@ -94,13 +94,16 @@ CODE_SAMPLE
         if ($this->valueResolver->isTrue($rightExpr)) {
             return $leftExpr;
         }
+
         // prevent double negation !!
-        if (!$this->valueResolver->isFalse($rightExpr)) {
+        if (! $this->valueResolver->isFalse($rightExpr)) {
             return null;
         }
-        if (!$leftExpr instanceof BooleanNot) {
+
+        if (! $leftExpr instanceof BooleanNot) {
             return null;
         }
+
         return $leftExpr->expr;
     }
 
