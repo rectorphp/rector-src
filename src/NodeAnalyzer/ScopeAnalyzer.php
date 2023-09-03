@@ -20,7 +20,7 @@ final class ScopeAnalyzer
     /**
      * @var array<class-string<Node>>
      */
-    private const REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class];
+    private const NON_REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class];
 
     public function __construct(
         private readonly ScopeFactory $scopeFactory
@@ -29,7 +29,7 @@ final class ScopeAnalyzer
 
     public function isRefreshable(Node $node): bool
     {
-        foreach (self::REFRESHABLE_NODES as $noScopeNode) {
+        foreach (self::NON_REFRESHABLE_NODES as $noScopeNode) {
             if ($node instanceof $noScopeNode) {
                 return false;
             }
