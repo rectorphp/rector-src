@@ -18,7 +18,7 @@ final class FileHashComputer
         $this->ensureIsPhp($filePath);
 
         $parametersHash = SimpleParameterProvider::hash();
-        return sha1(FileSystem::read($filePath). $parametersHash);
+        return sha1(FileSystem::read($filePath) . $parametersHash);
     }
 
     private function ensureIsPhp(string $filePath): void
