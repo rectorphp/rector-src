@@ -15,7 +15,13 @@ final class FileHashComputer
     {
         $this->ensureIsPhp($filePath);
 
-        return sha1_file($filePath);
+        $hashedFile = sha1_file($filePath);
+
+        if ($hashedFile === false) {
+            throw new ShouldNotHappenException(sprintf('File %s cannot be hashed', $filePath));
+        }
+
+        return $hashedFile;
     }
 
     private function ensureIsPhp(string $filePath): void
