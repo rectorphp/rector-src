@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Caching\Config;
 
+use Nette\Utils\FileSystem;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 
@@ -17,7 +18,7 @@ final class FileHashComputer
         $this->ensureIsPhp($filePath);
 
         $parametersHash = SimpleParameterProvider::hash();
-        return sha1($filePath . $parametersHash);
+        return sha1(FileSystem::read($filePath). $parametersHash);
     }
 
     private function ensureIsPhp(string $filePath): void
