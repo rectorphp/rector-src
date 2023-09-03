@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Caching\Config\FileHashComputer;
 
 use Nette\Utils\FileSystem;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -19,6 +20,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         $this->fileHashComputer = $this->make(FileHashComputer::class);
     }
 
+    #[RunInSeparateProcess]
     public function testRectorPhpChanged(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
@@ -41,6 +43,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         $this->assertNotSame($newHashedFile, $hashedFile);
     }
 
+    #[RunInSeparateProcess]
     public function testRectorPhpNotChanged(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
