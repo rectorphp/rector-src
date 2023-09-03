@@ -24,9 +24,8 @@ final class FileHashComputerTest extends TestCase
         copy(__DIR__ . '/Fixture/updated_rector_rule.php', __DIR__ . '/Fixture/rector.php');
 
         $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
+        rename(__DIR__ . '/Fixture/rector_temp.php', __DIR__ . '/Fixture/rector.php');
 
         $this->assertNotSame($newHashedFile, $hashedFile);
-
-        rename(__DIR__ . '/Fixture/rector_temp.php', __DIR__ . '/Fixture/rector.php');
     }
 }
