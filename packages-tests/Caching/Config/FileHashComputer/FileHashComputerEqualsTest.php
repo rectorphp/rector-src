@@ -18,7 +18,7 @@ final class FileHashComputerEqualsTest extends AbstractLazyTestCase
         $this->fileHashComputer = $this->make(FileHashComputer::class);
     }
 
-    public function test(): void
+    public function testRectorPhpNotChanged(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/FixtureEquals/rector.php']);
 
