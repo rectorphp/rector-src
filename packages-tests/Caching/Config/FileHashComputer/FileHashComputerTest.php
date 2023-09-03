@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Caching\Config\FileHashComputer;
 
-use PHPUnit\Framework\TestCase;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
