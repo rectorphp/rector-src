@@ -18,7 +18,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         $this->fileHashComputer = $this->make(FileHashComputer::class);
     }
 
-    public function testRectorPhpChanged(): void
+    public function test(): void
     {
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
