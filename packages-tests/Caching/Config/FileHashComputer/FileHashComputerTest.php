@@ -7,7 +7,7 @@ namespace Rector\Tests\Caching\Config\FileHashComputer;
 use PHPUnit\Framework\TestCase;
 use Rector\Caching\Config\FileHashComputer;
 
-class FileHashComputerTest extends TestCase
+final class FileHashComputerTest extends TestCase
 {
     private FileHashComputer $fileHashComputer;
 
@@ -16,7 +16,7 @@ class FileHashComputerTest extends TestCase
         $this->fileHashComputer = new FileHashComputer();
     }
 
-    public function testRectorPhpChanged()
+    public function testRectorPhpChanged(): void
     {
         $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
 
