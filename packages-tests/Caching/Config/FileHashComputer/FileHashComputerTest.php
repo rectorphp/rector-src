@@ -32,4 +32,21 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 
         $this->assertNotSame($newHashedFile, $hashedFile);
     }
+
+    public function testRectorPhpNotChanged(): void
+    {
+        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
+
+        $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
+
+        copy(__DIR__ . '/Fixture/rector.php', __DIR__ . '/Fixture/rector_temp.php');
+        copy(__DIR__ . '/Fixture/rector_rule_equals.php', __DIR__ . '/Fixture/rector.php');
+
+        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
+
+        $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
+        rename(__DIR__ . '/Fixture/rector_temp.php', __DIR__ . '/Fixture/rector.php');
+
+        $this->assertSame($newHashedFile, $hashedFile);
+    }
 }
