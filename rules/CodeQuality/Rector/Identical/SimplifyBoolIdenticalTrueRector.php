@@ -94,15 +94,14 @@ CODE_SAMPLE
         if ($this->valueResolver->isTrue($rightExpr)) {
             return $leftExpr;
         }
-
-        if ($this->valueResolver->isFalse($rightExpr)) {
-            // prevent double negation !!
-            if ($leftExpr instanceof BooleanNot) {
-                return $leftExpr->expr;
-            }
+        // prevent double negation !!
+        if (!$this->valueResolver->isFalse($rightExpr)) {
+            return null;
         }
-
-        return null;
+        if (!$leftExpr instanceof BooleanNot) {
+            return null;
+        }
+        return $leftExpr->expr;
     }
 
     private function refactorNotIdentical(Expr $leftExpr, Expr $rightExpr): ?Expr
