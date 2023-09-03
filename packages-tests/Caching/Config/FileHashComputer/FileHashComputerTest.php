@@ -6,6 +6,8 @@ namespace Rector\Tests\Caching\Config\FileHashComputer;
 
 use Nette\Utils\FileSystem;
 use Rector\Caching\Config\FileHashComputer;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class FileHashComputerTest extends AbstractLazyTestCase
@@ -28,6 +30,8 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         copy(__DIR__ . '/Fixture/updated_rector_rule.php', __DIR__ . '/Fixture/rector.php');
         $newRectorConfig = FileSystem::read(__DIR__ . '/Fixture/rector.php');
 
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
         $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
@@ -48,6 +52,8 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         copy(__DIR__ . '/Fixture/rector_rule_equals.php', __DIR__ . '/Fixture/rector.php');
 
         $newRectorConfig = FileSystem::read(__DIR__ . '/Fixture/rector.php');
+
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
 
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
