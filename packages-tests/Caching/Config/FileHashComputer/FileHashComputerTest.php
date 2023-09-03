@@ -6,14 +6,15 @@ namespace Rector\Tests\Caching\Config\FileHashComputer;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Caching\Config\FileHashComputer;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class FileHashComputerTest extends TestCase
+final class FileHashComputerTest extends AbstractLazyTestCase
 {
     private FileHashComputer $fileHashComputer;
 
     protected function setUp(): void
     {
-        $this->fileHashComputer = new FileHashComputer();
+        $this->fileHashComputer = $this->make(FileHashComputer::class);
     }
 
     public function testRectorPhpChanged(): void
