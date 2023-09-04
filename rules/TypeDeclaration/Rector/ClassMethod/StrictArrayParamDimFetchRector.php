@@ -171,10 +171,8 @@ CODE_SAMPLE
             $nodeToCheck = $node->var;
         }
 
-        if ($nodeToCheck instanceof Node\Expr\MethodCall
-            && $nodeToCheck->var instanceof Variable
-            && $this->isName($nodeToCheck->var, $paramName)) {
-            return true;
+        if ($nodeToCheck instanceof Node\Expr\MethodCall) {
+            return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
         }
 
         if ($nodeToCheck instanceof ArrayDimFetch) {
