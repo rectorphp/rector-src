@@ -200,8 +200,6 @@ final class AssignToPropertyTypeInferer
             if ($this->exprAnalyzer->isNonTypedFromParam($node->expr)) {
                 $assignedExprTypes = [];
                 return NodeTraverser::STOP_TRAVERSAL;
-
-                return null;
             }
 
             $assignedExprTypes[] = $this->resolveExprStaticTypeIncludingDimFetch($node);
