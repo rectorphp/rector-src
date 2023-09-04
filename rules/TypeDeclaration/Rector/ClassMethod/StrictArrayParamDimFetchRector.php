@@ -171,7 +171,9 @@ CODE_SAMPLE
             $nodeToCheck = $node->var;
         }
 
-        if ($nodeToCheck instanceof Node\Expr\MethodCall && $this->isName($nodeToCheck->var, $paramName)) {
+        if ($nodeToCheck instanceof Node\Expr\MethodCall
+            && $nodeToCheck->var instanceof Variable
+            && $this->isName($nodeToCheck->var, $paramName)) {
             return true;
         }
 
