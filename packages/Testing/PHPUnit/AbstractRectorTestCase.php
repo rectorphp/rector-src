@@ -8,7 +8,6 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use PHPStan\Analyser\NodeScopeResolver;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
@@ -249,11 +248,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     private function processFilePath(string $filePath): string
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
-
-        // needed for PHPStan, because the analyzed file is just created in /temp - need for trait and similar deps
-        /** @var NodeScopeResolver $nodeScopeResolver */
-        $nodeScopeResolver = $this->make(NodeScopeResolver::class);
-        $nodeScopeResolver->setAnalysedFiles([$filePath]);
 
         /** @var ConfigurationFactory $configurationFactory */
         $configurationFactory = $this->make(ConfigurationFactory::class);
