@@ -345,6 +345,11 @@ final class RectorConfig extends Container
         $this->ruleConfigurations = [];
     }
 
+    public function levels(): RectorLevelsConfig
+    {
+        return new RectorLevelsConfig($this);
+    }
+
     private function importFile(string $filePath): void
     {
         Assert::fileExists($filePath);
