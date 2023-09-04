@@ -20,6 +20,7 @@ use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
@@ -40,6 +41,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      * @var array<string, true>
      */
     private static array $cacheByRuleAndConfig = [];
+
+    private CurrentFileProvider $currentFileProvider;
 
     /**
      * Restore default parameters
@@ -112,6 +115,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
+
+        $this->currentFileProvider = $this->make(CurrentFileProvider::class);
     }
 
     protected function tearDown(): void
@@ -225,8 +230,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     ): void {
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
-        $originalContents = FileSystem::read($originalFilePath);
         $changedContent = $this->processFilePath($originalFilePath);
+        $originalContents = $this->currentFileProvider->getFile()->getOriginalFileContent();
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -256,7 +261,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        return FileSystem::read($filePath);
+        return $this->currentFileProvider->getFile()->getFileContent();
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
