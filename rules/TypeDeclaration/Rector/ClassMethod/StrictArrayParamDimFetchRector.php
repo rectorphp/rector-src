@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
@@ -159,7 +161,7 @@ CODE_SAMPLE
             $nodeToCheck = $firstArg->value;
         }
 
-        if ($node instanceof Node\Stmt\Expression) {
+        if ($node instanceof Expression) {
             $nodeToCheck = $node->expr;
         }
 
@@ -171,7 +173,7 @@ CODE_SAMPLE
             $nodeToCheck = $node->var;
         }
 
-        if ($nodeToCheck instanceof Node\Expr\MethodCall) {
+        if ($nodeToCheck instanceof MethodCall) {
             return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
         }
 
