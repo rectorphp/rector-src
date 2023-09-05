@@ -101,16 +101,16 @@ CODE_SAMPLE
         return $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::ENUM;
+    }
+
     private function isEnumConstant(string $className, string $constant): bool
     {
         $classReflection = $this->reflectionProvider->getClass($className);
 
         return $classReflection->hasConstant($constant);
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::ENUM;
     }
 
     private function refactorGetKeyMethodCall(MethodCall $methodCall): ?ClassConstFetch
@@ -166,7 +166,7 @@ CODE_SAMPLE
     private function refactorEqualsMethodCall(MethodCall $methodCall): ?Identical
     {
         $expr = $this->getNonEnumReturnTypeExpr($methodCall->var);
-        if (!$expr instanceof Expr) {
+        if (! $expr instanceof Expr) {
             $expr = $this->getValidEnumExpr($methodCall->var);
             if (! $expr instanceof Expr) {
                 return null;
@@ -179,7 +179,7 @@ CODE_SAMPLE
         }
 
         $right = $this->getNonEnumReturnTypeExpr($arg->value);
-        if (!$right instanceof Expr) {
+        if (! $right instanceof Expr) {
             $right = $this->getValidEnumExpr($arg->value);
             if (! $right instanceof Expr) {
                 return null;
