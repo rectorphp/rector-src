@@ -130,12 +130,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $dataProviderPhpDocTagNodes = $this->resolveDataProviderPhpDocTagNode($classMethod);
-            if ($dataProviderPhpDocTagNodes === []) {
+            $dataProviderNodes = $this->resolveDataProviderPhpDocTagNode($classMethod);
+            if ($dataProviderNodes === []) {
                 return null;
             }
 
-            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $node, $dataProviderPhpDocTagNodes);
+            $hasClassMethodChanged = $this->refactorClassMethod($classMethod, $node, $dataProviderNodes);
             if ($hasClassMethodChanged) {
                 $hasChanged = true;
             }
@@ -148,9 +148,9 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(Class_ $class, Param $param, PhpDocTagNode $dataProviderPhpDocTagNode): Type
+    private function inferParam(Class_ $class, Param $param, PhpDocTagNode $dataProviderNode): Type
     {
-        $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderPhpDocTagNode);
+        $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
             return new MixedType();
         }
@@ -173,13 +173,13 @@ CODE_SAMPLE
 
     private function resolveDataProviderClassMethod(
         Class_ $class,
-        PhpDocTagNode $dataProviderPhpDocTagNode
+        PhpDocTagNode $dataProviderNode
     ): ?ClassMethod {
-        if (! $dataProviderPhpDocTagNode->value instanceof GenericTagValueNode) {
+        if (! $dataProviderNode->value instanceof GenericTagValueNode) {
             return null;
         }
 
-        $content = $dataProviderPhpDocTagNode->value->value;
+        $content = $dataProviderNode->value->value;
         $match = Strings::match($content, self::METHOD_NAME_REGEX);
         if ($match === null) {
             return null;
@@ -296,12 +296,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<PhpDocTagNode> $dataProviderPhpDocTagNodes
+     * @param array<PhpDocTagNode> $dataProviderNodes
      */
     private function refactorClassMethod(
         ClassMethod $classMethod,
         Class_ $class,
-        array $dataProviderPhpDocTagNodes
+        array $dataProviderNodes
     ): bool {
         $hasChanged = false;
 
@@ -311,8 +311,8 @@ CODE_SAMPLE
             }
 
             $paramTypes = [];
-            foreach ($dataProviderPhpDocTagNodes as $dataProviderPhpDocTagNode) {
-                $paramTypes[] = $this->inferParam($class, $param, $dataProviderPhpDocTagNode);
+            foreach ($dataProviderNodes as $dataProviderNode) {
+                $paramTypes[] = $this->inferParam($class, $param, $dataProviderNode);
             }
 
             $paramTypeDeclaration = TypeCombinator::union(...$paramTypes);
