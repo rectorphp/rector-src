@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -86,14 +87,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-
-        if (! $returnType instanceof ThisType) {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        if ($returnType instanceof ObjectType && $returnType->getClassName() === $classReflection->getName()) {
+            $node->returnType = new Name('self');
+            return $node;
+        }
+
+        if (! $returnType instanceof ThisType) {
             return null;
         }
 
