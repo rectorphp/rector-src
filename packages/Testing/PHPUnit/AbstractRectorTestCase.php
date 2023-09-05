@@ -230,7 +230,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         $changedContent = $this->processFilePath($originalFilePath);
-        $originalFileContent = $this->currentFileProvider->getFile()->getOriginalFileContent();
+        $originalFileContent = $this->currentFileProvider->getFile()
+            ->getOriginalFileContent();
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -255,7 +256,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        return $this->currentFileProvider->getFile()->getFileContent();
+        return $this->currentFileProvider->getFile()
+            ->getFileContent();
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
