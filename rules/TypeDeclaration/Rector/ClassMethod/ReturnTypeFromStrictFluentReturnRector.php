@@ -122,9 +122,11 @@ CODE_SAMPLE
         if ($classReflection->isAnonymous()) {
             return true;
         }
+
         if ($classReflection->isFinalByKeyword()) {
             return true;
         }
+
         return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
     }
 }
