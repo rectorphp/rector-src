@@ -28,6 +28,10 @@ final class FamilyRelationsAnalyzer
      */
     public function getChildrenOfClassReflection(ClassReflection $desiredClassReflection): array
     {
+        if ($desiredClassReflection->isFinalByKeyword()) {
+            return [];
+        }
+
         /** @var ClassReflection[] $classReflections */
         $classReflections = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
 
