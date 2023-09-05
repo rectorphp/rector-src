@@ -26,7 +26,6 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PHPStan\Reflection\TypeToCallReflectionResolver\TypeToCallReflectionResolverRegistry;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -39,7 +38,6 @@ final class ReflectionResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly TypeToCallReflectionResolverRegistry $typeToCallReflectionResolverRegistry,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly MethodReflectionResolver $methodReflectionResolver,
         private readonly AstResolver $astResolver
@@ -241,16 +239,8 @@ final class ReflectionResolver
             if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
                 return $this->reflectionProvider->getFunction($funcCall->name, $scope);
             }
-
-            return null;
         }
 
-        if (! $scope instanceof Scope) {
-            return null;
-        }
-
-        // fallback to callable
-        $funcCallNameType = $scope->getType($funcCall->name);
-        return $this->typeToCallReflectionResolverRegistry->resolve($funcCallNameType, $scope);
+        return null;
     }
 }
