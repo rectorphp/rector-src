@@ -112,19 +112,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSelf($classReflection)) {
-            $node->returnType = new Name('self');
-        } else {
-            $node->returnType = new Name('static');
-        }
+        $node->returnType = $this->shouldSelf($classReflection) ? new Name('self') : new Name('static');
 
         return $node;
     }
 
     private function shouldSelf(ClassReflection $classReflection): bool
     {
-        return $classReflection->isAnonymous()
-            || $classReflection->isFinalByKeyword()
-            || ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
+        if ($classReflection->isAnonymous()) {
+            return true;
+        }
+        if ($classReflection->isFinalByKeyword()) {
+            return true;
+        }
+        return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
     }
 }
