@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -93,6 +94,15 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+
+        if ($returnType instanceof StaticType && $returnType->getStaticObjectType()->getClassName() === $classReflection->getName()) {
+            $node->returnType = $this->shouldSelf($classReflection)
+                ? new Name('self')
+                : new Name('static');
+
+            return $node;
+        }
+
         if ($returnType instanceof ObjectType && $returnType->getClassName() === $classReflection->getName()) {
             $node->returnType = new Name('self');
             return $node;
@@ -102,14 +112,19 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($classReflection->isAnonymous()
-            || $classReflection->isFinalByKeyword()
-            || ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
+        if ($this->shouldSelf($classReflection)) {
             $node->returnType = new Name('self');
         } else {
             $node->returnType = new Name('static');
         }
 
         return $node;
+    }
+
+    private function shouldSelf(ClassReflection $classReflection): bool
+    {
+        return $classReflection->isAnonymous()
+            || $classReflection->isFinalByKeyword()
+            || ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
     }
 }
