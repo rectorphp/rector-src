@@ -66,7 +66,7 @@ final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
         return new RuleDefinition(self::ERROR_MESSAGE, [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-use PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
 
 final class SomeTest extends TestCase
 {
@@ -85,7 +85,7 @@ final class SomeTest extends TestCase
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-use PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
 
 final class SomeTest extends TestCase
 {
