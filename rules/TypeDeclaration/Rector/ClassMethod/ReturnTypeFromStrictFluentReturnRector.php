@@ -96,11 +96,7 @@ CODE_SAMPLE
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
 
         if ($returnType instanceof StaticType && $returnType->getStaticObjectType()->getClassName() === $classReflection->getName()) {
-            $node->returnType = $this->shouldSelf($classReflection)
-                ? new Name('self')
-                : new Name('static');
-
-            return $node;
+            return $this->processAddReturnSelfOrStatic($node, $classReflection);
         }
 
         if ($returnType instanceof ObjectType && $returnType->getClassName() === $classReflection->getName()) {
@@ -112,9 +108,18 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->returnType = $this->shouldSelf($classReflection) ? new Name('self') : new Name('static');
+        return $this->processAddReturnSelfOrStatic($node, $classReflection);
+    }
 
-        return $node;
+    private function processAddReturnSelfOrStatic(
+        ClassMethod $classMethod,
+        ClassReflection $classReflection
+    ): ClassMethod {
+        $classMethod->returnType = $this->shouldSelf($classReflection)
+            ? new Name('self')
+            : new Name('static');
+
+        return $classMethod;
     }
 
     private function shouldSelf(ClassReflection $classReflection): bool
