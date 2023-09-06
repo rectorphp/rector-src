@@ -26,7 +26,7 @@ final class SilentVoidResolver
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -34,10 +34,6 @@ final class SilentVoidResolver
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
         if ($classReflection instanceof ClassReflection && $classReflection->isInterface()) {
-            return false;
-        }
-
-        if ($this->hasNeverType($functionLike)) {
             return false;
         }
 
@@ -132,14 +128,6 @@ final class SilentVoidResolver
         }
 
         return true;
-    }
-
-    /**
-     * @see https://phpstan.org/writing-php-code/phpdoc-types#bottom-type
-     */
-    private function hasNeverType(ClassMethod | Closure | Function_ $functionLike): bool
-    {
-        return $this->betterNodeFinder->hasInstancesOf($functionLike, [Throw_::class]);
     }
 
     private function resolveReturnCount(Switch_ $switch): int
