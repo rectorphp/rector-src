@@ -710,10 +710,8 @@ final class LazyContainerFactory
             ScopeResolverNodeVisitorInterface::class
         );
 
-        // phpstan factory
         $this->createPHPStanServices($rectorConfig);
 
-        // @todo add base node visitors
         $rectorConfig->when(PhpDocNodeMapper::class)
             ->needs('$phpDocNodeVisitors')
             ->giveTagged(BasePhpDocNodeVisitorInterface::class);
