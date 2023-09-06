@@ -69,7 +69,7 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         $exprType = $this->nodeTypeResolver->getNativeType($expr);
-        if ($this->isScalarType($exprType)) {
+        if ($exprType->isScalar()->yes()) {
             return $exprType;
         }
 
@@ -79,29 +79,11 @@ final class AlwaysStrictScalarExprAnalyzer
     private function resolveCastType(Cast $cast): ?Type
     {
         $type = $this->nodeTypeResolver->getNativeType($cast);
-        if ($this->isScalarType($type)) {
+        if ($type->isScalar()->yes()) {
             return $type;
         }
 
         return null;
-    }
-
-    private function isScalarType(Type $type): bool
-    {
-        if ($type->isString()->yes()) {
-            return true;
-        }
-
-        if ($type->isFloat()->yes()) {
-            return true;
-        }
-
-        if ($type->isInteger()->yes()) {
-            return true;
-        }
-
-        return $type->isBoolean()
-            ->yes();
     }
 
     private function resolveTypeFromScalar(Scalar $scalar): Type|null
@@ -155,10 +137,10 @@ final class AlwaysStrictScalarExprAnalyzer
         );
 
         $returnType = $parametersAcceptor->getReturnType();
-        if (! $this->isScalarType($returnType)) {
-            return null;
+        if ($returnType->isScalar()->yes()) {
+            return $returnType;
         }
 
-        return $returnType;
+        return null;
     }
 }
