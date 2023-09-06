@@ -10,10 +10,6 @@ final class ReturnEmptyString
 
         if ('' != $values['background-color']) {
             $style = 'something';
-
-            if ('' != $padding) {
-                $style .= $padding;
-            }
         }
 
         if ('' != $style) {
@@ -38,10 +34,6 @@ final class ReturnEmptyString
 
         if ('' != $values['background-color']) {
             $style = 'something';
-
-            if ('' != $padding) {
-                $style .= $padding;
-            }
         }
 
         if ('' != $style) {
