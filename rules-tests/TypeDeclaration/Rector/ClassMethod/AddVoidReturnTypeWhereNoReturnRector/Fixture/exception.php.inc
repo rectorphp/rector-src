@@ -14,7 +14,7 @@ final class ThrowsException
 
 use Rector\Core\Exception\ShouldNotHappenException;
 
-final class SkipException
+final class ThrowsException
 {
     public function getValues(): void
     {
