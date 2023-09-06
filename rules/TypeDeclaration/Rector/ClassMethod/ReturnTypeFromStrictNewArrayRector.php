@@ -143,7 +143,7 @@ CODE_SAMPLE
         $node->returnType = new Identifier('array');
 
         // add more precise array type if suitable
-        /** @var \PHPStan\Type\ArrayType $returnType */
+        /** @var ArrayType $returnType */
         if ($this->shouldAddReturnArrayDocType($returnType)) {
             $this->changeReturnType($node, $returnType);
         }
