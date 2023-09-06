@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
@@ -140,7 +141,7 @@ CODE_SAMPLE
         return $this->processAddArrayReturnType($node, $returnType);
     }
 
-    private function processAddArrayReturnType(ClassMethod|Function_|Closure $node, \PHPStan\Type\Type $returnType): ClassMethod|Function_|Closure
+    private function processAddArrayReturnType(ClassMethod|Function_|Closure $node, Type $returnType): ClassMethod|Function_|Closure
     {
         // always returns array
         $node->returnType = new Identifier('array');
