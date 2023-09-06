@@ -238,6 +238,7 @@ final class ReflectionResolver
         if (! $funcCall->name instanceof Name) {
             return null;
         }
+
         if ($this->reflectionProvider->hasFunction($funcCall->name, $scope)) {
             return $this->reflectionProvider->getFunction($funcCall->name, $scope);
         }
