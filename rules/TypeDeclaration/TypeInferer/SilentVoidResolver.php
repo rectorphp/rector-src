@@ -22,7 +22,6 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 
-
 final class SilentVoidResolver
 {
     public function __construct(
@@ -46,9 +45,11 @@ final class SilentVoidResolver
             return false;
         }
 
-        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped($functionLike, static fn(Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr);
-
-        return !$return instanceof Node;
+        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $functionLike,
+            static fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
+        );
+        return ! $return instanceof Return_;
     }
 
     public function hasSilentVoid(FunctionLike $functionLike): bool
