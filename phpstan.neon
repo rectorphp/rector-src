@@ -576,8 +576,6 @@ parameters:
             message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
             path: src/DependencyInjection/RectorContainerFactory.php
 
-        - '#Class "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector" is missing @see annotation with test case class reference#'
-
         # chicken/egg
         -
             message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
