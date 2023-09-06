@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
@@ -25,6 +26,7 @@ use PHPStan\Type\NeverType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +39,8 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractScopeAwareRector 
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -108,12 +111,17 @@ CODE_SAMPLE
 
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
-        if (count($returns) !== 1) {
+        if ($returns === []) {
             return null;
         }
 
         if ($this->isVariableOverriddenWithNonArray($node, $variable)) {
             return null;
+        }
+
+        if (count($returns) > 1) {
+            $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+            return $this->processAddArrayReturnType($node, $returnType);
         }
 
         $onlyReturn = $returns[0];
@@ -122,14 +130,20 @@ CODE_SAMPLE
         }
 
         $returnType = $this->nodeTypeResolver->getNativeType($onlyReturn->expr);
-        if (! $returnType instanceof ArrayType) {
+        return $this->processAddArrayReturnType($node, $returnType);
+    }
+
+    private function processAddArrayReturnType(ClassMethod|Function_|Closure $node, Type $returnType): ClassMethod|Function_|Closure|null
+    {
+        if (! $returnType->isArray()->yes()) {
             return null;
         }
 
-        // 3. always returns array
+        // always returns array
         $node->returnType = new Identifier('array');
 
-        // 4. add more precise array type if suitable
+        // add more precise array type if suitable
+        /** @var ArrayType $returnType */
         if ($this->shouldAddReturnArrayDocType($returnType)) {
             $this->changeReturnType($node, $returnType);
         }
