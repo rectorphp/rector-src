@@ -148,7 +148,7 @@ final class SilentVoidResolver
     private function hasNeverType(ClassMethod | Closure | Function_ $functionLike): bool
     {
         // look for top-level never returning statements
-        foreach($functionLike->stmts as $stmt) {
+        foreach((array) $functionLike->getStmts() as $stmt) {
             if ($stmt instanceof Throw_) {
                 return true;
             }
