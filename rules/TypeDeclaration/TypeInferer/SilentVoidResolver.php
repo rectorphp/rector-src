@@ -154,7 +154,7 @@ final class SilentVoidResolver
             }
 
             if ($stmt instanceof Expression) {
-                $exprType = $this->nodeTypeResolver->getType($stmt->expr);
+                $exprType = $this->nodeTypeResolver->getNativeType($stmt->expr);
                 if ($exprType instanceof NeverType) {
                     return true;
                 }
