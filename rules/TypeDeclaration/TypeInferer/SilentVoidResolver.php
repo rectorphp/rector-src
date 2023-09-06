@@ -46,14 +46,9 @@ final class SilentVoidResolver
             return false;
         }
 
-        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped($functionLike, function(Node $node) {
-            if ($node instanceof Return_ && $node->expr instanceof Expr) {
-                return true;
-            }
-            return false;
-        });
+        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped($functionLike, static fn(Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr);
 
-        return $return === null;
+        return !$return instanceof Node;
     }
 
     public function hasSilentVoid(FunctionLike $functionLike): bool
