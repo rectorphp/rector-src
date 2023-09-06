@@ -51,6 +51,7 @@ return static function (RectorConfig $rectorConfig): void {
         TypedPropertyFromStrictConstructorReadonlyClassRector::class,
         ParamTypeFromStrictTypedPropertyRector::class,
         AddVoidReturnTypeWhereNoReturnRector::class,
+        ReturnTypeFromStrictFluentReturnRector::class,
         ReturnTypeFromReturnNewRector::class,
         TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
         AddMethodCallBasedStrictParamTypeRector::class,
@@ -76,7 +77,6 @@ return static function (RectorConfig $rectorConfig): void {
         NumericReturnTypeFromStrictScalarReturnsRector::class,
         StrictArrayParamDimFetchRector::class,
         ReturnUnionTypeRector::class,
-        ReturnTypeFromStrictFluentReturnRector::class,
         StrictStringParamConcatRector::class,
     ]);
 };
