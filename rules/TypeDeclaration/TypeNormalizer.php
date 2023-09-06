@@ -91,10 +91,6 @@ final class TypeNormalizer
                 $traversedTypeTypes = $traversedType->getTypes();
                 $countTraversedTypes = count($traversedTypeTypes);
 
-                if ($this->isUnionMixedArrayNeverType($countTraversedTypes, $traversedTypeTypes)) {
-                    return new MixedType();
-                }
-
                 $collectedTypes = $this->getCollectedTypes($traversedTypeTypes);
                 $countCollectedTypes = count($collectedTypes);
 
