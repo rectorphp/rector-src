@@ -2,7 +2,7 @@
 
 use Rector\Core\Exception\ShouldNotHappenException;
 
-final class SkipException
+final class ThrowsException
 {
     public function getValues()
     {
