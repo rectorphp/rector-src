@@ -121,10 +121,6 @@ CODE_SAMPLE
 
         if (count($returns) > 1) {
             $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-            if (! $returnType->isArray()->yes()) {
-                return null;
-            }
-
             return $this->processAddArrayReturnType($node, $returnType);
         }
 
@@ -134,15 +130,15 @@ CODE_SAMPLE
         }
 
         $returnType = $this->nodeTypeResolver->getNativeType($onlyReturn->expr);
+        return $this->processAddArrayReturnType($node, $returnType);
+    }
+
+    private function processAddArrayReturnType(ClassMethod|Function_|Closure $node, Type $returnType): ClassMethod|Function_|Closure|null
+    {
         if (! $returnType->isArray()->yes()) {
             return null;
         }
 
-        return $this->processAddArrayReturnType($node, $returnType);
-    }
-
-    private function processAddArrayReturnType(ClassMethod|Function_|Closure $node, Type $returnType): ClassMethod|Function_|Closure
-    {
         // always returns array
         $node->returnType = new Identifier('array');
 
