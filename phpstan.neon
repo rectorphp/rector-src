@@ -592,11 +592,6 @@ parameters:
             message: '#Do not name "d", shorter than 2 chars#'
             path: tests/debug_functions.php
 
-        # deprecated
-        -
-            message: '#Fetching class constant class of deprecated class Rector\\Core\\Contract\\Rector\\NonPhpRectorInterface#'
-            path: packages/Config/*
-
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
         -
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
