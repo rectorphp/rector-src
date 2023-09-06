@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
@@ -18,19 +17,15 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
-use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\NeverType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class SilentVoidResolver
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -38,10 +33,6 @@ final class SilentVoidResolver
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
         if ($classReflection instanceof ClassReflection && $classReflection->isInterface()) {
-            return false;
-        }
-
-        if ($this->hasNeverType($functionLike)) {
             return false;
         }
 
@@ -140,29 +131,6 @@ final class SilentVoidResolver
         }
 
         return true;
-    }
-
-    /**
-     * @see https://phpstan.org/writing-php-code/phpdoc-types#bottom-type
-     */
-    private function hasNeverType(ClassMethod | Closure | Function_ $functionLike): bool
-    {
-        // look for top-level never returning statements
-        foreach((array) $functionLike->getStmts() as $stmt) {
-            if ($stmt instanceof Throw_) {
-                return true;
-            }
-
-            if ($stmt instanceof Expression) {
-                $exprType = $this->nodeTypeResolver->getNativeType($stmt->expr);
-                if ($exprType instanceof NeverType) {
-                    return true;
-                }
-            }
-
-        }
-
-        return false;
     }
 
     private function resolveReturnCount(Switch_ $switch): int
