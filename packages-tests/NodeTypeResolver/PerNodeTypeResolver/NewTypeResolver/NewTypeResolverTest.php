@@ -44,7 +44,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $objectWithoutClassType = new ObjectWithoutClassType();
 
         # test new
-      //  yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
+        yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
 
         $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes(
             [
