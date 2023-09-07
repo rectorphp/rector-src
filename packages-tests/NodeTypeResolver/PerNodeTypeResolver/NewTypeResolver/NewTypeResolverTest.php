@@ -37,7 +37,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
     }
 
     /**
-     * @return Iterator<int[]|string[]|ObjectWithoutClassType[]>
+     * @return Iterator<int[]|string[]|ObjectWithoutClassType[]|ObjectWithoutClassTypeWithParentTypes[]|bool[]>
      */
     public static function provideData(): Iterator
     {
@@ -46,8 +46,11 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         # test new
         yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
 
-        $directParentTypes[] = new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader');
-        $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes($directParentTypes);
+        $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes(
+            [
+                new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')
+            ]
+        );
         yield [__DIR__ . '/Source/NewDynamicNewExtends.php', 0, $objectWithoutClassTypeWithParentTypes, true];
     }
 }
