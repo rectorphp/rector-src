@@ -65,13 +65,6 @@ final class AlwaysStrictScalarExprAnalyzer
             return null;
         }
 
-        if ($expr instanceof FuncCall) {
-            $exprType = $this->resolveNativeFuncCallType($expr, $scope);
-            if ($exprType->isScalar()->yes()) {
-                return $exprType;
-            }
-        }
-
         $exprType = $this->nodeTypeResolver->getNativeType($expr);
         if ($exprType->isScalar()->yes()) {
             return $exprType;
@@ -119,32 +112,4 @@ final class AlwaysStrictScalarExprAnalyzer
         return null;
     }
 
-    private function resolveNativeFuncCallType(FuncCall $funcCall, Scope $scope): Type
-    {
-        if (! $funcCall->name instanceof Name) {
-            return new MixedType();
-        }
-
-        if (! $this->reflectionProvider->hasFunction($funcCall->name, null)) {
-            return new MixedType();
-        }
-
-        $functionReflection = $this->reflectionProvider->getFunction($funcCall->name, null);
-        if (! $functionReflection instanceof NativeFunctionReflection) {
-            return new MixedType();
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionReflection,
-            $funcCall,
-            $scope
-        );
-
-        $returnType = $parametersAcceptor->getReturnType();
-        if ($returnType->isScalar()->yes()) {
-            return $returnType;
-        }
-
-        return new MixedType();
-    }
 }
