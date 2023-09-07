@@ -23,6 +23,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\Mixed;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
@@ -121,16 +122,16 @@ final class AlwaysStrictScalarExprAnalyzer
     private function resolveNativeFuncCallType(FuncCall $funcCall, Scope $scope): Type
     {
         if (! $funcCall->name instanceof Name) {
-            return new \PHPStan\Type\Mixed();
+            return new Mixed();
         }
 
         if (! $this->reflectionProvider->hasFunction($funcCall->name, null)) {
-            return new \PHPStan\Type\Mixed();
+            return new Mixed();
         }
 
         $functionReflection = $this->reflectionProvider->getFunction($funcCall->name, null);
         if (! $functionReflection instanceof NativeFunctionReflection) {
-            return new \PHPStan\Type\Mixed();
+            return new Mixed();
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
@@ -144,6 +145,6 @@ final class AlwaysStrictScalarExprAnalyzer
             return $returnType;
         }
 
-        return new \PHPStan\Type\Mixed();
+        return new Mixed();
     }
 }
