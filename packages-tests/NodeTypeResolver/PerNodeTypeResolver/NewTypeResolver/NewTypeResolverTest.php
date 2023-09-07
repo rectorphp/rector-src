@@ -34,7 +34,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
     }
 
     /**
-     * @return Iterator<int[]|string[]|ObjectType[]>
+     * @return Iterator<int[]|string[]|ObjectWithoutClassType[]>
      */
     public static function provideData(): Iterator
     {
