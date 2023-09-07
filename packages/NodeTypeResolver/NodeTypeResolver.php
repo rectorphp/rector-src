@@ -39,6 +39,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
+use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
@@ -110,6 +111,10 @@ final class NodeTypeResolver
                 // in some type checks, the provided type in rector.php configuration does not have to exists
                 return false;
             }
+        }
+
+        if ($resolvedType instanceof ObjectWithoutClassType) {
+            return $this->isMatchObjectWithoutClassType($resolvedType, $requiredObjectType);
         }
 
         return $this->isMatchingUnionType($resolvedType, $requiredObjectType);
@@ -324,6 +329,21 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function isMatchObjectWithoutClassType(
+        ObjectWithoutClassType $objectWithoutClassType,
+        ObjectType $requiredObjectType
+    ): bool {
+        if ($objectWithoutClassType instanceof ObjectWithoutClassTypeWithParentTypes) {
+            foreach ($objectWithoutClassType->getParentTypes() as $typeWithClassName) {
+                if ($requiredObjectType->isSuperTypeOf($typeWithClassName)->yes()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function isAnonymousObjectType(Type $type): bool
