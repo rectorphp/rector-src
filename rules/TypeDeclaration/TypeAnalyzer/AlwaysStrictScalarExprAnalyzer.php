@@ -66,7 +66,7 @@ final class AlwaysStrictScalarExprAnalyzer
 
         if ($expr instanceof FuncCall) {
             $exprType = $this->resolveNativeFuncCallType($expr, $scope);
-            if ($exprType instanceof Type && $exprType->isScalar()->yes()) {
+            if ($exprType->isScalar()->yes()) {
                 return $exprType;
             }
         }
@@ -118,19 +118,19 @@ final class AlwaysStrictScalarExprAnalyzer
         return null;
     }
 
-    private function resolveNativeFuncCallType(FuncCall $funcCall, Scope $scope): ?Type
+    private function resolveNativeFuncCallType(FuncCall $funcCall, Scope $scope): Type
     {
         if (! $funcCall->name instanceof Name) {
-            return null;
+            return new \PHPStan\Type\Mixed();
         }
 
         if (! $this->reflectionProvider->hasFunction($funcCall->name, null)) {
-            return null;
+            return new \PHPStan\Type\Mixed();
         }
 
         $functionReflection = $this->reflectionProvider->getFunction($funcCall->name, null);
         if (! $functionReflection instanceof NativeFunctionReflection) {
-            return null;
+            return new \PHPStan\Type\Mixed();
         }
 
         $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
@@ -144,6 +144,6 @@ final class AlwaysStrictScalarExprAnalyzer
             return $returnType;
         }
 
-        return null;
+        return new \PHPStan\Type\Mixed();
     }
 }
