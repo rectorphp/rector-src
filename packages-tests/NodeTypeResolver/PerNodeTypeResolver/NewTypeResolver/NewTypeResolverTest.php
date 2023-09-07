@@ -10,6 +10,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
+use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTestCase;
 
 /**
@@ -18,14 +20,15 @@ use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\AbstractNodeTypeResolverTe
 final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     #[DataProvider('provideData')]
-    public function test(string $file, int $nodePosition, Type $expectedType): void
+    public function test(string $file, int $nodePosition, Type $expectedType, bool $isObjectType): void
     {
         $newNodes = $this->getNodesForFileOfType($file, New_::class);
 
         $resolvedType = $this->nodeTypeResolver->getType($newNodes[$nodePosition]);
         $this->assertEquals($expectedType, $resolvedType);
 
-        $this->assertFalse(
+        $this->assertEquals(
+            $isObjectType,
             $this->nodeTypeResolver->isObjectType(
                 $newNodes[$nodePosition],
                 new ObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')
@@ -41,6 +44,10 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         $objectWithoutClassType = new ObjectWithoutClassType();
 
         # test new
-        yield [__DIR__ . '/Source/NewDynamicVariable.php', 0, $objectWithoutClassType];
+        yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
+
+        $directParentTypes[] = new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader');
+        $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes($directParentTypes);
+        yield [__DIR__ . '/Source/NewDynamicNewExtends.php', 0, $objectWithoutClassTypeWithParentTypes, true];
     }
 }
