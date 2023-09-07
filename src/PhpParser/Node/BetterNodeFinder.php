@@ -256,12 +256,16 @@ final class BetterNodeFinder
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if ($foundNode instanceof $subNode) {
-                    $scopedFoundNode = $this->findFirst($subNode, $filter);
-                    if ($scopedFoundNode instanceof Node) {
-                        $scopedNode = $subNode;
-                        return NodeTraverser::STOP_TRAVERSAL;
-                    }
+                if (! $foundNode instanceof $subNode) {
+                    return null;
+                }
+
+                // handle after Closure
+                // @see https://github.com/rectorphp/rector-src/pull/4931
+                $scopedFoundNode = $this->findFirst($subNode, $filter);
+                if ($scopedFoundNode === $subNode) {
+                    $scopedNode = $subNode;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
                 return null;
