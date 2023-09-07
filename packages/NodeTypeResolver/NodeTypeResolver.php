@@ -113,7 +113,7 @@ final class NodeTypeResolver
         }
 
         if ($resolvedType instanceof ObjectWithoutClassType) {
-            return $resolvedType::class === $requiredObjectType::class;
+            return $resolvedType->equals($requiredObjectType);
         }
 
         return $this->isMatchingUnionType($resolvedType, $requiredObjectType);
