@@ -336,8 +336,8 @@ final class NodeTypeResolver
         ObjectType $requiredObjectType
     ): bool {
         if ($objectWithoutClassType instanceof ObjectWithoutClassTypeWithParentTypes) {
-            foreach ($objectWithoutClassType->getParentTypes() as $parentType) {
-                if ($requiredObjectType->isSuperTypeOf($parentType)->yes()) {
+            foreach ($objectWithoutClassType->getParentTypes() as $typeWithClassName) {
+                if ($requiredObjectType->isSuperTypeOf($typeWithClassName)->yes()) {
                     return true;
                 }
             }
