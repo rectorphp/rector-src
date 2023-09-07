@@ -65,7 +65,10 @@ final class AlwaysStrictScalarExprAnalyzer
         }
 
         if ($expr instanceof FuncCall) {
-            return $this->resolveFuncCallType($expr, $scope);
+            $exprType = $this->resolveFuncCallType($expr, $scope);
+            if ($exprType instanceof Type && $exprType->isScalar()->yes()) {
+                return $exprType;
+            }
         }
 
         $exprType = $this->nodeTypeResolver->getNativeType($expr);
