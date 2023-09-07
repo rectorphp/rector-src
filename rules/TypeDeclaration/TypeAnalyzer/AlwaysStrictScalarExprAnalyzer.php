@@ -8,8 +8,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\Encapsed;
@@ -18,22 +16,17 @@ use PhpParser\Node\Scalar\MagicConst;
 use PhpParser\Node\Scalar\MagicConst\Line;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Reflection\Native\NativeFunctionReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
-use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
-use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 
 final class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
@@ -63,13 +56,6 @@ final class AlwaysStrictScalarExprAnalyzer
             }
 
             return null;
-        }
-
-        if ($expr instanceof FuncCall) {
-            $exprType = $this->resolveNativeFuncCallType($expr, $scope);
-            if ($exprType->isScalar()->yes()) {
-                return $exprType;
-            }
         }
 
         $exprType = $this->nodeTypeResolver->getNativeType($expr);
@@ -119,32 +105,4 @@ final class AlwaysStrictScalarExprAnalyzer
         return null;
     }
 
-    private function resolveNativeFuncCallType(FuncCall $funcCall, Scope $scope): Type
-    {
-        if (! $funcCall->name instanceof Name) {
-            return new MixedType();
-        }
-
-        if (! $this->reflectionProvider->hasFunction($funcCall->name, null)) {
-            return new MixedType();
-        }
-
-        $functionReflection = $this->reflectionProvider->getFunction($funcCall->name, null);
-        if (! $functionReflection instanceof NativeFunctionReflection) {
-            return new MixedType();
-        }
-
-        $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select(
-            $functionReflection,
-            $funcCall,
-            $scope
-        );
-
-        $returnType = $parametersAcceptor->getReturnType();
-        if ($returnType->isScalar()->yes()) {
-            return $returnType;
-        }
-
-        return new MixedType();
-    }
 }
