@@ -5,6 +5,9 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNe
 
 final class OrderRepositoryReturnDocblock
 {
+    /**
+     * @return array
+     */
     public function fetchAllForBuyer()
     {
         return [];
