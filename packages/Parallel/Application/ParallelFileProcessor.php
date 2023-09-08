@@ -50,7 +50,7 @@ final class ParallelFileProcessor
 
     /**
      * @param callable(int $stepCount): void $postFileCallback Used for progress bar jump
-     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], collected_data: mixed[], system_errors_count: int}
+     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], system_errors_count: int}
      */
     public function process(
         Schedule $schedule,

@@ -198,7 +198,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: mixed[], system_errors_count: int}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
      */
     private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
     {
