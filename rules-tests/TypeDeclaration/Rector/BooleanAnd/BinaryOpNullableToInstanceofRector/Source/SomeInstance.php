@@ -4,7 +4,8 @@ namespace Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInsta
 
 final class SomeInstance
 {
-    public function someMethod()
+    public function someMethod(): bool
     {
+        return true;
     }
 }

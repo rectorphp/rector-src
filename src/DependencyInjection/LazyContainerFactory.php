@@ -94,7 +94,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ParamTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\PropertyFetchTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\PropertyTypeResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver\ReturnTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ScalarTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\StaticCallMethodCallTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\TraitTypeResolver;
@@ -337,6 +336,7 @@ final class LazyContainerFactory
      */
     private const NODE_TYPE_RESOLVER_CLASSES = [
         CastTypeResolver::class,
+        StaticCallMethodCallTypeResolver::class,
         ClassAndInterfaceTypeResolver::class,
         ClassMethodOrClassConstTypeResolver::class,
         IdentifierTypeResolver::class,
@@ -345,9 +345,7 @@ final class LazyContainerFactory
         ParamTypeResolver::class,
         PropertyFetchTypeResolver::class,
         PropertyTypeResolver::class,
-        ReturnTypeResolver::class,
         ScalarTypeResolver::class,
-        StaticCallMethodCallTypeResolver::class,
         TraitTypeResolver::class,
     ];
 
