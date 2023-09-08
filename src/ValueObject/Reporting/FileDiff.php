@@ -101,7 +101,7 @@ final class FileDiff implements SerializableInterface
     /**
      * @param array<string, mixed> $json
      */
-    public static function decode(array $json): SerializableInterface
+    public static function decode(array $json): self
     {
         $rectorWithLineChanges = [];
 
