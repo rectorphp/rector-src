@@ -104,5 +104,4 @@ final class AlwaysStrictScalarExprAnalyzer
 
         return null;
     }
-
 }
