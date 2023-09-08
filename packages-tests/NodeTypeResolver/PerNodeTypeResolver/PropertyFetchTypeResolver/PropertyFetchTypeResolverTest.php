@@ -33,8 +33,6 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
         [$inputFileContents, $expectedType] = FixtureSplitter::split($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputFileContents);
 
-        FileSystem::delete($inputFilePath);
-
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);
         $resolvedType = $this->nodeTypeResolver->getType($propertyFetchNodes[0]);
 
@@ -42,12 +40,13 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
         $typeFilePath = FixtureTempFileDumper::dump($expectedType);
         $expectedType = include $typeFilePath;
 
-        FileSystem::delete($typeFilePath);
-
         $expectedTypeAsString = $this->getStringFromType($expectedType);
         $resolvedTypeAsString = $this->getStringFromType($resolvedType);
 
         $this->assertSame($expectedTypeAsString, $resolvedTypeAsString);
+
+        FileSystem::delete($inputFilePath);
+        FileSystem::delete($typeFilePath);
     }
 
     private function getStringFromType(Type $type): string
