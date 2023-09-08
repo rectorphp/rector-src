@@ -66,6 +66,8 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
         foreach ($tagValueNodeClasses as $tagValueNodeClass) {
             $this->doTestPrintedPhpDocInfo($fixtureFilePath, $tagValueNodeClass, $nodeClass);
         }
+
+        FileSystem::delete($fixtureFilePath);
     }
 
     public static function provideData(): Iterator

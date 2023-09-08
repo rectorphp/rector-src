@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -71,6 +72,8 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
     {
         $fixtureFilePath = FixtureTempFileDumper::dump($fileContents);
         $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($fixtureFilePath);
+
+        FileSystem::delete($fixtureFilePath);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);
         if (! $node instanceof Node) {
