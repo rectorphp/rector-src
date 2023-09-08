@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyFetchTypeResolver;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
@@ -32,12 +33,16 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
         [$inputFileContents, $expectedType] = FixtureSplitter::split($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputFileContents);
 
+        FileSystem::delete($inputFilePath);
+
         $propertyFetchNodes = $this->getNodesForFileOfType($inputFilePath, PropertyFetch::class);
         $resolvedType = $this->nodeTypeResolver->getType($propertyFetchNodes[0]);
 
         // this file actually containts PHP for type
         $typeFilePath = FixtureTempFileDumper::dump($expectedType);
         $expectedType = include $typeFilePath;
+
+        FileSystem::delete($typeFilePath);
 
         $expectedTypeAsString = $this->getStringFromType($expectedType);
         $resolvedTypeAsString = $this->getStringFromType($resolvedType);
