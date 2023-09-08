@@ -159,14 +159,10 @@ final class ApplicationFileProcessor
         $errorMessage = sprintf('System error: "%s"', $throwable->getMessage()) . PHP_EOL;
 
         if ($this->symfonyStyle->isDebug()) {
-            return new SystemError(
-                $errorMessage . PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString(),
-                $filePath,
-                $throwable->getLine()
-            );
+            $errorMessage .= PHP_EOL . 'Stack trace:' . PHP_EOL . $throwable->getTraceAsString();
+        } else {
+            $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
         }
-
-        $errorMessage .= 'Run Rector with "--debug" option and post the report here: https://github.com/rectorphp/rector/issues/new';
 
         return new SystemError($errorMessage, $filePath, $throwable->getLine());
     }
