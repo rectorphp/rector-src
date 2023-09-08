@@ -47,9 +47,7 @@ final class NewTypeResolverTest extends AbstractNodeTypeResolverTestCase
         yield [__DIR__ . '/Source/NewDynamicNew.php', 0, $objectWithoutClassType, false];
 
         $objectWithoutClassTypeWithParentTypes = new ObjectWithoutClassTypeWithParentTypes(
-            [
-                new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')
-            ]
+            [new FullyQualifiedObjectType('Symfony\Bundle\TwigBundle\Loader\FilesystemLoader')]
         );
         yield [__DIR__ . '/Source/NewDynamicNewExtends.php', 0, $objectWithoutClassTypeWithParentTypes, true];
     }

@@ -42,6 +42,8 @@ final class RectorContainerFactory
             $container->import($configFile);
         }
 
+        $container->boot();
+
         return $container;
     }
 }
