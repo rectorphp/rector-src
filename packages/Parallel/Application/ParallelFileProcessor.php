@@ -50,7 +50,7 @@ final class ParallelFileProcessor
 
     /**
      * @param callable(int $stepCount): void $postFileCallback Used for progress bar jump
-     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], system_errors_count: int}
+     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], collected_data: mixed[], system_errors_count: int}
      */
     public function process(
         Schedule $schedule,
@@ -66,6 +66,7 @@ final class ParallelFileProcessor
 
         // initial counters
         $fileDiffs = [];
+        $collectedData = [];
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
@@ -159,6 +160,7 @@ final class ParallelFileProcessor
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
+                    &$collectedData,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier
                 ): void {
@@ -175,6 +177,8 @@ final class ParallelFileProcessor
                     foreach ($json[Bridge::FILE_DIFFS] as $jsonFileDiff) {
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
                     }
+
+                    $collectedData = array_merge($collectedData, $json[Bridge::COLLECTED_DATA]);
 
                     $postFileCallback($json[Bridge::FILES_COUNT]);
 
@@ -230,6 +234,7 @@ final class ParallelFileProcessor
             Bridge::FILE_DIFFS => $fileDiffs,
             Bridge::SYSTEM_ERRORS => $systemErrors,
             Bridge::SYSTEM_ERRORS_COUNT => count($systemErrors),
+            Bridge::COLLECTED_DATA => $collectedData,
         ];
     }
 }

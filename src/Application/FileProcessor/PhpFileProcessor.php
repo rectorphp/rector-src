@@ -42,13 +42,14 @@ final class PhpFileProcessor
     }
 
     /**
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: mixed[]}
      */
     public function process(File $file, Configuration $configuration): array
     {
         $systemErrorsAndFileDiffs = [
             Bridge::SYSTEM_ERRORS => [],
             Bridge::FILE_DIFFS => [],
+            Bridge::COLLECTED_DATA => [],
         ];
 
         // 1. parse files to nodes
@@ -113,6 +114,11 @@ final class PhpFileProcessor
      */
     private function parseFileAndDecorateNodes(File $file): array
     {
+        // skip if file is parsed
+        if ($file->isParsed()) {
+            return [];
+        }
+
         $this->notifyFile($file);
 
         try {

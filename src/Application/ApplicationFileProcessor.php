@@ -63,6 +63,7 @@ final class ApplicationFileProcessor
             return [
                 Bridge::SYSTEM_ERRORS => [],
                 Bridge::FILE_DIFFS => [],
+                Bridge::COLLECTED_DATA => [],
             ];
         }
 
@@ -86,7 +87,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]}
      */
     public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
     {
@@ -103,6 +104,7 @@ final class ApplicationFileProcessor
             Bridge::SYSTEM_ERRORS => [],
             Bridge::FILE_DIFFS => [],
             Bridge::SYSTEM_ERRORS_COUNT => 0,
+            Bridge::COLLECTED_DATA => [],
         ];
 
         foreach ($filePaths as $filePath) {
@@ -131,8 +133,8 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int} $systemErrorsAndFileDiffs
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
+     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]} $systemErrorsAndFileDiffs
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]}
      */
     private function processFile(File $file, array $systemErrorsAndFileDiffs, Configuration $configuration): array
     {
@@ -198,7 +200,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: mixed[], system_errors_count: int}
      */
     private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
     {
@@ -209,9 +211,6 @@ final class ApplicationFileProcessor
             $filePaths
         );
 
-        $postFileCallback = static function (int $stepCount): void {
-        };
-
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($filePaths);
             $this->symfonyStyle->progressStart($fileCount);
@@ -220,6 +219,9 @@ final class ApplicationFileProcessor
             $postFileCallback = function (int $stepCount): void {
                 $this->symfonyStyle->progressAdvance($stepCount);
                 // running in parallel here → nothing else to do
+            };
+        } else {
+            $postFileCallback = static function (int $stepCount): void {
             };
         }
 
