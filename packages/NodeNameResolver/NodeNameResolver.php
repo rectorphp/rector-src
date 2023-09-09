@@ -15,9 +15,7 @@ use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
-use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\Regex\RegexPatternDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeNameResolver
@@ -31,7 +29,6 @@ final class NodeNameResolver
      * @param NodeNameResolverInterface[] $nodeNameResolvers
      */
     public function __construct(
-        private readonly RegexPatternDetector $regexPatternDetector,
         private readonly ClassNaming $classNaming,
         private readonly CallAnalyzer $callAnalyzer,
         private readonly iterable $nodeNameResolvers = []
@@ -168,26 +165,6 @@ final class NodeNameResolver
         return $names;
     }
 
-    /**
-     * Ends with ucname
-     * Starts with adjective, e.g. (Post $firstPost, Post $secondPost)
-     */
-    public function endsWith(string $currentName, string $expectedName): bool
-    {
-        $suffixNamePattern = '#\w+' . ucfirst($expectedName) . '#';
-        return StringUtils::isMatch($currentName, $suffixNamePattern);
-    }
-
-    public function startsWith(Node $node, string $prefix): bool
-    {
-        $name = $this->getName($node);
-        if (! is_string($name)) {
-            return false;
-        }
-
-        return str_starts_with($name, $prefix);
-    }
-
     public function getShortName(string | Name | Identifier | ClassLike $name): string
     {
         return $this->classNaming->getShortName($name);
@@ -205,21 +182,6 @@ final class NodeNameResolver
         }
 
         return strcasecmp($resolvedName, $desiredName) === 0;
-    }
-
-    public function matchesStringName(string|Identifier $resolvedName, string $desiredNamePattern): bool
-    {
-        if ($resolvedName instanceof Identifier) {
-            $resolvedName = $resolvedName->toString();
-        }
-
-        // is probably regex pattern
-        if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
-            return StringUtils::isMatch($resolvedName, $desiredNamePattern);
-        }
-
-        // is probably fnmatch
-        return fnmatch($desiredNamePattern, $resolvedName, FNM_NOESCAPE);
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool

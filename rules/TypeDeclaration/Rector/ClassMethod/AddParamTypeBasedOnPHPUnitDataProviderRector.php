@@ -235,9 +235,9 @@ CODE_SAMPLE
         return $this->typeFactory->createMixedPassedOrUnionType($paramOnPositionTypes);
     }
 
-    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArrayNode): MixedType | ConstantArrayType
+    private function getTypeFromClassMethodYield(Array_ $classMethodYieldArray): MixedType | ConstantArrayType
     {
-        $arrayType = $this->nodeTypeResolver->getType($classMethodYieldArrayNode);
+        $arrayType = $this->nodeTypeResolver->getType($classMethodYieldArray);
 
         // impossible to resolve
         if (! $arrayType instanceof ConstantArrayType) {

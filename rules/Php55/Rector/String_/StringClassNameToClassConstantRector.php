@@ -180,7 +180,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if ($this->nodeNameResolver->matchesStringName($classLikeName, $classToSkip)) {
+            if (fnmatch($classToSkip, $classLikeName, FNM_NOESCAPE)) {
                 return true;
             }
         }

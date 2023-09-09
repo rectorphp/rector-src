@@ -141,9 +141,9 @@ CODE_SAMPLE
     /**
      * @return If_[]
      */
-    private function createStandaloneIfsWithReturn(If_ $nestedIfWithOnlyReturn, Return_ $return): array
+    private function createStandaloneIfsWithReturn(If_ $onlyReturnIf, Return_ $return): array
     {
-        $invertedCondExpr = $this->conditionInverter->createInvertedCondition($nestedIfWithOnlyReturn->cond);
+        $invertedCondExpr = $this->conditionInverter->createInvertedCondition($onlyReturnIf->cond);
 
         // special case
         if ($invertedCondExpr instanceof BooleanNot && $invertedCondExpr->expr instanceof BooleanAnd) {
@@ -156,9 +156,9 @@ CODE_SAMPLE
             return [$booleanNotPartIf, $secondBooleanNotPartIf];
         }
 
-        $nestedIfWithOnlyReturn->cond = $invertedCondExpr;
-        $nestedIfWithOnlyReturn->stmts = [$return];
+        $onlyReturnIf->cond = $invertedCondExpr;
+        $onlyReturnIf->stmts = [$return];
 
-        return [$nestedIfWithOnlyReturn];
+        return [$onlyReturnIf];
     }
 }
