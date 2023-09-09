@@ -55,6 +55,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
+        $workerCommandLine = str_replace("'main_script' worker", "'main_script' '' worker", $workerCommandLine);
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
 

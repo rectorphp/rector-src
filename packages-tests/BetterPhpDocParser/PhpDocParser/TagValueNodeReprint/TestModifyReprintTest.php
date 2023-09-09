@@ -7,6 +7,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
@@ -39,6 +40,7 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
         $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
     }
 
+    #[RunInSeparateProcess]
     public function test(): void
     {
         [$inputContent, $expectedContent] = FixtureSplitter::split(
