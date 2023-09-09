@@ -23,11 +23,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class NodeNameResolver
 {
     /**
-     * Used to check if a string might contain a regex or fnmatch pattern
-     */
-    private const REGEX_WILDCARD_CHARS = ['*', '#', '~', '/'];
-
-    /**
      * @var array<string, NodeNameResolverInterface|null>
      */
     private array $nodeNameResolversByClass = [];
