@@ -179,6 +179,10 @@ CODE_SAMPLE
             if ($this->nodeNameResolver->isStringName($classLikeName, $classToSkip)) {
                 return true;
             }
+
+            if ($this->nodeNameResolver->matchesStringName($classLikeName, $classToSkip)) {
+                return true;
+            }
         }
 
         return false;
