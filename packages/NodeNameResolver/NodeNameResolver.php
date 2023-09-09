@@ -196,8 +196,12 @@ final class NodeNameResolver
         return strtolower($resolvedName) === strtolower($desiredName);
     }
 
-    public function matchesStringName(string $resolvedName, string $desiredNamePattern): bool
+    public function matchesStringName(string|Identifier $resolvedName, string $desiredNamePattern): bool
     {
+        if ($resolvedName instanceof Identifier) {
+            $resolvedName = $resolvedName->toString();
+        }
+
         // is probably regex pattern
         if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
             return StringUtils::isMatch($resolvedName, $desiredNamePattern);
