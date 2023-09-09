@@ -157,23 +157,13 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($classOrInterface->getMethods() as $classMethod) {
+            $methodName = $this->getName($classMethod->name);
+            if ($methodName === null) {
+                continue;
+            }
+
             foreach ($this->methodCallRenames as $methodCallRename) {
-                if (! $this->isName($classMethod->name, $methodCallRename->getOldMethod())) {
-                    continue;
-                }
-
-                if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
-                    $classMethod,
-                    $methodCallRename->getObjectType()
-                )) {
-                    continue;
-                }
-
-                if ($this->shouldKeepForParentInterface($methodCallRename, $classReflection)) {
-                    continue;
-                }
-
-                if ($this->hasClassNewClassMethod($classOrInterface, $methodCallRename)) {
+                if ($this->shouldSkipRename($methodName, $classMethod, $methodCallRename, $classReflection, $classOrInterface)) {
                     continue;
                 }
 
@@ -189,11 +179,46 @@ CODE_SAMPLE
         return null;
     }
 
+    private function shouldSkipRename(
+        string $methodName,
+        Node\Stmt\ClassMethod $classMethod,
+        MethodCallRenameInterface $methodCallRename,
+        ClassReflection $classReflection,
+        Class_|Interface_ $classOrInterface
+    ): bool
+    {
+        if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
+            return true;
+        }
+
+        if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
+            $classMethod,
+            $methodCallRename->getObjectType()
+        )) {
+            return true;
+        }
+
+        if ($this->shouldKeepForParentInterface($methodCallRename, $classReflection)) {
+            return true;
+        }
+
+        if ($this->hasClassNewClassMethod($classOrInterface, $methodCallRename)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function refactorMethodCallAndStaticCall(
         StaticCall|MethodCall $call
     ): ArrayDimFetch|null|MethodCall|StaticCall {
+        $callName = $this->getName($call->name);
+        if ($callName === null) {
+            return null;
+        }
+
         foreach ($this->methodCallRenames as $methodCallRename) {
-            if (! $this->isName($call->name, $methodCallRename->getOldMethod())) {
+            if (! $this->nodeNameResolver->isStringName($callName, $methodCallRename->getOldMethod())) {
                 continue;
             }
 
