@@ -30,6 +30,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         copy(__DIR__ . '/Fixture/updated_rector_rule.php', __DIR__ . '/Fixture/rector.php');
 
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_IMPORTFILES, null);
 
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
@@ -50,6 +51,7 @@ final class FileHashComputerTest extends AbstractLazyTestCase
         copy(__DIR__ . '/Fixture/rector_rule_equals.php', __DIR__ . '/Fixture/rector.php');
 
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_IMPORTFILES, null);
 
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
