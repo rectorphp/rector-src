@@ -170,7 +170,7 @@ final class NodeNameResolver
     /**
      * @param string|string[] $suffix
      */
-    public function endsWith(\PhpParser\Node $node, string|array $suffix): bool
+    public function endsWith(Node $node, string|array $suffix): bool
     {
         $name = $this->getName($node);
         if (! is_string($name)) {
