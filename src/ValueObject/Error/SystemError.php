@@ -53,7 +53,7 @@ final class SystemError implements SerializableInterface
     /**
      * @param mixed[] $json
      */
-    public static function decode(array $json): SerializableInterface
+    public static function decode(array $json): self
     {
         return new self(
             $json[Name::MESSAGE],
