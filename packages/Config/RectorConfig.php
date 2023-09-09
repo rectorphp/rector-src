@@ -49,9 +49,6 @@ final class RectorConfig extends Container
             Assert::fileExists($set);
             $this->import($set);
         }
-
-        // for cache invalidation in case of sets change
-        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_SETS, $sets);
     }
 
     public function disableParallel(): void

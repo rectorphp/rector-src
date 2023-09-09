@@ -224,10 +224,4 @@ final class Option
      * @var string
      */
     public const REGISTERED_RECTOR_RULES = 'registered_rector_rules';
-
-    /**
-     * @internal For cache invalidation in case of change
-     * @var string
-     */
-    public const REGISTERED_RECTOR_SETS = 'registered_rector_sets';
 }
