@@ -229,5 +229,5 @@ final class Option
      * @internal For cache invalidation in case of change
      * @var string
      */
-    public const REGISTERED_RECTOR_SETS = 'registered_rector_sets';
+    public const REGISTERED_RECTOR_IMPORTFILES = 'registered_rector_importfiles';
 }

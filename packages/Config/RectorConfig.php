@@ -49,9 +49,6 @@ final class RectorConfig extends Container
             Assert::fileExists($set);
             $this->import($set);
         }
-
-        // for cache invalidation in case of sets change
-        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_SETS, $sets);
     }
 
     public function disableParallel(): void
@@ -233,6 +230,9 @@ final class RectorConfig extends Container
         foreach ($paths as $path) {
             $this->importFile($path);
         }
+
+        // for cache invalidation in case of change
+        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_IMPORTFILES, $paths);
     }
 
     /**
