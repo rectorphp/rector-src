@@ -199,7 +199,7 @@ final class NodeNameResolver
         }
 
         $containsWildcard = false;
-        foreach(self::REGEX_WILDCARD_CHARS as $char) {
+        foreach (self::REGEX_WILDCARD_CHARS as $char) {
             if (str_contains($desiredName, $char)) {
                 $containsWildcard = true;
                 break;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Application;
 
-use PhpParser\Node\Stmt;
+use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -47,8 +47,8 @@ final class PostFileProcessor
     }
 
     /**
-     * @param Stmt[] $stmts
-     * @return Stmt[]
+     * @param Node[] $stmts
+     * @return Node[]
      */
     public function traverse(array $stmts): array
     {

@@ -18,7 +18,6 @@ use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\ValueObject\Bridge;
-use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
@@ -33,13 +32,12 @@ final class PhpFileProcessor
 
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
-        private readonly FileProcessor           $fileProcessor,
-        private readonly SymfonyStyle            $symfonyStyle,
-        private readonly FileDiffFactory         $fileDiffFactory,
-        private readonly ChangedFilesDetector    $changedFilesDetector,
-        private readonly PostFileProcessor       $postFileProcessor,
-        private readonly ErrorFactory            $errorFactory,
-        private readonly FilePathHelper          $filePathHelper
+        private readonly FileProcessor $fileProcessor,
+        private readonly SymfonyStyle $symfonyStyle,
+        private readonly FileDiffFactory $fileDiffFactory,
+        private readonly ChangedFilesDetector $changedFilesDetector,
+        private readonly ErrorFactory $errorFactory,
+        private readonly FilePathHelper $filePathHelper
     ) {
     }
 
@@ -68,14 +66,9 @@ final class PhpFileProcessor
         $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
-            $this->fileProcessor->refactor($file);
+            $this->fileProcessor->process($file);
 
-            // 3. apply post rectors
-            $newStmts = $this->postFileProcessor->traverse($file->getNewStmts());
-            // this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($newStmts);
-
-            // 4. print to file or string
+            // 3. print to file or string
             // important to detect if file has changed
             $this->printFile($file, $configuration);
 
