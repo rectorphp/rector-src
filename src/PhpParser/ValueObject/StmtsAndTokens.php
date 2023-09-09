@@ -10,7 +10,7 @@ final class StmtsAndTokens
 {
     /**
      * @param Stmt[] $stmts
-     * @param mixed[] $tokens
+     * @param array<int, array{int, string, int}|string> $tokens
      */
     public function __construct(
         private readonly array $stmts,
@@ -27,7 +27,7 @@ final class StmtsAndTokens
     }
 
     /**
-     * @return mixed[]
+     * @return array<int, array{int, string, int}|string>
      */
     public function getTokens(): array
     {

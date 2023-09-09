@@ -32,7 +32,7 @@ final class File
     private array $newStmts = [];
 
     /**
-     * @var mixed[]
+     * @var array<int, array{int, string, int}|string>
      */
     private array $oldTokens = [];
 
@@ -96,7 +96,7 @@ final class File
     /**
      * @param Stmt[] $newStmts
      * @param Stmt[] $oldStmts
-     * @param mixed[] $oldTokens
+     * @param array<int, array{int, string, int}|string> $oldTokens
      */
     public function hydrateStmtsAndTokens(array $newStmts, array $oldStmts, array $oldTokens): void
     {
@@ -126,7 +126,7 @@ final class File
     }
 
     /**
-     * @return mixed[]
+     * @return array<int, array{int, string, int}|string>
      */
     public function getOldTokens(): array
     {
