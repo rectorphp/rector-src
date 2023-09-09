@@ -29,6 +29,8 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/build/build-preload.php',
     ]);
 
+    $ecsConfig->rules([\PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer::class]);
+
     $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [
         'allow_mixed' => true,
     ]);

@@ -4,25 +4,34 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject;
 
+use PHPStan\Collectors\CollectedData;
 use Rector\Core\ValueObject\Error\SystemError;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Webmozart\Assert\Assert;
 
-/**
- * @see \Rector\Core\ValueObjectFactory\ProcessResultFactory
- */
 final class ProcessResult
 {
     /**
-     * @param FileDiff[] $fileDiffs
      * @param SystemError[] $systemErrors
+     * @param FileDiff[] $fileDiffs
+     * @param CollectedData[] $collectedData
      */
     public function __construct(
-        private readonly array $systemErrors,
+        private array $systemErrors,
         private readonly array $fileDiffs,
+        private readonly array $collectedData
     ) {
-        Assert::allIsAOf($fileDiffs, FileDiff::class);
-        Assert::allIsAOf($systemErrors, SystemError::class);
+        Assert::allIsInstanceOf($systemErrors, SystemError::class);
+        Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
+        Assert::allIsInstanceOf($collectedData, CollectedData::class);
+    }
+
+    /**
+     * @return SystemError[]
+     */
+    public function getSystemErrors(): array
+    {
+        return $this->systemErrors;
     }
 
     /**
@@ -34,10 +43,20 @@ final class ProcessResult
     }
 
     /**
-     * @return SystemError[]
+     * @return CollectedData[]
      */
-    public function getErrors(): array
+    public function getCollectedData(): array
     {
-        return $this->systemErrors;
+        return $this->collectedData;
+    }
+
+    /**
+     * @param SystemError[] $systemErrors
+     */
+    public function addSystemErrors(array $systemErrors): void
+    {
+        Assert::allIsInstanceOf($systemErrors, SystemError::class);
+
+        $this->systemErrors = array_merge($this->systemErrors, $systemErrors);
     }
 }

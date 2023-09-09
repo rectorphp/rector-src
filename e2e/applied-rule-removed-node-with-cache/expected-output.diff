@@ -1,24 +1,7 @@
 2 files with changes
 ====================
 
-1) src/DeadConstructor.php:1
-
-    ---------- begin diff ----------
-@@ @@
-
- final class DeadConstructor
- {
--    public function __construct()
--    {
--    }
- }
-    ----------- end diff -----------
-
-Applied rules:
- * RemoveEmptyClassMethodRector
-
-
-2) src/AlwaysTrue.php:3
+1) src/AlwaysTrue.php:3
 
     ---------- begin diff ----------
 @@ @@
@@ -35,6 +18,23 @@ Applied rules:
 
 Applied rules:
  * RemoveAlwaysTrueIfConditionRector
+
+
+2) src/DeadConstructor.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class DeadConstructor
+ {
+-    public function __construct()
+-    {
+-    }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveEmptyClassMethodRector
 
 
  [OK] 2 files would have changed (dry-run) by Rector

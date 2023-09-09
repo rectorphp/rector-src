@@ -1,25 +1,7 @@
 2 files with changes
 ====================
 
-1) src/UselessVarTag.php:1
-
-    ---------- begin diff ----------
-@@ @@
-
- final class UselessVarTag
- {
--    /**
--     * @var string
--     */
-     public string $name = 'name';
- }
-    ----------- end diff -----------
-
-Applied rules:
- * RemoveUselessVarTagRector
-
-
-2) src/RenameDocblock.php:0
+1) src/RenameDocblock.php:0
 
     ---------- begin diff ----------
 @@ @@
@@ -35,6 +17,24 @@ Applied rules:
 
 Applied rules:
  * RenameClassRector
+
+
+2) src/UselessVarTag.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ final class UselessVarTag
+ {
+-    /**
+-     * @var string
+-     */
+     public string $name = 'name';
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUselessVarTagRector
 
 
  [OK] 2 files would have changed (dry-run) by Rector

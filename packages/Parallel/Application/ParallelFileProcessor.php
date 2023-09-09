@@ -7,6 +7,7 @@ namespace Rector\Parallel\Application;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\Random;
+use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
@@ -14,6 +15,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Console\Command\ProcessCommand;
 use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\ValueObject\Bridge;
@@ -50,14 +52,13 @@ final class ParallelFileProcessor
 
     /**
      * @param callable(int $stepCount): void $postFileCallback Used for progress bar jump
-     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], system_errors_count: int}
      */
     public function process(
         Schedule $schedule,
         string $mainScript,
         callable $postFileCallback,
         InputInterface $input
-    ): array {
+    ): ProcessResult {
         $jobs = array_reverse($schedule->getJobs());
         $streamSelectLoop = new StreamSelectLoop();
 
@@ -65,7 +66,13 @@ final class ParallelFileProcessor
         $numberOfProcesses = $schedule->getNumberOfProcesses();
 
         // initial counters
+
+        /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
+
+        /** @var CollectedData[] $collectedDatas */
+        $collectedDatas = [];
+
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
@@ -106,7 +113,6 @@ final class ParallelFileProcessor
         $serverPort = parse_url($serverAddress, PHP_URL_PORT);
 
         $systemErrorsCount = 0;
-
         $reachedSystemErrorsCountLimit = false;
 
         $handleErrorCallable = function (Throwable $throwable) use (
@@ -159,6 +165,7 @@ final class ParallelFileProcessor
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
+                    &$collectedDatas,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier
                 ): void {
@@ -174,6 +181,10 @@ final class ParallelFileProcessor
 
                     foreach ($json[Bridge::FILE_DIFFS] as $jsonFileDiff) {
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
+                    }
+
+                    foreach ($json[Bridge::COLLECTED_DATA] as $jsonCollectedData) {
+                        $collectedDatas[] = CollectedData::decode($jsonCollectedData);
                     }
 
                     $postFileCallback($json[Bridge::FILES_COUNT]);
@@ -226,10 +237,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return [
-            Bridge::FILE_DIFFS => $fileDiffs,
-            Bridge::SYSTEM_ERRORS => $systemErrors,
-            Bridge::SYSTEM_ERRORS_COUNT => count($systemErrors),
-        ];
+        return new ProcessResult($systemErrors, $fileDiffs, $collectedDatas);
     }
 }

@@ -27,7 +27,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     private const ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private readonly SymfonyStyle             $symfonyStyle,
+        private readonly SymfonyStyle $symfonyStyle,
         private readonly RectorsChangelogResolver $rectorsChangelogResolver,
     ) {
     }
@@ -38,9 +38,9 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
             $this->reportFileDiffs($processResult->getFileDiffs());
         }
 
-        $this->reportErrors($processResult->getErrors());
+        $this->reportErrors($processResult->getSystemErrors());
 
-        if ($processResult->getErrors() !== []) {
+        if ($processResult->getSystemErrors() !== []) {
             return;
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
+use PHPStan\Collectors\CollectedData;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\Option;
@@ -14,10 +15,11 @@ use Rector\Core\Util\ArrayParametersMerger;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\FileProcessResult;
+use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Core\ValueObjectFactory\Application\FileFactory;
 use Rector\Parallel\Application\ParallelFileProcessor;
-use Rector\Parallel\ValueObject\Bridge;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -41,54 +43,44 @@ final class ApplicationFileProcessor
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
         private readonly FileFactory $fileFactory,
-        private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly PhpFileProcessor $phpFileProcessor,
+        private readonly ArrayParametersMerger $arrayParametersMerger,
     ) {
     }
 
-    /**
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
-     */
-    public function run(Configuration $configuration, InputInterface $input): array
+    public function run(Configuration $configuration, InputInterface $input): ProcessResult
     {
         $filePaths = $this->fileFactory->findFilesInPaths($configuration->getPaths(), $configuration);
 
         // no files found
         if ($filePaths === []) {
-            return [
-                Bridge::SYSTEM_ERRORS => [],
-                Bridge::FILE_DIFFS => [],
-            ];
+            return new ProcessResult([], [], []);
         }
 
         $this->configureCustomErrorHandler();
 
         if ($configuration->isParallel()) {
-            $systemErrorsAndFileDiffs = $this->runParallel($filePaths, $configuration, $input);
+            $processResult = $this->runParallel($filePaths, $configuration, $input);
         } else {
-            $systemErrorsAndFileDiffs = $this->processFiles($filePaths, $configuration, false);
+            $processResult = $this->processFiles($filePaths, $configuration, false);
         }
 
-        $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] = array_merge(
-            $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
-            $this->systemErrors
-        );
+        $processResult->addSystemErrors($this->systemErrors);
 
         $this->restoreErrorHandler();
 
-        return $systemErrorsAndFileDiffs;
+        return $processResult;
     }
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
      */
-    public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
+    public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): ProcessResult
     {
         $shouldShowProgressBar = $configuration->shouldShowProgressBar();
 
@@ -99,17 +91,32 @@ final class ApplicationFileProcessor
             $this->symfonyStyle->progressAdvance(0);
         }
 
-        $systemErrorsAndFileDiffs = [
-            Bridge::SYSTEM_ERRORS => [],
-            Bridge::FILE_DIFFS => [],
-            Bridge::SYSTEM_ERRORS_COUNT => 0,
-        ];
+        /** @var SystemError[] $systemErrors */
+        $systemErrors = [];
+
+        /** @var FileDiff[] $fileDiffs */
+        $fileDiffs = [];
+
+        /** @var CollectedData[] $collectedData */
+        $collectedData = [];
 
         foreach ($filePaths as $filePath) {
             $file = new File($filePath, UtilsFileSystem::read($filePath));
 
             try {
-                $systemErrorsAndFileDiffs = $this->processFile($file, $systemErrorsAndFileDiffs, $configuration);
+                $fileProcessResult = $this->processFile($file, $configuration);
+
+                $systemErrors = $this->arrayParametersMerger->merge(
+                    $systemErrors,
+                    $fileProcessResult->getSystemErrors()
+                );
+
+                $currentFileDiff = $fileProcessResult->getFileDiff();
+                if ($currentFileDiff instanceof FileDiff) {
+                    $fileDiffs[] = $currentFileDiff;
+                }
+
+                $collectedData = array_merge($collectedData, $fileProcessResult->getCollectedData());
 
                 // progress bar +1,
                 // progress bar on parallel handled on runParallel()
@@ -123,35 +130,26 @@ final class ApplicationFileProcessor
                     throw $throwable;
                 }
 
-                $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS][] = $this->resolveSystemError($throwable, $filePath);
+                $systemErrors[] = $this->resolveSystemError($throwable, $filePath);
             }
         }
 
-        return $systemErrorsAndFileDiffs;
+        return new ProcessResult($systemErrors, $fileDiffs, $collectedData);
     }
 
-    /**
-     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int} $systemErrorsAndFileDiffs
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
-     */
-    private function processFile(File $file, array $systemErrorsAndFileDiffs, Configuration $configuration): array
+    private function processFile(File $file, Configuration $configuration): FileProcessResult
     {
         $this->currentFileProvider->setFile($file);
 
-        $phpSystemErrorsAndFileDiffs = $this->phpFileProcessor->process($file, $configuration);
+        $fileProcessResult = $this->phpFileProcessor->process($file, $configuration);
 
-        $systemErrorsAndFileDiffs = $this->arrayParametersMerger->merge(
-            $systemErrorsAndFileDiffs,
-            $phpSystemErrorsAndFileDiffs
-        );
-
-        if ($systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS] !== []) {
+        if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
-        } elseif (! $configuration->isDryRun() || $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS] === []) {
+        } elseif (! $configuration->isDryRun() || ! $fileProcessResult->getFileDiff() instanceof FileDiff) {
             $this->changedFilesDetector->cacheFile($file->getFilePath());
         }
 
-        return $systemErrorsAndFileDiffs;
+        return $fileProcessResult;
     }
 
     private function resolveSystemError(Throwable $throwable, string $filePath): SystemError
@@ -198,9 +196,8 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int}
      */
-    private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
+    private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): ProcessResult
     {
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
@@ -208,9 +205,6 @@ final class ApplicationFileProcessor
             SimpleParameterProvider::provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
             $filePaths
         );
-
-        $postFileCallback = static function (int $stepCount): void {
-        };
 
         if ($configuration->shouldShowProgressBar()) {
             $fileCount = count($filePaths);
@@ -220,6 +214,9 @@ final class ApplicationFileProcessor
             $postFileCallback = function (int $stepCount): void {
                 $this->symfonyStyle->progressAdvance($stepCount);
                 // running in parallel here → nothing else to do
+            };
+        } else {
+            $postFileCallback = static function (int $stepCount): void {
             };
         }
 
