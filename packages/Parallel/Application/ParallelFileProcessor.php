@@ -15,6 +15,7 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Console\Command\ProcessCommand;
 use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Core\ValueObject\ProcessResult;
 use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\Parallel\Command\WorkerCommandLineFactory;
 use Rector\Parallel\ValueObject\Bridge;
@@ -51,14 +52,13 @@ final class ParallelFileProcessor
 
     /**
      * @param callable(int $stepCount): void $postFileCallback Used for progress bar jump
-     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], collected_data: CollectedData[], system_errors_count: int}
      */
     public function process(
         Schedule $schedule,
         string $mainScript,
         callable $postFileCallback,
         InputInterface $input
-    ): array {
+    ): ProcessResult {
         $jobs = array_reverse($schedule->getJobs());
         $streamSelectLoop = new StreamSelectLoop();
 
@@ -70,8 +70,8 @@ final class ParallelFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
-        /** @var CollectedData[] $collectedData */
-        $collectedData = [];
+        /** @var CollectedData[] $collectedDatas */
+        $collectedDatas = [];
 
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
@@ -165,7 +165,7 @@ final class ParallelFileProcessor
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
-                    &$collectedData,
+                    &$collectedDatas,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier
                 ): void {
@@ -183,7 +183,9 @@ final class ParallelFileProcessor
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
                     }
 
-                    $collectedData = array_merge($collectedData, $json[Bridge::COLLECTED_DATA]);
+                    foreach ($json[Bridge::COLLECTED_DATA] as $jsonCollectedData) {
+                        $collectedDatas[] = CollectedData::decode($jsonCollectedData);
+                    }
 
                     $postFileCallback($json[Bridge::FILES_COUNT]);
 
@@ -235,11 +237,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return [
-            Bridge::FILE_DIFFS => $fileDiffs,
-            Bridge::SYSTEM_ERRORS => $systemErrors,
-            Bridge::SYSTEM_ERRORS_COUNT => count($systemErrors),
-            Bridge::COLLECTED_DATA => $collectedData,
-        ];
+        return new ProcessResult($systemErrors, $fileDiffs, $collectedDatas);
     }
 }

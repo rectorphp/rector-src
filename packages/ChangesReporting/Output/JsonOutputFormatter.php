@@ -55,10 +55,10 @@ final class JsonOutputFormatter implements OutputFormatterInterface
             $errorsJson['changed_files'][] = $relativeFilePath;
         }
 
-        $errors = $processResult->getErrors();
-        $errorsJson['totals']['errors'] = count($errors);
+        $systemErrors = $processResult->getSystemErrors();
+        $errorsJson['totals']['errors'] = count($systemErrors);
 
-        $errorsData = $this->createErrorsData($errors);
+        $errorsData = $this->createErrorsData($systemErrors);
         if ($errorsData !== []) {
             $errorsJson['errors'] = $errorsData;
         }

@@ -59,7 +59,8 @@ final class WorkerRunner
 
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
-            $systemErrorsAndFileDiffs = $this->applicationFileProcessor->processFiles($filePaths, $configuration);
+
+            $processResult = $this->applicationFileProcessor->processFiles($filePaths, $configuration);
 
             /**
              * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
@@ -67,11 +68,11 @@ final class WorkerRunner
             $encoder->write([
                 ReactCommand::ACTION => Action::RESULT,
                 self::RESULT => [
-                    Bridge::FILE_DIFFS => $systemErrorsAndFileDiffs[Bridge::FILE_DIFFS],
+                    Bridge::FILE_DIFFS => $processResult->getFileDiffs(),
                     Bridge::FILES_COUNT => count($filePaths),
-                    Bridge::SYSTEM_ERRORS => $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS],
-                    Bridge::SYSTEM_ERRORS_COUNT => $systemErrorsAndFileDiffs[Bridge::SYSTEM_ERRORS_COUNT],
-                    Bridge::COLLECTED_DATA => $systemErrorsAndFileDiffs[Bridge::COLLECTED_DATA],
+                    Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
+                    Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
+                    Bridge::COLLECTED_DATA => $processResult->getCollectedData(),
                 ],
             ]);
         });

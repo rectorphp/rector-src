@@ -19,7 +19,6 @@ use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Core\ValueObject\Configuration;
 use Rector\Core\ValueObject\ProcessResult;
-use Rector\Core\ValueObjectFactory\ProcessResultFactory;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,11 +32,10 @@ final class ProcessCommand extends Command
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly ConfigInitializer $configInitializer,
         private readonly ApplicationFileProcessor $applicationFileProcessor,
-        private readonly ProcessResultFactory          $processResultFactory,
         private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
-        private readonly OutputFormatterCollector      $outputFormatterCollector,
-        private readonly SymfonyStyle                  $symfonyStyle,
-        private readonly MemoryLimiter                 $memoryLimiter,
+        private readonly OutputFormatterCollector $outputFormatterCollector,
+        private readonly SymfonyStyle $symfonyStyle,
+        private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
     ) {
         parent::__construct();
@@ -83,7 +81,7 @@ final class ProcessCommand extends Command
 
         // MAIN PHASE
         // 2. run Rector
-        $systemErrorsAndFileDiffs = $this->applicationFileProcessor->run($configuration, $input);
+        $processResult = $this->applicationFileProcessor->run($configuration, $input);
 
         // REPORTING PHASE
         // 3. reporting phase
@@ -91,7 +89,6 @@ final class ProcessCommand extends Command
         $outputFormat = $configuration->getOutputFormat();
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);
 
-        $processResult = $this->processResultFactory->create($systemErrorsAndFileDiffs);
         $outputFormatter->report($processResult, $configuration);
 
         return $this->resolveReturnCode($processResult, $configuration);
@@ -122,7 +119,7 @@ final class ProcessCommand extends Command
     private function resolveReturnCode(ProcessResult $processResult, Configuration $configuration): int
     {
         // some system errors were found → fail
-        if ($processResult->getErrors() !== []) {
+        if ($processResult->getSystemErrors() !== []) {
             return ExitCode::FAILURE;
         }
 
