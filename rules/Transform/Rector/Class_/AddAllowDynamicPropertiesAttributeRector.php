@@ -142,7 +142,7 @@ CODE_SAMPLE
         if ($this->transformOnNamespaces !== []) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
-                if (! $this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                if (! $this->nodeNameResolver->matchesStringName($className, $transformOnNamespace)) {
                     return true;
                 }
             }

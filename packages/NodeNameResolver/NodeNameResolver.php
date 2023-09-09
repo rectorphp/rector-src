@@ -198,27 +198,18 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        $containsWildcard = false;
-        foreach (self::REGEX_WILDCARD_CHARS as $char) {
-            if (str_contains($desiredName, $char)) {
-                $containsWildcard = true;
-                break;
-            }
-        }
-
-        if ($containsWildcard) {
-            // is probably regex pattern
-            if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
-                return StringUtils::isMatch($resolvedName, $desiredName);
-            }
-
-            // is probably fnmatch
-            if (\str_contains($desiredName, '*')) {
-                return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
-            }
-        }
-
         return strtolower($resolvedName) === strtolower($desiredName);
+    }
+
+    public function matchesStringName(string $resolvedName, string $desiredNamePattern): bool
+    {
+        // is probably regex pattern
+        if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
+            return StringUtils::isMatch($resolvedName, $desiredNamePattern);
+        }
+
+        // is probably fnmatch
+        return fnmatch($desiredNamePattern, $resolvedName, FNM_NOESCAPE);
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool
