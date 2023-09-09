@@ -15,9 +15,7 @@ use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
-use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
-use Rector\NodeNameResolver\Regex\RegexPatternDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeNameResolver
@@ -219,21 +217,6 @@ final class NodeNameResolver
         }
 
         return strcasecmp($resolvedName, $desiredName) === 0;
-    }
-
-    public function matchesStringName(string|Identifier $resolvedName, string $desiredNamePattern): bool
-    {
-        if ($resolvedName instanceof Identifier) {
-            $resolvedName = $resolvedName->toString();
-        }
-
-        //        // is probably regex pattern
-        //        if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
-        //            return StringUtils::isMatch($resolvedName, $desiredNamePattern);
-        //        }
-
-        // is probably fnmatch
-        return fnmatch($desiredNamePattern, $resolvedName, FNM_NOESCAPE);
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool

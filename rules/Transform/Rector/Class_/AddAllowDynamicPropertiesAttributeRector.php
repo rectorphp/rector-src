@@ -146,7 +146,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if (! $this->nodeNameResolver->matchesStringName($className, $transformOnNamespace)) {
+                if (! fnmatch($transformOnNamespace, $className, FNM_NOESCAPE)) {
                     return true;
                 }
             }
