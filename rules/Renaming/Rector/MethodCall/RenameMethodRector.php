@@ -157,8 +157,13 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($classOrInterface->getMethods() as $classMethod) {
+            $methodName = $this->getName($classMethod->name);
+            if ($methodName === null) {
+                continue;
+            }
+
             foreach ($this->methodCallRenames as $methodCallRename) {
-                if (! $this->isName($classMethod->name, $methodCallRename->getOldMethod())) {
+                if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
                     continue;
                 }
 
@@ -192,8 +197,13 @@ CODE_SAMPLE
     private function refactorMethodCallAndStaticCall(
         StaticCall|MethodCall $call
     ): ArrayDimFetch|null|MethodCall|StaticCall {
+        $callName = $this->getName($call->name);
+        if ($callName === null) {
+            return null;
+        }
+
         foreach ($this->methodCallRenames as $methodCallRename) {
-            if (! $this->isName($call->name, $methodCallRename->getOldMethod())) {
+            if (! $this->nodeNameResolver->isStringName($callName, $methodCallRename->getOldMethod())) {
                 continue;
             }
 

@@ -318,8 +318,13 @@ CODE_SAMPLE
 
     private function refactorCall(StaticCall|MethodCall $call): void
     {
+        $callName = $this->getName($call->name);
+        if ($callName === null) {
+            return;
+        }
+
         foreach ($this->addedArguments as $addedArgument) {
-            if (! $this->isName($call->name, $addedArgument->getMethod())) {
+            if (! $this->nodeNameResolver->isStringName($callName, $addedArgument->getMethod())) {
                 continue;
             }
 

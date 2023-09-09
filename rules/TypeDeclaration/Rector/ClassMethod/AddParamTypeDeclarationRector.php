@@ -88,8 +88,13 @@ CODE_SAMPLE
                 continue;
             }
 
+            $methodName = $this->getName($classMethod);
+            if ($methodName === null) {
+                continue;
+            }
+
             foreach ($this->addParamTypeDeclarations as $addParamTypeDeclaration) {
-                if (! $this->isName($classMethod, $addParamTypeDeclaration->getMethodName())) {
+                if (!$this->nodeNameResolver->isStringName($methodName, $addParamTypeDeclaration->getMethodName())) {
                     continue;
                 }
 
