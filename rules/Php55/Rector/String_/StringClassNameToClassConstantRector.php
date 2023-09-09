@@ -176,6 +176,10 @@ CODE_SAMPLE
         }
 
         foreach ($this->classesToSkip as $classToSkip) {
+            if ($this->nodeNameResolver->isStringName($classLikeName, $classToSkip)) {
+                return true;
+            }
+
             if ($this->nodeNameResolver->matchesStringName($classLikeName, $classToSkip)) {
                 return true;
             }
