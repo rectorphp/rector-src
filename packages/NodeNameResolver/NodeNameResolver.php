@@ -31,7 +31,6 @@ final class NodeNameResolver
      * @param NodeNameResolverInterface[] $nodeNameResolvers
      */
     public function __construct(
-        private readonly RegexPatternDetector $regexPatternDetector,
         private readonly ClassNaming $classNaming,
         private readonly CallAnalyzer $callAnalyzer,
         private readonly iterable $nodeNameResolvers = []
@@ -169,13 +168,28 @@ final class NodeNameResolver
     }
 
     /**
-     * Ends with ucname
-     * Starts with adjective, e.g. (Post $firstPost, Post $secondPost)
+     * @param string|string[] $suffix
      */
-    public function endsWith(string $currentName, string $expectedName): bool
+    public function endsWith(\PhpParser\Node $node, string|array $suffix): bool
     {
-        $suffixNamePattern = '#\w+' . ucfirst($expectedName) . '#';
-        return StringUtils::isMatch($currentName, $suffixNamePattern);
+        $name = $this->getName($node);
+        if (! is_string($name)) {
+            return false;
+        }
+
+        if (! is_array($suffix)) {
+            $suffixes = [$suffix];
+        } else {
+            $suffixes = $suffix;
+        }
+
+        foreach ($suffixes as $suffix) {
+            if (str_ends_with($name, $suffix) || str_ends_with($name, ucfirst($suffix))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function startsWith(Node $node, string $prefix): bool
@@ -213,10 +227,10 @@ final class NodeNameResolver
             $resolvedName = $resolvedName->toString();
         }
 
-        // is probably regex pattern
-        if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
-            return StringUtils::isMatch($resolvedName, $desiredNamePattern);
-        }
+        //        // is probably regex pattern
+        //        if ($this->regexPatternDetector->isRegexPattern($desiredNamePattern)) {
+        //            return StringUtils::isMatch($resolvedName, $desiredNamePattern);
+        //        }
 
         // is probably fnmatch
         return fnmatch($desiredNamePattern, $resolvedName, FNM_NOESCAPE);

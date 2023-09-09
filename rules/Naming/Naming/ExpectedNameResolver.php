@@ -51,7 +51,7 @@ final class ExpectedNameResolver
             return null;
         }
 
-        if ($this->nodeNameResolver->endsWith($currentName, $expectedName)) {
+        if ($this->nodeNameResolver->endsWith($param->var, $expectedName)) {
             return null;
         }
 
