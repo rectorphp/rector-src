@@ -204,7 +204,7 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        return strtolower($resolvedName) === strtolower($desiredName);
+        return strcasecmp($resolvedName, $desiredName) === 0;
     }
 
     public function matchesStringName(string|Identifier $resolvedName, string $desiredNamePattern): bool
