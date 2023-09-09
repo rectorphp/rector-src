@@ -36,13 +36,6 @@ final class PhpFileProcessor
         private readonly SymfonyStyle $symfonyStyle,
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        private readonly PostFileProcessor $postFileProcessor,
->>>>>>> 296d03345e (make use of CollectedData)
-=======
->>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
         private readonly ErrorFactory $errorFactory,
         private readonly FilePathHelper $filePathHelper
     ) {
@@ -111,12 +104,7 @@ final class PhpFileProcessor
                 throw $analysedCodeException;
             }
 
-            $autoloadSystemError = $this->errorFactory->createAutoloadError(
-                $analysedCodeException,
-                $file->getFilePath()
-            );
-
-            return $autoloadSystemError;
+            return $this->errorFactory->createAutoloadError($analysedCodeException, $file->getFilePath());
         } catch (Throwable $throwable) {
             if ($this->symfonyStyle->isVerbose() || StaticPHPUnitEnvironment::isPHPUnitRun()) {
                 throw $throwable;

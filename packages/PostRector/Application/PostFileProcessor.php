@@ -4,14 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Application;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 use PhpParser\Node;
-=======
->>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
-=======
-use PhpParser\Node;
->>>>>>> 2d84200b97 (introduce FileProcessResult, to align with PHPStan parallel architecture conventions and avoid using array shapes)
 use PhpParser\NodeTraverser;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -54,18 +47,8 @@ final class PostFileProcessor
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
      * @param Node[] $stmts
      * @return Node[]
-=======
-     * @param \PhpParser\Node[] $stmts
-     * @return \PhpParser\Node[]
->>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
-=======
-     * @param Node[] $stmts
-     * @return Node[]
->>>>>>> 2d84200b97 (introduce FileProcessResult, to align with PHPStan parallel architecture conventions and avoid using array shapes)
      */
     public function traverse(array $stmts): array
     {
