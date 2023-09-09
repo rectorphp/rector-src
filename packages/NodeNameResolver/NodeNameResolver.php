@@ -28,7 +28,7 @@ final class NodeNameResolver
      * @var string
      * @see https://regex101.com/r/ImTV1W/1
      */
-    private const CONTAINS_WILDCARD_CHARS_REGEX = '/[\*\#\~\/]/';
+    private const REGEX_WILDCARD_CHARS = ['*', '#', '~', '/'];
 
     /**
      * @var array<string, NodeNameResolverInterface|null>
@@ -201,7 +201,15 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        if (StringUtils::isMatch($desiredName, self::CONTAINS_WILDCARD_CHARS_REGEX)) {
+        $containsWildcard = false;
+        foreach(self::REGEX_WILDCARD_CHARS as $char) {
+            if (str_contains($desiredName, $char)) {
+                $containsWildcard = true;
+                break;
+            }
+        }
+
+        if ($containsWildcard) {
             // is probably regex pattern
             if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
                 return StringUtils::isMatch($resolvedName, $desiredName);
