@@ -8,6 +8,7 @@ use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\PhpParser\Parser\RectorParser;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PostRector\Application\PostFileProcessor;
 
 final class FileProcessor
 {
@@ -15,6 +16,7 @@ final class FileProcessor
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private readonly RectorParser $rectorParser,
         private readonly RectorNodeTraverser $rectorNodeTraverser,
+        private readonly PostFileProcessor $postFileProcessor,
     ) {
     }
 
@@ -34,6 +36,10 @@ final class FileProcessor
     {
         $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
-        $file->changeNewStmts($newStmts);
+        // apply post rectors
+        $postNewStmts = $this->postFileProcessor->traverse($newStmts);
+
+        // this is needed for new tokens added in "afterTraverse()"
+        $file->changeNewStmts($postNewStmts);
     }
 }
