@@ -55,6 +55,8 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
+        // running on macOS cause empty string after main_script removed on run whole unit test
+        // this ensure it works
         $workerCommandLine = str_replace("'main_script' worker", "'main_script' '' worker", $workerCommandLine);
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
