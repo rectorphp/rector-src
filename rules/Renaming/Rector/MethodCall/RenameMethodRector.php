@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -120,7 +121,7 @@ CODE_SAMPLE
     }
 
     private function hasClassNewClassMethod(
-        Class_|Interface_         $classOrInterface,
+        Class_|Interface_ $classOrInterface,
         MethodCallRenameInterface $methodCallRename
     ): bool {
         return (bool) $classOrInterface->getMethod($methodCallRename->getNewMethod());
@@ -163,7 +164,13 @@ CODE_SAMPLE
             }
 
             foreach ($this->methodCallRenames as $methodCallRename) {
-                if ($this->shouldSkipRename($methodName, $classMethod, $methodCallRename, $classReflection, $classOrInterface)) {
+                if ($this->shouldSkipRename(
+                    $methodName,
+                    $classMethod,
+                    $methodCallRename,
+                    $classReflection,
+                    $classOrInterface
+                )) {
                     continue;
                 }
 
@@ -181,12 +188,11 @@ CODE_SAMPLE
 
     private function shouldSkipRename(
         string $methodName,
-        Node\Stmt\ClassMethod $classMethod,
+        ClassMethod $classMethod,
         MethodCallRenameInterface $methodCallRename,
         ClassReflection $classReflection,
         Class_|Interface_ $classOrInterface
-    ): bool
-    {
+    ): bool {
         if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
             return true;
         }
@@ -202,11 +208,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->hasClassNewClassMethod($classOrInterface, $methodCallRename)) {
-            return true;
-        }
-
-        return false;
+        return $this->hasClassNewClassMethod($classOrInterface, $methodCallRename);
     }
 
     private function refactorMethodCallAndStaticCall(

@@ -44,6 +44,11 @@ final class ControllerClassMethodManipulator
             return false;
         }
 
-        return $this->nodeNameResolver->endsWith($class->extends, ['Controller', 'Presenter']);
+        $parentClassName = $this->nodeNameResolver->getName($class->extends);
+        if (str_ends_with($parentClassName, 'Controller')) {
+            return true;
+        }
+
+        return str_ends_with($parentClassName, 'Presenter');
     }
 }

@@ -47,11 +47,8 @@ final class ExpectedNameResolver
 
         /** @var string $currentName */
         $currentName = $this->nodeNameResolver->getName($param->var);
-        if ($currentName === $expectedName) {
-            return null;
-        }
 
-        if ($this->nodeNameResolver->endsWith($param->var, $expectedName)) {
+        if ($currentName === $expectedName || str_ends_with($currentName, ucfirst($expectedName))) {
             return null;
         }
 

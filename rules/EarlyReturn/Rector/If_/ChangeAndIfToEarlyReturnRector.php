@@ -201,11 +201,11 @@ CODE_SAMPLE
     private function processReplaceIfs(
         If_ $if,
         array $conditions,
-        Return_ $cloneIffNextReturn,
+        Return_ $ifNextReturn,
         array $afters,
         ?Stmt $nextStmt
     ): array {
-        $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $cloneIffNextReturn, $nextStmt);
+        $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturn, $nextStmt);
         $this->mirrorComments($ifs[0], $if);
 
         $result = array_merge($ifs, $afters);
@@ -213,7 +213,7 @@ CODE_SAMPLE
             return $result;
         }
 
-        if (! $cloneIffNextReturn->expr instanceof Expr) {
+        if (! $ifNextReturn->expr instanceof Expr) {
             return $result;
         }
 
@@ -221,7 +221,7 @@ CODE_SAMPLE
             return $result;
         }
 
-        return array_merge($result, [$cloneIffNextReturn]);
+        return array_merge($result, [$ifNextReturn]);
     }
 
     private function shouldSkip(If_ $if, ?Stmt $nexStmt): bool

@@ -165,41 +165,6 @@ final class NodeNameResolver
         return $names;
     }
 
-    /**
-     * @param string|string[] $suffix
-     */
-    public function endsWith(Node $node, string|array $suffix): bool
-    {
-        $name = $this->getName($node);
-        if (! is_string($name)) {
-            return false;
-        }
-
-        if (! is_array($suffix)) {
-            $suffixes = [$suffix];
-        } else {
-            $suffixes = $suffix;
-        }
-
-        foreach ($suffixes as $suffix) {
-            if (str_ends_with($name, $suffix) || str_ends_with($name, ucfirst($suffix))) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function startsWith(Node $node, string $prefix): bool
-    {
-        $name = $this->getName($node);
-        if (! is_string($name)) {
-            return false;
-        }
-
-        return str_starts_with($name, $prefix);
-    }
-
     public function getShortName(string | Name | Identifier | ClassLike $name): string
     {
         return $this->classNaming->getShortName($name);
