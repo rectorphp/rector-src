@@ -120,10 +120,10 @@ CODE_SAMPLE
     }
 
     private function hasClassNewClassMethod(
-        Class_|Interface_ $classOrInternace,
+        Class_|Interface_         $classOrInterface,
         MethodCallRenameInterface $methodCallRename
     ): bool {
-        return (bool) $classOrInternace->getMethod($methodCallRename->getNewMethod());
+        return (bool) $classOrInterface->getMethod($methodCallRename->getNewMethod());
     }
 
     private function shouldKeepForParentInterface(
