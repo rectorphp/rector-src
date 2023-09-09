@@ -11,7 +11,6 @@ use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
@@ -46,7 +45,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         SeparateMultiUseImportsRector::class,
         PostIncDecToPreIncDecRector::class,
-        UnSpreadOperatorRector::class,
         NewlineAfterStatementRector::class,
         RemoveFinalFromConstRector::class,
         NullableCompareToNullRector::class,
