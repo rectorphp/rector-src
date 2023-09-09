@@ -27,7 +27,7 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     private const ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private readonly SymfonyStyle             $symfonyStyle,
+        private readonly SymfonyStyle $symfonyStyle,
         private readonly RectorsChangelogResolver $rectorsChangelogResolver,
     ) {
     }
