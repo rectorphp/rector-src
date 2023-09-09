@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Application;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
+use PHPStan\Collectors\CollectedData;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\Option;
@@ -87,7 +88,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: CollectedData[]}
      */
     public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): array
     {
@@ -133,8 +134,8 @@ final class ApplicationFileProcessor
     }
 
     /**
-     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]} $systemErrorsAndFileDiffs
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: mixed[]}
+     * @param array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: CollectedData[]} $systemErrorsAndFileDiffs
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], system_errors_count: int, collected_data: CollectedData[]}
      */
     private function processFile(File $file, array $systemErrorsAndFileDiffs, Configuration $configuration): array
     {
@@ -200,7 +201,7 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: mixed[], system_errors_count: int}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: CollectedData[], system_errors_count: int}
      */
     private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): array
     {

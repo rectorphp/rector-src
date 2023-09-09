@@ -7,6 +7,7 @@ namespace Rector\Parallel\Application;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\Random;
+use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
@@ -50,7 +51,7 @@ final class ParallelFileProcessor
 
     /**
      * @param callable(int $stepCount): void $postFileCallback Used for progress bar jump
-     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], collected_data: mixed[], system_errors_count: int}
+     * @return array{file_diffs: FileDiff[], system_errors: SystemError[], collected_data: CollectedData[], system_errors_count: int}
      */
     public function process(
         Schedule $schedule,
@@ -65,8 +66,13 @@ final class ParallelFileProcessor
         $numberOfProcesses = $schedule->getNumberOfProcesses();
 
         // initial counters
+
+        /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
+
+        /** @var CollectedData[] $collectedData */
         $collectedData = [];
+
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
@@ -107,7 +113,6 @@ final class ParallelFileProcessor
         $serverPort = parse_url($serverAddress, PHP_URL_PORT);
 
         $systemErrorsCount = 0;
-
         $reachedSystemErrorsCountLimit = false;
 
         $handleErrorCallable = function (Throwable $throwable) use (

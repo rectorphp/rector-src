@@ -100,18 +100,13 @@ final class File
      */
     public function hydrateStmtsAndTokens(array $newStmts, array $oldStmts, array $oldTokens): void
     {
-        if ($this->isParsed()) {
+        if ($this->oldStmts !== []) {
             throw new ShouldNotHappenException('Double stmts override');
         }
 
         $this->oldStmts = $oldStmts;
         $this->newStmts = $newStmts;
         $this->oldTokens = $oldTokens;
-    }
-
-    public function isParsed(): bool
-    {
-        return $this->oldStmts !== [];
     }
 
     /**

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Application;
 
+<<<<<<< HEAD
 use PhpParser\Node;
+=======
+>>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
 use PhpParser\NodeTraverser;
 use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -47,8 +50,13 @@ final class PostFileProcessor
     }
 
     /**
+<<<<<<< HEAD
      * @param Node[] $stmts
      * @return Node[]
+=======
+     * @param \PhpParser\Node[] $stmts
+     * @return \PhpParser\Node[]
+>>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
      */
     public function traverse(array $stmts): array
     {

@@ -6,6 +6,7 @@ namespace Rector\Core\Application\FileProcessor;
 
 use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
+use PHPStan\Collectors\CollectedData;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
@@ -36,13 +37,20 @@ final class PhpFileProcessor
         private readonly SymfonyStyle $symfonyStyle,
         private readonly FileDiffFactory $fileDiffFactory,
         private readonly ChangedFilesDetector $changedFilesDetector,
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        private readonly PostFileProcessor $postFileProcessor,
+>>>>>>> 296d03345e (make use of CollectedData)
+=======
+>>>>>>> 8110026be6 (move PostFileProcessor to FileProcessor, as always should run together)
         private readonly ErrorFactory $errorFactory,
         private readonly FilePathHelper $filePathHelper
     ) {
     }
 
     /**
-     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: mixed[]}
+     * @return array{system_errors: SystemError[], file_diffs: FileDiff[], collected_data: CollectedData[]}
      */
     public function process(File $file, Configuration $configuration): array
     {
@@ -114,11 +122,6 @@ final class PhpFileProcessor
      */
     private function parseFileAndDecorateNodes(File $file): array
     {
-        // skip if file is parsed
-        if ($file->isParsed()) {
-            return [];
-        }
-
         $this->notifyFile($file);
 
         try {
