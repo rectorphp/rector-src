@@ -40,7 +40,7 @@ final class PhpFileProcessor
         private readonly FilePathHelper $filePathHelper
     ) {
     }
-g
+
     /**
      * @return array{system_errors: SystemError[], file_diffs: FileDiff[]}
      */
@@ -66,7 +66,7 @@ g
         $rectorWithLineChanges = null;
         do {
             $file->changeHasChanged(false);
-            $this->fileProcessor->refactor($file);
+            $this->fileProcessor->process($file);
 
             // 3. print to file or string
             // important to detect if file has changed

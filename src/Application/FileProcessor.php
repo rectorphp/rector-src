@@ -32,7 +32,7 @@ final class FileProcessor
         $file->hydrateStmtsAndTokens($newStmts, $oldStmts, $oldTokens);
     }
 
-    public function refactor(File $file): void
+    public function process(File $file): void
     {
         $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
