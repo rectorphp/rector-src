@@ -25,12 +25,6 @@ use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
 
 final class PhpNestedAttributeGroupFactory
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/g3d9jy/1
-     */
-    private const SHORT_ORM_ALIAS_REGEX = '#^@ORM#';
-
     public function __construct(
         private readonly AnnotationToAttributeMapper $annotationToAttributeMapper,
         private readonly AttributeNameFactory $attributeNameFactory,
@@ -160,8 +154,7 @@ final class PhpNestedAttributeGroupFactory
             -1
         );
 
-        $matches = Strings::match($originalIdentifier, self::SHORT_ORM_ALIAS_REGEX);
-        if ($matches !== null) {
+        if (! str_starts_with($originalIdentifier, '@ORM')) {
             // or alias
             return new Name('ORM\\' . $shortDoctrineAttributeName);
         }
