@@ -64,10 +64,27 @@ final class ApplicationFileProcessor
 
         $this->configureCustomErrorHandler();
 
-        if ($configuration->isParallel()) {
-            $processResult = $this->runParallel($filePaths, $configuration, $input);
+        /**
+         * Mimic @see https://github.com/phpstan/phpstan-src/blob/ab154e1da54d42fec751e17a1199b3e07591e85e/src/Command/AnalyseApplication.php#L188C23-L244
+         */
+        if ($configuration->shouldShowProgressBar()) {
+            $fileCount = count($filePaths);
+            $this->symfonyStyle->progressStart($fileCount);
+            $this->symfonyStyle->progressAdvance(0);
+
+            $postFileCallback = function (int $stepCount): void {
+                $this->symfonyStyle->progressAdvance($stepCount);
+                // running in parallel here → nothing else to do
+            };
         } else {
-            $processResult = $this->processFiles($filePaths, $configuration, false);
+            $postFileCallback = static function (int $stepCount): void {
+            };
+        }
+
+        if ($configuration->isParallel()) {
+            $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
+        } else {
+            $processResult = $this->processFiles($filePaths, $configuration, $postFileCallback);
         }
 
         $processResult->addSystemErrors($this->systemErrors);
@@ -79,18 +96,13 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
+     * @param callable(int $fileCount): void|null $postFileCallback
      */
-    public function processFiles(array $filePaths, Configuration $configuration, bool $isParallel = true): ProcessResult
-    {
-        $shouldShowProgressBar = $configuration->shouldShowProgressBar();
-
-        // progress bar on parallel handled on runParallel()
-        if (! $isParallel && $shouldShowProgressBar) {
-            $fileCount = count($filePaths);
-            $this->symfonyStyle->progressStart($fileCount);
-            $this->symfonyStyle->progressAdvance(0);
-        }
-
+    public function processFiles(
+        array $filePaths,
+        Configuration $configuration,
+        ?callable $postFileCallback = null
+    ): ProcessResult {
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
@@ -118,10 +130,9 @@ final class ApplicationFileProcessor
 
                 $collectedData = array_merge($collectedData, $fileProcessResult->getCollectedData());
 
-                // progress bar +1,
                 // progress bar on parallel handled on runParallel()
-                if (! $isParallel && $shouldShowProgressBar) {
-                    $this->symfonyStyle->progressAdvance();
+                if (is_callable($postFileCallback)) {
+                    $postFileCallback(1);
                 }
             } catch (Throwable $throwable) {
                 $this->changedFilesDetector->invalidateFile($filePath);
@@ -196,29 +207,19 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
+     * @param callable(int $stepCount): void $postFileCallback
      */
-    private function runParallel(array $filePaths, Configuration $configuration, InputInterface $input): ProcessResult
-    {
+    private function runParallel(
+        array $filePaths,
+        InputInterface $input,
+        callable $postFileCallback
+    ): ProcessResult {
         $schedule = $this->scheduleFactory->create(
             $this->cpuCoreCountProvider->provide(),
             SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_SIZE),
             SimpleParameterProvider::provideIntParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES),
             $filePaths
         );
-
-        if ($configuration->shouldShowProgressBar()) {
-            $fileCount = count($filePaths);
-            $this->symfonyStyle->progressStart($fileCount);
-            $this->symfonyStyle->progressAdvance(0);
-
-            $postFileCallback = function (int $stepCount): void {
-                $this->symfonyStyle->progressAdvance($stepCount);
-                // running in parallel here → nothing else to do
-            };
-        } else {
-            $postFileCallback = static function (int $stepCount): void {
-            };
-        }
 
         $mainScript = $this->resolveCalledRectorBinary();
         if ($mainScript === null) {
@@ -239,11 +240,11 @@ final class ApplicationFileProcessor
             return null;
         }
 
-        $potentialEcsBinaryPath = $_SERVER[self::ARGV][0];
-        if (! file_exists($potentialEcsBinaryPath)) {
+        $potentialRectorBinaryPath = $_SERVER[self::ARGV][0];
+        if (! file_exists($potentialRectorBinaryPath)) {
             return null;
         }
 
-        return $potentialEcsBinaryPath;
+        return $potentialRectorBinaryPath;
     }
 }
