@@ -6,7 +6,6 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -17,17 +16,12 @@ use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\Testing\Fixture\FixtureFileFinder;
+use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class TagValueNodeReprintTest extends AbstractLazyTestCase
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/0UHYBt/1
-     */
-    private const SPLIT_LINE_REGEX = "#-----\n#";
-
     private FileInfoParser $fileInfoParser;
 
     private BetterNodeFinder $betterNodeFinder;
@@ -53,9 +47,8 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
     {
         $fixtureFileContents = FileSystem::read($filePath);
 
-        [$fileContents, $nodeClass, $tagValueNodeClasses] = Strings::split(
-            $fixtureFileContents,
-            self::SPLIT_LINE_REGEX
+        [$fileContents, $nodeClass, $tagValueNodeClasses] =  FixtureSplitter::splitFixtureFileContents(
+            $fixtureFileContents
         );
 
         $nodeClass = trim((string) $nodeClass);

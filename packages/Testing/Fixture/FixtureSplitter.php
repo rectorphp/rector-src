@@ -4,23 +4,15 @@ declare(strict_types=1);
 namespace Rector\Testing\Fixture;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 
 /**
  * @api
  */
 final class FixtureSplitter
 {
-    /**
-     * @api
-     * @var string
-     * @see https://regex101.com/r/zZDoyy/1
-     */
-    public const SPLIT_LINE_REGEX = '#\-\-\-\-\-\r?\n#';
-
     public static function containsSplit(string $fixtureFileContent): bool
     {
-        return Strings::match($fixtureFileContent, self::SPLIT_LINE_REGEX) !== null;
+        return str_contains($fixtureFileContent, "-----\n");
     }
 
     /**
@@ -30,7 +22,7 @@ final class FixtureSplitter
     {
         $fixtureFileContents = FileSystem::read($filePath);
 
-        return Strings::split($fixtureFileContents, self::SPLIT_LINE_REGEX);
+        return self::splitFixtureFileContents($fixtureFileContents);
     }
 
     /**
@@ -38,6 +30,6 @@ final class FixtureSplitter
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        return Strings::split($fixtureFileContents, self::SPLIT_LINE_REGEX);
+        return explode("-----\n", $fixtureFileContents);
     }
 }
