@@ -43,19 +43,19 @@ final class FileHashComputerTest extends AbstractLazyTestCase
     {
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
 
-        $this->bootFromConfigFiles([__DIR__ . '/FixtureEqual/rector.php']);
+        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
-        $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/FixtureEqual/rector.php');
+        $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
 
-        copy(__DIR__ . '/FixtureEqual/rector.php', __DIR__ . '/FixtureEqual/rector_temp_equal.php');
-        copy(__DIR__ . '/FixtureEqual/rector_rule_equals.php', __DIR__ . '/FixtureEqual/rector.php');
+        copy(__DIR__ . '/Fixture/rector.php', __DIR__ . '/Fixture/rector_temp_equal.php');
+        copy(__DIR__ . '/Fixture/rector_rule_equals.php', __DIR__ . '/Fixture/rector.php');
 
         SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
 
-        $this->bootFromConfigFiles([__DIR__ . '/FixtureEqual/rector.php']);
+        $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
-        $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/FixtureEqual/rector.php');
-        rename(__DIR__ . '/FixtureEqual/rector_temp_equal.php', __DIR__ . '/FixtureEqual/rector.php');
+        $newHashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
+        rename(__DIR__ . '/Fixture/rector_temp_equal.php', __DIR__ . '/Fixture/rector.php');
 
         $this->assertSame($newHashedFile, $hashedFile);
     }
