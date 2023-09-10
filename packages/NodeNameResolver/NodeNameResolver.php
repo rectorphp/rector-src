@@ -15,7 +15,9 @@ use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\CallAnalyzer;
+use Rector\Core\Util\StringUtils;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
+use Rector\NodeNameResolver\Regex\RegexPatternDetector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class NodeNameResolver
@@ -31,6 +33,7 @@ final class NodeNameResolver
     public function __construct(
         private readonly ClassNaming $classNaming,
         private readonly CallAnalyzer $callAnalyzer,
+        private readonly RegexPatternDetector $regexPatternDetector,
         private readonly iterable $nodeNameResolvers = []
     ) {
     }
@@ -181,7 +184,19 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        return strcasecmp($resolvedName, $desiredName) === 0;
+        if (strcasecmp($resolvedName, $desiredName) === 0) {
+            return true;
+        }
+
+        if ($this->regexPatternDetector->isRegexPattern($desiredName)) {
+            return StringUtils::isMatch($resolvedName, $desiredName);
+        }
+
+        if (str_contains($desiredName, '*')) {
+            return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
+        }
+
+        return false;
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool

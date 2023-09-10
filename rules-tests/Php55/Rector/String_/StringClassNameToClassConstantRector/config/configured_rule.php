@@ -7,5 +7,10 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
-        ->ruleWithConfiguration(StringClassNameToClassConstantRector::class, ['Nette\*', 'Error', 'Exception']);
+        ->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
+            'Nette\*',
+            '#^PHPStan\\\\Type#',
+            'Error',
+            'Exception'
+        ]);
 };
