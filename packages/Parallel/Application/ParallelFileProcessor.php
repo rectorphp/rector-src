@@ -47,7 +47,7 @@ final class ParallelFileProcessor
      *
      * @var int
      */
-    private const MAX_CHUNKS_PER_WORKER = 10;
+    private const MAX_CHUNKS_PER_WORKER = 8;
 
     private ProcessPool|null $processPool = null;
 
