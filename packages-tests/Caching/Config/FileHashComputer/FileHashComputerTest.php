@@ -20,6 +20,8 @@ final class FileHashComputerTest extends AbstractLazyTestCase
 
     public function test(): void
     {
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, null);
+
         $this->bootFromConfigFiles([__DIR__ . '/Fixture/rector.php']);
 
         $hashedFile = $this->fileHashComputer->compute(__DIR__ . '/Fixture/rector.php');
