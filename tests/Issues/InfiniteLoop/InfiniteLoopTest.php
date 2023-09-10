@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\Core\Tests\Issues\InfiniteLoop;
 
+use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class InfiniteLoopTest extends AbstractRectorTestCase
 {
-    public function testException(): void
+    #[DataProvider('provideData')]
+    public function test(string $filePath): void
     {
-        $this->doTestFile(__DIR__ . '/Fixture/some_method_call_infinity.php.inc');
+        $this->doTestFile($filePath);
     }
 
-    public function testPass(): void
+    public static function provideData(): Iterator
     {
-        $this->doTestFile(__DIR__ . '/Fixture/de_morgan.php.inc');
+        return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
 
     public function provideConfigFilePath(): string
