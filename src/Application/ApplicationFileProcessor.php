@@ -64,6 +64,15 @@ final class ApplicationFileProcessor
 
         $this->configureCustomErrorHandler();
 
+        /**
+         * Mimic @see https://github.com/phpstan/phpstan-src/blob/ab154e1da54d42fec751e17a1199b3e07591e85e/src/Command/AnalyseApplication.php#L188C23-L244
+         */
+        // @todo
+        $preFileCallback = function () {
+        };
+        $postFileCallback = function () {
+        };
+
         if ($configuration->isParallel()) {
             $processResult = $this->runParallel($filePaths, $configuration, $input);
         } else {
