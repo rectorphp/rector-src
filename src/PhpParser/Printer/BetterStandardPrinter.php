@@ -32,7 +32,6 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -42,12 +41,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class BetterStandardPrinter extends Standard
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/jUFizd/1
-     */
-    private const NEWLINE_END_REGEX = "#\n$#";
-
     /**
      * @var string
      * @see https://regex101.com/r/F5x783/1
@@ -101,7 +94,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
-        if (count($newStmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
+        if (count($newStmts) !== count($origStmts) && ! str_ends_with($content, "\n")) {
             $content .= $this->nl;
         }
 
