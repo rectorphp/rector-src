@@ -147,23 +147,22 @@ final class ParallelFileProcessor
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
         $fileChunksBudgetPerProcess = [];
 
-        $processSpawner = function() use (
-                &$systemErrors,
-                &$fileDiffs,
-                &$jobs,
-                $postFileCallback,
-                &$systemErrorsCount,
-                &$reachedInternalErrorsCountLimit,
-                $mainScript,
-                $input,
-                $serverPort,
-                $streamSelectLoop,
-                $timeoutInSeconds,
-                $handleErrorCallable,
-                &$fileChunksBudgetPerProcess,
-                &$processSpawner
-            ): void {
-
+        $processSpawner = function () use (
+            &$systemErrors,
+            &$fileDiffs,
+            &$jobs,
+            $postFileCallback,
+            &$systemErrorsCount,
+            &$reachedInternalErrorsCountLimit,
+            $mainScript,
+            $input,
+            $serverPort,
+            $streamSelectLoop,
+            $timeoutInSeconds,
+            $handleErrorCallable,
+            &$fileChunksBudgetPerProcess,
+            &$processSpawner
+        ): void {
             $processIdentifier = Random::generate();
             $workerCommandLine = $this->workerCommandLineFactory->create(
                 $mainScript,
