@@ -47,7 +47,11 @@ final class ApplicationFileProcessor
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
+<<<<<<< HEAD
         private readonly FileProcessor $fileProcessor,
+=======
+        private readonly FileProcessor $phpFileProcessor,
+>>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
         private readonly ArrayParametersMerger $arrayParametersMerger,
     ) {
     }
@@ -83,7 +87,7 @@ final class ApplicationFileProcessor
         if ($configuration->isParallel()) {
             $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
         } else {
-            $processResult = $this->processFiles($filePaths, $configuration, $postFileCallback);
+            $processResult = $this->processFiles($filePaths, $configuration, null, $postFileCallback);
         }
 
         $processResult->addSystemErrors($this->systemErrors);
@@ -95,11 +99,13 @@ final class ApplicationFileProcessor
 
     /**
      * @param string[] $filePaths
+     * @param callable(string $file): void|null $preFileCallback
      * @param callable(int $fileCount): void|null $postFileCallback
      */
     public function processFiles(
         array $filePaths,
         Configuration $configuration,
+        ?callable $preFileCallback = null,
         ?callable $postFileCallback = null
     ): ProcessResult {
         /** @var SystemError[] $systemErrors */
@@ -112,6 +118,10 @@ final class ApplicationFileProcessor
         $collectedData = [];
 
         foreach ($filePaths as $filePath) {
+            if ($preFileCallback !== null) {
+                $preFileCallback($filePath);
+            }
+
             $file = new File($filePath, UtilsFileSystem::read($filePath));
 
             try {
@@ -151,7 +161,11 @@ final class ApplicationFileProcessor
     {
         $this->currentFileProvider->setFile($file);
 
+<<<<<<< HEAD
         $fileProcessResult = $this->fileProcessor->processFile($file, $configuration);
+=======
+        $fileProcessResult = $this->phpFileProcessor->processFile($file, $configuration);
+>>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());

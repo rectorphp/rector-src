@@ -256,8 +256,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        return $this->currentFileProvider->getFile()
-            ->getFileContent();
+        $currentFile = $this->currentFileProvider->getFile();
+        return $currentFile->getFileContent();
     }
 
     private function createInputFilePath(string $fixtureFilePath): string

@@ -27,8 +27,8 @@ final class PHPStanServicesFactory
 {
     private readonly Container $container;
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
         $containerFactory = new ContainerFactory(getcwd());
         $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
 
