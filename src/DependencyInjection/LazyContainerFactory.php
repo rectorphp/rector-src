@@ -46,7 +46,7 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter\UsesClassNameImp
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Config\RectorConfig;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
-use Rector\Core\Application\FileProcessor\PhpFileProcessor;
+use Rector\Core\Application\FileProcessor;
 use Rector\Core\Configuration\ConfigInitializer;
 use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
@@ -408,7 +408,7 @@ final class LazyContainerFactory
 
         $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
-        $rectorConfig->singleton(PhpFileProcessor::class);
+        $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
 
         // phpdoc-parser

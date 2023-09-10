@@ -7,7 +7,6 @@ namespace Rector\Core\Application;
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use PHPStan\Collectors\CollectedData;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\Application\FileProcessor\PhpFileProcessor;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Provider\CurrentFileProvider;
@@ -48,7 +47,7 @@ final class ApplicationFileProcessor
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly PhpFileProcessor $phpFileProcessor,
+        private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
     ) {
     }
@@ -152,7 +151,7 @@ final class ApplicationFileProcessor
     {
         $this->currentFileProvider->setFile($file);
 
-        $fileProcessResult = $this->phpFileProcessor->process($file, $configuration);
+        $fileProcessResult = $this->fileProcessor->processFile($file, $configuration);
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());
