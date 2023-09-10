@@ -59,7 +59,11 @@ final class BetterPhpDocParser extends PhpDocParser
         );
     }
 
+<<<<<<< HEAD
     public function parseWithNode(BetterTokenIterator $betterTokenIterator, Node $node): PhpDocNode
+=======
+    public function parseWithNode(BetterTokenIterator $tokenIterator, Node $node): PhpDocNode
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
     {
         $betterTokenIterator->consumeTokenType(Lexer::TOKEN_OPEN_PHPDOC);
         $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
@@ -79,6 +83,11 @@ final class BetterPhpDocParser extends PhpDocParser
         $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_CLOSE_PHPDOC);
 
         $phpDocNode = new PhpDocNode($children);
+<<<<<<< HEAD
+=======
+
+        // decorate FQN classes etc.
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
         foreach ($this->phpDocNodeDecorators as $phpDocNodeDecorator) {
             $phpDocNodeDecorator->decorate($phpDocNode, $node);
         }

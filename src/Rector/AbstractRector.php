@@ -70,6 +70,15 @@ CODE_SAMPLE;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    private CurrentRectorProvider $currentRectorProvider;
+=======
+    private CurrentNodeProvider $currentNodeProvider;
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
     private Skipper $skipper;
 
     private CurrentFileProvider $currentFileProvider;
@@ -90,6 +99,14 @@ CODE_SAMPLE;
         NodeFactory $nodeFactory,
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        CurrentRectorProvider $currentRectorProvider,
+=======
+        CurrentNodeProvider $currentNodeProvider,
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
         Skipper $skipper,
         ValueResolver $valueResolver,
         BetterNodeFinder $betterNodeFinder,
@@ -104,6 +121,14 @@ CODE_SAMPLE;
         $this->nodeFactory = $nodeFactory;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        $this->currentRectorProvider = $currentRectorProvider;
+=======
+        $this->currentNodeProvider = $currentNodeProvider;
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
         $this->skipper = $skipper;
         $this->valueResolver = $valueResolver;
         $this->betterNodeFinder = $betterNodeFinder;
@@ -142,6 +167,16 @@ CODE_SAMPLE;
             return null;
         }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        $this->currentRectorProvider->changeCurrentRector($this);
+=======
+        // for PHP doc info factory and change notifier
+        $this->currentNodeProvider->setNode($node);
+
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN

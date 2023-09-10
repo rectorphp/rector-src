@@ -517,6 +517,14 @@ final class LazyContainerFactory
                     $container->make(NodeFactory::class),
                     $container->make(PhpDocInfoFactory::class),
                     $container->make(StaticTypeMapper::class),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                    $container->make(CurrentRectorProvider::class),
+=======
+                    $container->make(CurrentNodeProvider::class),
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
                     $container->make(Skipper::class),
                     $container->make(ValueResolver::class),
                     $container->make(BetterNodeFinder::class),

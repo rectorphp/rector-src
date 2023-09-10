@@ -252,7 +252,15 @@ final class PhpDocInfo
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use (
             $typeToRemove,
+<<<<<<< HEAD
             &$hasChanged
+=======
+<<<<<<< HEAD
+            &$hasChanged,
+=======
+            &$hasChanged
+>>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
         ): ?int {
             if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
                 // keep special annotation for tools
@@ -376,6 +384,29 @@ final class PhpDocInfo
      */
     public function markAsChanged(): void
     {
+<<<<<<< HEAD
+=======
+        $this->hasChanged = true;
+    }
+
+    public function hasChanged(): bool
+    {
+        if ($this->isNewNode()) {
+            return true;
+        }
+
+        if ($this->hasChanged) {
+            return true;
+        }
+
+        // has a single node with missing start_end
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $changedPhpDocNodeVisitor = new ChangedPhpDocNodeVisitor();
+        $phpDocNodeTraverser->addPhpDocNodeVisitor($changedPhpDocNodeVisitor);
+        $phpDocNodeTraverser->traverse($this->phpDocNode);
+
+        return $changedPhpDocNodeVisitor->hasChanged();
+>>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
     }
 
     public function makeMultiLined(): void
