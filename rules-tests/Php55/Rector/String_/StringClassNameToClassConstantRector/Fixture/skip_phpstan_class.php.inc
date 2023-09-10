@@ -6,6 +6,6 @@ final class SkipPHPStanClass
 {
     public function run()
     {
-        return 'PHPStan\Type\Type';
+        return 'Nette\Utils\FileSystem';
     }
 }
