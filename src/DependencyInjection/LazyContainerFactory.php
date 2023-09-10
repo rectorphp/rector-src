@@ -61,7 +61,6 @@ use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\Logging\RectorOutput;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -515,7 +514,6 @@ final class LazyContainerFactory
                     $container->make(CurrentFileProvider::class),
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
-                    $container->make(RectorOutput::class),
                 );
             }
         );

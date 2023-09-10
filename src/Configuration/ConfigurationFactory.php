@@ -48,6 +48,7 @@ final class ConfigurationFactory
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
+        $isDebug = (bool) $input->getOption(Option::DEBUG);
 
         $memoryLimit = $this->resolveMemoryLimit($input);
 
@@ -62,7 +63,8 @@ final class ConfigurationFactory
             $parallelPort,
             $parallelIdentifier,
             $isParallel,
-            $memoryLimit
+            $memoryLimit,
+            $isDebug
         );
     }
 

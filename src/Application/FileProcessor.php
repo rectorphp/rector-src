@@ -106,8 +106,6 @@ final class FileProcessor
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
-        $this->notifyFile($file);
-
         try {
             $this->parseFileNodes($file);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
@@ -173,16 +171,6 @@ final class FileProcessor
         }
 
         $file->changeFileContent($newContent);
-    }
-
-    private function notifyFile(File $file): void
-    {
-        if (! $this->symfonyStyle->isVerbose()) {
-            return;
-        }
-
-        $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
-        $this->symfonyStyle->writeln($relativeFilePath);
     }
 
     private function parseFileNodes(File $file): void

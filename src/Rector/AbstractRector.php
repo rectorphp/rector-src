@@ -19,7 +19,6 @@ use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
-use Rector\Core\Logging\RectorOutput;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -88,8 +87,6 @@ CODE_SAMPLE;
 
     private CreatedByRuleDecorator $createdByRuleDecorator;
 
-    private RectorOutput $rectorOutput;
-
     private ?int $toBeRemovedNodeId = null;
 
     public function autowire(
@@ -108,7 +105,6 @@ CODE_SAMPLE;
         CurrentFileProvider $currentFileProvider,
         CreatedByRuleDecorator $createdByRuleDecorator,
         ChangedNodeScopeRefresher $changedNodeScopeRefresher,
-        RectorOutput $rectorOutput
     ): void {
         $this->nodeNameResolver = $nodeNameResolver;
         $this->nodeTypeResolver = $nodeTypeResolver;
@@ -125,7 +121,6 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
-        $this->rectorOutput = $rectorOutput;
     }
 
     /**
@@ -157,29 +152,15 @@ CODE_SAMPLE;
             return null;
         }
 
-        $isDebug = $this->rectorOutput->isDebug();
-
         $this->currentRectorProvider->changeCurrentRector($this);
         // for PHP doc info factory and change notifier
         $this->currentNodeProvider->setNode($node);
 
-        if ($isDebug) {
-            $this->rectorOutput->printCurrentFileAndRule($filePath, static::class);
-        }
-
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
-
-        if ($isDebug) {
-            $this->rectorOutput->startConsumptions();
-        }
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN
         $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE) ?? $node;
         $refactoredNode = $this->refactor($node);
-
-        if ($isDebug) {
-            $this->rectorOutput->printConsumptions();
-        }
 
         // @see NodeTraverser::* codes, e.g. removal of node of stopping the traversing
         if ($refactoredNode === NodeTraverser::REMOVE_NODE) {
