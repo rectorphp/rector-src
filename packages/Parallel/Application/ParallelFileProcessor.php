@@ -143,7 +143,7 @@ final class ParallelFileProcessor
         };
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
-        $fileBudgetPerProcess = [];
+        $fileChunksBudgetPerProcess = [];
 
         $processSpawner = function() use (
                 &$systemErrors,
@@ -158,7 +158,7 @@ final class ParallelFileProcessor
                 $streamSelectLoop,
                 $timeoutInSeconds,
                 $handleErrorCallable,
-                &$fileBudgetPerProcess,
+                &$fileChunksBudgetPerProcess,
                 &$processSpawner
             ): void {
 
@@ -171,7 +171,7 @@ final class ParallelFileProcessor
                 $processIdentifier,
                 $serverPort,
             );
-            $fileBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
+            $fileChunksBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
@@ -187,7 +187,7 @@ final class ParallelFileProcessor
                     &$collectedDatas,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
-                    &$fileBudgetPerProcess,
+                    &$fileChunksBudgetPerProcess,
                     &$processSpawner
                 ): void {
                     // decode arrays to objects
@@ -216,7 +216,7 @@ final class ParallelFileProcessor
                         $this->processPool->quitAll();
                     }
 
-                    if ($fileBudgetPerProcess[$processIdentifier] <= 0) {
+                    if ($fileChunksBudgetPerProcess[$processIdentifier] <= 0) {
                         // kill the current worker, and spawn a fresh one to free memory
                         $this->processPool->quitProcess($processIdentifier);
 
@@ -233,7 +233,7 @@ final class ParallelFileProcessor
                         ReactCommand::ACTION => Action::MAIN,
                         Content::FILES => $jobsChunk,
                     ]);
-                    --$fileBudgetPerProcess[$processIdentifier];
+                    --$fileChunksBudgetPerProcess[$processIdentifier];
                 },
 
                 // 2. callable on error
