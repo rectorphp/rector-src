@@ -47,11 +47,7 @@ final class ApplicationFileProcessor
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
-<<<<<<< HEAD
         private readonly FileProcessor $fileProcessor,
-=======
-        private readonly FileProcessor $phpFileProcessor,
->>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
         private readonly ArrayParametersMerger $arrayParametersMerger,
     ) {
     }
@@ -84,10 +80,18 @@ final class ApplicationFileProcessor
             };
         }
 
+        if ($configuration->isDebug()) {
+            $preFileCallback = function (string $filePath): void {
+                $this->symfonyStyle->writeln('[file] ' . $filePath);
+            };
+        } else {
+            $preFileCallback = null;
+        }
+
         if ($configuration->isParallel()) {
             $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
         } else {
-            $processResult = $this->processFiles($filePaths, $configuration, null, $postFileCallback);
+            $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
         }
 
         $processResult->addSystemErrors($this->systemErrors);
@@ -161,11 +165,7 @@ final class ApplicationFileProcessor
     {
         $this->currentFileProvider->setFile($file);
 
-<<<<<<< HEAD
         $fileProcessResult = $this->fileProcessor->processFile($file, $configuration);
-=======
-        $fileProcessResult = $this->phpFileProcessor->processFile($file, $configuration);
->>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
 
         if ($fileProcessResult->getSystemErrors() !== []) {
             $this->changedFilesDetector->invalidateFile($file->getFilePath());

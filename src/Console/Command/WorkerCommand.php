@@ -69,7 +69,11 @@ final class WorkerCommand extends Command
         $tcpConnector = new TcpConnector($streamSelectLoop);
 
         $promise = $tcpConnector->connect('127.0.0.1:' . $configuration->getParallelPort());
-        $promise->then(function (ConnectionInterface $connection) use ($parallelIdentifier, $configuration): void {
+        $promise->then(function (ConnectionInterface $connection) use (
+            $parallelIdentifier,
+            $configuration,
+            $output
+        ): void {
             $inDecoder = new Decoder($connection, true, 512, JSON_INVALID_UTF8_IGNORE);
             $outEncoder = new Encoder($connection, JSON_INVALID_UTF8_IGNORE);
 
@@ -78,7 +82,7 @@ final class WorkerCommand extends Command
                 ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
-            $this->runWorker($outEncoder, $inDecoder, $configuration);
+            $this->runWorker($outEncoder, $inDecoder, $configuration, $output);
         });
 
         $streamSelectLoop->run();
@@ -86,9 +90,21 @@ final class WorkerCommand extends Command
         return self::SUCCESS;
     }
 
-    private function runWorker(Encoder $encoder, Decoder $decoder, Configuration $configuration): void
-    {
+    private function runWorker(
+        Encoder $encoder,
+        Decoder $decoder,
+        Configuration $configuration,
+        OutputInterface $output
+    ): void {
         $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
+
+        if ($configuration->isDebug()) {
+            $preFileCallback = static function (string $filePath) use ($output): void {
+                $output->writeln($filePath);
+            };
+        } else {
+            $preFileCallback = null;
+        }
 
         // 1. handle system error
         $handleErrorCallback = static function (Throwable $throwable) use ($encoder): void {
@@ -108,7 +124,7 @@ final class WorkerCommand extends Command
         $encoder->on(ReactEvent::ERROR, $handleErrorCallback);
 
         // 2. collect diffs + errors from file processor
-        $decoder->on(ReactEvent::DATA, function (array $json) use ($encoder, $configuration): void {
+        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration): void {
             $action = $json[ReactCommand::ACTION];
             if ($action !== Action::MAIN) {
                 return;
@@ -117,7 +133,11 @@ final class WorkerCommand extends Command
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
 
-            $processResult = $this->applicationFileProcessor->processFiles($filePaths, $configuration);
+            $processResult = $this->applicationFileProcessor->processFiles(
+                $filePaths,
+                $configuration,
+                $preFileCallback
+            );
 
             /**
              * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA

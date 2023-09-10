@@ -106,12 +106,6 @@ final class FileProcessor
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
     {
-<<<<<<< HEAD
-        $this->notifyFile($file);
-=======
-        //        $this->notifyFile($file);
->>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
-
         try {
             $this->parseFileNodes($file);
         } catch (ShouldNotHappenException $shouldNotHappenException) {
@@ -178,28 +172,6 @@ final class FileProcessor
 
         $file->changeFileContent($newContent);
     }
-
-<<<<<<< HEAD
-    private function notifyFile(File $file): void
-    {
-        if (! $this->symfonyStyle->isVerbose()) {
-            return;
-        }
-
-        $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
-        $this->symfonyStyle->writeln($relativeFilePath);
-    }
-=======
-    //    private function notifyFile(File $file): void
-    //    {
-    //        if (! $this->symfonyStyle->isVerbose()) {
-    //            return;
-    //        }
-    //
-    //        $relativeFilePath = $this->filePathHelper->relativePath($file->getFilePath());
-    //        $this->symfonyStyle->writeln($relativeFilePath);
-    //    }
->>>>>>> ad06f86a23 (merge PhpFileProcessor to FileProcessor)
 
     private function parseFileNodes(File $file): void
     {
