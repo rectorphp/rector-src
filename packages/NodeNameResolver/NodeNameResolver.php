@@ -181,7 +181,15 @@ final class NodeNameResolver
             return $desiredName === $resolvedName;
         }
 
-        return strcasecmp($resolvedName, $desiredName) === 0;
+        if (strcasecmp($resolvedName, $desiredName) === 0) {
+            return true;
+        }
+
+        if (str_starts_with($desiredName, '*') || str_ends_with($desiredName, '*')) {
+            return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
+        }
+
+        return false;
     }
 
     private function isCallOrIdentifier(Expr|Identifier $node): bool
