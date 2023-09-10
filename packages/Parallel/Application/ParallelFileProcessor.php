@@ -43,9 +43,11 @@ final class ParallelFileProcessor
      */
     private const SYSTEM_ERROR_LIMIT = 50;
     /**
+     * the number of chunks a worker can process before getting killed
+     *
      * @var int
      */
-    private const MAX_JOBS_PER_WORKER = 10;
+    private const MAX_CHUNKS_PER_WORKER = 10;
 
     private ProcessPool|null $processPool = null;
 
@@ -102,10 +104,10 @@ final class ParallelFileProcessor
                     return;
                 }
 
-                $job = array_pop($jobs);
+                $jobsChunk = array_pop($jobs);
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
-                    Content::FILES => $job,
+                    Content::FILES => $jobsChunk,
                 ]);
             });
         });
@@ -169,7 +171,7 @@ final class ParallelFileProcessor
                 $processIdentifier,
                 $serverPort,
             );
-            $fileBudgetPerProcess[$processIdentifier] = self::MAX_JOBS_PER_WORKER;
+            $fileBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
@@ -226,10 +228,10 @@ final class ParallelFileProcessor
                         return;
                     }
 
-                    $job = array_pop($jobs);
+                    $jobsChunk = array_pop($jobs);
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
-                        Content::FILES => $job,
+                        Content::FILES => $jobsChunk,
                     ]);
                     --$fileBudgetPerProcess[$processIdentifier];
                 },
