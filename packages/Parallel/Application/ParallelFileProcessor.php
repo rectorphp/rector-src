@@ -42,6 +42,7 @@ final class ParallelFileProcessor
      * @var int
      */
     private const SYSTEM_ERROR_LIMIT = 50;
+
     /**
      * The number of chunks a worker can process before getting killed.
      * In contrast the jobSize defines the maximum size of a chunk, a worker process at a time.
@@ -224,6 +225,7 @@ final class ParallelFileProcessor
                         ($processSpawner)();
                         return;
                     }
+
                     if ($jobs === []) {
                         $this->processPool->quitProcess($processIdentifier);
                         return;
