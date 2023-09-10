@@ -185,7 +185,7 @@ final class NodeNameResolver
             return true;
         }
 
-        if (str_starts_with($desiredName, '*') || str_ends_with($desiredName, '*')) {
+        if (str_contains($desiredName, '*')) {
             return fnmatch($desiredName, $resolvedName, FNM_NOESCAPE);
         }
 
