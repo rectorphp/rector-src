@@ -227,11 +227,11 @@ final class ParallelFileProcessor
                     }
 
                     $job = array_pop($jobs);
-                    $fileBudgetPerProcess[$processIdentifier]--;
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
                         Content::FILES => $job,
                     ]);
+                    --$fileBudgetPerProcess[$processIdentifier];
                 },
 
                 // 2. callable on error
