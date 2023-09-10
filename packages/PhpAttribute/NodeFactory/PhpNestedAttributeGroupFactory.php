@@ -154,7 +154,7 @@ final class PhpNestedAttributeGroupFactory
             -1
         );
 
-        if (! str_starts_with($originalIdentifier, '@ORM')) {
+        if (str_starts_with($originalIdentifier, '@ORM')) {
             // or alias
             return new Name('ORM\\' . $shortDoctrineAttributeName);
         }
