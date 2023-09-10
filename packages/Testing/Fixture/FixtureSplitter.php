@@ -12,7 +12,7 @@ final class FixtureSplitter
 {
     public static function containsSplit(string $fixtureFileContent): bool
     {
-        return str_contains($fixtureFileContent, "-----\n");
+        return str_contains($fixtureFileContent, "-----" . PHP_EOL);
     }
 
     /**
@@ -30,6 +30,6 @@ final class FixtureSplitter
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        return explode("-----\n", $fixtureFileContents);
+        return explode("-----" . PHP_EOL, $fixtureFileContents);
     }
 }
