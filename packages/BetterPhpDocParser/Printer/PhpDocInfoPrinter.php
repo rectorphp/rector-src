@@ -173,7 +173,7 @@ final class PhpDocInfoPrinter
         return str_replace(" \n", "\n", $output);
     }
 
-    private function hasDocblockStart(string $output)
+    private function hasDocblockStart(string $output): bool
     {
         foreach (self::DOCBLOCK_STARTS as $docblockStart) {
             if (str_starts_with($output, $docblockStart)) {
