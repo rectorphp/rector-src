@@ -214,7 +214,6 @@ final class ParallelFileProcessor
                         $this->processPool->quitAll();
                     }
 
-                    var_dump($fileBudgetPerProcess[$processIdentifier]);
                     if ($fileBudgetPerProcess[$processIdentifier] <= 0) {
                         // kill the current worker, and spawn a fresh one to free memory
                         $this->processPool->quitProcess($processIdentifier);
