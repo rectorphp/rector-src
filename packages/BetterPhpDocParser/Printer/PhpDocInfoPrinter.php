@@ -43,12 +43,7 @@ final class PhpDocInfoPrinter
     /**
      * @var string[]
      */
-    private const DOCBLOCK_STARTS = [
-        '//',
-        '/**',
-        '/*',
-        '#'
-    ];
+    private const DOCBLOCK_STARTS = ['//', '/**', '/*', '#'];
 
     /**
      * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
