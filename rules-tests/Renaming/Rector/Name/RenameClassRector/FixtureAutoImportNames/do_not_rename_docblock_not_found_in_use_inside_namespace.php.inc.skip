@@ -1,12 +1,12 @@
 <?php
 
-namespace Foo3;
+namespace Foo2;
 
-class Foo3 extends FooBar
+use Foo\Bar;
+
+class Foo2 extends FooBar
 {
     /**
-     * @param \DateTime $foo
-     *
      * @return Storage|\Storage
      */
     public function bar($foo){}
@@ -16,14 +16,11 @@ class Foo3 extends FooBar
 -----
 <?php
 
-namespace Foo3;
+namespace Foo2;
 
-use DateTime;
-class Foo3 extends FooBar
+class Foo2 extends FooBar
 {
     /**
-     * @param DateTime $foo
-     *
      * @return Storage|\Illuminate\Support\Facades\Storage
      */
     public function bar($foo){}

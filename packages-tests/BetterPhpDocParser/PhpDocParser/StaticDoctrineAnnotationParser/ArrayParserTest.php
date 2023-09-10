@@ -34,7 +34,6 @@ final class ArrayParserTest extends AbstractLazyTestCase
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
 
         $string = new String_('some_node');
-
         $arrayItemNodes = $this->arrayParser->parseCurlyArray($betterTokenIterator, $string);
         $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }

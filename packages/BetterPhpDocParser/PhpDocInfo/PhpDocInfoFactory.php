@@ -15,14 +15,6 @@ use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-use Rector\Core\Configuration\CurrentNodeProvider;
-=======
-//use Rector\Core\Configuration\CurrentNodeProvider;
->>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
->>>>>>> 6f1f96c5ca (Lower current node/rector dependency, to clean architecture of life cycle)
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 

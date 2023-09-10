@@ -9,11 +9,8 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
-<<<<<<< HEAD
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-=======
->>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -86,7 +83,6 @@ CODE_SAMPLE
 
         $hasChanged = false;
         foreach ($this->annotationsToRemove as $annotationToRemove) {
-<<<<<<< HEAD
             $namedHasChanged = $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToRemove);
             if ($namedHasChanged) {
                 $hasChanged = true;
@@ -100,11 +96,6 @@ CODE_SAMPLE
             if ($typedHasChanged) {
                 $hasChanged = true;
             }
-=======
-            if ($this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToRemove)) {
-                $hasChanged = true;
-            }
->>>>>>> f83a2fc0b4 (Lower current node/rector dependency, to clean architecture of life cycle)
         }
 
         if ($hasChanged) {

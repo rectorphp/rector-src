@@ -25,11 +25,6 @@ final class PhpDocTagRemover
             if ($this->areAnnotationNamesEqual($name, $phpDocChildNode->name)) {
                 unset($phpDocNode->children[$key]);
                 $hasChanged = true;
-<<<<<<< HEAD
-=======
-                $phpDocInfo->markAsChanged();
-                $hasChanged = true;
->>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
             }
 
             if ($phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode && $phpDocChildNode->value->hasClassName(
@@ -37,11 +32,6 @@ final class PhpDocTagRemover
             )) {
                 unset($phpDocNode->children[$key]);
                 $hasChanged = true;
-<<<<<<< HEAD
-=======
-                $phpDocInfo->markAsChanged();
-                $hasChanged = true;
->>>>>>> ebd9d7563b (Lower current node/rector dependency, to clean architecture of life cycle)
             }
         }
 
