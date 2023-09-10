@@ -42,6 +42,13 @@ final class ParallelFileProcessor
      * @var int
      */
     private const SYSTEM_ERROR_LIMIT = 50;
+    /**
+     * The number of chunks a worker can process before getting killed.
+     * In contrast the jobSize defines the maximum size of a chunk, a worker process at a time.
+     *
+     * @var int
+     */
+    private const MAX_CHUNKS_PER_WORKER = 8;
 
     private ProcessPool|null $processPool = null;
 
@@ -98,10 +105,10 @@ final class ParallelFileProcessor
                     return;
                 }
 
-                $job = array_pop($jobs);
+                $jobsChunk = array_pop($jobs);
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
-                    Content::FILES => $job,
+                    Content::FILES => $jobsChunk,
                 ]);
             });
         });
@@ -137,12 +144,24 @@ final class ParallelFileProcessor
         };
 
         $timeoutInSeconds = SimpleParameterProvider::provideIntParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS);
+        $fileChunksBudgetPerProcess = [];
 
-        for ($i = 0; $i < $numberOfProcesses; ++$i) {
-            // nothing else to process, stop now
-            if ($jobs === []) {
-                break;
-            }
+        $processSpawner = function() use (
+                &$systemErrors,
+                &$fileDiffs,
+                &$jobs,
+                $postFileCallback,
+                &$systemErrorsCount,
+                &$reachedInternalErrorsCountLimit,
+                $mainScript,
+                $input,
+                $serverPort,
+                $streamSelectLoop,
+                $timeoutInSeconds,
+                $handleErrorCallable,
+                &$fileChunksBudgetPerProcess,
+                &$processSpawner
+            ): void {
 
             $processIdentifier = Random::generate();
             $workerCommandLine = $this->workerCommandLineFactory->create(
@@ -153,6 +172,7 @@ final class ParallelFileProcessor
                 $processIdentifier,
                 $serverPort,
             );
+            $fileChunksBudgetPerProcess[$processIdentifier] = self::MAX_CHUNKS_PER_WORKER;
 
             $parallelProcess = new ParallelProcess($workerCommandLine, $streamSelectLoop, $timeoutInSeconds);
 
@@ -167,7 +187,9 @@ final class ParallelFileProcessor
                     &$systemErrorsCount,
                     &$collectedDatas,
                     &$reachedInternalErrorsCountLimit,
-                    $processIdentifier
+                    $processIdentifier,
+                    &$fileChunksBudgetPerProcess,
+                    &$processSpawner
                 ): void {
                     // decode arrays to objects
                     foreach ($json[Bridge::SYSTEM_ERRORS] as $jsonError) {
@@ -195,16 +217,24 @@ final class ParallelFileProcessor
                         $this->processPool->quitAll();
                     }
 
+                    if ($fileChunksBudgetPerProcess[$processIdentifier] <= 0) {
+                        // kill the current worker, and spawn a fresh one to free memory
+                        $this->processPool->quitProcess($processIdentifier);
+
+                        ($processSpawner)();
+                        return;
+                    }
                     if ($jobs === []) {
                         $this->processPool->quitProcess($processIdentifier);
                         return;
                     }
 
-                    $job = array_pop($jobs);
+                    $jobsChunk = array_pop($jobs);
                     $parallelProcess->request([
                         ReactCommand::ACTION => Action::MAIN,
-                        Content::FILES => $job,
+                        Content::FILES => $jobsChunk,
                     ]);
+                    --$fileChunksBudgetPerProcess[$processIdentifier];
                 },
 
                 // 2. callable on error
@@ -226,6 +256,15 @@ final class ParallelFileProcessor
             );
 
             $this->processPool->attachProcess($processIdentifier, $parallelProcess);
+        };
+
+        for ($i = 0; $i < $numberOfProcesses; ++$i) {
+            // nothing else to process, stop now
+            if ($jobs === []) {
+                break;
+            }
+
+            ($processSpawner)();
         }
 
         $streamSelectLoop->run();
