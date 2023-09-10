@@ -41,10 +41,9 @@ final class PhpDocInfoPrinter
     private const CALLABLE_REGEX = '#callable(\s+)\(#';
 
     /**
-     * @var string
-     * @see https://regex101.com/r/LLWiPl/1
+     * @var string[]
      */
-    private const DOCBLOCK_START_REGEX = '#^(\/\/|\/\*\*|\/\*|\#)#';
+    private const DOCBLOCK_STARTS = ['//', '/**', '/*', '#'];
 
     /**
      * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
@@ -157,7 +156,7 @@ final class PhpDocInfoPrinter
         $output = $this->printEnd($output);
 
         // fix missing start
-        if (! StringUtils::isMatch($output, self::DOCBLOCK_START_REGEX) && $output !== '') {
+        if (! $this->hasDocblockStart($output) && $output !== '') {
             $output = '/**' . $output;
         }
 
@@ -167,6 +166,17 @@ final class PhpDocInfoPrinter
         }
 
         return str_replace(" \n", "\n", $output);
+    }
+
+    private function hasDocblockStart(string $output): bool
+    {
+        foreach (self::DOCBLOCK_STARTS as $docblockStart) {
+            if (str_starts_with($output, $docblockStart)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function printDocChildNode(
