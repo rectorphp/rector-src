@@ -293,7 +293,7 @@ final class BetterStandardPrinter extends Standard
             return $closureContent;
         }
 
-        return str_replace('use(', 'use (', $closureContent);
+        return str_replace(' use(', ' use (', $closureContent);
     }
 
     /**
