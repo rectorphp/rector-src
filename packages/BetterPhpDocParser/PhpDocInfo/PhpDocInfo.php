@@ -79,8 +79,6 @@ final class PhpDocInfo
         $this->phpDocNode->children[] = $phpDocChildNode;
         // to give node more space
         $this->makeMultiLined();
-
-        $this->markAsChanged();
     }
 
     public function getPhpDocNode(): PhpDocNode
@@ -373,6 +371,7 @@ final class PhpDocInfo
     }
 
     /**
+     * @deprecated Change doc block and print directly in the node instead
      * @internal
      * Should be handled by attributes of phpdoc node - if stard_and_end is missing in one of nodes, it has been changed
      * Similar to missing original node in php-aprser
