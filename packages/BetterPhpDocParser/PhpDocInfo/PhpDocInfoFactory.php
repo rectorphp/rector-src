@@ -79,7 +79,7 @@ final class PhpDocInfoFactory
             $tokens = $this->lexer->tokenize($docComment->getText());
             $tokenIterator = new BetterTokenIterator($tokens);
 
-            $phpDocNode = $this->betterPhpDocParser->parse($tokenIterator);
+            $phpDocNode = $this->betterPhpDocParser->parseWithNode($tokenIterator, $node);
             $this->setPositionOfLastToken($phpDocNode);
         }
 

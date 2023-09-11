@@ -15,7 +15,6 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Logging\CurrentRectorProvider;
@@ -74,8 +73,6 @@ CODE_SAMPLE;
 
     private CurrentRectorProvider $currentRectorProvider;
 
-    private CurrentNodeProvider $currentNodeProvider;
-
     private Skipper $skipper;
 
     private CurrentFileProvider $currentFileProvider;
@@ -97,7 +94,6 @@ CODE_SAMPLE;
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
         CurrentRectorProvider $currentRectorProvider,
-        CurrentNodeProvider $currentNodeProvider,
         Skipper $skipper,
         ValueResolver $valueResolver,
         BetterNodeFinder $betterNodeFinder,
@@ -113,7 +109,6 @@ CODE_SAMPLE;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
         $this->currentRectorProvider = $currentRectorProvider;
-        $this->currentNodeProvider = $currentNodeProvider;
         $this->skipper = $skipper;
         $this->valueResolver = $valueResolver;
         $this->betterNodeFinder = $betterNodeFinder;
@@ -153,9 +148,6 @@ CODE_SAMPLE;
         }
 
         $this->currentRectorProvider->changeCurrentRector($this);
-        // for PHP doc info factory and change notifier
-        $this->currentNodeProvider->setNode($node);
-
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN

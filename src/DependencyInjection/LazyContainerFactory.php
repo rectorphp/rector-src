@@ -48,7 +48,6 @@ use Rector\Config\RectorConfig;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Application\FileProcessor;
 use Rector\Core\Configuration\ConfigInitializer;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\Console\Command\ListRulesCommand;
 use Rector\Core\Console\Command\ProcessCommand;
@@ -506,7 +505,6 @@ final class LazyContainerFactory
                     $container->make(PhpDocInfoFactory::class),
                     $container->make(StaticTypeMapper::class),
                     $container->make(CurrentRectorProvider::class),
-                    $container->make(CurrentNodeProvider::class),
                     $container->make(Skipper::class),
                     $container->make(ValueResolver::class),
                     $container->make(BetterNodeFinder::class),
