@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\ClassNameImport;
 
 use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
@@ -79,7 +80,7 @@ final class UseImportsTraverser
                 $this->processGroupUse($node, $desiredType, $callable);
             }
 
-            if (!$node instanceof Namespace_) {
+            if (!$node instanceof Namespace_ && !$node instanceof FileWithoutNamespace) {
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
