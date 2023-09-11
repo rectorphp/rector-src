@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\Printer;
 
 use Nette\Utils\Strings;
+use PhpParser\Comment;
 use PhpParser\Node\Stmt\InlineHTML;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
@@ -22,7 +23,6 @@ use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
-use Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\Fixture\Comment;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\PhpDocInfoPrinterTest
@@ -135,7 +135,7 @@ final class PhpDocInfoPrinter
     public function printToComments(PhpDocInfo $phpDocInfo): array
     {
         $printedPhpDocContents = $this->printFormatPreserving($phpDocInfo);
-        return [new \PhpParser\Comment($printedPhpDocContents)];
+        return [new Comment($printedPhpDocContents)];
     }
 
     private function getCurrentPhpDocInfo(): PhpDocInfo

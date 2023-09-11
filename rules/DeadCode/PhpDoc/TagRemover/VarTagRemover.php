@@ -28,24 +28,26 @@ final class VarTagRemover
     ) {
     }
 
-    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property $property): void
+    public function removeVarTagIfUseless(PhpDocInfo $phpDocInfo, Property $property): bool
     {
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {
-            return;
+            return false;
         }
 
         $isVarTagValueDead = $this->deadVarTagValueNodeAnalyzer->isDead($varTagValueNode, $property);
         if (! $isVarTagValueDead) {
-            return;
+            return false;
         }
 
         if ($this->phpDocTypeChanger->isAllowed($varTagValueNode->type)) {
-            return;
+            return false;
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+
+        return true;
     }
 
     public function removeVarPhpTagValueNodeIfNotComment(Expression | Property | Param $node, Type $type): void

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
-use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
@@ -16,12 +15,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
@@ -29,10 +25,10 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -66,13 +62,11 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
     public function __construct(
         private readonly PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
         private readonly VariableRenamer $variableRenamer,
-        private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PropertyPromotionDocBlockMerger $propertyPromotionDocBlockMerger,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PhpDocInfoPrinter $phpDocInfoPrinter,
     ) {
     }
 
@@ -186,7 +180,12 @@ CODE_SAMPLE
             $paramTagValueNode = $constructorPhpDocInfo->getParamTagValueByName($paramName);
 
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
-                $this->decorateParamWithPropertyPhpDocInfo($constructClassMethod, $property, $param, $paramName);
+                $this->propertyPromotionDocBlockMerger->decorateParamWithPropertyPhpDocInfo(
+                    $constructClassMethod,
+                    $property,
+                    $param,
+                    $paramName
+                );
             } elseif ($paramTagValueNode->parameterName !== '$' . $propertyName) {
                 $paramTagValueNode->parameterName = '$' . $propertyName;
                 $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
@@ -201,27 +200,11 @@ CODE_SAMPLE
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
             $this->processUnionType($property, $param);
 
-            $paramComments = $param->getComments();
-
-            // already has @param tag → give it priority over @var and remove @var
-            if ($paramTagValueNode instanceof ParamTagValueNode) {
-                $propertyDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-
-                if ($propertyDocInfo->hasByType(VarTagValueNode::class)) {
-                    $propertyDocInfo->removeByType(VarTagValueNode::class);
-
-                    $propertyComments = $this->phpDocInfoPrinter->printToComments($propertyDocInfo);
-                    $mergedComments = array_merge($paramComments, $propertyComments);
-
-                    $mergedComments = array_filter($mergedComments, function (Comment $comment) {
-                        return $comment->getText() !== '';
-                    });
-
-                    $param->setAttribute(AttributeKey::COMMENTS, $mergedComments);
-                }
-            }
-
-            // $this->phpDocTypeChanger->convertPropertyVarTagToParamTag($constructClassMethod, $property, $param);
+            $this->propertyPromotionDocBlockMerger->mergePropertyAndParamDocBlocks(
+                $property,
+                $param,
+                $paramTagValueNode
+            );
         }
 
         return $node;
@@ -265,40 +248,6 @@ CODE_SAMPLE
         $paramType = TypeCombinator::union($paramType, $defaultType);
 
         $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
-    }
-
-    private function decorateParamWithPropertyPhpDocInfo(
-        ClassMethod $classMethod,
-        Property $property,
-        Param $param,
-        string $paramName
-    ): void {
-        $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-        $propertyPhpDocInfo->markAsChanged();
-
-        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
-
-        // make sure the docblock is useful
-        if ($param->type === null) {
-            $varTagValueNode = $propertyPhpDocInfo->getVarTagValueNode();
-            if (! $varTagValueNode instanceof VarTagValueNode) {
-                return;
-            }
-
-            $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
-            $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-            $this->phpDocTypeChanger->changeParamType(
-                $classMethod,
-                $classMethodPhpDocInfo,
-                $paramType,
-                $param,
-                $paramName
-            );
-        } else {
-            $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-        }
-
-        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($param, $paramType);
     }
 
     private function shouldSkipParam(Param $param): bool
