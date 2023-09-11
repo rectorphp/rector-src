@@ -137,14 +137,14 @@ final class PhpDocTypeChanger
         Type $newType,
         Param $param,
         string $paramName
-    ): void {
+    ): bool {
         // better skip, could crash hard
         if ($phpDocInfo->hasInvalidTag('@param')) {
-            return;
+            return false;
         }
 
         if (! $this->newPhpDocFromPHPStanTypeGuard->isLegal($newType)) {
-            return;
+            return false;
         }
 
         $phpDocTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
@@ -160,11 +160,11 @@ final class PhpDocTypeChanger
 
             // avoid overriding better type
             if ($this->typeComparator->isSubtype($currentType, $newType)) {
-                return;
+                return false;
             }
 
             if ($this->typeComparator->areTypesEqual($currentType, $newType)) {
-                return;
+                return false;
             }
 
             $paramTagValueNode->type = $phpDocTypeNode;
@@ -174,6 +174,8 @@ final class PhpDocTypeChanger
         }
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
+
+        return true;
     }
 
     public function isAllowed(TypeNode $typeNode): bool

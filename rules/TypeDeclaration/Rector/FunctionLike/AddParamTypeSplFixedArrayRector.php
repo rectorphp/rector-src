@@ -117,7 +117,7 @@ CODE_SAMPLE
             }
 
             $paramName = $this->getName($param);
-            $this->phpDocTypeChanger->changeParamType(
+            $changedParamType = $this->phpDocTypeChanger->changeParamType(
                 $node,
                 $functionLikePhpDocInfo,
                 $genericParamType,
@@ -125,11 +125,12 @@ CODE_SAMPLE
                 $paramName
             );
 
-            $hasChanged = true;
+            if ($changedParamType) {
+                $hasChanged = true;
+            }
         }
 
         if ($hasChanged) {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             return $node;
         }
 
