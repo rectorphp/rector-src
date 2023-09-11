@@ -253,10 +253,7 @@ final class PhpDocInfo
         $hasChanged = false;
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', function (Node $node) use (
-            $typeToRemove,
-            &$hasChanged,
-        ): ?int {
+        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use ($typeToRemove, &$hasChanged) : ?int {
             if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
                 // keep special annotation for tools
                 if (str_starts_with($node->name, '@psalm-')) {
@@ -270,11 +267,9 @@ final class PhpDocInfo
                 $hasChanged = true;
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
-
             if (! $node instanceof $typeToRemove) {
                 return null;
             }
-
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
