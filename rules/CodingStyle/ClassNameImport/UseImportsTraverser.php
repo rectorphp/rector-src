@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
-use Lines202308\PhpParser\Builder\Namespace_;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
