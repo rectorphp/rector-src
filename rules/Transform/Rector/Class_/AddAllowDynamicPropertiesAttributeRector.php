@@ -139,16 +139,18 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
-        if ($this->transformOnNamespaces !== []) {
-            $className = (string) $this->nodeNameResolver->getName($class);
-            foreach ($this->transformOnNamespaces as $transformOnNamespace) {
-                if ($this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
-                    continue;
-                }
-
+        $className = (string) $this->nodeNameResolver->getName($class);
+        foreach ($this->transformOnNamespaces as $transformOnNamespace) {
+            if (str_contains($transformOnNamespace, '*')) {
                 if (! fnmatch($transformOnNamespace, $className, FNM_NOESCAPE)) {
                     return true;
                 }
+
+                continue;
+            }
+
+            if ($this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                continue;
             }
         }
 
