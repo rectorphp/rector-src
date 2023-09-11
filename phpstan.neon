@@ -577,3 +577,4 @@ parameters:
 
         # remove in next step
         - '#Call to deprecated method markAsChanged\(\) of class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo#'
+        - '#Method "importNames\(\)" returns bool type, so the name should start with is/has/was#'

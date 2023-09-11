@@ -9,11 +9,17 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-class TestRector extends AbstractRector
+final class PartialUpdateTestRector extends AbstractRector
 {
+    public function __construct(
+        private readonly DocBlockUpdater $docBlockUpdater,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('uff', []);
@@ -41,6 +47,8 @@ class TestRector extends AbstractRector
                 new CurlyListNode(),
                 'defaults',
             );
+
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
             return $node;
         }

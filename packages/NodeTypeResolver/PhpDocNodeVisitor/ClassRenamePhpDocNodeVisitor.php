@@ -33,6 +33,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
      */
     private array $oldToNewTypes = [];
 
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly CurrentNodeProvider $currentNodeProvider,
@@ -45,6 +47,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         if ($this->oldToNewTypes === []) {
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
         }
+
+        $this->hasChanged = true;
     }
 
     public function enterNode(Node $node): ?Node
@@ -90,6 +94,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 $newTypeNode->setAttribute(PhpDocAttributeKey::PARENT, $parentType);
             }
 
+            $this->hasChanged = true;
+
             return $newTypeNode;
         }
 
@@ -102,6 +108,11 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     public function setOldToNewTypes(array $oldToNewTypes): void
     {
         $this->oldToNewTypes = $oldToNewTypes;
+    }
+
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
     }
 
     private function resolveNamespacedName(
