@@ -25,6 +25,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Naming\PropertyRenamer\PropertyPromotionRenamer;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -67,6 +68,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
         private readonly ReflectionResolver $reflectionResolver,
+        private readonly PropertyPromotionRenamer $propertyPromotionRenamer
     ) {
     }
 
@@ -187,8 +189,7 @@ CODE_SAMPLE
                     $paramName
                 );
             } elseif ($paramTagValueNode->parameterName !== '$' . $propertyName) {
-                $paramTagValueNode->parameterName = '$' . $propertyName;
-                $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
+                $this->propertyPromotionRenamer->renameParamDoc($constructorPhpDocInfo, $constructClassMethod, $param, $paramTagValueNode->parameterName, $propertyName);
             }
 
             // property name has higher priority

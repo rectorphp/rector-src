@@ -31,7 +31,7 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
     ];
 
     public function __construct(
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 
@@ -89,6 +89,7 @@ CODE_SAMPLE
         }
 
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $hasChanged = false;
 
         foreach ($node->getParams() as $param) {
             if ($param->type === null) {
@@ -114,16 +115,20 @@ CODE_SAMPLE
             }
 
             $paramName = $this->getName($param);
-            $this->phpDocTypeChanger->changeParamType(
+            $changedParamType = $this->phpDocTypeChanger->changeParamType(
                 $node,
                 $functionLikePhpDocInfo,
                 $genericParamType,
                 $param,
                 $paramName
             );
+
+            if ($changedParamType) {
+                $hasChanged = true;
+            }
         }
 
-        if ($functionLikePhpDocInfo->hasChanged()) {
+        if ($hasChanged) {
             return $node;
         }
 

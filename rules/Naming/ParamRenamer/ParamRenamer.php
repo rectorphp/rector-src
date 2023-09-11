@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Naming\ParamRenamer;
 
-use Rector\BetterPhpDocParser\PhpDocManipulator\PropertyDocBlockManipulator;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\VariableRenamer;
 
@@ -12,7 +16,8 @@ final class ParamRenamer
 {
     public function __construct(
         private readonly VariableRenamer $variableRenamer,
-        private readonly PropertyDocBlockManipulator $propertyDocBlockManipulator
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
@@ -31,6 +36,26 @@ final class ParamRenamer
         );
 
         // 3. rename @param variable in docblock too
-        $this->propertyDocBlockManipulator->renameParameterNameInDocBlock($paramRename);
+        $this->renameParameterNameInDocBlock($paramRename);
+    }
+
+    private function renameParameterNameInDocBlock(ParamRename $paramRename): void
+    {
+        $functionLike = $paramRename->getFunctionLike();
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($functionLike);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return;
+        }
+
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramRename->getCurrentName());
+        if (! $paramTagValueNode instanceof ParamTagValueNode) {
+            return;
+        }
+
+        $paramTagValueNode->parameterName = '$' . $paramRename->getExpectedName();
+        $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
     }
 }

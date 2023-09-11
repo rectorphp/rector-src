@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
@@ -55,6 +56,10 @@ return static function (RectorConfig $rectorConfig): void {
         RenamePropertyToMatchTypeRector::class => [
             __DIR__ . '/src/Console/Command/ListRulesCommand.php',
             __DIR__ . '/src/Configuration/ConfigInitializer.php',
+        ],
+
+        RemoveEmptyClassMethodRector::class => [
+            __DIR__ . '/packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php',
         ],
 
         // resolve later

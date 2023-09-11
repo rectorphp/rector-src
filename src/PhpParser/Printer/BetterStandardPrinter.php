@@ -20,7 +20,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -28,7 +27,6 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -61,7 +59,6 @@ final class BetterStandardPrinter extends Standard
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     public function __construct(
-        private readonly DocBlockUpdater $docBlockUpdater
     ) {
         parent::__construct([
             'shortArraySyntax' => true,
@@ -238,10 +235,7 @@ final class BetterStandardPrinter extends Standard
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
-
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
-
         if ($content === null) {
             return $content;
         }
@@ -516,21 +510,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $stmts;
-    }
-
-    /**
-     * @param array<Node|null> $nodes
-     */
-    private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
-    {
-        // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $node) {
-            if (! $node instanceof Stmt && ! $node instanceof Param) {
-                continue;
-            }
-
-            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
-        }
     }
 
     /**

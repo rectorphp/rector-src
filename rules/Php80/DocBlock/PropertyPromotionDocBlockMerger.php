@@ -13,6 +13,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -25,6 +26,7 @@ final class PropertyPromotionDocBlockMerger
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly VarTagRemover $varTagRemover,
         private readonly PhpDocInfoPrinter $phpDocInfoPrinter,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -52,6 +54,8 @@ final class PropertyPromotionDocBlockMerger
                 $param->setAttribute(AttributeKey::COMMENTS, $mergedComments);
             }
         }
+        
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
     }
 
     public function decorateParamWithPropertyPhpDocInfo(

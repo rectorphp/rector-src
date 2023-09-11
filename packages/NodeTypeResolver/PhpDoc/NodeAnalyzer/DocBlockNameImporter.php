@@ -16,10 +16,10 @@ final class DocBlockNameImporter
     ) {
     }
 
-    public function importNames(PhpDocNode $phpDocNode, Node $node): void
+    public function importNames(PhpDocNode $phpDocNode, Node $node): bool
     {
         if ($phpDocNode->children === []) {
-            return;
+            return false;
         }
 
         $this->nameImportingPhpDocNodeVisitor->setCurrentNode($node);
@@ -27,5 +27,7 @@ final class DocBlockNameImporter
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->addPhpDocNodeVisitor($this->nameImportingPhpDocNodeVisitor);
         $phpDocNodeTraverser->traverse($phpDocNode);
+
+        return $this->nameImportingPhpDocNodeVisitor->hasChanged();
     }
 }

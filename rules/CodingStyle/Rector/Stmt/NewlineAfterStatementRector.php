@@ -115,6 +115,7 @@ CODE_SAMPLE
         }
 
         $totalKeys = array_key_last($node->stmts);
+
         for ($key = $jumpToKey; $key < $totalKeys; ++$key) {
             if (! isset($node->stmts[$key], $node->stmts[$key + 1])) {
                 break;
@@ -147,7 +148,6 @@ CODE_SAMPLE
             array_splice($node->stmts, $key + 1, 0, [new Nop()]);
 
             $hasChanged = true;
-
             return $this->processAddNewLine($node, $hasChanged, $key + 2);
         }
 
@@ -171,13 +171,10 @@ CODE_SAMPLE
             return $rangeLine;
         }
 
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nextStmt);
-        if ($phpDocInfo->hasChanged()) {
-            return $rangeLine;
-        }
-
         /** @var Comment[] $comments */
-        $line = $comments[0]->getStartLine();
+        $firstComment = $comments[0];
+
+        $line = $firstComment->getStartLine();
         return $line - $endLine;
     }
 
@@ -186,11 +183,7 @@ CODE_SAMPLE
      */
     private function hasNoComment(?array $comments): bool
     {
-        if ($comments === null) {
-            return true;
-        }
-
-        return ! isset($comments[0]);
+        return $comments === null || $comments === [];
     }
 
     private function shouldSkip(Stmt $stmt): bool

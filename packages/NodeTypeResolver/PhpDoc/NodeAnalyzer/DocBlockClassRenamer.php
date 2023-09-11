@@ -19,10 +19,10 @@ final class DocBlockClassRenamer
     /**
      * @param OldToNewType[] $oldToNewTypes
      */
-    public function renamePhpDocType(PhpDocInfo $phpDocInfo, array $oldToNewTypes): void
+    public function renamePhpDocType(PhpDocInfo $phpDocInfo, array $oldToNewTypes): bool
     {
         if ($oldToNewTypes === []) {
-            return;
+            return false;
         }
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
@@ -31,5 +31,7 @@ final class DocBlockClassRenamer
         $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
 
         $phpDocNodeTraverser->traverse($phpDocInfo->getPhpDocNode());
+
+        return $this->classRenamePhpDocNodeVisitor->hasChanged();
     }
 }
