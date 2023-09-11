@@ -20,7 +20,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 
@@ -60,7 +59,7 @@ final class BetterPhpDocParser extends PhpDocParser
         );
     }
 
-    public function parseWithNode(BetterTokenIterator $betterTokenIterator, \PhpParser\Node $node): PhpDocNode
+    public function parseWithNode(BetterTokenIterator $betterTokenIterator, Node $node): PhpDocNode
     {
         $betterTokenIterator->consumeTokenType(Lexer::TOKEN_OPEN_PHPDOC);
         $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
@@ -71,9 +70,7 @@ final class BetterPhpDocParser extends PhpDocParser
 
             while ($betterTokenIterator->tryConsumeTokenType(
                 Lexer::TOKEN_PHPDOC_EOL
-            ) && ! $betterTokenIterator->isCurrentTokenType(
-                Lexer::TOKEN_CLOSE_PHPDOC
-            )) {
+            ) && ! $betterTokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_PHPDOC)) {
                 $children[] = $this->parseChildAndStoreItsPositions($betterTokenIterator);
             }
         }
@@ -82,13 +79,6 @@ final class BetterPhpDocParser extends PhpDocParser
         $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_CLOSE_PHPDOC);
 
         $phpDocNode = new PhpDocNode($children);
-
-        // decorate FQN classes etc.
-        //        $node = $this->currentNodeProvider->getNode();
-        //        if (! $node instanceof Node) {
-        //            throw new ShouldNotHappenException();
-        //        }
-
         foreach ($this->phpDocNodeDecorators as $phpDocNodeDecorator) {
             $phpDocNodeDecorator->decorate($phpDocNode, $node);
         }
