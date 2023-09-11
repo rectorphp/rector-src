@@ -13,7 +13,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -33,7 +32,6 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
 
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
