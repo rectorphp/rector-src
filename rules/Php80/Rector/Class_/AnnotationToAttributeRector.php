@@ -176,7 +176,6 @@ CODE_SAMPLE
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (DocNode $docNode) use (
             &$attributeGroups,
-            $phpDocInfo
         ): ?int {
             if (! $docNode instanceof PhpDocTagNode) {
                 return null;
@@ -200,8 +199,6 @@ CODE_SAMPLE
                 }
 
                 $attributeGroups[] = $this->phpAttributeGroupFactory->createFromSimpleTag($annotationToAttribute);
-
-                $phpDocInfo->markAsChanged();
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
