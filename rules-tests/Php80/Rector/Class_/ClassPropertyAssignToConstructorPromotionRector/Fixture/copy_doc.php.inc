@@ -2,28 +2,23 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
+use Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\ValidatedElement;
 use Symfony\Component\Validator\Constraints as Assert;
-
-class Y {}
-class Z {}
 
 final class CopyDoc
 {
-    public Y $y;
-
     /**
-     * @var Z[]
+     * @var ValidatedElement[]
      * @Assert\Valid()
      * @Assert\NotBlank()
      */
     public array $z = [];
 
     /**
-     * @param Z[] $z
+     * @param ValidatedElement[] $z
      */
-    public function __construct(Y $y, array $z = [])
+    public function __construct(array $z = [])
     {
-        $this->y = $y;
         $this->z = $z;
     }
 }
@@ -33,18 +28,15 @@ final class CopyDoc
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
+use Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Source\ValidatedElement;
 use Symfony\Component\Validator\Constraints as Assert;
-
-class Y {}
-class Z {}
 
 final class CopyDoc
 {
     /**
-     * @param Z[] $z
+     * @param ValidatedElement[] $z
      */
     public function __construct(
-        public Y $y,
         /**
          * @Assert\Valid()
          * @Assert\NotBlank()

@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\Fixture\Comment;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\PhpDocInfoPrinterTest
@@ -126,6 +127,15 @@ final class PhpDocInfoPrinter
 
         // hotfix of extra space with callable ()
         return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
+    }
+
+    /**
+     * @return Comment[]
+     */
+    public function printToComments(PhpDocInfo $phpDocInfo): array
+    {
+        $printedPhpDocContents = $this->printFormatPreserving($phpDocInfo);
+        return [new \PhpParser\Comment($printedPhpDocContents)];
     }
 
     private function getCurrentPhpDocInfo(): PhpDocInfo

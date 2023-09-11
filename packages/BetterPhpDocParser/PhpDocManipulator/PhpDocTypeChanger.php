@@ -59,9 +59,9 @@ final class PhpDocTypeChanger
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly TypeComparator $typeComparator,
         private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly CommentsMerger $commentsMerger,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        //        private readonly NodeNameResolver $nodeNameResolver,
+        //        private readonly CommentsMerger $commentsMerger,
+        //        private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard,
         private readonly DocBlockUpdater $docBlockUpdater
     ) {
@@ -210,45 +210,45 @@ final class PhpDocTypeChanger
         return in_array((string) $typeNode, self::ALLOWED_IDENTIFIER_TYPENODE_TYPES, true);
     }
 
-    public function convertPropertyVarTagToParamTag(ClassMethod $classMethod, Property $property, Param $param): void
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return;
-        }
-
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-        if (! $varTagValueNode instanceof VarTagValueNode) {
-            $this->processKeepComments($property, $param);
-            return;
-        }
-
-        if ($varTagValueNode->description !== '') {
-            return;
-        }
-
-        $paramVarName = $this->nodeNameResolver->getName($param->var);
-        if (! $this->isAllowed($varTagValueNode->type)) {
-            return;
-        }
-
-        if (! is_string($paramVarName)) {
-            return;
-        }
-
-        $phpDocInfo->removeByType(VarTagValueNode::class);
-
-        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
-
-        $phpDocInfo = $classMethod->getAttribute(AttributeKey::PHP_DOC_INFO);
-        $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
-
-        $this->changeParamType($classMethod, $phpDocInfo, $paramType, $param, $paramVarName);
-        $this->processKeepComments($property, $param);
-    }
+    //    public function convertPropertyVarTagToParamTag(ClassMethod $classMethod, Property $property, Param $param): void
+    //    {
+    //        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+    //        if (! $phpDocInfo instanceof PhpDocInfo) {
+    //            return;
+    //        }
+    //
+    //        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+    //        if (! $varTagValueNode instanceof VarTagValueNode) {
+    //            $this->processKeepComments($property, $param);
+    //            return;
+    //        }
+    //
+    //        if ($varTagValueNode->description !== '') {
+    //            return;
+    //        }
+    //
+    //        $paramVarName = $this->nodeNameResolver->getName($param->var);
+    //        if (! $this->isAllowed($varTagValueNode->type)) {
+    //            return;
+    //        }
+    //
+    //        if (! is_string($paramVarName)) {
+    //            return;
+    //        }
+    //
+    //        $phpDocInfo->removeByType(VarTagValueNode::class);
+    //
+    //        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
+    //
+    //        $phpDocInfo = $classMethod->getAttribute(AttributeKey::PHP_DOC_INFO);
+    //        $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
+    //
+    //        $this->changeParamType($classMethod, $phpDocInfo, $paramType, $param, $paramVarName);
+    //        $this->processKeepComments($property, $param);
+    //    }
 
     /**
-     * @api doctrine
+     * @api downgrade
      */
     public function changeVarTypeNode(Stmt $stmt, PhpDocInfo $phpDocInfo, TypeNode $typeNode): void
     {
@@ -259,29 +259,29 @@ final class PhpDocTypeChanger
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
-    private function processKeepComments(Property $property, Param $param): void
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
-
-        $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
-        $this->commentsMerger->keepComments($param, [$property]);
-
-        $paramPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
-        $varTagValueNode = $paramPhpDocInfo->getVarTagValueNode();
-        if (! $toBeRemoved) {
-            return;
-        }
-
-        if (! $varTagValueNode instanceof VarTagValueNode) {
-            return;
-        }
-
-        if ($varTagValueNode->description !== '') {
-            return;
-        }
-
-        $paramPhpDocInfo->removeByType(VarTagValueNode::class);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
-    }
+    //    private function processKeepComments(Property $property, Param $param): void
+    //    {
+    //        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
+    //        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+    //
+    //        $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
+    //        $this->commentsMerger->keepComments($param, [$property]);
+    //
+    //        $paramPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
+    //        $varTagValueNode = $paramPhpDocInfo->getVarTagValueNode();
+    //        if (! $toBeRemoved) {
+    //            return;
+    //        }
+    //
+    //        if (! $varTagValueNode instanceof VarTagValueNode) {
+    //            return;
+    //        }
+    //
+    //        if ($varTagValueNode->description !== '') {
+    //            return;
+    //        }
+    //
+    //        $paramPhpDocInfo->removeByType(VarTagValueNode::class);
+    //        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
+    //    }
 }

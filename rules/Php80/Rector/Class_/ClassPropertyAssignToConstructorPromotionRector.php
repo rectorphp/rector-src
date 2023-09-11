@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php80\Rector\Class_;
 
+use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
@@ -20,6 +21,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
@@ -69,7 +71,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PhpDocInfoPrinter $phpDocInfoPrinter,
     ) {
     }
 
@@ -138,7 +141,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
+        $constructorPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
@@ -146,14 +149,13 @@ CODE_SAMPLE
         }
 
         foreach ($promotionCandidates as $promotionCandidate) {
-            // does property have some useful annotations?
-            $property = $promotionCandidate->getProperty();
             $param = $promotionCandidate->getParam();
 
             if ($this->shouldSkipParam($param)) {
                 continue;
             }
 
+            $property = $promotionCandidate->getProperty();
             if (! $this->makePropertyPromotionGuard->isLegal(
                 $node,
                 $classReflection,
@@ -164,14 +166,14 @@ CODE_SAMPLE
                 continue;
             }
 
+            // remove property from class
             $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
             unset($node->stmts[$propertyStmtKey]);
 
-            // remove assign
+            // remove assign in constructor
             $assignStmtPosition = $promotionCandidate->getStmtPosition();
             unset($constructClassMethod->stmts[$assignStmtPosition]);
 
-            $property = $promotionCandidate->getProperty();
             $paramName = $this->getName($param);
 
             // rename also following calls
@@ -181,7 +183,7 @@ CODE_SAMPLE
             $oldName = $this->getName($param->var);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
 
-            $paramTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($paramName);
+            $paramTagValueNode = $constructorPhpDocInfo->getParamTagValueByName($paramName);
 
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
                 $this->decorateParamWithPropertyPhpDocInfo($constructClassMethod, $property, $param, $paramName);
@@ -193,13 +195,33 @@ CODE_SAMPLE
             // property name has higher priority
             $paramName = $this->getName($property);
             $param->var = new Variable($paramName);
-
             $param->flags = $property->flags;
-            // Copy over attributes of the "old" property
+
+            // copy attributes of the old property
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
             $this->processUnionType($property, $param);
 
-            $this->phpDocTypeChanger->convertPropertyVarTagToParamTag($constructClassMethod, $property, $param);
+            $paramComments = $param->getComments();
+
+            // already has @param tag → give it priority over @var and remove @var
+            if ($paramTagValueNode instanceof ParamTagValueNode) {
+                $propertyDocInfo = $this->phpDocInfoFactory->createFromNode($property);
+
+                if ($propertyDocInfo->hasByType(VarTagValueNode::class)) {
+                    $propertyDocInfo->removeByType(VarTagValueNode::class);
+
+                    $propertyComments = $this->phpDocInfoPrinter->printToComments($propertyDocInfo);
+                    $mergedComments = array_merge($paramComments, $propertyComments);
+
+                    $mergedComments = array_filter($mergedComments, function (Comment $comment) {
+                        return $comment->getText() !== '';
+                    });
+
+                    $param->setAttribute(AttributeKey::COMMENTS, $mergedComments);
+                }
+            }
+
+            // $this->phpDocTypeChanger->convertPropertyVarTagToParamTag($constructClassMethod, $property, $param);
         }
 
         return $node;
