@@ -267,9 +267,11 @@ final class PhpDocInfo
                 $hasChanged = true;
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
+
             if (! $node instanceof $typeToRemove) {
                 return null;
             }
+
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
