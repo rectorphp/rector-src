@@ -95,7 +95,6 @@ final class PhpDocTypeChanger
         if ($currentVarTagValueNode instanceof VarTagValueNode) {
             // only change type
             $currentVarTagValueNode->type = $newPHPStanPhpDocTypeNode;
-            $phpDocInfo->markAsChanged();
         } else {
             // add completely new one
             $varTagValueNode = new VarTagValueNode($newPHPStanPhpDocTypeNode, '', '');

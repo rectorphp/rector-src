@@ -70,10 +70,6 @@ final class PhpVersionFeature
      */
     public const CLASSNAME_CONSTANT = PhpVersion::PHP_55;
 
-    /*
-    * @var int
-    */
-
     /**
      * @var int
      */

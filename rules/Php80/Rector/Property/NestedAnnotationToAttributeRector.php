@@ -14,6 +14,7 @@ use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersion;
@@ -46,7 +47,8 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
         private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector
+        private readonly UseNodesToAddCollector $useNodesToAddCollector,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -120,6 +122,9 @@ CODE_SAMPLE
         if ($attributeGroups === []) {
             return null;
         }
+
+        // 3. Reprint docblock
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         $node->attrGroups = array_merge($node->attrGroups, $attributeGroups);
         $this->completeExtraUseImports($attributeGroups);
