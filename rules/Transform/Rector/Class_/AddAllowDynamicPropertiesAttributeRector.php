@@ -151,8 +151,8 @@ CODE_SAMPLE
             return true;
         }
 
-        $className = (string) $this->getName($class);
         if ($this->transformOnNamespaces !== []) {
+            $className = (string) $this->getName($class);
             return ! $this->isExistsWithWildCards($className) && ! $this->isExistsWithClassName($className);
         }
 
