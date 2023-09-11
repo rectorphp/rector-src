@@ -48,6 +48,9 @@ final class AliasUsesResolver
             UseUse $useUse,
             string $name
         ) use (&$aliasedUses): void {
+            if (!$useUse->type === Stmt\Use_::TYPE_NORMAL) {
+                return;
+            }
             if (! $useUse->alias instanceof Identifier) {
                 return;
             }

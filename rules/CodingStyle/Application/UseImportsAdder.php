@@ -41,9 +41,10 @@ final class UseImportsAdder
         array $constantUseImportTypes,
         array $functionUseImportTypes
     ): array {
-        $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($stmts);
-        $existingConstantUseImports = $this->usedImportsResolver->resolveConstantImportsForStmts($stmts);
-        $existingFunctionUseImports = $this->usedImportsResolver->resolveFunctionImportsForStmts($stmts);
+        $usedImports = $this->usedImportsResolver->resolveForStmts($stmts);
+        $existingUseImportTypes = $usedImports->getUseImports();
+        $existingConstantUseImports = $usedImports->getConstantImports();
+        $existingFunctionUseImports = $usedImports->getFunctionImports();
 
         $useImportTypes = $this->diffFullyQualifiedObjectTypes($useImportTypes, $existingUseImportTypes);
         $constantUseImportTypes = $this->diffFullyQualifiedObjectTypes(
@@ -103,9 +104,10 @@ final class UseImportsAdder
     ): void {
         $namespaceName = $this->getNamespaceName($namespace);
 
-        $existingUseImportTypes = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
-        $existingConstantUseImportTypes = $this->usedImportsResolver->resolveConstantImportsForStmts($namespace->stmts);
-        $existingFunctionUseImportTypes = $this->usedImportsResolver->resolveFunctionImportsForStmts($namespace->stmts);
+        $existingUsedImports = $this->usedImportsResolver->resolveForStmts($namespace->stmts);
+        $existingUseImportTypes = $existingUsedImports->getUseImports();
+        $existingConstantUseImportTypes = $existingUsedImports->getConstantImports();
+        $existingFunctionUseImportTypes = $existingUsedImports->getFunctionImports();
 
         $existingUseImportTypes = $this->typeFactory->uniquateTypes($existingUseImportTypes);
 

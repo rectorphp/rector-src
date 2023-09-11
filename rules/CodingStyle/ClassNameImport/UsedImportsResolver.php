@@ -24,9 +24,8 @@ final class UsedImportsResolver
 
     /**
      * @param Stmt[] $stmts
-     * @return array<FullyQualifiedObjectType|AliasedObjectType>
      */
-    public function resolveForStmts(array $stmts): array
+    public function resolveForStmts(array $stmts): ResolvedImports
     {
         $usedImports = [];
 
@@ -40,53 +39,30 @@ final class UsedImportsResolver
             $usedImports[] = new FullyQualifiedObjectType($className);
         }
 
+        $usedConstImports = [];
+        $usedFunctionImports = [];
         $this->useImportsTraverser->traverserStmts($stmts, static function (
             UseUse $useUse,
             string $name
-        ) use (&$usedImports): void {
-            if ($useUse->alias instanceof Identifier) {
-                $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
-            } else {
-                $usedImports[] = new FullyQualifiedObjectType($name);
+        ) use (&$usedImports, &$usedFunctionImports, &$usedConstImports): void {
+            if ($useUse->type === Stmt\Use_::TYPE_NORMAL) {
+                if ($useUse->alias instanceof Identifier) {
+                    $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
+                } else {
+                    $usedImports[] = new FullyQualifiedObjectType($name);
+                }
+            }
+
+            if ($useUse->type === Stmt\Use_::TYPE_FUNCTION) {
+                $usedFunctionImports[] = new FullyQualifiedObjectType($name);
+            }
+
+            if ($useUse->type === Stmt\Use_::TYPE_CONSTANT) {
+                $usedConstImports[] = new FullyQualifiedObjectType($name);
             }
         });
 
-        return $usedImports;
+        return new ResolvedImports($usedImports, $usedFunctionImports, $usedConstImports);
     }
 
-    /**
-     * @param Stmt[] $stmts
-     * @return FullyQualifiedObjectType[]
-     */
-    public function resolveConstantImportsForStmts(array $stmts): array
-    {
-        $usedConstImports = [];
-
-        $this->useImportsTraverser->traverserStmtsForConstants($stmts, static function (
-            UseUse $useUse,
-            string $name
-        ) use (&$usedConstImports): void {
-            $usedConstImports[] = new FullyQualifiedObjectType($name);
-        });
-
-        return $usedConstImports;
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     * @return FullyQualifiedObjectType[]
-     */
-    public function resolveFunctionImportsForStmts(array $stmts): array
-    {
-        $usedFunctionImports = [];
-
-        $this->useImportsTraverser->traverserStmtsForFunctions($stmts, static function (
-            UseUse $useUse,
-            string $name
-        ) use (&$usedFunctionImports): void {
-            $usedFunctionImports[] = new FullyQualifiedObjectType($name);
-        });
-
-        return $usedFunctionImports;
-    }
 }
