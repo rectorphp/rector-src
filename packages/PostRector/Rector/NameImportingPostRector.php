@@ -15,9 +15,11 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -38,7 +40,8 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly AliasNameResolver $aliasNameResolver
+        private readonly AliasNameResolver $aliasNameResolver,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -62,11 +65,18 @@ final class NameImportingPostRector extends AbstractPostRector
             return $this->processNodeName($node, $file);
         }
 
-        if (($node instanceof Stmt || $node instanceof Param) && SimpleParameterProvider::provideBoolParameter(
-            Option::AUTO_IMPORT_DOC_BLOCK_NAMES
-        )) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
+        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
+
+        if (($node instanceof Stmt || $node instanceof Param) && $shouldImportDocBlocks) {
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+            if ($phpDocInfo instanceof PhpDocInfo) {
+                $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
+
+                if ($hasDocChanged) {
+                    // update doc block, if needed
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+                }
+            }
 
             return $node;
         }

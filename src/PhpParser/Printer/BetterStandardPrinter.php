@@ -529,7 +529,7 @@ final class BetterStandardPrinter extends Standard
                 continue;
             }
 
-            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
+            // $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
         }
     }
 
