@@ -159,28 +159,28 @@ CODE_SAMPLE
     {
         $wildcardTransformOnNamespaces = array_filter($this->transformOnNamespaces, static fn(string $transformOnNamespace): bool => str_contains($transformOnNamespace, '*'));
         foreach ($wildcardTransformOnNamespaces as $wildcardTransformOnNamespace) {
-            if (fnmatch($wildcardTransformOnNamespace, $className, FNM_NOESCAPE)) {
+            if (! fnmatch($wildcardTransformOnNamespace, $className, FNM_NOESCAPE)) {
                 continue;
             }
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private function isExistsWithClassName(string $className): bool
     {
         $transformedClassNames = array_filter($this->transformOnNamespaces, static fn(string $transformOnNamespace): bool => ! str_contains($transformOnNamespace, '*'));
         foreach ($transformedClassNames as $transformedClassName) {
-            if ($this->nodeNameResolver->isStringName($className, $transformedClassName)) {
+            if (! $this->nodeNameResolver->isStringName($className, $transformedClassName)) {
                 continue;
             }
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private function hasMagicSetMethod(Class_ $class): bool
