@@ -13,6 +13,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -31,7 +32,8 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
     ];
 
     public function __construct(
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -89,6 +91,7 @@ CODE_SAMPLE
         }
 
         $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $hasChanged = false;
 
         foreach ($node->getParams() as $param) {
             if ($param->type === null) {
@@ -121,9 +124,12 @@ CODE_SAMPLE
                 $param,
                 $paramName
             );
+
+            $hasChanged = true;
         }
 
-        if ($functionLikePhpDocInfo->hasChanged()) {
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             return $node;
         }
 

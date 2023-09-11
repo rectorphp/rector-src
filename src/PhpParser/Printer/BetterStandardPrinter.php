@@ -235,10 +235,7 @@ final class BetterStandardPrinter extends Standard
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        //        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
-
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
-
         if ($content === null) {
             return $content;
         }
@@ -514,21 +511,6 @@ final class BetterStandardPrinter extends Standard
 
         return $stmts;
     }
-
-    //    /**
-    //     * @param array<Node|null> $nodes
-    //     */
-    ////    private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
-    //    {
-    //        // move phpdoc from node to "comment" attribute
-    //        foreach ($nodes as $node) {
-    //            if (! $node instanceof Stmt && ! $node instanceof Param) {
-    //                continue;
-    //            }
-    //
-    //            // $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
-    //        }
-    //    }
 
     /**
      * @param Node[] $nodes

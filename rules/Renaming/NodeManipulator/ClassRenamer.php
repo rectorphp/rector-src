@@ -69,8 +69,9 @@ final class ClassRenamer
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        $hasPhpDocChanged = false;
         if ($phpDocInfo instanceof PhpDocInfo) {
-            $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
+            $hasPhpDocChanged = $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
         }
 
         if ($node instanceof Namespace_) {
@@ -81,9 +82,9 @@ final class ClassRenamer
             return $this->refactorClassLike($node, $oldToNewClasses, $scope);
         }
 
-        //        if ($phpDocInfo->hasChanged()) {
-        //            return $node;
-        //        }
+        if ($hasPhpDocChanged) {
+            return $node;
+        }
 
         return null;
     }
@@ -97,15 +98,15 @@ final class ClassRenamer
         array $oldToNewTypes,
         array $oldToNewClasses,
         PhpDocInfo $phpDocInfo
-    ): void {
+    ): bool {
         if (! $phpDocInfo->hasByTypes(NodeTypes::TYPE_AWARE_NODES) && ! $phpDocInfo->hasByAnnotationClasses(
             NodeTypes::TYPE_AWARE_DOCTRINE_ANNOTATION_CLASSES
         )) {
-            return;
+            return false;
         }
 
         if ($node instanceof AttributeGroup) {
-            return;
+            return false;
         }
 
         $hasChanged = $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
@@ -113,7 +114,10 @@ final class ClassRenamer
 
         if ($hasChanged) {
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+            return true;
         }
+
+        return false;
     }
 
     private function shouldSkip(string $newName, Name $name): bool
