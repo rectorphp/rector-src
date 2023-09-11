@@ -69,9 +69,12 @@ final class ClassRenamer
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        $hasPhpDocChanged = false;
         if ($phpDocInfo instanceof PhpDocInfo) {
             $hasPhpDocChanged = $this->refactorPhpDoc($node, $oldToNewTypes, $oldToNewClasses, $phpDocInfo);
+
+            if ($hasPhpDocChanged) {
+                return $node;
+            }
         }
 
         if ($node instanceof Namespace_) {
@@ -80,10 +83,6 @@ final class ClassRenamer
 
         if ($node instanceof ClassLike) {
             return $this->refactorClassLike($node, $oldToNewClasses, $scope);
-        }
-
-        if ($hasPhpDocChanged) {
-            return $node;
         }
 
         return null;

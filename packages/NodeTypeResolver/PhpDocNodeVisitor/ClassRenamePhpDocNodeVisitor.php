@@ -48,7 +48,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
         }
 
-        $this->hasChanged = true;
+        $this->hasChanged = false;
     }
 
     public function enterNode(Node $node): ?Node
