@@ -59,6 +59,10 @@ final class UseImportsTraverser
      */
     private function processGroupUse(GroupUse $groupUse, callable $callable): void
     {
+        if ($groupUse->type !== Use_::TYPE_UNKNOWN) {
+            return;
+        }
+        
         $prefixName = $groupUse->prefix->toString();
 
         foreach ($groupUse->uses as $useUse) {
