@@ -56,8 +56,8 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $currentStmt = current($file->getNewStmts());
-        if ($currentStmt instanceof FileWithoutNamespace && current($currentStmt->stmts) instanceof InlineHTML) {
+        $firstStmt = current($file->getNewStmts());
+        if ($firstStmt instanceof FileWithoutNamespace && current($firstStmt->stmts) instanceof InlineHTML) {
             return null;
         }
 
@@ -65,23 +65,27 @@ final class NameImportingPostRector extends AbstractPostRector
             return $this->processNodeName($node, $file);
         }
 
-        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
-
-        if (($node instanceof Stmt || $node instanceof Param) && $shouldImportDocBlocks) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-            if ($phpDocInfo instanceof PhpDocInfo) {
-                $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
-
-                if ($hasDocChanged) {
-                    // update doc block, if needed
-                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-                }
-            }
-
-            return $node;
+        if (! $node instanceof Stmt && ! $node instanceof Param) {
+            return null;
         }
 
-        return null;
+        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
+        if (! $shouldImportDocBlocks) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return null;
+        }
+
+        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
+        if (! $hasDocChanged) {
+            return null;
+        }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        return $node;
     }
 
     private function processNodeName(Name $name, File $file): ?Node

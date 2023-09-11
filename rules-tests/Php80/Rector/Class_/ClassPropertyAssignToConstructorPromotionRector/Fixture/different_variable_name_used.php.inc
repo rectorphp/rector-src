@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class DifferentVariableNameUsed
+final class DifferentVariableNameUsed
 {
     /**
      * @var int
@@ -24,7 +24,7 @@ class DifferentVariableNameUsed
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class DifferentVariableNameUsed
+final class DifferentVariableNameUsed
 {
     /**
      * @param int $ID
