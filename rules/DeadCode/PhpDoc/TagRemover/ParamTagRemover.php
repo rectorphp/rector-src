@@ -10,13 +10,15 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadParamTagValueNodeAnalyzer;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class ParamTagRemover
 {
     public function __construct(
-        private readonly DeadParamTagValueNodeAnalyzer $deadParamTagValueNodeAnalyzer
+        private readonly DeadParamTagValueNodeAnalyzer $deadParamTagValueNodeAnalyzer,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -27,7 +29,6 @@ final class ParamTagRemover
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (Node $docNode) use (
             $functionLike,
-            $phpDocInfo,
             &$hasChanged
         ): ?int {
             if (! $docNode instanceof PhpDocTagNode) {
@@ -52,10 +53,13 @@ final class ParamTagRemover
                 return null;
             }
 
-            $phpDocInfo->markAsChanged();
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
+
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($functionLike);
+        }
 
         return $hasChanged;
     }

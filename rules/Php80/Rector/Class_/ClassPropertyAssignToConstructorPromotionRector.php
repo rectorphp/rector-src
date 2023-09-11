@@ -139,7 +139,11 @@ CODE_SAMPLE
         }
 
         $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
-        $classReflection = null;
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         foreach ($promotionCandidates as $promotionCandidate) {
             // does property have some useful annotations?
@@ -148,14 +152,6 @@ CODE_SAMPLE
 
             if ($this->shouldSkipParam($param)) {
                 continue;
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
             }
 
             if (! $this->makePropertyPromotionGuard->isLegal(
@@ -203,7 +199,7 @@ CODE_SAMPLE
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
             $this->processUnionType($property, $param);
 
-            $this->phpDocTypeChanger->copyPropertyDocToParam($constructClassMethod, $property, $param);
+            $this->phpDocTypeChanger->convertPropertyVarTagToParamTag($constructClassMethod, $property, $param);
         }
 
         return $node;

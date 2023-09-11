@@ -177,7 +177,6 @@ final class PhpDocTypeChanger
             }
 
             $paramTagValueNode->type = $phpDocTypeNode;
-            $phpDocInfo->markAsChanged();
         } else {
             $paramTagValueNode = $this->paramPhpDocNodeFactory->create($phpDocTypeNode, $param);
             $phpDocInfo->addTagValueNode($paramTagValueNode);
@@ -211,7 +210,7 @@ final class PhpDocTypeChanger
         return in_array((string) $typeNode, self::ALLOWED_IDENTIFIER_TYPENODE_TYPES, true);
     }
 
-    public function copyPropertyDocToParam(ClassMethod $classMethod, Property $property, Param $param): void
+    public function convertPropertyVarTagToParamTag(ClassMethod $classMethod, Property $property, Param $param): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
         if (! $phpDocInfo instanceof PhpDocInfo) {
@@ -220,7 +219,7 @@ final class PhpDocTypeChanger
 
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
         if (! $varTagValueNode instanceof VarTagValueNode) {
-            $this->processKeepComments($classMethod, $property, $param);
+            $this->processKeepComments($property, $param);
             return;
         }
 
@@ -238,7 +237,6 @@ final class PhpDocTypeChanger
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
 
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $phpDocInfo);
 
@@ -246,7 +244,7 @@ final class PhpDocTypeChanger
         $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
 
         $this->changeParamType($classMethod, $phpDocInfo, $paramType, $param, $paramVarName);
-        $this->processKeepComments($classMethod, $property, $param);
+        $this->processKeepComments($property, $param);
     }
 
     /**
@@ -261,7 +259,7 @@ final class PhpDocTypeChanger
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
     }
 
-    private function processKeepComments(ClassMethod $classMethod, Property $property, Param $param): void
+    private function processKeepComments(Property $property, Param $param): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
         $varTagValueNode = $phpDocInfo->getVarTagValueNode();
@@ -269,10 +267,8 @@ final class PhpDocTypeChanger
         $toBeRemoved = ! $varTagValueNode instanceof VarTagValueNode;
         $this->commentsMerger->keepComments($param, [$property]);
 
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
-        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        $paramPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($param);
+        $varTagValueNode = $paramPhpDocInfo->getVarTagValueNode();
         if (! $toBeRemoved) {
             return;
         }
@@ -285,8 +281,7 @@ final class PhpDocTypeChanger
             return;
         }
 
-        $phpDocInfo->removeByType(VarTagValueNode::class);
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+        $paramPhpDocInfo->removeByType(VarTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
     }
 }

@@ -269,7 +269,6 @@ final class PhpDocInfo
                     return null;
                 }
 
-                $this->markAsChanged();
                 $hasChanged = true;
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
@@ -278,7 +277,6 @@ final class PhpDocInfo
                 return null;
             }
 
-            $this->markAsChanged();
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });

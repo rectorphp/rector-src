@@ -13,6 +13,7 @@ use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 
@@ -22,7 +23,8 @@ final class VarTagRemover
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -43,6 +45,7 @@ final class VarTagRemover
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
     }
 
     public function removeVarPhpTagValueNodeIfNotComment(Expression | Property | Param $node, Type $type): void
@@ -74,5 +77,6 @@ final class VarTagRemover
         }
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
     }
 }
