@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use Lines202308\PhpParser\Builder\Namespace_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
@@ -75,6 +77,10 @@ final class UseImportsTraverser
 
             if ($node instanceof GroupUse) {
                 $this->processGroupUse($node, $desiredType, $callable);
+            }
+
+            if (!$node instanceof Namespace_) {
+                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
             return null;
