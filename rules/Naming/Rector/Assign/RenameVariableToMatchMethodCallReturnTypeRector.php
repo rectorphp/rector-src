@@ -11,6 +11,8 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Matcher\VariableAndCallAssignMatcher;
@@ -40,6 +42,7 @@ final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRect
         private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
         private readonly VariableAndCallAssignMatcher $variableAndCallAssignMatcher,
         private readonly VariableRenamer $variableRenamer,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -128,7 +131,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->renameVariable($variableAndCallAssign, $expectedName);
+            $this->renameVariable($variableAndCallAssign, $expectedName, $stmt);
 
             return $node;
         }
@@ -159,10 +162,22 @@ CODE_SAMPLE
         );
     }
 
-    private function renameVariable(VariableAndCallAssign $variableAndCallAssign, string $expectedName): void
-    {
-        $assign = $variableAndCallAssign->getAssign();
-        $assignPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($assign);
+    private function renameVariable(
+        VariableAndCallAssign $variableAndCallAssign,
+        string $expectedName,
+        Expression $expression
+    ): void {
+        $this->variableRenamer->renameVariableInFunctionLike(
+            $variableAndCallAssign->getFunctionLike(),
+            $variableAndCallAssign->getVariableName(),
+            $expectedName,
+            $variableAndCallAssign->getAssign()
+        );
+
+        $assignPhpDocInfo = $this->phpDocInfoFactory->createFromNode($expression);
+        if (! $assignPhpDocInfo instanceof PhpDocInfo) {
+            return;
+        }
 
         $this->varTagValueNodeRenamer->renameAssignVarTagVariableName(
             $assignPhpDocInfo,
@@ -170,11 +185,6 @@ CODE_SAMPLE
             $expectedName
         );
 
-        $this->variableRenamer->renameVariableInFunctionLike(
-            $variableAndCallAssign->getFunctionLike(),
-            $variableAndCallAssign->getVariableName(),
-            $expectedName,
-            $variableAndCallAssign->getAssign()
-        );
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($expression);
     }
 }

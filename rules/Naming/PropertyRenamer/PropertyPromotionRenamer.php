@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -34,7 +35,8 @@ final class PropertyPromotionRenamer
         private readonly ParamRenamer $paramRenamer,
         private readonly PropertyFetchRenamer $propertyFetchRenamer,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly VariableRenamer $variableRenamer
+        private readonly VariableRenamer $variableRenamer,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -131,6 +133,7 @@ final class PropertyPromotionRenamer
         }
 
         $this->paramRenamer->rename($paramRename);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
     }
 
     /**
