@@ -129,7 +129,6 @@ final class PhpDocTypeChanger
         if ($currentReturnTagValueNode instanceof ReturnTagValueNode) {
             // only change type
             $currentReturnTagValueNode->type = $newPHPStanPhpDocTypeNode;
-            $phpDocInfo->markAsChanged();
         } else {
             // add completely new one
             $returnTagValueNode = new ReturnTagValueNode($newPHPStanPhpDocTypeNode, '');
