@@ -142,12 +142,16 @@ CODE_SAMPLE
         if ($this->transformOnNamespaces !== []) {
             $className = (string) $this->nodeNameResolver->getName($class);
             foreach ($this->transformOnNamespaces as $transformOnNamespace) {
-                if ($this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                if (str_contains($transformOnNamespace, '*')) {
+                    if (! fnmatch($transformOnNamespace, $className, FNM_NOESCAPE)) {
+                        return true;
+                    }
+
                     continue;
                 }
 
-                if (! fnmatch($transformOnNamespace, $className, FNM_NOESCAPE)) {
-                    return true;
+                if ($this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
+                    continue;
                 }
             }
         }
