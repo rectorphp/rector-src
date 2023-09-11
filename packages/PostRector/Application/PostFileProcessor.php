@@ -6,7 +6,6 @@ namespace Rector\PostRector\Application;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
@@ -27,7 +26,6 @@ final class PostFileProcessor
     public function __construct(
         private readonly Skipper $skipper,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly CurrentRectorProvider $currentRectorProvider,
         // set order here
         UseAddingPostRector $useAddingPostRector,
         NameImportingPostRector $nameImportingPostRector,
@@ -56,8 +54,6 @@ final class PostFileProcessor
             if ($this->shouldSkipPostRector($postRector)) {
                 continue;
             }
-
-            $this->currentRectorProvider->changeCurrentRector($postRector);
 
             $nodeTraverser = new NodeTraverser();
             $nodeTraverser->addVisitor($postRector);

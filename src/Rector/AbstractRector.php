@@ -17,7 +17,6 @@ use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\Logging\CurrentRectorProvider;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
@@ -71,8 +70,6 @@ CODE_SAMPLE;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
-    private CurrentRectorProvider $currentRectorProvider;
-
     private Skipper $skipper;
 
     private CurrentFileProvider $currentFileProvider;
@@ -93,7 +90,6 @@ CODE_SAMPLE;
         NodeFactory $nodeFactory,
         PhpDocInfoFactory $phpDocInfoFactory,
         StaticTypeMapper $staticTypeMapper,
-        CurrentRectorProvider $currentRectorProvider,
         Skipper $skipper,
         ValueResolver $valueResolver,
         BetterNodeFinder $betterNodeFinder,
@@ -108,7 +104,6 @@ CODE_SAMPLE;
         $this->nodeFactory = $nodeFactory;
         $this->phpDocInfoFactory = $phpDocInfoFactory;
         $this->staticTypeMapper = $staticTypeMapper;
-        $this->currentRectorProvider = $currentRectorProvider;
         $this->skipper = $skipper;
         $this->valueResolver = $valueResolver;
         $this->betterNodeFinder = $betterNodeFinder;
@@ -147,7 +142,6 @@ CODE_SAMPLE;
             return null;
         }
 
-        $this->currentRectorProvider->changeCurrentRector($this);
         $this->changedNodeScopeRefresher->reIndexNodeAttributes($node);
 
         // ensure origNode pulled before refactor to avoid changed during refactor, ref https://3v4l.org/YMEGN

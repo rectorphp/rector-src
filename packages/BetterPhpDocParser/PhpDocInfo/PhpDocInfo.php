@@ -386,11 +386,6 @@ final class PhpDocInfo
     public function markAsChanged(): void
     {
         $this->hasChanged = true;
-
-        $node = $this->currentNodeProvider->getNode();
-        if ($node instanceof \PhpParser\Node) {
-            $this->rectorChangeCollector->notifyNodeFileInfo($node);
-        }
     }
 
     public function hasChanged(): bool
