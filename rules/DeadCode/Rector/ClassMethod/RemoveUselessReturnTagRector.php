@@ -6,8 +6,10 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
-use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
+use Rector\DeadCode\PhpDoc\DeadReturnTagValueNodeAnalyzer;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -17,7 +19,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUselessReturnTagRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReturnTagRemover $returnTagRemover
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly DeadReturnTagValueNodeAnalyzer $deadReturnTagValueNodeAnalyzer,
     ) {
     }
 
@@ -69,11 +72,24 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $hasChanged = $this->returnTagRemover->removeReturnTagIfUseless($phpDocInfo, $node);
-        if (! $hasChanged) {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if (! $phpDocInfo) {
             return null;
         }
+
+        // remove existing type
+        $returnTagValueNode = $phpDocInfo->getReturnTagValue();
+        if (! $returnTagValueNode instanceof ReturnTagValueNode) {
+            return null;
+        }
+
+        $isReturnTagValueDead = $this->deadReturnTagValueNodeAnalyzer->isDead($returnTagValueNode, $node);
+        if (! $isReturnTagValueDead) {
+            return null;
+        }
+
+        $phpDocInfo->removeByType(ReturnTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }
