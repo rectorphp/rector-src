@@ -60,31 +60,24 @@ final class UseImportsTraverser
             $callable,
             $desiredType
         ) {
-            if ($node instanceof Use_) {
-                // only import uses
-                if ($node->type !== $desiredType) {
-                    return null;
-                }
+            if ($node instanceof Namespace_ || $node instanceof FileWithoutNamespace) {
+                // traverse into namespaces
+                return null;
+            }
 
+            if ($node instanceof Use_ && $node->type === $desiredType) {
                 foreach ($node->uses as $useUse) {
                     $name = $this->nodeNameResolver->getName($useUse);
                     if ($name === null) {
                         continue;
                     }
-
                     $callable($useUse, $name);
                 }
-            }
-
-            if ($node instanceof GroupUse) {
+            } elseif ($node instanceof GroupUse) {
                 $this->processGroupUse($node, $desiredType, $callable);
             }
 
-            if (!$node instanceof Namespace_ && !$node instanceof FileWithoutNamespace) {
-                return NodeTraverser::DONT_TRAVERSE_CHILDREN;
-            }
-
-            return null;
+            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         });
     }
 
