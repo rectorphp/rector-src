@@ -53,9 +53,9 @@ final class PropertyPromotionDocBlockMerger
 
                 $param->setAttribute(AttributeKey::COMMENTS, $mergedComments);
             }
-        } else {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
         }
+        
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($param);
     }
 
     public function decorateParamWithPropertyPhpDocInfo(
