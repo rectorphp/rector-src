@@ -59,7 +59,7 @@ final class UseImportsTraverser
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             $callable,
             $desiredType
-        ) {
+        ): ?int {
             if ($node instanceof Namespace_ || $node instanceof FileWithoutNamespace) {
                 // traverse into namespaces
                 return null;
@@ -71,6 +71,7 @@ final class UseImportsTraverser
                     if ($name === null) {
                         continue;
                     }
+
                     $callable($useUse, $name);
                 }
             } elseif ($node instanceof GroupUse) {
