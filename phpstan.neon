@@ -121,6 +121,7 @@ parameters:
             paths:
                 - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/Php70/EregToPcreTransformer.php
+                - packages/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
 
