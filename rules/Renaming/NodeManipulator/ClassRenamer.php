@@ -109,7 +109,7 @@ final class ClassRenamer
         }
 
         $hasChanged = $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
-        $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses);
+        $hasChanged = $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses, $hasChanged);
 
         if ($hasChanged) {
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);

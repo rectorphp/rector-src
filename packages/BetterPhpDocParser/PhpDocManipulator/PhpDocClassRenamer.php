@@ -27,10 +27,8 @@ final class PhpDocClassRenamer
      *
      * @param string[] $oldToNewClasses
      */
-    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo, array $oldToNewClasses): bool
+    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo, array $oldToNewClasses, bool &$hasChanged): bool
     {
-        $hasChanged = false;
-
         $this->processAssertChoiceTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processDoctrineRelationTagValueNode($node, $oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processSerializerTypeTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
