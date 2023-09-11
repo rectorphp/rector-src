@@ -254,11 +254,14 @@ final class PhpDocInfo
      * @template T of \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<T> $typeToRemove
      */
-    public function removeByType(string $typeToRemove): void
+    public function removeByType(string $typeToRemove): bool
     {
+        $hasChanged = false;
+
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', function (Node $node) use (
-            $typeToRemove
+            $typeToRemove,
+            &$hasChanged,
         ): ?int {
             if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
                 // keep special annotation for tools
@@ -271,6 +274,7 @@ final class PhpDocInfo
                 }
 
                 $this->markAsChanged();
+                $hasChanged = true;
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
@@ -279,8 +283,11 @@ final class PhpDocInfo
             }
 
             $this->markAsChanged();
+            $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
+
+        return $hasChanged;
     }
 
     public function addTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): void
