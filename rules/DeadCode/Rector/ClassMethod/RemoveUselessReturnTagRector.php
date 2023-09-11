@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -17,7 +18,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUselessReturnTagRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReturnTagRemover $returnTagRemover
+        private readonly ReturnTagRemover $returnTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -74,6 +76,8 @@ CODE_SAMPLE
         if (! $hasChanged) {
             return null;
         }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return $node;
     }

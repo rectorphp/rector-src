@@ -17,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUselessVarTagRector extends AbstractRector
 {
     public function __construct(
-        private readonly VarTagRemover $varTagRemover
+        private readonly VarTagRemover $varTagRemover,
     ) {
     }
 
@@ -60,12 +60,12 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
 
-        if ($phpDocInfo->hasChanged()) {
-            return $node;
+        $hasChanged = $this->varTagRemover->removeVarTagIfUseless($phpDocInfo, $node);
+        if (! $hasChanged) {
+            return null;
         }
 
-        return null;
+        return $node;
     }
 }

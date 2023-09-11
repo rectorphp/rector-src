@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\Fixture;
 
-class Comment
+final class WithComment
 {
     public function accept()
     {
@@ -23,7 +23,7 @@ class Comment
 
 namespace Rector\Tests\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector\Fixture;
 
-class Comment
+final class WithComment
 {
     public function accept()
     {
