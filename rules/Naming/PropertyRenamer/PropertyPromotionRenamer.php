@@ -111,7 +111,7 @@ final class PropertyPromotionRenamer
         $this->variableRenamer->renameVariableInFunctionLike($classMethod, $paramVarName, $desiredPropertyName);
     }
 
-    private function renameParamDoc(
+    public function renameParamDoc(
         PhpDocInfo $phpDocInfo,
         ClassMethod $classMethod,
         Param $param,
