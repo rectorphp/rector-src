@@ -157,7 +157,7 @@ CODE_SAMPLE
 
     private function isExistsWithWildCards(string $className): bool
     {
-        $wildcardTransformOnNamespaces = array_filter($this->transformOnNamespaces, fn (string $transformOnNamespace): bool => str_contains($transformOnNamespace, '*'));
+        $wildcardTransformOnNamespaces = array_filter($this->transformOnNamespaces, static fn(string $transformOnNamespace): bool => str_contains($transformOnNamespace, '*'));
         foreach ($wildcardTransformOnNamespaces as $wildcardTransformOnNamespace) {
             if (fnmatch($wildcardTransformOnNamespace, $className, FNM_NOESCAPE)) {
                 continue;
@@ -171,7 +171,7 @@ CODE_SAMPLE
 
     private function isExistsWithClassName(string $className): bool
     {
-        $transformedClassNames = array_filter($this->transformOnNamespaces, fn (string $transformOnNamespace): bool => ! str_contains($transformOnNamespace, '*'));
+        $transformedClassNames = array_filter($this->transformOnNamespaces, static fn(string $transformOnNamespace): bool => ! str_contains($transformOnNamespace, '*'));
         foreach ($transformedClassNames as $transformedClassName) {
             if ($this->nodeNameResolver->isStringName($className, $transformedClassName)) {
                 continue;
