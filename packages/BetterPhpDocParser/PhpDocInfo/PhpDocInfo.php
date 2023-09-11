@@ -31,8 +31,6 @@ use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
-use Rector\ChangesReporting\Collector\RectorChangeCollector;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -64,8 +62,6 @@ final class PhpDocInfo
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly \PhpParser\Node $node,
         private readonly AnnotationNaming $annotationNaming,
-        private readonly CurrentNodeProvider $currentNodeProvider,
-        private readonly RectorChangeCollector $rectorChangeCollector,
         private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
     ) {
         $this->originalPhpDocNode = clone $phpDocNode;
@@ -386,11 +382,6 @@ final class PhpDocInfo
     public function markAsChanged(): void
     {
         $this->hasChanged = true;
-
-        $node = $this->currentNodeProvider->getNode();
-        if ($node instanceof \PhpParser\Node) {
-            $this->rectorChangeCollector->notifyNodeFileInfo($node);
-        }
     }
 
     public function hasChanged(): bool
