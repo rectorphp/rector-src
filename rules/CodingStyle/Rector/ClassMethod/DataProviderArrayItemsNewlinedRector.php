@@ -97,7 +97,7 @@ CODE_SAMPLE
         }
 
         // skip test methods
-        if ($this->isName($node, 'test*')) {
+        if (str_starts_with($node->name->toString(), 'test')) {
             return null;
         }
 
