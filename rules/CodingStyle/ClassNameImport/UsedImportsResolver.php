@@ -25,7 +25,7 @@ final class UsedImportsResolver
     /**
      * @param Stmt[] $stmts
      */
-    public function resolveForStmts(array $stmts): ResolvedImports
+    public function resolveForStmts(array $stmts): UsedImports
     {
         $usedImports = [];
 
@@ -62,7 +62,7 @@ final class UsedImportsResolver
             }
         });
 
-        return new ResolvedImports($usedImports, $usedFunctionImports, $usedConstImports);
+        return new UsedImports($usedImports, $usedFunctionImports, $usedConstImports);
     }
 
 }

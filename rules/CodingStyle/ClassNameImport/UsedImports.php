@@ -7,7 +7,7 @@ namespace Rector\CodingStyle\ClassNameImport;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class ResolvedImports {
+final class UsedImports {
     /**
      * @var array<FullyQualifiedObjectType|AliasedObjectType>
      */
