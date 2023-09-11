@@ -177,7 +177,6 @@ final class PhpDocTypeChanger
             }
 
             $paramTagValueNode->type = $phpDocTypeNode;
-            $phpDocInfo->markAsChanged();
         } else {
             $paramTagValueNode = $this->paramPhpDocNodeFactory->create($phpDocTypeNode, $param);
             $phpDocInfo->addTagValueNode($paramTagValueNode);
