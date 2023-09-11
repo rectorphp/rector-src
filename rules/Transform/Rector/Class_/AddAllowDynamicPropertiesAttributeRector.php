@@ -139,21 +139,6 @@ CODE_SAMPLE
 
     private function shouldSkip(Class_ $class): bool
     {
-        $className = (string) $this->nodeNameResolver->getName($class);
-        foreach ($this->transformOnNamespaces as $transformOnNamespace) {
-            if (str_contains($transformOnNamespace, '*')) {
-                if (! fnmatch($transformOnNamespace, $className, FNM_NOESCAPE)) {
-                    return true;
-                }
-
-                continue;
-            }
-
-            if ($this->nodeNameResolver->isStringName($className, $transformOnNamespace)) {
-                continue;
-            }
-        }
-
         if ($this->isDescendantOfStdclass($class)) {
             return true;
         }
@@ -162,7 +147,40 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->hasMagicSetMethod($class);
+        if ($this->hasMagicSetMethod($class)) {
+            return true;
+        }
+
+        $className = $this->getName($class);
+        return ! $this->isExistsWithWildCards($className) && ! $this->isExistsWithClassName($className);
+    }
+
+    private function isExistsWithWildCards(string $className): bool
+    {
+        $wildcardTransformOnNamespaces = array_filter($this->transformOnNamespaces, fn (string $transformOnNamespace): bool => str_contains($transformOnNamespace, '*'));
+        foreach ($wildcardTransformOnNamespaces as $wildcardTransformOnNamespace) {
+            if (fnmatch($wildcardTransformOnNamespace, $className, FNM_NOESCAPE)) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isExistsWithClassName(string $className): bool
+    {
+        $transformedClassNames = array_filter($this->transformOnNamespaces, fn (string $transformOnNamespace): bool => ! str_contains($transformOnNamespace, '*'));
+        foreach ($transformedClassNames as $transformedClassName) {
+            if ($this->nodeNameResolver->isStringName($className, $transformedClassName)) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private function hasMagicSetMethod(Class_ $class): bool
