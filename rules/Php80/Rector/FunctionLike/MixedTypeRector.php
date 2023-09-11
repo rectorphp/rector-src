@@ -14,6 +14,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -29,12 +30,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class MixedTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
-    private bool $hasChanged = false;
-
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly ParamTagRemover $paramTagRemover
+        private readonly ParamTagRemover $paramTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -86,17 +86,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->hasChanged = false;
-
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
-        $this->refactorParamTypes($node, $phpDocInfo);
-        $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
-        if ($this->hasChanged) {
-            return $node;
-        }
+        $hasChanged = $this->refactorParamTypes($node, $phpDocInfo);
 
-        if ($hasChanged) {
+        $hasRemoved = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        if ($hasChanged || $hasRemoved) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
             return $node;
         }
 
@@ -126,7 +122,9 @@ CODE_SAMPLE
     private function refactorParamTypes(
         ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
         PhpDocInfo $phpDocInfo
-    ): void {
+    ): bool {
+        $hasChanged = false;
+
         foreach ($functionLike->params as $param) {
             if ($param->type instanceof Node) {
                 continue;
@@ -145,11 +143,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->hasChanged = true;
             $param->type = new Identifier('mixed');
             if ($param->flags !== 0) {
                 $param->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
+
+            $hasChanged = true;
         }
+
+        return $hasChanged;
     }
 }

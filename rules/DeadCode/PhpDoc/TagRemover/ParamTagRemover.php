@@ -27,7 +27,6 @@ final class ParamTagRemover
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($phpDocInfo->getPhpDocNode(), '', function (Node $docNode) use (
             $functionLike,
-            $phpDocInfo,
             &$hasChanged
         ): ?int {
             if (! $docNode instanceof PhpDocTagNode) {
@@ -52,7 +51,6 @@ final class ParamTagRemover
                 return null;
             }
 
-            $phpDocInfo->markAsChanged();
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });

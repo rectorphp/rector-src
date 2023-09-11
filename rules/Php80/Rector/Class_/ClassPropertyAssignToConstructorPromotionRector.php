@@ -69,7 +69,7 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 

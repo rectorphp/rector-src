@@ -371,6 +371,7 @@ final class PhpDocInfo
     }
 
     /**
+     * @deprecated return changed node directly instead
      * @internal
      * Should be handled by attributes of phpdoc node - if stard_and_end is missing in one of nodes, it has been changed
      * Similar to missing original node in php-aprser
