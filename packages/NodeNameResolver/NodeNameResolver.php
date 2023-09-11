@@ -21,14 +21,14 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class NodeNameResolver
 {
     /**
-     * @var array<string, NodeNameResolverInterface|null>
-     */
-    private array $nodeNameResolversByClass = [];
-
-    /**
      * Used to check if a string might contain a regex or fnmatch pattern
      */
     private const REGEX_WILDCARD_CHARS = ['*', '#', '~', '/'];
+
+    /**
+     * @var array<string, NodeNameResolverInterface|null>
+     */
+    private array $nodeNameResolversByClass = [];
 
     /**
      * @param NodeNameResolverInterface[] $nodeNameResolvers
@@ -190,9 +190,11 @@ final class NodeNameResolver
             return true;
         }
 
-        foreach(self::REGEX_WILDCARD_CHARS as $char) {
+        foreach (self::REGEX_WILDCARD_CHARS as $char) {
             if (str_contains($desiredName, $char)) {
-                throw new ShouldNotHappenException('Matching of regular expressions is no longer supported. Use $this->getName() and compare with e.g. str_ends_with() or str_starts_with() instead.');
+                throw new ShouldNotHappenException(
+                    'Matching of regular expressions is no longer supported. Use $this->getName() and compare with e.g. str_ends_with() or str_starts_with() instead.'
+                );
             }
         }
 

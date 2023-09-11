@@ -11,6 +11,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->ruleWithConfiguration(AddAllowDynamicPropertiesAttributeRector::class, [
         '*\Fixture\Process\*',
-        'Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\DefinedClass\AddAllowDynamicProperties'
+        'Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\DefinedClass\AddAllowDynamicProperties',
     ]);
 };

@@ -10,6 +10,9 @@ use Rector\Core\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @see \Rector\Core\Tests\Configuration\ConfigurationFactoryTest
+ */
 final class ConfigurationFactory
 {
     public function __construct(
