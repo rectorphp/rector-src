@@ -152,7 +152,11 @@ CODE_SAMPLE
         }
 
         $className = $this->getName($class);
-        return ! $this->isExistsWithWildCards($className) && ! $this->isExistsWithClassName($className);
+        if ($this->transformOnNamespaces !== []) {
+            return ! $this->isExistsWithWildCards($className) && ! $this->isExistsWithClassName($className);
+        }
+
+        return false;
     }
 
     private function isExistsWithWildCards(string $className): bool
