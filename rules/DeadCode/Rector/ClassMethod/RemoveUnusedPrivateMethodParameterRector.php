@@ -220,7 +220,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $hasChanged = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
+            $hasTagRemoved = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
+            if ($hasTagRemoved) {
+                $hasChanged = true;
+            }
         }
 
         if ($hasChanged) {
