@@ -25,7 +25,7 @@ final class UseImportsTraverser
 
     /**
      * @param Stmt[] $stmts
-     * @param callable(int $useType, UseUse $useUse, string $name): void $callable
+     * @param callable(Use_::TYPE_* $useType, UseUse $useUse, string $name): void $callable
      */
     public function traverserStmts(array $stmts, callable $callable): void
     {
@@ -55,7 +55,7 @@ final class UseImportsTraverser
     }
 
     /**
-     * @param callable(int $useType, UseUse $useUse, string $name): void $callable
+     * @param callable(Use_::TYPE_* $useType, UseUse $useUse, string $name): void $callable
      */
     private function processGroupUse(GroupUse $groupUse, callable $callable): void
     {
