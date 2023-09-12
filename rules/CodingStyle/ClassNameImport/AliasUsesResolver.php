@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
@@ -44,10 +45,16 @@ final class AliasUsesResolver
     {
         $aliasedUses = [];
 
+        /** @param Use_::TYPE_* $useType */
         $this->useImportsTraverser->traverserStmts($stmts, static function (
+            int $useType,
             UseUse $useUse,
             string $name
         ) use (&$aliasedUses): void {
+            if ($useType !== Use_::TYPE_NORMAL) {
+                return;
+            }
+
             if (! $useUse->alias instanceof Identifier) {
                 return;
             }

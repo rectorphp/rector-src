@@ -580,3 +580,8 @@ parameters:
         - '#Call to deprecated method markAsChanged\(\) of class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo#'
         - '#Method "(importNames|renamePhpDocType)\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Call to an undefined method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:markAsChanged\(\)#'
+
+        # ignore until PHPParser returns more precise types
+        -
+            message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
+            path: rules/CodingStyle/ClassNameImport/UseImportsTraverser.php
