@@ -26,7 +26,7 @@ final class Skipper
      */
     public function __construct(
         private readonly RectifiedAnalyzer $rectifiedAnalyzer,
-        private readonly iterable $skipVoters = [],
+        private readonly array $skipVoters,
     ) {
         Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }
