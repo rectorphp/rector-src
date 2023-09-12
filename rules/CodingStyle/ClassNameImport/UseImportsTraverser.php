@@ -25,7 +25,7 @@ final class UseImportsTraverser
 
     /**
      * @param Stmt[] $stmts
-     * @param callable(UseUse $useUse, string $name): void $callable
+     * @param callable(int $useType, UseUse $useUse, string $name): void $callable
      */
     public function traverserStmts(array $stmts, callable $callable): void
     {
@@ -37,14 +37,14 @@ final class UseImportsTraverser
                 return null;
             }
 
-            if ($node instanceof Use_ && $node->type !== Use_::TYPE_UNKNOWN) {
+            if ($node instanceof Use_) {
                 foreach ($node->uses as $useUse) {
                     $name = $this->nodeNameResolver->getName($useUse);
                     if ($name === null) {
                         continue;
                     }
 
-                    $callable($useUse, $name);
+                    $callable($node->type, $useUse, $name);
                 }
             } elseif ($node instanceof GroupUse) {
                 $this->processGroupUse($node, $callable);
@@ -55,7 +55,7 @@ final class UseImportsTraverser
     }
 
     /**
-     * @param callable(UseUse $useUse, string $name): void $callable
+     * @param callable(int $useType, UseUse $useUse, string $name): void $callable
      */
     private function processGroupUse(GroupUse $groupUse, callable $callable): void
     {
@@ -67,7 +67,7 @@ final class UseImportsTraverser
 
         foreach ($groupUse->uses as $useUse) {
             $name = $prefixName . '\\' . $this->nodeNameResolver->getName($useUse);
-            $callable($useUse, $name);
+            $callable($useUse->type, $useUse, $name);
         }
     }
 }

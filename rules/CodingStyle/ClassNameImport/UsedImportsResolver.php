@@ -42,23 +42,24 @@ final class UsedImportsResolver
         $usedConstImports = [];
         $usedFunctionImports = [];
         $this->useImportsTraverser->traverserStmts($stmts, static function (
+            int $useType,
             UseUse $useUse,
             string $name
         ) use (&$usedImports, &$usedFunctionImports, &$usedConstImports): void {
-            if ($useUse->type === Stmt\Use_::TYPE_FUNCTION) {
+            if ($useType === Stmt\Use_::TYPE_NORMAL) {
+                if ($useUse->alias instanceof Identifier) {
+                    $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
+                } else {
+                    $usedImports[] = new FullyQualifiedObjectType($name);
+                }
+            }
+
+            if ($useType === Stmt\Use_::TYPE_FUNCTION) {
                 $usedFunctionImports[] = new FullyQualifiedObjectType($name);
-                return;
             }
 
-            if ($useUse->type === Stmt\Use_::TYPE_CONSTANT) {
+            if ($useType === Stmt\Use_::TYPE_CONSTANT) {
                 $usedConstImports[] = new FullyQualifiedObjectType($name);
-                return;
-            }
-
-            if ($useUse->alias instanceof Identifier) {
-                $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
-            } else {
-                $usedImports[] = new FullyQualifiedObjectType($name);
             }
         });
 
