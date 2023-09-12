@@ -12,7 +12,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeCollector\UnusedParameterResolver;
 use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
@@ -28,7 +27,6 @@ final class RemoveUnusedPrivateMethodParameterRector extends AbstractRector
         private readonly VariadicFunctionLikeDetector $variadicFunctionLikeDetector,
         private readonly UnusedParameterResolver $unusedParameterResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
-        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -203,7 +201,6 @@ CODE_SAMPLE
     private function clearPhpDocInfo(ClassMethod $classMethod, array $unusedParameters): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-        $hasChanged = false;
 
         foreach ($unusedParameters as $unusedParameter) {
             $parameterName = $this->getName($unusedParameter->var);
@@ -220,11 +217,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $hasChanged = $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
-        }
-
-        if ($hasChanged) {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+            $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
         }
     }
 }

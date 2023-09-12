@@ -8,10 +8,15 @@ use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
 final class PhpDocTagRemover
 {
+    public function __construct(private readonly DocBlockUpdater $docBlockUpdater)
+    {
+    }
+
     public function removeByName(PhpDocInfo $phpDocInfo, string $name): bool
     {
         $hasChanged = false;
@@ -33,6 +38,10 @@ final class PhpDocTagRemover
                 unset($phpDocNode->children[$key]);
                 $hasChanged = true;
             }
+        }
+
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($phpDocInfo->getNode());
         }
 
         return $hasChanged;
@@ -60,6 +69,10 @@ final class PhpDocTagRemover
             $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
+
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($phpDocInfo->getNode());
+        }
 
         return $hasChanged;
     }
