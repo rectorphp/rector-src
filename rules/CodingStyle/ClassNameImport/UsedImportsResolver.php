@@ -43,6 +43,7 @@ final class UsedImportsResolver
 
         $usedConstImports = [];
         $usedFunctionImports = [];
+        /** @param Use_::TYPE_* $useType */
         $this->useImportsTraverser->traverserStmts($stmts, static function (
             int $useType,
             UseUse $useUse,
