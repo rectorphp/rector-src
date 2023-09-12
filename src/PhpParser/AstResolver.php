@@ -329,10 +329,6 @@ final class AstResolver
             throw $throwable;
         }
 
-        if ($stmts === []) {
-            return $this->parsedFileNodes[$fileName] = [];
-        }
-
         return $this->parsedFileNodes[$fileName] = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile(
             $fileName,
             $stmts
