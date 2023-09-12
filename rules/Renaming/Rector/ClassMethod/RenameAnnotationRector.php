@@ -10,7 +10,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
@@ -31,8 +30,7 @@ final class RenameAnnotationRector extends AbstractRector implements Configurabl
     private array $renameAnnotations = [];
 
     public function __construct(
-        private readonly DocBlockTagReplacer $docBlockTagReplacer,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly DocBlockTagReplacer $docBlockTagReplacer
     ) {
     }
 
@@ -119,7 +117,6 @@ CODE_SAMPLE
                 );
 
                 if ($hasDocBlockChanged) {
-                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
                     $hasChanged = true;
                 }
             }
@@ -160,7 +157,6 @@ CODE_SAMPLE
         }
 
         if ($hasChanged) {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($expression);
             return $expression;
         }
 

@@ -8,11 +8,13 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 
 final class DocBlockTagReplacer
 {
     public function __construct(
-        private readonly AnnotationNaming $annotationNaming
+        private readonly AnnotationNaming $annotationNaming,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -36,6 +38,10 @@ final class DocBlockTagReplacer
             unset($phpDocNode->children[$key]);
             $phpDocNode->children[] = new PhpDocTagNode($newTag, new GenericTagValueNode(''));
             $hasChanged = true;
+        }
+
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($phpDocInfo->getNode());
         }
 
         return $hasChanged;
