@@ -9,28 +9,12 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UsedImports {
     /**
-     * @var array<FullyQualifiedObjectType|AliasedObjectType>
-     */
-    private array $useImports;
-    /**
-     * @var FullyQualifiedObjectType[]
-     */
-    private array $functionImports;
-    /**
-     * @var FullyQualifiedObjectType[]
-     */
-    private array $constantImports;
-
-    /**
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImports
      * @param FullyQualifiedObjectType[] $functionImports
      * @param FullyQualifiedObjectType[] $constantImports
      */
-    public function __construct(array $useImports, array $functionImports, array $constantImports)
+    public function __construct(private readonly array $useImports, private readonly array $functionImports, private readonly array $constantImports)
     {
-        $this->useImports = $useImports;
-        $this->functionImports = $functionImports;
-        $this->constantImports = $constantImports;
     }
 
     /**

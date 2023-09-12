@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\ClassNameImport;
 
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -47,7 +48,7 @@ final class UsedImportsResolver
             UseUse $useUse,
             string $name
         ) use (&$usedImports, &$usedFunctionImports, &$usedConstImports): void {
-            if ($useType === Stmt\Use_::TYPE_NORMAL) {
+            if ($useType === Use_::TYPE_NORMAL) {
                 if ($useUse->alias instanceof Identifier) {
                     $usedImports[] = new AliasedObjectType($useUse->alias->toString(), $name);
                 } else {
@@ -55,11 +56,11 @@ final class UsedImportsResolver
                 }
             }
 
-            if ($useType === Stmt\Use_::TYPE_FUNCTION) {
+            if ($useType === Use_::TYPE_FUNCTION) {
                 $usedFunctionImports[] = new FullyQualifiedObjectType($name);
             }
 
-            if ($useType === Stmt\Use_::TYPE_CONSTANT) {
+            if ($useType === Use_::TYPE_CONSTANT) {
                 $usedConstImports[] = new FullyQualifiedObjectType($name);
             }
         });
