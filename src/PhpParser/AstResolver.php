@@ -319,7 +319,8 @@ final class AstResolver
              * phpstan.phar contains jetbrains/phpstorm-stubs which the code is not downgraded
              * that if read from lower php < 8.1 may cause crash
              *
-             * @see https://github.com/rectorphp/rector/issues/8193
+             * @see https://github.com/rectorphp/rector/issues/8193 on php 8.0
+             * @see https://github.com/rectorphp/rector/issues/8145 on php 7.4
              */
             if (str_contains($fileName, 'phpstan.phar')) {
                 return [];
