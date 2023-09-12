@@ -57,8 +57,9 @@ final class RenameFunctionRector extends AbstractRector implements ConfigurableR
             return null;
         }
 
+        $nodeName = $this->getName($node);
         foreach ($this->oldFunctionToNewFunction as $oldFunction => $newFunction) {
-            if (! $this->isName($node, $oldFunction)) {
+            if (! $this->nodeNameResolver->isStringName($nodeName, $oldFunction)) {
                 continue;
             }
 
