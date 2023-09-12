@@ -13,11 +13,13 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 
 final class PhpDocClassRenamer
 {
     public function __construct(
-        private readonly ClassAnnotationMatcher $classAnnotationMatcher
+        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -32,6 +34,10 @@ final class PhpDocClassRenamer
         $this->processAssertChoiceTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processDoctrineRelationTagValueNode($node, $oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processSerializerTypeTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
+
+        if ($hasChanged) {
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($phpDocInfo->getNode());
+        }
 
         return $hasChanged;
     }

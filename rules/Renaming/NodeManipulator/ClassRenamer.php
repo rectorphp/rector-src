@@ -21,7 +21,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocClassRenamer;
 use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\CodingStyle\Naming\ClassNaming;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\FileHasher;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -53,7 +52,6 @@ final class ClassRenamer
         private readonly DocBlockClassRenamer $docBlockClassRenamer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FileHasher $fileHasher,
-        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -111,12 +109,7 @@ final class ClassRenamer
         $hasChanged = $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
         $hasChanged = $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses, $hasChanged);
 
-        if ($hasChanged) {
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-            return true;
-        }
-
-        return false;
+        return $hasChanged;
     }
 
     private function shouldSkip(string $newName, Name $name): bool
