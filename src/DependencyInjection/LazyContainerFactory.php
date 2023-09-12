@@ -154,7 +154,10 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\ThisTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\TypeWithClassNameTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
+use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\Skipper\SkipVoter\ClassSkipVoter;
+use Rector\Skipper\SkipVoter\PathSkipVoter;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
@@ -359,6 +362,11 @@ final class LazyContainerFactory
     ];
 
     /**
+     * @var array<class-string<SkipVoterInterface>>
+     */
+    private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class, PathSkipVoter::class];
+
+    /**
      * @api used as next rectorConfig factory
      */
     public function create(): RectorConfig
@@ -492,6 +500,12 @@ final class LazyContainerFactory
         $rectorConfig->when(NodeNameResolver::class)
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
+
+        $rectorConfig->when(Skipper::class)
+            ->needs('$skipVoters')
+            ->giveTagged(SkipVoterInterface::class);
+
+        $this->registerTagged($rectorConfig, self::SKIP_VOTER_CLASSES, SkipVoterInterface::class);
 
         $rectorConfig->afterResolving(
             AbstractRector::class,
