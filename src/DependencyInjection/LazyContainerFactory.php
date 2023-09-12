@@ -361,6 +361,9 @@ final class LazyContainerFactory
         UnionTypeNodeMapper::class,
     ];
 
+    /**
+     * @var array<class-string<SkipVoterInterface>>
+     */
     private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class, PathSkipVoter::class];
 
     /**
