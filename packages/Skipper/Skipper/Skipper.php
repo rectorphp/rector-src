@@ -22,7 +22,7 @@ final class Skipper
     private const FILE_ELEMENT = 'file_elements';
 
     /**
-     * @param iterable<SkipVoterInterface> $skipVoters
+     * @param array<SkipVoterInterface> $skipVoters
      */
     public function __construct(
         private readonly RectifiedAnalyzer $rectifiedAnalyzer,
