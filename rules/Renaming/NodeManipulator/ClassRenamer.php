@@ -107,9 +107,8 @@ final class ClassRenamer
         }
 
         $hasChanged = $this->docBlockClassRenamer->renamePhpDocType($phpDocInfo, $oldToNewTypes);
-        $hasChanged = $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses, $hasChanged);
 
-        return $hasChanged;
+        return $this->phpDocClassRenamer->changeTypeInAnnotationTypes($node, $phpDocInfo, $oldToNewClasses, $hasChanged);
     }
 
     private function shouldSkip(string $newName, Name $name): bool
