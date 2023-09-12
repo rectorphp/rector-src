@@ -37,7 +37,7 @@ final class UseImportsTraverser
                 return null;
             }
 
-            if ($node instanceof Use_) {
+            if ($node instanceof Use_ && $node->type !== Use_::TYPE_UNKNOWN) {
                 foreach ($node->uses as $useUse) {
                     $name = $this->nodeNameResolver->getName($useUse);
                     if ($name === null) {
@@ -62,7 +62,7 @@ final class UseImportsTraverser
         if ($groupUse->type !== Use_::TYPE_UNKNOWN) {
             return;
         }
-        
+
         $prefixName = $groupUse->prefix->toString();
 
         foreach ($groupUse->uses as $useUse) {
