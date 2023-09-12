@@ -190,6 +190,8 @@ final class UseImportsAdder
         ?string $namespaceName
     ): array {
         $newUses = [];
+
+        /** @var array<Use_::TYPE_*, array<AliasedObjectType|FullyQualifiedObjectType>> $importsMapping */
         $importsMapping = [
             Use_::TYPE_NORMAL => $useImportTypes,
             Use_::TYPE_CONSTANT => $constantUseImportTypes,
@@ -197,6 +199,7 @@ final class UseImportsAdder
         ];
 
         foreach ($importsMapping as $type => $importTypes) {
+            /** @var AliasedObjectType|FullyQualifiedObjectType $importType */
             foreach ($importTypes as $importType) {
                 if ($namespaceName !== null && $this->isCurrentNamespace($namespaceName, $importType)) {
                     continue;

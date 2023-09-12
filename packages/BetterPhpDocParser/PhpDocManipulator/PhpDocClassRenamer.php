@@ -27,8 +27,12 @@ final class PhpDocClassRenamer
      *
      * @param string[] $oldToNewClasses
      */
-    public function changeTypeInAnnotationTypes(Node $node, PhpDocInfo $phpDocInfo, array $oldToNewClasses, bool &$hasChanged): bool
-    {
+    public function changeTypeInAnnotationTypes(
+        Node $node,
+        PhpDocInfo $phpDocInfo,
+        array $oldToNewClasses,
+        bool &$hasChanged
+    ): bool {
         $this->processAssertChoiceTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processDoctrineRelationTagValueNode($node, $oldToNewClasses, $phpDocInfo, $hasChanged);
         $this->processSerializerTypeTagValueNode($oldToNewClasses, $phpDocInfo, $hasChanged);
@@ -39,8 +43,11 @@ final class PhpDocClassRenamer
     /**
      * @param array<string, string> $oldToNewClasses
      */
-    private function processAssertChoiceTagValueNode(array $oldToNewClasses, PhpDocInfo $phpDocInfo, bool &$hasChanged): void
-    {
+    private function processAssertChoiceTagValueNode(
+        array $oldToNewClasses,
+        PhpDocInfo $phpDocInfo,
+        bool &$hasChanged
+    ): void {
         $assertChoiceDoctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass(
             'Symfony\Component\Validator\Constraints\Choice'
         );
@@ -107,8 +114,11 @@ final class PhpDocClassRenamer
     /**
      * @param array<string, string> $oldToNewClasses
      */
-    private function processSerializerTypeTagValueNode(array $oldToNewClasses, PhpDocInfo $phpDocInfo, bool &$hasChanged): void
-    {
+    private function processSerializerTypeTagValueNode(
+        array $oldToNewClasses,
+        PhpDocInfo $phpDocInfo,
+        bool &$hasChanged
+    ): void {
         $doctrineAnnotationTagValueNode = $phpDocInfo->findOneByAnnotationClass('JMS\Serializer\Annotation\Type');
         if (! $doctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
             return;
