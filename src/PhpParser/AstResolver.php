@@ -314,10 +314,12 @@ final class AstResolver
 
         try {
             $stmts = $this->smartPhpParser->parseFile($fileName);
-        } catch (Throwable) {
+        } catch (Throwable $throwable) {
             if (str_contains($fileName, 'phpstan.phar')) {
                 return [];
             }
+
+            throw $throwable;
         }
 
         if ($stmts === []) {
