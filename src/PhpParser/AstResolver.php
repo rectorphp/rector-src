@@ -34,6 +34,7 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
+use Throwable;
 
 /**
  * The nodes provided by this resolver is for read-only analysis only!
@@ -311,7 +312,14 @@ final class AstResolver
             return $this->parsedFileNodes[$fileName];
         }
 
-        $stmts = $this->smartPhpParser->parseFile($fileName);
+        try {
+            $stmts = $this->smartPhpParser->parseFile($fileName);
+        } catch (Throwable) {
+            if (str_contains($fileName, 'phpstan.phar')) {
+                return [];
+            }
+        }
+
         if ($stmts === []) {
             return $this->parsedFileNodes[$fileName] = [];
         }
