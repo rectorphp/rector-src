@@ -315,6 +315,12 @@ final class AstResolver
         try {
             $stmts = $this->smartPhpParser->parseFile($fileName);
         } catch (Throwable $throwable) {
+            /**
+             * phpstan.phar contains jetbrains/phpstorm-stubs which the code is not downgraded
+             * that if read from lower php < 8.1 may cause crash
+             *
+             * @see https://github.com/rectorphp/rector/issues/8193
+             */
             if (str_contains($fileName, 'phpstan.phar')) {
                 return [];
             }
