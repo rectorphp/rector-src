@@ -223,7 +223,14 @@ final class RectorConfig extends Container
 
     public function import(string $filePath): void
     {
-        $this->importFile($filePath);
+        Assert::fileExists($filePath);
+
+        $self = $this;
+        $callable = (require $filePath);
+
+        Assert::isCallable($callable);
+        /** @var callable(Container $container): void $callable */
+        $callable($self);
     }
 
     /**
@@ -353,18 +360,6 @@ final class RectorConfig extends Container
             // completely forget the Rector rule only when no path specified
             ContainerMemento::forgetService($this, $skippedClass);
         }
-    }
-
-    private function importFile(string $filePath): void
-    {
-        Assert::fileExists($filePath);
-
-        $self = $this;
-        $callable = (require $filePath);
-
-        Assert::isCallable($callable);
-        /** @var callable(Container $container): void $callable */
-        $callable($self);
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
