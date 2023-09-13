@@ -43,9 +43,6 @@ final class ClassMethodParamVendorLockResolver
             return true;
         }
 
-        /** @var string $methodName */
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-
         return $this->hasClassMethodLockMatchingFileName($classReflection, $methodName, '/vendor/');
     }
 
