@@ -23,7 +23,7 @@ final class AttributeKey
     public const VIRTUAL_NODE = 'virtual_node';
 
     /**
-     * Contains @see Scope
+     * @see Scope
      * @var string
      */
     public const SCOPE = 'scope';

@@ -419,7 +419,9 @@ final class PhpDocInfo
         $resolvedClasses = [];
 
         foreach ($genericTagValueNodes as $genericTagValueNode) {
-            $resolvedClasses[] = $genericTagValueNode->value;
+            if ($genericTagValueNode->value !== '') {
+                $resolvedClasses[] = $genericTagValueNode->value;
+            }
         }
 
         return $resolvedClasses;
