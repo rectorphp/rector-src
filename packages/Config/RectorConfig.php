@@ -225,7 +225,7 @@ final class RectorConfig extends Container
     {
         if (str_contains($filePath, '*')) {
             throw new ShouldNotHappenException(
-                'Matching file paths by using glob($filePath) is no longer supported. Use specific file path instead.'
+                'Matching file paths by using glob-patterns is no longer supported. Use specific file path instead.'
             );
         }
 
