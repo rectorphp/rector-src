@@ -55,7 +55,6 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
 use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Webmozart\Assert\Assert;
@@ -84,7 +83,6 @@ final class PHPStanNodeScopeResolver
         iterable $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
-        private readonly NodeNameResolver $nodeNameResolver,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
