@@ -223,6 +223,12 @@ final class RectorConfig extends Container
 
     public function import(string $filePath): void
     {
+        if (str_contains($filePath, '*')) {
+            throw new ShouldNotHappenException(
+                'Matching file paths by using glob($filePath) is no longer supported. Use specific file path instead.'
+            );
+        }
+
         Assert::fileExists($filePath);
 
         $self = $this;
