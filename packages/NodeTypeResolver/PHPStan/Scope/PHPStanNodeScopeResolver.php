@@ -49,8 +49,6 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -152,7 +150,7 @@ final class PHPStanNodeScopeResolver
             } elseif ($node instanceof Switch_) {
                 $this->processSwitch($node, $mutatingScope);
             } elseif ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $filePath, $mutatingScope);
+                $this->processTryCatch($node, $mutatingScope);
             } elseif ($node instanceof ArrayItem) {
                 $this->processArrayItem($node, $mutatingScope);
             } elseif ($node instanceof NullableType) {
@@ -271,19 +269,12 @@ final class PHPStanNodeScopeResolver
         }
     }
 
-    private function processTryCatch(TryCatch $tryCatch, string $filePath, MutatingScope $mutatingScope): void
+    private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
     {
         foreach ($tryCatch->catches as $catch) {
-            $varName = $catch->var instanceof Variable
-                ? $this->nodeNameResolver->getName($catch->var)
-                : null;
-
-            $type = TypeCombinator::union(
-                ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
-            );
-
-            $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
-            $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
+            if ($catch->var instanceof Variable) {
+                $catch->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
         }
 
         if ($tryCatch->finally instanceof Finally_) {
