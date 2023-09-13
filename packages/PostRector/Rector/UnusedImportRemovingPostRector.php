@@ -56,6 +56,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
             $useUse = $namespaceStmt->uses[0];
             if ($this->isUseImportUsed($useUse, $names)) {
+                print_node($useUse->name);
                 continue;
             }
 
@@ -173,6 +174,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         // match partial import
         foreach ($names as $name) {
             if (str_ends_with($comparedName, $name)) {
+                if ($comparedName === 'Rector\Core\FileSystem\FilesystemTweaker') {
+                    var_dump($name);
+                    die('name is ' . $name);
+
+                }
                 return true;
             }
 
