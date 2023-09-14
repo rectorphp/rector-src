@@ -1,7 +1,7 @@
 {
     "scanPaths": ["../build", "../packages", "../packages-tests", "../rules", "../rules-tests", "../src", "../tests", "../tests-paths", "../utils", "../utils-tests"],
     "excludePaths": [
-        "../rector-src/rules-tests/Php82/Rector/Class_/ReadOnlyClassRector/Source/ParentAlreadyReadonly.php"
+        "../rules-tests/Php82/Rector/Class_/ReadOnlyClassRector/Source/ParentAlreadyReadonly.php"
     ],
     "fileExtensions": ["php"]
 }
