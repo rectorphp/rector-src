@@ -54,6 +54,7 @@
         "rector/phpstan-rules": "^0.7.1",
         "rector/rector-generator": "^0.7",
         "robiningelbrecht/phpunit-pretty-print": "^1.2.2",
+        "shipmonk/name-collision-detector": "^2.0",
         "spatie/enum": "^3.13",
         "symplify/easy-ci": "^11.3",
         "symplify/easy-coding-standard": "^12.0",
