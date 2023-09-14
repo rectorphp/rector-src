@@ -25,7 +25,7 @@ use stdClass;
 final class PublicPropertyDoc
 {
     /**
-     * @var stdClass
+     * @var \stdClass
      */
     public $config;
 
