@@ -1,6 +1,6 @@
 <?php
 
-namespace Foo7;
+namespace Foo;
 
 class Foo
 {
