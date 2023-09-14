@@ -73,7 +73,7 @@ final class TrustedClassMethodPropertyTypeInferer
 
         $resolvedTypes = [];
         foreach ($assignedExprs as $assignedExpr) {
-            $resolvedTypes[] = $this->nodeTypeResolver->getType($assignedExpr);
+            $resolvedTypes[] = $this->nodeTypeResolver->getNativeType($assignedExpr);
         }
 
         if ($resolvedTypes === []) {
