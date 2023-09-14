@@ -60,7 +60,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             2000
         );
 
-        // running on macOS cause empty string after DUMMY_MAIN_SCRIPT removed on run whole unit test
+        // running on macOS cause empty string after SPACED_DUMMY_MAIN_SCRIPT constant value removed on run whole unit test
         // this ensure it works
         $workerCommandLine = str_replace("rector' worker", "rector' '' worker", $workerCommandLine);
         $this->assertSame($expectedCommand, $workerCommandLine);
