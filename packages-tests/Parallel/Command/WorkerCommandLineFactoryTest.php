@@ -27,6 +27,11 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
      */
     private const DUMMY_MAIN_SCRIPT = 'main_script';
 
+    /**
+     * @var string
+     */
+    private const SPACED_DUMMY_MAIN_SCRIPT = 'C:\Users\P\Desktop\Web Dev\vendor\bin\rector';
+
     private WorkerCommandLineFactory $workerCommandLineFactory;
 
     private ProcessCommand $processCommand;
@@ -35,6 +40,63 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
     {
         $this->workerCommandLineFactory = $this->make(WorkerCommandLineFactory::class);
         $this->processCommand = $this->make(ProcessCommand::class);
+    }
+
+        /**
+     * @param array<string, mixed> $inputParameters
+     */
+    #[DataProvider('provideDataSpacedMainScript')]
+    public function testSpacedMainScript(array $inputParameters, string $expectedCommand): void
+    {
+        $inputDefinition = $this->prepareProcessCommandDefinition();
+        $arrayInput = new ArrayInput($inputParameters, $inputDefinition);
+
+        $workerCommandLine = $this->workerCommandLineFactory->create(
+            self::SPACED_DUMMY_MAIN_SCRIPT,
+            ProcessCommand::class,
+            'worker',
+            $arrayInput,
+            'identifier',
+            2000
+        );
+
+        $this->assertSame($expectedCommand, $workerCommandLine);
+    }
+
+    /**
+     * @return Iterator<array<int, array<string, string|string[]|bool>>|string[]>
+     */
+    public static function provideDataSpacedMainScript(): Iterator
+    {
+        $cliInputOptions = array_slice($_SERVER['argv'], 1);
+        $cliInputOptionsAsString = implode("' '", $cliInputOptions);
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+            ],
+            "'" . PHP_BINARY . "' '" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+            ],
+            "'" . PHP_BINARY . "' '" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+                '--' . Option::DEBUG => true,
+            ],
+            "'" . PHP_BINARY . "' '" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
     }
 
     /**
