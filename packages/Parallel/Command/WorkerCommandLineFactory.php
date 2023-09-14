@@ -62,11 +62,6 @@ final class WorkerCommandLineFactory
                 break;
             }
 
-            if ($arg === $mainScript) {
-                $workerCommandArray[] = '"' . $arg . '"';
-                continue;
-            }
-
             $workerCommandArray[] = escapeshellarg((string) $arg);
         }
 
