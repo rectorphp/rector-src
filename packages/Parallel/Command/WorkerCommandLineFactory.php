@@ -6,6 +6,7 @@ namespace Rector\Parallel\Command;
 
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Configuration\Option;
+use Rector\Core\FileSystem\FilePathHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;
@@ -22,11 +23,11 @@ final class WorkerCommandLineFactory
      */
     private const OPTION_DASHES = '--';
 
-    private readonly CommandFromReflectionFactory $commandFromReflectionFactory;
-
-    public function __construct()
+    public function __construct(
+        private readonly CommandFromReflectionFactory $commandFromReflectionFactory,
+        private readonly FilePathHelper $filePathHelper
+    )
     {
-        $this->commandFromReflectionFactory = new CommandFromReflectionFactory();
     }
 
     /**
@@ -115,7 +116,8 @@ final class WorkerCommandLineFactory
              *
              * tested in macOS and Ubuntu (github action)
              */
-            $workerCommandArray[] = escapeshellarg((string) $input->getOption(Option::CONFIG));
+            $config = (string) $input->getOption(Option::CONFIG);
+            $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
         }
 
         return implode(' ', $workerCommandArray);
