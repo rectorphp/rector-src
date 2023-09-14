@@ -1,7 +1,7 @@
 {
     "autoload": {
         "psr-4": {
-            "Foo\\": "src"
+            "Foo8\\": "src"
         }
     }
 }
