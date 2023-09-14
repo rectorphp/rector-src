@@ -1,5 +1,0 @@
-{
-    "scanPaths": ["../build", "../packages", "../packages-tests", "../rules", "../rules-tests", "../src", "../tests", "../tests-paths", "../utils", "../utils-tests"],
-    "excludePaths": [],
-    "fileExtensions": ["php"]
-}
