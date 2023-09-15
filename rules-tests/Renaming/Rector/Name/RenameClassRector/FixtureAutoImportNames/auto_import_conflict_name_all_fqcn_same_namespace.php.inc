@@ -1,32 +1,33 @@
 <?php
 
-namespace Foo2;
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames;
 
-class AutoImportConflictNameAllFqcnSameNamespace extends FooBar
+final class AutoImportConflictNameAllFqcnSameNamespace
 {
     /**
-     * @param \DateTime $foo
-     *
-     * @return \Foo2\Storage|\Storage
+     * @return \Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames\SomeShort|\SomeShort
      */
-    public function bar($foo){}
+    public function bar()
+    {
+    }
 }
 
 ?>
 -----
 <?php
 
-namespace Foo2;
+namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames;
 
-use DateTime;
-class AutoImportConflictNameAllFqcnSameNamespace extends FooBar
+use Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames\SomeShort;
+
+final class AutoImportConflictNameAllFqcnSameNamespace
 {
     /**
-     * @param DateTime $foo
-     *
-     * @return Storage|\Illuminate\Support\Facades\Storage
+     * @return SomeShort|\SomeShort
      */
-    public function bar($foo){}
+    public function bar()
+    {
+    }
 }
 
 ?>

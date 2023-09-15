@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer;
 
+use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
@@ -19,7 +20,7 @@ final class DocBlockClassRenamer
     /**
      * @param OldToNewType[] $oldToNewTypes
      */
-    public function renamePhpDocType(PhpDocInfo $phpDocInfo, array $oldToNewTypes): bool
+    public function renamePhpDocType(PhpDocInfo $phpDocInfo, array $oldToNewTypes, Node $currentPhpNode): bool
     {
         if ($oldToNewTypes === []) {
             return false;
@@ -27,6 +28,8 @@ final class DocBlockClassRenamer
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->addPhpDocNodeVisitor($this->classRenamePhpDocNodeVisitor);
+
+        $this->classRenamePhpDocNodeVisitor->setCurrentPhpNode($currentPhpNode);
 
         $this->classRenamePhpDocNodeVisitor->setOldToNewTypes($oldToNewTypes);
 

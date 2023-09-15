@@ -15,7 +15,6 @@ use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -28,7 +27,6 @@ final class PhpDocInfoFactory
 
     public function __construct(
         private readonly PhpDocNodeMapper $phpDocNodeMapper,
-        private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly Lexer $lexer,
         private readonly BetterPhpDocParser $betterPhpDocParser,
         private readonly StaticTypeMapper $staticTypeMapper,
@@ -61,9 +59,6 @@ final class PhpDocInfoFactory
             return $this->phpDocInfosByObjectId[$objectId];
         }
 
-        /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
-        $this->currentNodeProvider->setNode($node);
-
         $docComment = $node->getDocComment();
         if (! $docComment instanceof Doc) {
             if ($node->getComments() === []) {
@@ -92,9 +87,6 @@ final class PhpDocInfoFactory
      */
     public function createEmpty(Node $node): PhpDocInfo
     {
-        /** @see \Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator::decorate() */
-        $this->currentNodeProvider->setNode($node);
-
         $phpDocNode = new PhpDocNode([]);
         $phpDocInfo = $this->createFromPhpDocNode($phpDocNode, new BetterTokenIterator([]), $node);
 
