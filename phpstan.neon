@@ -1,20 +1,9 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
-<<<<<<< HEAD
-=======
-services:
-    # makes $container->make() generic type
-    - Rector\Utils\PHPStan\ClassConstFetchReturnTypeResolver
-    -
-        class: Rector\Utils\PHPStan\TypeExtension\ContainerMakeReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
 rules:
     - Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
 
->>>>>>> e4bb45f52e ([Internal] Experiment with internal PHPStan rule to spot heavy Rector rules)
 parameters:
     reportUnmatchedIgnoredErrors: false
 

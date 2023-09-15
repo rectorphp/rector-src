@@ -22,7 +22,12 @@ final class LongAndDependentComplexRectorRule implements Rule
     /**
      * @var int
      */
-    private const MAXIMUM_CLASS_LINES = 350;
+    private const MAX_CLASS_LINES = 320;
+
+    /**
+     * @var int
+     */
+    private const MAX_DEPENDENCY_COUNT = 7;
 
     public function getNodeType(): string
     {
@@ -44,7 +49,7 @@ final class LongAndDependentComplexRectorRule implements Rule
         $errorMessages = [];
 
         $constructorParameterCount = $this->resolveConstructorParameterCount($class);
-        if ($constructorParameterCount > 8) {
+        if ($constructorParameterCount > self::MAX_DEPENDENCY_COUNT) {
             $errorMessages[] = sprintf(
                 'Class "%s" has too many constructor parameters (%d), consider using value objects',
                 $classReflection->getName(),
@@ -53,7 +58,7 @@ final class LongAndDependentComplexRectorRule implements Rule
         }
 
         $classLineCount = $class->getEndLine() - $class->getStartLine();
-        if ($classLineCount > self::MAXIMUM_CLASS_LINES) {
+        if ($classLineCount > self::MAX_CLASS_LINES) {
             $errorMessages[] = sprintf(
                 'Class "%s" is too long (%d lines), consider splitting it to smaller classes',
                 $classReflection->getName(),
