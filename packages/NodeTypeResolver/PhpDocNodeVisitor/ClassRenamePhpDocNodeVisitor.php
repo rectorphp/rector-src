@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
-use PhpParser\Node as PhpParserNode;
+use PhpParser\Node as PhpNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
@@ -34,7 +34,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private bool $hasChanged = false;
 
-    private ?PhpParserNode $currentPhpNode = null;
+    private ?PhpNode $currentPhpNode = null;
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
@@ -42,9 +42,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     ) {
     }
 
-    public function setCurrentPhpNode(PhpParserNode $node): void
+    public function setCurrentPhpNode(PhpNode $phpNode): void
     {
-        $this->currentPhpNode = $node;
+        $this->currentPhpNode = $phpNode;
     }
 
     public function beforeTraverse(Node $node): void
@@ -53,7 +53,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
         }
 
-        if (! $this->currentPhpNode instanceof PhpParserNode) {
+        if (! $this->currentPhpNode instanceof PhpNode) {
             throw new ShouldNotHappenException('Configure "$currentPhpNode" first');
         }
 
@@ -124,7 +124,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private function resolveNamespacedName(
         IdentifierTypeNode $identifierTypeNode,
-        PhpParserNode $phpParserNode,
+        PhpNode $phpNode,
         string $name
     ): string {
         if (str_starts_with($name, '\\')) {
@@ -137,7 +137,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $identifierTypeNode,
-            $phpParserNode
+            $phpNode
         );
 
         if (! $staticType instanceof ObjectType) {
@@ -149,13 +149,13 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $uses = $this->useImportsResolver->resolve();
-        $originalNode = $phpParserNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-        $scope = $originalNode instanceof PhpParserNode
+        $originalNode = $phpNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+        $scope = $originalNode instanceof PhpNode
             ? $originalNode->getAttribute(AttributeKey::SCOPE)
-            : $phpParserNode->getAttribute(AttributeKey::SCOPE);
+            : $phpNode->getAttribute(AttributeKey::SCOPE);
 
         if (! $scope instanceof Scope) {
-            if (! $originalNode instanceof PhpParserNode) {
+            if (! $originalNode instanceof PhpNode) {
                 return $this->resolveNamefromUse($uses, $name);
             }
 
