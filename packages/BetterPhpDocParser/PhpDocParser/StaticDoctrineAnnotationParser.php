@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
@@ -31,10 +32,8 @@ final class StaticDoctrineAnnotationParser
      *
      * @return ArrayItemNode[]
      */
-    public function resolveAnnotationMethodCall(
-        BetterTokenIterator $tokenIterator,
-        \PhpParser\Node $currentPhpNode
-    ): array {
+    public function resolveAnnotationMethodCall(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
+    {
         if (! $tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
             return [];
         }
@@ -56,7 +55,7 @@ final class StaticDoctrineAnnotationParser
      */
     public function resolveAnnotationValue(
         BetterTokenIterator $tokenIterator,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): CurlyListNode | string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
         // skips dummy tokens like newlines
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
@@ -86,7 +85,7 @@ final class StaticDoctrineAnnotationParser
      *
      * @return ArrayItemNode[]
      */
-    private function resolveAnnotationValues(BetterTokenIterator $tokenIterator, \PhpParser\Node $currentPhpNode): array
+    private function resolveAnnotationValues(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
     {
         $values = [];
         $resolvedValue = $this->resolveAnnotationValue($tokenIterator, $currentPhpNode);
@@ -126,7 +125,7 @@ final class StaticDoctrineAnnotationParser
      */
     private function parseValue(
         BetterTokenIterator $tokenIterator,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): CurlyListNode | string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
         if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_CURLY_BRACKET)) {
             $items = $this->arrayParser->parseCurlyArray($tokenIterator, $currentPhpNode);

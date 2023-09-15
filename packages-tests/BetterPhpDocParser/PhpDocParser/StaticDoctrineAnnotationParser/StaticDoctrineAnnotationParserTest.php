@@ -34,8 +34,8 @@ final class StaticDoctrineAnnotationParserTest extends AbstractLazyTestCase
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
 
-        $currentPhpNode = new String_('some_node');
-        $value = $this->staticDoctrineAnnotationParser->resolveAnnotationValue($betterTokenIterator, $currentPhpNode);
+        $string = new String_('some_node');
+        $value = $this->staticDoctrineAnnotationParser->resolveAnnotationValue($betterTokenIterator, $string);
 
         // "equals" on purpose to compare 2 object with same content
         $this->assertEquals($expectedValue, $value);

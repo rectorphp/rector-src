@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
+use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -26,7 +27,7 @@ final class ArrayParser
      *
      * @return ArrayItemNode[]
      */
-    public function parseCurlyArray(BetterTokenIterator $tokenIterator, \PhpParser\Node $currentPhpNode): array
+    public function parseCurlyArray(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
     {
         $values = [];
 
@@ -108,7 +109,7 @@ final class ArrayParser
      * Mimics https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L1354-L1385
      * @return array<null|mixed, mixed>
      */
-    private function resolveArrayItem(BetterTokenIterator $tokenIterator, \PhpParser\Node $currentPhpNode): array
+    private function resolveArrayItem(BetterTokenIterator $tokenIterator, Node $currentPhpNode): array
     {
         // skip newlines
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);

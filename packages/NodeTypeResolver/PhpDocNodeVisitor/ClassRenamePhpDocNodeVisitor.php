@@ -34,7 +34,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private bool $hasChanged = false;
 
-    private ?\PhpParser\Node $currentPhpNode = null;
+    private ?PhpParserNode $currentPhpNode = null;
 
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
@@ -42,7 +42,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     ) {
     }
 
-    public function setCurrentPhpNode(\PhpParser\Node $node): void
+    public function setCurrentPhpNode(PhpParserNode $node): void
     {
         $this->currentPhpNode = $node;
     }
@@ -53,7 +53,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
         }
 
-        if (! $this->currentPhpNode instanceof \PhpParser\Node) {
+        if (! $this->currentPhpNode instanceof PhpParserNode) {
             throw new ShouldNotHappenException('Configure "$currentPhpNode" first');
         }
 

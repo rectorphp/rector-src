@@ -264,7 +264,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         string $tagName,
         string $fullyQualifiedAnnotationClass,
         StartAndEnd $startAndEnd,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): SpacelessPhpDocTagNode {
         $nestedTokenIterator = $this->tokenIteratorFactory->create($annotationContent);
 
@@ -306,7 +306,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 
     private function resolveFqnAnnotationSpacelessPhpDocTagNode(
         PhpDocTextNode $phpDocTextNode,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): ?SpacelessPhpDocTagNode {
         $match = Strings::match($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX);
         $fullyQualifiedAnnotationClass = $match['class_name'] ?? null;

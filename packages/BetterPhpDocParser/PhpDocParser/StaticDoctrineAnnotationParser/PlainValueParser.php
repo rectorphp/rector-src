@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
+use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprFalseNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
@@ -41,7 +42,7 @@ final class PlainValueParser
      */
     public function parseValue(
         BetterTokenIterator $tokenIterator,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
@@ -100,7 +101,7 @@ final class PlainValueParser
     private function parseNestedDoctrineAnnotationTagValueNode(
         string $currentTokenValue,
         BetterTokenIterator $tokenIterator,
-        \PhpParser\Node $currentPhpNode
+        Node $currentPhpNode
     ): DoctrineAnnotationTagValueNode {
         // @todo
         $annotationShortName = $currentTokenValue;
