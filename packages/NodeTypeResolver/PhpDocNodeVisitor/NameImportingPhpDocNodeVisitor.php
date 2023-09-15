@@ -151,6 +151,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         if (str_starts_with($identifierTypeNode->name, '\\')) {
+            if ($fullyQualifiedObjectType->getShortName() !== $fullyQualifiedObjectType->getClassName()) {
+                return $fullyQualifiedObjectType->getShortName() !== ltrim($identifierTypeNode->name, '\\');
+            }
+
             return true;
         }
 
