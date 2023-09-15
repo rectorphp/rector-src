@@ -2,13 +2,16 @@
 
 namespace Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\Fixture;
 
-final class SkipConstants
+class SkipConstants
 {
-    public CONST DAYS_TO_DELAY = 1;
-    
+    public const ONE = 1;
+
     public function run()
     {
-        return self::DAYS_TO_DELAY * 3600;
+        $value = 5 * self::ONE;
+        $value = 5 / self::ONE;
+        $value = self::ONE * 5;
+        $value = self::ONE / 5;
     }
 }
 
@@ -18,13 +21,16 @@ final class SkipConstants
 
 namespace Rector\Tests\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector\Fixture;
 
-final class SkipConstants
+class SkipConstants
 {
-    public CONST DAYS_TO_DELAY = 1;
-    
+    public const ONE = 1;
+
     public function run()
     {
-        return self::DAYS_TO_DELAY * 3600;
+        $value = 5 * self::ONE;
+        $value = 5 / self::ONE;
+        $value = self::ONE * 5;
+        $value = self::ONE / 5;
     }
 }
 
