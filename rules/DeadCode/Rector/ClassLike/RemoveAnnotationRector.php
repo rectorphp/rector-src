@@ -80,8 +80,6 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-
-        $hasChanged = false;
         foreach ($this->annotationsToRemove as $annotationToRemove) {
             $namedHasChanged = $this->phpDocTagRemover->removeByName($phpDocInfo, $annotationToRemove);
             if ($namedHasChanged) {
