@@ -18,8 +18,6 @@ final class AutoImportConflictNameAllFqcnSameNamespace
 
 namespace Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames;
 
-use Rector\Tests\Renaming\Rector\Name\RenameClassRector\FixtureAutoImportNames\SomeShort;
-
 final class AutoImportConflictNameAllFqcnSameNamespace
 {
     /**
