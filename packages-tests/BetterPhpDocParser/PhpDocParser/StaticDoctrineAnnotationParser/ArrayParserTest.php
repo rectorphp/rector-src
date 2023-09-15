@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
 use Iterator;
+use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\StringNode;
@@ -32,7 +33,9 @@ final class ArrayParserTest extends AbstractLazyTestCase
     {
         $betterTokenIterator = $this->tokenIteratorFactory->create($docContent);
 
-        $arrayItemNodes = $this->arrayParser->parseCurlyArray($betterTokenIterator);
+        $currentPhpNode = new String_('some_node');
+
+        $arrayItemNodes = $this->arrayParser->parseCurlyArray($betterTokenIterator, $currentPhpNode);
         $this->assertEquals($expectedArrayItemNodes, $arrayItemNodes);
     }
 

@@ -6,6 +6,10 @@ namespace Rector\Core\Configuration;
 
 use PhpParser\Node;
 
+/**
+ * @api
+ * @deprecated Pass node directly
+ */
 final class CurrentNodeProvider
 {
     private ?Node $node = null;

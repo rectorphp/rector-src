@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 
-use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprFalseNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
@@ -17,8 +16,6 @@ use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\Configuration\CurrentNodeProvider;
-use Rector\Core\Exception\ShouldNotHappenException;
 
 final class PlainValueParser
 {
@@ -28,7 +25,6 @@ final class PlainValueParser
 
     public function __construct(
         private readonly ClassAnnotationMatcher $classAnnotationMatcher,
-        private readonly CurrentNodeProvider $currentNodeProvider,
     ) {
     }
 
@@ -44,7 +40,8 @@ final class PlainValueParser
      * @return string|mixed[]|ConstExprNode|DoctrineAnnotationTagValueNode|StringNode
      */
     public function parseValue(
-        BetterTokenIterator $tokenIterator
+        BetterTokenIterator $tokenIterator,
+        \PhpParser\Node $currentPhpNode
     ): string | array | ConstExprNode | DoctrineAnnotationTagValueNode | StringNode {
         $currentTokenValue = $tokenIterator->currentTokenValue();
 
@@ -56,7 +53,7 @@ final class PlainValueParser
         // consume the token
         $isOpenCurlyArray = $tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_CURLY_BRACKET);
         if ($isOpenCurlyArray) {
-            return $this->arrayParser->parseCurlyArray($tokenIterator);
+            return $this->arrayParser->parseCurlyArray($tokenIterator, $currentPhpNode);
         }
 
         $tokenIterator->next();
@@ -76,7 +73,11 @@ final class PlainValueParser
 
         // nested entity!, supported in attribute since PHP 8.1
         if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
-            return $this->parseNestedDoctrineAnnotationTagValueNode($currentTokenValue, $tokenIterator);
+            return $this->parseNestedDoctrineAnnotationTagValueNode(
+                $currentTokenValue,
+                $tokenIterator,
+                $currentPhpNode
+            );
         }
 
         $start = $tokenIterator->currentPosition();
@@ -98,20 +99,16 @@ final class PlainValueParser
 
     private function parseNestedDoctrineAnnotationTagValueNode(
         string $currentTokenValue,
-        BetterTokenIterator $tokenIterator
+        BetterTokenIterator $tokenIterator,
+        \PhpParser\Node $currentPhpNode
     ): DoctrineAnnotationTagValueNode {
         // @todo
         $annotationShortName = $currentTokenValue;
-        $values = $this->staticDoctrineAnnotationParser->resolveAnnotationMethodCall($tokenIterator);
-
-        $currentNode = $this->currentNodeProvider->getNode();
-        if (! $currentNode instanceof Node) {
-            throw new ShouldNotHappenException();
-        }
+        $values = $this->staticDoctrineAnnotationParser->resolveAnnotationMethodCall($tokenIterator, $currentPhpNode);
 
         $fullyQualifiedAnnotationClass = $this->classAnnotationMatcher->resolveTagFullyQualifiedName(
             $annotationShortName,
-            $currentNode
+            $currentPhpNode
         );
 
         // keep the last ")"

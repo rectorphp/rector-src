@@ -157,7 +157,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
-                $spacelessPhpDocTagNode = $this->resolveFqnAnnotationSpacelessPhpDocTagNode($phpDocChildNode);
+                $spacelessPhpDocTagNode = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
+                    $phpDocChildNode,
+                    $currentPhpNode
+                );
                 if (! $spacelessPhpDocTagNode instanceof SpacelessPhpDocTagNode) {
                     continue;
                 }
@@ -192,7 +195,8 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
                 $phpDocChildNode->name,
                 $phpDocChildNode->value,
-                $fullyQualifiedAnnotationClass
+                $fullyQualifiedAnnotationClass,
+                $currentPhpNode
             );
 
             $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
@@ -241,7 +245,8 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
     private function createSpacelessPhpDocTagNode(
         string $tagName,
         GenericTagValueNode $genericTagValueNode,
-        string $fullyQualifiedAnnotationClass
+        string $fullyQualifiedAnnotationClass,
+        Node $currentPhpNode
     ): SpacelessPhpDocTagNode {
         $formerStartEnd = $genericTagValueNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
@@ -249,7 +254,8 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             $genericTagValueNode->value,
             $tagName,
             $fullyQualifiedAnnotationClass,
-            $formerStartEnd
+            $formerStartEnd,
+            $currentPhpNode
         );
     }
 
@@ -257,14 +263,18 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         string $annotationContent,
         string $tagName,
         string $fullyQualifiedAnnotationClass,
-        StartAndEnd $startAndEnd
+        StartAndEnd $startAndEnd,
+        \PhpParser\Node $currentPhpNode
     ): SpacelessPhpDocTagNode {
         $nestedTokenIterator = $this->tokenIteratorFactory->create($annotationContent);
 
         // mimics doctrine behavior just in phpdoc-parser syntax :)
         // https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L742
 
-        $values = $this->staticDoctrineAnnotationParser->resolveAnnotationMethodCall($nestedTokenIterator);
+        $values = $this->staticDoctrineAnnotationParser->resolveAnnotationMethodCall(
+            $nestedTokenIterator,
+            $currentPhpNode
+        );
 
         $identifierTypeNode = new IdentifierTypeNode($tagName);
         $identifierTypeNode->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $fullyQualifiedAnnotationClass);
@@ -294,8 +304,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         return new StartAndEnd($currentStartAndEnd->getStart(), $nextStartAndEnd->getEnd());
     }
 
-    private function resolveFqnAnnotationSpacelessPhpDocTagNode(PhpDocTextNode $phpDocTextNode): ?SpacelessPhpDocTagNode
-    {
+    private function resolveFqnAnnotationSpacelessPhpDocTagNode(
+        PhpDocTextNode $phpDocTextNode,
+        \PhpParser\Node $currentPhpNode
+    ): ?SpacelessPhpDocTagNode {
         $match = Strings::match($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX);
         $fullyQualifiedAnnotationClass = $match['class_name'] ?? null;
 
@@ -312,7 +324,8 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             $annotationContent,
             $tagName,
             $fullyQualifiedAnnotationClass,
-            $formerStartEnd
+            $formerStartEnd,
+            $currentPhpNode
         );
     }
 }

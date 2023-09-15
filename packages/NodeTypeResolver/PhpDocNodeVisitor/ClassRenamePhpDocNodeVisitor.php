@@ -15,7 +15,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -35,17 +34,27 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private bool $hasChanged = false;
 
+    private ?\PhpParser\Node $currentPhpNode = null;
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
+    }
+
+    public function setCurrentPhpNode(\PhpParser\Node $node): void
+    {
+        $this->currentPhpNode = $node;
     }
 
     public function beforeTraverse(Node $node): void
     {
         if ($this->oldToNewTypes === []) {
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
+        }
+
+        if (! $this->currentPhpNode instanceof \PhpParser\Node) {
+            throw new ShouldNotHappenException('Configure "$currentPhpNode" first');
         }
 
         $this->hasChanged = false;
@@ -57,19 +66,17 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $phpParserNode = $this->currentNodeProvider->getNode();
-        if (! $phpParserNode instanceof PhpParserNode) {
-            throw new ShouldNotHappenException();
-        }
+        /** @var \PhpParser\Node $currentPhpNode */
+        $currentPhpNode = $this->currentPhpNode;
 
-        $virtualNode = $phpParserNode->getAttribute(AttributeKey::VIRTUAL_NODE);
+        $virtualNode = $currentPhpNode->getAttribute(AttributeKey::VIRTUAL_NODE);
         if ($virtualNode === true) {
             return null;
         }
 
         $identifier = clone $node;
-        $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+        $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $node->name);
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $currentPhpNode);
 
         $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         $isNoNamespacedName = ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0;

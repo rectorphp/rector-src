@@ -26,8 +26,7 @@ final class WorkerCommandLineFactory
     public function __construct(
         private readonly CommandFromReflectionFactory $commandFromReflectionFactory,
         private readonly FilePathHelper $filePathHelper
-    )
-    {
+    ) {
     }
 
     /**

@@ -42,7 +42,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         $this->processCommand = $this->make(ProcessCommand::class);
     }
 
-        /**
+    /**
      * @param array<string, mixed> $inputParameters
      */
     #[DataProvider('provideDataSpacedMainScript')]
