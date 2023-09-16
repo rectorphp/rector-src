@@ -45,7 +45,7 @@ final class CommentRemoverTest extends AbstractLazyTestCase
         $fileContent = $this->betterStandardPrinter->print($nodesWithoutComments);
         $fileContent = trim($fileContent);
 
-        $expectedContent = trim((string) $expectedOutputContents);
+        $expectedContent = trim($expectedOutputContents);
         $this->assertSame($fileContent, $expectedContent);
 
         // original nodes are not touched
