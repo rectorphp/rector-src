@@ -49,7 +49,6 @@ final class CountableAnalyzer
             return false;
         }
 
-        /** @var StaticPropertyFetch|PropertyFetch $expr */
         $callerObjectType = $expr instanceof StaticPropertyFetch
             ? $this->nodeTypeResolver->getType($expr->class)
             : $this->nodeTypeResolver->getType($expr->var);
