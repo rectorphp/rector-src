@@ -23,6 +23,9 @@ parameters:
     strictRules:
         allRules: false
 
+    excludePaths:
+        - '*/Fixture/*'
+
     ignoreErrors:
         - '#Cognitive complexity .*#'
         - '#Out of .* possible .* types .*#'
