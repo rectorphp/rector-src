@@ -31,7 +31,7 @@ final class FixtureSplitter
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
         $posixContents = explode("-----\n", $fixtureFileContents);
-        if (count($posixContents) > 1) {
+        if (isset($posixContents[1])) {
             return $posixContents;
         }
 
