@@ -6,7 +6,6 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint;
 
 use Iterator;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PHPUnit\Framework\Attributes\DataProvider;
