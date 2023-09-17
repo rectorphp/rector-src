@@ -202,7 +202,7 @@ CODE_SAMPLE
         foreach ($returns as $return) {
             if (! $return->expr instanceof New_) {
                 $returnType = $this->nodeTypeResolver->getNativeType($return->expr);
-                if ($returnType instanceof \PHPStan\Type\ObjectType) {
+                if ($returnType instanceof ObjectType) {
                     $newTypes[] = $returnType;
                     continue;
                 }
