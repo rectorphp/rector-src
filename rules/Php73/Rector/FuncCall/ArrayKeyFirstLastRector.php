@@ -137,7 +137,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->hasPrevCallNext($stmtsAware, $key + 2, $totalKeys, $keyFuncCall)) {
+            if ($this->hasInternalPointerChangeNext($stmtsAware, $key + 1, $totalKeys, $keyFuncCall)) {
                 continue;
             }
 
@@ -183,7 +183,7 @@ CODE_SAMPLE
         });
     }
 
-    private function hasPrevCallNext(
+    private function hasInternalPointerChangeNext(
         StmtsAwareInterface $stmtsAware,
         int $nextKey,
         int $totalKeys,
@@ -201,7 +201,7 @@ CODE_SAMPLE
                         return false;
                     }
 
-                    if (! $this->isName($subNode, 'prev')) {
+                    if (! $this->isNames($subNode, ['prev', 'next'])) {
                         return false;
                     }
 
