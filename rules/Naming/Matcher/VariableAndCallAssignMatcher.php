@@ -26,7 +26,7 @@ final class VariableAndCallAssignMatcher
     public function match(Assign $assign, ClassMethod|Closure|Function_ $functionLike): ?VariableAndCallAssign
     {
         $call = $this->callMatcher->matchCall($assign);
-        if ($call === null) {
+        if (!$call instanceof Node) {
             return null;
         }
 
