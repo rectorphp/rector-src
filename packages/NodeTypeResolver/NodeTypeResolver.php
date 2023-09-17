@@ -250,20 +250,7 @@ final class NodeTypeResolver
             return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
         }
 
-        $hasChanged = false;
-        $types = $type->getTypes();
-        foreach ($types as $key => $childType) {
-            if ($this->isAnonymousObjectType($childType)) {
-                $types[$key] = new ObjectWithoutClassType();
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            return $this->accessoryNonEmptyStringTypeCorrector->correct(new UnionType($types));
-        }
-
-        return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
+        return $this->resolveNativeUnionType($type);
     }
 
     public function isNumberType(Expr $expr): bool
@@ -336,6 +323,24 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function resolveNativeUnionType(UnionType $unionType): UnionType
+    {
+        $hasChanged = false;
+        $types = $unionType->getTypes();
+        foreach ($types as $key => $childType) {
+            if ($this->isAnonymousObjectType($childType)) {
+                $types[$key] = new ObjectWithoutClassType();
+                $hasChanged = true;
+            }
+        }
+
+        if ($hasChanged) {
+            return $this->accessoryNonEmptyStringTypeCorrector->correct(new UnionType($types));
+        }
+
+        return $this->accessoryNonEmptyStringTypeCorrector->correct($unionType);
     }
 
     private function isMatchObjectWithoutClassType(
