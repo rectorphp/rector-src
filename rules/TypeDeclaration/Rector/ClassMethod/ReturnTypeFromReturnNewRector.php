@@ -201,11 +201,11 @@ CODE_SAMPLE
     {
         $newTypes = [];
         foreach ($returns as $return) {
-            if (! $return->expr instanceof New_) {
-                if (! $return->expr instanceof Expr) {
-                    return null;
-                }
+            if (! $return->expr instanceof Expr) {
+                return null;
+            }
 
+            if (! $return->expr instanceof New_) {
                 $returnType = $this->nodeTypeResolver->getNativeType($return->expr);
                 if ($returnType instanceof ObjectType) {
                     $newTypes[] = $returnType;
