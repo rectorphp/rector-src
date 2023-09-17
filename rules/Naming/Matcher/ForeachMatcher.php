@@ -24,7 +24,7 @@ final class ForeachMatcher
     public function match(Foreach_ $foreach, ClassMethod|Closure|Function_ $functionLike): ?VariableAndCallForeach
     {
         $call = $this->callMatcher->matchCall($foreach);
-        if (!$call instanceof Node) {
+        if (! $call instanceof Node) {
             return null;
         }
 

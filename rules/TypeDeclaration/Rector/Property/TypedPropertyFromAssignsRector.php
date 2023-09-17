@@ -147,7 +147,7 @@ CODE_SAMPLE
 
             $inferredType = $this->decorateTypeWithNullableIfDefaultPropertyNull($property, $inferredType);
             $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($inferredType, TypeKind::PROPERTY);
-            if (!$typeNode instanceof Node) {
+            if (! $typeNode instanceof Node) {
                 continue;
             }
 
