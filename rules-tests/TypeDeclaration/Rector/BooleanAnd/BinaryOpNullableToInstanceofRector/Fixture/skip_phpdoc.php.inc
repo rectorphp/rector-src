@@ -7,7 +7,7 @@ use Rector\Tests\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofR
 /**
  * @param SomeInstance|null $someClass
  */
-function binaryOrPhpdoc($someClass)
+function skipBinaryOrPhpdoc($someClass)
 {
     if ($someClass || $someClass->someMethod()) {
         return 'yes';
