@@ -9,7 +9,7 @@ final class FallbackFromParamSelf
     public function action(self $obj)
     {
         if (rand(0, 1)) {
-            return new FallbackFromParam2();
+            return new FallbackFromParamSelf();
         }
 
         return $obj;
@@ -26,10 +26,10 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNe
 
 final class FallbackFromParamSelf
 {
-    public function action(self $obj): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture\FallbackFromParam2
+    public function action(self $obj): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture\FallbackFromParamSelf
     {
         if (rand(0, 1)) {
-            return new FallbackFromParam2();
+            return new FallbackFromParamSelf();
         }
 
         return $obj;
