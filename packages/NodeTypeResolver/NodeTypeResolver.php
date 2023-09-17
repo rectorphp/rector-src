@@ -325,7 +325,7 @@ final class NodeTypeResolver
         return $classReflection->isSubclassOf($objectType->getClassName());
     }
 
-    private function resolveNativeUnionType(UnionType $unionType): UnionType
+    private function resolveNativeUnionType(UnionType $unionType): Type
     {
         $hasChanged = false;
         $types = $unionType->getTypes();
