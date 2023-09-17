@@ -26,15 +26,15 @@ final class FixtureSplitter
     }
 
     /**
-     * @return array<int, string>
+     * @return array{string, string}
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        $posixContents = explode("-----\n", $fixtureFileContents);
+        $posixContents = explode("-----\n", $fixtureFileContents, 2);
         if (isset($posixContents[1])) {
             return $posixContents;
         }
 
-        return explode("-----\r\n", $fixtureFileContents);
+        return explode("-----\r\n", $fixtureFileContents, 2);
     }
 }
