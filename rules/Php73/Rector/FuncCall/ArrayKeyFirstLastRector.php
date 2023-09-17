@@ -200,7 +200,6 @@ CODE_SAMPLE
                     if (! $subNode instanceof FuncCall) {
                         return false;
                     }
-                    echo $subNode->name;
 
                     if (! $this->isNames($subNode, ['prev', 'next'])) {
                         return false;

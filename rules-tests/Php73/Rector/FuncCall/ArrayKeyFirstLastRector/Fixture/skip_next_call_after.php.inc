@@ -1,6 +1,9 @@
 <?php
+<?php
 
-function a(array $arr) {
+namespace Rector\Tests\Php73\Rector\FuncCall\ArrayKeyFirstLastRector\Fixture;
+
+function skipExecutionHasNextNext(array $arr) {
     reset($arr);
     while ($key !== null) {
         $key = key($arr);
