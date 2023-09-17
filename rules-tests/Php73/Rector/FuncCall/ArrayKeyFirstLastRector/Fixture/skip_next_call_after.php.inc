@@ -1,5 +1,5 @@
 <?php
-<?php
+
 
 namespace Rector\Tests\Php73\Rector\FuncCall\ArrayKeyFirstLastRector\Fixture;
 
