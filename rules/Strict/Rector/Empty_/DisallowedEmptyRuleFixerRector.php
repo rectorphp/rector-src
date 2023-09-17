@@ -125,7 +125,7 @@ CODE_SAMPLE
 
     private function createDimFetchBooleanAnd(Empty_ $empty): ?BooleanAnd
     {
-        $exprType = $this->getType($empty->expr);
+        $exprType = $this->nodeTypeResolver->getNativeType($empty->expr);
 
         $isset = new Isset_([$empty->expr]);
         $compareExpr = $this->exactCompareFactory->createNotIdenticalFalsyCompare($exprType, $empty->expr, false);

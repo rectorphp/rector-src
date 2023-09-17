@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -234,7 +235,13 @@ final class NodeTypeResolver
             }
         }
 
-        $type = $scope->getNativeType($expr);
+        /**
+         * ArrayDimFetch got type by its Scope->getType(), otherwise, it got MixedType
+         */
+        $type = $expr instanceof ArrayDimFetch
+            ? $scope->getType($expr)
+            : $scope->getNativeType($expr);
+
         if (! $type instanceof UnionType) {
             if ($this->isAnonymousObjectType($type)) {
                 return new ObjectWithoutClassType();
