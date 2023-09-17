@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-final class FallbackFromParam2
+final class FallbackFromParamSelf
 {
     public function action(self $obj)
     {
@@ -24,7 +24,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-final class FallbackFromParam2
+final class FallbackFromParamSelf
 {
     public function action(self $obj): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture\FallbackFromParam2
     {
