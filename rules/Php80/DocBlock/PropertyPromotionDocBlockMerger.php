@@ -65,7 +65,6 @@ final class PropertyPromotionDocBlockMerger
         string $paramName
     ): void {
         $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-        $propertyPhpDocInfo->markAsChanged();
 
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
 
