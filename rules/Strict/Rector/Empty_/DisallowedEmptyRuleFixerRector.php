@@ -97,7 +97,7 @@ CODE_SAMPLE
 
         $empty = $booleanNot->expr;
         if ($empty->expr instanceof ArrayDimFetch) {
-            return $this->createDimFetchBooleanAnd($empty);
+            return $this->createDimFetchBooleanAnd($empty->expr);
         }
 
         if ($this->exprAnalyzer->isNonTypedFromParam($empty->expr)) {
@@ -123,12 +123,12 @@ CODE_SAMPLE
         return $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
     }
 
-    private function createDimFetchBooleanAnd(Empty_ $empty): ?BooleanAnd
+    private function createDimFetchBooleanAnd(ArrayDimFetch $arrayDimFetch): ?BooleanAnd
     {
-        $exprType = $this->getType($empty->expr);
+        $exprType = $this->nodeTypeResolver->getNativeType($arrayDimFetch);
 
-        $isset = new Isset_([$empty->expr]);
-        $compareExpr = $this->exactCompareFactory->createNotIdenticalFalsyCompare($exprType, $empty->expr, false);
+        $isset = new Isset_([$arrayDimFetch]);
+        $compareExpr = $this->exactCompareFactory->createNotIdenticalFalsyCompare($exprType, $arrayDimFetch, false);
 
         if (! $compareExpr instanceof Expr) {
             return null;
