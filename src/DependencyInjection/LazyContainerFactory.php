@@ -60,6 +60,7 @@ use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\Style\RectorStyle;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
@@ -68,6 +69,7 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\Provider\CurrentFileProvider;
+use Rector\Core\Rector\AbstractCollectorRector;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -455,6 +457,10 @@ final class LazyContainerFactory
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
 
+        $rectorConfig->when(RectorNodeTraverser::class)
+            ->needs('$collectorRectors')
+            ->giveTagged(CollectorRectorInterface::class);
+
         $rectorConfig->when(ConfigInitializer::class)
             ->needs('$rectors')
             ->giveTagged(RectorInterface::class);
@@ -526,22 +532,35 @@ final class LazyContainerFactory
         $this->registerTagged($rectorConfig, self::SKIP_VOTER_CLASSES, SkipVoterInterface::class);
 
         $rectorConfig->afterResolving(
-            AbstractRector::class,
-            static function (AbstractRector $rector, Container $container): void {
-                $rector->autowire(
-                    $container->make(NodeNameResolver::class),
-                    $container->make(NodeTypeResolver::class),
+            AbstractCollectorRector::class,
+            static function (AbstractCollectorRector $collectorRector, Container $container): void {
+                $collectorRector->autowire(
                     $container->make(SimpleCallableNodeTraverser::class),
-                    $container->make(NodeFactory::class),
-                    $container->make(PhpDocInfoFactory::class),
-                    $container->make(StaticTypeMapper::class),
                     $container->make(Skipper::class),
-                    $container->make(ValueResolver::class),
-                    $container->make(BetterNodeFinder::class),
-                    $container->make(NodeComparator::class),
                     $container->make(CurrentFileProvider::class),
                     $container->make(CreatedByRuleDecorator::class),
                     $container->make(ChangedNodeScopeRefresher::class),
+                );
+            }
+        );
+
+        $rectorConfig->afterResolving(
+            AbstractRector::class,
+            static function (AbstractRector $rector, Container $container): void {
+                $rector->autowire(
+                    $container->get(NodeNameResolver::class),
+                    $container->get(NodeTypeResolver::class),
+                    $container->get(SimpleCallableNodeTraverser::class),
+                    $container->get(NodeFactory::class),
+                    $container->get(PhpDocInfoFactory::class),
+                    $container->get(StaticTypeMapper::class),
+                    $container->get(Skipper::class),
+                    $container->get(ValueResolver::class),
+                    $container->get(BetterNodeFinder::class),
+                    $container->get(NodeComparator::class),
+                    $container->get(CurrentFileProvider::class),
+                    $container->get(CreatedByRuleDecorator::class),
+                    $container->get(ChangedNodeScopeRefresher::class),
                 );
             }
         );

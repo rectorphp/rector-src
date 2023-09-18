@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\Contract\SkipVoterInterface;
@@ -59,7 +60,7 @@ final class Skipper
     }
 
     /**
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     public function shouldSkipCurrentNode(
         string | object $element,

@@ -52,6 +52,11 @@ final class FileProcessor
 
     public function processFile(File $file, Configuration $configuration): FileProcessResult
     {
+        if ($configuration->isSecondRun()) {
+            // 2nd run
+            $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
+        }
+
         // 1. parse files to nodes
         $parsingSystemError = $this->parseFileAndDecorateNodes($file);
         if ($parsingSystemError instanceof SystemError) {

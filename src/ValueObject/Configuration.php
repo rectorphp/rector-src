@@ -22,6 +22,8 @@ final class Configuration
      */
     private array $collectedDatas = [];
 
+    private bool $isSecondRun = false;
+
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
@@ -155,5 +157,18 @@ final class Configuration
 =======
         return $this->collectedDatas;
 >>>>>>> 44a91d291b (Add collector processor)
+    }
+
+    public function enableSecondRun(): void
+    {
+        $this->isSecondRun = true;
+    }
+
+    /**
+     * @api
+     */
+    public function isSecondRun(): bool
+    {
+        return $this->isSecondRun;
     }
 }

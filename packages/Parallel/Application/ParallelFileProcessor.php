@@ -117,10 +117,11 @@ final class ParallelFileProcessor
                 }
 
                 $jobsChunk = array_pop($jobs);
+
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $jobsChunk,
-                    \Rector\Parallel\Enum\Content::PREVIOUSLY_COLLECTED_DATAS => $configuration->getCollectedDatas(),
+                    Bridge::PREVIOUSLY_COLLECTED_DATAS => $configuration->getCollectedDatas(),
                 ]);
             });
         });

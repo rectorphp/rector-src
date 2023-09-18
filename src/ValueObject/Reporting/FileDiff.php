@@ -6,6 +6,7 @@ namespace Rector\Core\ValueObject\Reporting;
 
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
@@ -60,7 +61,7 @@ final class FileDiff implements SerializableInterface
     }
 
     /**
-     * @return array<class-string<RectorInterface>>
+     * @return array<class-string<RectorInterface|CollectorRectorInterface>>
      */
     public function getRectorClasses(): array
     {

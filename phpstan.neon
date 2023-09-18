@@ -156,6 +156,7 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/PostRector/Rector/AbstractPostRector.php
                 - src/Rector/AbstractRector.php
+                - src/Rector/AbstractCollectorRector.php
                 - src/Rector/AbstractScopeAwareRector.php
 
         -
@@ -568,5 +569,22 @@ parameters:
 
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+<<<<<<< HEAD
 >>>>>>> 98b5551e72 (Add collector processor)
+<<<<<<< HEAD
 >>>>>>> e4785d40b2 (Adding collectors - step 4)
+=======
+=======
+
+        # collectors
+        - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+        - '#Method Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\:\:refactor\(\) return type has no value type specified in iterable type array#'
+        -
+            message: '#PHPDoc tag @return contains unresolvable type#'
+            path: src/Contract/Rector/CollectorRectorInterface.php
+        - '#Parameter \#1 \$node \(PhpParser\\Node\\Stmt\\Class_\) of method Rector\\(.*?)Collector\:\:processNode\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method PHPStan\\Collectors\\Collector<PhpParser\\Node,mixed>\:\:processNode\(\)#'
+        - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface>\|Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
+
+        - '#class\-string<Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface#'
+>>>>>>> ebf2f07dc3 (we're inside rector rule)
+>>>>>>> 79ba663a36 (kick of AbstractCollectorRector)

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\NodeDecorator;
 
 use PhpParser\Node;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -12,7 +13,7 @@ final class CreatedByRuleDecorator
 {
     /**
      * @param array<Node>|Node $node
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     public function decorate(array | Node $node, Node $originalNode, string $rectorClass): void
     {
@@ -35,7 +36,7 @@ final class CreatedByRuleDecorator
     }
 
     /**
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     private function createByRule(Node $node, string $rectorClass): void
     {

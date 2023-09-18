@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\ValueObject;
 
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
@@ -21,18 +22,18 @@ final class RectorWithLineChange implements SerializableInterface
     private const KEY_LINE = 'line';
 
     /**
-     * @var class-string<RectorInterface>
+     * @var class-string<RectorInterface|CollectorRectorInterface>
      */
     private readonly string $rectorClass;
 
     /**
-     * @param class-string<RectorInterface>|RectorInterface $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface>|RectorInterface|CollectorRectorInterface $rectorClass
      */
     public function __construct(
-        string|RectorInterface $rectorClass,
+        string|RectorInterface|CollectorRectorInterface $rectorClass,
         private readonly int $line
     ) {
-        if ($rectorClass instanceof RectorInterface) {
+        if ($rectorClass instanceof RectorInterface || $rectorClass instanceof CollectorRectorInterface) {
             $rectorClass = $rectorClass::class;
         }
 
@@ -40,7 +41,7 @@ final class RectorWithLineChange implements SerializableInterface
     }
 
     /**
-     * @return class-string<RectorInterface>
+     * @return class-string<RectorInterface|CollectorRectorInterface>
      */
     public function getRectorClass(): string
     {
@@ -62,7 +63,7 @@ final class RectorWithLineChange implements SerializableInterface
     }
 
     /**
-     * @return array{rector_class: class-string<RectorInterface>, line: int}
+     * @return array{rector_class: class-string<RectorInterface|CollectorRectorInterface>, line: int}
      */
     public function jsonSerialize(): array
     {

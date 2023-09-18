@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
@@ -18,7 +19,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 final class RectifiedAnalyzer
 {
     /**
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     public function hasRectified(string $rectorClass, Node $node): bool
     {
@@ -36,12 +37,12 @@ final class RectifiedAnalyzer
     }
 
     /**
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     private function hasConsecutiveCreatedByRule(string $rectorClass, Node $node, ?Node $originalNode): bool
     {
         $createdByRuleNode = $originalNode ?? $node;
-        /** @var class-string<RectorInterface>[] $createdByRule */
+        /** @var class-string<RectorInterface|CollectorRectorInterface>[] $createdByRule */
         $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         if ($createdByRule === []) {

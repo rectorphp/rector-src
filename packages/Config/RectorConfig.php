@@ -9,6 +9,7 @@ use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
@@ -16,6 +17,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\RectorGenerator\Exception\ConfigurationException;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Webmozart\Assert\Assert;
 
@@ -202,15 +204,21 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string<RectorInterface> $rectorClass
+     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
      */
     public function rule(string $rectorClass): void
     {
         Assert::classExists($rectorClass);
-        Assert::isAOf($rectorClass, RectorInterface::class);
+        Assert::isAnyOf($rectorClass, [RectorInterface::class, CollectorRectorInterface::class]);
 
         $this->singleton($rectorClass);
-        $this->tag($rectorClass, RectorInterface::class);
+        if (is_a($rectorClass, RectorInterface::class, true)) {
+            $this->tag($rectorClass, RectorInterface::class);
+        } elseif (is_a($rectorClass, CollectorRectorInterface::class, true)) {
+            $this->tag($rectorClass, CollectorRectorInterface::class);
+        } else {
+            throw new ConfigurationException();
+        }
 
         if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
             $this->extend(

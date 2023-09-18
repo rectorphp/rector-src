@@ -38,4 +38,9 @@ final class Bridge
      * @var string
      */
     public const COLLECTED_DATAS = 'collected_datas';
+
+    /**
+     * @var string
+     */
+    public const PREVIOUSLY_COLLECTED_DATAS = 'previously_collected_datas';
 }
