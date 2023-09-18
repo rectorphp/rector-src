@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject\Error;
 
-use Rector\Parallel\ValueObject\Name;
+use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 
 final class SystemError implements SerializableInterface
@@ -43,10 +43,10 @@ final class SystemError implements SerializableInterface
     public function jsonSerialize(): array
     {
         return [
-            Name::MESSAGE => $this->message,
-            Name::RELATIVE_FILE_PATH => $this->relativeFilePath,
-            Name::LINE => $this->line,
-            Name::RECTOR_CLASS => $this->rectorClass,
+            BridgeItem::MESSAGE => $this->message,
+            BridgeItem::RELATIVE_FILE_PATH => $this->relativeFilePath,
+            BridgeItem::LINE => $this->line,
+            BridgeItem::RECTOR_CLASS => $this->rectorClass,
         ];
     }
 
@@ -56,10 +56,10 @@ final class SystemError implements SerializableInterface
     public static function decode(array $json): self
     {
         return new self(
-            $json[Name::MESSAGE],
-            $json[Name::RELATIVE_FILE_PATH],
-            $json[Name::LINE],
-            $json[Name::RECTOR_CLASS]
+            $json[BridgeItem::MESSAGE],
+            $json[BridgeItem::RELATIVE_FILE_PATH],
+            $json[BridgeItem::LINE],
+            $json[BridgeItem::RECTOR_CLASS]
         );
     }
 
