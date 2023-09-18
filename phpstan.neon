@@ -552,13 +552,13 @@ parameters:
             message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
             path: rules/CodingStyle/ClassNameImport/UseImportsTraverser.php
 
-<<<<<<< HEAD
         # rector collectors
         - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
         -
             message: '#Anonymous function has an unused use \$configuration#'
             path: packages/Parallel/Application/ParallelFileProcessor.php
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         # stmts aware interface
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
@@ -575,6 +575,9 @@ parameters:
 >>>>>>> e4785d40b2 (Adding collectors - step 4)
 =======
 =======
+=======
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+>>>>>>> 0835aba0c7 (add test case)
 
         # collectors
         - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
@@ -586,5 +589,9 @@ parameters:
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface>\|Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
 
         - '#class\-string<Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface#'
+<<<<<<< HEAD
 >>>>>>> ebf2f07dc3 (we're inside rector rule)
 >>>>>>> 79ba663a36 (kick of AbstractCollectorRector)
+=======
+        - '#deprecated class Rector\\Core\\Rector\\AbstractCollectorRector\:#'
+>>>>>>> 0835aba0c7 (add test case)

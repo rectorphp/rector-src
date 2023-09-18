@@ -379,21 +379,13 @@ final class LazyContainerFactory
 
         $rectorConfig->import(__DIR__ . '/../../config/config.php');
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         // rector collectors
         $rectorConfig->when(Registry::class)
             ->needs('$collectors')
             ->giveTagged(Collector::class);
-=======
+
         // @todo collectors - just for testing purpose
-        $rectorConfig->collector(\Rector\TypeDeclaration\Collector\MethodCallTypeCollector::class);
->>>>>>> 585663451f (Add RectorConfig::collector())
-=======
-        $rectorConfig->when(Registry::class)
-            ->needs('$collectors')
-            ->giveTagged(Collector::class);
->>>>>>> 44a91d291b (Add collector processor)
+        $rectorConfig->collector(\Rector\TypeDeclaration\Collector\ParentClassCollector::class);
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
             $application = $container->make(ConsoleApplication::class);

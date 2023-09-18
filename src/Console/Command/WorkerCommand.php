@@ -132,7 +132,7 @@ final class WorkerCommand extends Command
                 return;
             }
 
-            $previouslyCollectedDataItems = $json[Bridge::PREVIOUSLY_COLLECTED_DATAS] ?? [];
+            $previouslyCollectedDataItems = $json[Bridge::PREVIOUSLY_COLLECTED_DATA] ?? [];
             if ($previouslyCollectedDataItems !== []) {
                 // turn to value objects
                 $previouslyCollectedDatas = [];
@@ -144,7 +144,7 @@ final class WorkerCommand extends Command
                     $previouslyCollectedDatas[] = CollectedData::decode($previouslyCollectedDataItem);
                 }
 
-                $configuration->setCollectedDatas($previouslyCollectedDatas);
+                $configuration->setCollectedData($previouslyCollectedDatas);
                 $configuration->enableSecondRun();
             }
 
@@ -169,7 +169,7 @@ final class WorkerCommand extends Command
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
-                    Bridge::COLLECTED_DATAS => $processResult->getCollectedDatas(),
+                    Bridge::COLLECTED_DATA => $processResult->getCollectedDatas(),
                 ],
             ]);
         });

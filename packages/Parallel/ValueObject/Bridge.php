@@ -37,10 +37,10 @@ final class Bridge
     /**
      * @var string
      */
-    public const COLLECTED_DATAS = 'collected_datas';
+    public const COLLECTED_DATA = 'collected_data';
 
     /**
      * @var string
      */
-    public const PREVIOUSLY_COLLECTED_DATAS = 'previously_collected_datas';
+    public const PREVIOUSLY_COLLECTED_DATA = 'previously_collected_data';
 }

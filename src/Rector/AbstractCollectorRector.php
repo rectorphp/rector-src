@@ -22,6 +22,9 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Skipper\Skipper\Skipper;
 use Webmozart\Assert\Assert;
 
+/**
+ * @deprecated Merge to AbstractRector + add marker of RectorCollectorInterface or use getType()/refactor() matching node type instead?
+ */
 abstract class AbstractCollectorRector extends NodeVisitorAbstract implements CollectorRectorInterface
 {
     /**

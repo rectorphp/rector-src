@@ -48,7 +48,6 @@ final class RectorNodeTraverser extends NodeTraverser
     {
         $this->rectors = $rectors;
         $this->visitors = [];
-        $this->collectorRectors = [];
 
         $this->areNodeVisitorsPrepared = false;
     }
@@ -64,7 +63,7 @@ final class RectorNodeTraverser extends NodeTraverser
         // hydrate abstract collector rector with configuration
         foreach ($this->collectorRectors as $collectorRector) {
             /** @var AbstractCollectorRector $collectorRector */
-            $collectorRector->setCollectedDatas($configuration->getCollectedDatas());
+            $collectorRector->setCollectedDatas($configuration->getCollectedData());
         }
 
         $this->visitors = $this->collectorRectors;

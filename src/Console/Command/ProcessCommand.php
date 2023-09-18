@@ -90,7 +90,7 @@ final class ProcessCommand extends Command
             $this->symfonyStyle->newLine(2);
             $this->symfonyStyle->title('Running 2nd time with collectors data');
 
-            $configuration->setCollectedDatas($processResult->getCollectedDatas());
+            $configuration->setCollectedData($processResult->getCollectedDatas());
             $configuration->enableSecondRun();
 
             $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);

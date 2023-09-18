@@ -65,10 +65,6 @@ final class PropertyPromotionDocBlockMerger
         string $paramName
     ): void {
         $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-<<<<<<< HEAD
-
-=======
->>>>>>> 44a91d291b (Add collector processor)
         $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
 
         // make sure the docblock is useful

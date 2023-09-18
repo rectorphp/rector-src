@@ -18,13 +18,6 @@ final class Configuration
     private array $collectedData = [];
 
     /**
-     * @var CollectedData[]
-     */
-    private array $collectedDatas = [];
-
-    private bool $isSecondRun = false;
-
-    /**
      * @param string[] $fileExtensions
      * @param string[] $paths
      */
@@ -112,53 +105,24 @@ final class Configuration
     }
 
     /**
-<<<<<<< HEAD
-     * @api
-=======
->>>>>>> 44a91d291b (Add collector processor)
-     * @param CollectedData[] $collectedDatas
+     * @param CollectedData[] $collectedData
      */
-    public function setCollectedDatas(array $collectedDatas): void
+    public function setCollectedData(array $collectedData): void
     {
-<<<<<<< HEAD
-        $this->collectedData = $collectedDatas;
+        $this->collectedData = $collectedData;
     }
 
     /**
-     * @api
-=======
-        $this->collectedDatas = $collectedDatas;
-    }
-
-    /**
->>>>>>> 44a91d291b (Add collector processor)
      * @return CollectedData[]
      */
-    public function getCollectedDatas(): array
+    public function getCollectedData(): array
     {
-<<<<<<< HEAD
         return $this->collectedData;
     }
 
     /**
      * @api
      */
-    public function enableSecondRun(): void
-    {
-        $this->isSecondRun = true;
-    }
-
-    /**
-     * @api
-     */
-    public function isSecondRun(): bool
-    {
-        return $this->isSecondRun;
-=======
-        return $this->collectedDatas;
->>>>>>> 44a91d291b (Add collector processor)
-    }
-
     public function enableSecondRun(): void
     {
         $this->isSecondRun = true;
