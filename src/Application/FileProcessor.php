@@ -9,6 +9,7 @@ use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
+use Rector\Core\Application\Collector\CollectorProcessor;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -42,6 +43,7 @@ final class FileProcessor
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly ErrorFactory $errorFactory,
         private readonly FilePathHelper $filePathHelper,
+        private readonly CollectorProcessor $collectorProcessor,
         private readonly PostFileProcessor $postFileProcessor,
         private readonly RectorParser $rectorParser,
         private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
@@ -65,6 +67,9 @@ final class FileProcessor
             $file->changeHasChanged(false);
 
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
+
+            // collect data
+            $fileCollectedData = $this->collectorProcessor->process($newStmts);
 
             // apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts);
@@ -101,7 +106,7 @@ final class FileProcessor
             $file->setFileDiff($currentFileDiff);
         }
 
-        return new FileProcessResult([], $file->getFileDiff(), []);
+        return new FileProcessResult([], $file->getFileDiff(), $fileCollectedData);
     }
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
