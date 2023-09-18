@@ -224,7 +224,7 @@ final class ApplicationFileProcessor
      */
     private function runParallel(
         array $filePaths,
-        $configuration,
+        Configuration $configuration,
         InputInterface $input,
         callable $postFileCallback
     ): ProcessResult {
