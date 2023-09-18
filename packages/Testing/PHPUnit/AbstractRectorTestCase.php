@@ -256,7 +256,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        if ($processResult->getCollectedDatas()) {
+        if ($processResult->getCollectedDatas() !== []) {
             // second run with collected data
             $configuration->setCollectedData($processResult->getCollectedDatas());
             $configuration->enableSecondRun();

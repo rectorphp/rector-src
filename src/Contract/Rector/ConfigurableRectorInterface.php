@@ -6,7 +6,7 @@ namespace Rector\Core\Contract\Rector;
 
 use Symplify\RuleDocGenerator\Contract\ConfigurableRuleInterface;
 
-interface ConfigurableRectorInterface extends ConfigurableRuleInterface
+interface ConfigurableRectorInterface extends RectorInterface, ConfigurableRuleInterface
 {
     /**
      * @param mixed[] $configuration

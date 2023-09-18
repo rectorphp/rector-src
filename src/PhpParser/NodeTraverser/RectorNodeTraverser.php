@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractCollectorRector;
 use Rector\Core\ValueObject\Configuration;
 use Rector\VersionBonding\PhpVersionedFilter;
@@ -55,9 +54,7 @@ final class RectorNodeTraverser extends NodeTraverser
     public function prepareCollectorRectorsRun(Configuration $configuration): void
     {
         if ($this->collectorRectors === []) {
-            throw new ShouldNotHappenException(
-                'There are no ConfigurableRectorInterface rules to run. Register them first.'
-            );
+            return;
         }
 
         // hydrate abstract collector rector with configuration

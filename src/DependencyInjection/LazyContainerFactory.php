@@ -180,6 +180,7 @@ use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\Collector\ParentClassCollector;
 use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
@@ -385,7 +386,7 @@ final class LazyContainerFactory
             ->giveTagged(Collector::class);
 
         // @todo collectors - just for testing purpose
-        $rectorConfig->collector(\Rector\TypeDeclaration\Collector\ParentClassCollector::class);
+        $rectorConfig->collector(ParentClassCollector::class);
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
             $application = $container->make(ConsoleApplication::class);

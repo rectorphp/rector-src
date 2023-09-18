@@ -413,7 +413,10 @@ parameters:
             message: '#Anonymous (variable|variables) in#'
             path: utils/ChangelogGenerator
 
+<<<<<<< HEAD
         # std class api
+=======
+>>>>>>> f60832b8b2 (cleanup phpstan)
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
@@ -554,9 +557,6 @@ parameters:
 
         # rector collectors
         - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-        -
-            message: '#Anonymous function has an unused use \$configuration#'
-            path: packages/Parallel/Application/ParallelFileProcessor.php
 
 <<<<<<< HEAD
 <<<<<<< HEAD

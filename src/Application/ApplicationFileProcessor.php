@@ -118,8 +118,8 @@ final class ApplicationFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
-        /** @var CollectedData[] $collectedDatas */
-        $collectedDatas = [];
+        /** @var CollectedData[] $collectedData */
+        $collectedData = [];
 
         foreach ($filePaths as $filePath) {
             if ($preFileCallback !== null) {
@@ -141,7 +141,7 @@ final class ApplicationFileProcessor
                     $fileDiffs[] = $currentFileDiff;
                 }
 
-                $collectedDatas = array_merge($collectedDatas, $fileProcessResult->getCollectedDatas());
+                $collectedData = array_merge($collectedData, $fileProcessResult->getCollectedDatas());
 
                 // progress bar on parallel handled on runParallel()
                 if (is_callable($postFileCallback)) {
@@ -158,7 +158,7 @@ final class ApplicationFileProcessor
             }
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $collectedDatas);
+        return new ProcessResult($systemErrors, $fileDiffs, $collectedData);
     }
 
     private function processFile(File $file, Configuration $configuration): FileProcessResult
