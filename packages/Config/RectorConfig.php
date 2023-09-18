@@ -373,8 +373,10 @@ final class RectorConfig extends Container
             is_string($skipRule)
             // not regex path
             && ! str_contains($skipRule, '*')
-            // not realpath
-            && realpath($skipRule) === false
+            // not directory
+            && ! is_dir($skipRule)
+            // not file
+            && ! is_file($skipRule)
             // a Rector end
             && str_ends_with($skipRule, 'Rector')
             // class not exists
