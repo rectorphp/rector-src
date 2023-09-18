@@ -1,14 +1,6 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
-services:
-    # makes $container->make() generic type
-    - Rector\Utils\PHPStan\ClassConstFetchReturnTypeResolver
-    -
-        class: Rector\Utils\PHPStan\TypeExtension\ContainerMakeReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
 parameters:
     reportUnmatchedIgnoredErrors: false
 
