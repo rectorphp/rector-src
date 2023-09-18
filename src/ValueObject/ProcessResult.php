@@ -14,16 +14,16 @@ final class ProcessResult
     /**
      * @param SystemError[] $systemErrors
      * @param FileDiff[] $fileDiffs
-     * @param CollectedData[] $collectedData
+     * @param CollectedData[] $collectedDatas
      */
     public function __construct(
         private array $systemErrors,
         private readonly array $fileDiffs,
-        private readonly array $collectedData
+        private readonly array $collectedDatas
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
-        Assert::allIsInstanceOf($collectedData, CollectedData::class);
+        Assert::allIsInstanceOf($collectedDatas, CollectedData::class);
     }
 
     /**
@@ -45,9 +45,9 @@ final class ProcessResult
     /**
      * @return CollectedData[]
      */
-    public function getCollectedData(): array
+    public function getCollectedDatas(): array
     {
-        return $this->collectedData;
+        return $this->collectedDatas;
     }
 
     /**

@@ -63,6 +63,7 @@ final class FileProcessor
 
         // 2. change nodes with Rectors
         $rectorWithLineChanges = null;
+
         do {
             $file->changeHasChanged(false);
 

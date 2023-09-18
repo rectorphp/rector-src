@@ -9,9 +9,12 @@ use PhpParser\NodeTraverser;
 use PHPStan\Collectors\CollectedData;
 use PHPStan\Collectors\Registry;
 
+<<<<<<< HEAD
 /**
  * @api
  */
+=======
+>>>>>>> 98b5551e72 (Add collector processor)
 final class CollectorProcessor
 {
     private readonly NodeTraverser $nodeTraverser;

@@ -193,6 +193,15 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @param class-string<Collector> $collectorClass
+     */
+    public function collector(string $collectorClass): void
+    {
+        $this->singleton($collectorClass);
+        $this->tag($collectorClass, Collector::class);
+    }
+
+    /**
      * @param class-string<RectorInterface> $rectorClass
      */
     public function rule(string $rectorClass): void

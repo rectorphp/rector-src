@@ -15,6 +15,7 @@ use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\ProcessConfigureDecorator;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Core\ValueObject\Configuration;
@@ -37,6 +38,7 @@ final class ProcessCommand extends Command
         private readonly SymfonyStyle $symfonyStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
+        private readonly RectorNodeTraverser $rectorNodeTraverser,
     ) {
         parent::__construct();
     }
@@ -83,8 +85,25 @@ final class ProcessCommand extends Command
         // 2. run Rector
         $processResult = $this->applicationFileProcessor->run($configuration, $input);
 
+        // 3. collectors phase
+        if ($processResult->getCollectedDatas() !== []) {
+            $configuration->setCollectedDatas($processResult->getCollectedDatas());
+
+            $this->symfonyStyle->newLine(2);
+            $this->symfonyStyle->title('Running 2nd time with collectors data');
+
+            $this->rectorNodeTraverser->prepareCollectorRectorsRun();
+
+            // reset rules in Rector traverser
+            $nextProcessResult = $this->applicationFileProcessor->run($configuration, $input);
+            dd($nextProcessResult);
+
+            // unset all rectors that are not collector
+            // set new collector rectors - have a custom tag? yes
+        }
+
         // REPORTING PHASE
-        // 3. reporting phase
+        // 4. reporting phase
         // report diffs and errors
         $outputFormat = $configuration->getOutputFormat();
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);

@@ -13,7 +13,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Throwable;
 
 /**
+<<<<<<< HEAD
  * @api
+=======
+>>>>>>> 98b5551e72 (Add collector processor)
  * @see Mimics https://github.com/phpstan/phpstan-src/commit/bccd1cd58e0d117ac8755ab228e338d966cac25a
  */
 final class CollectorNodeVisitor extends NodeVisitorAbstract

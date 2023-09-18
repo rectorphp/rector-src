@@ -39,9 +39,6 @@ parameters:
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
 
-        # handle later after di transition
-        - packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfoPrinter/MultilineTest.
-
         # CI test
         - tests/Fixtures/*
 
@@ -465,6 +462,11 @@ parameters:
         # false positive on enums
         - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
 
+<<<<<<< HEAD
+=======
+        - '#Access to an undefined property (.*?)?Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+
+>>>>>>> e4785d40b2 (Adding collectors - step 4)
         -
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Naming/VariableRenamer.php
@@ -549,12 +551,22 @@ parameters:
             message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
             path: rules/CodingStyle/ClassNameImport/UseImportsTraverser.php
 
+<<<<<<< HEAD
         # rector collectors
         - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
         -
             message: '#Anonymous function has an unused use \$configuration#'
             path: packages/Parallel/Application/ParallelFileProcessor.php
 
+<<<<<<< HEAD
         # stmts aware interface
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
         - '#undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface::\$stmts#'
+=======
+=======
+        - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+>>>>>>> 98b5551e72 (Add collector processor)
+>>>>>>> e4785d40b2 (Adding collectors - step 4)

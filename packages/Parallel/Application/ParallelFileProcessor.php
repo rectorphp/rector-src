@@ -120,6 +120,7 @@ final class ParallelFileProcessor
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $jobsChunk,
+                    \Rector\Parallel\Enum\Content::PREVIOUSLY_COLLECTED_DATAS => $configuration->getCollectedDatas(),
                 ]);
             });
         });
@@ -160,6 +161,7 @@ final class ParallelFileProcessor
         $processSpawner = function () use (
             &$systemErrors,
             &$fileDiffs,
+            &$collectedDatas,
             &$jobs,
             $postFileCallback,
             &$systemErrorsCount,
@@ -215,7 +217,7 @@ final class ParallelFileProcessor
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
                     }
 
-                    foreach ($json[Bridge::COLLECTED_DATA] as $jsonCollectedData) {
+                    foreach ($json[Bridge::COLLECTED_DATAS] as $jsonCollectedData) {
                         $collectedDatas[] = CollectedData::decode($jsonCollectedData);
                     }
 

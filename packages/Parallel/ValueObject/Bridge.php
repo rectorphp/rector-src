@@ -37,5 +37,5 @@ final class Bridge
     /**
      * @var string
      */
-    public const COLLECTED_DATA = 'collected_data';
+    public const COLLECTED_DATAS = 'collected_datas';
 }
