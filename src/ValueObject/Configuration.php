@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\Core\ValueObject;
 
+use PHPStan\Collectors\CollectedData;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Webmozart\Assert\Assert;
 
 final class Configuration
 {
+    private bool $isSecondRun = false;
+
+    /**
+     * @var CollectedData[]
+     */
+    private array $collectedData = [];
+
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
@@ -94,5 +102,39 @@ final class Configuration
     public function isDebug(): bool
     {
         return $this->isDebug;
+    }
+
+    /**
+     * @api
+     * @param CollectedData[] $collectedDatas
+     */
+    public function setCollectedDatas(array $collectedDatas): void
+    {
+        $this->collectedData = $collectedDatas;
+    }
+
+    /**
+     * @api
+     * @return CollectedData[]
+     */
+    public function getCollectedDatas(): array
+    {
+        return $this->collectedData;
+    }
+
+    /**
+     * @api
+     */
+    public function enableSecondRun(): void
+    {
+        $this->isSecondRun = true;
+    }
+
+    /**
+     * @api
+     */
+    public function isSecondRun(): bool
+    {
+        return $this->isSecondRun;
     }
 }
