@@ -33,6 +33,6 @@ final class CollectorProcessor
     public function process(array $stmts): array
     {
         $this->nodeTraverser->traverse($stmts);
-        return $this->collectorNodeVisitor->getCollectedDatas();
+        return $this->collectorNodeVisitor->getCollectedData();
     }
 }

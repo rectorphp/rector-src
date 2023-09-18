@@ -6,9 +6,9 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
+use PHPStan\Node\CollectedDataNode;
 use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Rector\AbstractCollectorRector;
 use Rector\Core\ValueObject\Configuration;
 use Rector\VersionBonding\PhpVersionedFilter;
 
@@ -57,10 +57,11 @@ final class RectorNodeTraverser extends NodeTraverser
             return;
         }
 
+        $collectedDataNode = new CollectedDataNode($configuration->getCollectedData(), false);
+
         // hydrate abstract collector rector with configuration
         foreach ($this->collectorRectors as $collectorRector) {
-            /** @var AbstractCollectorRector $collectorRector */
-            $collectorRector->setCollectedDatas($configuration->getCollectedData());
+            $collectorRector->setCollectedDataNode($collectedDataNode);
         }
 
         $this->visitors = $this->collectorRectors;
@@ -80,9 +81,14 @@ final class RectorNodeTraverser extends NodeTraverser
         }
 
         // filer out by version
-        $activePhpRectors = $this->phpVersionedFilter->filter($this->rectors);
+        $activeRectors = $this->phpVersionedFilter->filter($this->rectors);
 
-        $this->visitors = array_merge($this->visitors, $activePhpRectors);
+        $nonCollectorActiveRectors = array_filter(
+            $activeRectors,
+            static fn (RectorInterface $rector): bool => ! $rector instanceof CollectorRectorInterface
+        );
+
+        $this->visitors = array_merge($this->visitors, $nonCollectorActiveRectors);
 
         $this->areNodeVisitorsPrepared = true;
     }

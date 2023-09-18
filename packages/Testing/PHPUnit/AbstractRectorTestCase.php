@@ -97,7 +97,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 $phpRectors = [];
             }
 
-            $rectorNodeTraverser = $rectorConfig->get(RectorNodeTraverser::class);
+            $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
             $rectorNodeTraverser->refreshPhpRectors($phpRectors);
 
             // store cache
@@ -256,9 +256,9 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        if ($processResult->getCollectedDatas() !== []) {
+        if ($processResult->getCollectedData() !== []) {
             // second run with collected data
-            $configuration->setCollectedData($processResult->getCollectedDatas());
+            $configuration->setCollectedData($processResult->getCollectedData());
             $configuration->enableSecondRun();
 
             $rectorNodeTraverser = $this->make(RectorNodeTraverser::class);

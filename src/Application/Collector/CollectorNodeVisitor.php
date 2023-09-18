@@ -65,7 +65,7 @@ final class CollectorNodeVisitor extends NodeVisitorAbstract
     /**
      * @return CollectedData[]
      */
-    public function getCollectedDatas(): array
+    public function getCollectedData(): array
     {
         return $this->collectedDatas;
     }

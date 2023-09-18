@@ -9,23 +9,26 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Node\CollectedDataNode;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\DoctrineEntityAnalyzer;
-use Rector\Core\Rector\AbstractCollectorRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\TypeDeclaration\Collector\ParentClassCollector;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollectorRector
+/**
+ * @see \Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector\FinalizeClassesWithoutChildrenCollectorRectorTest
+ */
+final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractRector implements CollectorRectorInterface
 {
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly DoctrineEntityAnalyzer $doctrineEntityAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver,
     ) {
     }
 
@@ -40,7 +43,7 @@ final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollec
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node, CollectedDataNode $collectedDataNode): ?Node
+    public function refactor(Node $node): ?Node
     {
         if ($this->shouldSkipClass($node)) {
             return null;
@@ -59,7 +62,7 @@ final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollec
             return null;
         }
 
-        $parentClassNames = $this->resolveCollectedParentClassNames($collectedDataNode);
+        $parentClassNames = $this->resolveCollectedParentClassNames($this->getCollectedDataNode());
 
         // the class is being extended in the code, so we should skip it here
         if ($this->nodeNameResolver->isNames($node, $parentClassNames)) {
@@ -74,6 +77,11 @@ final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollec
         $this->visibilityManipulator->makeFinal($node);
 
         return $node;
+    }
+
+    public function getRuleDefinition(): RuleDefinition
+    {
+        return new RuleDefinition('...', []);
     }
 
     private function shouldSkipClass(Class_ $class): bool

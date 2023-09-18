@@ -10,11 +10,13 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
+use PHPStan\Node\CollectedDataNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Application\ChangedNodeScopeRefresher;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
@@ -30,6 +32,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Webmozart\Assert\Assert;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
@@ -83,6 +86,8 @@ CODE_SAMPLE;
 
     private ?int $toBeRemovedNodeId = null;
 
+    private ?CollectedDataNode $collectedDataNode = null;
+
     public function autowire(
         NodeNameResolver $nodeNameResolver,
         NodeTypeResolver $nodeTypeResolver,
@@ -111,6 +116,15 @@ CODE_SAMPLE;
         $this->currentFileProvider = $currentFileProvider;
         $this->createdByRuleDecorator = $createdByRuleDecorator;
         $this->changedNodeScopeRefresher = $changedNodeScopeRefresher;
+    }
+
+    /**
+     * @api used via optional contract
+     */
+    public function setCollectedDataNode(CollectedDataNode $collectedDataNode): void
+    {
+        Assert::isAOf(static::class, CollectorRectorInterface::class);
+        $this->collectedDataNode = $collectedDataNode;
     }
 
     /**
@@ -209,6 +223,16 @@ CODE_SAMPLE;
         }
 
         return $this->nodesToReturn[$objectId] ?? $node;
+    }
+
+    public function getCollectedDataNode(): CollectedDataNode
+    {
+        if (! $this->collectedDataNode instanceof CollectedDataNode) {
+            throw new ShouldNotHappenException('Collected data node is not set');
+        }
+
+        // this should be called only from CollectorRectorInterface
+        return $this->collectedDataNode;
     }
 
     protected function isName(Node $node, string $name): bool

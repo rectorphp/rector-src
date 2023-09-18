@@ -17,7 +17,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
-use Rector\RectorGenerator\Exception\ConfigurationException;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Webmozart\Assert\Assert;
 
@@ -195,20 +194,18 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string<RectorInterface|CollectorRectorInterface> $rectorClass
+     * @param class-string<RectorInterface> $rectorClass
      */
     public function rule(string $rectorClass): void
     {
         Assert::classExists($rectorClass);
-        Assert::isAnyOf($rectorClass, [RectorInterface::class, CollectorRectorInterface::class]);
+        Assert::isAOf($rectorClass, RectorInterface::class);
 
         $this->singleton($rectorClass);
-        if (is_a($rectorClass, RectorInterface::class, true)) {
-            $this->tag($rectorClass, RectorInterface::class);
-        } elseif (is_a($rectorClass, CollectorRectorInterface::class, true)) {
+        $this->tag($rectorClass, RectorInterface::class);
+
+        if (is_a($rectorClass, CollectorRectorInterface::class, true)) {
             $this->tag($rectorClass, CollectorRectorInterface::class);
-        } else {
-            throw new ConfigurationException();
         }
 
         if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {

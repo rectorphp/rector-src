@@ -40,7 +40,7 @@ final class FileProcessResult
     /**
      * @return CollectedData[]
      */
-    public function getCollectedDatas(): array
+    public function getCollectedData(): array
     {
         return $this->collectedDatas;
     }

@@ -69,7 +69,6 @@ use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\Rector\AbstractCollectorRector;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -523,19 +522,6 @@ final class LazyContainerFactory
             ->giveTagged(SkipVoterInterface::class);
 
         $this->registerTagged($rectorConfig, self::SKIP_VOTER_CLASSES, SkipVoterInterface::class);
-
-        $rectorConfig->afterResolving(
-            AbstractCollectorRector::class,
-            static function (AbstractCollectorRector $collectorRector, Container $container): void {
-                $collectorRector->autowire(
-                    $container->make(SimpleCallableNodeTraverser::class),
-                    $container->make(Skipper::class),
-                    $container->make(CurrentFileProvider::class),
-                    $container->make(CreatedByRuleDecorator::class),
-                    $container->make(ChangedNodeScopeRefresher::class),
-                );
-            }
-        );
 
         $rectorConfig->afterResolving(
             AbstractRector::class,

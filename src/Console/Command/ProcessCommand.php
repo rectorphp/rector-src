@@ -86,11 +86,11 @@ final class ProcessCommand extends Command
         $processResult = $this->applicationFileProcessor->run($configuration, $input);
 
         // 3. collectors phase
-        if ($processResult->getCollectedDatas() !== []) {
+        if ($processResult->getCollectedData() !== []) {
             $this->symfonyStyle->newLine(2);
             $this->symfonyStyle->title('Running 2nd time with collectors data');
 
-            $configuration->setCollectedData($processResult->getCollectedDatas());
+            $configuration->setCollectedData($processResult->getCollectedData());
             $configuration->enableSecondRun();
 
             $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);

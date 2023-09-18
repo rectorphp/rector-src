@@ -4,26 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Core\Contract\Rector;
 
-use PhpParser\Node;
-use PhpParser\NodeVisitor;
 use PHPStan\Node\CollectedDataNode;
 
 /**
  * @api
  */
-interface CollectorRectorInterface extends NodeVisitor
+interface CollectorRectorInterface extends RectorInterface
 {
-    /**
-     * List of nodes this class checks, classes that implements \PhpParser\Node
-     * See beautiful map of all nodes https://github.com/rectorphp/php-parser-nodes-docs#node-overview
-     *
-     * @return array<class-string<Node>>
-     */
-    public function getNodeTypes(): array;
+    public function setCollectedDataNode(CollectedDataNode $collectedDataNode): void;
 
-    /**
-     * Process Node of matched type
-     * @return Node|Node[]|null|NodeTraverser::*
-     */
-    public function refactor(Node $node, CollectedDataNode $collectedDataNode): null|array|Node|int;
+    public function getCollectedDataNode(): CollectedDataNode;
 }
