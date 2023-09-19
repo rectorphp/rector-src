@@ -20,3 +20,5 @@ parameters:
         - '*/Fixture/*'
         - '*/RenameClassRector/*'
         - '*/Source/phpstan.phar/*'
+        - '*/ImportFullyQualifiedNamesRector/*'
+        - '*/TagValueNodeReprint/*'
