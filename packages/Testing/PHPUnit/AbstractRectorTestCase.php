@@ -8,6 +8,7 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PHPStan\Collectors\Collector;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
@@ -179,10 +180,17 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $rectorConfig->offsetUnset($rector::class);
         }
 
-        // 2. remove all tagged rules
+        // 2. forget instance first, then remove tags
+        $collectors = $rectorConfig->tagged(Collector::class);
+        foreach ($collectors as $collector) {
+            $rectorConfig->offsetUnset($collector::class);
+        }
+
+        // 3. remove all tagged services
         $privatesAccessor = new PrivatesAccessor();
         $privatesAccessor->propertyClosure($rectorConfig, 'tags', static function (array $tags): array {
             unset($tags[RectorInterface::class]);
+            unset($tags[Collector::class]);
             return $tags;
         });
 

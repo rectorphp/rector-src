@@ -10,6 +10,9 @@ use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Collectors\Collector;
 
+/**
+ * @implements Collector<Class_, string[]|null>
+ */
 final class ParentClassCollector implements Collector
 {
     public function getNodeType(): string
@@ -19,7 +22,7 @@ final class ParentClassCollector implements Collector
 
     /**
      * @param Class_ $node
-     * @return mixed[]|null
+     * @return string[]|null
      */
     public function processNode(Node $node, Scope $scope): ?array
     {
