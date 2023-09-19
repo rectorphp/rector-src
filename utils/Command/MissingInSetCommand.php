@@ -9,6 +9,7 @@ use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorReadonlyClassRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Finder\RectorClassFinder;
@@ -99,6 +100,8 @@ final class MissingInSetCommand extends Command
         WhileNullableToInstanceofRector::class,
         // collectors
         FinalizeClassesWithoutChildrenCollectorRector::class,
+        // deprecated
+        TypedPropertyFromStrictConstructorReadonlyClassRector::class,
     ];
 
     public function __construct(
