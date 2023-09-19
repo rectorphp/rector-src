@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
@@ -17,7 +15,6 @@ use PHPStan\Type\MixedType;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -38,7 +35,6 @@ final class ClassMethodReturnTypeOverrideGuard
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
@@ -90,11 +86,7 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        if ($this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod)) {
-            return true;
-        }
-
-        return $this->hasClassMethodExprReturn($classMethod);
+        return $this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod);
     }
 
     private function isReturnTypeChangeAllowed(ClassMethod $classMethod, Scope $scope): bool
@@ -156,6 +148,9 @@ final class ClassMethodReturnTypeOverrideGuard
     private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod): bool
     {
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
+        if (! $returnType->isVoid()->yes()) {
+            return true;
+        }
 
         $methodName = $this->nodeNameResolver->getName($classMethod);
         foreach ($childrenClassReflections as $childClassReflection) {
@@ -175,10 +170,6 @@ final class ClassMethodReturnTypeOverrideGuard
             }
 
             $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
-            if (! $returnType->isVoid()->yes()) {
-                continue;
-            }
-
             if ($childReturnType->isVoid()->yes()) {
                 continue;
             }
@@ -210,19 +201,5 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         return false;
-    }
-
-    private function hasClassMethodExprReturn(ClassMethod $classMethod): bool
-    {
-        return (bool) $this->betterNodeFinder->findFirst(
-            (array) $classMethod->stmts,
-            static function (Node $node): bool {
-                if (! $node instanceof Return_) {
-                    return false;
-                }
-
-                return $node->expr instanceof Expr;
-            }
-        );
     }
 }
