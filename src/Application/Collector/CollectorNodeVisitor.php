@@ -33,6 +33,7 @@ final class CollectorNodeVisitor extends NodeVisitorAbstract
     public function beforeTraverse(array $nodes): ?array
     {
         $this->collectedDatas = [];
+
         return null;
     }
 

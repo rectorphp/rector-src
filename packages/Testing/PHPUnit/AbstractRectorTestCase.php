@@ -17,6 +17,7 @@ use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -70,7 +71,10 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // boot once for config + test case to avoid booting again and again for every test fixture
         $cacheKey = sha1($configFile . static::class);
 
-        if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
+        // boot is needed for rules with collectors, as there is some cached state
+        $hasCollectors = (bool) $rectorConfig->tagged(Collector::class);
+
+        if (! isset(self::$cacheByRuleAndConfig[$cacheKey]) || $hasCollectors) {
             // reset
             /** @var RewindableGenerator<int, ResetableInterface> $resetables */
             $resetables = $rectorConfig->tagged(ResetableInterface::class);
@@ -85,19 +89,22 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(CollectorRectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(Collector::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
             $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
             if ($rectorsGenerator instanceof RewindableGenerator) {
-                $phpRectors = iterator_to_array($rectorsGenerator->getIterator());
+                $rectors = iterator_to_array($rectorsGenerator->getIterator());
             } else {
                 // no rules at all, e.g. in case of only post rector run
-                $phpRectors = [];
+                $rectors = [];
             }
 
+            /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
-            $rectorNodeTraverser->refreshPhpRectors($phpRectors);
+            $rectorNodeTraverser->refreshPhpRectors($rectors);
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
@@ -173,6 +180,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // 1. forget tagged services
         ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
         ContainerMemento::forgetTag($rectorConfig, Collector::class);
+        ContainerMemento::forgetTag($rectorConfig, CollectorRectorInterface::class);
 
         // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();

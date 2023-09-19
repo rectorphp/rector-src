@@ -9,13 +9,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Node\CollectedDataNode;
 use PHPStan\Reflection\ClassReflection;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
->>>>>>> 9894d301da (fixup! misc)
-=======
->>>>>>> 68f4311467 (fixup! misc)
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\DoctrineEntityAnalyzer;
 use Rector\Core\Rector\AbstractCollectorRector;
@@ -69,8 +62,6 @@ final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollec
         }
 
         $parentClassNames = $this->resolveCollectedParentClassNames($this->getCollectedDataNode());
-
-        dump($parentClassNames);
 
         // the class is being extended in the code, so we should skip it here
         if ($this->nodeNameResolver->isNames($node, $parentClassNames)) {
