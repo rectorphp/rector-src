@@ -8,6 +8,8 @@ use Rector\TypeDeclaration\Collector\ParentClassCollector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
-
     $rectorConfig->collector(ParentClassCollector::class);
+
+    // explicit opt-in required
+    $rectorConfig->enableCollectors();
 };

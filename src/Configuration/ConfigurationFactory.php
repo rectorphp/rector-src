@@ -28,7 +28,23 @@ final class ConfigurationFactory
     {
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
-        return new Configuration(false, true, false, ConsoleOutputFormatter::NAME, $fileExtensions, $paths);
+        $isCollectors = SimpleParameterProvider::provideBoolParameter(Option::COLLECTORS, false);
+
+        return new Configuration(
+            false,
+            true,
+            false,
+            ConsoleOutputFormatter::NAME,
+            $fileExtensions,
+            $paths,
+            true,
+            null,
+            null,
+            false,
+            null,
+            false,
+            $isCollectors
+        );
     }
 
     /**
@@ -54,6 +70,7 @@ final class ConfigurationFactory
         $isDebug = (bool) $input->getOption(Option::DEBUG);
 
         $memoryLimit = $this->resolveMemoryLimit($input);
+        $isCollectors = SimpleParameterProvider::provideBoolParameter(Option::COLLECTORS);
 
         return new Configuration(
             $isDryRun,
@@ -67,7 +84,8 @@ final class ConfigurationFactory
             $parallelIdentifier,
             $isParallel,
             $memoryLimit,
-            $isDebug
+            $isDebug,
+            $isCollectors
         );
     }
 

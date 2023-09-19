@@ -52,7 +52,7 @@ final class FileProcessor
 
     public function processFile(File $file, Configuration $configuration): FileProcessResult
     {
-        if ($configuration->isSecondRun()) {
+        if ($configuration->isSecondRun() && $configuration->isCollectors()) {
             // 2nd run
             $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
         }
@@ -75,7 +75,7 @@ final class FileProcessor
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
             // collect data
-            $fileCollectedData = $this->collectorProcessor->process($newStmts);
+            $fileCollectedData = $configuration->isCollectors() ? $this->collectorProcessor->process($newStmts) : [];
 
             // apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts);

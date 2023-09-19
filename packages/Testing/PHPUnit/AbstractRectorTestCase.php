@@ -55,6 +55,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
     }
 
     protected function setUp(): void
@@ -71,10 +72,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // boot once for config + test case to avoid booting again and again for every test fixture
         $cacheKey = sha1($configFile . static::class);
 
-        // boot is needed for rules with collectors, as there is some cached state
-        $hasCollectors = (bool) $rectorConfig->tagged(Collector::class);
-
-        if (! isset(self::$cacheByRuleAndConfig[$cacheKey]) || $hasCollectors) {
+        if (! isset(self::$cacheByRuleAndConfig[$cacheKey])) {
             // reset
             /** @var RewindableGenerator<int, ResetableInterface> $resetables */
             $resetables = $rectorConfig->tagged(ResetableInterface::class);
@@ -84,7 +82,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 $resetable->reset();
             }
 
-            $this->forgetRectorsRules();
+            $this->forgetRectorsRulesAndCollectors();
             $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
@@ -173,7 +171,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
     }
 
-    protected function forgetRectorsRules(): void
+    protected function forgetRectorsRulesAndCollectors(): void
     {
         $rectorConfig = self::getContainer();
 
@@ -252,7 +250,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        if ($processResult->getCollectedData() !== []) {
+        if ($processResult->getCollectedData() !== [] && $configuration->isCollectors()) {
             // second run with collected data
             $configuration->setCollectedData($processResult->getCollectedData());
             $configuration->enableSecondRun();

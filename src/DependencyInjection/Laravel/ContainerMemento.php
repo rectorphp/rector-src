@@ -26,9 +26,10 @@ final class ContainerMemento
 
         // 2. forget tagged references
         $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure($container, 'tags', function (array $tags) use ($tagToForget): array {
+        $privatesAccessor->propertyClosure($container, 'tags', static function (array $tags) use (
+            $tagToForget
+        ): array {
             unset($tags[$tagToForget]);
-
             return $tags;
         });
     }

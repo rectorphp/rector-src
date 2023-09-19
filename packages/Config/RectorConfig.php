@@ -60,6 +60,14 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::PARALLEL, false);
     }
 
+    /**
+     * @experimental since Rector 0.17.x
+     */
+    public function enableCollectors(): void
+    {
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, true);
+    }
+
     public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
@@ -380,6 +388,14 @@ final class RectorConfig extends Container
             // completely forget the Rector rule only when no path specified
             ContainerMemento::forgetService($this, $skippedClass);
         }
+    }
+
+    /**
+     * @experimental since Rector 0.17.x
+     */
+    public function disableCollectors(): void
+    {
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
