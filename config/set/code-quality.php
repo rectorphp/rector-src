@@ -68,6 +68,7 @@ use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperator
 use Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector;
 use Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector;
 use Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector;
+use Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector;
 use Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector;
 use Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector;
@@ -186,5 +187,6 @@ return static function (RectorConfig $rectorConfig): void {
         DisallowedEmptyRuleFixerRector::class,
         ConvertStaticPrivateConstantToSelfRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
+        NumberCompareToMaxFuncCallRector::class,
     ]);
 };

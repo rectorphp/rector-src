@@ -48,13 +48,15 @@ class SomeClass
 {
     public function run()
     {
-        /** @var \stdClass|null $value */
-        $value = $this->foo->bar();
+        $value = $this->get();
         if (! $value instanceof \stdClass) {
             return null;
         }
 
         return $value;
+    }
+
+    public function get(): ?stdClass {
     }
 }
 CODE_SAMPLE
@@ -64,7 +66,10 @@ class SomeClass
 {
     public function run()
     {
-        return $this->foo->bar();
+        return $this->get();
+    }
+
+    public function get(): ?stdClass {
     }
 }
 CODE_SAMPLE

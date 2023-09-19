@@ -141,7 +141,7 @@ final class MissingInSetCommand extends Command
             $hasError = true;
             $this->symfonyStyle->title('We could not find there rules in configs');
 
-            $setRealpath = (string) realpath($setFile);
+            $setRealpath = realpath($setFile);
             $relativeFilePath = Strings::after($setRealpath, getcwd() . '/');
 
             $this->symfonyStyle->writeln(' * ' . $relativeFilePath);

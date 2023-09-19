@@ -90,7 +90,7 @@ CODE_SAMPLE
                 $addPropertyTypeDeclaration->getType(),
                 TypeKind::PROPERTY
             );
-            if ($typeNode === null) {
+            if (! $typeNode instanceof Node) {
                 // invalid configuration
                 throw new ShouldNotHappenException();
             }

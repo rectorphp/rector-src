@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PhpDocNodeVisitor;
 
-use PhpParser\Node as PhpParserNode;
+use PhpParser\Node as PhpNode;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
@@ -15,7 +15,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -33,11 +32,19 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
      */
     private array $oldToNewTypes = [];
 
+    private bool $hasChanged = false;
+
+    private ?PhpNode $currentPhpNode = null;
+
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
+    }
+
+    public function setCurrentPhpNode(PhpNode $phpNode): void
+    {
+        $this->currentPhpNode = $phpNode;
     }
 
     public function beforeTraverse(Node $node): void
@@ -45,6 +52,12 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         if ($this->oldToNewTypes === []) {
             throw new ShouldNotHappenException('Configure "$oldToNewClasses" first');
         }
+
+        if (! $this->currentPhpNode instanceof PhpNode) {
+            throw new ShouldNotHappenException('Configure "$currentPhpNode" first');
+        }
+
+        $this->hasChanged = false;
     }
 
     public function enterNode(Node $node): ?Node
@@ -53,19 +66,17 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $phpParserNode = $this->currentNodeProvider->getNode();
-        if (! $phpParserNode instanceof PhpParserNode) {
-            throw new ShouldNotHappenException();
-        }
+        /** @var \PhpParser\Node $currentPhpNode */
+        $currentPhpNode = $this->currentPhpNode;
 
-        $virtualNode = $phpParserNode->getAttribute(AttributeKey::VIRTUAL_NODE);
+        $virtualNode = $currentPhpNode->getAttribute(AttributeKey::VIRTUAL_NODE);
         if ($virtualNode === true) {
             return null;
         }
 
         $identifier = clone $node;
-        $identifier->name = $this->resolveNamespacedName($identifier, $phpParserNode, $node->name);
-        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $phpParserNode);
+        $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $node->name);
+        $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $currentPhpNode);
 
         $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         $isNoNamespacedName = ! str_starts_with($identifier->name, '\\') && substr_count($identifier->name, '\\') === 0;
@@ -90,6 +101,8 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
                 $newTypeNode->setAttribute(PhpDocAttributeKey::PARENT, $parentType);
             }
 
+            $this->hasChanged = true;
+
             return $newTypeNode;
         }
 
@@ -104,9 +117,14 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $this->oldToNewTypes = $oldToNewTypes;
     }
 
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
+    }
+
     private function resolveNamespacedName(
         IdentifierTypeNode $identifierTypeNode,
-        PhpParserNode $phpParserNode,
+        PhpNode $phpNode,
         string $name
     ): string {
         if (str_starts_with($name, '\\')) {
@@ -119,7 +137,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $identifierTypeNode,
-            $phpParserNode
+            $phpNode
         );
 
         if (! $staticType instanceof ObjectType) {
@@ -131,13 +149,13 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $uses = $this->useImportsResolver->resolve();
-        $originalNode = $phpParserNode->getAttribute(AttributeKey::ORIGINAL_NODE);
-        $scope = $originalNode instanceof PhpParserNode
+        $originalNode = $phpNode->getAttribute(AttributeKey::ORIGINAL_NODE);
+        $scope = $originalNode instanceof PhpNode
             ? $originalNode->getAttribute(AttributeKey::SCOPE)
-            : $phpParserNode->getAttribute(AttributeKey::SCOPE);
+            : $phpNode->getAttribute(AttributeKey::SCOPE);
 
         if (! $scope instanceof Scope) {
-            if (! $originalNode instanceof PhpParserNode) {
+            if (! $originalNode instanceof PhpNode) {
                 return $this->resolveNamefromUse($uses, $name);
             }
 

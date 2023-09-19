@@ -10,11 +10,10 @@ use PhpParser\Node\Name;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\PostRector\Contract\Collector\NodeCollectorInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class UseNodesToAddCollector implements NodeCollectorInterface
+final class UseNodesToAddCollector
 {
     /**
      * @var array<string, FullyQualifiedObjectType[]>
@@ -35,11 +34,6 @@ final class UseNodesToAddCollector implements NodeCollectorInterface
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
-    }
-
-    public function isActive(): bool
-    {
-        return $this->useImportTypesInFilePath !== [] || $this->functionUseImportTypesInFilePath !== [];
     }
 
     public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void

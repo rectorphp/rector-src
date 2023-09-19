@@ -27,12 +27,9 @@ use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocNodeFinder\PhpDocNodeByTypeFinder;
-use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\Type\ShortenedIdentifierTypeNode;
-use Rector\ChangesReporting\Collector\RectorChangeCollector;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -56,16 +53,12 @@ final class PhpDocInfo
 
     private readonly PhpDocNode $originalPhpDocNode;
 
-    private bool $hasChanged = false;
-
     public function __construct(
         private readonly PhpDocNode $phpDocNode,
         private readonly BetterTokenIterator $betterTokenIterator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly \PhpParser\Node $node,
         private readonly AnnotationNaming $annotationNaming,
-        private readonly CurrentNodeProvider $currentNodeProvider,
-        private readonly RectorChangeCollector $rectorChangeCollector,
         private readonly PhpDocNodeByTypeFinder $phpDocNodeByTypeFinder
     ) {
         $this->originalPhpDocNode = clone $phpDocNode;
@@ -83,8 +76,6 @@ final class PhpDocInfo
         $this->phpDocNode->children[] = $phpDocChildNode;
         // to give node more space
         $this->makeMultiLined();
-
-        $this->markAsChanged();
     }
 
     public function getPhpDocNode(): PhpDocNode
@@ -254,11 +245,14 @@ final class PhpDocInfo
      * @template T of \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<T> $typeToRemove
      */
-    public function removeByType(string $typeToRemove): void
+    public function removeByType(string $typeToRemove): bool
     {
+        $hasChanged = false;
+
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', function (Node $node) use (
-            $typeToRemove
+        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use (
+            $typeToRemove,
+            &$hasChanged
         ): ?int {
             if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
                 // keep special annotation for tools
@@ -270,7 +264,7 @@ final class PhpDocInfo
                     return null;
                 }
 
-                $this->markAsChanged();
+                $hasChanged = true;
                 return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
@@ -278,9 +272,11 @@ final class PhpDocInfo
                 return null;
             }
 
-            $this->markAsChanged();
+            $hasChanged = true;
             return PhpDocNodeTraverser::NODE_REMOVE;
         });
+
+        return $hasChanged;
     }
 
     public function addTagValueNode(PhpDocTagValueNode $phpDocTagValueNode): void
@@ -372,37 +368,13 @@ final class PhpDocInfo
     }
 
     /**
-     * @internal
+     * @deprecated Change doc block and print directly in the node instead
      * Should be handled by attributes of phpdoc node - if stard_and_end is missing in one of nodes, it has been changed
-     * Similar to missing original node in php-aprser
+     *
+     * @api
      */
     public function markAsChanged(): void
     {
-        $this->hasChanged = true;
-
-        $node = $this->currentNodeProvider->getNode();
-        if ($node instanceof \PhpParser\Node) {
-            $this->rectorChangeCollector->notifyNodeFileInfo($node);
-        }
-    }
-
-    public function hasChanged(): bool
-    {
-        if ($this->isNewNode()) {
-            return true;
-        }
-
-        if ($this->hasChanged) {
-            return true;
-        }
-
-        // has a single node with missing start_end
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $changedPhpDocNodeVisitor = new ChangedPhpDocNodeVisitor();
-        $phpDocNodeTraverser->addPhpDocNodeVisitor($changedPhpDocNodeVisitor);
-        $phpDocNodeTraverser->traverse($this->phpDocNode);
-
-        return $changedPhpDocNodeVisitor->hasChanged();
     }
 
     public function makeMultiLined(): void
@@ -446,7 +418,9 @@ final class PhpDocInfo
         $resolvedClasses = [];
 
         foreach ($genericTagValueNodes as $genericTagValueNode) {
-            $resolvedClasses[] = $genericTagValueNode->value;
+            if ($genericTagValueNode->value !== '') {
+                $resolvedClasses[] = $genericTagValueNode->value;
+            }
         }
 
         return $resolvedClasses;

@@ -6,6 +6,7 @@ namespace Rector\NodeTypeResolver;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -39,6 +40,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeCorrector\AccessoryNonEmptyStringTypeCorrector;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
+use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
@@ -110,6 +112,10 @@ final class NodeTypeResolver
                 // in some type checks, the provided type in rector.php configuration does not have to exists
                 return false;
             }
+        }
+
+        if ($resolvedType instanceof ObjectWithoutClassType) {
+            return $this->isMatchObjectWithoutClassType($resolvedType, $requiredObjectType);
         }
 
         return $this->isMatchingUnionType($resolvedType, $requiredObjectType);
@@ -229,7 +235,13 @@ final class NodeTypeResolver
             }
         }
 
-        $type = $scope->getNativeType($expr);
+        /**
+         * ArrayDimFetch got type by its Scope->getType(), otherwise, it got MixedType
+         */
+        $type = $expr instanceof ArrayDimFetch
+            ? $scope->getType($expr)
+            : $scope->getNativeType($expr);
+
         if (! $type instanceof UnionType) {
             if ($this->isAnonymousObjectType($type)) {
                 return new ObjectWithoutClassType();
@@ -238,20 +250,7 @@ final class NodeTypeResolver
             return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
         }
 
-        $hasChanged = false;
-        $types = $type->getTypes();
-        foreach ($types as $key => $childType) {
-            if ($this->isAnonymousObjectType($childType)) {
-                $types[$key] = new ObjectWithoutClassType();
-                $hasChanged = true;
-            }
-        }
-
-        if ($hasChanged) {
-            return $this->accessoryNonEmptyStringTypeCorrector->correct(new UnionType($types));
-        }
-
-        return $this->accessoryNonEmptyStringTypeCorrector->correct($type);
+        return $this->resolveNativeUnionType($type);
     }
 
     public function isNumberType(Expr $expr): bool
@@ -324,6 +323,39 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function resolveNativeUnionType(UnionType $unionType): Type
+    {
+        $hasChanged = false;
+        $types = $unionType->getTypes();
+        foreach ($types as $key => $childType) {
+            if ($this->isAnonymousObjectType($childType)) {
+                $types[$key] = new ObjectWithoutClassType();
+                $hasChanged = true;
+            }
+        }
+
+        if ($hasChanged) {
+            return $this->accessoryNonEmptyStringTypeCorrector->correct(new UnionType($types));
+        }
+
+        return $this->accessoryNonEmptyStringTypeCorrector->correct($unionType);
+    }
+
+    private function isMatchObjectWithoutClassType(
+        ObjectWithoutClassType $objectWithoutClassType,
+        ObjectType $requiredObjectType
+    ): bool {
+        if ($objectWithoutClassType instanceof ObjectWithoutClassTypeWithParentTypes) {
+            foreach ($objectWithoutClassType->getParentTypes() as $typeWithClassName) {
+                if ($requiredObjectType->isSuperTypeOf($typeWithClassName)->yes()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function isAnonymousObjectType(Type $type): bool

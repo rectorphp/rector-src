@@ -1,14 +1,6 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
-services:
-    # makes $container->make() generic type
-    - Rector\Utils\PHPStan\ClassConstFetchReturnTypeResolver
-    -
-        class: Rector\Utils\PHPStan\TypeExtension\ContainerMakeReturnTypeExtension
-        tags:
-            - phpstan.broker.dynamicMethodReturnTypeExtension
-
 parameters:
     reportUnmatchedIgnoredErrors: false
 
@@ -37,6 +29,9 @@ parameters:
 
     scanDirectories:
         - stubs
+
+    scanFiles:
+        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
 
     checkGenericClassInNonGenericObjectType: false
 
@@ -121,6 +116,7 @@ parameters:
             paths:
                 - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/Php70/EregToPcreTransformer.php
+                - packages/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
 
         - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
 
@@ -178,10 +174,6 @@ parameters:
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 
-        -
-            path: src/Bootstrap/RectorConfigsResolver.php
-            message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
-
         # known value object, nullable due to typed property
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
@@ -236,13 +228,9 @@ parameters:
         -
             message: '#Use value object over return of values#'
             paths:
-                - src/Application/ApplicationFileProcessor.php
-                - packages/Parallel/Application/ParallelFileProcessor.php
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
-
-        - '#Method Rector\\Core\\Application\\ApplicationFileProcessor\:\:runParallel\(\) should return array\{system_errors\: array<Rector\\Core\\ValueObject\\Error\\SystemError\>, file_diffs\: array<Rector\\Core\\ValueObject\\Reporting\\FileDiff\>\} but returns array#'
 
         # impossible to validate json string is a class-string
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
@@ -289,16 +277,12 @@ parameters:
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - src/DependencyInjection/LazyContainerFactory.php
-                - config/config.php
                 - packages/Config/RectorConfig.php
 
         # use of internal phpstan classes
         -
             message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: packages/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php
-        -
-            message: '#Creating new PHPStan\\Reflection\\Native\\NativeFunctionReflection is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-            path: src/PHPStan/Reflection/TypeToCallReflectionResolver/ClosureTypeToCallReflectionResolver
 
         -
             message: '#Do not name "[a-z]", shorter than 2 chars#'
@@ -316,9 +300,6 @@ parameters:
         -
             message: '#Class cognitive complexity is \d+, keep it under 50#'
             path: src/PhpParser/Printer/BetterStandardPrinter.php #41
-
-        # validate class-string input
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?)\(\) with (.*?) will always evaluate to (false|true)#'
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
@@ -423,11 +404,6 @@ parameters:
         # fixture class
         - '#Class "Rector\\Core\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
-        -
-            message: '#Offset (.*?)includes(.*?) always exists and is not nullable#'
-            paths:
-                - src/Bootstrap/ExtensionConfigResolver.php
-
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
 
@@ -441,10 +417,6 @@ parameters:
 
         # std class api
         -
-            message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: utils/ChangelogGenerator
-
-        -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
 
@@ -452,15 +424,6 @@ parameters:
             message: '#Class (.*?) not found#'
             paths:
                 - rules-tests/*/config/*
-
-        -
-            message: '#Value object "(.*?)" should be named "(.*?)" instead to respect used service#'
-            paths:
-                - rules-tests/*/config/*
-        -
-            message: '#Offset \d does not exist on array<string, string>#'
-            paths:
-                - *Test.php
 
         -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
 
@@ -502,24 +465,14 @@ parameters:
         # false positive on enums
         - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
 
-        - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-
         -
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Naming/VariableRenamer.php
 
-        # resolve continually
-        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
-
         # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
-        - '#Access to an undefined property PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
-
-        - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
 
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
         -
@@ -558,25 +511,8 @@ parameters:
             paths:
                 - src/NodeManipulator/PropertyManipulator.php
 
-        # remove later
-        - '#Public method "Rector\\Core\\NodeManipulator\\IfManipulator\:\:createIfStmt\(\)" is never used#'
-
         # submethods that handle smaller change
         - '#Method "refactor(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
-
-        -
-            message: '#Public method "AutoloadIncluder\:\:.*\(\)" is never used#'
-            path: bin/rector.php
-
-        -
-            message: '#Public method "Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:provide\(\)" is never used#'
-            path: src/Bootstrap/RectorConfigsResolver.php
-
-        -
-            message: '#Public method "Rector\\Core\\DependencyInjection\\RectorContainerFactory\:\:createFromBootstrapConfigs\(\)" is never used#'
-            path: src/DependencyInjection/RectorContainerFactory.php
-
-        - '#Class "Rector\\Renaming\\Rector\\FileWithoutNamespace\\PseudoNamespaceToNamespaceRector" is missing @see annotation with test case class reference#'
 
         # chicken/egg
         -
@@ -592,17 +528,33 @@ parameters:
             message: '#Do not name "d", shorter than 2 chars#'
             path: tests/debug_functions.php
 
-        # deprecated
-        -
-            message: '#Fetching class constant class of deprecated class Rector\\Core\\Contract\\Rector\\NonPhpRectorInterface#'
-            path: packages/Config/*
-
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
         -
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: packages/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
+        # allow generic use
+        - '#Parameters should use "Illuminate\\Container\\Container\|string\|callable" types as the only types passed to this method#'
+
         # checks for rector always autoloaded rules only
         -
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: packages/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
+
+        # remove in next step
+        - '#Method "(importNames|renamePhpDocType)\(\)" returns bool type, so the name should start with is/has/was#'
+
+        # ignore until PHPParser returns more precise types
+        -
+            message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
+            path: rules/CodingStyle/ClassNameImport/UseImportsTraverser.php
+
+        # rector collectors
+        - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+        -
+            message: '#Anonymous function has an unused use \$configuration#'
+            path: packages/Parallel/Application/ParallelFileProcessor.php
+
+        # stmts aware interface
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface::\$stmts#'

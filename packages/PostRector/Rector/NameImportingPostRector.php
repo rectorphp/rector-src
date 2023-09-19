@@ -15,9 +15,11 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -38,7 +40,8 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly AliasNameResolver $aliasNameResolver
+        private readonly AliasNameResolver $aliasNameResolver,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -53,8 +56,8 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $currentStmt = current($file->getNewStmts());
-        if ($currentStmt instanceof FileWithoutNamespace && current($currentStmt->stmts) instanceof InlineHTML) {
+        $firstStmt = current($file->getNewStmts());
+        if ($firstStmt instanceof FileWithoutNamespace && current($firstStmt->stmts) instanceof InlineHTML) {
             return null;
         }
 
@@ -62,16 +65,27 @@ final class NameImportingPostRector extends AbstractPostRector
             return $this->processNodeName($node, $file);
         }
 
-        if (($node instanceof Stmt || $node instanceof Param) && SimpleParameterProvider::provideBoolParameter(
-            Option::AUTO_IMPORT_DOC_BLOCK_NAMES
-        )) {
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
-
-            return $node;
+        if (! $node instanceof Stmt && ! $node instanceof Param) {
+            return null;
         }
 
-        return null;
+        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
+        if (! $shouldImportDocBlocks) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return null;
+        }
+
+        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
+        if (! $hasDocChanged) {
+            return null;
+        }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+        return $node;
     }
 
     private function processNodeName(Name $name, File $file): ?Node

@@ -48,7 +48,10 @@ final class FullyQualifiedObjectType extends ObjectType
         return $name;
     }
 
-    public function getUseNode(?int $useType = null): Use_
+    /**
+     * @param Use_::TYPE_* $useType
+     */
+    public function getUseNode(int $useType): Use_
     {
         $name = new Name($this->getClassName());
         $name->setAttribute(AttributeKey::IS_USEUSE_NAME, true);
@@ -56,9 +59,7 @@ final class FullyQualifiedObjectType extends ObjectType
         $useUse = new UseUse($name);
 
         $use = new Use_([$useUse]);
-        if ($useType !== null) {
-            $use->type = $useType;
-        }
+        $use->type = $useType;
 
         return $use;
     }
@@ -66,10 +67,5 @@ final class FullyQualifiedObjectType extends ObjectType
     public function getShortNameLowered(): string
     {
         return strtolower($this->getShortName());
-    }
-
-    public function getClassNameLowered(): string
-    {
-        return strtolower($this->getClassName());
     }
 }

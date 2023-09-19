@@ -9,5 +9,8 @@ use Rector\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpVersion(PhpVersionFeature::DEPRECATE_DYNAMIC_PROPERTIES);
 
-    $rectorConfig->ruleWithConfiguration(AddAllowDynamicPropertiesAttributeRector::class, ['*\Fixture\Process\*']);
+    $rectorConfig->ruleWithConfiguration(AddAllowDynamicPropertiesAttributeRector::class, [
+        '*\Fixture\Process\*',
+        'Rector\Tests\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector\Fixture\DefinedClass\AddAllowDynamicProperties',
+    ]);
 };

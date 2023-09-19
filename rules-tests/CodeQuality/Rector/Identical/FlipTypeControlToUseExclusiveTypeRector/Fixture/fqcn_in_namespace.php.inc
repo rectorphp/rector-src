@@ -8,14 +8,13 @@ class FqcnInNamespace
 {
     public function run()
     {
-        /** @var stdClass|null $stdClass */
         $stdClass = $this->getStdClass();
         if ($stdClass === null) {
             return;
         }
     }
 
-    public function getStdClass()
+    public function getStdClass(): ?stdClass
     {
         return new \stdClass();
     }
@@ -33,14 +32,13 @@ class FqcnInNamespace
 {
     public function run()
     {
-        /** @var stdClass|null $stdClass */
         $stdClass = $this->getStdClass();
         if (!$stdClass instanceof \Rector\Tests\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector\Source\stdClass) {
             return;
         }
     }
 
-    public function getStdClass()
+    public function getStdClass(): ?stdClass
     {
         return new \stdClass();
     }

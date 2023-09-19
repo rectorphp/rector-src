@@ -20,7 +20,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\Core\Configuration\CurrentNodeProvider;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 
@@ -35,7 +34,6 @@ final class BetterPhpDocParser extends PhpDocParser
     public function __construct(
         TypeParser $typeParser,
         ConstExprParser $constExprParser,
-        private readonly CurrentNodeProvider $currentNodeProvider,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
         private readonly array $phpDocNodeDecorators,
         private readonly PrivatesAccessor $privatesAccessor = new PrivatesAccessor(),
@@ -61,33 +59,26 @@ final class BetterPhpDocParser extends PhpDocParser
         );
     }
 
-    public function parse(TokenIterator $tokenIterator): PhpDocNode
+    public function parseWithNode(BetterTokenIterator $betterTokenIterator, Node $node): PhpDocNode
     {
-        $tokenIterator->consumeTokenType(Lexer::TOKEN_OPEN_PHPDOC);
-        $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
+        $betterTokenIterator->consumeTokenType(Lexer::TOKEN_OPEN_PHPDOC);
+        $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 
         $children = [];
-        if (! $tokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_PHPDOC)) {
-            $children[] = $this->parseChildAndStoreItsPositions($tokenIterator);
+        if (! $betterTokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_PHPDOC)) {
+            $children[] = $this->parseChildAndStoreItsPositions($betterTokenIterator);
 
-            while ($tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL) && ! $tokenIterator->isCurrentTokenType(
-                Lexer::TOKEN_CLOSE_PHPDOC
-            )) {
-                $children[] = $this->parseChildAndStoreItsPositions($tokenIterator);
+            while ($betterTokenIterator->tryConsumeTokenType(
+                Lexer::TOKEN_PHPDOC_EOL
+            ) && ! $betterTokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_PHPDOC)) {
+                $children[] = $this->parseChildAndStoreItsPositions($betterTokenIterator);
             }
         }
 
         // might be in the middle of annotations
-        $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_CLOSE_PHPDOC);
+        $betterTokenIterator->tryConsumeTokenType(Lexer::TOKEN_CLOSE_PHPDOC);
 
         $phpDocNode = new PhpDocNode($children);
-
-        // decorate FQN classes etc.
-        $node = $this->currentNodeProvider->getNode();
-        if (! $node instanceof Node) {
-            throw new ShouldNotHappenException();
-        }
-
         foreach ($this->phpDocNodeDecorators as $phpDocNodeDecorator) {
             $phpDocNodeDecorator->decorate($phpDocNode, $node);
         }

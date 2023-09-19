@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -120,10 +121,10 @@ CODE_SAMPLE
     }
 
     private function hasClassNewClassMethod(
-        Class_|Interface_ $classOrInternace,
+        Class_|Interface_ $classOrInterface,
         MethodCallRenameInterface $methodCallRename
     ): bool {
-        return (bool) $classOrInternace->getMethod($methodCallRename->getNewMethod());
+        return (bool) $classOrInterface->getMethod($methodCallRename->getNewMethod());
     }
 
     private function shouldKeepForParentInterface(
@@ -157,23 +158,19 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($classOrInterface->getMethods() as $classMethod) {
+            $methodName = $this->getName($classMethod->name);
+            if ($methodName === null) {
+                continue;
+            }
+
             foreach ($this->methodCallRenames as $methodCallRename) {
-                if (! $this->isName($classMethod->name, $methodCallRename->getOldMethod())) {
-                    continue;
-                }
-
-                if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
+                if ($this->shouldSkipRename(
+                    $methodName,
                     $classMethod,
-                    $methodCallRename->getObjectType()
+                    $methodCallRename,
+                    $classReflection,
+                    $classOrInterface
                 )) {
-                    continue;
-                }
-
-                if ($this->shouldKeepForParentInterface($methodCallRename, $classReflection)) {
-                    continue;
-                }
-
-                if ($this->hasClassNewClassMethod($classOrInterface, $methodCallRename)) {
                     continue;
                 }
 
@@ -189,11 +186,41 @@ CODE_SAMPLE
         return null;
     }
 
+    private function shouldSkipRename(
+        string $methodName,
+        ClassMethod $classMethod,
+        MethodCallRenameInterface $methodCallRename,
+        ClassReflection $classReflection,
+        Class_|Interface_ $classOrInterface
+    ): bool {
+        if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
+            return true;
+        }
+
+        if (! $this->nodeTypeResolver->isMethodStaticCallOrClassMethodObjectType(
+            $classMethod,
+            $methodCallRename->getObjectType()
+        )) {
+            return true;
+        }
+
+        if ($this->shouldKeepForParentInterface($methodCallRename, $classReflection)) {
+            return true;
+        }
+
+        return $this->hasClassNewClassMethod($classOrInterface, $methodCallRename);
+    }
+
     private function refactorMethodCallAndStaticCall(
         StaticCall|MethodCall $call
     ): ArrayDimFetch|null|MethodCall|StaticCall {
+        $callName = $this->getName($call->name);
+        if ($callName === null) {
+            return null;
+        }
+
         foreach ($this->methodCallRenames as $methodCallRename) {
-            if (! $this->isName($call->name, $methodCallRename->getOldMethod())) {
+            if (! $this->nodeNameResolver->isStringName($callName, $methodCallRename->getOldMethod())) {
                 continue;
             }
 

@@ -6,11 +6,11 @@ use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Core\Bootstrap\RectorConfigsResolver;
 use Rector\Core\Configuration\Option;
-use Rector\Core\Console\ConsoleApplication;
 use Rector\Core\Console\Style\SymfonyStyleFactory;
 use Rector\Core\DependencyInjection\LazyContainerFactory;
 use Rector\Core\DependencyInjection\RectorContainerFactory;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 
@@ -106,11 +106,8 @@ final class AutoloadIncluder
             return;
         }
 
+        /** @var string $realPath always string after file_exists() check */
         $realPath = realpath($filePath);
-        if (! is_string($realPath)) {
-            return;
-        }
-
         $this->alreadyLoadedAutoloadFiles[] = $realPath;
 
         require_once $filePath;
@@ -159,6 +156,6 @@ try {
     exit(Command::FAILURE);
 }
 
-/** @var ConsoleApplication $application */
-$application = $container->get(ConsoleApplication::class);
+/** @var Application $application */
+$application = $container->get(Application::class);
 exit($application->run());

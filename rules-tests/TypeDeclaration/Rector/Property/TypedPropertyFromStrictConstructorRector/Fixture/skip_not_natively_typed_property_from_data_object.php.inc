@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Fixture;
 
-use Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Source\NotNativelyTypedDataObject;
+use Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector\Source\NotNativelyTypedDataObject;
 
 final class SkipNotNativelyTypedPropertyFromDataObject
 {

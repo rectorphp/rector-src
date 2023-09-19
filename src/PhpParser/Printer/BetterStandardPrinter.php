@@ -20,7 +20,6 @@ use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
@@ -28,11 +27,9 @@ use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\Node\Expr\AlwaysRememberedExpr;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
@@ -42,18 +39,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  */
 final class BetterStandardPrinter extends Standard
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/jUFizd/1
-     */
-    private const NEWLINE_END_REGEX = "#\n$#";
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/F5x783/1
-     */
-    private const USE_REGEX = '#( use)\(#';
-
     /**
      * @var string
      * @see https://regex101.com/r/DrsMY4/1
@@ -74,7 +59,6 @@ final class BetterStandardPrinter extends Standard
     private const REPLACE_COLON_WITH_SPACE_REGEX = '#(^.*function .*\(.*\)) : #';
 
     public function __construct(
-        private readonly DocBlockUpdater $docBlockUpdater
     ) {
         parent::__construct([
             'shortArraySyntax' => true,
@@ -101,7 +85,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
-        if (count($newStmts) !== count($origStmts) && ! StringUtils::isMatch($content, self::NEWLINE_END_REGEX)) {
+        if (count($newStmts) !== count($origStmts) && ! str_ends_with($content, "\n")) {
             $content .= $this->nl;
         }
 
@@ -251,10 +235,7 @@ final class BetterStandardPrinter extends Standard
         // reindex positions for printer
         $nodes = array_values($nodes);
 
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
-
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
-
         if ($content === null) {
             return $content;
         }
@@ -306,7 +287,7 @@ final class BetterStandardPrinter extends Standard
             return $closureContent;
         }
 
-        return Strings::replace($closureContent, self::USE_REGEX, '$1 (');
+        return str_replace(' use(', ' use (', (string) $closureContent);
     }
 
     /**
@@ -371,16 +352,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pScalar_String($string);
-    }
-
-    /**
-     * @param Node[] $nodes
-     */
-    protected function pStmts(array $nodes, bool $indent = true): string
-    {
-        $this->moveCommentsFromAttributeObjectToCommentsAttribute($nodes);
-
-        return parent::pStmts($nodes, $indent);
     }
 
     /**
@@ -539,21 +510,6 @@ final class BetterStandardPrinter extends Standard
         }
 
         return $stmts;
-    }
-
-    /**
-     * @param array<Node|null> $nodes
-     */
-    private function moveCommentsFromAttributeObjectToCommentsAttribute(array $nodes): void
-    {
-        // move phpdoc from node to "comment" attribute
-        foreach ($nodes as $node) {
-            if (! $node instanceof Stmt && ! $node instanceof Param) {
-                continue;
-            }
-
-            $this->docBlockUpdater->updateNodeWithPhpDocInfo($node);
-        }
     }
 
     /**

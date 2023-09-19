@@ -56,7 +56,7 @@ CODE_SAMPLE
         }
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
-        if ($returnTypeNode === null) {
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 

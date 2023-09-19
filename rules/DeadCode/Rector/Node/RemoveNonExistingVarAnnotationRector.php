@@ -22,6 +22,7 @@ use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\While_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\StmtsManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -52,7 +53,8 @@ final class RemoveNonExistingVarAnnotationRector extends AbstractRector
     ];
 
     public function __construct(
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -154,6 +156,7 @@ CODE_SAMPLE
             }
 
             $phpDocInfo->removeByType(VarTagValueNode::class);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
             $hasChanged = true;
         }
 

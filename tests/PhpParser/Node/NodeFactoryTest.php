@@ -28,11 +28,11 @@ final class NodeFactoryTest extends AbstractLazyTestCase
      * @param int[]|array<string, int> $inputArray
      */
     #[DataProvider('provideDataForArray')]
-    public function testCreateArray(array $inputArray, Array_ $expectedArrayNode): void
+    public function testCreateArray(array $inputArray, Array_ $expectedArray): void
     {
         $arrayNode = $this->nodeFactory->createArray($inputArray);
 
-        $this->assertEquals($expectedArrayNode, $arrayNode);
+        $this->assertEquals($expectedArray, $arrayNode);
     }
 
     /**

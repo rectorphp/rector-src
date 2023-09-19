@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 
 final class AliasUsesResolver
@@ -44,10 +45,16 @@ final class AliasUsesResolver
     {
         $aliasedUses = [];
 
+        /** @param Use_::TYPE_* $useType */
         $this->useImportsTraverser->traverserStmts($stmts, static function (
+            int $useType,
             UseUse $useUse,
             string $name
         ) use (&$aliasedUses): void {
+            if ($useType !== Use_::TYPE_NORMAL) {
+                return;
+            }
+
             if (! $useUse->alias instanceof Identifier) {
                 return;
             }

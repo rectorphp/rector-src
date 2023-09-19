@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -143,7 +142,6 @@ CODE_SAMPLE
             return $this->exprAnalyzer->isNonTypedFromParam($expr);
         }
 
-        /** @var PropertyFetch|StaticPropertyFetch $expr */
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
             $propertyType = $expr instanceof StaticPropertyFetch

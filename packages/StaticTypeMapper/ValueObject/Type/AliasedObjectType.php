@@ -29,7 +29,10 @@ final class AliasedObjectType extends ObjectType
         return $this->fullyQualifiedClass;
     }
 
-    public function getUseNode(?int $useType = null): Use_
+    /**
+     * @param Use_::TYPE_* $useType
+     */
+    public function getUseNode(int $useType): Use_
     {
         $name = new Name($this->fullyQualifiedClass);
         $name->setAttribute(AttributeKey::IS_USEUSE_NAME, true);
@@ -37,9 +40,7 @@ final class AliasedObjectType extends ObjectType
         $useUse = new UseUse($name, $this->getClassName());
 
         $use = new Use_([$useUse]);
-        if ($useType !== null) {
-            $use->type = $useType;
-        }
+        $use->type = $useType;
 
         return $use;
     }

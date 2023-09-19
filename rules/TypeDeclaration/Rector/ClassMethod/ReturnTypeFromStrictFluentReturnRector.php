@@ -9,6 +9,8 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -86,25 +88,50 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-
-        if (! $returnType instanceof ThisType) {
-            return null;
-        }
-
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
         if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
-        if ($classReflection->isAnonymous()
-            || $classReflection->isFinalByKeyword()
-            || ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
-            $node->returnType = new Name('self');
-        } else {
-            $node->returnType = new Name('static');
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+
+        if ($returnType instanceof StaticType && $returnType->getStaticObjectType()->getClassName() === $classReflection->getName()) {
+            return $this->processAddReturnSelfOrStatic($node, $classReflection);
         }
 
-        return $node;
+        if ($returnType instanceof ObjectType && $returnType->getClassName() === $classReflection->getName()) {
+            $node->returnType = new Name('self');
+            return $node;
+        }
+
+        if (! $returnType instanceof ThisType) {
+            return null;
+        }
+
+        return $this->processAddReturnSelfOrStatic($node, $classReflection);
+    }
+
+    private function processAddReturnSelfOrStatic(
+        ClassMethod $classMethod,
+        ClassReflection $classReflection
+    ): ClassMethod {
+        $classMethod->returnType = $this->shouldSelf($classReflection)
+            ? new Name('self')
+            : new Name('static');
+
+        return $classMethod;
+    }
+
+    private function shouldSelf(ClassReflection $classReflection): bool
+    {
+        if ($classReflection->isAnonymous()) {
+            return true;
+        }
+
+        if ($classReflection->isFinalByKeyword()) {
+            return true;
+        }
+
+        return ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
     }
 }

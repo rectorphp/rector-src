@@ -9,15 +9,21 @@ use Clue\React\NDJson\Encoder;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
+use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Console\ProcessConfigureDecorator;
+use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
-use Rector\Parallel\WorkerRunner;
+use Rector\Core\ValueObject\Configuration;
+use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Parallel\ValueObject\Bridge;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
+use Symplify\EasyParallel\Enum\ReactEvent;
+use Throwable;
 
 /**
  * Inspired at: https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92
@@ -28,8 +34,14 @@ use Symplify\EasyParallel\Enum\ReactCommand;
  */
 final class WorkerCommand extends Command
 {
+    /**
+     * @var string
+     */
+    private const RESULT = 'result';
+
     public function __construct(
-        private readonly WorkerRunner $workerRunner,
+        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator,
+        private readonly ApplicationFileProcessor $applicationFileProcessor,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory
     ) {
@@ -57,21 +69,91 @@ final class WorkerCommand extends Command
         $tcpConnector = new TcpConnector($streamSelectLoop);
 
         $promise = $tcpConnector->connect('127.0.0.1:' . $configuration->getParallelPort());
-        $promise->then(function (ConnectionInterface $connection) use ($parallelIdentifier, $configuration): void {
+        $promise->then(function (ConnectionInterface $connection) use (
+            $parallelIdentifier,
+            $configuration,
+            $output
+        ): void {
             $inDecoder = new Decoder($connection, true, 512, JSON_INVALID_UTF8_IGNORE);
             $outEncoder = new Encoder($connection, JSON_INVALID_UTF8_IGNORE);
 
-            // handshake?
             $outEncoder->write([
                 ReactCommand::ACTION => Action::HELLO,
                 ReactCommand::IDENTIFIER => $parallelIdentifier,
             ]);
 
-            $this->workerRunner->run($outEncoder, $inDecoder, $configuration);
+            $this->runWorker($outEncoder, $inDecoder, $configuration, $output);
         });
 
         $streamSelectLoop->run();
 
         return self::SUCCESS;
+    }
+
+    private function runWorker(
+        Encoder $encoder,
+        Decoder $decoder,
+        Configuration $configuration,
+        OutputInterface $output
+    ): void {
+        $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
+
+        if ($configuration->isDebug()) {
+            $preFileCallback = static function (string $filePath) use ($output): void {
+                $output->writeln($filePath);
+            };
+        } else {
+            $preFileCallback = null;
+        }
+
+        // 1. handle system error
+        $handleErrorCallback = static function (Throwable $throwable) use ($encoder): void {
+            $systemError = new SystemError($throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+
+            $encoder->write([
+                ReactCommand::ACTION => Action::RESULT,
+                self::RESULT => [
+                    Bridge::SYSTEM_ERRORS => [$systemError],
+                    Bridge::FILES_COUNT => 0,
+                    Bridge::SYSTEM_ERRORS_COUNT => 1,
+                ],
+            ]);
+            $encoder->end();
+        };
+
+        $encoder->on(ReactEvent::ERROR, $handleErrorCallback);
+
+        // 2. collect diffs + errors from file processor
+        $decoder->on(ReactEvent::DATA, function (array $json) use ($preFileCallback, $encoder, $configuration): void {
+            $action = $json[ReactCommand::ACTION];
+            if ($action !== Action::MAIN) {
+                return;
+            }
+
+            /** @var string[] $filePaths */
+            $filePaths = $json[Bridge::FILES] ?? [];
+
+            $processResult = $this->applicationFileProcessor->processFiles(
+                $filePaths,
+                $configuration,
+                $preFileCallback
+            );
+
+            /**
+             * this invokes all listeners listening $decoder->on(...) @see \Symplify\EasyParallel\Enum\ReactEvent::DATA
+             */
+            $encoder->write([
+                ReactCommand::ACTION => Action::RESULT,
+                self::RESULT => [
+                    Bridge::FILE_DIFFS => $processResult->getFileDiffs(),
+                    Bridge::FILES_COUNT => count($filePaths),
+                    Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
+                    Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
+                    Bridge::COLLECTED_DATA => $processResult->getCollectedData(),
+                ],
+            ]);
+        });
+
+        $decoder->on(ReactEvent::ERROR, $handleErrorCallback);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyFetchTypeResolver;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use PhpParser\Node\Expr\PropertyFetch;
 use PHPStan\Type\Type;
 use PHPStan\Type\VerbosityLevel;
@@ -43,6 +44,9 @@ final class PropertyFetchTypeResolverTest extends AbstractNodeTypeResolverTestCa
         $resolvedTypeAsString = $this->getStringFromType($resolvedType);
 
         $this->assertSame($expectedTypeAsString, $resolvedTypeAsString);
+
+        FileSystem::delete($inputFilePath);
+        FileSystem::delete($typeFilePath);
     }
 
     private function getStringFromType(Type $type): string

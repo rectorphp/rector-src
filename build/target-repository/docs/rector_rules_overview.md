@@ -6,9 +6,9 @@
 
 - [Arguments](#arguments) (4)
 
-- [CodeQuality](#codequality) (70)
+- [CodeQuality](#codequality) (71)
 
-- [CodingStyle](#codingstyle) (30)
+- [CodingStyle](#codingstyle) (29)
 
 - [DeadCode](#deadcode) (41)
 
@@ -48,13 +48,13 @@
 
 - [Removing](#removing) (5)
 
-- [Renaming](#renaming) (10)
+- [Renaming](#renaming) (9)
 
 - [Strict](#strict) (5)
 
 - [Transform](#transform) (22)
 
-- [TypeDeclaration](#typedeclaration) (41)
+- [TypeDeclaration](#typedeclaration) (42)
 
 - [Visibility](#visibility) (3)
 
@@ -862,6 +862,25 @@ Change unsafe new `static()` to new `self()`
 
 <br>
 
+### NumberCompareToMaxFuncCallRector
+
+Ternary number compare to `max()` call
+
+- class: [`Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector`](../rules/CodeQuality/Rector/Ternary/NumberCompareToMaxFuncCallRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run($value)
+     {
+-        return $value > 100 ? $value : 100;
++        return max($value, 100);
+     }
+ }
+```
+
+<br>
+
 ### OptionalParametersAfterRequiredRector
 
 Move required parameters after optional ones
@@ -993,8 +1012,9 @@ Simplify bool value compare to true or false
      public function run(bool $value, string $items)
      {
 -         $match = in_array($value, $items, TRUE) === TRUE;
--         $match = in_array($value, $items, TRUE) !== FALSE;
 +         $match = in_array($value, $items, TRUE);
+
+-         $match = in_array($value, $items, TRUE) !== FALSE;
 +         $match = in_array($value, $items, TRUE);
      }
  }
@@ -1143,14 +1163,16 @@ Direct return on if nullable check before return
  {
      public function run()
      {
--        /** @var \stdClass|null $value */
--        $value = $this->foo->bar();
+-        $value = $this->get();
 -        if (! $value instanceof \stdClass) {
 -            return null;
 -        }
 -
 -        return $value;
-+        return $this->foo->bar();
++        return $this->get();
+     }
+
+     public function get(): ?stdClass {
      }
  }
 ```
@@ -1714,8 +1736,11 @@ Convert enscaped {$string} to more readable sprintf or concat, if no mask is use
 - class: [`Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector`](../rules/CodingStyle/Rector/Encapsed/EncapsedStringsToSprintfRector.php)
 
 ```diff
--echo "Unsupported format {$format}";
-+echo sprintf('Unsupported format %s', $format);
+-echo "Unsupported format {$format} - use another";
++echo sprintf('Unsupported format %s - use another', $format);
+
+-echo "Try {$allowed}";
++echo 'Try ' . $allowed;
 ```
 
 <br>
@@ -2019,30 +2044,6 @@ Assign outcome of ternary condition to variable, where applicable
  {
 -    $value ? $a = 1 : $a = 0;
 +    $a = $value ? 1 : 0;
- }
-```
-
-<br>
-
-### UnSpreadOperatorRector
-
-Remove spread operator
-
-- class: [`Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector`](../rules/CodingStyle/Rector/ClassMethod/UnSpreadOperatorRector.php)
-
-```diff
- class SomeClass
- {
--    public function run(...$array)
-+    public function run(array $array)
-     {
-     }
-
-     public function execute(array $data)
-     {
--        $this->run(...$data);
-+        $this->run($data);
-     }
  }
 ```
 
@@ -5433,24 +5434,6 @@ Remove specific traits from code
 
 ## Renaming
 
-### PseudoNamespaceToNamespaceRector
-
-Replaces defined Pseudo_Namespaces by Namespace\Ones.
-
-:wrench: **configure it!**
-
-- class: [`Rector\Renaming\Rector\FileWithoutNamespace\PseudoNamespaceToNamespaceRector`](../rules/Renaming/Rector/FileWithoutNamespace/PseudoNamespaceToNamespaceRector.php)
-
-```diff
--/** @var Some_Chicken $someService */
--$someService = new Some_Chicken;
-+/** @var Some\Chicken $someService */
-+$someService = new Some\Chicken;
- $someClassToKeep = new Some_Class_To_Keep;
-```
-
-<br>
-
 ### RenameAnnotationRector
 
 Turns defined annotations above properties and methods to their new values.
@@ -6732,6 +6715,25 @@ Add strict type declaration based on returned constants
 +    public function run(): string
      {
          return self::NAME;
+     }
+ }
+```
+
+<br>
+
+### ReturnTypeFromStrictFluentReturnRector
+
+Add return type from strict return `$this`
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictFluentReturnRector.php)
+
+```diff
+ final class SomeClass
+ {
+-    public function run()
++    public function run(): self
+     {
+         return $this;
      }
  }
 ```

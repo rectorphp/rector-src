@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
@@ -25,7 +26,7 @@ final class SilentVoidResolver
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
     ) {
     }
 
@@ -36,23 +37,15 @@ final class SilentVoidResolver
             return false;
         }
 
-        if ($this->hasNeverType($functionLike)) {
-            return false;
-        }
-
         if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, Yield_::class)) {
             return false;
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
-        foreach ($returns as $return) {
-            if ($return->expr instanceof Expr) {
-                return false;
-            }
-        }
-
-        return true;
+        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $functionLike,
+            static fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
+        );
+        return ! $return instanceof Return_;
     }
 
     public function hasSilentVoid(FunctionLike $functionLike): bool
@@ -135,14 +128,6 @@ final class SilentVoidResolver
         }
 
         return true;
-    }
-
-    /**
-     * @see https://phpstan.org/writing-php-code/phpdoc-types#bottom-type
-     */
-    private function hasNeverType(ClassMethod | Closure | Function_ $functionLike): bool
-    {
-        return $this->betterNodeFinder->hasInstancesOf($functionLike, [Throw_::class]);
     }
 
     private function resolveReturnCount(Switch_ $switch): int

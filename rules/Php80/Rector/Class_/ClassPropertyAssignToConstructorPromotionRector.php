@@ -15,22 +15,20 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\Naming\PropertyRenamer\PropertyPromotionRenamer;
 use Rector\Naming\VariableRenamer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\Php80\DocBlock\PropertyPromotionDocBlockMerger;
 use Rector\Php80\Guard\MakePropertyPromotionGuard;
 use Rector\Php80\NodeAnalyzer\PromotedPropertyCandidateResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -64,12 +62,12 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
     public function __construct(
         private readonly PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
         private readonly VariableRenamer $variableRenamer,
-        private readonly VarTagRemover $varTagRemover,
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PropertyPromotionDocBlockMerger $propertyPromotionDocBlockMerger,
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PropertyPromotionRenamer $propertyPromotionRenamer
     ) {
     }
 
@@ -138,26 +136,21 @@ CODE_SAMPLE
             return null;
         }
 
-        $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
-        $classReflection = null;
+        $constructorPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($constructClassMethod);
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         foreach ($promotionCandidates as $promotionCandidate) {
-            // does property have some useful annotations?
-            $property = $promotionCandidate->getProperty();
             $param = $promotionCandidate->getParam();
 
             if ($this->shouldSkipParam($param)) {
                 continue;
             }
 
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
-            }
-
+            $property = $promotionCandidate->getProperty();
             if (! $this->makePropertyPromotionGuard->isLegal(
                 $node,
                 $classReflection,
@@ -168,14 +161,14 @@ CODE_SAMPLE
                 continue;
             }
 
+            // remove property from class
             $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
             unset($node->stmts[$propertyStmtKey]);
 
-            // remove assign
+            // remove assign in constructor
             $assignStmtPosition = $promotionCandidate->getStmtPosition();
             unset($constructClassMethod->stmts[$assignStmtPosition]);
 
-            $property = $promotionCandidate->getProperty();
             $paramName = $this->getName($param);
 
             // rename also following calls
@@ -185,25 +178,39 @@ CODE_SAMPLE
             $oldName = $this->getName($param->var);
             $this->variableRenamer->renameVariableInFunctionLike($constructClassMethod, $oldName, $propertyName, null);
 
-            $paramTagValueNode = $classMethodPhpDocInfo->getParamTagValueByName($paramName);
+            $paramTagValueNode = $constructorPhpDocInfo->getParamTagValueByName($paramName);
 
             if (! $paramTagValueNode instanceof ParamTagValueNode) {
-                $this->decorateParamWithPropertyPhpDocInfo($constructClassMethod, $property, $param, $paramName);
+                $this->propertyPromotionDocBlockMerger->decorateParamWithPropertyPhpDocInfo(
+                    $constructClassMethod,
+                    $property,
+                    $param,
+                    $paramName
+                );
             } elseif ($paramTagValueNode->parameterName !== '$' . $propertyName) {
-                $paramTagValueNode->parameterName = '$' . $propertyName;
-                $paramTagValueNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
+                $this->propertyPromotionRenamer->renameParamDoc(
+                    $constructorPhpDocInfo,
+                    $constructClassMethod,
+                    $param,
+                    $paramTagValueNode->parameterName,
+                    $propertyName
+                );
             }
 
             // property name has higher priority
             $paramName = $this->getName($property);
             $param->var = new Variable($paramName);
-
             $param->flags = $property->flags;
-            // Copy over attributes of the "old" property
+
+            // copy attributes of the old property
             $param->attrGroups = array_merge($param->attrGroups, $property->attrGroups);
             $this->processUnionType($property, $param);
 
-            $this->phpDocTypeChanger->copyPropertyDocToParam($constructClassMethod, $property, $param);
+            $this->propertyPromotionDocBlockMerger->mergePropertyAndParamDocBlocks(
+                $property,
+                $param,
+                $paramTagValueNode
+            );
         }
 
         return $node;
@@ -247,40 +254,6 @@ CODE_SAMPLE
         $paramType = TypeCombinator::union($paramType, $defaultType);
 
         $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($paramType, TypeKind::PARAM);
-    }
-
-    private function decorateParamWithPropertyPhpDocInfo(
-        ClassMethod $classMethod,
-        Property $property,
-        Param $param,
-        string $paramName
-    ): void {
-        $propertyPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
-        $propertyPhpDocInfo->markAsChanged();
-
-        $param->setAttribute(AttributeKey::PHP_DOC_INFO, $propertyPhpDocInfo);
-
-        // make sure the docblock is useful
-        if ($param->type === null) {
-            $varTagValueNode = $propertyPhpDocInfo->getVarTagValueNode();
-            if (! $varTagValueNode instanceof VarTagValueNode) {
-                return;
-            }
-
-            $paramType = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType($varTagValueNode, $property);
-            $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
-            $this->phpDocTypeChanger->changeParamType(
-                $classMethod,
-                $classMethodPhpDocInfo,
-                $paramType,
-                $param,
-                $paramName
-            );
-        } else {
-            $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-        }
-
-        $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($param, $paramType);
     }
 
     private function shouldSkipParam(Param $param): bool

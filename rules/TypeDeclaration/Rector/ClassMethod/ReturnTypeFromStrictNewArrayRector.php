@@ -22,9 +22,11 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,7 +39,8 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractScopeAwareRector 
 {
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -108,7 +111,7 @@ CODE_SAMPLE
 
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
-        if (count($returns) !== 1) {
+        if ($returns === []) {
             return null;
         }
 
@@ -116,34 +119,42 @@ CODE_SAMPLE
             return null;
         }
 
+        if (count($returns) > 1) {
+            $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+            return $this->processAddArrayReturnType($node, $returnType);
+        }
+
         $onlyReturn = $returns[0];
         if (! $onlyReturn->expr instanceof Variable) {
             return null;
         }
 
-        $returnType = $this->nodeTypeResolver->getType($onlyReturn->expr);
-        if (! $returnType instanceof ArrayType) {
-            return null;
-        }
-
-        if (! $this->nodeNameResolver->areNamesEqual($onlyReturn->expr, $variable)) {
-            return null;
-        }
-
-        // 3. always returns array
-        $node->returnType = new Identifier('array');
-
-        // 4. add more precise array type if suitable
-        if ($this->shouldAddReturnArrayDocType($returnType)) {
-            $this->changeReturnType($node, $returnType);
-        }
-
-        return $node;
+        $returnType = $this->nodeTypeResolver->getNativeType($onlyReturn->expr);
+        return $this->processAddArrayReturnType($node, $returnType);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function processAddArrayReturnType(
+        ClassMethod|Function_|Closure $node,
+        Type $returnType
+    ): ClassMethod|Function_|Closure|null {
+        if (! $returnType->isArray()->yes()) {
+            return null;
+        }
+
+        // always returns array
+        $node->returnType = new Identifier('array');
+
+        // add more precise array type if suitable
+        if ($returnType instanceof ArrayType && $this->shouldAddReturnArrayDocType($returnType)) {
+            $this->changeReturnType($node, $returnType);
+        }
+
+        return $node;
     }
 
     private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
@@ -224,11 +235,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $assign->expr instanceof Array_) {
-                continue;
+            $nativeType = $this->nodeTypeResolver->getNativeType($assign->expr);
+            if ($nativeType->isArray()->yes()) {
+                return $assign->var;
             }
-
-            return $assign->var;
         }
 
         return null;

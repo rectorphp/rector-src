@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\Printer;
 
 use Nette\Utils\Strings;
+use PhpParser\Comment;
 use PhpParser\Node\Stmt\InlineHTML;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocChildNode;
@@ -36,21 +37,14 @@ final class PhpDocInfoPrinter
 
     /**
      * @var string
-     * @see https://regex101.com/r/mVmOCY/2
-     */
-    private const OPENING_DOCBLOCK_REGEX = '#^(/\*\*)#';
-
-    /**
-     * @var string
      * @see https://regex101.com/r/5fJyws/1
      */
     private const CALLABLE_REGEX = '#callable(\s+)\(#';
 
     /**
-     * @var string
-     * @see https://regex101.com/r/LLWiPl/1
+     * @var string[]
      */
-    private const DOCBLOCK_START_REGEX = '#^(\/\/|\/\*\*|\/\*|\#)#';
+    private const DOCBLOCK_STARTS = ['//', '/**', '/*', '#'];
 
     /**
      * @var string Uses a hardcoded unix-newline since most codes use it (even on windows) - otherwise we would need to normalize newlines
@@ -135,6 +129,15 @@ final class PhpDocInfoPrinter
         return Strings::replace($phpDocString, self::CALLABLE_REGEX, 'callable(');
     }
 
+    /**
+     * @return Comment[]
+     */
+    public function printToComments(PhpDocInfo $phpDocInfo): array
+    {
+        $printedPhpDocContents = $this->printFormatPreserving($phpDocInfo);
+        return [new Comment($printedPhpDocContents)];
+    }
+
     private function getCurrentPhpDocInfo(): PhpDocInfo
     {
         if (! $this->phpDocInfo instanceof PhpDocInfo) {
@@ -163,19 +166,27 @@ final class PhpDocInfoPrinter
         $output = $this->printEnd($output);
 
         // fix missing start
-        if (! StringUtils::isMatch($output, self::DOCBLOCK_START_REGEX) && $output !== '') {
+        if (! $this->hasDocblockStart($output) && $output !== '') {
             $output = '/**' . $output;
         }
 
         // fix missing end
-        if (StringUtils::isMatch(
-            $output,
-            self::OPENING_DOCBLOCK_REGEX
-        ) && ! StringUtils::isMatch($output, self::CLOSING_DOCBLOCK_REGEX)) {
+        if (str_starts_with($output, '/**') && ! StringUtils::isMatch($output, self::CLOSING_DOCBLOCK_REGEX)) {
             $output .= ' */';
         }
 
         return str_replace(" \n", "\n", $output);
+    }
+
+    private function hasDocblockStart(string $output): bool
+    {
+        foreach (self::DOCBLOCK_STARTS as $docblockStart) {
+            if (str_starts_with($output, $docblockStart)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function printDocChildNode(

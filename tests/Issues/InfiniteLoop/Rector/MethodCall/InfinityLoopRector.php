@@ -7,6 +7,7 @@ namespace Rector\Core\Tests\Issues\InfiniteLoop\Rector\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\NodeTraverser;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -20,15 +21,18 @@ final class InfinityLoopRector extends AbstractRector
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class];
+        return [Assign::class, MethodCall::class];
     }
 
     /**
-     * @param MethodCall $node
-     * @return Assign|null
+     * @param Assign|MethodCall $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactor(Node $node): Assign|null|int
     {
+        if ($node instanceof Assign) {
+            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+        }
+
         if (! $this->isName($node->name, 'modify')) {
             return null;
         }

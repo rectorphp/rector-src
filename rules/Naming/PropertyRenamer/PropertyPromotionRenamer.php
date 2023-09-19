@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Php\PhpVersionProvider;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -34,7 +35,8 @@ final class PropertyPromotionRenamer
         private readonly ParamRenamer $paramRenamer,
         private readonly PropertyFetchRenamer $propertyFetchRenamer,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly VariableRenamer $variableRenamer
+        private readonly VariableRenamer $variableRenamer,
+        private readonly DocBlockUpdater $docBlockUpdater,
     ) {
     }
 
@@ -81,6 +83,31 @@ final class PropertyPromotionRenamer
         return $hasChanged;
     }
 
+    public function renameParamDoc(
+        PhpDocInfo $phpDocInfo,
+        ClassMethod $classMethod,
+        Param $param,
+        string $paramVarName,
+        string $desiredPropertyName
+    ): void {
+        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramVarName);
+        if (! $paramTagValueNode instanceof ParamTagValueNode) {
+            return;
+        }
+
+        $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName(
+            $classMethod,
+            $param,
+            $desiredPropertyName
+        );
+        if (! $paramRename instanceof ParamRename) {
+            return;
+        }
+
+        $this->paramRenamer->rename($paramRename);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
+    }
+
     private function renameParamVarNameAndVariableUsage(
         ClassLike $classLike,
         ClassMethod $classMethod,
@@ -107,30 +134,6 @@ final class PropertyPromotionRenamer
         $param->var = new Variable($desiredPropertyName);
 
         $this->variableRenamer->renameVariableInFunctionLike($classMethod, $paramVarName, $desiredPropertyName);
-    }
-
-    private function renameParamDoc(
-        PhpDocInfo $phpDocInfo,
-        ClassMethod $classMethod,
-        Param $param,
-        string $paramVarName,
-        string $desiredPropertyName
-    ): void {
-        $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramVarName);
-        if (! $paramTagValueNode instanceof ParamTagValueNode) {
-            return;
-        }
-
-        $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName(
-            $classMethod,
-            $param,
-            $desiredPropertyName
-        );
-        if (! $paramRename instanceof ParamRename) {
-            return;
-        }
-
-        $this->paramRenamer->rename($paramRename);
     }
 
     /**

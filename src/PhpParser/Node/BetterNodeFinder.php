@@ -246,7 +246,7 @@ final class BetterNodeFinder
         $scopedNode = null;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $functionLike->stmts,
-            static function (Node $subNode) use (&$scopedNode, $foundNode): ?int {
+            function (Node $subNode) use (&$scopedNode, $foundNode, $filter): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     if ($foundNode instanceof $subNode && $subNode === $foundNode) {
                         $scopedNode = $subNode;
@@ -256,7 +256,14 @@ final class BetterNodeFinder
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if ($foundNode instanceof $subNode && $subNode === $foundNode) {
+                if (! $foundNode instanceof $subNode) {
+                    return null;
+                }
+
+                // handle after Closure
+                // @see https://github.com/rectorphp/rector-src/pull/4931
+                $scopedFoundNode = $this->findFirst($subNode, $filter);
+                if ($scopedFoundNode === $subNode) {
                     $scopedNode = $subNode;
                     return NodeTraverser::STOP_TRAVERSAL;
                 }

@@ -29,6 +29,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 {
     private ?PhpParserNode $currentPhpParserNode = null;
 
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
@@ -61,7 +63,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
-
         if (! $staticType instanceof FullyQualifiedObjectType) {
             return null;
         }
@@ -85,7 +86,13 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function setCurrentNode(PhpParserNode $phpParserNode): void
     {
+        $this->hasChanged = false;
         $this->currentPhpParserNode = $phpParserNode;
+    }
+
+    public function hasChanged(): bool
+    {
+        return $this->hasChanged;
     }
 
     private function processFqnNameImport(
@@ -100,6 +107,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
+        // standardize to FQN
         if (str_starts_with($fullyQualifiedObjectType->getClassName(), '@')) {
             $fullyQualifiedObjectType = new FullyQualifiedObjectType(ltrim(
                 $fullyQualifiedObjectType->getClassName(),
@@ -125,6 +133,8 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
         if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
             $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+            $this->hasChanged = true;
+
             return $newNode;
         }
 
@@ -141,6 +151,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         if (str_starts_with($identifierTypeNode->name, '\\')) {
+            if ($fullyQualifiedObjectType->getShortName() !== $fullyQualifiedObjectType->getClassName()) {
+                return $fullyQualifiedObjectType->getShortName() !== ltrim($identifierTypeNode->name, '\\');
+            }
+
             return true;
         }
 

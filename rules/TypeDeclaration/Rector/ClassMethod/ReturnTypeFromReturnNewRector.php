@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
@@ -200,7 +201,17 @@ CODE_SAMPLE
     {
         $newTypes = [];
         foreach ($returns as $return) {
+            if (! $return->expr instanceof Expr) {
+                return null;
+            }
+
             if (! $return->expr instanceof New_) {
+                $returnType = $this->nodeTypeResolver->getNativeType($return->expr);
+                if ($returnType instanceof ObjectType) {
+                    $newTypes[] = $returnType;
+                    continue;
+                }
+
                 return null;
             }
 

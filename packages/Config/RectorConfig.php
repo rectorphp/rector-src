@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Rector\Config;
 
 use Illuminate\Container\Container;
+use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Contract\Rector\NonPhpRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\FileSystem\FilesystemTweaker;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Webmozart\Assert\Assert;
 
 /**
@@ -58,7 +59,7 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::PARALLEL, false);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 20): void
+    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
         SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
@@ -114,7 +115,7 @@ final class RectorConfig extends Container
 
         if ($notExistsRules !== []) {
             throw new ShouldNotHappenException(
-                'Following skipped rules on $rectorConfig->skip() are no longer exists or changed to different namespace: ' . implode(
+                'Following rules on $rectorConfig->skip() do no longer exist or changed to different namespace: ' . implode(
                     ', ',
                     $notExistsRules
                 )
@@ -178,7 +179,7 @@ final class RectorConfig extends Container
         );
 
         $this->singleton($rectorClass);
-        $this->tagRectorService($rectorClass);
+        $this->tag($rectorClass, RectorInterface::class);
 
         $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
             $rectorClass
@@ -200,7 +201,7 @@ final class RectorConfig extends Container
         Assert::isAOf($rectorClass, RectorInterface::class);
 
         $this->singleton($rectorClass);
-        $this->tagRectorService($rectorClass);
+        $this->tag($rectorClass, RectorInterface::class);
 
         if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
             $this->extend(
@@ -220,18 +221,31 @@ final class RectorConfig extends Container
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
     }
 
+    /**
+     * @param class-string<Collector> $collectorClass
+     */
+    public function collector(string $collectorClass): void
+    {
+        $this->singleton($collectorClass);
+        $this->tag($collectorClass, Collector::class);
+    }
+
     public function import(string $filePath): void
     {
-        $paths = [$filePath];
-
         if (str_contains($filePath, '*')) {
-            $filesystemTweaker = new FilesystemTweaker();
-            $paths = $filesystemTweaker->resolveWithFnmatch($paths);
+            throw new ShouldNotHappenException(
+                'Matching file paths by using glob-patterns is no longer supported. Use specific file path instead.'
+            );
         }
 
-        foreach ($paths as $path) {
-            $this->importFile($path);
-        }
+        Assert::fileExists($filePath);
+
+        $self = $this;
+        $callable = (require $filePath);
+
+        Assert::isCallable($callable);
+        /** @var callable(Container $container): void $callable */
+        $callable($self);
     }
 
     /**
@@ -345,16 +359,22 @@ final class RectorConfig extends Container
         $this->ruleConfigurations = [];
     }
 
-    private function importFile(string $filePath): void
+    /**
+     * Compiler passes-like method
+     */
+    public function boot(): void
     {
-        Assert::fileExists($filePath);
+        $skippedClassResolver = new SkippedClassResolver();
+        $skippedElements = $skippedClassResolver->resolve();
 
-        $self = $this;
-        $callable = (require $filePath);
+        foreach ($skippedElements as $skippedClass => $path) {
+            if ($path !== null) {
+                continue;
+            }
 
-        Assert::isCallable($callable);
-        /** @var callable(Container $container): void $callable */
-        $callable($self);
+            // completely forget the Rector rule only when no path specified
+            ContainerMemento::forgetService($this, $skippedClass);
+        }
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
@@ -363,10 +383,12 @@ final class RectorConfig extends Container
             is_string($skipRule)
             // not regex path
             && ! str_contains($skipRule, '*')
-            // not realpath
-            && realpath($skipRule) === false
             // a Rector end
             && str_ends_with($skipRule, 'Rector')
+            // not directory
+            && ! is_dir($skipRule)
+            // not file
+            && ! is_file($skipRule)
             // class not exists
             && ! class_exists($skipRule);
     }
@@ -387,23 +409,6 @@ final class RectorConfig extends Container
         }
 
         return array_unique($duplicates);
-    }
-
-    /**
-     * @param class-string<RectorInterface> $rectorClass
-     */
-    private function tagRectorService(string $rectorClass): void
-    {
-        $this->tag($rectorClass, RectorInterface::class);
-
-        if (is_a($rectorClass, NonPhpRectorInterface::class, true)) {
-            trigger_error(sprintf(
-                'The "%s" interface of "%s" rule is deprecated. Rector will process only PHP code, as designed to with AST. For another file format, use custom tooling.',
-                NonPhpRectorInterface::class,
-                $rectorClass,
-            ));
-            exit();
-        }
     }
 
     /**

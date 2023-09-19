@@ -7,7 +7,7 @@ namespace Rector\Core\ValueObject\Reporting;
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Parallel\ValueObject\Name;
+use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
@@ -91,28 +91,28 @@ final class FileDiff implements SerializableInterface
     public function jsonSerialize(): array
     {
         return [
-            Name::RELATIVE_FILE_PATH => $this->relativeFilePath,
-            Name::DIFF => $this->diff,
-            Name::DIFF_CONSOLE_FORMATTED => $this->diffConsoleFormatted,
-            Name::RECTORS_WITH_LINE_CHANGES => $this->rectorsWithLineChanges,
+            BridgeItem::RELATIVE_FILE_PATH => $this->relativeFilePath,
+            BridgeItem::DIFF => $this->diff,
+            BridgeItem::DIFF_CONSOLE_FORMATTED => $this->diffConsoleFormatted,
+            BridgeItem::RECTORS_WITH_LINE_CHANGES => $this->rectorsWithLineChanges,
         ];
     }
 
     /**
      * @param array<string, mixed> $json
      */
-    public static function decode(array $json): SerializableInterface
+    public static function decode(array $json): self
     {
         $rectorWithLineChanges = [];
 
-        foreach ($json[Name::RECTORS_WITH_LINE_CHANGES] as $rectorWithLineChangesJson) {
+        foreach ($json[BridgeItem::RECTORS_WITH_LINE_CHANGES] as $rectorWithLineChangesJson) {
             $rectorWithLineChanges[] = RectorWithLineChange::decode($rectorWithLineChangesJson);
         }
 
         return new self(
-            $json[Name::RELATIVE_FILE_PATH],
-            $json[Name::DIFF],
-            $json[Name::DIFF_CONSOLE_FORMATTED],
+            $json[BridgeItem::RELATIVE_FILE_PATH],
+            $json[BridgeItem::DIFF],
+            $json[BridgeItem::DIFF_CONSOLE_FORMATTED],
             $rectorWithLineChanges,
         );
     }

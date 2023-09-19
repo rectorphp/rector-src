@@ -13,7 +13,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->autoloadPaths([]);
     $rectorConfig->bootstrapFiles([]);
-    $rectorConfig->parallel(120, 16, 20);
+    $rectorConfig->parallel();
 
     // to avoid autoimporting out of the box
     $rectorConfig->importNames(false, false);
@@ -33,9 +33,9 @@ return static function (RectorConfig $rectorConfig): void {
         $rectorConfig->cacheClass(MemoryCacheStorage::class);
     }
 
+    // load internal rector-* extension configs
     $extensionConfigResolver = new ExtensionConfigResolver();
-    $extensionConfigFiles = $extensionConfigResolver->provide();
-    foreach ($extensionConfigFiles as $extensionConfigFile) {
+    foreach ($extensionConfigResolver->provide() as $extensionConfigFile) {
         $rectorConfig->import($extensionConfigFile);
     }
 };

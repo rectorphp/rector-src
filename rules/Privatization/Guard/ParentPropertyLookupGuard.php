@@ -6,7 +6,6 @@ namespace Rector\Privatization\Guard;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\PropertyFetch;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -97,7 +96,6 @@ final class ParentPropertyLookupGuard
                 return false;
             }
 
-            /** @var PropertyFetch|StaticPropertyFetch $subNode */
             if ($subNode instanceof PropertyFetch) {
                 if (! $subNode->var instanceof Variable) {
                     return false;
