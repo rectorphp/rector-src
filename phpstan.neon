@@ -30,6 +30,9 @@ parameters:
     scanDirectories:
         - stubs
 
+    scanFiles:
+        - src/Contract/PhpParser/Node/StmtsAwareInterface.php
+
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
@@ -171,10 +174,6 @@ parameters:
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
 
-        -
-            path: src/Bootstrap/RectorConfigsResolver.php
-            message: '#Method Rector\\Core\\Bootstrap\\RectorConfigsResolver\:\:resolveFromInput\(\) should return string\|null but returns string\|false#'
-
         # known value object, nullable due to typed property
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
@@ -229,8 +228,6 @@ parameters:
         -
             message: '#Use value object over return of values#'
             paths:
-                - src/Application/ApplicationFileProcessor.php
-                - packages/Parallel/Application/ParallelFileProcessor.php
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
@@ -420,10 +417,6 @@ parameters:
 
         # std class api
         -
-            message: '#Function "property_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: utils/ChangelogGenerator
-
-        -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
 
@@ -431,11 +424,6 @@ parameters:
             message: '#Class (.*?) not found#'
             paths:
                 - rules-tests/*/config/*
-
-        -
-            message: '#Offset \d does not exist on array<string, string>#'
-            paths:
-                - *Test.php
 
         -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
 
@@ -477,24 +465,14 @@ parameters:
         # false positive on enums
         - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
 
-        - '#Access to an undefined property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-
         -
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
             path: rules/Naming/VariableRenamer.php
 
-        # resolve continually
-        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
-
         # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
-        - '#Access to an undefined property PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
-
-        - '#Access to an undefined property PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\|Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Access to an undefined property \(PhpParser\\Node\\Stmt&Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\)\|PhpParser\\Node\\Stmt\\ClassLike\|PhpParser\\Node\\Stmt\\Declare_\:\:\$stmts#'
 
         # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
         -
@@ -563,15 +541,8 @@ parameters:
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: packages/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-        # generic for other packages too
-        -
-            message: '#Parameters should use "PhpParser\\Node\\Identifier\|string" types as the only types passed to this method#'
-            path: packages/NodeNameResolver/NodeNameResolver.php
-
         # remove in next step
-        - '#Call to deprecated method markAsChanged\(\) of class Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo#'
         - '#Method "(importNames|renamePhpDocType)\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Call to an undefined method Rector\\BetterPhpDocParser\\PhpDocInfo\\PhpDocInfo\:\:markAsChanged\(\)#'
 
         # ignore until PHPParser returns more precise types
         -
@@ -584,3 +555,6 @@ parameters:
             message: '#Anonymous function has an unused use \$configuration#'
             path: packages/Parallel/Application/ParallelFileProcessor.php
 
+        # stmts aware interface
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface::\$stmts#'

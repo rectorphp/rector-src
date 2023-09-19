@@ -41,10 +41,10 @@ final class CollectorNodeVisitor extends NodeVisitorAbstract
     {
         $collectors = $this->collectorRegistry->getCollectors($node::class);
 
-        foreach ($collectors as $collector) {
-            /** @var Scope $scope */
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
+        /** @var Scope $scope */
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
+        foreach ($collectors as $collector) {
             try {
                 $collectedData = $collector->processNode($node, $scope);
             } catch (Throwable) {
