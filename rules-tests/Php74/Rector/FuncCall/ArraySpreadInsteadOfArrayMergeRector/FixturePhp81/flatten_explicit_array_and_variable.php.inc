@@ -1,13 +1,13 @@
 <?php
 
-namespace Rector\Tests\Php74\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector\Fixture;
+namespace Rector\Tests\Php74\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector\FixturePhp81;
 
 final class DemoFile
 {
     public function run()
     {
         $array = ['foo' => 'bar'];
-        
+
         return array_merge(['baz' => 'xxx'], $array);
     }
 }
@@ -23,7 +23,7 @@ final class DemoFile
     public function run()
     {
         $array = ['foo' => 'bar'];
-        
+
         return ['baz' => 'xxx', ...$array];
     }
 }
