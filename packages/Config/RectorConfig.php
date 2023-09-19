@@ -73,7 +73,7 @@ final class RectorConfig extends Container
      *
      * @param positive-int $seconds timeout in seconds, after a worker will be force-killed.
      * @param positive-int $maxNumberOfProcess number of parallel worker processes. The higher the number, the more memory is consumed.
-     * @param positive-int $jobSize number of files a worker processes at once. A higher number means faster processing but also more memory consumption.
+     * @param positive-int $jobSize number of files a worker processes at once. A higher number means faster processing but also more peak memory consumption.
      */
     public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
     {
