@@ -15,7 +15,6 @@ use Rector\Core\Console\ExitCode;
 use Rector\Core\Console\Output\OutputFormatterCollector;
 use Rector\Core\Console\ProcessConfigureDecorator;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Core\Util\MemoryLimiter;
 use Rector\Core\ValueObject\Configuration;
@@ -38,7 +37,6 @@ final class ProcessCommand extends Command
         private readonly SymfonyStyle $symfonyStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
-        private readonly RectorNodeTraverser $rectorNodeTraverser,
     ) {
         parent::__construct();
     }
@@ -92,8 +90,6 @@ final class ProcessCommand extends Command
 
             $configuration->setCollectedData($processResult->getCollectedData());
             $configuration->enableSecondRun();
-
-            // $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
 
             // reset rules in Rector traverser
             $nextProcessResult = $this->applicationFileProcessor->run($configuration, $input);

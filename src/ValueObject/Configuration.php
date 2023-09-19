@@ -135,4 +135,12 @@ final class Configuration
     {
         return $this->isSecondRun;
     }
+
+    /**
+     * @api used in tests
+     */
+    public function reset(): void
+    {
+        $this->isSecondRun = false;
+    }
 }

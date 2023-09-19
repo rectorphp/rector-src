@@ -18,9 +18,9 @@ use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
@@ -41,8 +41,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      * @var array<string, true>
      */
     private static array $cacheByRuleAndConfig = [];
-
-    private CurrentFileProvider $currentFileProvider;
 
     /**
      * Restore default parameters
@@ -115,8 +113,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
-
-        $this->currentFileProvider = $this->make(CurrentFileProvider::class);
     }
 
     protected function tearDown(): void
@@ -174,27 +170,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     {
         $rectorConfig = self::getContainer();
 
-        // 1. forget instance first, then remove tags
-        $rectors = $rectorConfig->tagged(RectorInterface::class);
-        foreach ($rectors as $rector) {
-            $rectorConfig->offsetUnset($rector::class);
-        }
+        // 1. forget tagged services
+        ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
+        ContainerMemento::forgetTag($rectorConfig, Collector::class);
 
-        // 2. forget instance first, then remove tags
-        $collectors = $rectorConfig->tagged(Collector::class);
-        foreach ($collectors as $collector) {
-            $rectorConfig->offsetUnset($collector::class);
-        }
-
-        // 3. remove all tagged services
+        // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure($rectorConfig, 'tags', static function (array $tags): array {
-            unset($tags[RectorInterface::class]);
-            unset($tags[Collector::class]);
-            return $tags;
-        });
-
-        // 3. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor->propertyClosure(
             $rectorConfig,
             'afterResolvingCallbacks',
@@ -238,8 +219,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         $changedContent = $this->processFilePath($originalFilePath);
-        $originalFileContent = $this->currentFileProvider->getFile()
-            ->getOriginalFileContent();
+        $originalFileContent = FileSystem::read($originalFilePath);
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -275,8 +255,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->applicationFileProcessor->processFiles([$filePath], $configuration);
         }
 
-        $currentFile = $this->currentFileProvider->getFile();
-        return $currentFile->getFileContent();
+        // return changed file contents
+        return FileSystem::read($filePath);
     }
 
     private function createInputFilePath(string $fixtureFilePath): string

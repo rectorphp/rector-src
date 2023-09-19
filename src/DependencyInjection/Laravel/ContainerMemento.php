@@ -12,6 +12,27 @@ use Rector\Core\Util\Reflection\PrivatesAccessor;
  */
 final class ContainerMemento
 {
+    /**
+     * @api
+     * @see https://tomasvotruba.com/blog/removing-service-from-laravel-container-is-not-that-easy
+     */
+    public static function forgetTag(Container $container, string $tagToForget): void
+    {
+        // 1. forget instances
+        $taggedClasses = $container->tagged($tagToForget);
+        foreach ($taggedClasses as $taggedClass) {
+            $container->offsetUnset($taggedClass::class);
+        }
+
+        // 2. forget tagged references
+        $privatesAccessor = new PrivatesAccessor();
+        $privatesAccessor->propertyClosure($container, 'tags', function (array $tags) use ($tagToForget): array {
+            unset($tags[$tagToForget]);
+
+            return $tags;
+        });
+    }
+
     public static function forgetService(Container $container, string $typeToForget): void
     {
         // 1. remove the service

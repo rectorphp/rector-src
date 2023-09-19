@@ -156,6 +156,7 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/PostRector/Rector/AbstractPostRector.php
                 - src/Rector/AbstractRector.php
+                - src/Rector/AbstractCollectorRector.php
                 - src/Rector/AbstractScopeAwareRector.php
 
         -

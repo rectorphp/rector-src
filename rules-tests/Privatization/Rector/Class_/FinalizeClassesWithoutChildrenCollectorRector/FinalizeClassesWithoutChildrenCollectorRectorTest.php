@@ -6,9 +6,10 @@ namespace Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildre
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
+#[RunTestsInSeparateProcesses]
 final class FinalizeClassesWithoutChildrenCollectorRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]

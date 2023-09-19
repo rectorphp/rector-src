@@ -25,7 +25,7 @@ abstract class AbstractCollectorRector extends AbstractRector implements Collect
     public function getCollectedDataNode(): CollectedDataNode
     {
         if (! $this->collectedDataNode instanceof CollectedDataNode) {
-            throw new ShouldNotHappenException('Collected data node is not set');
+            throw new ShouldNotHappenException('CollectedDataNode is not set');
         }
 
         // this should be called only from CollectorRectorInterface
