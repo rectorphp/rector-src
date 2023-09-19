@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
@@ -129,7 +130,7 @@ CODE_SAMPLE
                 return [];
             }
 
-            if (! $return->expr instanceof PropertyFetch) {
+            if (! $return->expr instanceof PropertyFetch && ! $return->expr instanceof StaticPropertyFetch) {
                 return [];
             }
 
