@@ -2,7 +2,7 @@ includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
 parameters:
-    reportUnmatchedIgnoredErrors: false
+    # reportUnmatchedIgnoredErrors: false
 
     cognitive_complexity:
         class: 50
