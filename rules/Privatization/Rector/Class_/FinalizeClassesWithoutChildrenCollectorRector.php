@@ -9,10 +9,9 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Node\CollectedDataNode;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\DoctrineEntityAnalyzer;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractCollectorRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
@@ -22,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector\FinalizeClassesWithoutChildrenCollectorRectorTest
  */
-final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractRector implements CollectorRectorInterface
+final class FinalizeClassesWithoutChildrenCollectorRector extends AbstractCollectorRector
 {
     public function __construct(
         private readonly ClassAnalyzer $classAnalyzer,

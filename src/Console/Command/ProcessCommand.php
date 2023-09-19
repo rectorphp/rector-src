@@ -93,10 +93,12 @@ final class ProcessCommand extends Command
             $configuration->setCollectedData($processResult->getCollectedData());
             $configuration->enableSecondRun();
 
-            $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
+            // $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
 
             // reset rules in Rector traverser
             $nextProcessResult = $this->applicationFileProcessor->run($configuration, $input);
+
+            // @todo merge results here
 
             $this->symfonyStyle->newLine(3);
 

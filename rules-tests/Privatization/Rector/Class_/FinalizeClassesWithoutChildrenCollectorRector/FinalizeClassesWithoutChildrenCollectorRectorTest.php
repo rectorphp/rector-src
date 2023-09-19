@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-#[RunClassInSeparateProcess]
 final class FinalizeClassesWithoutChildrenCollectorRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
