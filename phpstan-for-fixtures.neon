@@ -19,3 +19,4 @@ parameters:
     excludePaths:
         - '*/Fixture/*'
         - '*/RenameClassRector/*'
+        - '*/Source/phpstan.phar/*'
