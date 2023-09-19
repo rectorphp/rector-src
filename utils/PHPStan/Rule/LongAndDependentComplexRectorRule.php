@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\Utils\PHPStan\Rule;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeFinder;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\InClassNode;
+use PHPStan\Reflection\ClassReflection;
+use PHPStan\Reflection\ParameterReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Rules\Rule;
+use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\ValueObject\MethodName;
+use TomasVotruba\CognitiveComplexity\AstCognitiveComplexityAnalyzer;
 
 /**
  * @implements Rule<InClassNode>
@@ -22,12 +29,20 @@ final class LongAndDependentComplexRectorRule implements Rule
     /**
      * @var int
      */
-    private const MAX_CLASS_LINES = 320;
+    private const ALLOWED_TRANSITIONAL_COMPLEXITY = 120;
 
-    /**
-     * @var int
-     */
-    private const MAX_DEPENDENCY_COUNT = 7;
+    private Parser $phpParser;
+
+    private NodeFinder $nodeFinder;
+
+    public function __construct(
+        private AstCognitiveComplexityAnalyzer $astCognitiveComplexityAnalyzer,
+    ) {
+        $parserFactory = new ParserFactory();
+        $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
+
+        $this->nodeFinder = new NodeFinder();
+    }
 
     public function getNodeType(): string
     {
@@ -45,37 +60,73 @@ final class LongAndDependentComplexRectorRule implements Rule
             return [];
         }
 
-        $class = $node->getOriginalNode();
-        $errorMessages = [];
-
-        $constructorParameterCount = $this->resolveConstructorParameterCount($class);
-        if ($constructorParameterCount > self::MAX_DEPENDENCY_COUNT) {
-            $errorMessages[] = sprintf(
-                'Class "%s" has too many constructor parameters (%d), consider using value objects',
-                $classReflection->getName(),
-                $constructorParameterCount
-            );
+        // not much complex
+        if (! $classReflection->hasConstructor()) {
+            return [];
         }
 
-        $classLineCount = $class->getEndLine() - $class->getStartLine();
-        if ($classLineCount > self::MAX_CLASS_LINES) {
-            $errorMessages[] = sprintf(
-                'Class "%s" is too long (%d lines), consider splitting it to smaller classes',
-                $classReflection->getName(),
-                $classLineCount
-            );
+        $constructorMethodReflection = $classReflection->getConstructor();
+        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($constructorMethodReflection->getVariants());
+
+        $originalClassLike = $node->getOriginalNode();
+        if (! $originalClassLike instanceof Class_) {
+            return [];
         }
 
-        return $errorMessages;
+        $currentClassLikeComplexity = $this->astCognitiveComplexityAnalyzer->analyzeClassLike($originalClassLike);
+        $totalTransitionalComplexity = $currentClassLikeComplexity;
+
+        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+            /** @var ParameterReflection $parameterReflection */
+            $parameterType = $parameterReflection->getType();
+            if (! $parameterType instanceof TypeWithClassName) {
+                continue;
+            }
+
+            $parameterClassReflection = $parameterType->getClassReflection();
+            if (! $parameterClassReflection instanceof ClassReflection) {
+                continue;
+            }
+
+            $dependencyClass = $this->parseClassReflectionToClassNode($parameterClassReflection);
+            if (! $dependencyClass instanceof Class_) {
+                continue;
+            }
+
+            $dependencyComplexity = $this->astCognitiveComplexityAnalyzer->analyzeClassLike($dependencyClass);
+            $totalTransitionalComplexity += $dependencyComplexity;
+        }
+
+        if ($totalTransitionalComplexity < self::ALLOWED_TRANSITIONAL_COMPLEXITY) {
+            return [];
+        }
+
+        return [sprintf(
+            'Transitional dependency complexity %d is over %d, please consider splitting it up.',
+            $totalTransitionalComplexity,
+            self::ALLOWED_TRANSITIONAL_COMPLEXITY
+        )];
     }
 
-    private function resolveConstructorParameterCount(ClassLike $classLike): int
+    private function parseClassReflectionToClassNode(ClassReflection $classReflection): ?Class_
     {
-        $constructorClassMethod = $classLike->getMethod(MethodName::CONSTRUCT);
-        if (! $constructorClassMethod instanceof ClassMethod) {
-            return 0;
+        $fileName = $classReflection->getFileName();
+        if (! is_string($fileName)) {
+            return null;
         }
 
-        return count($constructorClassMethod->getParams());
+        $fileContents = FileSystem::read($fileName);
+
+        $stmts = $this->phpParser->parse($fileContents);
+        if ($stmts === null) {
+            return null;
+        }
+
+        $dependencyClass = $this->nodeFinder->findFirstInstanceOf($stmts, Class_::class);
+        if (! $dependencyClass instanceof Class_) {
+            return null;
+        }
+
+        return $dependencyClass;
     }
 }
