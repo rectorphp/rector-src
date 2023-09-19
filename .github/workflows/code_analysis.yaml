@@ -41,8 +41,8 @@ jobs:
                         name: 'PHPStan for fixtures'
                         run: |
                            # fixtures don't need all these strict rules
-                           composer remove phpstan/extension-installer
-                           composer remove phpstan/phpstan-strict-rules
+                           composer remove phpstan/extension-installer --dev
+                           composer remove phpstan/phpstan-strict-rules --dev
                            composer phpstan-fixtures
 
                     -
