@@ -13,7 +13,6 @@ use PhpParser\ParserFactory;
 use PHPStan\Analyser\Scope;
 use PHPStan\Node\InClassNode;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Rules\Rule;
 use PHPStan\Type\TypeWithClassName;
@@ -31,12 +30,12 @@ final class LongAndDependentComplexRectorRule implements Rule
      */
     private const ALLOWED_TRANSITIONAL_COMPLEXITY = 120;
 
-    private Parser $phpParser;
+    private readonly Parser $phpParser;
 
-    private NodeFinder $nodeFinder;
+    private readonly NodeFinder $nodeFinder;
 
     public function __construct(
-        private AstCognitiveComplexityAnalyzer $astCognitiveComplexityAnalyzer,
+        private readonly AstCognitiveComplexityAnalyzer $astCognitiveComplexityAnalyzer,
     ) {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);
@@ -65,8 +64,10 @@ final class LongAndDependentComplexRectorRule implements Rule
             return [];
         }
 
-        $constructorMethodReflection = $classReflection->getConstructor();
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($constructorMethodReflection->getVariants());
+        $extendedMethodReflection = $classReflection->getConstructor();
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+            $extendedMethodReflection->getVariants()
+        );
 
         $originalClassLike = $node->getOriginalNode();
         if (! $originalClassLike instanceof Class_) {
@@ -76,9 +77,8 @@ final class LongAndDependentComplexRectorRule implements Rule
         $currentClassLikeComplexity = $this->astCognitiveComplexityAnalyzer->analyzeClassLike($originalClassLike);
         $totalTransitionalComplexity = $currentClassLikeComplexity;
 
-        foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-            /** @var ParameterReflection $parameterReflection */
-            $parameterType = $parameterReflection->getType();
+        foreach ($parametersAcceptorWithPhpDocs->getParameters() as $parameterReflectionWithPhpDoc) {
+            $parameterType = $parameterReflectionWithPhpDoc->getType();
             if (! $parameterType instanceof TypeWithClassName) {
                 continue;
             }
@@ -122,11 +122,11 @@ final class LongAndDependentComplexRectorRule implements Rule
             return null;
         }
 
-        $dependencyClass = $this->nodeFinder->findFirstInstanceOf($stmts, Class_::class);
-        if (! $dependencyClass instanceof Class_) {
+        $foundNode = $this->nodeFinder->findFirstInstanceOf($stmts, Class_::class);
+        if (! $foundNode instanceof Class_) {
             return null;
         }
 
-        return $dependencyClass;
+        return $foundNode;
     }
 }
