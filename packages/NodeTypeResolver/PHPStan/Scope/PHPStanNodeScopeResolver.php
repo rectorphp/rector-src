@@ -49,12 +49,15 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\TypeCombinator;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
 use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Webmozart\Assert\Assert;
@@ -83,6 +86,7 @@ final class PHPStanNodeScopeResolver
         iterable $nodeVisitors,
         private readonly ScopeFactory $scopeFactory,
         private readonly PrivatesAccessor $privatesAccessor,
+        private readonly NodeNameResolver $nodeNameResolver,
         private readonly ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
@@ -148,7 +152,7 @@ final class PHPStanNodeScopeResolver
             } elseif ($node instanceof Switch_) {
                 $this->processSwitch($node, $mutatingScope);
             } elseif ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $mutatingScope);
+                $this->processTryCatch($node, $filePath, $mutatingScope);
             } elseif ($node instanceof ArrayItem) {
                 $this->processArrayItem($node, $mutatingScope);
             } elseif ($node instanceof NullableType) {
@@ -267,13 +271,19 @@ final class PHPStanNodeScopeResolver
         }
     }
 
-    private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
+    private function processTryCatch(TryCatch $tryCatch, string $filePath, MutatingScope $mutatingScope): void
     {
         foreach ($tryCatch->catches as $catch) {
-            $catch->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            if ($catch->var instanceof Variable) {
-                $catch->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
+            $varName = $catch->var instanceof Variable
+                ? $this->nodeNameResolver->getName($catch->var)
+                : null;
+
+            $type = TypeCombinator::union(
+                ...array_map(static fn (Name $name): ObjectType => new ObjectType((string) $name), $catch->types)
+            );
+
+            $catchMutatingScope = $mutatingScope->enterCatchType($type, $varName);
+            $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
         }
 
         if ($tryCatch->finally instanceof Finally_) {
