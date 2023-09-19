@@ -6,6 +6,7 @@ namespace Rector\Core\Console\Command;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
+use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
@@ -24,6 +25,7 @@ use Symplify\EasyParallel\Enum\Action;
 use Symplify\EasyParallel\Enum\ReactCommand;
 use Symplify\EasyParallel\Enum\ReactEvent;
 use Throwable;
+use Webmozart\Assert\Assert;
 
 /**
  * Inspired at: https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92
@@ -130,8 +132,26 @@ final class WorkerCommand extends Command
                 return;
             }
 
+            $previouslyCollectedDataItems = $json[Bridge::PREVIOUSLY_COLLECTED_DATA] ?? [];
+            if ($previouslyCollectedDataItems !== []) {
+                // turn to value objects
+                $previouslyCollectedDatas = [];
+                foreach ($previouslyCollectedDataItems as $previouslyCollectedDataItem) {
+                    Assert::keyExists($previouslyCollectedDataItem, 'data');
+                    Assert::keyExists($previouslyCollectedDataItem, 'filePath');
+                    Assert::keyExists($previouslyCollectedDataItem, 'collectorType');
+
+                    $previouslyCollectedDatas[] = CollectedData::decode($previouslyCollectedDataItem);
+                }
+
+                $configuration->setCollectedData($previouslyCollectedDatas);
+                $configuration->enableSecondRun();
+            }
+
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
+
+            Assert::notEmpty($filePaths);
 
             $processResult = $this->applicationFileProcessor->processFiles(
                 $filePaths,

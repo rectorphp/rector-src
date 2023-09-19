@@ -39,9 +39,6 @@ parameters:
         # too modern code for PHPStan 0.12.2
         - bin/validate-phpstan-version.php
 
-        # handle later after di transition
-        - packages-tests/BetterPhpDocParser/PhpDocInfo/PhpDocInfoPrinter/MultilineTest.
-
         # CI test
         - tests/Fixtures/*
 
@@ -159,6 +156,7 @@ parameters:
                 - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
                 - packages/PostRector/Rector/AbstractPostRector.php
                 - src/Rector/AbstractRector.php
+                - src/Rector/AbstractCollectorRector.php
                 - src/Rector/AbstractScopeAwareRector.php
 
         -
@@ -251,8 +249,6 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
-
-        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)\:\:refactorWithScope\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector\\ScopeAwarePhpRectorInterface\:\:refactorWithScope\(\)#'
 
         -
             message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 11#'
@@ -415,7 +411,6 @@ parameters:
             message: '#Anonymous (variable|variables) in#'
             path: utils/ChangelogGenerator
 
-        # std class api
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
             path: rules-tests
@@ -551,10 +546,13 @@ parameters:
 
         # rector collectors
         - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-        -
-            message: '#Anonymous function has an unused use \$configuration#'
-            path: packages/Parallel/Application/ParallelFileProcessor.php
 
-        # stmts aware interface
-        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface::\$stmts#'
+        # collectors
+        - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
+
+        - '#class\-string<Rector\\Core\\Contract\\Rector\\CollectorRectorInterface\|Rector\\Core\\Contract\\Rector\\RectorInterface#'
+
+        - '#Parameter \#1 \$node \(PhpParser\\Node\\Stmt\\Class_\) of method Rector\\(.*?)Collector\:\:processNode\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method PHPStan\\Collectors\\Collector<PhpParser\\Node,mixed>\:\:processNode\(\)#'
+
+        - '#Access to an undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'

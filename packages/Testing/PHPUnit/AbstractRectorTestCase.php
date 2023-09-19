@@ -8,6 +8,7 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PHPStan\Collectors\Collector;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Core\Application\ApplicationFileProcessor;
 use Rector\Core\Autoloading\AdditionalAutoloader;
@@ -16,10 +17,11 @@ use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\Contract\DependencyInjection\ResetableInterface;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\NodeTraverser\RectorNodeTraverser;
-use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
@@ -41,8 +43,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
      */
     private static array $cacheByRuleAndConfig = [];
 
-    private CurrentFileProvider $currentFileProvider;
-
     /**
      * Restore default parameters
      */
@@ -55,6 +55,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
     }
 
     protected function setUp(): void
@@ -81,24 +82,27 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 $resetable->reset();
             }
 
-            $this->forgetRectorsRules();
+            $this->forgetRectorsRulesAndCollectors();
             $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(CollectorRectorInterface::class));
+            $this->assertEmpty($rectorConfig->tagged(Collector::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
             $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
             if ($rectorsGenerator instanceof RewindableGenerator) {
-                $phpRectors = iterator_to_array($rectorsGenerator->getIterator());
+                $rectors = iterator_to_array($rectorsGenerator->getIterator());
             } else {
                 // no rules at all, e.g. in case of only post rector run
-                $phpRectors = [];
+                $rectors = [];
             }
 
+            /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
-            $rectorNodeTraverser->refreshPhpRectors($phpRectors);
+            $rectorNodeTraverser->refreshPhpRectors($rectors);
 
             // store cache
             self::$cacheByRuleAndConfig[$cacheKey] = true;
@@ -114,8 +118,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         /** @var BootstrapFilesIncluder $bootstrapFilesIncluder */
         $bootstrapFilesIncluder = $this->make(BootstrapFilesIncluder::class);
         $bootstrapFilesIncluder->includeBootstrapFiles();
-
-        $this->currentFileProvider = $this->make(CurrentFileProvider::class);
     }
 
     protected function tearDown(): void
@@ -169,24 +171,17 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
     }
 
-    protected function forgetRectorsRules(): void
+    protected function forgetRectorsRulesAndCollectors(): void
     {
         $rectorConfig = self::getContainer();
 
-        // 1. forget instance first, then remove tags
-        $rectors = $rectorConfig->tagged(RectorInterface::class);
-        foreach ($rectors as $rector) {
-            $rectorConfig->offsetUnset($rector::class);
-        }
+        // 1. forget tagged services
+        ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
+        ContainerMemento::forgetTag($rectorConfig, Collector::class);
+        ContainerMemento::forgetTag($rectorConfig, CollectorRectorInterface::class);
 
-        // 2. remove all tagged rules
+        // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();
-        $privatesAccessor->propertyClosure($rectorConfig, 'tags', static function (array $tags): array {
-            unset($tags[RectorInterface::class]);
-            return $tags;
-        });
-
-        // 3. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor->propertyClosure(
             $rectorConfig,
             'afterResolvingCallbacks',
@@ -230,8 +225,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         $changedContent = $this->processFilePath($originalFilePath);
-        $originalFileContent = $this->currentFileProvider->getFile()
-            ->getOriginalFileContent();
+        $originalFileContent = FileSystem::read($originalFilePath);
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -254,10 +248,21 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $configurationFactory = $this->make(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);
 
-        $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+        $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
-        $currentFile = $this->currentFileProvider->getFile();
-        return $currentFile->getFileContent();
+        if ($processResult->getCollectedData() !== [] && $configuration->isCollectors()) {
+            // second run with collected data
+            $configuration->setCollectedData($processResult->getCollectedData());
+            $configuration->enableSecondRun();
+
+            $rectorNodeTraverser = $this->make(RectorNodeTraverser::class);
+            $rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
+
+            $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+        }
+
+        // return changed file contents
+        return FileSystem::read($filePath);
     }
 
     private function createInputFilePath(string $fixtureFilePath): string

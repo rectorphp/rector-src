@@ -13,6 +13,7 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Collector\ParentClassCollector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
@@ -31,6 +32,10 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_100,
     ]);
+
+    // @todo collectors - just for testing purpose
+    $rectorConfig->collector(ParentClassCollector::class);
+    $rectorConfig->rule(\Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector::class);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class]);
 

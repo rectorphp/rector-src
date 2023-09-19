@@ -80,8 +80,8 @@ final class ParallelFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
-        /** @var CollectedData[] $collectedDatas */
-        $collectedDatas = [];
+        /** @var CollectedData[] $collectedData */
+        $collectedData = [];
 
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
@@ -117,9 +117,11 @@ final class ParallelFileProcessor
                 }
 
                 $jobsChunk = array_pop($jobs);
+
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $jobsChunk,
+                    Bridge::PREVIOUSLY_COLLECTED_DATA => $configuration->getCollectedData(),
                 ]);
             });
         });
@@ -160,6 +162,7 @@ final class ParallelFileProcessor
         $processSpawner = function () use (
             &$systemErrors,
             &$fileDiffs,
+            &$collectedData,
             &$jobs,
             $postFileCallback,
             &$systemErrorsCount,
@@ -195,7 +198,7 @@ final class ParallelFileProcessor
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
-                    &$collectedDatas,
+                    &$collectedData,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
                     &$fileChunksBudgetPerProcess,
@@ -215,8 +218,8 @@ final class ParallelFileProcessor
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
                     }
 
-                    foreach ($json[Bridge::COLLECTED_DATA] as $jsonCollectedData) {
-                        $collectedDatas[] = CollectedData::decode($jsonCollectedData);
+                    foreach ($json[Bridge::COLLECTED_DATA] as $collectedDataItem) {
+                        $collectedData[] = CollectedData::decode($collectedDataItem);
                     }
 
                     $postFileCallback($json[Bridge::FILES_COUNT]);
@@ -287,6 +290,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $collectedDatas);
+        return new ProcessResult($systemErrors, $fileDiffs, $collectedData);
     }
 }

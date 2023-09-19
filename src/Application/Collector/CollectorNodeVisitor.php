@@ -13,7 +13,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Throwable;
 
 /**
- * @api
  * @see Mimics https://github.com/phpstan/phpstan-src/commit/bccd1cd58e0d117ac8755ab228e338d966cac25a
  */
 final class CollectorNodeVisitor extends NodeVisitorAbstract
@@ -34,6 +33,7 @@ final class CollectorNodeVisitor extends NodeVisitorAbstract
     public function beforeTraverse(array $nodes): ?array
     {
         $this->collectedDatas = [];
+
         return null;
     }
 
@@ -66,7 +66,7 @@ final class CollectorNodeVisitor extends NodeVisitorAbstract
     /**
      * @return CollectedData[]
      */
-    public function getCollectedDatas(): array
+    public function getCollectedData(): array
     {
         return $this->collectedDatas;
     }

@@ -33,7 +33,8 @@ final class Configuration
         private readonly string | null $parallelIdentifier = null,
         private readonly bool $isParallel = false,
         private readonly string|null $memoryLimit = null,
-        private readonly bool $isDebug = false
+        private readonly bool $isDebug = false,
+        private readonly bool $isCollectors = false,
     ) {
     }
 
@@ -105,19 +106,17 @@ final class Configuration
     }
 
     /**
-     * @api
-     * @param CollectedData[] $collectedDatas
+     * @param CollectedData[] $collectedData
      */
-    public function setCollectedDatas(array $collectedDatas): void
+    public function setCollectedData(array $collectedData): void
     {
-        $this->collectedData = $collectedDatas;
+        $this->collectedData = $collectedData;
     }
 
     /**
-     * @api
      * @return CollectedData[]
      */
-    public function getCollectedDatas(): array
+    public function getCollectedData(): array
     {
         return $this->collectedData;
     }
@@ -136,5 +135,21 @@ final class Configuration
     public function isSecondRun(): bool
     {
         return $this->isSecondRun;
+    }
+
+    /**
+     * @api used in tests
+     */
+    public function reset(): void
+    {
+        $this->isSecondRun = false;
+    }
+
+    /**
+     * @api
+     */
+    public function isCollectors(): bool
+    {
+        return $this->isCollectors;
     }
 }

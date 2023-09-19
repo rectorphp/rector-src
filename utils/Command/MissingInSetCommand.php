@@ -7,6 +7,7 @@ namespace Rector\Utils\Command;
 use Nette\Utils\Strings;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
@@ -96,6 +97,8 @@ final class MissingInSetCommand extends Command
         DataProviderArrayItemsNewlinedRector::class,
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
+        // collectors
+        FinalizeClassesWithoutChildrenCollectorRector::class,
     ];
 
     public function __construct(

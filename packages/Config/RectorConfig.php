@@ -9,6 +9,7 @@ use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Contract\Rector\CollectorRectorInterface;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
@@ -57,6 +58,14 @@ final class RectorConfig extends Container
     public function disableParallel(): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, false);
+    }
+
+    /**
+     * @experimental since Rector 0.17.x
+     */
+    public function enableCollectors(): void
+    {
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, true);
     }
 
     public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
@@ -202,6 +211,10 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
         $this->tag($rectorClass, RectorInterface::class);
+
+        if (is_a($rectorClass, CollectorRectorInterface::class, true)) {
+            $this->tag($rectorClass, CollectorRectorInterface::class);
+        }
 
         if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
             $this->extend(
@@ -375,6 +388,14 @@ final class RectorConfig extends Container
             // completely forget the Rector rule only when no path specified
             ContainerMemento::forgetService($this, $skippedClass);
         }
+    }
+
+    /**
+     * @experimental since Rector 0.17.x
+     */
+    public function disableCollectors(): void
+    {
+        SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
