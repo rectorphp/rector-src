@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
@@ -33,7 +34,8 @@ final class ParamTypeByMethodCallTypeRector extends AbstractScopeAwareRector
     public function __construct(
         private readonly CallerParamMatcher $callerParamMatcher,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly ParamTypeAddGuard $paramTypeAddGuard
+        private readonly ParamTypeAddGuard $paramTypeAddGuard,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

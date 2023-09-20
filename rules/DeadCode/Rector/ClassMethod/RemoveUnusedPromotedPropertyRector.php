@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
@@ -30,6 +31,7 @@ final class RemoveUnusedPromotedPropertyRector extends AbstractScopeAwareRector 
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 

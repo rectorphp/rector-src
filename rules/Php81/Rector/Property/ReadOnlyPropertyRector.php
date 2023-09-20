@@ -19,6 +19,7 @@ use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\Core\NodeManipulator\PropertyManipulator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -40,7 +41,8 @@ final class ReadOnlyPropertyRector extends AbstractScopeAwareRector implements M
         private readonly PropertyManipulator $propertyManipulator,
         private readonly PropertyFetchAssignManipulator $propertyFetchAssignManipulator,
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly VisibilityManipulator $visibilityManipulator
+        private readonly VisibilityManipulator $visibilityManipulator,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

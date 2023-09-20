@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,7 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveDeadIfForeachForRector extends AbstractRector
 {
     public function __construct(
-        private readonly ConditionInverter $conditionInverter
+        private readonly ConditionInverter $conditionInverter,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

@@ -20,6 +20,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
 use Rector\Core\PhpParser\AstResolver;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
@@ -40,6 +41,7 @@ final class AddParamBasedOnParentClassMethodRector extends AbstractRector implem
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly AstResolver $astResolver,
         private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
