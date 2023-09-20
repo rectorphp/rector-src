@@ -14,6 +14,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -34,7 +35,8 @@ final class MixedTypeRector extends AbstractRector implements MinPhpVersionInter
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly ParamTagRemover $paramTagRemover
+        private readonly ParamTagRemover $paramTagRemover,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

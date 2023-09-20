@@ -6,6 +6,9 @@ namespace Rector\Utils\Rector;
 
 // e.g. to move PhpDocInfo to the particular rule itself
 use PhpParser\Node;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\ClassDependencyManipulator;
@@ -34,13 +37,13 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
 
     public function getNodeTypes(): array
     {
-        return [Node\Stmt\Class_::class];
+        return [Class_::class];
     }
 
     /**
-     * @param Node\Stmt\Class_ $node
+     * @param Class_ $node
      */
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?Node
     {
         if ($node->isAbstract()) {
             return null;
@@ -53,8 +56,8 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
         $typesToAdd = [];
 
         // has dependency on X type?
-        $this->traverseNodesWithCallable($node->stmts, function (\PhpParser\Node $node) use (&$typesToAdd) {
-            if (! $node instanceof Node\Expr\PropertyFetch) {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$typesToAdd) {
+            if (! $node instanceof PropertyFetch) {
                 return null;
             }
 
@@ -71,15 +74,30 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
             }
         });
 
+        // remove already added properties
+
         if ($typesToAdd === []) {
             return null;
         }
 
+        $hasChanged = false;
+
         foreach ($typesToAdd as $propertyNameToAdd => $propertyTypeToAdd) {
+            // skip if property already exists
+            if ($node->getProperty($propertyNameToAdd) instanceof Property) {
+                continue;
+            }
+
             $this->classDependencyManipulator->addConstructorDependency(
                 $node,
                 new PropertyMetadata($propertyNameToAdd, new ObjectType($propertyTypeToAdd))
             );
+
+            $hasChanged = true;
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;

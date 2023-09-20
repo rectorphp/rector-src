@@ -20,6 +20,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
@@ -61,6 +62,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

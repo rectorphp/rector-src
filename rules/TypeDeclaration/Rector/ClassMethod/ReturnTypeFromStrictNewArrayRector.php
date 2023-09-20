@@ -23,6 +23,7 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
@@ -40,7 +41,8 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractScopeAwareRector 
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

@@ -11,11 +11,13 @@ use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Collector\ParentClassCollector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
+use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
@@ -33,14 +35,11 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_100,
     ]);
 
-    // @todo collectors - just for testing purpose
+    // testing collectors
     $rectorConfig->collector(ParentClassCollector::class);
-    $rectorConfig->rule(\Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector::class);
+    $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
 
-    $rectorConfig->rules([
-        DeclareStrictTypesRector::class,
-        \Rector\Utils\Rector\MoveAbstractRectorToChildrenRector::class,
-    ]);
+    $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',

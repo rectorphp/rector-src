@@ -13,6 +13,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -52,7 +53,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly VarTagRemover $varTagRemover,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

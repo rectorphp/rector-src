@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -26,7 +27,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnEarlyIfVariableRector extends AbstractRector
 {
     public function __construct(
-        private readonly VariableAnalyzer $variableAnalyzer
+        private readonly VariableAnalyzer $variableAnalyzer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
