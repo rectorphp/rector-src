@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\ClassMethod;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\Naming\ExpectedNameResolver;
@@ -24,7 +25,8 @@ final class RenameVariableToMatchNewTypeRector extends AbstractRector
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
         private readonly ExpectedNameResolver $expectedNameResolver,
-        private readonly VariableRenamer $variableRenamer
+        private readonly VariableRenamer $variableRenamer,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

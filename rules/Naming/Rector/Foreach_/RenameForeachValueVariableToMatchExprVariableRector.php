@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\NodeManipulator\StmtsManipulator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,7 +24,8 @@ final class RenameForeachValueVariableToMatchExprVariableRector extends Abstract
     public function __construct(
         private readonly InflectorSingularResolver $inflectorSingularResolver,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

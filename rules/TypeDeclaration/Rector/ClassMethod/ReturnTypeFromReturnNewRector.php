@@ -25,6 +25,7 @@ use PHPStan\Type\UnionType;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -52,7 +53,8 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly NewTypeResolver $newTypeResolver
+        private readonly NewTypeResolver $newTypeResolver,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

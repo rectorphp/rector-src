@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Rector\EarlyReturn\ValueObject\BareSingleAssignIf;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -25,7 +26,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class PreparedValueToEarlyReturnRector extends AbstractRector
 {
     public function __construct(
-        private readonly IfManipulator $ifManipulator
+        private readonly IfManipulator $ifManipulator,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 

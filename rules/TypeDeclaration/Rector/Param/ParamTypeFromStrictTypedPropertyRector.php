@@ -18,6 +18,7 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -35,7 +36,8 @@ final class ParamTypeFromStrictTypedPropertyRector extends AbstractScopeAwareRec
 {
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard
+        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
