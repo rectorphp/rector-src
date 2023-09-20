@@ -37,7 +37,10 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->collector(ParentClassCollector::class);
     $rectorConfig->rule(\Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector::class);
 
-    $rectorConfig->rules([DeclareStrictTypesRector::class]);
+    $rectorConfig->rules([
+        DeclareStrictTypesRector::class,
+        \Rector\Utils\Rector\MoveAbstractRectorToChildrenRector::class,
+    ]);
 
     $rectorConfig->paths([
         __DIR__ . '/bin',
