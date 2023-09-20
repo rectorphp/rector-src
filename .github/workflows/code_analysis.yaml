@@ -40,9 +40,8 @@ jobs:
                     -
                         name: 'PHPStan for fixtures'
                         run: |
-                           # fixtures don't need all these strict rules
+                           # disable auto discovering of rules
                            composer remove phpstan/extension-installer --dev
-                           composer remove phpstan/phpstan-strict-rules --dev
                            composer phpstan-fixtures
 
                     -
