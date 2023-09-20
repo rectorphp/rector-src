@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
@@ -40,6 +41,7 @@ final class BoolReturnTypeFromStrictScalarReturnsRector extends AbstractRector i
     public function __construct(
         private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 

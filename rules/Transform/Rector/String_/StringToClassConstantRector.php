@@ -7,6 +7,7 @@ namespace Rector\Transform\Rector\String_;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Transform\ValueObject\StringToClassConstant;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -22,6 +23,11 @@ final class StringToClassConstantRector extends AbstractRector implements Config
      * @var StringToClassConstant[]
      */
     private array $stringsToClassConstants = [];
+
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {

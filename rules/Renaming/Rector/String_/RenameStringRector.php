@@ -7,6 +7,7 @@ namespace Rector\Renaming\Rector\String_;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,6 +24,11 @@ final class RenameStringRector extends AbstractRector implements ConfigurableRec
      * @var array<string, string>
      */
     private array $stringChanges = [];
+
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {

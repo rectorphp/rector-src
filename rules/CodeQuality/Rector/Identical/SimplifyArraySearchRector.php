@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -22,7 +23,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SimplifyArraySearchRector extends AbstractRector
 {
     public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator
+        private readonly BinaryOpManipulator $binaryOpManipulator,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

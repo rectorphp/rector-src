@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Scalar\String_;
 use Rector\CodingStyle\NodeFactory\ArrayCallableToMethodCallFactory;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -28,6 +29,7 @@ final class CallUserFuncArrayToVariadicRector extends AbstractRector implements 
 {
     public function __construct(
         private readonly ArrayCallableToMethodCallFactory $arrayCallableToMethodCallFactory,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
