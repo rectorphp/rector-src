@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use PhpParser\Node\Scalar\String_;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AbsolutizeRequireAndIncludePathRector extends AbstractRector
 {
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -102,11 +108,10 @@ CODE_SAMPLE
         }
 
         // add preslash to string
-        if (\str_starts_with($includeValue, './')) {
-            $node->expr->value = Strings::substring($includeValue, 1);
-        } else {
-            $node->expr->value = '/' . $includeValue;
-        }
+        $node->expr->value = \str_starts_with($includeValue, './') ? Strings::substring(
+            $includeValue,
+            1
+        ) : '/' . $includeValue;
 
         $node->expr = $this->prefixWithDirConstant($node->expr);
 

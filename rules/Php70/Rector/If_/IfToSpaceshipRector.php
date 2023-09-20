@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php70\Enum\BattleshipCompareOrder;
@@ -32,6 +33,7 @@ final class IfToSpaceshipRector extends AbstractRector implements MinPhpVersionI
 {
     public function __construct(
         private readonly BattleshipTernaryAnalyzer $battleshipTernaryAnalyzer,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 

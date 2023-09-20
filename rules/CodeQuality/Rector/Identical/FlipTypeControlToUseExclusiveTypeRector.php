@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\TypeDeclaration\TypeAnalyzer\NullableTypeAnalyzer;
@@ -25,6 +26,7 @@ final class FlipTypeControlToUseExclusiveTypeRector extends AbstractRector
 {
     public function __construct(
         private readonly NullableTypeAnalyzer $nullableTypeAnalyzer,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 

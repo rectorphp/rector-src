@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Ternary;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class UnnecessaryTernaryExpressionRector extends AbstractRector
 {
     public function __construct(
-        private readonly AssignAndBinaryMap $assignAndBinaryMap
+        private readonly AssignAndBinaryMap $assignAndBinaryMap,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

@@ -16,6 +16,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\NodeManipulator\BinaryOpManipulator;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,7 +33,8 @@ final class GetClassToInstanceOfRector extends AbstractRector
     private const NO_NAMESPACED_CLASSNAMES = ['self', 'static'];
 
     public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator
+        private readonly BinaryOpManipulator $binaryOpManipulator,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

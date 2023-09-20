@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -32,6 +33,11 @@ final class StrContainsRector extends AbstractRector implements MinPhpVersionInt
      * @var string[]
      */
     private const OLD_STR_NAMES = ['strpos', 'strstr'];
+
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
 
     public function provideMinPhpVersion(): int
     {

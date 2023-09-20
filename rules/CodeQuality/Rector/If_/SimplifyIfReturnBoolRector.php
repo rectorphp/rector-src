@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\CodeQuality\NodeManipulator\ExprBoolCaster;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -28,7 +29,8 @@ final class SimplifyIfReturnBoolRector extends AbstractRector
     public function __construct(
         private readonly CommentsMerger $commentsMerger,
         private readonly ExprBoolCaster $exprBoolCaster,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

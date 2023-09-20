@@ -15,6 +15,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -54,7 +55,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
         private readonly VarTagRemover $varTagRemover,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

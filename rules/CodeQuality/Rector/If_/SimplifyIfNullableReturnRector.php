@@ -21,6 +21,7 @@ use PHPStan\Type\UnionType;
 use Rector\CodeQuality\TypeResolver\AssignVariableTypeResolver;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeManipulator\IfManipulator;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -35,7 +36,8 @@ final class SimplifyIfNullableReturnRector extends AbstractRector
     public function __construct(
         private readonly IfManipulator $ifManipulator,
         private readonly AssignVariableTypeResolver $assignVariableTypeResolver,
-        private readonly VarTagRemover $varTagRemover
+        private readonly VarTagRemover $varTagRemover,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 

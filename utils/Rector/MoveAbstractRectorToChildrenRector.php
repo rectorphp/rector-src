@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\ClassDependencyManipulator;
+use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,6 +24,7 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
      */
     private const PROPERTIES_TO_TYPES = [
         'phpDocInfoFactory' => PhpDocInfoFactory::class,
+        'valueResolver' => ValueResolver::class,
     ];
 
     public function __construct(
