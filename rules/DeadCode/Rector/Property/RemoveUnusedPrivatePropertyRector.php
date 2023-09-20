@@ -14,6 +14,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
@@ -28,6 +29,7 @@ final class RemoveUnusedPrivatePropertyRector extends AbstractScopeAwareRector
     public function __construct(
         private readonly PropertyFetchFinder $propertyFetchFinder,
         private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

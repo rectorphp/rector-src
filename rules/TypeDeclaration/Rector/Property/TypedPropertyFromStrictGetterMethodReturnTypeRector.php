@@ -14,6 +14,7 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -36,7 +37,8 @@ final class TypedPropertyFromStrictGetterMethodReturnTypeRector extends Abstract
         private readonly VarTagRemover $varTagRemover,
         private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

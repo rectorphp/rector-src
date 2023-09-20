@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -39,7 +40,8 @@ final class TypedPropertyFromStrictConstructorRector extends AbstractRector impl
         private readonly PropertyTypeOverrideGuard $propertyTypeOverrideGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private readonly PropertyTypeDefaultValueAnalyzer $propertyTypeDefaultValueAnalyzer
+        private readonly PropertyTypeDefaultValueAnalyzer $propertyTypeDefaultValueAnalyzer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

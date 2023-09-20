@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\If_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\Comment\CommentsMerger;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class CombineIfRector extends AbstractRector
 {
     public function __construct(
-        private readonly CommentsMerger $commentsMerger
+        private readonly CommentsMerger $commentsMerger,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

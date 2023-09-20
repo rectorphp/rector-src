@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -27,7 +28,8 @@ final class RemoveDeadStmtRector extends AbstractRector
     public function __construct(
         private readonly LivingCodeManipulator $livingCodeManipulator,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

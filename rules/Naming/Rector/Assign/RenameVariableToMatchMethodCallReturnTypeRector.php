@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
@@ -42,7 +43,8 @@ final class RenameVariableToMatchMethodCallReturnTypeRector extends AbstractRect
         private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
         private readonly VariableAndCallAssignMatcher $variableAndCallAssignMatcher,
         private readonly VariableRenamer $variableRenamer,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

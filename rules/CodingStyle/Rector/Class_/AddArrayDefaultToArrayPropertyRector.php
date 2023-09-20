@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\TypeAnalyzer\IterableTypeAnalyzer;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -34,7 +35,8 @@ final class AddArrayDefaultToArrayPropertyRector extends AbstractRector
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
         private readonly IterableTypeAnalyzer $iterableTypeAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

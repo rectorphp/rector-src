@@ -18,6 +18,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\Rector\AbstractRector;
@@ -67,7 +68,8 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
         private readonly MakePropertyPromotionGuard $makePropertyPromotionGuard,
         private readonly TypeComparator $typeComparator,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly PropertyPromotionRenamer $propertyPromotionRenamer
+        private readonly PropertyPromotionRenamer $propertyPromotionRenamer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

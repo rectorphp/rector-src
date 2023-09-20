@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\Property;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -18,6 +19,7 @@ final class RemoveUselessVarTagRector extends AbstractRector
 {
     public function __construct(
         private readonly VarTagRemover $varTagRemover,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

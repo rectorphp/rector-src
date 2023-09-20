@@ -12,6 +12,7 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,6 +33,7 @@ final class AddParamTypeSplFixedArrayRector extends AbstractRector
 
     public function __construct(
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
