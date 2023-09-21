@@ -1,6 +1,6 @@
 <?php
 
-// intentional without namespace
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
@@ -17,6 +17,9 @@ $values = new class
 
 ?>
 -----
+
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
+
 $values = new class
 {
     public function run($value)
