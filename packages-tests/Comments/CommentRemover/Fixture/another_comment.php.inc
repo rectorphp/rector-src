@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Comments\Tests\CommentRemover\Fixture;
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
@@ -19,7 +19,9 @@ $values = new class
 
 ?>
 -----
-namespace Rector\Comments\Tests\CommentRemover\Fixture;
+<?php
+
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
@@ -32,3 +34,5 @@ $values = new class
         }
     }
 };
+
+?>
