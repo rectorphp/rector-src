@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
+use Rector\Core\Collector\MockedClassCollector;
+use Rector\Core\Collector\ParentClassCollector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
@@ -14,7 +16,6 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Collector\ParentClassCollector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
@@ -37,6 +38,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // testing collectors
     $rectorConfig->collector(ParentClassCollector::class);
+    $rectorConfig->collector(MockedClassCollector::class);
     $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
