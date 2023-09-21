@@ -4,7 +4,7 @@ namespace Rector\Tests\Renaming\Rector\StaticCall\RenameStaticMethodRector\Fixtu
 
 function staticMethodNameReplacer()
 {
-    Nette\Utils\Html::add('someContent');
+    \Nette\Utils\Html::add('someContent');
 }
 
 ?>
@@ -15,7 +15,7 @@ namespace Rector\Tests\Renaming\Rector\StaticCall\RenameStaticMethodRector\Fixtu
 
 function staticMethodNameReplacer()
 {
-    Nette\Utils\Html::addHtml('someContent');
+    \Nette\Utils\Html::addHtml('someContent');
 }
 
 ?>
