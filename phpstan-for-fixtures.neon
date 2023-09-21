@@ -25,3 +25,4 @@ parameters:
         - 'rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/Fixture/extended_parent.php.inc'
         # intentionally without namespace
         - 'rules-tests/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector/Fixture/skip_result_object.php.inc'
+        - 'rules-tests/Php80/Rector/Class_/AnnotationToAttributeRector/Fixture/non_namespaced_class_with_annotation.php.inc'

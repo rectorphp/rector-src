@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector\Fixture;
+
 class TransformsRequest {
     public function handle($request, Closure $next)
     {

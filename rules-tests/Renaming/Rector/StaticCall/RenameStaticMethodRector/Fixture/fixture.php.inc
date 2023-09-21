@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Renaming\Rector\StaticCall\RenameStaticMethodRector\Fixture;
+
 function staticMethodNameReplacer()
 {
     Nette\Utils\Html::add('someContent');
@@ -8,6 +10,8 @@ function staticMethodNameReplacer()
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Renaming\Rector\StaticCall\RenameStaticMethodRector\Fixture;
 
 function staticMethodNameReplacer()
 {
