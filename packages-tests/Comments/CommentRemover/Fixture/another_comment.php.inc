@@ -11,7 +11,6 @@ $values = new class
             case 'key':
                 // something
                 return 'https://some_very_long_link.cz';  /* here too */
-                break;
         }
     }
 };
@@ -27,7 +26,6 @@ $values = new class
         switch ($value) {
             case 'key':
                 return 'https://some_very_long_link.cz';
-                break;
         }
     }
 };
