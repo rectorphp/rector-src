@@ -255,7 +255,7 @@ final class NodeTypeResolver
         return $this->resolveNativeUnionType($type);
     }
 
-    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope, Type $type): Type
+    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope, Type $originalNativeType): Type
     {
         /**
          * Allow pull type from
@@ -289,13 +289,15 @@ final class NodeTypeResolver
                     }
 
                     if ($targetKey !== null && in_array($targetKey, $variableType->getOptionalKeys(), true)) {
-                        return $scope->getNativeType($arrayDimFetch);
+                        return $originalNativeType;
                     }
                 }
             }
+
+            return $type;
         }
 
-        return $type;
+        return $originalNativeType;
     }
 
     public function isNumberType(Expr $expr): bool
