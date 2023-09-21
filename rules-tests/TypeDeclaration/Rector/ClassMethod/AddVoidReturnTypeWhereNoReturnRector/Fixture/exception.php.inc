@@ -26,3 +26,4 @@ final class ThrowsException
         throw new ShouldNotHappenException();
     }
 }
+?>
