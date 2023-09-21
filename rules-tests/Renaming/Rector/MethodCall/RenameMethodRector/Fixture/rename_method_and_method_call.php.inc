@@ -2,7 +2,13 @@
 
 namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
-use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
+final class CustomType
+{
+    public function notify(): int
+    {
+        return 5;
+    }
+}
 
 final class Caller
 {
@@ -18,7 +24,13 @@ final class Caller
 
 namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
-use Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source\CustomType;
+final class CustomType
+{
+    public function __invoke(): int
+    {
+        return 5;
+    }
+}
 
 final class Caller
 {
