@@ -17,8 +17,6 @@ $values = new class
 
 ?>
 -----
-<?php
-
 $values = new class
 {
     public function run($value)
@@ -29,5 +27,3 @@ $values = new class
         }
     }
 };
-
-?>
