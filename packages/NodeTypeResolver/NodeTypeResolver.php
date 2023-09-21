@@ -327,27 +327,27 @@ final class NodeTypeResolver
         return $classReflection->isSubclassOf($objectType->getClassName());
     }
 
+    /**
+     * Allow pull type from
+     *
+     *      - native function
+     *      - always defined by assignment
+     *
+     * eg:
+     *
+     *  $parts = parse_url($url);
+     *  if (!empty($parts['host'])) { }
+     *
+     * or
+     *
+     *  $parts = ['host' => 'foo'];
+     *  if (!empty($parts['host'])) { }
+     */
     private function resolveArrayDimFetchType(
         ArrayDimFetch $arrayDimFetch,
         Scope $scope,
         Type $originalNativeType
     ): Type {
-        /**
-         * Allow pull type from
-         *
-         *      - native function
-         *      - always defined by assignment
-         *
-         * eg:
-         *
-         *  $parts = parse_url($url);
-         *  if (!empty($parts['host'])) { }
-         *
-         * or
-         *
-         *  $parts = ['host' => 'foo'];
-         *  if (!empty($parts['host'])) { }
-         */
         $nativeVariableType = $scope->getNativeType($arrayDimFetch->var);
         if ($nativeVariableType instanceof MixedType || ($nativeVariableType instanceof ArrayType && $nativeVariableType->getItemType() instanceof MixedType)) {
             return $originalNativeType;
