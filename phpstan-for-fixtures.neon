@@ -23,6 +23,9 @@ parameters:
         - '*/TagValueNodeReprint/*'
         # test-case mixes global scope and namespace
         - 'rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/Fixture/extended_parent.php.inc'
+        - 'rules-tests/CodingStyle/Rector/Stmt/NewlineAfterStatementRector/Fixture/no_new_line_classlike.php.inc'
         # intentionally without namespace
+        - 'rules-tests/CodeQuality/Rector/Class_/CompleteDynamicPropertiesRector/Fixture/class_string_case_sensitive.php.inc'
+        - 'rules-tests/CodeQuality/Rector/Class_/CompleteDynamicPropertiesRector/Fixture/class_string_case_insensitive.php.inc'
         - 'rules-tests/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector/Fixture/skip_result_object.php.inc'
         - 'rules-tests/Php80/Rector/Class_/AnnotationToAttributeRector/Fixture/non_namespaced_class_with_annotation.php.inc'
