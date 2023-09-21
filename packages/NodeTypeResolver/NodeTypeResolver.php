@@ -241,7 +241,7 @@ final class NodeTypeResolver
 
         $type = $scope->getNativeType($expr);
         if ($expr instanceof ArrayDimFetch) {
-            $type = $this->resolveArrayDimFetchType($expr, $scope);
+            $type = $this->resolveArrayDimFetchType($expr, $scope, $type);
         }
 
         if (! $type instanceof UnionType) {
@@ -255,7 +255,7 @@ final class NodeTypeResolver
         return $this->resolveNativeUnionType($type);
     }
 
-    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope): Type
+    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope, Type $type): Type
     {
         /**
          * Allow pull type from
@@ -289,15 +289,13 @@ final class NodeTypeResolver
                     }
 
                     if ($targetKey !== null && in_array($targetKey, $variableType->getOptionalKeys(), true)) {
-                        $type = $scope->getNativeType($arrayDimFetch);
+                        return $scope->getNativeType($arrayDimFetch);
                     }
                 }
             }
-
-            return $type;
         }
 
-        return $scope->getNativeType($arrayDimFetch);
+        return $type;
     }
 
     public function isNumberType(Expr $expr): bool
