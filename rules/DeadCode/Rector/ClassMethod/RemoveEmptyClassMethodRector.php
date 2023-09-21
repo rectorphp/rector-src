@@ -8,6 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeAnalyzer\ParamAnalyzer;
 use Rector\Core\NodeManipulator\ClassMethodManipulator;
 use Rector\Core\Rector\AbstractRector;
@@ -24,7 +27,8 @@ final class RemoveEmptyClassMethodRector extends AbstractRector
     public function __construct(
         private readonly ClassMethodManipulator $classMethodManipulator,
         private readonly ControllerClassMethodManipulator $controllerClassMethodManipulator,
-        private readonly ParamAnalyzer $paramAnalyzer
+        private readonly ParamAnalyzer $paramAnalyzer,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
@@ -135,17 +139,29 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->controllerClassMethodManipulator->isControllerClassMethodWithBehaviorAnnotation(
-            $class,
-            $classMethod
-        )) {
+        if ($this->hasDeprecatedAnnotation($classMethod)) {
+            return true;
+        }
+
+        if ($this->controllerClassMethodManipulator->isControllerClassMethod($class, $classMethod)) {
             return true;
         }
 
         if ($this->nodeNameResolver->isName($classMethod, MethodName::CONSTRUCT)) {
+            // has parent class?
             return $class->extends instanceof FullyQualified;
         }
 
         return $this->nodeNameResolver->isName($classMethod, MethodName::INVOKE);
+    }
+
+    private function hasDeprecatedAnnotation(ClassMethod $classMethod): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        return $phpDocInfo->hasByType(DeprecatedTagValueNode::class);
     }
 }
