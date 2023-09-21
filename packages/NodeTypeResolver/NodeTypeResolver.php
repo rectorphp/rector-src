@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver;
 
+use PHPStan\Type\Constant\ConstantStringType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -17,6 +18,7 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Analyser\Scope;
@@ -238,26 +240,7 @@ final class NodeTypeResolver
 
         $type = $scope->getNativeType($expr);
         if ($expr instanceof ArrayDimFetch) {
-            /**
-             * Allow pull type from
-             *
-             *      - native function
-             *      - always defined by assignment
-             *
-             * eg:
-             *
-             *  $parts = parse_url($url);
-             *  if (!empty($parts['host'])) { }
-             *
-             * or
-             *
-             *  $parts = ['host' => 'foo'];
-             *  if (!empty($parts['host'])) { }
-             */
-            $variableType = $scope->getNativeType($expr->var);
-            if (! $variableType instanceof MixedType && (! $variableType instanceof ArrayType || ! $variableType->getItemType() instanceof MixedType)) {
-                $type = $scope->getType($expr);
-            }
+            $type = $this->resolveArrayDimFetchType($expr, $scope);
         }
 
         if (! $type instanceof UnionType) {
@@ -269,6 +252,51 @@ final class NodeTypeResolver
         }
 
         return $this->resolveNativeUnionType($type);
+    }
+
+    private function resolveArrayDimFetchType(ArrayDimFetch $expr, Scope $scope): Type
+    {
+        /**
+         * Allow pull type from
+         *
+         *      - native function
+         *      - always defined by assignment
+         *
+         * eg:
+         *
+         *  $parts = parse_url($url);
+         *  if (!empty($parts['host'])) { }
+         *
+         * or
+         *
+         *  $parts = ['host' => 'foo'];
+         *  if (!empty($parts['host'])) { }
+         */
+        $nativeVariableType = $scope->getNativeType($expr->var);
+        if (! $nativeVariableType instanceof MixedType && (! $nativeVariableType instanceof ArrayType || ! $nativeVariableType->getItemType() instanceof MixedType)) {
+            $type = $scope->getType($expr);
+
+            if ($expr->dim instanceof String_) {
+                $targetKey = null;
+                $variableType = $scope->getType($expr->var);
+                if ($variableType instanceof \PHPStan\Type\Constant\ConstantArrayType) {
+                    foreach ($variableType->getKeyTypes() as $key => $type) {
+                        if ($type instanceof ConstantStringType && $type->getValue() === $expr->dim->value) {
+                            $targetKey = $key;
+                            break;
+                        }
+                    }
+
+                    if ($targetKey !== null && in_array($targetKey, $variableType->getOptionalKeys(), true)) {
+                        $type = $scope->getNativeType($expr);
+                    }
+                }
+            }
+
+            return $type;
+        }
+
+        return $nativeVariableType;
     }
 
     public function isNumberType(Expr $expr): bool
