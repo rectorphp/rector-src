@@ -21,3 +21,5 @@ parameters:
         - '*/Source/phpstan.phar/*'
         - '*/ImportFullyQualifiedNamesRector/*'
         - '*/TagValueNodeReprint/*'
+        # test-case mixes global scope and namespace
+        - 'rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/Fixture/extended_parent.php.inc'
