@@ -64,7 +64,7 @@
         "tomasvotruba/cognitive-complexity": "^0.2",
         "tomasvotruba/lines": "^0.5",
         "tomasvotruba/type-coverage": "^0.2",
-        "tomasvotruba/unused-public": "dev-main",
+        "tomasvotruba/unused-public": "^0.3",
         "tracy/tracy": "^2.9"
     },
     "replace": {
