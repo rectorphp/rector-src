@@ -364,6 +364,7 @@ final class NodeTypeResolver
             return $type;
         }
 
+        $optionalKeys = $variableType->getOptionalKeys();
         foreach ($variableType->getKeyTypes() as $key => $type) {
             if (! $type instanceof ConstantStringType) {
                 continue;
@@ -373,7 +374,7 @@ final class NodeTypeResolver
                 continue;
             }
 
-            if (! in_array($key, $variableType->getOptionalKeys(), true)) {
+            if (! in_array($key, $optionalKeys, true)) {
                 continue;
             }
 
