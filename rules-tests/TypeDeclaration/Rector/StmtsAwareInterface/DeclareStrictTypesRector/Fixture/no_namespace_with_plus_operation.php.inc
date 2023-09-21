@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\Fixture;
+
 final class NoNamespaceWithOperationPlusOperation
 {
     private array $prop2;
@@ -13,6 +15,8 @@ final class NoNamespaceWithOperationPlusOperation
 ?>
 -----
 <?php
+
+namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\Fixture;
 
 declare(strict_types=1);
 
