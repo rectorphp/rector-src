@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\SideEffect;
+namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
 
 class SideEffect {
 
@@ -27,7 +27,7 @@ class SideEffect {
 -----
 <?php
 
-namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\SideEffect;
+namespace Rector\Tests\Php70\Rector\If_\IfToSpaceshipRector\Fixture;
 
 class SideEffect {
 
