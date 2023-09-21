@@ -27,7 +27,7 @@ final class NativeArrayShape
         $this->doBar($shape['basename']);
     }
 
-    private function doBar($param): string
+    private function doBar(string $param)
     {
 
     }
