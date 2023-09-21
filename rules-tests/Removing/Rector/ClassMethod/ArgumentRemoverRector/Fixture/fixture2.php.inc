@@ -1,7 +1,5 @@
 <?php
 
-namespace Rector\Tests\Removing\Rector\ClassMethod\ArgumentRemoverRector\Fixture;
-
 use Symfony\Component\Yaml\Yaml;
 
 function argumentRemover()
@@ -26,8 +24,6 @@ function argumentRemover()
 ?>
 -----
 <?php
-
-namespace Rector\Tests\Removing\Rector\ClassMethod\ArgumentRemoverRector\Fixture;
 
 use Symfony\Component\Yaml\Yaml;
 
