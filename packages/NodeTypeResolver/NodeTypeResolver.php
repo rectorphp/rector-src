@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver;
 
-use PHPStan\Type\Constant\ConstantArrayType;
-use PHPStan\Type\Constant\ConstantStringType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -27,7 +25,9 @@ use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
@@ -255,51 +255,6 @@ final class NodeTypeResolver
         return $this->resolveNativeUnionType($type);
     }
 
-    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope, Type $originalNativeType): Type
-    {
-        /**
-         * Allow pull type from
-         *
-         *      - native function
-         *      - always defined by assignment
-         *
-         * eg:
-         *
-         *  $parts = parse_url($url);
-         *  if (!empty($parts['host'])) { }
-         *
-         * or
-         *
-         *  $parts = ['host' => 'foo'];
-         *  if (!empty($parts['host'])) { }
-         */
-        $nativeVariableType = $scope->getNativeType($arrayDimFetch->var);
-        if (! $nativeVariableType instanceof MixedType && (! $nativeVariableType instanceof ArrayType || ! $nativeVariableType->getItemType() instanceof MixedType)) {
-            $type = $scope->getType($arrayDimFetch);
-
-            if ($arrayDimFetch->dim instanceof String_) {
-                $targetKey = null;
-                $variableType = $scope->getType($arrayDimFetch->var);
-                if ($variableType instanceof ConstantArrayType) {
-                    foreach ($variableType->getKeyTypes() as $key => $type) {
-                        if ($type instanceof ConstantStringType && $type->getValue() === $arrayDimFetch->dim->value) {
-                            $targetKey = $key;
-                            break;
-                        }
-                    }
-
-                    if ($targetKey !== null && in_array($targetKey, $variableType->getOptionalKeys(), true)) {
-                        return $originalNativeType;
-                    }
-                }
-            }
-
-            return $type;
-        }
-
-        return $originalNativeType;
-    }
-
     public function isNumberType(Expr $expr): bool
     {
         $nodeType = $this->getType($expr);
@@ -370,6 +325,59 @@ final class NodeTypeResolver
         }
 
         return $classReflection->isSubclassOf($objectType->getClassName());
+    }
+
+    private function resolveArrayDimFetchType(
+        ArrayDimFetch $arrayDimFetch,
+        Scope $scope,
+        Type $originalNativeType
+    ): Type {
+        /**
+         * Allow pull type from
+         *
+         *      - native function
+         *      - always defined by assignment
+         *
+         * eg:
+         *
+         *  $parts = parse_url($url);
+         *  if (!empty($parts['host'])) { }
+         *
+         * or
+         *
+         *  $parts = ['host' => 'foo'];
+         *  if (!empty($parts['host'])) { }
+         */
+        $nativeVariableType = $scope->getNativeType($arrayDimFetch->var);
+        if ($nativeVariableType instanceof MixedType || ($nativeVariableType instanceof ArrayType && $nativeVariableType->getItemType() instanceof MixedType)) {
+            return $originalNativeType;
+        }
+
+        $type = $scope->getType($arrayDimFetch);
+
+        if (! $arrayDimFetch->dim instanceof String_) {
+            return $type;
+        }
+
+        $variableType = $scope->getType($arrayDimFetch->var);
+        if (! $variableType instanceof ConstantArrayType) {
+            return $type;
+        }
+
+        foreach ($variableType->getKeyTypes() as $key => $type) {
+            if (! $type instanceof ConstantStringType) {
+                continue;
+            }
+            if ($type->getValue() !== $arrayDimFetch->dim->value) {
+                continue;
+            }
+            if (! in_array($key, $variableType->getOptionalKeys(), true)) {
+                continue;
+            }
+            return $originalNativeType;
+        }
+
+        return $type;
     }
 
     private function resolveNativeUnionType(UnionType $unionType): Type
