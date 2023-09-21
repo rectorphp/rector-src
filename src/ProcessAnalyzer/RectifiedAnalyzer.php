@@ -46,11 +46,7 @@ final class RectifiedAnalyzer
         $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         if ($createdByRule === []) {
-            if ($node instanceof Stmt) {
-                return ! $originalNode instanceof Node && count($node->getAttributes()) <= 1;
-            }
-
-            return false;
+            return ! $originalNode instanceof Node && count($node->getAttributes()) <= 1;
         }
 
         return end($createdByRule) === $rectorClass;
