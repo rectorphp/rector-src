@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStri
 
 final class SkipNativeOptionalShape {
     private function doFoo() {
-        $shape = pathinfo();
+        $shape = pathinfo('');
         $this->doBar($shape['dirname']); // dirname is only conditionally returned
     }
 

@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStri
 
 final class NativeArrayShape {
     private function doFoo() {
-        $shape = pathinfo();
+        $shape = pathinfo('/www/htdocs/inc/lib.inc.php')
         $this->doBar($shape['basename']);
     }
 
@@ -20,7 +20,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStri
 
 final class NativeArrayShape {
     private function doFoo() {
-        $shape = pathinfo();
+        $shape = pathinfo('/www/htdocs/inc/lib.inc.php')
         $this->doBar($shape['basename']);
     }
 
