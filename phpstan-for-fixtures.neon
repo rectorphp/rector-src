@@ -23,3 +23,5 @@ parameters:
         - '*/TagValueNodeReprint/*'
         # test-case mixes global scope and namespace
         - 'rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/Fixture/extended_parent.php.inc'
+        # intentionally without namespace
+        - 'rules-tests/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector/Fixture/skip_result_object.php.inc'
