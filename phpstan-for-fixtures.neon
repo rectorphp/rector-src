@@ -21,6 +21,8 @@ parameters:
         - '*/Source/phpstan.phar/*'
         - '*/ImportFullyQualifiedNamesRector/*'
         - '*/TagValueNodeReprint/*'
+        # rector rules which target php versions which do not yet support namespaces
+        - 'rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/*'
         # test-case mixes global scope and namespace
         - 'rules-tests/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector/Fixture/extended_parent.php.inc'
         - 'rules-tests/CodingStyle/Rector/Stmt/NewlineAfterStatementRector/Fixture/no_new_line_classlike.php.inc'
