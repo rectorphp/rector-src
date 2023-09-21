@@ -16,9 +16,9 @@ final class NoNamespaceWithOperationPlusOperation
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\Fixture;
-
 declare(strict_types=1);
+
+namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\Fixture;
 
 final class NoNamespaceWithOperationPlusOperation
 {
