@@ -31,4 +31,5 @@ parameters:
         - 'rules-tests/CodeQuality/Rector/Class_/CompleteDynamicPropertiesRector/Fixture/class_string_case_insensitive.php.inc'
         - 'rules-tests/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector/Fixture/skip_result_object.php.inc'
         - 'rules-tests/Php80/Rector/Class_/AnnotationToAttributeRector/Fixture/non_namespaced_class_with_annotation.php.inc'
+        - 'rules-tests/Removing/Rector/ClassMethod/ArgumentRemoverRector/Fixture/fixture2.php.inc'
         - 'packages-tests/Comments/CommentRemover/Fixture/another_comment.php.inc'
