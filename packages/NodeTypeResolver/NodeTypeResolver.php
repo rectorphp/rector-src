@@ -368,12 +368,15 @@ final class NodeTypeResolver
             if (! $type instanceof ConstantStringType) {
                 continue;
             }
+
             if ($type->getValue() !== $arrayDimFetch->dim->value) {
                 continue;
             }
+
             if (! in_array($key, $variableType->getOptionalKeys(), true)) {
                 continue;
             }
+
             return $originalNativeType;
         }
 
