@@ -297,7 +297,7 @@ final class NodeTypeResolver
             return $type;
         }
 
-        return $nativeVariableType;
+        return $scope->getNativeType($arrayDimFetch);
     }
 
     public function isNumberType(Expr $expr): bool
