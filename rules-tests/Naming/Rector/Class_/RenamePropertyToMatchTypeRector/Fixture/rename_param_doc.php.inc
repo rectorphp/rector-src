@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
@@ -24,7 +24,7 @@ final class RenameParamDoc
 -----
 <?php
 
-namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 
