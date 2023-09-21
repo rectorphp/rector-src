@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
