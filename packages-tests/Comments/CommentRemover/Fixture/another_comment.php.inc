@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Comments\CommentRemover\Fixture;
+// intentional without namespace
 
 $values = new class
 {
@@ -16,12 +16,9 @@ $values = new class
     }
 };
 
-
 ?>
 -----
 <?php
-
-namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
