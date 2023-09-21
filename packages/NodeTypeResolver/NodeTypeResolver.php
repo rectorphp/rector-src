@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver;
 
+use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -254,7 +255,7 @@ final class NodeTypeResolver
         return $this->resolveNativeUnionType($type);
     }
 
-    private function resolveArrayDimFetchType(ArrayDimFetch $expr, Scope $scope): Type
+    private function resolveArrayDimFetchType(ArrayDimFetch $arrayDimFetch, Scope $scope): Type
     {
         /**
          * Allow pull type from
@@ -272,23 +273,23 @@ final class NodeTypeResolver
          *  $parts = ['host' => 'foo'];
          *  if (!empty($parts['host'])) { }
          */
-        $nativeVariableType = $scope->getNativeType($expr->var);
+        $nativeVariableType = $scope->getNativeType($arrayDimFetch->var);
         if (! $nativeVariableType instanceof MixedType && (! $nativeVariableType instanceof ArrayType || ! $nativeVariableType->getItemType() instanceof MixedType)) {
-            $type = $scope->getType($expr);
+            $type = $scope->getType($arrayDimFetch);
 
-            if ($expr->dim instanceof String_) {
+            if ($arrayDimFetch->dim instanceof String_) {
                 $targetKey = null;
-                $variableType = $scope->getType($expr->var);
-                if ($variableType instanceof \PHPStan\Type\Constant\ConstantArrayType) {
+                $variableType = $scope->getType($arrayDimFetch->var);
+                if ($variableType instanceof ConstantArrayType) {
                     foreach ($variableType->getKeyTypes() as $key => $type) {
-                        if ($type instanceof ConstantStringType && $type->getValue() === $expr->dim->value) {
+                        if ($type instanceof ConstantStringType && $type->getValue() === $arrayDimFetch->dim->value) {
                             $targetKey = $key;
                             break;
                         }
                     }
 
                     if ($targetKey !== null && in_array($targetKey, $variableType->getOptionalKeys(), true)) {
-                        $type = $scope->getNativeType($expr);
+                        $type = $scope->getNativeType($arrayDimFetch);
                     }
                 }
             }
