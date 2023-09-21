@@ -239,9 +239,19 @@ final class NodeTypeResolver
         $type = $scope->getNativeType($expr);
         if ($expr instanceof ArrayDimFetch) {
             /**
-             * Allow pull type from native function, otherwise, use native type
+             * Allow pull type from
+             *
+             *      - native function
+             *      - always defined by assignment
+             *
+             * eg:
              *
              *  $parts = parse_url($url);
+             *  if (!empty($parts['host'])) { }
+             *
+             * or
+             *
+             *  $parts = ['host' => 'foo'];
              *  if (!empty($parts['host'])) { }
              */
             $variableType = $scope->getNativeType($expr->var);
