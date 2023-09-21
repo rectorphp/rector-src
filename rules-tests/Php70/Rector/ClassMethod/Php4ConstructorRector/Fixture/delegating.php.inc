@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+
 final class DelegatingPhp4ConstructorClass
 {
     /**
@@ -32,6 +34,8 @@ final class DelegatingPhp4ConstructorClass
 <?php
 
 declare(strict_types=1);
+
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
 
 final class DelegatingPhp4ConstructorClass
 {

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+
 abstract class InvalidFlagsConstructorClass2
 {
     abstract function InvalidFlagsConstructorClass2();
@@ -35,6 +37,8 @@ final class SomePhp4ConstructorClass
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
 
 abstract class InvalidFlagsConstructorClass2
 {

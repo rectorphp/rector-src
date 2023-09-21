@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+
 final class JustFor
 {
     public function JustFor()
@@ -16,6 +18,8 @@ final class JustFor
 <?php
 
 declare(strict_types=1);
+
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
 
 final class JustFor
 {

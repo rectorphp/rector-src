@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+
 class FooParEnt
 {
 }
@@ -19,6 +21,8 @@ class Php4ConstructorWithParent extends FooParEnt
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
 
 class FooParEnt
 {
