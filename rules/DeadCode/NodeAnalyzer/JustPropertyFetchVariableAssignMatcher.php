@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Expression;
 use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\DeadCode\ValueObject\VariableAndPropertyFetchAssign;
@@ -26,12 +31,12 @@ final class JustPropertyFetchVariableAssignMatcher
             return null;
         }
 
-        $firstVariableAndPropertyFetchAssign = $this->matchVariableAndPropertyFetchAssign();
+        $firstVariableAndPropertyFetchAssign = $this->matchVariableAndPropertyFetchAssign($stmts[0]);
         if (! $firstVariableAndPropertyFetchAssign instanceof VariableAndPropertyFetchAssign) {
             return null;
         }
 
-        $thirdVariableAndPropertyFetchAssign = $this->matchRevertedVariableAndPropertyFetchAssign();
+        $thirdVariableAndPropertyFetchAssign = $this->matchRevertedVariableAndPropertyFetchAssign($stmts[2]);
         if (! $thirdVariableAndPropertyFetchAssign instanceof VariableAndPropertyFetchAssign) {
             return null;
         }
@@ -55,13 +60,47 @@ final class JustPropertyFetchVariableAssignMatcher
         return $firstVariableAndPropertyFetchAssign;
     }
 
-    private function matchVariableAndPropertyFetchAssign(): ?VariableAndPropertyFetchAssign
+    private function matchVariableAndPropertyFetchAssign(Stmt $stmt): ?VariableAndPropertyFetchAssign
     {
-        return null;
+        if (! $stmt instanceof Expression) {
+            return null;
+        }
+
+        if (! $stmt->expr instanceof Assign) {
+            return null;
+        }
+
+        $assign = $stmt->expr;
+        if (! $assign->expr instanceof PropertyFetch) {
+            return null;
+        }
+
+        if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
+        return new VariableAndPropertyFetchAssign($assign->var, $assign->expr);
     }
 
-    private function matchRevertedVariableAndPropertyFetchAssign(): ?VariableAndPropertyFetchAssign
+    private function matchRevertedVariableAndPropertyFetchAssign(Stmt $stmt): ?VariableAndPropertyFetchAssign
     {
-        return null;
+        if (! $stmt instanceof Expression) {
+            return null;
+        }
+
+        if (! $stmt->expr instanceof Assign) {
+            return null;
+        }
+
+        $assign = $stmt->expr;
+        if (! $assign->var instanceof PropertyFetch) {
+            return null;
+        }
+
+        if (! $assign->expr instanceof Variable) {
+            return null;
+        }
+
+        return new VariableAndPropertyFetchAssign($assign->expr, $assign->var);
     }
 }

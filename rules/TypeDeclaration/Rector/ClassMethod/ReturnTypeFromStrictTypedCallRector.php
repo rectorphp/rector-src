@@ -177,7 +177,7 @@ CODE_SAMPLE
     }
 
     private function refactorSingleReturnType(
-        array $return,
+        Return_ $return,
         Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,
         ClassMethod | Function_ | Closure $functionLike
     ): Closure | ClassMethod | Function_ {
