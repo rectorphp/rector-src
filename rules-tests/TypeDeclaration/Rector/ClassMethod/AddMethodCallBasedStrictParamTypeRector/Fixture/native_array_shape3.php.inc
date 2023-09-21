@@ -5,8 +5,8 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStri
 final class NativeArrayShape3 {
     private function doFoo() {
         $arr = [];
-        $arr[0] = [123.132];
-        $this->doBar($arr[0]);
+        $arr[10] = [123.132];
+        $this->doBar($arr[10]);
     }
 
     private function doBar($param) {
