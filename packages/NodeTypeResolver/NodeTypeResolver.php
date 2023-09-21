@@ -236,6 +236,7 @@ final class NodeTypeResolver
             }
         }
 
+        $type = $scope->getNativeType($expr);
         if ($expr instanceof ArrayDimFetch) {
             /**
              * Allow pull type from native function, otherwise, use native type
@@ -243,14 +244,10 @@ final class NodeTypeResolver
              *  $parts = parse_url($url);
              *  if (!empty($parts['host'])) { }
              */
-            $type = $scope->getNativeType($expr->var);
-            if ($type instanceof ArrayType && $type->getItemType() instanceof MixedType) {
-                $type = $scope->getNativeType($expr);
-            } else {
+            $variableType = $scope->getNativeType($expr->var);
+            if (! $variableType instanceof ArrayType || ! $variableType->getItemType() instanceof MixedType) {
                 $type = $scope->getType($expr);
             }
-        } else {
-            $type = $scope->getNativeType($expr);
         }
 
         if (! $type instanceof UnionType) {
