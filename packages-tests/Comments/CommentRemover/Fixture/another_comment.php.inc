@@ -17,7 +17,6 @@ $values = new class
 
 ?>
 -----
-
 namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
