@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+// PHP4 code is not allowed to contain namespaces
 
 class FooParEnt
 {
@@ -22,7 +22,7 @@ class Php4ConstructorWithParent extends FooParEnt
 -----
 <?php
 
-namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+// PHP4 code is not allowed to contain namespaces
 
 class FooParEnt
 {

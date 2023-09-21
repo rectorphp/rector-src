@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+// PHP4 code is not allowed to contain namespaces
 
 final class DelegatingPhp4ConstructorClassAgain
 {
@@ -30,7 +30,7 @@ final class DelegatingPhp4ConstructorClassAgain
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php70\Rector\ClassMethod\Php4ConstructorRector\Fixture;
+// PHP4 code is not allowed to contain namespaces
 
 final class DelegatingPhp4ConstructorClassAgain
 {
