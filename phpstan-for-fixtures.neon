@@ -20,7 +20,6 @@ parameters:
         - '*/RenameClassRector/*'
         - '*/Source/phpstan.phar/*'
         - '*/ImportFullyQualifiedNamesRector/*'
-        - '*/TagValueNodeReprint/*'
         # rector rules which target php versions which do not yet support namespaces
         - 'rules-tests/Php70/Rector/ClassMethod/Php4ConstructorRector/*'
         # test-case mixes global scope and namespace
