@@ -23,6 +23,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Broker\ClassAutoloadingException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -235,12 +236,22 @@ final class NodeTypeResolver
             }
         }
 
-        /**
-         * ArrayDimFetch got type by its Scope->getType(), otherwise, it got MixedType
-         */
-        $type = $expr instanceof ArrayDimFetch
-            ? $scope->getType($expr)
-            : $scope->getNativeType($expr);
+        if ($expr instanceof ArrayDimFetch) {
+            /**
+             * Allow pull type from native function, otherwise, use native type
+             *
+             *  $parts = parse_url($url);
+             *  if (!empty($parts['host'])) { }
+             */
+            $type = $scope->getNativeType($expr->var);
+            if ($type instanceof ArrayType && $type->getItemType() instanceof MixedType) {
+                $type = $scope->getNativeType($expr);
+            } else {
+                $type = $scope->getType($expr);
+            }
+        } else {
+            $type = $scope->getNativeType($expr);
+        }
 
         if (! $type instanceof UnionType) {
             if ($this->isAnonymousObjectType($type)) {
