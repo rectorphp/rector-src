@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector\Fixture;
+
 class SomeException extends \Exception
 {
     protected $message = '';

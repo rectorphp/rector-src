@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source;
+namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
 final class CustomType
 {
@@ -22,7 +22,7 @@ final class Caller
 -----
 <?php
 
-namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Source;
+namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
 final class CustomType
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
 class Foo
 {
@@ -14,7 +14,7 @@ class Foo
 -----
 <?php
 
-namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
 class Foo
 {

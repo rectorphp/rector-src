@@ -1,5 +1,7 @@
 <?php
 
+// PHP4 code is not allowed to contain namespaces
+
 class FooParEnt
 {
 }
@@ -19,6 +21,8 @@ class Php4ConstructorWithParent extends FooParEnt
 ?>
 -----
 <?php
+
+// PHP4 code is not allowed to contain namespaces
 
 class FooParEnt
 {

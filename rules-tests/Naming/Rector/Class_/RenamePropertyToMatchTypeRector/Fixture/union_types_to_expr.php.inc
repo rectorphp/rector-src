@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
@@ -30,7 +30,7 @@ final class UnionTypesToExpr
 -----
 <?php
 
-namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\FixturePhp80;
+namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;

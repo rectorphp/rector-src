@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Comments\Tests\CommentRemover\Fixture;
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
@@ -11,15 +11,13 @@ $values = new class
             case 'key':
                 // something
                 return 'https://some_very_long_link.cz';  /* here too */
-                break;
         }
     }
 };
 
-
 ?>
 -----
-namespace Rector\Comments\Tests\CommentRemover\Fixture;
+namespace Rector\Tests\Comments\CommentRemover\Fixture;
 
 $values = new class
 {
@@ -28,7 +26,6 @@ $values = new class
         switch ($value) {
             case 'key':
                 return 'https://some_very_long_link.cz';
-                break;
         }
     }
 };

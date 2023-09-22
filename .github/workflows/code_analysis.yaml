@@ -38,6 +38,13 @@ jobs:
                         run: composer phpstan-config
 
                     -
+                        name: 'PHPStan for fixtures'
+                        run: |
+                           # disable auto discovering of rules
+                           composer remove phpstan/extension-installer --dev
+                           composer phpstan-fixtures
+
+                    -
                         name: 'Commented Code'
                         run: vendor/bin/easy-ci check-commented-code src packages rules tests packages-tests rules-tests --line-limit 5 --ansi
 

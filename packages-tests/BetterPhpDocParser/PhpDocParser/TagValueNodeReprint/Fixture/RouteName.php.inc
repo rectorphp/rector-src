@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\Fixture\SymfonyRoute;
+namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\Fixture;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\Source\TestController;

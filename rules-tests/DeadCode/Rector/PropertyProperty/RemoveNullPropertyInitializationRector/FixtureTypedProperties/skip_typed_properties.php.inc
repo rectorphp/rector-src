@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector\Fixture;
+namespace Rector\Tests\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector\FixtureTypedProperties;
 
 class SkipTypedPropertyClass
 {

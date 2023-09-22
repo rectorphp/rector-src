@@ -9,6 +9,7 @@ final class ExitMethod
         exit();
     }
 }
+?>
 -----
 <?php
 
@@ -21,3 +22,4 @@ final class ExitMethod
         exit();
     }
 }
+?>

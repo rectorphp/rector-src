@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
+namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\FixtureForPhp73;
 
 class IsCountable
 {
@@ -14,7 +14,7 @@ class IsCountable
 -----
 <?php
 
-namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\Fixture;
+namespace Rector\Tests\Php71\Rector\FuncCall\CountOnNullRector\FixtureForPhp73;
 
 class IsCountable
 {

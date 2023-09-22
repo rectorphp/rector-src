@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\StaticCall\RemoveParentCallWithoutParentRector\Source;
+namespace Rector\Tests\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector\Source;
 
 class SomeParentMethod
 {

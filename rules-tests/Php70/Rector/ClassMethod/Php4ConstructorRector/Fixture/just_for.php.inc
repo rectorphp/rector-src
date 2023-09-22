@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+// PHP4 code is not allowed to contain namespaces
+
 final class JustFor
 {
     public function JustFor()
@@ -16,6 +18,8 @@ final class JustFor
 <?php
 
 declare(strict_types=1);
+
+// PHP4 code is not allowed to contain namespaces
 
 final class JustFor
 {

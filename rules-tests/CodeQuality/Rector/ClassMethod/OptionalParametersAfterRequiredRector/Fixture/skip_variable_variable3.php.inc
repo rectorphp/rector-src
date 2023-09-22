@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\Fixture;
+
 abstract class SkipVariableVariable3
 {
     private static function loadCurveByParam(\DOMXPath $xpath)
