@@ -27,7 +27,6 @@ use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
-use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
 use Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector;
 use Rector\Config\RectorConfig;
@@ -48,7 +47,6 @@ return static function (RectorConfig $rectorConfig): void {
         NewlineAfterStatementRector::class,
         RemoveFinalFromConstRector::class,
         NullableCompareToNullRector::class,
-        BinarySwitchToIfElseRector::class,
         ConsistentImplodeRector::class,
         TernaryConditionVariableAssignmentRector::class,
         SymplifyQuoteEscapeRector::class,
