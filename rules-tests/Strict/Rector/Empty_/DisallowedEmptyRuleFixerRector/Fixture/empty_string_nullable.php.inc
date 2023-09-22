@@ -20,7 +20,7 @@ final class EmptyStringNullable
 {
     public function run(string|null $value)
     {
-        return $value === null || $value === '';
+        return $value === null || $value === '' || $value === '0';
     }
 }
 
