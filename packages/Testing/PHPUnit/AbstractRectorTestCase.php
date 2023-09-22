@@ -224,8 +224,11 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     ): void {
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
-        $changedContent = $this->processFilePath($originalFilePath);
+        // the original file content must be loaded first
         $originalFileContent = FileSystem::read($originalFilePath);
+
+        // the file is now changed (if any rule matches)
+        $changedContent = $this->processFilePath($originalFilePath);
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
