@@ -122,6 +122,7 @@ CODE_SAMPLE
 
                 $assign = new Assign($assignVar, $match);
                 $node->stmts[$key] = new Expression($assign);
+                $this->mirrorComments($node->stmts[$key], $stmt);
 
                 $hasChanged = true;
 
@@ -133,6 +134,7 @@ CODE_SAMPLE
             }
 
             $node->stmts[$key] = $isReturn ? new Return_($match) : new Expression($match);
+            $this->mirrorComments($node->stmts[$key], $stmt);
             $hasChanged = true;
         }
 
