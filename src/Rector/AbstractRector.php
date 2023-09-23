@@ -90,10 +90,22 @@ CODE_SAMPLE;
     private array $deprecatedDependencies = [];
 
     /**
+     * @var array<class-string, array<string, bool>>
+     */
+    private array $cachedDeprecatedDependenciesWarning = [];
+
+    /**
      * Handle deprecated dependencies compatbility
      */
     public function __get(string $name): mixed
     {
+        if (! isset($this->cachedDeprecatedDependenciesWarning[static::class][$name])) {
+            echo sprintf('Get %s property from AbstractRector on %s is deprecated, inject via __construct() instead', $name, static::class);
+            echo PHP_EOL;
+
+            $this->cachedDeprecatedDependenciesWarning[static::class][$name] = true;
+        }
+
         return $this->deprecatedDependencies[$name] ?? null;
     }
 
