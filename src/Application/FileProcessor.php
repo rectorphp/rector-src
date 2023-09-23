@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
-use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
@@ -29,12 +28,6 @@ use Throwable;
 
 final class FileProcessor
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/xP2MGa/1
-     */
-    private const OPEN_TAG_SPACED_REGEX = '#^(?<open_tag_spaced>[^\S\r\n]+\<\?php)#m';
-
     public function __construct(
         private readonly FormatPerservingPrinter $formatPerservingPrinter,
         private readonly RectorNodeTraverser $rectorNodeTraverser,
@@ -162,17 +155,6 @@ final class FileProcessor
             $ltrimOriginalFileContent = ltrim($originalFileContent);
 
             if ($ltrimOriginalFileContent === $newContent) {
-                return;
-            }
-
-            $cleanOriginalContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-            $cleanNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-
-            /**
-             * Handle space before <?php wiped on print format preserving
-             * On inside content level
-             */
-            if ($cleanOriginalContent === $cleanNewContent) {
                 return;
             }
         }
