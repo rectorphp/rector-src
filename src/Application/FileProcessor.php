@@ -164,9 +164,11 @@ final class FileProcessor
         if ($configuration->isDryRun()) {
             return;
         }
-        if (!$file->hasChanged()) {
+
+        if (! $file->hasChanged()) {
             return;
         }
+
         $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $newContent);
     }
 
