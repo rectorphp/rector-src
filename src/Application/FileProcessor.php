@@ -159,11 +159,12 @@ final class FileProcessor
             }
         }
 
-        if (! $configuration->isDryRun()) {
+        // change file content to mark $file->hasChanged() based on new content
+        $file->changeFileContent($newContent);
+
+        if (! $configuration->isDryRun() && $file->hasChanged()) {
             $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $newContent);
         }
-
-        $file->changeFileContent($newContent);
     }
 
     private function parseFileNodes(File $file): void
