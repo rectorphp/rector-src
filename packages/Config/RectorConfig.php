@@ -37,7 +37,7 @@ final class RectorConfig extends Container
     {
         Assert::allString($paths);
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             if (str_contains($path, '*')) {
                 continue;
             }
