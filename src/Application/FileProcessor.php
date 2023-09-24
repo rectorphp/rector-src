@@ -159,7 +159,7 @@ final class FileProcessor
             }
         }
 
-        // change file content to mark $file->hasChanged() based on new content
+        // change file content early to make $file->hasChanged() based on new content
         $file->changeFileContent($newContent);
 
         if (! $configuration->isDryRun() && $file->hasChanged()) {
