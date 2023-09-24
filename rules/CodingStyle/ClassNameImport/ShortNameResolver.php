@@ -79,8 +79,11 @@ final class ShortNameResolver
     {
         $newStmts = $file->getNewStmts();
 
-        /** @var Namespace_[] $namespaces */
-        $namespaces = array_filter($newStmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace);
+        /** @var Namespace_[]|FileWithoutNamespace[] $namespaces */
+        $namespaces = array_filter(
+            $newStmts,
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
+        );
         if (count($namespaces) !== 1) {
             // only handle single namespace nodes
             return [];
@@ -89,7 +92,7 @@ final class ShortNameResolver
         $namespace = current($namespaces);
 
         /** @var ClassLike[] $classLikes */
-        $classLikes = $this->betterNodeFinder->findInstanceOf($namespace, ClassLike::class);
+        $classLikes = $this->betterNodeFinder->findInstanceOf($namespace->stmts, ClassLike::class);
 
         $shortClassLikeNames = [];
         foreach ($classLikes as $classLike) {
