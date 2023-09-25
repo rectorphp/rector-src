@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+namespace Rector\Tests\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use PhpParser\Node;
@@ -14,7 +14,7 @@ use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
+class ArrayItemNodeTest extends AbstractLazyTestCase
 {
     private DocBlockUpdater $docBlockUpdater;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode\FixtureNested;
+namespace Rector\Tests\BetterPhpDocParser\PhpDoc\ArrayItemNode\FixtureNested;
 
 use Doctrine\ORM\Mapping as ORM;
 
