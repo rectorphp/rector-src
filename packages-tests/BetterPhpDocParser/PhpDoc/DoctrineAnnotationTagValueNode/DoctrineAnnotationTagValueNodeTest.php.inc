@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Tests\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
@@ -14,6 +16,16 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
 {
+    private DocBlockUpdater $docBlockUpdater;
+
+    private PhpDocInfoFactory $phpDocInfoFactory;
+
+    private PhpDocInfoPrinter $phpDocInfoPrinter;
+
+    private RectorParser $rectorParser;
+
+    private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator;
+
     protected function setUp(): void
     {
         $this->docBlockUpdater = $this->make(DocBlockUpdater::class);
@@ -25,7 +37,7 @@ class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
 
     public function testUpdateNestedClassAnnotation(): void
     {
-        $filePath = __DIR__ . '/FixtureNested/DoctrineNestedClassAnnotation.php';
+        $filePath = __DIR__ . '/FixtureNested/DoctrineNestedClassAnnotation.php.inc';
         $file = new File($filePath, UtilsFileSystem::read($filePath));
 
         $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($file->getFilePath());
@@ -33,6 +45,7 @@ class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
 
         $classStmt = null;
+        $classDocComment = null;
 
         foreach ($newStmts as $node) {
             if ($node->stmts === null) {
@@ -40,7 +53,7 @@ class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
             }
 
             foreach ($node->stmts as $stmt) {
-                if (!$stmt instanceof Node\Stmt\Class_) {
+                if (! $stmt instanceof Node\Stmt\Class_) {
                     continue;
                 }
 
@@ -48,7 +61,7 @@ class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
                 $phpDocNode = $phpDocInfo->getPhpDocNode();
 
                 foreach ($phpDocNode->children as $key => $phpDocChildNode) {
-                    $phpDocChildNode->setAttribute('start_and_end',null);
+                    $phpDocChildNode->setAttribute('start_and_end', null);
                     $phpDocNode->children[$key] = $phpDocChildNode;
                 }
 
@@ -62,10 +75,10 @@ class DoctrineAnnotationTagValueNodeTest extends AbstractLazyTestCase
 
         $this->assertEquals(
             '/**
- * @Mapping\Table(name="doctrine_entity", uniqueConstraints={@UniqueConstraint(name="property")})
- */', $classDocComment
+ * @ORM\Table(name="doctrine_entity", uniqueConstraints={@ORM\UniqueConstraint(name="property")})
+ */',
+            $classDocComment
         );
-
     }
 
     private function printNodePhpDocInfoToString(Node $node): string

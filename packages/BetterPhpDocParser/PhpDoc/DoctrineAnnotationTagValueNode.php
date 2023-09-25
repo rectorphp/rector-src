@@ -47,11 +47,10 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
 
         $doctrineIdentifier = '';
         if (
-            $this->identifierTypeNode instanceof IdentifierTypeNode
             //on first level the parent is a SpacelessPhpDocTagNode and the toString method already add the name
-            && !$this->getAttribute('parent') instanceof PhpDocTagNode
+            ! $this->getAttribute('parent') instanceof PhpDocTagNode
         ) {
-            $doctrineIdentifier .= (string)$this->identifierTypeNode;
+            $doctrineIdentifier .= (string) $this->identifierTypeNode;
         }
 
         $itemContents = $this->printValuesContent($this->values);
