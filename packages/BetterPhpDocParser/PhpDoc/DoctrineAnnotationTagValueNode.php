@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDoc;
 
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\AbstractValuesAwareNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -45,16 +44,8 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
             return '';
         }
 
-        $doctrineIdentifier = '';
-        if (
-            //on first level the parent is a SpacelessPhpDocTagNode and the toString method already add the name
-            ! $this->getAttribute('parent') instanceof PhpDocTagNode
-        ) {
-            $doctrineIdentifier .= (string) $this->identifierTypeNode;
-        }
-
         $itemContents = $this->printValuesContent($this->values);
-        return \sprintf('%s(%s)', $doctrineIdentifier, $itemContents);
+        return \sprintf('(%s)', $itemContents);
     }
 
     public function hasClassName(string $className): bool
