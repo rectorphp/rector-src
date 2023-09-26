@@ -68,6 +68,10 @@ final class NameImporter
             return substr_count($stringName, '\\') === 0;
         }
 
+        if ($name->getAttribute(AttributeKey::IS_FUNCCALL_NAME) !== true) {
+            return false;
+        }
+
         $scope = $name->getAttribute(AttributeKey::SCOPE);
         if ($scope === null) {
             return false;
@@ -82,8 +86,8 @@ final class NameImporter
         }
 
         $functionName = new Name($prefix . $lastName);
-        if ($this->reflectionProvider->hasFunction($functionName, null)) {
-            $function = $this->reflectionProvider->getFunction($functionName, null);
+        if ($this->reflectionProvider->hasFunction($functionName, $scope)) {
+            $function = $this->reflectionProvider->getFunction($functionName, $scope);
             return ! $function instanceof NativeFunctionReflection;
         }
 
