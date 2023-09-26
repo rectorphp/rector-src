@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
@@ -37,7 +36,6 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ReflectionProvider $reflectionProvider,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
@@ -208,10 +206,6 @@ final class NameImportingPostRector extends AbstractPostRector
             return true;
         }
 
-        if ($this->classNameImportSkipper->isAlreadyImported($name, $currentUses)) {
-            return true;
-        }
-
-        return $this->reflectionProvider->hasFunction(new Name($name->getLast()), null);
+        return $this->classNameImportSkipper->isAlreadyImported($name, $currentUses);
     }
 }
