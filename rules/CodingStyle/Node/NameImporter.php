@@ -75,12 +75,13 @@ final class NameImporter
 
         $namespace = $scope->getNamespace();
         $prefix = $namespace === null ? '' : $namespace . '\\';
+        $lastName = $name->getLast();
 
-        if ($prefix . $name->getLast() === $name->toString()) {
+        if ($prefix . $lastName === $name->toString()) {
             return false;
         }
 
-        $functionName = new Name($prefix . $name->getLast());
+        $functionName = new Name($prefix . $lastName);
         if ($this->reflectionProvider->hasFunction($functionName, null)) {
             $function = $this->reflectionProvider->getFunction($functionName, null);
             return ! $function instanceof NativeFunctionReflection;
