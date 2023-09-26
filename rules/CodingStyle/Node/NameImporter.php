@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Node;
 
 use PhpParser\Node\Name;
+use PHPStan\Reflection\Native\NativeFunctionReflection;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -19,7 +21,8 @@ final class NameImporter
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector
+        private readonly UseNodesToAddCollector $useNodesToAddCollector,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -62,9 +65,25 @@ final class NameImporter
         // Importing root namespace classes (like \DateTime) is optional
         if (! SimpleParameterProvider::provideBoolParameter(Option::IMPORT_SHORT_CLASSES)) {
             $stringName = $name->toString();
-            if (substr_count($stringName, '\\') === 0) {
-                return true;
-            }
+            return substr_count($stringName, '\\') === 0;
+        }
+
+        $scope = $name->getAttribute(AttributeKey::SCOPE);
+        if ($scope === null) {
+            return false;
+        }
+
+        $namespace = $scope->getNamespace();
+        $prefix = $namespace === null ? '' : $namespace . '\\';
+
+        if ($prefix . $name->getLast() === $name->toString()) {
+            return false;
+        }
+
+        $functionName = new Name($prefix . $name->getLast());
+        if ($this->reflectionProvider->hasFunction($functionName, null)) {
+            $function = $this->reflectionProvider->getFunction($functionName, null);
+            return ! $function instanceof NativeFunctionReflection;
         }
 
         return false;

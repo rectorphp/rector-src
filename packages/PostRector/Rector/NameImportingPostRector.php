@@ -208,10 +208,6 @@ final class NameImportingPostRector extends AbstractPostRector
             return true;
         }
 
-        if ($this->classNameImportSkipper->isAlreadyImported($name, $currentUses)) {
-            return true;
-        }
-
-        return $this->reflectionProvider->hasFunction(new Name($name->getLast()), null);
+        return $this->classNameImportSkipper->isAlreadyImported($name, $currentUses);
     }
 }
