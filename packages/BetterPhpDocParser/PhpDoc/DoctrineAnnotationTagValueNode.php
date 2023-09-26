@@ -45,7 +45,7 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
         }
 
         $itemContents = $this->printValuesContent($this->values);
-        return sprintf('(%s)', $itemContents);
+        return \sprintf('(%s)', $itemContents);
     }
 
     public function hasClassName(string $className): bool
