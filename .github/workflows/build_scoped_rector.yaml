@@ -138,4 +138,4 @@ jobs:
                     git push --quiet origin ${GITHUB_REF#refs/tags/}
 
             # run bare run test
-            -   run: cd remote-repository && bin/rector list --ansi && cd ..
+            -   run: cd remote-repository && composer update && bin/rector list --ansi && cd ..

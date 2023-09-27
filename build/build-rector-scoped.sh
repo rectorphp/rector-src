@@ -30,7 +30,7 @@ note "Starts"
 note "Running scoper to $RESULT_DIRECTORY"
 wget https://github.com/humbug/php-scoper/releases/download/0.17.7/php-scoper.phar -N --no-verbose
 
-# avoid phpstan duplicates
+# avoid phpstan/phpstan dependency duplicate
 php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
 

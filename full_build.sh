@@ -57,6 +57,9 @@ cp preload.php rector-prefixed-downgraded/
 # rector-build check
 cd rector-prefixed-downgraded
 
+# trigger phpstan/phpstan dependnecy download
+composer update
+
 if test -z ${PHP72_BIN_PATH+y}; then
     bin/rector list --ansi;
 else
