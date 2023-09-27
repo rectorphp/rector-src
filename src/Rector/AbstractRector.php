@@ -367,7 +367,7 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
+            $this->changedNodeScopeRefresher->refresh($node, $filePath, $mutatingScope);
         }
     }
 
