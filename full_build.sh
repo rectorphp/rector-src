@@ -24,10 +24,6 @@ composer install --ansi
 # ensure remove cache directory
 php -r 'shell_exec("rm -rf " . sys_get_temp_dir() . "/rector_cached_files");';
 
-# remove duplicated phpstan package as required in final composer.json
-php bin/add-phpstan-self-replace.php
-composer remove phpstan/phpstan -W
-
 composer install --no-dev --ansi
 
 # early downgrade individual functions
@@ -45,10 +41,10 @@ sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 composer global require php-parallel-lint/php-parallel-lint
 
 if test -z ${PHP72_BIN_PATH+y}; then
-    ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test;
+    ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 else
     echo "verify syntax valid in php 7.2 with specify PHP72_BIN_PATH env";
-    $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test;
+    $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 fi
 
 # Check php 7.2 can be used locally with PHP72_BIN_PATH env
