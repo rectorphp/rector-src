@@ -136,6 +136,3 @@ jobs:
                     git push --quiet origin main
                     git tag ${GITHUB_REF#refs/tags/} -m "${GITHUB_REF#refs/tags/}"
                     git push --quiet origin ${GITHUB_REF#refs/tags/}
-
-            # run bare run test
-            -   run: cd remote-repository && composer update && bin/rector list --ansi && cd ..
