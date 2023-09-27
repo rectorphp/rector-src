@@ -27,8 +27,6 @@ use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\MutatingScope;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 
 /**
@@ -38,22 +36,15 @@ final class ChangedNodeScopeRefresher
 {
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private readonly ScopeAnalyzer $scopeAnalyzer,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly ScopeAnalyzer $scopeAnalyzer
     ) {
     }
 
-    public function refresh(Node $node, ?MutatingScope $mutatingScope, ?string $filePath = null): void
+    public function refresh(Node $node, string $filePath, ?MutatingScope $mutatingScope): void
     {
         // nothing to refresh
         if (! $this->scopeAnalyzer->isRefreshable($node)) {
             return;
-        }
-
-        if (! is_string($filePath)) {
-            /** @var File $file */
-            $file = $this->currentFileProvider->getFile();
-            $filePath = $file->getFilePath();
         }
 
         $mutatingScope = $mutatingScope instanceof MutatingScope
