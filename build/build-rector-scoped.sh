@@ -37,7 +37,7 @@ note "Dumping Composer Autoload"
 
 # avoid duplicates
 php bin/add-phpstan-self-replace.php
-composer remove phpstan/phpstan -W
+composer remove phpstan/phpstan -W --update-no-dev
 
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
 
