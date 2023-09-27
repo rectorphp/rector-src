@@ -79,6 +79,4 @@ return static function (RectorConfig $rectorConfig): void {
 
         RemovePhpVersionIdCheckRector::class => [__DIR__ . '/src/Util/FileHasher.php'],
     ]);
-
-    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');
 };

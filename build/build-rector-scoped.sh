@@ -26,9 +26,6 @@ RESULT_DIRECTORY=$2
 
 note "Starts"
 
-# this will remove dependency on dev packages that are imported in phpstan.neon
-rm -f "$BUILD_DIRECTORY/phpstan-for-rector.neon"
-
 # 2. scope it
 note "Running scoper to $RESULT_DIRECTORY"
 wget https://github.com/humbug/php-scoper/releases/download/0.17.7/php-scoper.phar -N --no-verbose
