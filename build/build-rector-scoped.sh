@@ -31,8 +31,8 @@ note "Running scoper to $RESULT_DIRECTORY"
 wget https://github.com/humbug/php-scoper/releases/download/0.17.7/php-scoper.phar -N --no-verbose
 
 # avoid phpstan duplicates
-php "$RESULT_DIRECTORY/bin/add-phpstan-self-replace.php"
-composer remove phpstan/phpstan -W --update-no-dev --working-dir "$RESULT_DIRECTORY"
+php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
+composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
 
 # Work around possible PHP memory limits
 php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
