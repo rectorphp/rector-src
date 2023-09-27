@@ -49,10 +49,6 @@ jobs:
             # this run is needed to install patches, the --no-dev skips them
             -   run: composer install --ansi
 
-            # remove local need for phpstan to avoid duplicated load, as already required in final composer.json
-            -   run: php bin/add-phpstan-self-replace.php
-            -   run: composer remove phpstan/phpstan -W
-
             # to remove dev dependencies
             -   run: composer install --no-dev --ansi
 
