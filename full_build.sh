@@ -54,25 +54,5 @@ cp -R templates rector-prefixed-downgraded/
 cp CONTRIBUTING.md rector-prefixed-downgraded/
 cp preload.php rector-prefixed-downgraded/
 
-# rector-build check
-cd rector-prefixed-downgraded
-
-# trigger phpstan/phpstan dependnecy download
-composer update
-
-if test -z ${PHP72_BIN_PATH+y}; then
-    bin/rector list --ansi;
-else
-    echo "verify scoped rector with specify PHP72_BIN_PATH env";
-    $PHP72_BIN_PATH bin/rector list --ansi;
-fi
-
-cd ..
-
-rm -rf rector-prefixed-downgraded
-
-# back to get dev dependencies
-composer install --ansi
-
-# remove php-parallel-lint from global dependencies
-composer global remove php-parallel-lint/php-parallel-lint
+# the bin/rector cannot work, as depends on external phpstan/phpstan dependency
+# this package cannot be installed here, as it would override scoped autoload
