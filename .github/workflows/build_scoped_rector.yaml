@@ -50,8 +50,8 @@ jobs:
             -   run: composer install --ansi
 
             # remove local need for phpstan to avoid duplicated load, as already required in final composer.json
-            -   run: php rector-build/bin/add-phpstan-self-replace.php
-            -   run: composer remove phpstan/phpstan -W --working-dir rector-build
+            -   run: php bin/add-phpstan-self-replace.php
+            -   run: composer remove phpstan/phpstan -W
 
             # to remove dev dependencies
             -   run: composer install --no-dev --ansi

@@ -25,8 +25,8 @@ composer install --ansi
 php -r 'shell_exec("rm -rf " . sys_get_temp_dir() . "/rector_cached_files");';
 
 # remove duplicated phpstan package as required in final composer.json
-php rector-build/bin/add-phpstan-self-replace.php
-composer remove phpstan/phpstan -W --working-dir rector-build
+php bin/add-phpstan-self-replace.php
+composer remove phpstan/phpstan -W
 
 composer install --no-dev --ansi
 
