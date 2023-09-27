@@ -36,8 +36,8 @@ wget https://github.com/humbug/php-scoper/releases/download/0.17.7/php-scoper.ph
 # Work around possible PHP memory limits
 php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 
-php bin/add-phpstan-self-replace.php
-composer remove phpstan/phpstan -W
+php "$RESULT_DIRECTORY/bin/add-phpstan-self-replace.php"
+composer remove phpstan/phpstan -W --working-dir "$RESULT_DIRECTORY"
 
 note "Dumping Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
