@@ -19,7 +19,7 @@ jobs:
                 directory:
                     - 'e2e/attributes'
 
-        name: End to end test with diff - ${{ matrix.directory }}
+        name: Tests with diffs on PHP ${{ matrix.php_version }} - ${{ matrix.directory }}
 
         steps:
             -   uses: actions/checkout@v4
