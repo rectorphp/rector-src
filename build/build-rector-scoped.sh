@@ -36,8 +36,8 @@ php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules 
 note "Dumping Composer Autoload"
 
 # avoid duplicates
-php bin/add-phpstan-self-replace.php
-composer remove phpstan/phpstan -W --update-no-dev
+php "$RESULT_DIRECTORY/bin/add-phpstan-self-replace.php"
+composer remove phpstan/phpstan -W --update-no-dev --working-dir "$RESULT_DIRECTORY"
 
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
 
