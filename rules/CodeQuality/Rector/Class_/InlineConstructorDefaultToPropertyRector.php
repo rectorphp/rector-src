@@ -156,7 +156,7 @@ CODE_SAMPLE
         ClassMethod $constructClassMethod,
         int $key
     ): bool {
-        if($class->isReadonly()) {
+        if ($class->isReadonly()) {
             return false;
         }
 
