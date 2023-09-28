@@ -58,7 +58,7 @@ final class TestingParser
         $stmts = $this->rectorParser->parseString($fileContent);
         $file = new File($filePath, $fileContent);
 
-        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath), $stmts);
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
 
         $this->currentFileProvider->setFile($file);
