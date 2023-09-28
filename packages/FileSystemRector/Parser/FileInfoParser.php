@@ -33,7 +33,7 @@ final class FileInfoParser
         $stmts = $this->rectorParser->parseString($fileContent);
 
         $file = new File($filePath, $fileContent);
-        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file->getFilePath(), $stmts);
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);
