@@ -43,7 +43,7 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
 
         $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($fileContent);
         $oldStmts = $stmtsAndTokens->getStmts();
-        $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
+        $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $oldStmts);
 
         $classStmt = null;
         $classDocComment = null;

@@ -175,7 +175,8 @@ final class FileProcessor
 
     private function parseFileNodes(File $file): void
     {
-        $fileContent = FileSystem::read($file->getFilePath());
+        $filePath = $file->getFilePath();
+        $fileContent = FileSystem::read($filePath);
 
         // store tokens by absolute path, so we don't have to print them right now
         $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($fileContent);
@@ -183,7 +184,7 @@ final class FileProcessor
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();
 
-        $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
+        $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $oldStmts);
         $file->hydrateStmtsAndTokens($newStmts, $oldStmts, $oldTokens);
     }
 }
