@@ -40,7 +40,7 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
         $filePath = __DIR__ . '/FixtureNested/DoctrineNestedClassAnnotation.php.inc';
         $file = new File($filePath, UtilsFileSystem::read($filePath));
 
-        $stmtsAndTokens = $this->rectorParser->parseFileToStmtsAndTokens($file->getFilePath());
+        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($file->getOriginalFileContent());
         $oldStmts = $stmtsAndTokens->getStmts();
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
 
