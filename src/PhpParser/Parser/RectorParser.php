@@ -18,6 +18,8 @@ final class RectorParser
     }
 
     /**
+     * @api used by rector-symfony
+     *
      * @return Stmt[]
      */
     public function parseFile(string $filePath): array
