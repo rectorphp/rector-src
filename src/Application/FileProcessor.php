@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
+use Nette\Utils\FileSystem;
 use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
@@ -174,8 +175,10 @@ final class FileProcessor
 
     private function parseFileNodes(File $file): void
     {
+        $fileContent = FileSystem::read($file->getFilePath());
+
         // store tokens by absolute path, so we don't have to print them right now
-        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($file->getOriginalFileContent());
+        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($fileContent);
 
         $oldStmts = $stmtsAndTokens->getStmts();
         $oldTokens = $stmtsAndTokens->getTokens();
