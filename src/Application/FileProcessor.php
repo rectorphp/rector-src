@@ -174,7 +174,7 @@ final class FileProcessor
 
     private function parseFileNodes(File $file): void
     {
-        // store tokens by absolute path, so we don't have to print them right now
+        // store tokens by original file content, so we don't have to print them right now
         $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($file->getOriginalFileContent());
 
         $oldStmts = $stmtsAndTokens->getStmts();
