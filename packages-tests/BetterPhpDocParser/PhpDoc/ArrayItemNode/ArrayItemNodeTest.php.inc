@@ -38,9 +38,10 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
     public function testUpdateNestedClassAnnotation(): void
     {
         $filePath = __DIR__ . '/FixtureNested/DoctrineNestedClassAnnotation.php.inc';
-        $file = new File($filePath, UtilsFileSystem::read($filePath));
+        $fileContent = UtilsFileSystem::read($filePath);
+        $file = new File($filePath, $fileContent);
 
-        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($file->getOriginalFileContent());
+        $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($fileContent);
         $oldStmts = $stmtsAndTokens->getStmts();
         $newStmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $oldStmts);
 
