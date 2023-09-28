@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\Application;
 
-use Nette\Utils\FileSystem;
 use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
