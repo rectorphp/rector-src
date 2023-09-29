@@ -16,6 +16,7 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PostRector\ValueObject\PropertyMetadata;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class MoveAbstractRectorToChildrenRector extends AbstractRector
@@ -27,6 +28,7 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
         'phpDocInfoFactory' => PhpDocInfoFactory::class,
         'valueResolver' => ValueResolver::class,
         'betterNodeFinder' => BetterNodeFinder::class,
+        'staticTypeMapper' => StaticTypeMapper::class,
     ];
 
     public function __construct(

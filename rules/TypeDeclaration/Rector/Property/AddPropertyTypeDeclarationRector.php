@@ -13,6 +13,7 @@ use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\ValueObject\AddPropertyTypeDeclaration;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,6 +28,11 @@ final class AddPropertyTypeDeclarationRector extends AbstractScopeAwareRector im
      * @var AddPropertyTypeDeclaration[]
      */
     private array $addPropertyTypeDeclarations = [];
+
+    public function __construct(
+        private readonly StaticTypeMapper $staticTypeMapper
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {

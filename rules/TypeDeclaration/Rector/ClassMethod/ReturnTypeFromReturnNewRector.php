@@ -32,6 +32,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictReturnNewAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -54,7 +55,8 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly NewTypeResolver $newTypeResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 

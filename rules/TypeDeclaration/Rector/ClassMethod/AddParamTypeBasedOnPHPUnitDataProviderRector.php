@@ -28,6 +28,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -51,7 +52,8 @@ final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
         private readonly TypeFactory $typeFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -309,9 +311,10 @@ CODE_SAMPLE
             }
 
             $paramTypes = [];
-            foreach ($dataProviderPhpDocTagNodes as $phpDocTagNode) {
-                $paramTypes[] = $this->inferParam($class, $param, $phpDocTagNode);
+            foreach ($dataProviderPhpDocTagNodes as $dataProviderPhpDocTagNode) {
+                $paramTypes[] = $this->inferParam($class, $param, $dataProviderPhpDocTagNode);
             }
+
             $paramTypeDeclaration = TypeCombinator::union(...$paramTypes);
 
             if ($paramTypeDeclaration instanceof MixedType) {

@@ -14,6 +14,7 @@ use PHPStan\Type\Type;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictScalarReturnTypeAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -27,7 +28,8 @@ final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwar
 {
     public function __construct(
         private readonly StrictScalarReturnTypeAnalyzer $strictScalarReturnTypeAnalyzer,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 

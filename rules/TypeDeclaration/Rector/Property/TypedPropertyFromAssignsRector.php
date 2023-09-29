@@ -22,6 +22,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -56,7 +57,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 

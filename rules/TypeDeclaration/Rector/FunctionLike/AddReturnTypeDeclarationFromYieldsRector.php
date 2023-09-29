@@ -25,6 +25,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -39,6 +40,7 @@ final class AddReturnTypeDeclarationFromYieldsRector extends AbstractRector impl
     public function __construct(
         private readonly TypeFactory $typeFactory,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 
