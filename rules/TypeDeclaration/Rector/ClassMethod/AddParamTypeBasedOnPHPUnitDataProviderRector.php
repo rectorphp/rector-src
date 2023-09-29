@@ -130,7 +130,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $dataProviderNodes = $this->resolveDataProviderPhpDocTagNode($classMethod);
+            $dataProviderNodes = $this->resolveDataProviderNodes($classMethod);
             if ($dataProviderNodes === []) {
                 return null;
             }
@@ -285,7 +285,7 @@ CODE_SAMPLE
     /**
      * @return array<PhpDocTagNode>
      */
-    private function resolveDataProviderPhpDocTagNode(ClassMethod $classMethod): array
+    private function resolveDataProviderNodes(ClassMethod $classMethod): array
     {
         $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNode($classMethod);
         if (! $classMethodPhpDocInfo instanceof PhpDocInfo) {
