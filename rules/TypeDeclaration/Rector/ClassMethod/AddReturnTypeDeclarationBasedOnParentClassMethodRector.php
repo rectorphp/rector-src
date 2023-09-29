@@ -18,6 +18,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,6 +33,7 @@ final class AddReturnTypeDeclarationBasedOnParentClassMethodRector extends Abstr
     public function __construct(
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 

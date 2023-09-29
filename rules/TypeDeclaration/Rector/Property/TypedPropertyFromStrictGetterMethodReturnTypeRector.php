@@ -21,6 +21,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\GetterTypeDeclarationPropertyTypeInferer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -38,7 +39,8 @@ final class TypedPropertyFromStrictGetterMethodReturnTypeRector extends Abstract
         private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 

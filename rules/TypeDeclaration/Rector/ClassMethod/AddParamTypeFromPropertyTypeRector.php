@@ -17,6 +17,7 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -38,7 +39,8 @@ final class AddParamTypeFromPropertyTypeRector extends AbstractRector implements
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly TypeFactory $typeFactory,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly ParamTypeAddGuard $paramTypeAddGuard
+        private readonly ParamTypeAddGuard $paramTypeAddGuard,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
