@@ -310,12 +310,12 @@ CODE_SAMPLE
     /**
      * @return array<array-key, Attribute>
      */
-    private function getPhpDataProviderAttributes(ClassMethod $node): array
+    private function getPhpDataProviderAttributes(ClassMethod $classMethod): array
     {
         $attributeName = 'PHPUnit\Framework\Attributes\DataProvider';
 
         /** @var AttributeGroup[] $attrGroups */
-        $attrGroups = $node->attrGroups;
+        $attrGroups = $classMethod->attrGroups;
 
         $dataProviders = [];
 
