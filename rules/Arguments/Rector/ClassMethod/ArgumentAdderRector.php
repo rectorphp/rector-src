@@ -28,6 +28,7 @@ use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -48,7 +49,8 @@ final class ArgumentAdderRector extends AbstractRector implements ConfigurableRe
         private readonly ArgumentAddingScope $argumentAddingScope,
         private readonly ChangedArgumentsDetector $changedArgumentsDetector,
         private readonly AstResolver $astResolver,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private readonly BetterStandardPrinter $betterStandardPrinter,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -187,7 +189,6 @@ CODE_SAMPLE
     private function fillGapBetweenWithDefaultValue(MethodCall | StaticCall $node, int $position): void
     {
         $lastPosition = count($node->getArgs()) - 1;
-
         if ($position <= $lastPosition) {
             return;
         }

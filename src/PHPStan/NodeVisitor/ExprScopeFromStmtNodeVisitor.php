@@ -6,6 +6,7 @@ namespace Rector\Core\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -13,16 +14,18 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
-use PHPStan\Analyser\Scope;
 use PHPStan\Node\VirtualNode;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 
 final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
 {
     private ?Stmt $currentStmt = null;
 
     public function __construct(
+        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private readonly string $filePath,
         private readonly MutatingScope $mutatingScope
     ) {
     }
@@ -52,7 +55,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
         }
 
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        if ($scope instanceof Scope) {
+        if ($scope instanceof MutatingScope) {
             return null;
         }
 
@@ -61,9 +64,13 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             ? $this->currentStmt->getAttribute(AttributeKey::SCOPE)
             : $this->mutatingScope;
 
-        $scope = $scope instanceof Scope ? $scope : $this->mutatingScope;
+        $scope = $scope instanceof MutatingScope ? $scope : $this->mutatingScope;
 
         $node->setAttribute(AttributeKey::SCOPE, $scope);
+
+        if ($node instanceof Closure) {
+            $this->phpStanNodeScopeResolver->processNodes($node->stmts, $this->filePath, $scope);
+        }
 
         return null;
     }

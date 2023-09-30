@@ -29,10 +29,11 @@ final class FileInfoParser
      */
     public function parseFileInfoToNodesAndDecorate(string $filePath): array
     {
-        $stmts = $this->rectorParser->parseFile($filePath);
+        $fileContent = FileSystem::read($filePath);
+        $stmts = $this->rectorParser->parseString($fileContent);
 
-        $file = new File($filePath, FileSystem::read($filePath));
-        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($file, $stmts);
+        $file = new File($filePath, $fileContent);
+        $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);

@@ -36,6 +36,15 @@ final class RectorConfig extends Container
     public function paths(array $paths): void
     {
         Assert::allString($paths);
+
+        foreach ($paths as $path) {
+            if (str_contains($path, '*')) {
+                continue;
+            }
+
+            Assert::fileExists($path);
+        }
+
         SimpleParameterProvider::setParameter(Option::PATHS, $paths);
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
+
 final class SomeFinalClass
 {
     final function noExplicitVisFinal()
@@ -10,6 +12,8 @@ final class SomeFinalClass
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
 
 final class SomeFinalClass
 {

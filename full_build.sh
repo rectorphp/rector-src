@@ -31,7 +31,7 @@ bin/rector process src/functions/node_helper.php -c build/config/config-downgrad
 
 rsync --exclude rector-build -av * rector-build --quiet
 
-rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener rector-build/vendor/symfony/contracts/Cache/ItemInterface.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguageProvider.php rector-build/vendor/symfony/dependency-injection/ExpressionLanguage.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
+rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
 
 php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
@@ -41,10 +41,10 @@ sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
 composer global require php-parallel-lint/php-parallel-lint
 
 if test -z ${PHP72_BIN_PATH+y}; then
-    ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test;
+    ~/.config/composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 else
     echo "verify syntax valid in php 7.2 with specify PHP72_BIN_PATH env";
-    $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates --exclude rector-prefixed-downgraded/vendor/symfony/contracts/Cache --exclude rector-prefixed-downgraded/vendor/symfony/contracts/HttpClient/Test;
+    $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 fi
 
 # Check php 7.2 can be used locally with PHP72_BIN_PATH env
@@ -54,22 +54,5 @@ cp -R templates rector-prefixed-downgraded/
 cp CONTRIBUTING.md rector-prefixed-downgraded/
 cp preload.php rector-prefixed-downgraded/
 
-# rector-build check
-cd rector-prefixed-downgraded
-
-if test -z ${PHP72_BIN_PATH+y}; then
-    bin/rector list --ansi;
-else
-    echo "verify scoped rector with specify PHP72_BIN_PATH env";
-    $PHP72_BIN_PATH bin/rector list --ansi;
-fi
-
-cd ..
-
-rm -rf rector-prefixed-downgraded
-
-# back to get dev dependencies
-composer install --ansi
-
-# remove php-parallel-lint from global dependencies
-composer global remove php-parallel-lint/php-parallel-lint
+# the bin/rector cannot work, as depends on external phpstan/phpstan dependency
+# this package cannot be installed here, as it would override scoped autoload

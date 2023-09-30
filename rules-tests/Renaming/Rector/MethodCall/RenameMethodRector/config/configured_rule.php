@@ -18,6 +18,11 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRename(AbstractType::class, 'setDefaultOptions', 'configureOptions'),
         new MethodCallRename('Nette\Utils\Html', 'add', 'addHtml'),
         new MethodCallRename(CustomType::class, 'notify', '__invoke'),
+        new MethodCallRename(
+            \Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture\CustomType::class,
+            'notify',
+            '__invoke'
+        ),
         new MethodCallRename(SomeSubscriber::class, 'old', 'new'),
         new MethodCallRename(Foo::class, 'old', 'new'),
         new MethodCallRename(NewInterface::class, 'some_old', 'some_new'),

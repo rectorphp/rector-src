@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\FixtureNested;
+
 use Doctrine\ORM\Mapping as ORM;
 
 final class JoinTableWithJoinColumns

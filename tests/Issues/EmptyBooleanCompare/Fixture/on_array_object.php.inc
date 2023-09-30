@@ -2,13 +2,12 @@
 
 namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
 
-final class ArrayDimFetchFromDocblock
+final class OnArrayObject
 {
-    /**
-     * @param array{host: string} $parts
-     */
-    public function checkUrl(array $parts)
+    public function checkUrl()
     {
+        $parts = new \ArrayObject(['host' => 'test'], \ArrayObject::ARRAY_AS_PROPS);
+
         if (!empty($parts['host'])) {
             return $parts['host'];
         }
@@ -23,13 +22,12 @@ final class ArrayDimFetchFromDocblock
 
 namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
 
-final class ArrayDimFetchFromDocblock
+final class OnArrayObject
 {
-    /**
-     * @param array{host: string} $parts
-     */
-    public function checkUrl(array $parts)
+    public function checkUrl()
     {
+        $parts = new \ArrayObject(['host' => 'test'], \ArrayObject::ARRAY_AS_PROPS);
+
         if (isset($parts['host']) && $parts['host'] !== '') {
             return $parts['host'];
         }

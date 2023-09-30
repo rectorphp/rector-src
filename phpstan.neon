@@ -563,7 +563,9 @@ parameters:
         # deprecation
         -
             message: '#Unreachable statement \- code above always terminates#'
-            path: rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorReadonlyClassRector.php
+            paths:
+                - rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorReadonlyClassRector.php
+                - rules/CodingStyle/Rector/Switch_/BinarySwitchToIfElseRector.php
 
         - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorReadonlyClassRector#'
 
@@ -572,3 +574,8 @@ parameters:
 
         # deprecated parent property
         - '#Access to deprecated property \$phpDocInfoFactory of class Rector\\Core\\Rector\\AbstractRector#'
+        - '#Fetching class constant class of deprecated class Rector\\CodingStyle\\Rector\\Switch_\\BinarySwitchToIfElseRector#'
+
+        -
+            path: rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php
+            message: "#Method \"processToClassConstFetch\\(\\)\" returns bool type, so the name should start with is/has/was#"

@@ -37,6 +37,8 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
  * @property-read ValueResolver $valueResolver; @deprecated The parent AbstractRector dependency is deprecated and will be removed. Use dependency injection in your own rule instead.
  *
  * @property-read BetterNodeFinder $betterNodeFinder; @deprecated The parent AbstractRector dependency is deprecated and will be removed. Use dependency injection in your own rule instead.
+ *
+ * @property-read StaticTypeMapper $staticTypeMapper; @deprecated The parent AbstractRector dependency is deprecated and will be removed. Use dependency injection in your own rule instead.
  */
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {
@@ -58,8 +60,6 @@ CODE_SAMPLE;
     protected NodeNameResolver $nodeNameResolver;
 
     protected NodeTypeResolver $nodeTypeResolver;
-
-    protected StaticTypeMapper $staticTypeMapper;
 
     protected NodeFactory $nodeFactory;
 
@@ -90,10 +90,26 @@ CODE_SAMPLE;
     private array $deprecatedDependencies = [];
 
     /**
+     * @var array<class-string, array<string, bool>>
+     */
+    private array $cachedDeprecatedDependenciesWarning = [];
+
+    /**
      * Handle deprecated dependencies compatbility
      */
     public function __get(string $name): mixed
     {
+        if (! isset($this->cachedDeprecatedDependenciesWarning[static::class][$name])) {
+            echo sprintf(
+                'Get %s property from AbstractRector on %s is deprecated, inject via __construct() instead',
+                $name,
+                static::class
+            );
+            echo PHP_EOL;
+
+            $this->cachedDeprecatedDependenciesWarning[static::class][$name] = true;
+        }
+
         return $this->deprecatedDependencies[$name] ?? null;
     }
 
@@ -116,7 +132,6 @@ CODE_SAMPLE;
         $this->nodeTypeResolver = $nodeTypeResolver;
         $this->simpleCallableNodeTraverser = $simpleCallableNodeTraverser;
         $this->nodeFactory = $nodeFactory;
-        $this->staticTypeMapper = $staticTypeMapper;
         $this->skipper = $skipper;
         $this->nodeComparator = $nodeComparator;
         $this->currentFileProvider = $currentFileProvider;
@@ -126,6 +141,7 @@ CODE_SAMPLE;
         $this->deprecatedDependencies['phpDocInfoFactory'] = $phpDocInfoFactory;
         $this->deprecatedDependencies['valueResolver'] = $valueResolver;
         $this->deprecatedDependencies['betterNodeFinder'] = $betterNodeFinder;
+        $this->deprecatedDependencies['staticTypeMapper'] = $staticTypeMapper;
     }
 
     /**
@@ -351,7 +367,7 @@ CODE_SAMPLE;
         $nodes = $node instanceof Node ? [$node] : $node;
 
         foreach ($nodes as $node) {
-            $this->changedNodeScopeRefresher->refresh($node, $mutatingScope, $filePath);
+            $this->changedNodeScopeRefresher->refresh($node, $filePath, $mutatingScope);
         }
     }
 

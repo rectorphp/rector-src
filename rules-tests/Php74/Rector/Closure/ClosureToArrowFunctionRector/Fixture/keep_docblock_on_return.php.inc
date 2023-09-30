@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
+
 class KeepDocblockOnReturn
 {
     public function run()
@@ -14,6 +16,8 @@ class KeepDocblockOnReturn
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Php74\Rector\Closure\ClosureToArrowFunctionRector\Fixture;
 
 class KeepDocblockOnReturn
 {

@@ -25,6 +25,7 @@ final class ParamArrayOffset
         echo $data['key'];
     }
 }
+?>
 -----
 <?php
 
@@ -53,3 +54,4 @@ final class ParamArrayOffset
         echo $data['key'];
     }
 }
+?>

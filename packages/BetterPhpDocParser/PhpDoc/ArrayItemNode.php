@@ -30,6 +30,8 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
             foreach ($this->value as $singleValue) {
                 $value .= $singleValue;
             }
+        } elseif ($this->value instanceof DoctrineAnnotationTagValueNode) {
+            $value .= $this->value->identifierTypeNode . $this->value;
         } else {
             $value .= $this->value;
         }

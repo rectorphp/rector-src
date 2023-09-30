@@ -18,6 +18,7 @@ use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -38,6 +39,7 @@ final class AddParamTypeDeclarationRector extends AbstractRector implements Conf
     public function __construct(
         private readonly TypeComparator $typeComparator,
         private readonly PhpVersionProvider $phpVersionProvider,
+        private readonly StaticTypeMapper $staticTypeMapper,
     ) {
     }
 

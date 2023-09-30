@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
+
 class SomeClass
 {
     function noExplicitVis()
@@ -31,6 +33,8 @@ function notInScope()
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
 
 class SomeClass
 {

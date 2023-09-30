@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
+
 abstract class SomeAbstractClass
 {
     abstract function noExplicitVis();
@@ -30,6 +32,8 @@ abstract class SomeAbstractClass
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector\Fixture;
 
 abstract class SomeAbstractClass
 {

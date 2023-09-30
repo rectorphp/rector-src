@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
 final class SkipAlreadySelf
 {

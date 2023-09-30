@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
+
 use Rector\Core\Collector\MockedClassCollector;
 use Rector\Core\Collector\ParentClassCollector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
-use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
-use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
-use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
@@ -59,33 +57,16 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
-    $rectorConfig->parallel();
 
     $rectorConfig->skip([
-        RenamePropertyToMatchTypeRector::class => [
-            __DIR__ . '/src/Console/Command/ListRulesCommand.php',
-            __DIR__ . '/src/Configuration/ConfigInitializer.php',
-        ],
-
-        RemoveEmptyClassMethodRector::class => [
-            __DIR__ . '/packages/BetterPhpDocParser/PhpDocInfo/PhpDocInfo.php',
-        ],
-
-        // resolve later
-        RenameParamToMatchTypeRector::class => [
-            __DIR__ . '/src/Console/Command/ListRulesCommand.php',
-            __DIR__ . '/src/Configuration/ConfigInitializer.php',
-            __DIR__ . '/src/PhpParser/NodeTraverser/RectorNodeTraverser.php',
-        ],
-
-        RenameVariableToMatchMethodCallReturnTypeRector::class => [__DIR__ . '/packages/Config/RectorConfig.php'],
-
         StringClassNameToClassConstantRector::class,
         __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
-        '**/Fixture*',
-        '**/Source*',
-        '**/Expected*',
+        '*/Fixture/*',
+        '*/Fixture*',
+        '*/Source/*',
+        '*/Source*',
+        '*/Expected*',
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
@@ -102,6 +83,4 @@ return static function (RectorConfig $rectorConfig): void {
 
         RemovePhpVersionIdCheckRector::class => [__DIR__ . '/src/Util/FileHasher.php'],
     ]);
-
-    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan-for-rector.neon');
 };

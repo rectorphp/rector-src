@@ -1,5 +1,7 @@
 <?php
 
+// PHP4 code is not allowed to contain namespaces
+
 abstract class InvalidFlagsConstructorClass2
 {
     abstract function InvalidFlagsConstructorClass2();
@@ -35,6 +37,8 @@ final class SomePhp4ConstructorClass
 ?>
 -----
 <?php
+
+// PHP4 code is not allowed to contain namespaces
 
 abstract class InvalidFlagsConstructorClass2
 {

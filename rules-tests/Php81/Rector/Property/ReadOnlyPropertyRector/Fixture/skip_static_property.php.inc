@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
+
 use stdClass;
 
 final class SkipStaticProperty

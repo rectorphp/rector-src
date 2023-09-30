@@ -156,6 +156,10 @@ CODE_SAMPLE
         ClassMethod $constructClassMethod,
         int $key
     ): bool {
+        if ($class->isReadonly()) {
+            return false;
+        }
+
         foreach ($class->stmts as $classStmt) {
             if (! $classStmt instanceof Property) {
                 continue;

@@ -20,11 +20,6 @@ jobs:
                     php-version: 8.1
                     coverage: none
 
-            # must be cleared, as local config is missing dev dependencies
-            -  run: |
-                rm phpstan-for-rector.neon
-                touch phpstan-for-rector.neon
-
             -  run: |
                  composer install --ansi
                  composer install --no-progress --ansi --no-dev

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
 final class PrivateConstantWithStatic
 {
@@ -16,7 +16,7 @@ final class PrivateConstantWithStatic
 -----
 <?php
 
-namespace Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
 final class PrivateConstantWithStatic
 {
