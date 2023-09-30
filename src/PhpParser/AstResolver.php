@@ -318,7 +318,7 @@ final class AstResolver
         try {
             $file = $this->currentFileProvider->getFile();
             $stmts = $file instanceof File && $file->getFilePath() === $fileName
-                ? $this->smartPhpParser->parseString($file->getFileContent())
+                ? $file->getNewStmts()
                 : $this->smartPhpParser->parseFile($fileName);
         } catch (Throwable $throwable) {
             /**
