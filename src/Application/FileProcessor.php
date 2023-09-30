@@ -71,7 +71,7 @@ final class FileProcessor
             $fileCollectedData = $configuration->isCollectors() ? $this->collectorProcessor->process($newStmts) : [];
 
             // apply post rectors
-            $postNewStmts = $this->postFileProcessor->traverse($newStmts);
+            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file->getFilePath());
 
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($postNewStmts);

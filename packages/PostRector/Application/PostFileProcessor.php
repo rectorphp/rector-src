@@ -6,8 +6,6 @@ namespace Rector\PostRector\Application;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
@@ -25,7 +23,6 @@ final class PostFileProcessor
 
     public function __construct(
         private readonly Skipper $skipper,
-        private readonly CurrentFileProvider $currentFileProvider,
         // set order here
         UseAddingPostRector $useAddingPostRector,
         NameImportingPostRector $nameImportingPostRector,
@@ -48,10 +45,10 @@ final class PostFileProcessor
      * @param Node[] $stmts
      * @return Node[]
      */
-    public function traverse(array $stmts): array
+    public function traverse(array $stmts, string $filePath): array
     {
         foreach ($this->postRectors as $postRector) {
-            if ($this->shouldSkipPostRector($postRector)) {
+            if ($this->shouldSkipPostRector($postRector, $filePath)) {
                 continue;
             }
 
@@ -63,14 +60,8 @@ final class PostFileProcessor
         return $stmts;
     }
 
-    private function shouldSkipPostRector(PostRectorInterface $postRector): bool
+    private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath): bool
     {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return false;
-        }
-
-        $filePath = $file->getFilePath();
         if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
             return true;
         }
