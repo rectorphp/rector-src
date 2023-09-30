@@ -315,11 +315,17 @@ final class AstResolver
             return $this->parsedFileNodes[$fileName];
         }
 
+        /**
+         * When current File object is equal to target file name to check
+         * no need to re-decorate it, just pull from its getNewStmts() instead
+         */
+        $file = $this->currentFileProvider->getFile();
+        if ($file instanceof File && $file->getFilePath() === $fileName) {
+            return $this->parsedFileNodes[$fileName] = $file->getNewStmts();
+        }
+
         try {
-            $file = $this->currentFileProvider->getFile();
-            $stmts = $file instanceof File && $file->getFilePath() === $fileName
-                ? $file->getNewStmts()
-                : $this->smartPhpParser->parseFile($fileName);
+            $stmts = $this->smartPhpParser->parseFile($fileName);
         } catch (Throwable $throwable) {
             /**
              * phpstan.phar contains jetbrains/phpstorm-stubs which the code is not downgraded
