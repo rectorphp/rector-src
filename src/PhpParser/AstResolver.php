@@ -318,7 +318,7 @@ final class AstResolver
 
         /**
          * When current File object file path is equal to target file name to check
-         * no need to re-decorate it, just pull from its getNewStmts() instead
+         * no need to scan and re-decorate it, just pull from its getNewStmts() instead
          */
         $file = $this->currentFileProvider->getFile();
 
