@@ -27,7 +27,9 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\Reflection\MethodReflectionResolver;
+use Rector\Core\ValueObject\Application\File;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
@@ -58,7 +60,8 @@ final class AstResolver
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ClassLikeAstResolver $classLikeAstResolver,
-        private readonly MethodReflectionResolver $methodReflectionResolver
+        private readonly MethodReflectionResolver $methodReflectionResolver,
+        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -313,7 +316,10 @@ final class AstResolver
         }
 
         try {
-            $stmts = $this->smartPhpParser->parseFile($fileName);
+            $file = $this->currentFileProvider->getFile();
+            $stmts = $file instanceof File && $file->getFilePath() === $fileName
+                ? $this->smartPhpParser->parseString($file->getFileContent())
+                : $this->smartPhpParser->parseFile($fileName);
         } catch (Throwable $throwable) {
             /**
              * phpstan.phar contains jetbrains/phpstorm-stubs which the code is not downgraded
