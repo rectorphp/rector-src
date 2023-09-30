@@ -37,6 +37,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Throwable;
+use Webmozart\Assert\Assert;
 
 /**
  * The nodes provided by this resolver is for read-only analysis only!
@@ -320,7 +321,10 @@ final class AstResolver
          * no need to re-decorate it, just pull from its getNewStmts() instead
          */
         $file = $this->currentFileProvider->getFile();
-        if ($file instanceof File && $file->getFilePath() === $fileName) {
+
+        Assert::isInstanceOf($file, File::class);
+
+        if ($file->getFilePath() === $fileName) {
             return $this->parsedFileNodes[$fileName] = $file->getNewStmts();
         }
 
