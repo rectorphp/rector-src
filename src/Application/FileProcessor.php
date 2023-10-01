@@ -170,7 +170,7 @@ final class FileProcessor
             return;
         }
 
-        $this->formatPerservingPrinter->dumpFile($file->getFilePath(), $newContent);
+        $this->formatPerservingPrinter->dumpFile($filePath, $newContent);
     }
 
     private function parseFileNodes(File $file): void
