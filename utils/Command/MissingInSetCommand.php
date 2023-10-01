@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorReadonlyClassRector;
@@ -38,6 +39,7 @@ final class MissingInSetCommand extends Command
         // deprecated
         TypedPropertyFromStrictConstructorReadonlyClassRector::class,
         BinarySwitchToIfElseRector::class,
+        CountOnNullRector::class,
     ];
 
     public function __construct(
