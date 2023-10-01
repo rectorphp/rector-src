@@ -54,5 +54,10 @@ cp -R templates rector-prefixed-downgraded/
 cp CONTRIBUTING.md rector-prefixed-downgraded/
 cp preload.php rector-prefixed-downgraded/
 
+rm -rf rector-prefixed-downgraded/
+git checkout src
+
+composer up
+
 # the bin/rector cannot work, as depends on external phpstan/phpstan dependency
 # this package cannot be installed here, as it would override scoped autoload
