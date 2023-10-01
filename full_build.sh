@@ -47,13 +47,7 @@ else
     $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 fi
 
-# Check php 7.2 can be used locally with PHP72_BIN_PATH env
-# rector-prefixed-downgraded check
-cp -R build/target-repository/. rector-prefixed-downgraded
-cp -R templates rector-prefixed-downgraded/
-cp CONTRIBUTING.md rector-prefixed-downgraded/
-cp preload.php rector-prefixed-downgraded/
-
+# rollback, done testing succeed
 rm -rf rector-prefixed-downgraded/
 git checkout src
 
