@@ -47,11 +47,11 @@ final class ScalarTypeComparator
      */
     public function areDifferentScalarTypes(Type $firstType, Type $secondType): bool
     {
-        if (! $this->isScalarType($firstType)) {
+        if (! $firstType->isScalar()->yes()) {
             return false;
         }
 
-        if (! $this->isScalarType($secondType)) {
+        if (! $secondType->isScalar()->yes()) {
             return false;
         }
 
@@ -73,23 +73,5 @@ final class ScalarTypeComparator
         }
 
         return false;
-    }
-
-    private function isScalarType(Type $type): bool
-    {
-        if ($type->isString()->yes()) {
-            return true;
-        }
-
-        if ($type->isFloat()->yes()) {
-            return true;
-        }
-
-        if ($type->isInteger()->yes()) {
-            return true;
-        }
-
-        return $type->isBoolean()
-            ->yes();
     }
 }
