@@ -126,19 +126,16 @@ final class PureFunctionDetector
 
     public function detect(FuncCall $funcCall, Scope $scope): bool
     {
-        $funcCallName = $this->nodeNameResolver->getName($funcCall);
-        if ($funcCallName === null) {
+        if (! $funcCall->name instanceof Name) {
             return false;
         }
 
-        $name = new Name($funcCallName);
-
-        $hasFunction = $this->reflectionProvider->hasFunction($name, $scope);
+        $hasFunction = $this->reflectionProvider->hasFunction($funcCall->name, $scope);
         if (! $hasFunction) {
             return false;
         }
 
-        $functionReflection = $this->reflectionProvider->getFunction($name, $scope);
+        $functionReflection = $this->reflectionProvider->getFunction($funcCall->name, $scope);
         if (! $functionReflection instanceof NativeFunctionReflection) {
             return false;
         }
