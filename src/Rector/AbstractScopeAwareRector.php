@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwareRectorInterface;
