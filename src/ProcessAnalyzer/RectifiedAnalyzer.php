@@ -7,23 +7,18 @@ namespace Rector\Core\ProcessAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
  * This service verify if the Node:
  *
  *      - already applied same Rector rule before current Rector rule on last previous Rector rule.
+ *      - Just added via return array of Stmt[]
  *      - just re-printed but token start still >= 0
  *      - has above node skipped traverse children on current rule
  */
 final class RectifiedAnalyzer
 {
-    public function __construct(
-        private readonly ScopeAnalyzer $scopeAnalyzer
-    ) {
-    }
-
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
@@ -52,7 +47,10 @@ final class RectifiedAnalyzer
         $createdByRule = $createdByRuleNode->getAttribute(AttributeKey::CREATED_BY_RULE) ?? [];
 
         if ($createdByRule === []) {
-            return ! $originalNode instanceof Node && $node instanceof Stmt && count($node->getAttributes()) <= 1;
+            /** Just added via return array of Stmt[] */
+            return ! $originalNode instanceof Node
+                && $node instanceof Stmt
+                && array_keys($node->getAttributes()) === [AttributeKey::SCOPE];
         }
 
         return end($createdByRule) === $rectorClass;
@@ -75,6 +73,6 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        return ! $node instanceof Stmt && $this->scopeAnalyzer->isRefreshable($node) && $node->getAttributes() === [];
+        return ! $node instanceof Stmt && $node->getAttributes() === [];
     }
 }
