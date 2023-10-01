@@ -37,7 +37,7 @@ final class StrictScalarReturnTypeAnalyzer
                 return null;
             }
 
-            $scalarType = $this->alwaysStrictScalarExprAnalyzer->matchStrictScalarExpr($return->expr, $scope);
+            $scalarType = $this->alwaysStrictScalarExprAnalyzer->matchStrictScalarExpr($return->expr);
             if (! $scalarType instanceof Type) {
                 return null;
             }

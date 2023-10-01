@@ -31,7 +31,7 @@ final class AlwaysStrictScalarExprAnalyzer
     ) {
     }
 
-    public function matchStrictScalarExpr(Expr $expr, Scope $scope): ?Type
+    public function matchStrictScalarExpr(Expr $expr): ?Type
     {
         if ($expr instanceof Concat) {
             return new StringType();
