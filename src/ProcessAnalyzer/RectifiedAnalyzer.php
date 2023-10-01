@@ -69,6 +69,6 @@ final class RectifiedAnalyzer
             return true;
         }
 
-        return ! $node instanceof Stmt && count($node->getAttributes()) === 0;
+        return ! $node instanceof Stmt && $node->getAttributes() === [];
     }
 }

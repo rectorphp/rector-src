@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
 final class ScopeAnalyzer
 {
@@ -18,11 +17,6 @@ final class ScopeAnalyzer
      * @var array<class-string<Node>>
      */
     private const NON_REFRESHABLE_NODES = [Name::class, Identifier::class, Param::class, Arg::class, Variable::class];
-
-    public function __construct(
-        private readonly ScopeFactory $scopeFactory
-    ) {
-    }
 
     public function isRefreshable(Node $node): bool
     {
