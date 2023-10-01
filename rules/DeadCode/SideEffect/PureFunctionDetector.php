@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\NodeNameResolver\NodeNameResolver;
 
 final class PureFunctionDetector
 {
@@ -118,6 +119,7 @@ final class PureFunctionDetector
     ];
 
     public function __construct(
+        private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider
     ) {
     }
@@ -138,6 +140,7 @@ final class PureFunctionDetector
             return false;
         }
 
-        return ! in_array($funcCall->name->toString(), self::IMPURE_FUNCTIONS, true);
+        $funcCallName = $this->nodeNameResolver->getName($funcCall);
+        return ! in_array($funcCallName, self::IMPURE_FUNCTIONS, true);
     }
 }
