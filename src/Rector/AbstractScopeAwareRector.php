@@ -5,23 +5,14 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
 use Rector\Core\Contract\Rector\ScopeAwareRectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwareRectorInterface
 {
-    private ScopeAnalyzer $scopeAnalyzer;
-
-    public function autowireAbstractScopeAwareRector(ScopeAnalyzer $scopeAnalyzer): void
-    {
-        $this->scopeAnalyzer = $scopeAnalyzer;
-    }
-
     /**
      * Process Node of matched type with its PHPStan scope
      * @return Node|Node[]|null|NodeTraverser::*
@@ -30,10 +21,6 @@ abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeA
     {
         /** @var MutatingScope|null $currentScope */
         $currentScope = $node->getAttribute(AttributeKey::SCOPE);
-
-        if (! $currentScope instanceof MutatingScope) {
-            $currentScope = $this->scopeAnalyzer->resolveScope($node, $this->file->getFilePath());
-        }
 
         if (! $currentScope instanceof Scope) {
             $errorMessage = sprintf(

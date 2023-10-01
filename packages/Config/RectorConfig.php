@@ -225,20 +225,6 @@ final class RectorConfig extends Container
             $this->tag($rectorClass, CollectorRectorInterface::class);
         }
 
-        if (is_a($rectorClass, AbstractScopeAwareRector::class, true)) {
-            $this->extend(
-                $rectorClass,
-                static function (
-                    AbstractScopeAwareRector $scopeAwareRector,
-                    Container $container
-                ): AbstractScopeAwareRector {
-                    $scopeAnalyzer = $container->make(ScopeAnalyzer::class);
-                    $scopeAwareRector->autowireAbstractScopeAwareRector($scopeAnalyzer);
-                    return $scopeAwareRector;
-                }
-            );
-        }
-
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
     }

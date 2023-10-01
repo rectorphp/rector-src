@@ -44,10 +44,6 @@ final class ChangedNodeScopeRefresher
             return;
         }
 
-        $mutatingScope = $mutatingScope instanceof MutatingScope
-            ? $mutatingScope
-            : $this->scopeAnalyzer->resolveScope($node, $filePath);
-
         if (! $mutatingScope instanceof MutatingScope) {
             $errorMessage = sprintf('Node "%s" with is missing scope required for scope refresh', $node::class);
 

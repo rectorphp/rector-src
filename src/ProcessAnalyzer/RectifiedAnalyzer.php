@@ -65,6 +65,10 @@ final class RectifiedAnalyzer
          * - Parent Node's original node is null
          */
         $startTokenPos = $node->getStartTokenPos();
-        return $startTokenPos >= 0;
+        if ($startTokenPos >= 0) {
+            return true;
+        }
+
+        return count($node->getAttributes()) === 0;
     }
 }
