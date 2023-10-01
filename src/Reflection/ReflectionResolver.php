@@ -21,7 +21,6 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\TypeUtils;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
@@ -117,7 +116,7 @@ final class ReflectionResolver
             $classNames = [$objectType->getFullyQualifiedName()];
         } else {
             /** @var array<class-string> $classNames */
-            $classNames = TypeUtils::getDirectClassNames($objectType);
+            $classNames = $objectType->getObjectClassNames();
         }
 
         $methodName = $this->nodeNameResolver->getName($staticCall->name);
