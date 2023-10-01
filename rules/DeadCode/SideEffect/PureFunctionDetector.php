@@ -138,6 +138,6 @@ final class PureFunctionDetector
             return false;
         }
 
-        return ! in_array($funcCallName, self::IMPURE_FUNCTIONS, true);
+        return ! in_array($funcCall->name->toString(), self::IMPURE_FUNCTIONS, true);
     }
 }
