@@ -43,10 +43,10 @@ final class ClassNameImportSkipper
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    public function shouldImportName(Name $name, array $uses): bool
+    public function shouldSkipName(Name $name, array $uses): bool
     {
         if (substr_count($name->toCodeString(), '\\') <= 1) {
-            return true;
+            return false;
         }
 
         $stringName = $name->toString();
@@ -65,14 +65,14 @@ final class ClassNameImportSkipper
                 }
 
                 if ($this->isConflictedShortNameInUse($useUse, $useName, $lastUseName, $stringName)) {
-                    return false;
+                    return true;
                 }
 
-                return $prefix . $useUse->name->toString() === $stringName;
+                return $prefix . $useUse->name->toString() !== $stringName;
             }
         }
 
-        return true;
+        return false;
     }
 
     private function isConflictedShortNameInUse(
