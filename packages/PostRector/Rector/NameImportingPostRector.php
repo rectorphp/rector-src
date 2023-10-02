@@ -107,10 +107,6 @@ final class NameImportingPostRector extends AbstractPostRector
         if ($this->classNameImportSkipper->shouldImportName($name, $currentUses)) {
             $nameInUse = $this->resolveNameInUse($name, $currentUses);
 
-            if ($nameInUse instanceof FullyQualified) {
-                return null;
-            }
-
             if ($nameInUse instanceof Name) {
                 return $nameInUse;
             }
@@ -124,7 +120,7 @@ final class NameImportingPostRector extends AbstractPostRector
     /**
      * @param Use_[]|GroupUse[] $currentUses
      */
-    private function resolveNameInUse(Name $name, array $currentUses): null|Name|FullyQualified
+    private function resolveNameInUse(Name $name, array $currentUses): null|Name
     {
         $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
 
@@ -137,13 +133,7 @@ final class NameImportingPostRector extends AbstractPostRector
             return new Name($aliasName);
         }
 
-        $isShortFullyQualifiedName = substr_count($name->toCodeString(), '\\') === 1;
-
-        if (! $isShortFullyQualifiedName) {
-            return $this->resolveLongNameInUseName($name, $currentUses);
-        }
-
-        return $this->resolveConflictedShortNameInUse($name, $currentUses);
+        return $this->resolveLongNameInUseName($name, $currentUses);
     }
 
     /**
@@ -151,6 +141,10 @@ final class NameImportingPostRector extends AbstractPostRector
      */
     private function resolveLongNameInUseName(Name $name, array $currentUses): ?Name
     {
+        if (substr_count($name->toCodeString(), '\\') === 1) {
+            return null;
+        }
+
         $lastName = $name->getLast();
         foreach ($currentUses as $currentUse) {
             foreach ($currentUse->uses as $useUse) {
@@ -160,32 +154,6 @@ final class NameImportingPostRector extends AbstractPostRector
 
                 if ($useUse->alias instanceof Identifier && $useUse->alias->toString() !== $lastName) {
                     return new Name($lastName);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Use_[]|GroupUse[] $currentUses
-     */
-    private function resolveConflictedShortNameInUse(Name $name, array $currentUses): ?FullyQualified
-    {
-        $currentName = $name->toString();
-        foreach ($currentUses as $currentUse) {
-            $prefix = $this->useImportsResolver->resolvePrefix($currentUse);
-
-            foreach ($currentUse->uses as $useUse) {
-                $useName = $prefix . $name->toString();
-                $lastUseName = $name->getLast();
-
-                if (! $useUse->alias instanceof Identifier && $useName !== $currentName && $lastUseName === $currentName) {
-                    return new FullyQualified($currentName);
-                }
-
-                if ($useUse->alias instanceof Identifier && $useUse->alias->toString() === $currentName) {
-                    return new FullyQualified($currentName);
                 }
             }
         }
