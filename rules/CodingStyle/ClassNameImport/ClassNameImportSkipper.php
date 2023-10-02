@@ -11,7 +11,6 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -23,7 +22,6 @@ final class ClassNameImportSkipper
      */
     public function __construct(
         private readonly iterable $classNameImportSkipVoters,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly UseImportsResolver $useImportsResolver
     ) {
     }
@@ -66,10 +64,6 @@ final class ClassNameImportSkipper
                     continue;
                 }
 
-                if ($this->isJustRenamedClass($stringName, $prefix, $useUse)) {
-                    continue;
-                }
-
                 if ($this->isConflictedShortNameInUse($useUse, $useName, $lastUseName, $stringName)) {
                     return false;
                 }
@@ -92,26 +86,5 @@ final class ClassNameImportSkipper
         }
 
         return $useUse->alias instanceof Identifier && $useUse->alias->toString() === $stringName;
-    }
-
-    private function isJustRenamedClass(string $stringName, string $prefix, UseUse $useUse): bool
-    {
-        $useUseNameString = $prefix . $useUse->name->toString();
-
-        // is in renamed classes? skip it
-        foreach ($this->renamedClassesDataCollector->getOldToNewClasses() as $oldClass => $newClass) {
-            // is class being renamed in use imports?
-            if ($stringName !== $newClass) {
-                continue;
-            }
-
-            if ($useUseNameString !== $oldClass) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 }
