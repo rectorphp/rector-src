@@ -52,14 +52,14 @@ final class ClassNameImportSkipper
         }
 
         $stringName = $name->toString();
-        $nameLastName = strtolower($name->getLast());
+        $lastUseName = $name->getLast();
+        $nameLastName = strtolower($lastUseName);
 
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
             $useName = $prefix . $stringName;
 
             foreach ($use->uses as $useUse) {
-                $lastUseName = $name->getLast();
                 $useUseLastName = strtolower($useUse->name->getLast());
 
                 if ($useUseLastName !== $nameLastName) {
