@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\ClassNameImport;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
@@ -51,10 +52,12 @@ final class ClassNameImportSkipper
         }
 
         $stringName = $name->toString();
-        $nameLastName = strtolower($name->getLast());
+        $lastUseName = $name->getLast();
+        $nameLastName = strtolower($lastUseName);
 
         foreach ($uses as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
+            $useName = $prefix . $stringName;
 
             foreach ($use->uses as $useUse) {
                 $useUseLastName = strtolower($useUse->name->getLast());
@@ -67,11 +70,28 @@ final class ClassNameImportSkipper
                     continue;
                 }
 
+                if ($this->isConflictedShortNameInUse($useUse, $useName, $lastUseName, $stringName)) {
+                    return false;
+                }
+
                 return $prefix . $useUse->name->toString() === $stringName;
             }
         }
 
         return true;
+    }
+
+    private function isConflictedShortNameInUse(
+        UseUse $useUse,
+        string $useName,
+        string $lastUseName,
+        string $stringName
+    ): bool {
+        if (! $useUse->alias instanceof Identifier && $useName !== $stringName && $lastUseName === $stringName) {
+            return true;
+        }
+
+        return $useUse->alias instanceof Identifier && $useUse->alias->toString() === $stringName;
     }
 
     private function isJustRenamedClass(string $stringName, string $prefix, UseUse $useUse): bool
