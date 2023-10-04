@@ -43,6 +43,8 @@ use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\NotImplementedYetException;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\PropertyTypeDecorator;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -61,7 +63,8 @@ final class NodeFactory
         private readonly BuilderFactory $builderFactory,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PropertyTypeDecorator $propertyTypeDecorator
+        private readonly PropertyTypeDecorator $propertyTypeDecorator,
+        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -431,5 +434,20 @@ final class NodeFactory
         }
 
         return $exprOrVariableName;
+    }
+
+    public function createReprintedExpr(Expr $expr): Expr
+    {
+        // reset original node, to allow the printer to re-use the expr
+        $expr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $expr,
+            static function (Node $node): Node {
+                $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                return $node;
+            }
+        );
+
+        return $expr;
     }
 }
