@@ -3,7 +3,7 @@ includes:
 
 rules:
     # @todo this rule is costly and designed for hand-on refactoring; enable only when needed
-    # - Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
+    #- Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
 
 parameters:
     reportUnmatchedIgnoredErrors: false
