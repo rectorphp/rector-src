@@ -15,14 +15,12 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 
 final class PhpAttributeAnalyzer
 {
     public function __construct(
-        private readonly AstResolver $astResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
     ) {
@@ -54,13 +52,8 @@ final class PhpAttributeAnalyzer
         $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
-            $resolvedClass = $this->astResolver->resolveClassFromClassReflection($ancestorClassReflection);
-
-            if (! $resolvedClass instanceof Class_) {
-                continue;
-            }
-
-            if ($this->hasPhpAttribute($resolvedClass, $attributeClass)) {
+            $nativeReflection = $ancestorClassReflection->getNativeReflection();
+            if ($nativeReflection->getAttributes($attributeClass) !== []) {
                 return true;
             }
         }
