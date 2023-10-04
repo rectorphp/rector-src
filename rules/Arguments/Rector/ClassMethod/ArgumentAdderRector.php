@@ -206,23 +206,8 @@ CODE_SAMPLE
                 throw new ShouldNotHappenException('Previous position does not have default value');
             }
 
-            $node->args[$index] = new Arg($this->resolveParamDefault($param->default));
+            $node->args[$index] = new Arg($this->nodeFactory->createReprintedExpr($param->default));
         }
-    }
-
-    private function resolveParamDefault(Expr $expr): Expr
-    {
-        // reset original node, to allow the printer to re-use the expr
-        $expr->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        $this->traverseNodesWithCallable(
-            $expr,
-            static function (Node $node): Node {
-                $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                return $node;
-            }
-        );
-
-        return $expr;
     }
 
     private function shouldSkipParameter(
