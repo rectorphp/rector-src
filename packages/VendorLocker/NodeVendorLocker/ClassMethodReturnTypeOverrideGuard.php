@@ -10,32 +10,19 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
 final class ClassMethodReturnTypeOverrideGuard
 {
-    /**
-     * @var array<class-string, array<string>>
-     */
-    private const CHAOTIC_CLASS_METHOD_NAMES = [
-        'PhpParser\NodeVisitor' => ['enterNode', 'leaveNode', 'beforeTraverse', 'afterTraverse'],
-    ];
-
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider,
         private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly AstResolver $astResolver,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
@@ -46,13 +33,7 @@ final class ClassMethodReturnTypeOverrideGuard
 
     public function shouldSkipClassMethod(ClassMethod $classMethod, Scope $scope): bool
     {
-        // 1. skip magic methods
         if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
-            return true;
-        }
-
-        // 2. skip chaotic contract class methods
-        if ($this->shouldSkipChaoticClassMethods($classMethod)) {
             return true;
         }
 
@@ -86,7 +67,9 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        return $this->shouldSkipHasChildHasReturnType($childrenClassReflections, $classMethod);
+        $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
+        return ! $returnType->isVoid()
+            ->yes();
     }
 
     private function isReturnTypeChangeAllowed(ClassMethod $classMethod, Scope $scope): bool
@@ -140,66 +123,5 @@ final class ClassMethodReturnTypeOverrideGuard
         $isParentInVendor = str_contains($normalizedFileName, '/vendor/');
 
         return ($isCurrentInVendor && $isParentInVendor) || (! $isCurrentInVendor && ! $isParentInVendor);
-    }
-
-    /**
-     * @param ClassReflection[] $childrenClassReflections
-     */
-    private function shouldSkipHasChildHasReturnType(array $childrenClassReflections, ClassMethod $classMethod): bool
-    {
-        $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        if (! $returnType->isVoid()->yes()) {
-            return true;
-        }
-
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-        foreach ($childrenClassReflections as $childClassReflection) {
-            if (! $childClassReflection->hasNativeMethod($methodName)) {
-                continue;
-            }
-
-            $methodReflection = $childClassReflection->getNativeMethod($methodName);
-            $method = $this->astResolver->resolveClassMethodFromMethodReflection($methodReflection);
-
-            if (! $method instanceof ClassMethod) {
-                continue;
-            }
-
-            if ($method->returnType instanceof Node) {
-                return true;
-            }
-
-            $childReturnType = $this->returnTypeInferer->inferFunctionLike($method);
-            if ($childReturnType->isVoid()->yes()) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function shouldSkipChaoticClassMethods(ClassMethod $classMethod): bool
-    {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-        if (! $classReflection instanceof ClassReflection) {
-            return true;
-        }
-
-        foreach (self::CHAOTIC_CLASS_METHOD_NAMES as $chaoticClass => $chaoticMethodNames) {
-            if (! $this->reflectionProvider->hasClass($chaoticClass)) {
-                continue;
-            }
-
-            $chaoticClassReflection = $this->reflectionProvider->getClass($chaoticClass);
-            if (! $classReflection->isSubclassOf($chaoticClassReflection->getName())) {
-                continue;
-            }
-
-            return $this->nodeNameResolver->isNames($classMethod, $chaoticMethodNames);
-        }
-
-        return false;
     }
 }
