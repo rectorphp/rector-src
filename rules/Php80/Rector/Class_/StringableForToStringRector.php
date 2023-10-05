@@ -146,6 +146,8 @@ CODE_SAMPLE
             $emptyStringReturn = new Return_(new String_(''));
             $toStringClassMethod->stmts[] = $emptyStringReturn;
 
+            $this->hasChanged = true;
+
             return;
         }
 
