@@ -86,6 +86,7 @@ CODE_SAMPLE
         for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
             if ($oldTokens[$i] !== ')') {
                 if ($oldTokens[$i] === ';') {
+                    // all good
                     return true;
                 }
 
@@ -101,7 +102,7 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
-            if (in_array($nextToken, ['{', ':', ';'], true)) {
+            if (in_array($nextToken, ['{', ':'], true)) {
                 // all good
                 return true;
             }
