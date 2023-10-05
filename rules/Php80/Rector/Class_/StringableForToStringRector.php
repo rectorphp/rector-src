@@ -106,6 +106,11 @@ CODE_SAMPLE
         $classLikeAncestorNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
 
         if (in_array(self::STRINGABLE, $classLikeAncestorNames, true)) {
+            // add return type
+            if ($toStringClassMethod->returnType === null) {
+                $toStringClassMethod->returnType = new Identifier('string');
+            }
+
             return null;
         }
 
