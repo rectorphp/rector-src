@@ -70,6 +70,15 @@ final class UseImportNameMatcher
         }
 
         if (! $originalUseUseNode->alias instanceof Identifier) {
+            $parts = $originalUseUseNode->name->getParts();
+            $tagExploded = explode('\\', $tag);
+            if (count($tagExploded) > 1 && reset($tagExploded) === end($parts)) {
+                //no alias and not a direct use import of a class, search the class
+                array_pop($parts);
+                $FQNClassArray = [$prefix, ...$parts, ...$tagExploded];
+                $FQNClassArray = array_filter($FQNClassArray);
+                return implode('\\', $FQNClassArray);
+            }
             return $prefix . $originalUseUseNode->name->toString();
         }
 
