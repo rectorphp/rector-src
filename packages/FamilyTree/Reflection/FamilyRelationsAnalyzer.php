@@ -49,32 +49,36 @@ final class FamilyRelationsAnalyzer
      * @api
      * @return string[]
      */
-    public function getClassLikeAncestorNames(Class_ | Name $classOrName): array
+    public function getClassLikeAncestorNames(Class_ $class): array
     {
         $ancestorNames = [];
 
-        if ($classOrName instanceof Name) {
-            $fullName = $this->nodeNameResolver->getName($classOrName);
-            $classReflection = $this->reflectionProvider->getClass($fullName);
-            $ancestors = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
-
-            return array_map(
-                static fn (ClassReflection $classReflection): string => $classReflection->getName(),
-                $ancestors
-            );
+        if ($class->extends instanceof Name) {
+            $ancestorNames[] = $this->nodeNameResolver->getName($class->extends);
+            $ancestorNames = array_merge($ancestorNames, $this->resolveAncestorNamesFromName($class->extends));
         }
 
-        if ($classOrName->extends instanceof Name) {
-            $ancestorNames[] = $this->nodeNameResolver->getName($classOrName->extends);
-            $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($classOrName->extends));
-        }
-
-        foreach ($classOrName->implements as $implement) {
+        foreach ($class->implements as $implement) {
             $ancestorNames[] = $this->nodeNameResolver->getName($implement);
-            $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($implement));
+            $ancestorNames = array_merge($ancestorNames, $this->resolveAncestorNamesFromName($implement));
         }
 
         /** @var string[] $ancestorNames */
         return $ancestorNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveAncestorNamesFromName(Name $name): array
+    {
+        $fullName = $this->nodeNameResolver->getName($name);
+        $classReflection = $this->reflectionProvider->getClass($fullName);
+        $ancestors = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+
+        return array_map(
+            static fn (ClassReflection $classReflection): string => $classReflection->getName(),
+            $ancestors
+        );
     }
 }
