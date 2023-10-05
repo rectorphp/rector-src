@@ -68,13 +68,8 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        if (! $returnType->isVoid()
-            ->yes()) {
-                return true;
-            }
-
-            d($returnType);
-            return false;
+        return ! $returnType->isVoid()
+            ->yes();
     }
 
     private function isReturnTypeChangeAllowed(ClassMethod $classMethod, Scope $scope): bool
