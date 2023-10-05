@@ -51,6 +51,7 @@ use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
 use Rector\CodeQuality\Rector\If_\CombineIfRector;
+use Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector;
 use Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
@@ -188,5 +189,6 @@ return static function (RectorConfig $rectorConfig): void {
         ConvertStaticPrivateConstantToSelfRector::class,
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
+        CompleteMissingIfElseBracketRector::class,
     ]);
 };
