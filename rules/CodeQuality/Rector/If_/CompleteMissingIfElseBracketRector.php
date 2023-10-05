@@ -94,7 +94,7 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
-            if ($nextToken === '{') {
+            if (in_array($nextToken, ['{', ':'], true)) {
                 // all good
                 return true;
             }
