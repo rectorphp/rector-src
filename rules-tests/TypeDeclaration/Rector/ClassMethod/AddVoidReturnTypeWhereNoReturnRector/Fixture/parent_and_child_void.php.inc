@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-final class ParentAndChildvoid
+class ParentAndChildvoid
 {
     protected function getValues()
     {
@@ -22,9 +22,9 @@ final class SomeChildFromVoid extends ParentAndChildvoid
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-final class ParentAndChildvoid
+class ParentAndChildvoid
 {
-    protected function getValues(): void
+    protected function getValues()
     {
     }
 }

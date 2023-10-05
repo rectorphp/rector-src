@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-final class SkipParentOnlyReturnVoid
+class SkipParentOnlyReturnVoid
 {
     protected function getValues()
     {
