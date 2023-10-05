@@ -2,7 +2,7 @@
 
 # usage:
 #
-#   export PHP72_BIN_PATH=/opt/homebrew/Cellar/php@7.2/7.2.34_4/bin/php && sh ./full_build.sh
+#   export PHP72_BIN_PATH=/opt/local/bin/php72 && sh ./full_build.sh
 
 # see https://stackoverflow.com/questions/66644233/how-to-propagate-colors-from-bash-script-to-github-action?noredirect=1#comment117811853_66644233
 export TERM=xterm-color
@@ -31,7 +31,7 @@ bin/rector process src/functions/node_helper.php -c build/config/config-downgrad
 
 rsync --exclude rector-build -av * rector-build --quiet
 
-rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
+rm -rf rector-build/packages-tests rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener  rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session
 
 php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
@@ -47,12 +47,11 @@ else
     $PHP72_BIN_PATH ~/.composer/vendor/bin/parallel-lint rector-prefixed-downgraded --exclude rector-prefixed-downgraded/stubs --exclude rector-prefixed-downgraded/vendor/tracy/tracy/examples --exclude rector-prefixed-downgraded/vendor/rector/rector-generator/templates
 fi
 
-# Check php 7.2 can be used locally with PHP72_BIN_PATH env
-# rector-prefixed-downgraded check
-cp -R build/target-repository/. rector-prefixed-downgraded
-cp -R templates rector-prefixed-downgraded/
-cp CONTRIBUTING.md rector-prefixed-downgraded/
-cp preload.php rector-prefixed-downgraded/
+# rollback, done testing succeed
+rm -rf rector-prefixed-downgraded/
+git checkout src
+
+composer up
 
 # the bin/rector cannot work, as depends on external phpstan/phpstan dependency
 # this package cannot be installed here, as it would override scoped autoload
