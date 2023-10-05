@@ -109,6 +109,7 @@ CODE_SAMPLE
             // add return type
             if ($toStringClassMethod->returnType === null) {
                 $toStringClassMethod->returnType = new Identifier('string');
+                return $node;
             }
 
             return null;
