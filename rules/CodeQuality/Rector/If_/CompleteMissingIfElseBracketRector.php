@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\ElseIf_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Parser\Tokens;
 use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -84,6 +85,10 @@ CODE_SAMPLE
     {
         for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
             if ($oldTokens[$i] !== ')') {
+                if ($oldTokens[$i] === ';') {
+                    return true;
+                }
+
                 continue;
             }
 
@@ -96,7 +101,7 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
-            if (in_array($nextToken, ['{', ':'], true)) {
+            if (in_array($nextToken, ['{', ':', ';'], true)) {
                 // all good
                 return true;
             }
