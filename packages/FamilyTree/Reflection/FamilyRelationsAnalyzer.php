@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -19,7 +18,6 @@ final class FamilyRelationsAnalyzer
         private readonly ReflectionProvider $reflectionProvider,
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
     ) {
     }
 
@@ -58,25 +56,29 @@ final class FamilyRelationsAnalyzer
 
         if ($classOrName instanceof Name) {
             $fullName = $this->nodeNameResolver->getName($classOrName);
-            $classLike = $this->astResolver->resolveClassFromName($fullName);
-        } else {
-            $classLike = $classOrName;
+            $classReflection = $this->reflectionProvider->getClass($fullName);
+            $ancestors = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+
+            return array_map(
+                static fn (ClassReflection $classReflection): string => $classReflection->getName(),
+                $ancestors
+            );
         }
 
-        if ($classLike instanceof Interface_) {
-            foreach ($classLike->extends as $extendInterfaceName) {
+        if ($classOrName instanceof Interface_) {
+            foreach ($classOrName->extends as $extendInterfaceName) {
                 $ancestorNames[] = $this->nodeNameResolver->getName($extendInterfaceName);
                 $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($extendInterfaceName));
             }
         }
 
-        if ($classLike instanceof Class_) {
-            if ($classLike->extends instanceof Name) {
-                $ancestorNames[] = $this->nodeNameResolver->getName($classLike->extends);
-                $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($classLike->extends));
+        if ($classOrName instanceof Class_) {
+            if ($classOrName->extends instanceof Name) {
+                $ancestorNames[] = $this->nodeNameResolver->getName($classOrName->extends);
+                $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($classOrName->extends));
             }
 
-            foreach ($classLike->implements as $implement) {
+            foreach ($classOrName->implements as $implement) {
                 $ancestorNames[] = $this->nodeNameResolver->getName($implement);
                 $ancestorNames = array_merge($ancestorNames, $this->getClassLikeAncestorNames($implement));
             }
