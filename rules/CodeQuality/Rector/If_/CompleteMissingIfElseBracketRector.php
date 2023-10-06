@@ -83,7 +83,11 @@ CODE_SAMPLE
     private function isIfConditionFollowedByOpeningCurlyBracket(If_|ElseIf_|Else_ $if, array $oldTokens): bool
     {
         for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
-            if ($oldTokens[$i] !== ')') {
+            if (! isset($oldTokens[$i + 1])) {
+                break;
+            }
+
+            if ($oldTokens[$i] !== ')' && ! is_array($oldTokens[$i+1])) {
                 if ($oldTokens[$i] === ';') {
                     // all good
                     return true;
