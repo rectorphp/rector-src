@@ -105,6 +105,10 @@ CODE_SAMPLE
                 // all good
                 return true;
             }
+
+            if (is_array($nextToken) && trim((string) $nextToken[1]) === '?>') {
+                return true;
+            }
         }
 
         $startStmt = current($if->stmts);
