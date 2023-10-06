@@ -87,29 +87,13 @@ CODE_SAMPLE
                 // all good
                 return true;
             }
+        }
 
-            if ($oldTokens[$i] !== ')') {
-                continue;
-            }
+        $startStmt = current($if->stmts);
+        $lastStmt = end($if->stmts);
 
-            // first closing bracket must be followed by curly opening brackets
-            // what is next token?
-            $nextToken = $oldTokens[$i + 1];
-
-            if (is_array($nextToken) && trim((string) $nextToken[1]) === '') {
-                // next token is whitespace
-                $nextToken = $oldTokens[$i + 2];
-            }
-
-            if (is_array($nextToken) && str_ends_with(trim((string) $nextToken[1]), '?>')) {
-                // all good
-                return true;
-            }
-
-            if (in_array($nextToken, ['{', ':'], true)) {
-                // all good
-                return true;
-            }
+        if ($startStmt === false || $lastStmt === false) {
+            return true;
         }
 
         return false;
