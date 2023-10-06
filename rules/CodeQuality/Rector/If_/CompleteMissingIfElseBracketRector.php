@@ -108,7 +108,8 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
-            if (is_array($nextToken) && in_array($nextToken[1], ['function', 'new'], true)) {
+            $isArrayNextToken = is_array($nextToken);
+            if ($isArrayNextToken && in_array($nextToken[1], ['function', 'new'], true)) {
                 return false;
             }
 
@@ -117,7 +118,7 @@ CODE_SAMPLE
                 return true;
             }
 
-            if (is_array($nextToken) && trim((string) $nextToken[1]) === '?>') {
+            if ($isArrayNextToken && trim((string) $nextToken[1]) === '?>') {
                 // all good
                 return true;
             }
