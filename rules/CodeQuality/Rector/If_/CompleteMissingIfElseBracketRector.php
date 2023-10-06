@@ -89,11 +89,6 @@ CODE_SAMPLE
             }
 
             if ($oldTokens[$i] !== ')' && ! is_array($oldTokens[$i+1])) {
-                if ($oldTokens[$i] === ';') {
-                    // all good
-                    return true;
-                }
-
                 continue;
             }
 
