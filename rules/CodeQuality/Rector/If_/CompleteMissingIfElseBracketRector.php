@@ -108,6 +108,10 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
+            if (is_array($nextToken) && in_array($nextToken[1], ['function', 'new'], true)) {
+                return false;
+            }
+
             if (in_array($nextToken, ['{', ':'], true)) {
                 // all good
                 return true;
