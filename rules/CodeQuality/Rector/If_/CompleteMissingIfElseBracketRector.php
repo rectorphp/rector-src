@@ -90,12 +90,7 @@ CODE_SAMPLE
 
         /** @var Stmt $lastStmt */
         $lastStmt = end($if->stmts);
-        $lastStmtEndTokenPos = $lastStmt->getEndTokenPos();
-        for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
-            if ($i === $lastStmtEndTokenPos) {
-                return false;
-            }
-
+        for ($i = $if->getStartTokenPos(); $i < $lastStmt->getEndTokenPos(); ++$i) {
             if (! isset($oldTokens[$i + 1])) {
                 break;
             }
