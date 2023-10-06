@@ -129,13 +129,16 @@ CODE_SAMPLE
         // first closing bracket must be followed by curly opening brackets
         // what is next token?
         $nextToken = $oldTokens[$i + 1];
-
-        if (is_array($nextToken) && trim((string) $nextToken[1]) === '') {
-            // next token is whitespace
-            $nextToken = $oldTokens[$i + 2];
+        if (! is_array($nextToken)) {
+            return $nextToken;
         }
 
-        return $nextToken;
+        if (trim((string) $nextToken[1]) !== '') {
+            return $nextToken;
+        }
+
+        // next token is whitespace
+        return $oldTokens[$i + 2];
     }
 
     private function isBareNewNode(If_|ElseIf_|Else_ $if): bool
