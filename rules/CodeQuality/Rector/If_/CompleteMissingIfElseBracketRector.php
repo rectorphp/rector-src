@@ -83,7 +83,19 @@ CODE_SAMPLE
      */
     private function isIfConditionFollowedByOpeningCurlyBracket(If_|ElseIf_|Else_ $if, array $oldTokens): bool
     {
+        $startStmt = current($if->stmts);
+        if (! $startStmt instanceof Stmt) {
+            return true;
+        }
+
+        /** @var Stmt $lastStmt */
+        $lastStmt = end($if->stmts);
+        $lastStmtEndTokenPos = $lastStmt->getEndTokenPos();
         for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
+            if ($i === $lastStmtEndTokenPos) {
+                return false;
+            }
+
             if (! isset($oldTokens[$i + 1])) {
                 break;
             }
@@ -112,8 +124,7 @@ CODE_SAMPLE
             }
         }
 
-        $startStmt = current($if->stmts);
-        return ! $startStmt instanceof Stmt;
+        return false;
     }
 
     private function isBareNewNode(If_|ElseIf_|Else_ $if): bool
