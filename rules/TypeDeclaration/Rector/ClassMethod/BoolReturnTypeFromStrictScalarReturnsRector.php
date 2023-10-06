@@ -126,13 +126,8 @@ CODE_SAMPLE
         if ($node->returnType instanceof Node) {
             return true;
         }
-
-        if ($node instanceof ClassMethod
-            && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
-            return true;
-        }
-
-        return false;
+        return $node instanceof ClassMethod
+            && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope);
     }
 
     /**
