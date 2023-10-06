@@ -101,7 +101,7 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
-            if (is_array($nextToken) && str_ends_with(trim($nextToken[1]), '?>')) {
+            if (is_array($nextToken) && str_ends_with(trim((string) $nextToken[1]), '?>')) {
                 // all good
                 return true;
             }
