@@ -7,7 +7,7 @@ class SkipNewInCond
     public function execute()
     {
          if ($a !== $b ||
-            new DateTime() > new DateTime('now')) {
+            new \DateTime() > new \DateTime('now')) {
             return;
          }
     }
