@@ -92,6 +92,10 @@ CODE_SAMPLE
         $i = $startStmt->getStartTokenPos() - 1;
 
         while (isset($oldTokens[$i])) {
+            if ($oldTokens[$i] === '(') {
+                return false;
+            }
+
             if (in_array($oldTokens[$i], ['{', ':'], true)) {
                 // all good
                 return true;
