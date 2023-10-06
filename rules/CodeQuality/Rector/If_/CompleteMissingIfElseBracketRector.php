@@ -90,9 +90,12 @@ CODE_SAMPLE
 
         $startTokenPos = $if->getStartTokenPos();
         $i = $startStmt->getStartTokenPos() - 1;
+        $condEndTokenPos = $if instanceof Else_
+            ? 0
+            : $if->cond->getEndTokenPos();
 
         while (isset($oldTokens[$i])) {
-            if ($oldTokens[$i] === ')') {
+            if ($i === $condEndTokenPos) {
                 return false;
             }
 
