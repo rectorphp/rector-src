@@ -101,6 +101,7 @@ CODE_SAMPLE
             }
 
             if (in_array($oldTokens[$i], [':', '{'], true)) {
+                // all good
                 return true;
             }
 
