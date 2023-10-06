@@ -88,57 +88,23 @@ CODE_SAMPLE
             return true;
         }
 
-        /** @var Stmt $lastStmt */
-        $lastStmt = end($if->stmts);
-        for ($i = $if->getStartTokenPos(); $i < $lastStmt->getEndTokenPos(); ++$i) {
-            if (! isset($oldTokens[$i + 1])) {
-                break;
+        $startTokenPos = $if->getStartTokenPos();
+        $i = $startStmt->getStartTokenPos() - 1;
+
+        while (isset($oldTokens[$i])) {
+            if (in_array($oldTokens[$i], ['{', ':'], true)) {
+                // all good
+                return true;
             }
 
-            if ($oldTokens[$i] !== ')' && ! is_array($oldTokens[$i + 1])) {
-                continue;
-            }
-
-            $nextToken = $this->resolveNextTokenWhiteSpace($oldTokens, $i);
-
-            $isArrayNextToken = is_array($nextToken);
-            if ($isArrayNextToken && in_array($nextToken[1], ['function', 'new'], true)) {
+            if ($i === $startTokenPos) {
                 return false;
             }
 
-            if (in_array($nextToken, ['{', ':'], true)) {
-                // all good
-                return true;
-            }
-
-            if ($isArrayNextToken && trim((string) $nextToken[1]) === '?>') {
-                // all good
-                return true;
-            }
+            --$i;
         }
 
         return false;
-    }
-
-    /**
-     * @param mixed[] $oldTokens
-     * @return mixed[]|string
-     */
-    private function resolveNextTokenWhiteSpace(array $oldTokens, int $i): array|string
-    {
-        // first closing bracket must be followed by curly opening brackets
-        // what is next token?
-        $nextToken = $oldTokens[$i + 1];
-        if (! is_array($nextToken)) {
-            return $nextToken;
-        }
-
-        if (trim((string) $nextToken[1]) !== '') {
-            return $nextToken;
-        }
-
-        // next token is whitespace
-        return $oldTokens[$i + 2];
     }
 
     private function isBareNewNode(If_|ElseIf_|Else_ $if): bool
