@@ -91,12 +91,7 @@ CODE_SAMPLE
 
         $startStmt = current($if->stmts);
         $lastStmt = end($if->stmts);
-
-        if ($startStmt === false || $lastStmt === false) {
-            return true;
-        }
-
-        return false;
+        return $startStmt === false || $lastStmt === false;
     }
 
     private function isBareNewNode(If_|ElseIf_|Else_ $if): bool
