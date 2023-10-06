@@ -27,9 +27,12 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\Rector\AbstractRector;
+use PHPStan\Analyser\Scope;
+use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -37,13 +40,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromStrictScalarReturnsRector\BoolReturnTypeFromStrictScalarReturnsRectorTest
  */
-final class BoolReturnTypeFromStrictScalarReturnsRector extends AbstractRector implements MinPhpVersionInterface
+final class BoolReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
     ) {
     }
 
@@ -94,9 +98,9 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType instanceof Node) {
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
@@ -108,6 +112,23 @@ CODE_SAMPLE
         $node->returnType = new Identifier('bool');
 
         return $node;
+    }
+
+    /**
+     * @param ClassMethod|Function_|Closure $node
+     */
+    private function shouldSkip(Node $node, Scope $scope): bool {
+        if ($node->returnType instanceof Node) {
+            return true;
+        }
+
+        if ($node instanceof ClassMethod
+            && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+            return true;
+        }
+
+        return false;
+
     }
 
     public function provideMinPhpVersion(): int
