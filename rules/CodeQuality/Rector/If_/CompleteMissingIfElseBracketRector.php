@@ -99,14 +99,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // first closing bracket must be followed by curly opening brackets
-            // what is next token?
-            $nextToken = $oldTokens[$i + 1];
-
-            if (is_array($nextToken) && trim((string) $nextToken[1]) === '') {
-                // next token is whitespace
-                $nextToken = $oldTokens[$i + 2];
-            }
+            $nextToken = $this->resolveNextTokenWhiteSpace($oldTokens, $i);
 
             $isArrayNextToken = is_array($nextToken);
             if ($isArrayNextToken && in_array($nextToken[1], ['function', 'new'], true)) {
@@ -125,6 +118,24 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    /**
+     * @param mixed[] $oldTokens
+     * @return mixed[]|string
+     */
+    private function resolveNextTokenWhiteSpace(array $oldTokens, int $i): array|string
+    {
+        // first closing bracket must be followed by curly opening brackets
+        // what is next token?
+        $nextToken = $oldTokens[$i + 1];
+
+        if (is_array($nextToken) && trim((string) $nextToken[1]) === '') {
+            // next token is whitespace
+            $nextToken = $oldTokens[$i + 2];
+        }
+
+        return $nextToken;
     }
 
     private function isBareNewNode(If_|ElseIf_|Else_ $if): bool
