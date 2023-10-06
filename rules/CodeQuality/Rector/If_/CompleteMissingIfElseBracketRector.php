@@ -107,6 +107,7 @@ CODE_SAMPLE
             }
 
             if (is_array($nextToken) && trim((string) $nextToken[1]) === '?>') {
+                // all good
                 return true;
             }
         }
