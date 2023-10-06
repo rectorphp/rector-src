@@ -28,6 +28,7 @@ use PHPStan\Type\BooleanType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -96,7 +97,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->returnType instanceof Node) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -108,6 +109,24 @@ CODE_SAMPLE
         $node->returnType = new Identifier('bool');
 
         return $node;
+    }
+
+    /**
+     * @param ClassMethod|Function_|Closure $node
+     */
+    private function shouldSkip(Node $node): bool {
+        if ($node->returnType instanceof Node) {
+            return true;
+        }
+
+        if ($node instanceof ClassMethod) {
+            if ($this->isName($node, MethodName::CONSTRUCT)) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     public function provideMinPhpVersion(): int
