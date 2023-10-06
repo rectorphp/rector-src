@@ -67,7 +67,7 @@ CODE_SAMPLE
         }
 
         $oldTokens = $this->file->getOldTokens();
-        if ($this->isIfConditionFollowedByOpeningCurlyBracket($node, $oldTokens)) {
+        if ($this->shouldSkip($node, $oldTokens)) {
             return null;
         }
 
@@ -80,7 +80,7 @@ CODE_SAMPLE
     /**
      * @param mixed[] $oldTokens
      */
-    private function isIfConditionFollowedByOpeningCurlyBracket(If_|ElseIf_|Else_ $if, array $oldTokens): bool
+    private function shouldSkip(If_|ElseIf_|Else_ $if, array $oldTokens): bool
     {
         for ($i = $if->getStartTokenPos(); $i < $if->getEndTokenPos(); ++$i) {
             if ($oldTokens[$i] === ';') {
