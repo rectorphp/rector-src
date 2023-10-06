@@ -23,13 +23,12 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BooleanType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use PHPStan\Analyser\Scope;
 use Rector\Core\Rector\AbstractScopeAwareRector;
-use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -114,10 +113,16 @@ CODE_SAMPLE
         return $node;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SCALAR_TYPES;
+    }
+
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    private function shouldSkip(Node $node, Scope $scope): bool {
+    private function shouldSkip(Node $node, Scope $scope): bool
+    {
         if ($node->returnType instanceof Node) {
             return true;
         }
@@ -128,12 +133,6 @@ CODE_SAMPLE
         }
 
         return false;
-
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::SCALAR_TYPES;
     }
 
     /**
