@@ -101,6 +101,11 @@ CODE_SAMPLE
                 $nextToken = $oldTokens[$i + 2];
             }
 
+            if (is_array($nextToken) && str_ends_with(trim($nextToken[1]), '?>')) {
+                // all good
+                return true;
+            }
+
             if (in_array($nextToken, ['{', ':'], true)) {
                 // all good
                 return true;
