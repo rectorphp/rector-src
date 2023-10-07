@@ -23,12 +23,12 @@ namespace Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\Fixture;
 
 class PropertyFetchInCondition
 {
-    private $cond2;
+    private $prop;
     
     public function run()
     {
         if (($p = $this->prop->doSomething()) && $p) {
-              return 'foo';
+            return 'foo';
         }
     }
 }
