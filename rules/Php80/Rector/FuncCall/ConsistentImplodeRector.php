@@ -16,7 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog http://php.net/manual/en/function.implode.php#refsect1-function.implode-description
  * @changelog https://3v4l.org/iYTgh
- * @see \Rector\Tests\Php80\Rector\FuncCall\ConsistentImplodeRector\ConsistentImplodeRectorTest
+ * @see \Rector\Tests\Php80\Rector\FuncCall\ConsistentImplodeRector\Php80ConsistentImplodeRectorTest
  */
 final class ConsistentImplodeRector extends AbstractRector implements MinPhpVersionInterface
 {
