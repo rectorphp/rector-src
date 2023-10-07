@@ -76,32 +76,6 @@ final class AstResolver
         return $this->resolveClassFromClassReflection($classReflection);
     }
 
-    public function resolveClassFromClassReflection(
-        ClassReflection $classReflection
-    ): Trait_ | Class_ | Interface_ | Enum_ | null {
-        if ($classReflection->isBuiltin()) {
-            return null;
-        }
-
-        $fileName = $classReflection->getFileName();
-        $stmts = $this->parseFileNameToDecoratedNodes($fileName);
-        $className = $classReflection->getName();
-
-        /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
-        $classLike = $this->betterNodeFinder->findFirst(
-            $stmts,
-            function (Node $node) use ($className): bool {
-                if (! $node instanceof ClassLike) {
-                    return false;
-                }
-
-                return $this->nodeNameResolver->isName($node, $className);
-            }
-        );
-
-        return $classLike;
-    }
-
     public function resolveClassMethodFromMethodReflection(MethodReflection $methodReflection): ?ClassMethod
     {
         $classReflection = $methodReflection->getDeclaringClass();
@@ -211,6 +185,32 @@ final class AstResolver
         }
 
         return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
+    }
+
+    public function resolveClassFromClassReflection(
+        ClassReflection $classReflection
+    ): Trait_ | Class_ | Interface_ | Enum_ | null {
+        if ($classReflection->isBuiltin()) {
+            return null;
+        }
+
+        $fileName = $classReflection->getFileName();
+        $stmts = $this->parseFileNameToDecoratedNodes($fileName);
+        $className = $classReflection->getName();
+
+        /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $stmts,
+            function (Node $node) use ($className): bool {
+                if (! $node instanceof ClassLike) {
+                    return false;
+                }
+
+                return $this->nodeNameResolver->isName($node, $className);
+            }
+        );
+
+        return $classLike;
     }
 
     /**
