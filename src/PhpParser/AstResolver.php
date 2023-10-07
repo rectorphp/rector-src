@@ -80,11 +80,6 @@ final class AstResolver
         $classReflection = $methodReflection->getDeclaringClass();
         $fileName = $classReflection->getFileName();
 
-        // probably native PHP method → un-parseable
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === []) {
             return null;
@@ -133,10 +128,6 @@ final class AstResolver
     public function resolveFunctionFromFunctionReflection(FunctionReflection $functionReflection): ?Function_
     {
         $fileName = $functionReflection->getFileName();
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === []) {
             return null;
@@ -218,10 +209,6 @@ final class AstResolver
         $traits = [];
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
-            if ($fileName === null) {
-                continue;
-            }
-
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
             if ($nodes === []) {
                 continue;
@@ -262,10 +249,6 @@ final class AstResolver
         $classReflection = $phpPropertyReflection->getDeclaringClass();
 
         $fileName = $classReflection->getFileName();
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === []) {
             return null;
@@ -309,8 +292,13 @@ final class AstResolver
     /**
      * @return Stmt[]
      */
-    public function parseFileNameToDecoratedNodes(string $fileName): array
+    public function parseFileNameToDecoratedNodes(?string $fileName): array
     {
+        // probably native PHP → un-parseable
+        if ($fileName === null) {
+            return [];
+        }
+
         if (isset($this->parsedFileNodes[$fileName])) {
             return $this->parsedFileNodes[$fileName];
         }
