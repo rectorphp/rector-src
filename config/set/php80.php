@@ -26,6 +26,7 @@ use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 use Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector;
 use Rector\Transform\ValueObject\StaticCallToFuncCall;
+use Rector\Php80\Rector\FuncCall\ConsistentImplodeRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
@@ -44,6 +45,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamBasedOnParentClassMethodRector::class,
         MixedTypeRector::class,
         ClassOnThisVariableObjectRector::class,
+        ConsistentImplodeRector::class,
     ]);
 
     $rectorConfig
