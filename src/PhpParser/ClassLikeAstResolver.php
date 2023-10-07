@@ -34,12 +34,6 @@ final class ClassLikeAstResolver
         }
 
         $fileName = $classReflection->getFileName();
-
-        // probably internal class
-        if ($fileName === null) {
-            return null;
-        }
-
         $stmts = $astResolver->parseFileNameToDecoratedNodes($fileName);
         if ($stmts === []) {
             return null;
