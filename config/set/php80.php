@@ -7,6 +7,7 @@ use Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
 use Rector\Arguments\ValueObject\ReplaceFuncCallArgumentDefaultValue;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
+use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
@@ -44,6 +45,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamBasedOnParentClassMethodRector::class,
         MixedTypeRector::class,
         ClassOnThisVariableObjectRector::class,
+        ConsistentImplodeRector::class
     ]);
 
     $rectorConfig
