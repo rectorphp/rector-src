@@ -27,6 +27,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\MethodReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -57,8 +58,8 @@ final class AstResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver,
-        private readonly MethodReflectionResolver $methodReflectionResolver
+        private readonly MethodReflectionResolver $methodReflectionResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -75,16 +76,38 @@ final class AstResolver
         return $this->resolveClassFromClassReflection($classReflection);
     }
 
+    public function resolveClassFromClassReflection(
+        ClassReflection $classReflection
+    ): Trait_ | Class_ | Interface_ | Enum_ | null {
+        if ($classReflection->isBuiltin()) {
+            return null;
+        }
+
+        $fileName = $classReflection->getFileName();
+        $stmts = $this->parseFileNameToDecoratedNodes($fileName);
+        $className = $classReflection->getName();
+
+        /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $stmts,
+            function (Node $node) use ($className): bool {
+                if (! $node instanceof ClassLike) {
+                    return false;
+                }
+
+                return $this->nodeNameResolver->isName($node, $className);
+            }
+        );
+
+        return $classLike;
+    }
+
     public function resolveClassMethodFromMethodReflection(MethodReflection $methodReflection): ?ClassMethod
     {
         $classReflection = $methodReflection->getDeclaringClass();
         $fileName = $classReflection->getFileName();
 
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === []) {
-            return null;
-        }
-
         $classLikeName = $classReflection->getName();
         $methodName = $methodReflection->getName();
 
@@ -129,9 +152,6 @@ final class AstResolver
     {
         $fileName = $functionReflection->getFileName();
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === []) {
-            return null;
-        }
 
         $functionName = $functionReflection->getName();
         $functionNode = null;
@@ -193,12 +213,6 @@ final class AstResolver
         return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
     }
 
-    public function resolveClassFromClassReflection(
-        ClassReflection $classReflection
-    ): Trait_ | Class_ | Interface_ | Enum_ | null {
-        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection, $this);
-    }
-
     /**
      * @return Trait_[]
      */
@@ -210,10 +224,6 @@ final class AstResolver
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-            if ($nodes === []) {
-                continue;
-            }
-
             $traitName = $classLike->getName();
 
             $traitNode = null;
