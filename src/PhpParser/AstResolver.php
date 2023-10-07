@@ -27,6 +27,7 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Reflection\MethodReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -57,8 +58,8 @@ final class AstResolver
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ClassLikeAstResolver $classLikeAstResolver,
-        private readonly MethodReflectionResolver $methodReflectionResolver
+        private readonly MethodReflectionResolver $methodReflectionResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -80,16 +81,7 @@ final class AstResolver
         $classReflection = $methodReflection->getDeclaringClass();
         $fileName = $classReflection->getFileName();
 
-        // probably native PHP method → un-parseable
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === []) {
-            return null;
-        }
-
         $classLikeName = $classReflection->getName();
         $methodName = $methodReflection->getName();
 
@@ -133,14 +125,7 @@ final class AstResolver
     public function resolveFunctionFromFunctionReflection(FunctionReflection $functionReflection): ?Function_
     {
         $fileName = $functionReflection->getFileName();
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-        if ($nodes === []) {
-            return null;
-        }
 
         $functionName = $functionReflection->getName();
         $functionNode = null;
@@ -205,7 +190,27 @@ final class AstResolver
     public function resolveClassFromClassReflection(
         ClassReflection $classReflection
     ): Trait_ | Class_ | Interface_ | Enum_ | null {
-        return $this->classLikeAstResolver->resolveClassFromClassReflection($classReflection, $this);
+        if ($classReflection->isBuiltin()) {
+            return null;
+        }
+
+        $fileName = $classReflection->getFileName();
+        $stmts = $this->parseFileNameToDecoratedNodes($fileName);
+        $className = $classReflection->getName();
+
+        /** @var Class_|Trait_|Interface_|Enum_|null $classLike */
+        $classLike = $this->betterNodeFinder->findFirst(
+            $stmts,
+            function (Node $node) use ($className): bool {
+                if (! $node instanceof ClassLike) {
+                    return false;
+                }
+
+                return $this->nodeNameResolver->isName($node, $className);
+            }
+        );
+
+        return $classLike;
     }
 
     /**
@@ -218,15 +223,7 @@ final class AstResolver
         $traits = [];
         foreach ($classLikes as $classLike) {
             $fileName = $classLike->getFileName();
-            if ($fileName === null) {
-                continue;
-            }
-
             $nodes = $this->parseFileNameToDecoratedNodes($fileName);
-            if ($nodes === []) {
-                continue;
-            }
-
             $traitName = $classLike->getName();
 
             $traitNode = null;
@@ -262,10 +259,6 @@ final class AstResolver
         $classReflection = $phpPropertyReflection->getDeclaringClass();
 
         $fileName = $classReflection->getFileName();
-        if ($fileName === null) {
-            return null;
-        }
-
         $nodes = $this->parseFileNameToDecoratedNodes($fileName);
         if ($nodes === []) {
             return null;
@@ -309,8 +302,13 @@ final class AstResolver
     /**
      * @return Stmt[]
      */
-    public function parseFileNameToDecoratedNodes(string $fileName): array
+    public function parseFileNameToDecoratedNodes(?string $fileName): array
     {
+        // probably native PHP → un-parseable
+        if ($fileName === null) {
+            return [];
+        }
+
         if (isset($this->parsedFileNodes[$fileName])) {
             return $this->parsedFileNodes[$fileName];
         }
