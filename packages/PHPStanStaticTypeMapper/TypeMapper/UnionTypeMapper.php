@@ -96,11 +96,6 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        $arrayNode = $this->matchArrayTypes($type);
-        if ($arrayNode !== null) {
-            return $arrayNode;
-        }
-
         // special case for nullable
         $nullabledType = $this->matchTypeForNullableUnionType($type);
         if (! $nullabledType instanceof Type) {
@@ -207,21 +202,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return $unionTypeAnalysis->hasArray();
-    }
-
-    private function matchArrayTypes(UnionType $unionType): Identifier | NullableType | PhpParserUnionType | null
-    {
-        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
-        if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
-            return null;
-        }
-
-        $type = $unionTypeAnalysis->hasIterable() ? 'iterable' : 'array';
-        if ($unionTypeAnalysis->isNullableType()) {
-            return $this->resolveNullableType(new NullableType($type));
-        }
-
-        return new Identifier($type);
     }
 
     private function resolveUnionTypes(PhpParserUnionType $phpParserUnionType, int $totalTypes): ?PhpParserUnionType
