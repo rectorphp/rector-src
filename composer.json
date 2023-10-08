@@ -84,7 +84,6 @@
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "src/constants.php",
             "src/functions/node_helper.php"
         ]
     },
