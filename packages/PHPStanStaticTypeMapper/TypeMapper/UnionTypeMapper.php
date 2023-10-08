@@ -192,7 +192,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function shouldSkipIterable(UnionType $unionType): bool
     {
-        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForNullableAndIterable($unionType);
+        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForArrayAndIterable($unionType);
         if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
             return false;
         }

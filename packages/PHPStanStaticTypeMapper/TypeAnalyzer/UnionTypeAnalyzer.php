@@ -15,9 +15,8 @@ use Traversable;
 
 final class UnionTypeAnalyzer
 {
-    public function analyseForNullableAndIterable(UnionType $unionType): ?UnionTypeAnalysis
+    public function analyseForArrayAndIterable(UnionType $unionType): ?UnionTypeAnalysis
     {
-        $isNullableType = false;
         $hasIterable = false;
         $hasArray = false;
 
@@ -32,11 +31,6 @@ final class UnionTypeAnalyzer
                 continue;
             }
 
-            if ($unionedType instanceof NullType) {
-                $isNullableType = true;
-                continue;
-            }
-
             if ($unionedType instanceof ObjectType && $unionedType->getClassName() === Traversable::class) {
                 $hasIterable = true;
                 continue;
@@ -45,7 +39,7 @@ final class UnionTypeAnalyzer
             return null;
         }
 
-        return new UnionTypeAnalysis($isNullableType, $hasIterable, $hasArray);
+        return new UnionTypeAnalysis($hasIterable, $hasArray);
     }
 
     /**
