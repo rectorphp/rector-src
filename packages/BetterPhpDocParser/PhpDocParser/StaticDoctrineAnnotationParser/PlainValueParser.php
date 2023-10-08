@@ -66,9 +66,20 @@ final class PlainValueParser
         }
 
         while ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_DOUBLE_COLON) ||
-            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_IDENTIFIER)
+            $tokenIterator->isCurrentTokenType(Lexer::TOKEN_IDENTIFIER) ||
+            // start with a quote but doesn't end with one
+            (str_starts_with($currentTokenValue, '"') && !str_ends_with($currentTokenValue, '"'))
         ) {
-            $currentTokenValue .= $tokenIterator->currentTokenValue();
+            if (str_starts_with($currentTokenValue, '"') && !str_ends_with($currentTokenValue, '"')) {
+                $currentTokenValue .= ' ';
+            }
+            if (str_starts_with($currentTokenValue, '"') && str_contains($tokenIterator->currentTokenValue(), '"')) {
+                //starts with '"' and current token contains '"', should be the end
+                $currentTokenValue .= substr($tokenIterator->currentTokenValue(), 0, strpos($tokenIterator->currentTokenValue(), '"')+1);
+                break;
+            } else {
+                $currentTokenValue .= $tokenIterator->currentTokenValue();
+            }
             $tokenIterator->next();
         }
 
