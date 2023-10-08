@@ -45,7 +45,7 @@ return static function (RectorConfig $rectorConfig): void {
         AddParamBasedOnParentClassMethodRector::class,
         MixedTypeRector::class,
         ClassOnThisVariableObjectRector::class,
-        ConsistentImplodeRector::class
+        ConsistentImplodeRector::class,
     ]);
 
     $rectorConfig
