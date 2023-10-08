@@ -32,7 +32,7 @@ use stdClass;
 
 final class UnionArray
 {
-    public function run($a, $b): null|\DateTime|array
+    public function run($a, $b): \DateTime|array|null
     {
         if ($a) {
             return null;
