@@ -34,7 +34,6 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\BoolUnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
@@ -52,7 +51,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
-        private readonly BoolUnionTypeAnalyzer $boolUnionTypeAnalyzer,
         private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly TypeFactory $typeFactory
@@ -312,7 +310,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         if ($phpParserUnionType instanceof PhpParserUnionType) {
-            return $this->narrowBoolType($unionType, $phpParserUnionType, $typeKind);
+            return $this->resolveUnionTypeNode($unionType, $phpParserUnionType, $typeKind);
         }
 
         $compatibleObjectTypeNode = $this->processResolveCompatibleObjectCandidates($unionType);
@@ -491,16 +489,11 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param TypeKind::* $typeKind
      */
-    private function narrowBoolType(
+    private function resolveUnionTypeNode(
         UnionType $unionType,
         PhpParserUnionType $phpParserUnionType,
         string $typeKind
     ): PhpParserUnionType|null|Identifier|Name|ComplexType {
-        // maybe all one type
-        if ($this->boolUnionTypeAnalyzer->isBoolUnionType($unionType)) {
-            return new Identifier('bool');
-        }
-
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
         }
