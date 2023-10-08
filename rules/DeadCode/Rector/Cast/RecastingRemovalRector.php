@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\Cast\Object_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Expr\StaticPropertyFetch;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
