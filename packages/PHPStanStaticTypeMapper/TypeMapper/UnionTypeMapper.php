@@ -99,8 +99,7 @@ final class UnionTypeMapper implements TypeMapperInterface
         // special case for nullable
         $nullabledType = $this->matchTypeForNullableUnionType($type);
         if (! $nullabledType instanceof Type) {
-            // use first unioned type in case of unioned object types
-            return $this->matchTypeForUnionedObjectTypes($type, $typeKind);
+            return $this->matchTypeForUnionedTypes($type, $typeKind);
         }
 
         return $this->mapNullabledType($nullabledType, $typeKind);
@@ -281,7 +280,7 @@ final class UnionTypeMapper implements TypeMapperInterface
      * @param TypeKind::* $typeKind
      * @return Name|FullyQualified|ComplexType|Identifier|null
      */
-    private function matchTypeForUnionedObjectTypes(UnionType $unionType, string $typeKind): ?Node
+    private function matchTypeForUnionedTypes(UnionType $unionType, string $typeKind): ?Node
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
 
@@ -293,6 +292,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $this->resolveUnionTypeNode($unionType, $phpParserUnionType, $typeKind);
         }
 
+        // use first unioned type in case of unioned object types
         $compatibleObjectTypeNode = $this->processResolveCompatibleObjectCandidates($unionType);
         if ($compatibleObjectTypeNode instanceof NullableType || $compatibleObjectTypeNode instanceof FullyQualified) {
             return $compatibleObjectTypeNode;
