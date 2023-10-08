@@ -137,14 +137,7 @@ CODE_SAMPLE
 
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($expr);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
-            $propertyType = $expr instanceof StaticPropertyFetch
-                ? $this->nodeTypeResolver->getType($expr->class)
-                : $this->nodeTypeResolver->getType($expr->var);
-
-            // need to UnionType check due rectify with RecastingRemovalRector + CountOnNullRector
-            // cause add (array) cast on $node->args
-            // on union $node types FuncCall|MethodCall|StaticCall
-            return ! $propertyType instanceof UnionType;
+            return true;
         }
 
         $nativeType = $phpPropertyReflection->getNativeType();
