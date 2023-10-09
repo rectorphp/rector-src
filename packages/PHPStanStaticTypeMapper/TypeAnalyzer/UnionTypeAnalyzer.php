@@ -8,7 +8,6 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
 use Traversable;
