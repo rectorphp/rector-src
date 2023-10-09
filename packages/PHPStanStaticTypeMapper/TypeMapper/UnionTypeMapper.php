@@ -35,7 +35,6 @@ use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
@@ -51,7 +50,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
-        private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly TypeFactory $typeFactory
     ) {
@@ -402,8 +400,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $this->correctObjectType($sharedTypeWithClassName);
         }
 
-        // find least common denominator
-        return $this->unionTypeCommonTypeNarrower->narrowToSharedObjectType($unionType);
+        return null;
     }
 
     /**
