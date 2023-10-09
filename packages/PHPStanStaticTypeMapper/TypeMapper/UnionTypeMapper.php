@@ -284,18 +284,18 @@ final class UnionTypeMapper implements TypeMapperInterface
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
 
+        // use first unioned type in case of unioned object types
+        $compatibleObjectTypeNode = $this->processResolveCompatibleObjectCandidates($unionType);
+        if ($compatibleObjectTypeNode instanceof NullableType || $compatibleObjectTypeNode instanceof FullyQualified) {
+            return $compatibleObjectTypeNode;
+        }
+
         if ($phpParserUnionType instanceof NullableType) {
             return $phpParserUnionType;
         }
 
         if ($phpParserUnionType instanceof PhpParserUnionType) {
             return $this->resolveUnionTypeNode($unionType, $phpParserUnionType, $typeKind);
-        }
-
-        // use first unioned type in case of unioned object types
-        $compatibleObjectTypeNode = $this->processResolveCompatibleObjectCandidates($unionType);
-        if ($compatibleObjectTypeNode instanceof NullableType || $compatibleObjectTypeNode instanceof FullyQualified) {
-            return $compatibleObjectTypeNode;
         }
 
         $type = $this->typeFactory->createMixedPassedOrUnionType($unionType->getTypes());
