@@ -5,6 +5,7 @@
     bootstrap="tests/bootstrap.php"
     colors="true"
     executionOrder="defects"
+    failOnWarning="true"
     defaultTestSuite="main"
     displayDetailsOnTestsThatTriggerWarnings="true"
 >
