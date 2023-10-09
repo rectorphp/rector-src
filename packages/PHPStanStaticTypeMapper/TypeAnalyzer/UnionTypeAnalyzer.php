@@ -42,24 +42,6 @@ final class UnionTypeAnalyzer
         return new UnionTypeAnalysis($hasIterable, $hasArray);
     }
 
-    /**
-     * @return TypeWithClassName[]
-     */
-    public function matchExclusiveTypesWithClassNames(UnionType $unionType): array
-    {
-        $typesWithClassNames = [];
-
-        foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof TypeWithClassName) {
-                return [];
-            }
-
-            $typesWithClassNames[] = $unionedType;
-        }
-
-        return $typesWithClassNames;
-    }
-
     public function isNullable(UnionType $unionType, bool $checkTwoTypes = false): bool
     {
         $types = $unionType->getTypes();
