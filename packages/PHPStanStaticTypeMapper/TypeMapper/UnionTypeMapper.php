@@ -31,7 +31,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
-use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
@@ -47,7 +46,6 @@ final class UnionTypeMapper implements TypeMapperInterface
     private PHPStanStaticTypeMapper $phpStanStaticTypeMapper;
 
     public function __construct(
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -382,14 +380,6 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     private function resolveCompatibleObjectCandidate(UnionType $unionType): UnionType|TypeWithClassName|null
     {
-        if ($this->doctrineTypeAnalyzer->isDoctrineCollectionWithIterableUnionType($unionType)) {
-            $objectType = new ObjectType('Doctrine\Common\Collections\Collection');
-
-            return $this->unionTypeAnalyzer->isNullable($unionType)
-                ? new UnionType([new NullType(), $objectType])
-                : $objectType;
-        }
-
         $typesWithClassNames = $this->unionTypeAnalyzer->matchExclusiveTypesWithClassNames($unionType);
         if ($typesWithClassNames === []) {
             return null;
