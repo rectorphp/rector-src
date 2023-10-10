@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Node;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
@@ -147,7 +148,7 @@ CODE_SAMPLE
 
             $variableName = ltrim($varTagValueNode->variableName, '$');
 
-            if ($variableName === '' && $this->isAnnotatableReturn($stmt)) {
+            if ($variableName === '' && $this->isAllowedEmptyVariableName($stmt)) {
                 continue;
             }
 
@@ -227,8 +228,12 @@ CODE_SAMPLE
         return str_contains($varTagValueNode->description, '}');
     }
 
-    private function isAnnotatableReturn(Stmt $stmt): bool
+    private function isAllowedEmptyVariableName(Stmt $stmt): bool
     {
-        return $stmt instanceof Return_ && $stmt->expr instanceof CallLike && ! $stmt->expr instanceof New_;
+        if ($stmt instanceof Return_ && $stmt->expr instanceof CallLike && ! $stmt->expr instanceof New_) {
+            return true;
+        }
+
+        return $stmt instanceof Expression && $stmt->expr instanceof Assign && $stmt->expr->var instanceof Variable;
     }
 }
