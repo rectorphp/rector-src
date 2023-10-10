@@ -81,7 +81,7 @@ CODE_SAMPLE
             );
 
             if ($isNodeUsed) {
-                return null;
+                continue;
             }
 
             if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, (string) $this->getName($keyVar))) {
