@@ -87,6 +87,7 @@ CODE_SAMPLE
 
         $node->cond->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $node->cond = new BooleanAnd($node->cond, $subIf->cond);
+
         $node->stmts = $subIf->stmts;
 
         $this->commentsMerger->keepComments($node, [$subIf]);
