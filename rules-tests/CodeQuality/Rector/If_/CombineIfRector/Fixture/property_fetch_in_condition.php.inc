@@ -4,13 +4,12 @@ namespace Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\Fixture;
 
 class PropertyFetchInCondition
 {
-    private $prop;
-    
     public function run()
     {
-        if ($p = $this->prop->doSomething()) {
-            if ($p) {
-                return 'foo';
+        if ($this->art->netzid > 0 && $artzo_list = $this->artzo_list) {
+            if ($artzo_list !== []) {
+                foreach ($artzo_list as $art) {
+                }
             }
         }
     }
@@ -23,12 +22,11 @@ namespace Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\Fixture;
 
 class PropertyFetchInCondition
 {
-    private $prop;
-    
     public function run()
     {
-        if (($p = $this->prop->doSomething()) && $p) {
-            return 'foo';
+        if ($this->art->netzid > 0 && ($artzo_list = $this->artzo_list) && $artzo_list !== []) {
+            foreach ($artzo_list as $art) {
+            }
         }
     }
 }
