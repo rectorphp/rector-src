@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\Fixture;
 
-class PropertyFetchInCondition
+class PropertyFetchInCondition2
 {
     public function run()
     {
@@ -20,7 +20,7 @@ class PropertyFetchInCondition
 
 namespace Rector\Tests\CodeQuality\Rector\If_\CombineIfRector\Fixture;
 
-class PropertyFetchInCondition
+class PropertyFetchInCondition2
 {
     public function run()
     {
