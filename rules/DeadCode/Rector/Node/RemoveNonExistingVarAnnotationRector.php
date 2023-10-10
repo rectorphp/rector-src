@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Static_;
@@ -193,7 +194,7 @@ CODE_SAMPLE
             }
         }
 
-        return false;
+        return isset($stmtsAware->stmts[$key+1]) && $stmtsAware->stmts[$key+1] instanceof InlineHTML;
     }
 
     private function hasVariableName(Stmt $stmt, string $variableName): bool
