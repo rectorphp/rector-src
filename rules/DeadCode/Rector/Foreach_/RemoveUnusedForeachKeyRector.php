@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Foreach_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Core\NodeManipulator\StmtsManipulator;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -18,7 +20,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedForeachKeyRector extends AbstractRector
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StmtsManipulator $stmtsManipulator
     ) {
     }
 
@@ -48,31 +51,51 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Foreach_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Foreach_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->keyVar instanceof Expr) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $keyVar = $node->keyVar;
+        $hasChanged = false;
+        foreach ($node->stmts as $key => $stmt) {
+            if (! $stmt instanceof Foreach_) {
+                continue;
+            }
 
-        $isNodeUsed = (bool) $this->betterNodeFinder->findFirst(
-            $node->stmts,
-            fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $keyVar)
-        );
+            if (! $stmt->keyVar instanceof Variable) {
+                continue;
+            }
 
-        if ($isNodeUsed) {
-            return null;
+            $keyVar = $stmt->keyVar;
+
+            $isNodeUsed = (bool) $this->betterNodeFinder->findFirst(
+                $stmt->stmts,
+                fn (Node $node): bool => $this->nodeComparator->areNodesEqual($node, $keyVar)
+            );
+
+            if ($isNodeUsed) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, (string) $this->getName($keyVar))) {
+                continue;
+            }
+
+            $stmt->keyVar = null;
+            $hasChanged = true;
         }
 
-        $node->keyVar = null;
+        if ($hasChanged) {
+            return $node;
+        }
 
-        return $node;
+        return null;
     }
 }
