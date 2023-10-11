@@ -82,7 +82,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|Closure $node
      */
-    public function refactorWithScope(Node $node, Scope $scope)
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         if ($node->returnType instanceof Node) {
             return null;
