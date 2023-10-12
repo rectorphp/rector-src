@@ -2856,6 +2856,12 @@ Remove useless return Expr in `__construct()`
 +            return;
          }
 
+         if (rand(2, 3)) {
+-            return parent::construct();
++            parent::construct();
++            return;
+         }
+
          $this->execute();
      }
  }

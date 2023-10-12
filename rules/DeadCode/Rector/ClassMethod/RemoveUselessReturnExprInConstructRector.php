@@ -38,6 +38,10 @@ class SomeClass
             return true;
         }
 
+        if (rand(2, 3)) {
+            return parent::construct();
+        }
+
         $this->execute();
     }
 }
@@ -50,6 +54,11 @@ class SomeClass
     {
         if (rand(0, 1)) {
             $this->init();
+            return;
+        }
+
+        if (rand(2, 3)) {
+            parent::construct();
             return;
         }
 
