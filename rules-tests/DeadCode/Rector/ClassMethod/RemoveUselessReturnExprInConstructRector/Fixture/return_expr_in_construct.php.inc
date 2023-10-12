@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstruct\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector\Fixture;
 
 final class ReturnExprInConstruct
 {
@@ -19,7 +19,7 @@ final class ReturnExprInConstruct
 -----
 <?php
 
-namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstruct\Fixture;
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector\Fixture;
 
 final class ReturnExprInConstruct
 {

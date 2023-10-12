@@ -2839,11 +2839,11 @@ Remove `@param` docblock with same type as parameter type
 
 <br>
 
-### RemoveUselessReturnExprInConstruct
+### RemoveUselessReturnExprInConstructRector
 
 Remove useless return Expr in `__construct()`
 
-- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstruct`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnExprInConstruct.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnExprInConstructRector.php)
 
 ```diff
  class SomeClass

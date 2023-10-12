@@ -18,9 +18,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstruct\RemoveUselessReturnExprInConstructTest
+ * @see \Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector\RemoveUselessReturnExprInConstructRectorTest
  */
-final class RemoveUselessReturnExprInConstruct extends AbstractRector
+final class RemoveUselessReturnExprInConstructRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
