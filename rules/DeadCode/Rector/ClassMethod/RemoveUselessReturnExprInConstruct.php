@@ -88,6 +88,7 @@ CODE_SAMPLE
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
+
             if ($subNode instanceof Return_ && $subNode->expr instanceof Expr) {
                 $subNode->expr = null;
                 return $subNode;
