@@ -9,9 +9,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
+use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -22,6 +24,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUselessReturnExprInConstructRector extends AbstractRector
 {
+    public function __construct(
+        private readonly ExprAnalyzer $exprAnalyzer
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -93,17 +100,28 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) use (
+            &$hasChanged
+        ): int|null|array|Return_ {
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
 
-            if ($subNode instanceof Return_ && $subNode->expr instanceof Expr) {
-                $hasChanged = true;
-
-                $subNode->expr = null;
-                return $subNode;
+            if (! $subNode instanceof Return_) {
+                return null;
             }
+
+            if (! $subNode->expr instanceof Expr) {
+                return null;
+            }
+
+            $hasChanged = true;
+            if ($this->exprAnalyzer->isDynamicExpr($subNode->expr)) {
+                return [new Expression($subNode->expr), new Return_()];
+            }
+
+            $subNode->expr = null;
+            return $subNode;
         });
 
         if ($hasChanged) {
