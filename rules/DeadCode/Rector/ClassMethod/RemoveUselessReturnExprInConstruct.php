@@ -90,6 +90,8 @@ CODE_SAMPLE
             }
 
             if ($subNode instanceof Return_ && $subNode->expr instanceof Expr) {
+                $hasChanged = true;
+
                 $subNode->expr = null;
                 return $subNode;
             }
