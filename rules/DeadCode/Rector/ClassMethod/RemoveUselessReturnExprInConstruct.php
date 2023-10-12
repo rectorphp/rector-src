@@ -12,11 +12,8 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\MethodName;
-use Rector\DeadCode\PhpDoc\TagRemover\ReturnTagRemover;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -87,11 +84,10 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable($node->stmts, function (Node $subNode) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node->stmts, static function (Node $subNode) use (&$hasChanged) {
             if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
-
             if ($subNode instanceof Return_ && $subNode->expr instanceof Expr) {
                 $subNode->expr = null;
                 return $subNode;
