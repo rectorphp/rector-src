@@ -132,7 +132,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return $this->getType($expr)
+        return $this->nodeTypeResolver->getNativeType($expr)
             ->isBoolean()
             ->yes();
     }
