@@ -62,7 +62,7 @@ final class ExprAnalyzer
             }
 
             if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
-                return ! $expr->expr instanceof LNumber && ! $expr instanceof DNumber;
+                return ! $expr->expr instanceof LNumber && ! $expr->expr instanceof DNumber;
             }
 
             return ! $this->isAllowedConstFetchOrClassConstFetch($expr);
