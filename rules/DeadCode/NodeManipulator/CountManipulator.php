@@ -11,14 +11,17 @@ use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
+use PHPStan\Type\NeverType;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class CountManipulator
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator
+        private readonly NodeComparator $nodeComparator,
+        private readonly NodeTypeResolver $nodeTypeResolver
     ) {
     }
 
@@ -113,6 +116,15 @@ final class CountManipulator
         $countedExpr = $node->getArgs()[0]
 ->value;
 
-        return $this->nodeComparator->areNodesEqual($countedExpr, $expr);
+        if ($this->nodeComparator->areNodesEqual($countedExpr, $expr)) {
+            $exprType = $this->nodeTypeResolver->getNativeType($expr);
+            if (! $exprType->isArray()->yes()) {
+                return $exprType instanceof NeverType;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
