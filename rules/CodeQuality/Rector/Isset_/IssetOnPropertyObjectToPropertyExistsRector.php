@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
@@ -154,6 +155,10 @@ CODE_SAMPLE
 
     private function shouldSkipForPropertyTypeDeclaration(PropertyFetch $propertyFetch): bool
     {
+        if (! $propertyFetch->name instanceof Identifier) {
+            return true;
+        }
+
         $phpPropertyReflection = $this->reflectionResolver->resolvePropertyReflectionFromPropertyFetch($propertyFetch);
         if (! $phpPropertyReflection instanceof PhpPropertyReflection) {
             return false;
