@@ -33,6 +33,8 @@ final class PureFunctionDetector
         // http
         'header', 'header_remove', 'http_response_code', 'setcookie',
 
+        'file_get_contents',
+
         // output buffer
         'ob_start', 'ob_end_clean', 'ob_get_clean', 'readfile', 'printf', 'var_dump', 'phpinfo',
         'ob_implicit_flush', 'vprintf',
