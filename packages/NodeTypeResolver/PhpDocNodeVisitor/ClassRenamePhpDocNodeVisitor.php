@@ -14,6 +14,8 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
@@ -62,7 +64,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof IdentifierTypeNode) {
+        if (! $node instanceof IdentifierTypeNode && ! $node instanceof SpacelessPhpDocTagNode) {
             return null;
         }
 
@@ -74,8 +76,17 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $identifier = clone $node;
-        $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $node->name);
+        if ($node instanceof SpacelessPhpDocTagNode) {
+            if ( ! $node->value instanceof DoctrineAnnotationTagValueNode) {
+                return null;
+            }
+
+            $identifier = clone $node->value->identifierTypeNode;
+        } else {
+            $identifier = clone $node;
+        }
+
+        $identifier->name = $this->resolveNamespacedName($identifier, $currentPhpNode, $identifier->name);
         $staticType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($identifier, $currentPhpNode);
 
         $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
@@ -95,13 +106,25 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
             $newTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($oldToNewType->getNewType());
 
-            $parentType = $node->getAttribute(PhpDocAttributeKey::PARENT);
+            $parentType =  $node instanceof SpacelessPhpDocTagNode
+                ? $node->value->identifierTypeNode->getAttribute(PhpDocAttributeKey::PARENT)
+                : $node->getAttribute(PhpDocAttributeKey::PARENT);
+
             if ($parentType instanceof TypeNode) {
                 // mirror attributes
                 $newTypeNode->setAttribute(PhpDocAttributeKey::PARENT, $parentType);
             }
 
             $this->hasChanged = true;
+
+            if ($node instanceof SpacelessPhpDocTagNode) {
+                $node->name = str_starts_with($node->name, '@')
+                    ? '@' . $newTypeNode->name
+                    : $newTypeNode->name;
+                $node->value->identifierTypeNode = $newTypeNode;
+
+                return $node;
+            }
 
             return $newTypeNode;
         }
@@ -127,6 +150,10 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         PhpNode $phpNode,
         string $name
     ): string {
+        if ($identifierTypeNode->hasAttribute(PhpDocAttributeKey::RESOLVED_CLASS)) {
+            $name = '\\'. ltrim((string) $identifierTypeNode->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS), '\\');
+        }
+
         if (str_starts_with($name, '\\')) {
             return $name;
         }

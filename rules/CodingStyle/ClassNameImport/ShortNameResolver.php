@@ -26,6 +26,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use ReflectionClass;
+use TypeError;
 
 /**
  * @see \Rector\Tests\CodingStyle\ClassNameImport\ShortNameResolver\ShortNameResolverTest
@@ -223,7 +224,11 @@ final class ShortNameResolver
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
             if ($nativeReflectionClass instanceof ReflectionClass) {
-                $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
+                try {
+                    $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
+                } catch (TypeError) {
+                    continue;
+                }
             } elseif (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
             } else {
