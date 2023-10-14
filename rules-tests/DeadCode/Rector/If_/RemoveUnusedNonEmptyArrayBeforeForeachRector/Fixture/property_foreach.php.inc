@@ -4,12 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeac
 
 final class PropertyForeach
 {
-    private $items = [];
-
-    public function __construct(array $items)
-    {
-        $this->items = $items;
-    }
+    private array $items = [];
 
     public function run()
     {
@@ -28,12 +23,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeac
 
 final class PropertyForeach
 {
-    private $items = [];
-
-    public function __construct(array $items)
-    {
-        $this->items = $items;
-    }
+    private array $items = [];
 
     public function run()
     {

@@ -111,6 +111,11 @@ CODE_SAMPLE
             if (is_string($variableName) && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
                 return false;
             }
+
+            $ifType = $scope->getNativeType($foreachExpr);
+            if (!$ifType->isArray()->yes()) {
+                return false;
+            }
         }
 
         $ifCond = $if->cond;
@@ -121,7 +126,7 @@ CODE_SAMPLE
         if (($ifCond instanceof Variable || $this->propertyFetchAnalyzer->isPropertyFetch($ifCond))
             && $this->nodeComparator->areNodesEqual($ifCond, $foreachExpr)
         ) {
-            $ifType = $scope->getType($ifCond);
+            $ifType = $scope->getNativeType($ifCond);
             return $ifType->isArray()
                 ->yes();
         }
