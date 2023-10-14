@@ -106,8 +106,12 @@ CODE_SAMPLE
         $foreach = $if->stmts[0];
         $foreachExpr = $foreach->expr;
 
-        if ($foreachExpr instanceof Expr\ArrayDimFetch) {
-            return false;
+        if ($foreachExpr instanceof Expr\ArrayDimFetch && $foreachExpr->dim !== null) {
+            $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
+            $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
+            if (!$exprType->hasOffsetValueType($dimType)->yes()) {
+                return false;
+            }
         }
 
         if ($foreachExpr instanceof Variable) {
