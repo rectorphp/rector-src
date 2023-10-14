@@ -21,14 +21,20 @@ final class SimplifyReturnExpressionToConstantTypeRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('"something()" will be renamed to "somethingElse()"', [
+        return new RuleDefinition('Simplify return expression to constant values', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
     public function run()
     {
-        $this->something();
+        $return = false;
+
+        if (doSomething()) {
+            return true;
+        }
+
+        return $return;
     }
 }
 CODE_SAMPLE
@@ -39,7 +45,13 @@ class SomeClass
 {
     public function run()
     {
-        $this->somethingElse();
+        $return = false;
+
+        if (doSomething()) {
+            return true;
+        }
+
+        return false;
     }
 }
 CODE_SAMPLE
