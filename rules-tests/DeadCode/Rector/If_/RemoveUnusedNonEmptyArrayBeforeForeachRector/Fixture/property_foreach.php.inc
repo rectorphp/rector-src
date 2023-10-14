@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeac
 
 final class PropertyForeach
 {
-    private $items = [];
+    private array $items = [];
 
     public function __construct(array $items)
     {
