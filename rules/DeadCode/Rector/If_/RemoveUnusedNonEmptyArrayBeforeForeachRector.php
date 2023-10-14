@@ -106,6 +106,10 @@ CODE_SAMPLE
         $foreach = $if->stmts[0];
         $foreachExpr = $foreach->expr;
 
+        if ($foreachExpr instanceof Expr\ArrayDimFetch) {
+            return false;
+        }
+
         if ($foreachExpr instanceof Variable) {
             $variableName = $this->nodeNameResolver->getName($foreachExpr);
             if (is_string($variableName) && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
