@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Core\DependencyInjection;
 
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
@@ -402,11 +400,6 @@ final class LazyContainerFactory
         $rectorConfig->when(ConsoleApplication::class)
             ->needs('$commands')
             ->giveTagged(Command::class);
-
-        $rectorConfig->singleton(Inflector::class, static function (): Inflector {
-            $inflectorFactory = new InflectorFactory();
-            return $inflectorFactory->build();
-        });
 
         $rectorConfig->tag(ProcessCommand::class, Command::class);
         $rectorConfig->tag(WorkerCommand::class, Command::class);
