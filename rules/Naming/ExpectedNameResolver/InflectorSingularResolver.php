@@ -164,17 +164,18 @@ final class InflectorSingularResolver
 
         foreach ($irregular as $singular_word => $plural_word)
         {
-            if (preg_match('/('.$plural_word.')$/i', $word, $arr))
+            $arr = Strings::match( $word, '/('.$plural_word.')$/i');
+            if ($arr !== null)
             {
-                return preg_replace('/('.$plural_word.')$/i', substr($arr[0],0,1).substr($singular_word,1), $word);
+                return Strings::replace( $word,'/('.$plural_word.')$/i', substr($arr[0],0,1).substr($singular_word,1));
             }
         }
 
         foreach ($singular as $rule => $replacement)
         {
-            if (preg_match($rule, $word))
+            if (Strings::match($word, $rule) !== null)
             {
-                return preg_replace($rule, $replacement, $word);
+                return Strings::replace($word, $rule, $replacement);
             }
         }
 
