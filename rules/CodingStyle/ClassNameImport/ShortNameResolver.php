@@ -223,7 +223,7 @@ final class ShortNameResolver
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
             if ($nativeReflectionClass instanceof ReflectionClass) {
-               $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
+                $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
             } elseif (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
             } else {
