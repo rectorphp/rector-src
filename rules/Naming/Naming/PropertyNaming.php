@@ -15,7 +15,6 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
-use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -57,7 +56,7 @@ final class PropertyNaming
 
     public function __construct(
         private readonly InflectorSingularResolver $inflectorSingularResolver,
-        private readonly NodeTypeResolver          $nodeTypeResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

@@ -102,9 +102,9 @@ final class InflectorSingularResolver
     }
 
     // see https://gist.github.com/peter-mcconnell/9757549
-    private function singularize (string $word): string
+    private function singularize(string $word): string
     {
-        $singular = array (
+        $singular = [
             '/(quiz)zes$/i' => '\\1',
             '/(matr)ices$/i' => '\\1ix',
             '/(vert|ind)ices$/i' => '\\1ex',
@@ -128,18 +128,18 @@ final class InflectorSingularResolver
             '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\\1\\2sis',
             '/([ti])a$/i' => '\\1um',
             '/(n)ews$/i' => '\\1ews',
-            '/s$/i' => ''
-        );
+            '/s$/i' => '',
+        ];
 
-        $irregular = array(
+        $irregular = [
             'person' => 'people',
             'man' => 'men',
             'child' => 'children',
             'sex' => 'sexes',
-            'move' => 'moves'
-        );
+            'move' => 'moves',
+        ];
 
-        $ignore = array(
+        $ignore = [
             'data',
             'equipment',
             'information',
@@ -151,30 +151,28 @@ final class InflectorSingularResolver
             'sheep',
             'press',
             'sms',
-        );
+        ];
 
         $lower_word = strtolower($word);
-        foreach ($ignore as $ignore_word)
-        {
-            if (substr($lower_word, (-1 * strlen($ignore_word))) == $ignore_word)
-            {
+        foreach ($ignore as $ignore_word) {
+            if (substr($lower_word, (-1 * strlen($ignore_word))) === $ignore_word) {
                 return $word;
             }
         }
 
-        foreach ($irregular as $singular_word => $plural_word)
-        {
-            $arr = Strings::match( $word, '/('.$plural_word.')$/i');
-            if ($arr !== null)
-            {
-                return Strings::replace( $word,'/('.$plural_word.')$/i', substr($arr[0],0,1).substr($singular_word,1));
+        foreach ($irregular as $singular_word => $plural_word) {
+            $arr = Strings::match($word, '/(' . $plural_word . ')$/i');
+            if ($arr !== null) {
+                return Strings::replace(
+                    $word,
+                    '/(' . $plural_word . ')$/i',
+                    substr($arr[0], 0, 1) . substr($singular_word, 1)
+                );
             }
         }
 
-        foreach ($singular as $rule => $replacement)
-        {
-            if (Strings::match($word, $rule) !== null)
-            {
+        foreach ($singular as $rule => $replacement) {
+            if (Strings::match($word, $rule) !== null) {
                 return Strings::replace($word, $rule, $replacement);
             }
         }
