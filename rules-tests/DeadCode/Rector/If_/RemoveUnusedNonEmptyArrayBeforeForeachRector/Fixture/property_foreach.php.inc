@@ -6,11 +6,6 @@ final class PropertyForeach
 {
     private array $items = [];
 
-    public function __construct(array $items)
-    {
-        $this->items = $items;
-    }
-
     public function run()
     {
         if ($this->items) {
