@@ -19,5 +19,6 @@ return static function (RectorConfig $rectorConfig): void {
         SomeServiceClassFirstNamespace::class => SomeServiceClass::class,
         'Storage' => 'Illuminate\Support\Facades\Storage',
         'Queue' => 'Illuminate\Support\Facades\Queue',
+        'Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted' => 'Symfony\Component\Security\Http\Attribute\IsGranted',
     ]);
 };
