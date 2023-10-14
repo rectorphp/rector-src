@@ -106,24 +106,8 @@ CODE_SAMPLE
         $foreach = $if->stmts[0];
         $foreachExpr = $foreach->expr;
 
-        if ($foreachExpr instanceof Expr\ArrayDimFetch && $foreachExpr->dim !== null) {
-            $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
-            $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
-            if (!$exprType->hasOffsetValueType($dimType)->yes()) {
-                return false;
-            }
-        }
-
-        if ($foreachExpr instanceof Variable) {
-            $variableName = $this->nodeNameResolver->getName($foreachExpr);
-            if (is_string($variableName) && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
-                return false;
-            }
-
-            $ifType = $scope->getNativeType($foreachExpr);
-            if (!$ifType->isArray()->yes()) {
-                return false;
-            }
+        if ($this->shouldSkipForeachExpr($foreachExpr, $scope)) {
+            return false;
         }
 
         $ifCond = $if->cond;
@@ -215,5 +199,30 @@ CODE_SAMPLE
         $stmt->setAttribute(AttributeKey::COMMENTS, $comments);
 
         return $stmt;
+    }
+
+    private function shouldSkipForeachExpr(Expr $foreachExpr, Scope $scope): bool
+    {
+        if ($foreachExpr instanceof Expr\ArrayDimFetch && $foreachExpr->dim !== null) {
+            $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
+            $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
+            if (!$exprType->hasOffsetValueType($dimType)->yes()) {
+                return true;
+            }
+        }
+
+        if ($foreachExpr instanceof Variable) {
+            $variableName = $this->nodeNameResolver->getName($foreachExpr);
+            if (is_string($variableName) && $this->reservedKeywordAnalyzer->isNativeVariable($variableName)) {
+                return true;
+            }
+
+            $ifType = $scope->getNativeType($foreachExpr);
+            if (!$ifType->isArray()->yes()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
