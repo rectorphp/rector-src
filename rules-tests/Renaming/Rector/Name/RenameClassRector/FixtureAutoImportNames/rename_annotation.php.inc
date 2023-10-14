@@ -14,10 +14,11 @@ class IsGrantedController extends AbstractController
 -----
 <?php
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @\Symfony\Component\Security\Http\Attribute\IsGranted('TEST')
+ * @IsGranted('TEST')
  */
 class IsGrantedController extends AbstractController
 {
