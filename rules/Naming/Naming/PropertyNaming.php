@@ -14,6 +14,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Util\StringUtils;
+use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -55,8 +56,8 @@ final class PropertyNaming
     private const GET_PREFIX_REGEX = '#^get(?<root_name>[A-Z].+)#';
 
     public function __construct(
-        private readonly RectorNamingInflector $rectorNamingInflector,
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private readonly InflectorSingularResolver $inflectorSingularResolver,
+        private readonly NodeTypeResolver          $nodeTypeResolver,
     ) {
     }
 
@@ -69,7 +70,7 @@ final class PropertyNaming
 
         $originalName = lcfirst((string) $matches['root_name']);
 
-        return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
+        return new ExpectedName($originalName, $this->inflectorSingularResolver->resolve($originalName));
     }
 
     public function getExpectedNameFromType(Type $type): ?ExpectedName
@@ -108,7 +109,7 @@ final class PropertyNaming
 
         // prolong too short generic names with one namespace up
         $originalName = $this->prolongIfTooShort($shortClassName, $className);
-        return new ExpectedName($originalName, $this->rectorNamingInflector->singularize($originalName));
+        return new ExpectedName($originalName, $this->inflectorSingularResolver->resolve($originalName));
     }
 
     public function fqnToVariableName(ThisType | ObjectType | string $objectType): string
