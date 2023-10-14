@@ -7,9 +7,11 @@ namespace Rector\CodeQuality\Rector\Return_;
 use PhpParser\Node;
 use Rector\Core\Rector\AbstractRector;
 use PHPStan\Type\ConstantScalarType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use PHPStan\Type\Enum\EnumCaseObjectType;
+use PHPStan\Type\VerbosityLevel;
+
 
 /**
 
@@ -78,6 +80,11 @@ CODE_SAMPLE
                 $node->expr = new Node\Expr\ConstFetch(new Node\Name($constName));
                 return $node;
             }
+        }
+
+        if ($nativeType instanceof EnumCaseObjectType) {
+            $node->expr = new Node\Expr\ConstFetch(new Node\Name($nativeType->describe(VerbosityLevel::precise())));
+            return $node;
         }
 
         return null;
