@@ -21,7 +21,6 @@ return static function (RectorConfig $rectorConfig): void {
         'Queue' => 'Illuminate\Support\Facades\Queue',
 
         /**
-         *
          * For testing skip remove use statement part of rename during auto import
          * the rename annotation is allowed only on specific symfony assert, doctrine, and serializer
          *
