@@ -5322,7 +5322,7 @@ Change deprecated utf8_decode and utf8_encode to mb_convert_encoding
 
 Add override attribute to overridden methods
 
-- class: [`Rector\Php83\Rector\Class_\AddOverrideAttributeToOverriddenMethodsRector`](../rules/Php83/Rector/Class_/AddOverrideAttributeToOverriddenMethodsRector.php)
+- class: [`Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector`](../rules/Php83/Rector/ClassMethod/AddOverrideAttributeToOverriddenMethodsRector.php)
 
 ```diff
  class ParentClass
