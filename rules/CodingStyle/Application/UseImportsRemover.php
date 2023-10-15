@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Application;
 
+use Nette\Utils\Strings;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -12,9 +13,9 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseImportsRemover
 {
-    public function __construct(private readonly UseNodesToAddCollector $useNodesToAddCollector)
-    {
-
+    public function __construct(
+        private readonly UseNodesToAddCollector $useNodesToAddCollector
+    ) {
     }
 
     /**
@@ -68,9 +69,12 @@ final class UseImportsRemover
                     unset($use->uses[$usesKey]);
                     continue 2;
                 }
-            }
 
-            unset($use->uses[$usesKey]);
+                if (Strings::after($className, '\\', -1) === Strings::after($useName, '\\', -1)) {
+                    unset($use->uses[$usesKey]);
+                    continue 2;
+                }
+            }
         }
 
         return $use;
