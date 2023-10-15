@@ -66,12 +66,7 @@ final class UseImportsRemover
                     ? $useImportType->getFullyQualifiedName()
                     : $useImportType->getClassName();
 
-                if ($className === $useName) {
-                    unset($use->uses[$usesKey]);
-                    continue 2;
-                }
-
-                if (Strings::after($className, '\\', -1) === $lastUseName) {
+                if ($className === $useName || Strings::after($className, '\\', -1) === $lastUseName) {
                     unset($use->uses[$usesKey]);
                     continue 2;
                 }
