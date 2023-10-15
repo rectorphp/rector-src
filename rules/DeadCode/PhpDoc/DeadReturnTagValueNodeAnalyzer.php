@@ -68,10 +68,10 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        return ! $this->hasTruePseudoType($returnTagValueNode->type);
+        return ! $this->hasTrueFalsePseudoType($returnTagValueNode->type);
     }
 
-    private function hasTruePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
+    private function hasTrueFalsePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
     {
         $unionTypes = $bracketsAwareUnionTypeNode->types;
 
@@ -81,7 +81,7 @@ final class DeadReturnTagValueNodeAnalyzer
             }
 
             $name = strtolower((string) $unionType);
-            if ($name === 'true') {
+            if (in_array($name, ['true', 'false'], true)) {
                 return true;
             }
         }
