@@ -19,5 +19,15 @@ return static function (RectorConfig $rectorConfig): void {
         SomeServiceClassFirstNamespace::class => SomeServiceClass::class,
         'Storage' => 'Illuminate\Support\Facades\Storage',
         'Queue' => 'Illuminate\Support\Facades\Queue',
+
+        /**
+         *
+         * For testing skip remove use statement part of rename during auto import
+         * the rename annotation is allowed only on specific symfony assert, doctrine, and serializer
+         *
+         * @see https://github.com/rectorphp/rector-src/blob/d55a35bcdede830d3927de1c11e0f7f0d12ee9e4/packages/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php#L36-L38s
+         * @see https://github.com/rectorphp/rector-symfony/issues/535#issuecomment-1762822651
+         */
+        'Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted' => 'Symfony\Component\Security\Http\Attribute\IsGranted',
     ]);
 };
