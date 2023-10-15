@@ -7,26 +7,18 @@ namespace Rector\CodingStyle\Application;
 use Nette\Utils\Strings;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
-use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseImportsRemover
 {
-    public function __construct(
-        private readonly UseNodesToAddCollector $useNodesToAddCollector
-    ) {
-    }
-
     /**
      * @param Stmt[] $stmts
      * @param string[] $removedUses
      * @return Stmt[]
      */
-    public function removeImportsFromStmts(array $stmts, array $removedUses, string $filePath): array
+    public function removeImportsFromStmts(array $stmts, array $removedUses, array $useImportTypes): array
     {
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($filePath);
-
         foreach ($stmts as $key => $stmt) {
             if (! $stmt instanceof Use_) {
                 continue;
@@ -49,11 +41,6 @@ final class UseImportsRemover
      */
     private function removeUseFromUse(array $removedUses, Use_ $use, array $useImportTypes): Use_
     {
-        // nothing to remove, as no replacement
-        if ($useImportTypes === []) {
-            return $use;
-        }
-
         foreach ($use->uses as $usesKey => $useUse) {
             $useName = $useUse->name->toString();
             if (! in_array($useName, $removedUses, true)) {
