@@ -87,7 +87,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
 
         // nothing to remove, as no replacement
         if ($useImportTypes === []) {
-            return null;
+            return $result;
         }
 
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
