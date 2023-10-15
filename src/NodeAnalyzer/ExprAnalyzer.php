@@ -55,20 +55,20 @@ final class ExprAnalyzer
 
     public function isDynamicExpr(Expr $expr): bool
     {
-        if (! $expr instanceof Array_) {
-            if ($expr instanceof Scalar) {
-                // string interpolation is true, otherwise false
-                return $expr instanceof Encapsed;
-            }
-
-            if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
-                return ! $expr->expr instanceof LNumber && ! $expr->expr instanceof DNumber;
-            }
-
-            return ! $this->isAllowedConstFetchOrClassConstFetch($expr);
+        if ($expr instanceof Array_) {
+            return $this->isDynamicArray($expr);
         }
 
-        return $this->isDynamicArray($expr);
+        if ($expr instanceof Scalar) {
+            // string interpolation is true, otherwise false
+            return $expr instanceof Encapsed;
+        }
+
+        if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
+            return ! $expr->expr instanceof LNumber && ! $expr->expr instanceof DNumber;
+        }
+
+        return ! $this->isAllowedConstFetchOrClassConstFetch($expr);
     }
 
     public function isDynamicArray(Array_ $array): bool
