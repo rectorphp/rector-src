@@ -19,6 +19,7 @@ use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
 
 final class ClassRenamingPostRector extends AbstractPostRector
@@ -29,7 +30,8 @@ final class ClassRenamingPostRector extends AbstractPostRector
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly UseImportsRemover $useImportsRemover,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly CurrentFileProvider $currentFileProvider,
+        private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 
@@ -81,11 +83,18 @@ final class ClassRenamingPostRector extends AbstractPostRector
             return null;
         }
 
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
+
+        // nothing to remove, as no replacement
+        if ($useImportTypes === []) {
+            return null;
+        }
+
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
         $this->rootNode->stmts = $this->useImportsRemover->removeImportsFromStmts(
             $this->rootNode->stmts,
             $removedUses,
-            $file->getFilePath()
+            $useImportTypes
         );
 
         return $result;
