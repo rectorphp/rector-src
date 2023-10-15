@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php83\Rector\Class_\AddOverrideAttributeToOverriddenMethodsRector;
+namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

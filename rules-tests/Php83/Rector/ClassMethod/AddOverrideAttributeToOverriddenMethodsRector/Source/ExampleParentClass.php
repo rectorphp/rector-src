@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php83\Rector\Class_\AddOverrideAttributeToOverriddenMethodsRector\Source;
+namespace Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\Source;
 
 class ExampleParentClass
 {

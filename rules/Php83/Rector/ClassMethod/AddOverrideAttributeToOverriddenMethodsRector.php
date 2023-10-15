@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php83\Rector\Class_;
+namespace Rector\Php83\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Attribute;
@@ -10,10 +10,10 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\OutOfClassScope;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -21,9 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see https://wiki.php.net/rfc/marking_overriden_methods
- * @see \Rector\Tests\Php83\Rector\Class_\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
+ * @see \Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
  */
-class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface
+class AddOverrideAttributeToOverriddenMethodsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -85,7 +85,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         // Detect if class extends a parent class
         if ($this->shouldSkipClass($node)) {
@@ -102,10 +102,7 @@ CODE_SAMPLE
             // Private methods should be ignored
             if ($parentClassReflection->hasMethod($method->name->toString())) {
                 // ignore if it is a private method on the parent
-                $parentMethod = $parentClassReflection->getMethod(
-                    $method->name->toString(),
-                    new OutOfClassScope(),
-                );
+                $parentMethod = $parentClassReflection->getMethod($method->name->toString(), $scope);
                 if ($parentMethod->isPrivate()) {
                     continue;
                 }
