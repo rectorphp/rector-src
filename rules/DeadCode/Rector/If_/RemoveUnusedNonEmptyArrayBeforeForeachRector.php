@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\If_;
 
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -203,7 +204,7 @@ CODE_SAMPLE
 
     private function shouldSkipForeachExpr(Expr $foreachExpr, Scope $scope): bool
     {
-        if ($foreachExpr instanceof Expr\ArrayDimFetch && $foreachExpr->dim !== null) {
+        if ($foreachExpr instanceof ArrayDimFetch && $foreachExpr->dim !== null) {
             $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
             $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
             if (! $exprType->hasOffsetValueType($dimType)->yes()) {
