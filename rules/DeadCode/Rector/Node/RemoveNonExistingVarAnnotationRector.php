@@ -194,7 +194,7 @@ CODE_SAMPLE
             }
         }
 
-        return isset($stmtsAware->stmts[$key+1]) && $stmtsAware->stmts[$key+1] instanceof InlineHTML;
+        return isset($stmtsAware->stmts[$key + 1]) && $stmtsAware->stmts[$key + 1] instanceof InlineHTML;
     }
 
     private function hasVariableName(Stmt $stmt, string $variableName): bool

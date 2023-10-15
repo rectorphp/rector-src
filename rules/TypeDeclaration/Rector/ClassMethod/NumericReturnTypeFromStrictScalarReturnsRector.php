@@ -39,8 +39,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
-    public function __construct(private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard)
-    {
+    public function __construct(
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -92,7 +93,10 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
+        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $node,
+            $scope
+        )) {
             return null;
         }
 
