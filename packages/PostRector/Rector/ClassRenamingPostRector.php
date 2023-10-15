@@ -80,7 +80,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
 
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
-            return null;
+            return $result;
         }
 
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
