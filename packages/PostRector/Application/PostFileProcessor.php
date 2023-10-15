@@ -23,12 +23,12 @@ final class PostFileProcessor
 
     public function __construct(
         private readonly Skipper $skipper,
-        // set order here
-        UseAddingPostRector $useAddingPostRector,
         NameImportingPostRector $nameImportingPostRector,
+        UseAddingPostRector $useAddingPostRector,
         ClassRenamingPostRector $classRenamingPostRector,
         UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
     ) {
+        // set order here
         $this->postRectors = [
             // priority: 650
             $nameImportingPostRector,
