@@ -60,6 +60,7 @@ final class UseImportsRemover
                 continue;
             }
 
+            $lastUseName = Strings::after($useName, '\\', -1);
             foreach ($useImportTypes as $useImportType) {
                 $className = $useImportType instanceof AliasedObjectType
                     ? $useImportType->getFullyQualifiedName()
@@ -70,7 +71,7 @@ final class UseImportsRemover
                     continue 2;
                 }
 
-                if (Strings::after($className, '\\', -1) === Strings::after($useName, '\\', -1)) {
+                if (Strings::after($className, '\\', -1) === $lastUseName) {
                     unset($use->uses[$usesKey]);
                     continue 2;
                 }
