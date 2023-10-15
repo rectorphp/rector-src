@@ -206,7 +206,7 @@ CODE_SAMPLE
         if ($foreachExpr instanceof Expr\ArrayDimFetch && $foreachExpr->dim !== null) {
             $exprType = $this->nodeTypeResolver->getNativeType($foreachExpr->var);
             $dimType = $this->nodeTypeResolver->getNativeType($foreachExpr->dim);
-            if (!$exprType->hasOffsetValueType($dimType)->yes()) {
+            if (! $exprType->hasOffsetValueType($dimType)->yes()) {
                 return true;
             }
         }
@@ -218,7 +218,7 @@ CODE_SAMPLE
             }
 
             $ifType = $scope->getNativeType($foreachExpr);
-            if (!$ifType->isArray()->yes()) {
+            if (! $ifType->isArray()->yes()) {
                 return true;
             }
         }
