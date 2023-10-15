@@ -15,6 +15,7 @@ final class UseImportsRemover
     /**
      * @param Stmt[] $stmts
      * @param string[] $removedUses
+     * @param AliasedObjectType[]|FullyQualifiedObjectType[] $useImportTypes
      * @return Stmt[]
      */
     public function removeImportsFromStmts(array $stmts, array $removedUses, array $useImportTypes): array
