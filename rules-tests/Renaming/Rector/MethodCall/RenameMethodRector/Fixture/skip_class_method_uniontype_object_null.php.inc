@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\Fixture;
 
-class Baz
+class SkipClassMethodUnionTypeObjectNull
 {
     public function doSomething() {
         /** @var object|null $bar */
