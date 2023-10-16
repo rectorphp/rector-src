@@ -79,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node)) {
+        if ($this->shouldSkip($node) || $node->expr === null) {
             return null;
         }
 
