@@ -54,13 +54,13 @@ final class ExprAnalyzer
 
     public function isDynamicExpr(Expr $expr): bool
     {
-        if ($expr instanceof Array_) {
-            return $this->isDynamicArray($expr);
-        }
-
         // Unwrap UnaryPlus and UnaryMinus
         if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
-            $expr = $expr->expr;
+            return $this->isDynamicExpr($expr->expr);
+        }
+
+        if ($expr instanceof Array_) {
+            return $this->isDynamicArray($expr);
         }
 
         if ($expr instanceof Scalar) {
