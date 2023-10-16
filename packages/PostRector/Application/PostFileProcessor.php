@@ -31,11 +31,11 @@ final class PostFileProcessor
     ) {
         $this->postRectors = [
             // priority: 650
-            $nameImportingPostRector,
-            // priority: 600
-            $useAddingPostRector,
-            // priority: 500
             $classRenamingPostRector,
+            // priority: 600
+            $nameImportingPostRector,
+            // priority: 500
+            $useAddingPostRector,
             // priority: 100
             $unusedImportRemovingPostRector,
         ];
