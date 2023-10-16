@@ -434,6 +434,10 @@ final class NodeTypeResolver
         // for falsy nullables
         $type = TypeCombinator::remove($type, new ConstantBooleanType(false));
 
+        if ($type instanceof ObjectWithoutClassType) {
+            return $this->isMatchObjectWithoutClassType($type, $requiredObjectType);
+        }
+
         return $type->isSuperTypeOf($requiredObjectType)
             ->yes();
     }
