@@ -192,7 +192,7 @@ final class BetterNodeFinder
      * @return T[]
      */
     public function findInstancesOfInFunctionLikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
+        ClassMethod | Function_ | Closure  $functionLike,
         string|array $types
     ): array {
         if (is_string($types)) {
