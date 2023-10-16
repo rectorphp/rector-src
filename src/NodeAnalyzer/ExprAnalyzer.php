@@ -15,7 +15,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
-use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -59,13 +58,14 @@ final class ExprAnalyzer
             return $this->isDynamicArray($expr);
         }
 
+        // Unwrap UnaryPlus and UnaryMinus
+        if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
+            $expr = $expr->expr;
+        }
+
         if ($expr instanceof Scalar) {
             // string interpolation is true, otherwise false
             return $expr instanceof Encapsed;
-        }
-
-        if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
-            return ! $expr->expr instanceof LNumber && ! $expr->expr instanceof DNumber;
         }
 
         return ! $this->isAllowedConstFetchOrClassConstFetch($expr);
