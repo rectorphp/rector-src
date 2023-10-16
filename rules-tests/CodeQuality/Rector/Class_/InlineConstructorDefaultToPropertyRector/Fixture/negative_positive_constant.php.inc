@@ -36,7 +36,7 @@ final class SomeClass
 -----
 <?php
 
-numberspace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Fixture;
 
 define("FLOAT_CONSTANT_1", 10.1);
 
