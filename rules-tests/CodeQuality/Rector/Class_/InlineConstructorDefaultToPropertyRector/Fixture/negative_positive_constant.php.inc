@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPrope
 
 define("FLOAT_CONSTANT_1", 10.1);
 
-final class SomeClass
+final class NegativePositiveConstant
 {
     const INT_CONSTANT_2 = 10;
 
@@ -40,7 +40,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPrope
 
 define("FLOAT_CONSTANT_1", 10.1);
 
-final class SomeClass
+final class NegativePositiveConstant
 {
     const INT_CONSTANT_2 = 10;
 

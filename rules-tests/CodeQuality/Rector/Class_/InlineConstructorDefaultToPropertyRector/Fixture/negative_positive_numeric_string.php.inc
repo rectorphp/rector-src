@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Fixture;
 
-final class NegativePositiveInt
+final class NegativePositiveNumericString
 {
     private $propertyA;
     private $propertyB;
@@ -22,7 +22,7 @@ final class NegativePositiveInt
 
 namespace Rector\Tests\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector\Fixture;
 
-final class NegativePositiveInt
+final class NegativePositiveNumericString
 {
     private $propertyA = -"100";
     private $propertyB = "100";
