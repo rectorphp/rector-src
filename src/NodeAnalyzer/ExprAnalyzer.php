@@ -56,7 +56,7 @@ final class ExprAnalyzer
     {
         // Unwrap UnaryPlus and UnaryMinus
         if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
-            return $this->isDynamicExpr($expr->expr);
+            $expr = $expr->expr;
         }
 
         if ($expr instanceof Array_) {
