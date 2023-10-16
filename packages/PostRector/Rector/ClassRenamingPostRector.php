@@ -80,14 +80,14 @@ final class ClassRenamingPostRector extends AbstractPostRector
 
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
-            return $result;
+            return null;
         }
 
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
 
         // nothing to remove, as no replacement
         if ($useImportTypes === []) {
-            return $result;
+            return null;
         }
 
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
