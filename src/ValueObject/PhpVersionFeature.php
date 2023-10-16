@@ -648,5 +648,5 @@ final class PhpVersionFeature
      * @see https://wiki.php.net/rfc/marking_overriden_methods
      * @var int
      */
-    public const OVERIDE_ATTRIBUTE = PhpVersion::PHP_83;
+    public const OVERRIDE_ATTRIBUTE = PhpVersion::PHP_83;
 }

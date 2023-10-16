@@ -119,7 +119,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::OVERIDE_ATTRIBUTE;
+        return PhpVersionFeature::OVERRIDE_ATTRIBUTE;
     }
 
     private function hasPhpAttribute(ClassMethod $node): bool
