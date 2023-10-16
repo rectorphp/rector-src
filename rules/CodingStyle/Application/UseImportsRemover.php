@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\CodingStyle\Application;
 
-use Nette\Utils\Strings;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -13,9 +12,9 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseImportsRemover
 {
-    public function __construct(
-        private readonly UseNodesToAddCollector $useNodesToAddCollector
-    ) {
+    public function __construct(private readonly UseNodesToAddCollector $useNodesToAddCollector)
+    {
+
     }
 
     /**
@@ -60,17 +59,18 @@ final class UseImportsRemover
                 continue;
             }
 
-            $lastUseName = Strings::after($useName, '\\', -1);
             foreach ($useImportTypes as $useImportType) {
                 $className = $useImportType instanceof AliasedObjectType
                     ? $useImportType->getFullyQualifiedName()
                     : $useImportType->getClassName();
 
-                if ($className === $useName || Strings::after($className, '\\', -1) === $lastUseName) {
+                if ($className === $useName) {
                     unset($use->uses[$usesKey]);
                     continue 2;
                 }
             }
+
+            unset($use->uses[$usesKey]);
         }
 
         return $use;
