@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Return_;
 
 use PhpParser\Node;
+use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use PHPStan\Type\ConstantScalarType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -60,6 +61,11 @@ CODE_SAMPLE
         ]);
     }
 
+    public function __construct(
+        private readonly VariableAnalyzer $variableAnalyzer
+    ) {
+    }
+
     /**
      * @return array<class-string<Node>>
      */
@@ -73,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->expr === null) {
+        if ($this->shouldSkip($node)) {
             return null;
         }
 
@@ -100,5 +106,26 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function shouldSkip(Node\Stmt\Return_ $node): bool
+    {
+        if ($node->expr === null) {
+            return true;
+        }
+
+        if (!$node->expr instanceof Node\Expr\Variable) {
+            return true;
+        }
+
+        if ($this->variableAnalyzer->isStaticOrGlobal($node->expr)) {
+            return true;
+        }
+
+        if ($this->variableAnalyzer->isUsedByReference($node->expr)) {
+            return true;
+        }
+
+        return false;
     }
 }
