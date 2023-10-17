@@ -85,6 +85,6 @@ final class RectifiedAnalyzer
             return array_keys($node->getAttributes()) === [AttributeKey::STMT_KEY];
         }
 
-        return ! $node instanceof Stmt && $node->getAttributes() === [];
+        return $node->getAttributes() === [];
     }
 }
