@@ -34,6 +34,7 @@ final class ServiceValueResolver
 
             $r = new \ReflectionProperty($e, 'message');
             $r->setAccessible(true);
+            $r->setValue($e, $message);
 
             throw $e;
         }
