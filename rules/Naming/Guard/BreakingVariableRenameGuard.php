@@ -197,7 +197,10 @@ final class BreakingVariableRenameGuard
             return false;
         }
 
-        if (str_ends_with($paramType->getClassName(), 'Generator') || str_ends_with($paramType->getClassName(), 'Iterator')) {
+        if (str_ends_with($paramType->getClassName(), 'Generator') || str_ends_with(
+            $paramType->getClassName(),
+            'Iterator'
+        )) {
             return true;
         }
 
