@@ -119,8 +119,7 @@ final class ExpectedNameResolver
             return null;
         }
 
-        if ($returnedType instanceof ObjectType && $returnedType->isInstanceOf('DateTimeInterface')->yes()) {
-            // skip date time, as custom naming
+        if ($this->isDateTimeType($returnedType)) {
             return null;
         }
 
@@ -212,5 +211,22 @@ final class ExpectedNameResolver
         }
 
         return $arrayType->getItemType();
+    }
+
+    /**
+     * Skip date time, as custom naming
+     */
+    private function isDateTimeType(Type $type): bool
+    {
+        if (! $type instanceof ObjectType) {
+            return false;
+        }
+
+        if ($type->isInstanceOf('DateTimeInterface')->yes()) {
+            return true;
+        }
+
+        return $type->isInstanceOf('DateTime')
+            ->yes();
     }
 }
