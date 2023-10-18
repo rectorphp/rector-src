@@ -26,6 +26,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RenameForeachValueVariableToMatchMethodCallReturnTypeRector extends AbstractRector
 {
+    /**
+     * @var string[]
+     */
+    private const UNREADABLE_GENERIC_NAMES = ['traversable', 'iterable', 'generator', 'rewindableGenerator'];
+
     public function __construct(
         private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
         private readonly ExpectedNameResolver $expectedNameResolver,
@@ -145,6 +150,10 @@ CODE_SAMPLE
 
     private function shouldSkip(VariableAndCallForeach $variableAndCallForeach, string $expectedName): bool
     {
+        if (in_array($expectedName, self::UNREADABLE_GENERIC_NAMES, true)) {
+            return true;
+        }
+
         if ($this->namingConventionAnalyzer->isCallMatchingVariableName(
             $variableAndCallForeach->getCall(),
             $variableAndCallForeach->getVariableName(),
