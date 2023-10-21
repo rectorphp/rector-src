@@ -73,7 +73,7 @@ final class OutsideAnySetCommand extends Command
 
         foreach ($setListReflectionClass->getConstants() as $constantValue) {
             $currentSetDefinedRectorClasses = SetRectorClassesResolver::resolve($constantValue);
-            $setDefinedRectorClasses = array_merge($setDefinedRectorClasses, $currentSetDefinedRectorClasses);
+            $setDefinedRectorClasses = [...$setDefinedRectorClasses, ...$currentSetDefinedRectorClasses];
         }
 
         return $setDefinedRectorClasses;
