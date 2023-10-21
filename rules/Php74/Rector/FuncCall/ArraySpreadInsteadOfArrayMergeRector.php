@@ -156,9 +156,8 @@ CODE_SAMPLE
             return false;
         }
 
-        return $arrayType->getKeyType()
-            ->isString()
-            ->yes();
+        // php 8.1+ allow mixed key: int, string, and null
+        return true;
     }
 
     private function resolveValue(Expr $expr): Expr
