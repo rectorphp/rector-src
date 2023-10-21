@@ -129,7 +129,7 @@ CODE_SAMPLE
                 $newStmts[] = $nestedIfWithOnlyReturn;
             } else {
                 $standaloneIfs = $this->createStandaloneIfsWithReturn($nestedIfWithOnlyReturn, $nextReturn);
-                $newStmts = array_merge($newStmts, $standaloneIfs);
+                $newStmts = [...$newStmts, ...$standaloneIfs];
             }
         }
 

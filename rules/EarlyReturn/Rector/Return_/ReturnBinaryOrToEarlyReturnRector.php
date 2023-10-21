@@ -126,7 +126,7 @@ CODE_SAMPLE
     private function createMultipleIfs(Expr $expr, Return_ $return, array $ifs): array
     {
         while ($expr instanceof BooleanOr) {
-            $ifs = array_merge($ifs, $this->collectLeftBooleanOrToIfs($expr, $return, $ifs));
+            $ifs = [...$ifs, ...$this->collectLeftBooleanOrToIfs($expr, $return, $ifs)];
             $ifs[] = new If_($expr->right, [
                 'stmts' => [new Return_($this->nodeFactory->createTrue())],
             ]);

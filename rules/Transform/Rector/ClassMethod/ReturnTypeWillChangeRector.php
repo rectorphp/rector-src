@@ -130,10 +130,7 @@ CODE_SAMPLE
     public function configure(array $configuration): void
     {
         Assert::allIsInstanceOf($configuration, ClassMethodReference::class);
-        $this->returnTypeChangedClassMethodReferences = array_merge(
-            $this->returnTypeChangedClassMethodReferences,
-            $configuration
-        );
+        $this->returnTypeChangedClassMethodReferences = [...$this->returnTypeChangedClassMethodReferences, ...$configuration];
     }
 
     public function provideMinPhpVersion(): int

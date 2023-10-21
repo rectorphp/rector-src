@@ -45,7 +45,7 @@ final class NestedAttrGroupsFactory
                 $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
             );
 
-            $attributeGroups = array_merge($attributeGroups, $nestedAttributeGroups);
+            $attributeGroups = [...$attributeGroups, ...$nestedAttributeGroups];
         }
 
         return $attributeGroups;

@@ -49,7 +49,7 @@ final class PhpAttributeAnalyzer
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        $ancestorClassReflections = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
 
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             $nativeReflection = $ancestorClassReflection->getNativeReflection();

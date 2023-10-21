@@ -151,13 +151,8 @@ CODE_SAMPLE
         if ($arrayType->getKeyType()->isInteger()->yes()) {
             return true;
         }
-
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS)) {
-            return false;
-        }
-
         // php 8.1+ allow mixed key: int, string, and null
-        return true;
+        return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS);
     }
 
     private function resolveValue(Expr $expr): Expr

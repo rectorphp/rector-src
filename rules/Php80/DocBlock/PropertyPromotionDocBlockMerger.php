@@ -47,7 +47,7 @@ final class PropertyPromotionDocBlockMerger
                 $propertyComments = $this->phpDocInfoPrinter->printToComments($propertyDocInfo);
 
                 /** @var Comment[] $mergedComments */
-                $mergedComments = array_merge($paramComments, $propertyComments);
+                $mergedComments = [...$paramComments, ...$propertyComments];
 
                 $mergedComments = $this->removeEmptyComments($mergedComments);
 
