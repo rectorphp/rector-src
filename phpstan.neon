@@ -233,6 +233,10 @@ parameters:
                 - packages/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
+                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
+                - src/FileSystem/FilesFinder.php
+                - src/PhpParser/NodeTransformer.php
 
         # impossible to validate json string is a class-string
         - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
