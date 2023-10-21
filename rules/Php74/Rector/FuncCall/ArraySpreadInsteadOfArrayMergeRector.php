@@ -151,6 +151,7 @@ CODE_SAMPLE
         if ($arrayType->getKeyType()->isInteger()->yes()) {
             return true;
         }
+
         // php 8.1+ allow mixed key: int, string, and null
         return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS);
     }
