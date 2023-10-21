@@ -101,6 +101,10 @@ CODE_SAMPLE
 
     private function refactorArray(FuncCall $funcCall): ?Array_
     {
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         $array = new Array_();
 
         foreach ($funcCall->args as $arg) {
