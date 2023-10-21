@@ -170,7 +170,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         // not sure why, but the 1st argument "command" is missing; this is needed for a command name
         $arguments = $inputDefinition->getArguments();
         $commandInputArgument = new InputArgument(self::COMMAND, InputArgument::REQUIRED);
-        $arguments = array_merge([$commandInputArgument], $arguments);
+        $arguments = [$commandInputArgument, ...$arguments];
 
         $inputDefinition->setArguments($arguments);
 

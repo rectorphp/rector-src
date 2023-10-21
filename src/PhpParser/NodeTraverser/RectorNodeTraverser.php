@@ -88,7 +88,7 @@ final class RectorNodeTraverser extends NodeTraverser
             static fn (RectorInterface $rector): bool => ! $rector instanceof CollectorRectorInterface
         );
 
-        $this->visitors = array_merge($this->visitors, $nonCollectorActiveRectors);
+        $this->visitors = [...$this->visitors, ...$nonCollectorActiveRectors];
 
         $this->areNodeVisitorsPrepared = true;
     }

@@ -64,7 +64,7 @@ final class PropertyFetchFinder
         $nodes = [$class];
         $nodesTrait = $this->astResolver->parseClassReflectionTraits($classReflection);
         $hasTrait = $nodesTrait !== [];
-        $nodes = array_merge($nodes, $nodesTrait);
+        $nodes = [...$nodes, ...$nodesTrait];
 
         return $this->findPropertyFetchesInClassLike($class, $nodes, $propertyName, $hasTrait, $scope);
     }

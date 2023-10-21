@@ -50,7 +50,7 @@ final class PhpDocNodeByTypeFinder
 
         foreach ($classes as $class) {
             $justFoundTagValueNodes = $this->findDoctrineAnnotationsByClass($phpDocNode, $class);
-            $doctrineAnnotationTagValueNodes = array_merge($doctrineAnnotationTagValueNodes, $justFoundTagValueNodes);
+            $doctrineAnnotationTagValueNodes = [...$doctrineAnnotationTagValueNodes, ...$justFoundTagValueNodes];
         }
 
         return $doctrineAnnotationTagValueNodes;

@@ -83,7 +83,7 @@ final class TypeFactory
 
             foreach ($flattenTypes as $flattenType) {
                 if ($flattenType instanceof ConstantArrayType) {
-                    $unwrappedTypes = array_merge($unwrappedTypes, $this->unwrapConstantArrayTypes($flattenType));
+                    $unwrappedTypes = [...$unwrappedTypes, ...$this->unwrapConstantArrayTypes($flattenType)];
                 } else {
                     $unwrappedTypes = $this->resolveNonConstantArrayType($flattenType, $unwrappedTypes);
                 }

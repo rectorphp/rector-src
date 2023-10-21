@@ -91,7 +91,7 @@ final class StaticDoctrineAnnotationParser
         $resolvedValue = $this->resolveAnnotationValue($tokenIterator, $currentPhpNode);
 
         if (is_array($resolvedValue)) {
-            $values = array_merge($values, $resolvedValue);
+            $values = [...$values, ...$resolvedValue];
         } else {
             $values[] = $resolvedValue;
         }
@@ -107,7 +107,7 @@ final class StaticDoctrineAnnotationParser
             $nestedValues = $this->resolveAnnotationValue($tokenIterator, $currentPhpNode);
 
             if (is_array($nestedValues)) {
-                $values = array_merge($values, $nestedValues);
+                $values = [...$values, ...$nestedValues];
             } else {
                 if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_END)) {
                     break;
