@@ -57,6 +57,6 @@ final class ProcessResult
     {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
 
-        $this->systemErrors = array_merge($this->systemErrors, $systemErrors);
+        $this->systemErrors = [...$this->systemErrors, ...$systemErrors];
     }
 }

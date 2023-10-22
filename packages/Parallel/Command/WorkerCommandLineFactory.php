@@ -41,7 +41,7 @@ final class WorkerCommandLineFactory
         int $port
     ): string {
         $commandArguments = array_slice($_SERVER['argv'], 1);
-        $args = array_merge([PHP_BINARY, $mainScript], $commandArguments);
+        $args = [PHP_BINARY, $mainScript, ...$commandArguments];
 
         $workerCommandArray = [];
 

@@ -88,7 +88,7 @@ CODE_SAMPLE
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        return array_merge([$strictTypesDeclare, new Nop()], $nodes);
+        return [$strictTypesDeclare, new Nop(), ...$nodes];
     }
 
     /**

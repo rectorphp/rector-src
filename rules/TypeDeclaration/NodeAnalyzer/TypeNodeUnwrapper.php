@@ -29,18 +29,12 @@ final class TypeNodeUnwrapper
 
         foreach ($typeNodes as $typeNode) {
             if ($typeNode instanceof UnionType) {
-                $unwrappedTypeNodes = array_merge(
-                    $unwrappedTypeNodes,
-                    $this->unwrapNullableUnionTypes($typeNode->types)
-                );
+                $unwrappedTypeNodes = [...$unwrappedTypeNodes, ...$this->unwrapNullableUnionTypes($typeNode->types)];
             } elseif ($typeNode instanceof NullableType) {
                 $unwrappedTypeNodes[] = $typeNode->type;
                 $unwrappedTypeNodes[] = new Identifier('null');
             } elseif ($typeNode instanceof IntersectionType) {
-                $unwrappedTypeNodes = array_merge(
-                    $unwrappedTypeNodes,
-                    $this->unwrapNullableUnionTypes($typeNode->types)
-                );
+                $unwrappedTypeNodes = [...$unwrappedTypeNodes, ...$this->unwrapNullableUnionTypes($typeNode->types)];
             } else {
                 $unwrappedTypeNodes[] = $typeNode;
             }

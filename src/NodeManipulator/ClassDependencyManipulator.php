@@ -112,7 +112,7 @@ final class ClassDependencyManipulator
                 $classMethod->stmts[] = $this->createParentClassMethodCall(MethodName::CONSTRUCT);
             }
 
-            $classMethod->stmts = array_merge((array) $classMethod->stmts, $stmts);
+            $classMethod->stmts = [...(array) $classMethod->stmts, ...$stmts];
 
             $class->stmts = array_merge($class->stmts, [$classMethod]);
             return;

@@ -74,7 +74,7 @@ final class ConflictingNameResolver
         $newAssignNames = $this->resolveForNewAssigns($functionLike);
         $nonNewAssignNames = $this->resolveForNonNewAssigns($functionLike);
 
-        $protectedNames = array_merge($paramNames, $newAssignNames, $nonNewAssignNames);
+        $protectedNames = [...$paramNames, ...$newAssignNames, ...$nonNewAssignNames];
 
         $protectedNames = $this->arrayFilter->filterWithAtLeastTwoOccurences($protectedNames);
         $this->conflictingVariableNamesByClassMethod[$classMethodId] = $protectedNames;

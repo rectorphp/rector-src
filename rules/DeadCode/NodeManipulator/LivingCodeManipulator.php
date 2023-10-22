@@ -61,10 +61,7 @@ final class LivingCodeManipulator
         }
 
         if ($expr instanceof PropertyFetch) {
-            return array_merge(
-                $this->keepLivingCodeFromExpr($expr->var),
-                $this->keepLivingCodeFromExpr($expr->name)
-            );
+            return [...$this->keepLivingCodeFromExpr($expr->var), ...$this->keepLivingCodeFromExpr($expr->name)];
         }
 
         if ($expr instanceof ArrayDimFetch) {
@@ -77,17 +74,11 @@ final class LivingCodeManipulator
                 }
             }
 
-            return array_merge(
-                $this->keepLivingCodeFromExpr($expr->var),
-                $this->keepLivingCodeFromExpr($expr->dim)
-            );
+            return [...$this->keepLivingCodeFromExpr($expr->var), ...$this->keepLivingCodeFromExpr($expr->dim)];
         }
 
         if ($expr instanceof ClassConstFetch || $expr instanceof StaticPropertyFetch) {
-            return array_merge(
-                $this->keepLivingCodeFromExpr($expr->class),
-                $this->keepLivingCodeFromExpr($expr->name)
-            );
+            return [...$this->keepLivingCodeFromExpr($expr->class), ...$this->keepLivingCodeFromExpr($expr->name)];
         }
 
         if ($this->isBinaryOpWithoutChange($expr)) {
@@ -97,10 +88,7 @@ final class LivingCodeManipulator
         }
 
         if ($expr instanceof Instanceof_) {
-            return array_merge(
-                $this->keepLivingCodeFromExpr($expr->expr),
-                $this->keepLivingCodeFromExpr($expr->class)
-            );
+            return [...$this->keepLivingCodeFromExpr($expr->expr), ...$this->keepLivingCodeFromExpr($expr->class)];
         }
 
         if ($expr instanceof Isset_) {
@@ -141,10 +129,7 @@ final class LivingCodeManipulator
      */
     private function processBinary(BinaryOp $binaryOp): array
     {
-        return array_merge(
-            $this->keepLivingCodeFromExpr($binaryOp->left),
-            $this->keepLivingCodeFromExpr($binaryOp->right)
-        );
+        return [...$this->keepLivingCodeFromExpr($binaryOp->left), ...$this->keepLivingCodeFromExpr($binaryOp->right)];
     }
 
     /**
@@ -154,7 +139,7 @@ final class LivingCodeManipulator
     {
         $livingExprs = [];
         foreach ($isset->vars as $expr) {
-            $livingExprs = array_merge($livingExprs, $this->keepLivingCodeFromExpr($expr));
+            $livingExprs = [...$livingExprs, ...$this->keepLivingCodeFromExpr($expr)];
         }
 
         return $livingExprs;

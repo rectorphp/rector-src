@@ -93,7 +93,7 @@ final class ClassChildAnalyzer
     private function resolveParentClassMethods(ClassReflection $classReflection, string $methodName): array
     {
         $parentClassMethods = [];
-        $parents = array_merge($classReflection->getParents(), $classReflection->getInterfaces());
+        $parents = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
         foreach ($parents as $parent) {
             if (! $parent->hasNativeMethod($methodName)) {
                 continue;

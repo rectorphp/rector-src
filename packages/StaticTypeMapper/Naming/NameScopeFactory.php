@@ -117,7 +117,7 @@ final class NameScopeFactory
             }
         }
 
-        $templateTypes = array_merge($nodeTemplateTypes, $classTemplateTypes);
+        $templateTypes = [...$nodeTemplateTypes, ...$classTemplateTypes];
         return new TemplateTypeMap($templateTypes);
     }
 

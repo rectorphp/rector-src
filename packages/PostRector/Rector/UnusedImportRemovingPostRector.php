@@ -121,13 +121,13 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $names = array_merge($names, $phpDocInfo->getAnnotationClassNames());
+            $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
 
             $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
-            $names = array_merge($names, $constFetchNodeNames);
+            $names = [...$names, ...$constFetchNodeNames];
 
             $genericTagClassNames = $phpDocInfo->getGenericTagClassNames();
-            $names = array_merge($names, $genericTagClassNames);
+            $names = [...$names, ...$genericTagClassNames];
         });
 
         return $names;
@@ -141,7 +141,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $phpNames = $this->findNonUseImportNames($namespace);
         $docBlockNames = $this->findNamesInDocBlocks($namespace);
 
-        $names = array_merge($phpNames, $docBlockNames);
+        $names = [...$phpNames, ...$docBlockNames];
         return array_unique($names);
     }
 

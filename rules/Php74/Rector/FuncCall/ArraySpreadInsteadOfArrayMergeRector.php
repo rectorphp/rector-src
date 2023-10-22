@@ -101,6 +101,10 @@ CODE_SAMPLE
 
     private function refactorArray(FuncCall $funcCall): ?Array_
     {
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
         $array = new Array_();
 
         foreach ($funcCall->args as $arg) {
@@ -152,13 +156,8 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS)) {
-            return false;
-        }
-
-        return $arrayType->getKeyType()
-            ->isString()
-            ->yes();
+        // php 8.1+ allow mixed key: int, string, and null
+        return $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::ARRAY_SPREAD_STRING_KEYS);
     }
 
     private function resolveValue(Expr $expr): Expr

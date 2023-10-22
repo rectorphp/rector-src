@@ -94,7 +94,7 @@ CODE_SAMPLE
             $nodesToReturnAfterNode = $this->getStatementsElseIfs($node);
             if ($originalNode->else instanceof Else_) {
                 $node->else = null;
-                $nodesToReturnAfterNode = array_merge($nodesToReturnAfterNode, [$originalNode->else]);
+                $nodesToReturnAfterNode = [...$nodesToReturnAfterNode, $originalNode->else];
             }
 
             return [$if, $node, ...$nodesToReturnAfterNode];

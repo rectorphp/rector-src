@@ -152,7 +152,7 @@ final class NodeTransformer
     {
         $arrayItems = $this->transformConcatItemToArrayItems($concat->left);
 
-        return array_merge($arrayItems, $this->transformConcatItemToArrayItems($concat->right));
+        return [...$arrayItems, ...$this->transformConcatItemToArrayItems($concat->right)];
     }
 
     /**

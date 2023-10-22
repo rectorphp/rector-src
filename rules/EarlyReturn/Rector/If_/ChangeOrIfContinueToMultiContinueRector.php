@@ -120,7 +120,7 @@ CODE_SAMPLE
     private function createMultipleIfs(Expr $expr, Continue_ $continue, array $ifs): array
     {
         while ($expr instanceof BooleanOr) {
-            $ifs = array_merge($ifs, $this->collectLeftBooleanOrToIfs($expr, $continue, $ifs));
+            $ifs = [...$ifs, ...$this->collectLeftBooleanOrToIfs($expr, $continue, $ifs)];
             $ifs[] = new If_($expr->right, [
                 'stmts' => [$continue],
             ]);

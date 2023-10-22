@@ -68,7 +68,7 @@ CODE_SAMPLE
 
         $nextClassConsts = $this->createNextClassConsts($allConsts, $node);
 
-        return array_merge([$node], $nextClassConsts);
+        return [$node, ...$nextClassConsts];
     }
 
     /**

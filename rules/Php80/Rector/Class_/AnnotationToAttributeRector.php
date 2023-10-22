@@ -140,7 +140,7 @@ CODE_SAMPLE
         // 2. Doctrine annotation classes
         $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $uses);
 
-        $attributeGroups = array_merge($genericAttributeGroups, $annotationAttributeGroups);
+        $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
         if ($attributeGroups === []) {
             return null;
         }

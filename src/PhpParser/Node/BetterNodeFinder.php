@@ -43,7 +43,7 @@ final class BetterNodeFinder
         $foundInstances = [];
         foreach ($types as $type) {
             $currentFoundInstances = $this->findInstanceOf($nodes, $type);
-            $foundInstances = array_merge($foundInstances, $currentFoundInstances);
+            $foundInstances = [...$foundInstances, ...$currentFoundInstances];
         }
 
         return $foundInstances;

@@ -142,10 +142,7 @@ CODE_SAMPLE
             if (! $nextStmt instanceof Return_) {
                 $afterStmts[] = $stmt->stmts[0];
 
-                $node->stmts = array_merge(
-                    $newStmts,
-                    $this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts, $nextStmt)
-                );
+                $node->stmts = [...$newStmts, ...$this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts, $nextStmt)];
 
                 return $node;
             }
@@ -172,7 +169,7 @@ CODE_SAMPLE
             );
 
             // update stmts
-            $node->stmts = array_merge($newStmts, $changedStmts);
+            $node->stmts = [...$newStmts, ...$changedStmts];
 
             return $node;
         }
@@ -208,7 +205,7 @@ CODE_SAMPLE
         $ifs = $this->invertedIfFactory->createFromConditions($if, $conditions, $ifNextReturn, $nextStmt);
         $this->mirrorComments($ifs[0], $if);
 
-        $result = array_merge($ifs, $afters);
+        $result = [...$ifs, ...$afters];
         if ($if->stmts[0] instanceof Return_) {
             return $result;
         }
@@ -221,7 +218,7 @@ CODE_SAMPLE
             return $result;
         }
 
-        return array_merge($result, [$ifNextReturn]);
+        return [...$result, $ifNextReturn];
     }
 
     private function shouldSkip(If_ $if, ?Stmt $nexStmt): bool

@@ -60,7 +60,7 @@ final class EnumFactory
             }
         }
 
-        $enum->stmts = array_merge($enum->stmts, $class->getMethods());
+        $enum->stmts = [...$enum->stmts, ...$class->getMethods()];
 
         return $enum;
     }
