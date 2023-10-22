@@ -71,7 +71,7 @@ CODE_SAMPLE;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
 
-    private Skipper $skipper;
+    protected Skipper $skipper;
 
     private CurrentFileProvider $currentFileProvider;
 

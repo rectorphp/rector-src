@@ -53,6 +53,11 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
+        $filePath = $this->file->getFilePath();
+        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $filePath)) {
+            return null;
+        }
+
         $newStmts = $this->file->getNewStmts();
 
         if ($newStmts === []) {

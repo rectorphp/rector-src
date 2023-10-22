@@ -10,7 +10,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         DeclareStrictTypesRector::class => [
             // .php.inc changed .php during running test
-            realpath(__DIR__ . '/../Fixture') . 'skipped_by_path.php',
+            realpath(__DIR__ . '/../Fixture') . '/skipped_by_path.php',
         ],
     ]);
 };
