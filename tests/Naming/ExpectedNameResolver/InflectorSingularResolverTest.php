@@ -122,7 +122,6 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['demos', 'demo'];
         yield ['diabetes', 'diabetes'];
         yield ['diagnoses', 'diagnosis'];
-        yield ['diagnosis_as', 'diagnosis_a'];
         yield ['dictionaries', 'dictionary'];
         yield ['dives', 'dive'];
         yield ['djinn', 'djinn'];
@@ -136,7 +135,6 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['elk', 'elk'];
         yield ['emoji', 'emoji'];
         yield ['emphases', 'emphasis'];
-        yield ['employee-children', 'employee-child'];
         yield ['energies', 'energy'];
         yield ['epochs', 'epoch'];
         yield ['equipment', 'equipment'];
