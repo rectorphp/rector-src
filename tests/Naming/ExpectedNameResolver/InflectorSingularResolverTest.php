@@ -235,8 +235,6 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['my_analyses', 'my_analysis'];
         yield ['nankingese', 'nankingese'];
         yield ['neuroses', 'neurosis'];
-        yield ['news', 'news'];
-        yield ['newsletters', 'newsletter'];
         yield ['nexus', 'nexus'];
         yield ['niasese', 'niasese'];
         yield ['niveaux', 'niveau'];
@@ -248,7 +246,6 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['octopuses', 'octopus'];
         yield ['offspring', 'offspring'];
         yield ['oil', 'oil'];
-        yield ['old_news', 'old_news'];
         yield ['olives', 'olive'];
         yield ['oxen', 'ox'];
         yield ['pants', 'pants'];

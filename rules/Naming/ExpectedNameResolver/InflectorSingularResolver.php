@@ -13,6 +13,13 @@ use Rector\Core\Util\StringUtils;
 final class InflectorSingularResolver
 {
     /**
+     * @var array<string, string>
+     */
+    private const SINGULARIZE_MAP = [
+        'news' => 'new',
+    ];
+
+    /**
      * @var string
      * @see https://regex101.com/r/lbQaGC/3
      */
@@ -36,6 +43,11 @@ final class InflectorSingularResolver
             return Strings::substring($currentName, 0, -strlen((string) $matchBy['by']));
         }
 
+        $resolvedValue = $this->resolveSingularizeMap($currentName);
+        if ($resolvedValue !== null) {
+            return $resolvedValue;
+        }
+
         $singularValueVarName = $this->singularizeCamelParts($currentName);
 
         if (in_array($singularValueVarName, ['', '_'], true)) {
@@ -48,6 +60,27 @@ final class InflectorSingularResolver
         }
 
         return $currentName;
+    }
+
+    private function resolveSingularizeMap(string $currentName): string|null
+    {
+        foreach (self::SINGULARIZE_MAP as $plural => $singular) {
+            if ($currentName === $plural) {
+                return $singular;
+            }
+
+            if (StringUtils::isMatch($currentName, '#' . ucfirst($plural) . '#')) {
+                $resolvedValue = Strings::replace($currentName, '#' . ucfirst($plural) . '#', ucfirst($singular));
+                return $this->singularizeCamelParts($resolvedValue);
+            }
+
+            if (StringUtils::isMatch($currentName, '#' . $plural . '#')) {
+                $resolvedValue = Strings::replace($currentName, '#' . $plural . '#', $singular);
+                return $this->singularizeCamelParts($resolvedValue);
+            }
+        }
+
+        return null;
     }
 
     private function singularizeCamelParts(string $currentName): string
