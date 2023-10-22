@@ -13,13 +13,6 @@ use Rector\Core\Util\StringUtils;
 final class InflectorSingularResolver
 {
     /**
-     * @var array<string, string>
-     */
-    private const SINGULARIZE_MAP = [
-        'news' => 'new',
-    ];
-
-    /**
      * @var string
      * @see https://regex101.com/r/lbQaGC/3
      */
@@ -43,11 +36,6 @@ final class InflectorSingularResolver
             return Strings::substring($currentName, 0, -strlen((string) $matchBy['by']));
         }
 
-        $resolvedValue = $this->resolveSingularizeMap($currentName);
-        if ($resolvedValue !== null) {
-            return $resolvedValue;
-        }
-
         $singularValueVarName = $this->singularizeCamelParts($currentName);
 
         if (in_array($singularValueVarName, ['', '_'], true)) {
@@ -60,27 +48,6 @@ final class InflectorSingularResolver
         }
 
         return $currentName;
-    }
-
-    private function resolveSingularizeMap(string $currentName): string|null
-    {
-        foreach (self::SINGULARIZE_MAP as $plural => $singular) {
-            if ($currentName === $plural) {
-                return $singular;
-            }
-
-            if (StringUtils::isMatch($currentName, '#' . ucfirst($plural) . '#')) {
-                $resolvedValue = Strings::replace($currentName, '#' . ucfirst($plural) . '#', ucfirst($singular));
-                return $this->singularizeCamelParts($resolvedValue);
-            }
-
-            if (StringUtils::isMatch($currentName, '#' . $plural . '#')) {
-                $resolvedValue = Strings::replace($currentName, '#' . $plural . '#', $singular);
-                return $this->singularizeCamelParts($resolvedValue);
-            }
-        }
-
-        return null;
     }
 
     private function singularizeCamelParts(string $currentName): string
@@ -109,12 +76,12 @@ final class InflectorSingularResolver
             '/(matr)ices$/i' => '\\1ix',
             '/(vert|ind)ices$/i' => '\\1ex',
             '/^(ox)en/i' => '\\1',
-            '/(alias|status)es$/i' => '\\1',
+            '/(alias|status|iris|hoax|hero)es$/i' => '\\1',
             '/([octop|vir])i$/i' => '\\1us',
             '/(cris|ax|test)es$/i' => '\\1is',
             '/(shoe)s$/i' => '\\1',
             '/(o)es$/i' => '\\1',
-            '/(bus)es$/i' => '\\1',
+            '/(bus|lens)es$/i' => '\\1',
             '/([m|l])ice$/i' => '\\1ouse',
             '/(x|ch|ss|sh)es$/i' => '\\1',
             '/(m)ovies$/i' => '\\1ovie',
@@ -125,8 +92,8 @@ final class InflectorSingularResolver
             '/(hive)s$/i' => '\\1',
             '/([^f])ves$/i' => '\\1fe',
             '/(^analy)ses$/i' => '\\1sis',
-            '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\\1\\2sis',
-            '/([ti])a$/i' => '\\1um',
+            '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he|(oa)|neuro)ses$/i' => '\\1\\2sis',
+            '/([ti]|memorand)a$/i' => '\\1um',
             '/(n)ews$/i' => '\\1ews',
             '/s$/i' => '',
         ];
@@ -135,22 +102,73 @@ final class InflectorSingularResolver
             'person' => 'people',
             'man' => 'men',
             'child' => 'children',
+            'code' => 'codes',
+            'octopus' => 'octopuses',
+            'olive' => 'olives',
+            'plateau' => 'plateaux',
+            'niveau' => 'niveaux',
+            'passerby' => 'passersby',
+            'save' => 'saves',
             'sex' => 'sexes',
+            'syllabus' => 'syllabi',
+            'stimulus' => 'stimuli',
+            'sku' => 'skus',
+            'sieve' => 'sieves',
+            'taxon' => 'taxa',
+            'taxi' => 'taxis',
+            'tax' => 'taxes',
+            'tooth' => 'teeth',
+            'tights' => 'tights',
+            'Thief' => 'Thieves',
+            'terminus' => 'termini',
+            'larva' => 'larvae',
+            'leaf' => 'leaves',
+            'loaf' => 'loaves',
             'move' => 'moves',
+            'nucleus' => 'nuclei',
+            'valve' => 'valves',
+            'wave' => 'waves',
+            'zombie' => 'zombies',
         ];
 
+        // keep words ending in $ignore
         $ignore = [
             'data',
             'equipment',
+            'hijinks',
+            'herpes',
+            'headquarters',
             'information',
             'rice',
+            'socialmedia',
+            'jeans',
+            'jackanapes',
+            'nodemedia',
             'money',
+            'mumps',
+            'mews',
+            'innings',
+            'nexus',
+            'rhinoceros',
+            'rabies',
+            'pants',
+            'police',
+            'pliers',
+            'progress',
+            'proceedings',
+            'pincers',
+            'scissors',
             'species',
             'series',
+            'status',
+            'shorts',
+            'shears',
             'fish',
             'sheep',
             'press',
             'sms',
+            'trousers',
+            'trivia'
         ];
 
         $lower_word = strtolower($word);
