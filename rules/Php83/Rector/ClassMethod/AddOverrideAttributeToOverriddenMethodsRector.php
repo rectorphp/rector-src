@@ -100,9 +100,9 @@ CODE_SAMPLE
                 continue;
             }
             // Private methods should be ignored
-            if ($parentClassReflection->hasMethod($method->name->toString())) {
+            if ($parentClassReflection->hasNativeMethod($method->name->toString())) {
                 // ignore if it is a private method on the parent
-                $parentMethod = $parentClassReflection->getMethod($method->name->toString(), $scope);
+                $parentMethod = $parentClassReflection->getNativeMethod($method->name->toString(), $scope);
                 if ($parentMethod->isPrivate()) {
                     continue;
                 }
@@ -142,9 +142,10 @@ CODE_SAMPLE
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return true;
         }
+        if (! $class->extends instanceof FullyQualified) {
+                return true;
+        }
 
-        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
-            $class->extends->toString()
-        );
+        return ! $this->reflectionProvider->hasClass($class->extends->toString());
     }
 }
