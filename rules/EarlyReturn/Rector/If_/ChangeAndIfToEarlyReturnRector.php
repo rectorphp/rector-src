@@ -142,10 +142,7 @@ CODE_SAMPLE
             if (! $nextStmt instanceof Return_) {
                 $afterStmts[] = $stmt->stmts[0];
 
-                $node->stmts = [
-                    ...$newStmts,
-                    ...$this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts, $nextStmt),
-                ];
+                $node->stmts = [...$newStmts, ...$this->processReplaceIfs($stmt, $booleanAndConditions, new Return_(), $afterStmts, $nextStmt)];
 
                 return $node;
             }

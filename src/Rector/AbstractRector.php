@@ -67,11 +67,11 @@ CODE_SAMPLE;
 
     protected File $file;
 
-    protected Skipper $skipper;
-
     private ChangedNodeScopeRefresher $changedNodeScopeRefresher;
 
     private SimpleCallableNodeTraverser $simpleCallableNodeTraverser;
+
+    protected Skipper $skipper;
 
     private CurrentFileProvider $currentFileProvider;
 
