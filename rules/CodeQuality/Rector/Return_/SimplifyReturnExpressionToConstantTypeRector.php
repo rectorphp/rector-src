@@ -78,7 +78,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param \PhpParser\Node\Stmt\Return_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
