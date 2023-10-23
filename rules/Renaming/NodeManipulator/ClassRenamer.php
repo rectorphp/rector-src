@@ -158,7 +158,8 @@ final class ClassRenamer
             return null;
         }
 
-        if ($name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true) {
+        $isUseUseName = $name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true;
+        if ($isUseUseName) {
             // no need to rename imports when auto import is not enabled
             $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
             if (! $shouldImport) {
@@ -168,6 +169,10 @@ final class ClassRenamer
 
         if ($this->shouldSkip($newName, $name)) {
             return null;
+        }
+
+        if ($isUseUseName) {
+            return new Name($newName);
         }
 
         return new FullyQualified($newName);
