@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Return_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Stmt\Expression;
+use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use PHPStan\Type\ConstantScalarType;
@@ -71,7 +74,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [\PhpParser\Node\Stmt\Return_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
@@ -79,29 +82,51 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkip($node) || $node->expr === null) {
+        if ($node->stmts === null) {
             return null;
         }
 
-        $nativeType = $this->nodeTypeResolver->getNativeType($node->expr);
-        if ($nativeType instanceof ConstantScalarType) {
-            $constantValue = $nativeType->getValue();
-            $constName = null;
-            if (is_bool($constantValue)) {
-                $constName = $constantValue ? 'true' : 'false';
-            }
-            if (is_null($constantValue)) {
-                $constName = 'null';
+        $hasChanged = false;
+        foreach ($node->stmts as $stmt) {
+            if ($stmt instanceof Expression
+                && $stmt->expr instanceof FuncCall
+                && $this->isName( $stmt->expr,'extract'))
+            {
+                $hasChanged = false;
+                break;
             }
 
-            if ($constName !== null) {
-                $node->expr = new Node\Expr\ConstFetch(new Node\Name($constName));
-                return $node;
+            if (!$stmt instanceof Node\Stmt\Return_
+                || $this->shouldSkip($stmt)
+                || $stmt->expr === null
+            ) {
+                continue;
+            }
+
+            $nativeType = $this->nodeTypeResolver->getNativeType($stmt->expr);
+            if ($nativeType instanceof ConstantScalarType) {
+                $constantValue = $nativeType->getValue();
+                $constName = null;
+                if (is_bool($constantValue)) {
+                    $constName = $constantValue ? 'true' : 'false';
+                }
+                if (is_null($constantValue)) {
+                    $constName = 'null';
+                }
+
+                if ($constName !== null) {
+                    $stmt->expr = new Node\Expr\ConstFetch(new Node\Name($constName));
+                    $hasChanged = true;
+                }
+            }
+
+            if ($nativeType instanceof EnumCaseObjectType) {
+                $stmt->expr = new Node\Expr\ConstFetch(new Node\Name($nativeType->describe(VerbosityLevel::precise())));
+                $hasChanged = true;
             }
         }
 
-        if ($nativeType instanceof EnumCaseObjectType) {
-            $node->expr = new Node\Expr\ConstFetch(new Node\Name($nativeType->describe(VerbosityLevel::precise())));
+        if ($hasChanged) {
             return $node;
         }
 
