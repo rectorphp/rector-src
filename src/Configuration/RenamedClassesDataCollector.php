@@ -53,12 +53,4 @@ final class RenamedClassesDataCollector implements ResetableInterface
 
         return new ObjectType($renamedClassName);
     }
-
-    /**
-     * @return string[]
-     */
-    public function getOldClasses(): array
-    {
-        return array_keys($this->oldToNewClasses);
-    }
 }
