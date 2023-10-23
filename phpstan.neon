@@ -264,7 +264,7 @@ parameters:
                 - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
 
         # known value
-        - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000 but returns int#'
+        - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000 but returns int#'
 
         # stubs-rector directory exists on target-repository
         -
@@ -412,7 +412,7 @@ parameters:
             path: utils/ChangelogGenerator
 
         -
-            message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|100000, (.*?) given#'
+            message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000, (.*?) given#'
             path: rules-tests
 
         -
