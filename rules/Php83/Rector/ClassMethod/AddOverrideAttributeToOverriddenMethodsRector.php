@@ -9,12 +9,11 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,11 +22,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  * @see https://wiki.php.net/rfc/marking_overriden_methods
  * @see \Rector\Tests\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector\AddOverrideAttributeToOverriddenMethodsRectorTest
  */
-class AddOverrideAttributeToOverriddenMethodsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+class AddOverrideAttributeToOverriddenMethodsRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ClassAnalyzer $classAnalyzer,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
     ) {
     }
 
@@ -85,7 +85,7 @@ CODE_SAMPLE
     /**
      * @param Class_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
         // Detect if class extends a parent class
         if ($this->shouldSkipClass($node)) {
@@ -102,12 +102,12 @@ CODE_SAMPLE
             // Private methods should be ignored
             if ($parentClassReflection->hasNativeMethod($method->name->toString())) {
                 // ignore if it is a private method on the parent
-                $parentMethod = $parentClassReflection->getNativeMethod($method->name->toString(), $scope);
+                $parentMethod = $parentClassReflection->getNativeMethod($method->name->toString());
                 if ($parentMethod->isPrivate()) {
                     continue;
                 }
                 // ignore if it already uses the attribute
-                if ($this->hasPhpAttribute($method)) {
+                if ($this->phpAttributeAnalyzer->hasPhpAttribute($method, 'Override')) {
                     continue;
                 }
                 $method->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified('Override'))]);
@@ -122,28 +122,13 @@ CODE_SAMPLE
         return PhpVersionFeature::OVERRIDE_ATTRIBUTE;
     }
 
-    private function hasPhpAttribute(ClassMethod $node): bool
-    {
-        foreach ($node->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attribute) {
-                if (! $this->nodeNameResolver->isName($attribute->name, 'Override')) {
-                    continue;
-                }
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private function shouldSkipClass(Class_ $class): bool
     {
         if ($this->classAnalyzer->isAnonymousClass($class)) {
             return true;
         }
         if (! $class->extends instanceof FullyQualified) {
-                return true;
+            return true;
         }
 
         return ! $this->reflectionProvider->hasClass($class->extends->toString());
