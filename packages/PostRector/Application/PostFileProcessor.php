@@ -10,7 +10,6 @@ use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\PostRector\Rector\UnusedImportRemovingPostRector;
 use Rector\PostRector\Rector\UseAddingPostRector;
-use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Skipper\Skipper\Skipper;
 
 final class PostFileProcessor

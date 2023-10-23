@@ -7,7 +7,6 @@ namespace Rector\Renaming\Rector\Name;
 use PhpParser\Node;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
@@ -89,26 +88,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        if ($oldToNewClasses !== []) {
-            $scope = $node->getAttribute(AttributeKey::SCOPE);
-            return $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
-        }
-
-        return null;
-    }
-
-    public function leaveNode(Node $node): array|int|Node|null
-    {
-        if (! $node instanceof FullyQualified) {
-            return null;
-        }
-
-        $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $filePath)) {
-            return null;
-        }
-
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
         if ($oldToNewClasses !== []) {
             $scope = $node->getAttribute(AttributeKey::SCOPE);
