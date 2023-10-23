@@ -95,6 +95,8 @@ CODE_SAMPLE
         // Fetch the parent class reflection
         $parentClassReflection = $this->reflectionProvider->getClass((string) $node->extends);
 
+        $hasChanged = false;
+
         foreach ($node->getMethods() as $method) {
             if ($method->name->toString() === '__construct') {
                 continue;
@@ -111,7 +113,12 @@ CODE_SAMPLE
                     continue;
                 }
                 $method->attrGroups[] = new AttributeGroup([new Attribute(new FullyQualified('Override'))]);
+                $hasChanged = true;
             }
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
