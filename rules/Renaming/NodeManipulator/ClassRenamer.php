@@ -22,6 +22,8 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocClassRenamer;
 use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\Core\Configuration\Option;
+use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Util\FileHasher;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -156,11 +158,12 @@ final class ClassRenamer
             return null;
         }
 
-        // no need to preslash "use \SomeNamespace" of imported namespace
         if ($name->getAttribute(AttributeKey::IS_USEUSE_NAME) === true) {
-            // no need to rename imports, they will be handled by autoimport and coding standard
-            // also they might cause some rename
-            return null;
+            // no need to rename imports when auto import is not enabled
+            $shouldImport = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
+            if (! $shouldImport) {
+                return null;
+            }
         }
 
         if ($this->shouldSkip($newName, $name)) {

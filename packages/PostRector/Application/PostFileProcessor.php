@@ -7,7 +7,6 @@ namespace Rector\PostRector\Application;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
-use Rector\PostRector\Rector\ClassRenamingPostRector;
 use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\PostRector\Rector\UnusedImportRemovingPostRector;
 use Rector\PostRector\Rector\UseAddingPostRector;
@@ -26,12 +25,9 @@ final class PostFileProcessor
         // set order here
         UseAddingPostRector $useAddingPostRector,
         NameImportingPostRector $nameImportingPostRector,
-        ClassRenamingPostRector $classRenamingPostRector,
         UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
     ) {
         $this->postRectors = [
-            // priority: 650
-            $classRenamingPostRector,
             // priority: 600
             $nameImportingPostRector,
             // priority: 500
@@ -48,7 +44,7 @@ final class PostFileProcessor
     public function traverse(array $stmts, string $filePath): array
     {
         foreach ($this->postRectors as $postRector) {
-            if ($this->shouldSkipPostRector($postRector, $filePath)) {
+            if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
                 continue;
             }
 
@@ -58,18 +54,5 @@ final class PostFileProcessor
         }
 
         return $stmts;
-    }
-
-    private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath): bool
-    {
-        if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
-            return true;
-        }
-
-        // skip renaming if rename class rector is skipped
-        return $postRector instanceof ClassRenamingPostRector && $this->skipper->shouldSkipElementAndFilePath(
-            RenameClassRector::class,
-            $filePath
-        );
     }
 }
