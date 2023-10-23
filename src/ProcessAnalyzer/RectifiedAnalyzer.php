@@ -76,10 +76,6 @@ final class RectifiedAnalyzer
             return false;
         }
 
-        if (! $this->scopeAnalyzer->isRefreshable($node)) {
-            return false;
-        }
-
         /**
          * Start token pos must be < 0 to continue, as the node and parent node just re-printed
          *
@@ -88,7 +84,7 @@ final class RectifiedAnalyzer
          */
         $startTokenPos = $node->getStartTokenPos();
         if ($startTokenPos >= 0) {
-            return true;
+            return $this->scopeAnalyzer->isRefreshable($node);
         }
 
         if ($node instanceof Stmt) {
