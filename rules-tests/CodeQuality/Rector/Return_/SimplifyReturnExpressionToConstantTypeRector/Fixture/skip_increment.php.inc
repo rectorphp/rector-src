@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Return_\SimplifyReturnExpressionToConstantTypeRector\Fixture;
 
-class SkipExtract
+class SkipIncrement
 {
     public function run()
     {
