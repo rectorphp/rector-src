@@ -104,7 +104,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $node)) {
+        $filePath = $this->file->getFilePath();
+        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $filePath)) {
             return null;
         }
 
