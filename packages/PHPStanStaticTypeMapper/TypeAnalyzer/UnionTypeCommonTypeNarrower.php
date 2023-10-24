@@ -139,7 +139,10 @@ final class UnionTypeCommonTypeNarrower
         $implementedInterfaceClassReflections = array_reverse($classReflection->getInterfaces());
 
         /** @var ClassReflection[] $parentClassAndInterfaceReflections */
-        $parentClassAndInterfaceReflections = [...$implementedInterfaceClassReflections, ...$classReflection->getParents()];
+        $parentClassAndInterfaceReflections = [
+            ...$implementedInterfaceClassReflections,
+            ...$classReflection->getParents(),
+        ];
 
         return $this->filterOutNativeClassReflections($parentClassAndInterfaceReflections);
     }
