@@ -21,7 +21,7 @@ final class GithubApiCaller
     public function searchIssues(Commit $commit): stdClass
     {
         $requestUri = sprintf(
-            'https://api.github.com/search/issues?q=repo:%s+%s',
+            'https://api.github.com/search/issues?q=repo:%s+%s+is:issue',
             RepositoryName::DEPLOY,
             $commit->getHash()
         );
@@ -32,7 +32,7 @@ final class GithubApiCaller
     public function searchPullRequests(Commit $commit): stdClass
     {
         $requestUri = sprintf(
-            'https://api.github.com/search/issues?q=repo:%s+%s',
+            'https://api.github.com/search/issues?q=repo:%s+%s+is:pull-request',
             RepositoryName::DEVELOPMENT,
             $commit->getHash()
         );
