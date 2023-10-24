@@ -110,6 +110,7 @@ CODE_SAMPLE
                 // clean safely
                 $cleanAssignedExpr = $this->cleanCastedExpr($assign->expr);
                 $node->stmts[$stmtPosition] = new Expression($cleanAssignedExpr);
+                $this->mirrorComments($node->stmts[$stmtPosition], $currentStmt);
             } else {
                 unset($node->stmts[$stmtPosition]);
             }
