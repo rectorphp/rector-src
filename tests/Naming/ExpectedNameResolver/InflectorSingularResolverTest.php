@@ -27,19 +27,20 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
 
     public static function provideData(): Iterator
     {
-        yield ['psr4NamespacesToPaths', 'psr4NamespaceToPath'];
-        yield ['nestedNews', 'nestedNew'];
-        yield ['news', 'new'];
+        yield ['psr4NamespacesToPaths', 'psr4NamespacesToPath'];
+        yield ['nestedNews', 'nestedNews'];
+        yield ['news', 'news'];
         yield ['property', 'property'];
-        yield ['argsOrOptions', 'argOrOption'];
+        yield ['argsOrOptions', 'argsOrOption'];
         yield ['class', 'class'];
 
         // news and plural
-        yield ['staticCallsToNews', 'staticCallToNew'];
-        yield ['newsToMethodCalls', 'newToMethodCall'];
+        yield ['staticCallsToNews', 'staticCallsToNews'];
+        yield ['newsToMethodCalls', 'newsToMethodCall'];
         yield ['hasFilters', 'hasFilter'];
         yield ['parametersAcceptor', 'parametersAcceptor'];
-        yield ['ParametersAcceptorWithPhpDoc', 'ParametersAcceptorWithPhpDoc'];
+        yield ['parametersAcceptorWithPhpDoc', 'parametersAcceptorWithPhpDoc'];
+        yield ['dogsCleaners', 'dogsCleaner'];
 
         // doctrine-inflector tests
         yield ['abilities', 'ability'];

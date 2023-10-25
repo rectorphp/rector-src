@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming\ExpectedNameResolver;
 
 use Nette\Utils\Strings;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Util\StringUtils;
 
 /**
@@ -13,18 +14,10 @@ use Rector\Core\Util\StringUtils;
 final class InflectorSingularResolver
 {
     /**
-     * @var array<string, string>
-     */
-    private const SINGULARIZE_MAP = [
-        'news' => 'new',
-        'parametersAcceptor' => 'parametersAcceptor',
-    ];
-
-    /**
      * @var string
      * @see https://regex101.com/r/lbQaGC/3
      */
-    private const CAMELCASE_REGEX = '#(?<camelcase>([a-z\d]+|[A-Z\d]{1,}[a-z\d]+|_))#';
+    private const CAMELCASE_REGEX = '#([a-z\d]+|[A-Z\d]{1,}[a-z\d]+|_)#';
 
     /**
      * @var string
@@ -44,12 +37,7 @@ final class InflectorSingularResolver
             return Strings::substring($currentName, 0, -strlen((string) $matchBy['by']));
         }
 
-        $resolvedValue = $this->resolveSingularizeMap($currentName);
-        if ($resolvedValue !== null) {
-            return $resolvedValue;
-        }
-
-        $singularValueVarName = $this->singularizeCamelParts($currentName);
+        $singularValueVarName = $this->singularizeCamelCase($currentName);
 
         if (in_array($singularValueVarName, ['', '_'], true)) {
             return $currentName;
@@ -63,43 +51,21 @@ final class InflectorSingularResolver
         return $currentName;
     }
 
-    private function resolveSingularizeMap(string $currentName): string|null
-    {
-        foreach (self::SINGULARIZE_MAP as $plural => $singular) {
-            if ($currentName === $plural) {
-                return $singular;
-            }
-
-            if (StringUtils::isMatch($currentName, '#' . ucfirst($plural) . '#')) {
-                $resolvedValue = Strings::replace($currentName, '#' . ucfirst($plural) . '#', ucfirst($singular));
-                return $this->singularizeCamelParts($resolvedValue);
-            }
-
-            if (StringUtils::isMatch($currentName, '#' . $plural . '#')) {
-                $resolvedValue = Strings::replace($currentName, '#' . $plural . '#', $singular);
-                return $this->singularizeCamelParts($resolvedValue);
-            }
-        }
-
-        return null;
-    }
-
-    private function singularizeCamelParts(string $currentName): string
+    private function singularizeCamelCase(string $currentName): string
     {
         $camelCases = Strings::matchAll($currentName, self::CAMELCASE_REGEX);
 
-        $resolvedName = '';
-        foreach ($camelCases as $camelCase) {
-            $value = $this->singularize($camelCase[self::CAMELCASE]);
-
-            if (in_array($camelCase[self::CAMELCASE], ['is', 'has'], true)) {
-                $value = $camelCase[self::CAMELCASE];
+        $newName = '';
+        $lastIndex = count($camelCases) - 1;
+        foreach($camelCases as $i => $camelCase) {
+            if ($i === $lastIndex) {
+                $newName .= $this->singularize($camelCase[0]);
+            } else {
+                $newName .= $camelCase[0];
             }
-
-            $resolvedName .= $value;
         }
 
-        return $resolvedName;
+        return $newName;
     }
 
     // see https://gist.github.com/peter-mcconnell/9757549
