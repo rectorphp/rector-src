@@ -32,6 +32,7 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['news', 'new'];
         yield ['property', 'property'];
         yield ['argsOrOptions', 'argOrOption'];
+        yield ['class', 'class'];
 
         // news and plural
         yield ['staticCallsToNews', 'staticCallToNew'];

@@ -129,7 +129,7 @@ final class InflectorSingularResolver
             '/((a)naly|(b)a|(d)iagno|empha|(p)arenthe|(p)rogno|(s)ynop|(t)he|(oa)|neuro)ses$/i' => '\\1\\2sis',
             '/([ti]|memorand|curricul)a$/i' => '\\1um',
             '/(n)ews$/i' => '\\1ews',
-            '/s$/i' => '',
+            '/(?<!s)s$/i' => '',
         ];
 
         $irregular = [
