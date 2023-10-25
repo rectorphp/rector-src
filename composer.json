@@ -32,7 +32,7 @@
         "rector/rector-doctrine": "dev-main",
         "rector/rector-downgrade-php": "dev-main",
         "rector/rector-phpunit": "dev-main",
-        "rector/rector-symfony": "dev-temporary-doctrine",
+        "rector/rector-symfony": "dev-main",
         "sebastian/diff": "^5.0",
         "symfony/console": "^6.3",
         "symfony/filesystem": "^6.3",
