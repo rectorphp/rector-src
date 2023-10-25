@@ -17,6 +17,7 @@ final class InflectorSingularResolver
      */
     private const SINGULARIZE_MAP = [
         'news' => 'new',
+        'parametersAcceptor' => 'parametersAcceptor',
     ];
 
     /**

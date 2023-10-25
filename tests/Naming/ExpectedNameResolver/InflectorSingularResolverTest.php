@@ -38,6 +38,7 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['staticCallsToNews', 'staticCallToNew'];
         yield ['newsToMethodCalls', 'newToMethodCall'];
         yield ['hasFilters', 'hasFilter'];
+        yield ['parametersAcceptor', 'parametersAcceptor'];
 
         // doctrine-inflector tests
         yield ['abilities', 'ability'];
