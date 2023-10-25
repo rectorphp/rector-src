@@ -39,7 +39,7 @@ final class InflectorSingularResolverTest extends AbstractLazyTestCase
         yield ['newsToMethodCalls', 'newToMethodCall'];
         yield ['hasFilters', 'hasFilter'];
         yield ['parametersAcceptor', 'parametersAcceptor'];
-        yield ['ParametersAcceptorWithPhpDoc', 'ParametersAcceptorWithPhpDoc'];
+        yield ['parametersAcceptorWithPhpDoc', 'parametersAcceptorWithPhpDoc'];
 
         // doctrine-inflector tests
         yield ['abilities', 'ability'];
