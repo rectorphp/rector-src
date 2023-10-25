@@ -146,8 +146,8 @@ final class RemoveExtraParametersRector extends AbstractRector implements MinPhp
         MethodReflection | FunctionReflection $functionLikeReflection
     ): int {
         $parameterCounts = [0];
-        foreach ($functionLikeReflection->getVariants() as $parametersAcceptor) {
-            $parameterCounts[] = count($parametersAcceptor->getParameters());
+        foreach ($functionLikeReflection->getVariants() as $parameterAcceptor) {
+            $parameterCounts[] = count($parameterAcceptor->getParameters());
         }
 
         return max($parameterCounts);

@@ -180,8 +180,8 @@ CODE_SAMPLE
             return false;
         }
 
-        foreach ($functionReflection->getVariants() as $parametersAcceptorWithPhpDoc) {
-            return $parametersAcceptorWithPhpDoc->getNativeReturnType() instanceof BooleanType;
+        foreach ($functionReflection->getVariants() as $parameterAcceptorWithPhpDoc) {
+            return $parameterAcceptorWithPhpDoc->getNativeReturnType() instanceof BooleanType;
         }
 
         return false;
