@@ -257,7 +257,7 @@ final class NodeTypeResolver
 
     public function isNumberType(Expr $expr): bool
     {
-        $nodeType = $this->getType($expr);
+        $nodeType = $this->getNativeType($expr);
         if ($nodeType->isInteger()->yes()) {
             return true;
         }
