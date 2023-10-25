@@ -57,9 +57,9 @@ final class VariadicAnalyzer
 
     private function hasVariadicVariant(MethodReflection | FunctionReflection $functionLikeReflection): bool
     {
-        foreach ($functionLikeReflection->getVariants() as $parametersAcceptor) {
+        foreach ($functionLikeReflection->getVariants() as $parameterAcceptor) {
             // can be any number of arguments → nothing to limit here
-            if ($parametersAcceptor->isVariadic()) {
+            if ($parameterAcceptor->isVariadic()) {
                 return true;
             }
         }
