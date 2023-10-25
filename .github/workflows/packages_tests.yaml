@@ -56,7 +56,5 @@ jobs:
                 if: ${{ github.event_name == 'pull_request' }}
 
             -   run: composer install --ansi
-            # temporary to give me access to merge
-            -   run: composer require doctrine/inflector:^2.0.6
 
             -   run: ${{ matrix.actions.run }}
