@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector\Fixture;
 
-class SkipEnscaped
+class SkipPhpdoc
 {
     /**
      * @var int
