@@ -27,6 +27,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
+use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -40,7 +41,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -100,17 +102,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $return = $this->matchRootReturnWithExpr($node);
-        if (! $return instanceof Return_) {
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
+        if ($returns === []) {
             return null;
         }
 
-        if ($return->expr instanceof PreInc
-            || $return->expr instanceof PostInc
-            || $return->expr instanceof PostDec
-            || $return->expr instanceof PreDec
-        ) {
-            $exprType = $this->nodeTypeResolver->getNativeType($return->expr);
+        if ($this->shouldSkip($returns)) {
+            return null;
+        }
+
+        /** @var Return_ $return */
+        $return = $this->matchRootReturnWithExpr($node);
+
+        if ($this->isInt($return)) {
+            /** @var Expr $expr */
+            $expr = $return->expr;
+            $exprType = $this->nodeTypeResolver->getNativeType($expr);
             if ($exprType instanceof IntegerType) {
                 $node->returnType = new Identifier('int');
                 return $node;
@@ -119,25 +126,52 @@ CODE_SAMPLE
             return null;
         }
 
+        /** @var BinaryOp $expr */
+        $expr = $return->expr;
         // @see https://chat.openai.com/share/a9e4fb74-5366-4c4c-9998-d6caeb8b5acc
-        if ($return->expr instanceof Minus
+        return $this->refactorBinaryOp($expr, $node);
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    /**
+     * @param Return_[] $returns
+     */
+    private function shouldSkip(array $returns): bool
+    {
+        foreach ($returns as $return) {
+            if ($this->isInt($return)) {
+                continue;
+            }
+
+            if ($this->isNumericOperation($return)) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function isInt(Return_ $return): bool
+    {
+        return $return->expr instanceof PreInc || $return->expr instanceof PostInc || $return->expr instanceof PostDec || $return->expr instanceof PreDec;
+    }
+
+    private function isNumericOperation(Return_ $return): bool
+    {
+        return $return->expr instanceof Minus
             || $return->expr instanceof Plus
             || $return->expr instanceof Mul
             || $return->expr instanceof Mod
             || $return->expr instanceof BitwiseAnd
             || $return->expr instanceof ShiftRight
             || $return->expr instanceof ShiftLeft
-            || $return->expr instanceof BitwiseOr
-        ) {
-            return $this->refactorBinaryOp($return->expr, $node);
-        }
-
-        return null;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::SCALAR_TYPES;
+            || $return->expr instanceof BitwiseOr;
     }
 
     private function matchRootReturnWithExpr(ClassMethod|Function_|Closure $functionLike): ?Return_
