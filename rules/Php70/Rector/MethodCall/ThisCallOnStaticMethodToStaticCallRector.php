@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeTraverser;
@@ -116,6 +117,10 @@ CODE_SAMPLE
             }
 
             if (! $this->nodeNameResolver->isName($node->var, 'this')) {
+                return null;
+            }
+
+            if (! $node->name instanceof Identifier) {
                 return null;
             }
 
