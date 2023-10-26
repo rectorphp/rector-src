@@ -5,31 +5,14 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\BinaryOp\BitwiseAnd;
-use PhpParser\Node\Expr\BinaryOp\BitwiseOr;
-use PhpParser\Node\Expr\BinaryOp\Minus;
-use PhpParser\Node\Expr\BinaryOp\Mod;
-use PhpParser\Node\Expr\BinaryOp\Mul;
-use PhpParser\Node\Expr\BinaryOp\Plus;
-use PhpParser\Node\Expr\BinaryOp\ShiftLeft;
-use PhpParser\Node\Expr\BinaryOp\ShiftRight;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\PostDec;
-use PhpParser\Node\Expr\PostInc;
-use PhpParser\Node\Expr\PreDec;
-use PhpParser\Node\Expr\PreInc;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\FloatType;
-use PHPStan\Type\IntegerType;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,7 +25,7 @@ final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScope
 {
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -102,128 +85,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
-        if ($returns === []) {
-            return null;
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        if ($returnType->isFloat()->yes()) {
+            $node->returnType = new Identifier('float');
+            return $node;
         }
 
-        if ($this->shouldSkip($returns)) {
-            return null;
+        if ($returnType->isInteger()->yes()) {
+            $node->returnType = new Identifier('int');
+            return $node;
         }
 
-        /** @var Return_ $return */
-        $return = $this->matchRootReturnWithExpr($node);
-
-        if ($this->isInt($return)) {
-            /** @var Expr $expr */
-            $expr = $return->expr;
-            $exprType = $this->nodeTypeResolver->getNativeType($expr);
-            if ($exprType instanceof IntegerType) {
-                $node->returnType = new Identifier('int');
-                return $node;
-            }
-
-            return null;
-        }
-
-        /** @var BinaryOp $expr */
-        $expr = $return->expr;
-        // @see https://chat.openai.com/share/a9e4fb74-5366-4c4c-9998-d6caeb8b5acc
-        return $this->refactorBinaryOp($expr, $node);
+        return null;
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
-    }
-
-    /**
-     * @param Return_[] $returns
-     */
-    private function shouldSkip(array $returns): bool
-    {
-        foreach ($returns as $return) {
-            if ($this->isInt($return)) {
-                continue;
-            }
-
-            if ($this->isNumericOperation($return)) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function isInt(Return_ $return): bool
-    {
-        return $return->expr instanceof PreInc || $return->expr instanceof PostInc || $return->expr instanceof PostDec || $return->expr instanceof PreDec;
-    }
-
-    private function isNumericOperation(Return_ $return): bool
-    {
-        return $return->expr instanceof Minus
-            || $return->expr instanceof Plus
-            || $return->expr instanceof Mul
-            || $return->expr instanceof Mod
-            || $return->expr instanceof BitwiseAnd
-            || $return->expr instanceof ShiftRight
-            || $return->expr instanceof ShiftLeft
-            || $return->expr instanceof BitwiseOr;
-    }
-
-    private function matchRootReturnWithExpr(ClassMethod|Function_|Closure $functionLike): ?Return_
-    {
-        if ($functionLike->stmts === null) {
-            return null;
-        }
-
-        foreach ($functionLike->stmts as $stmt) {
-            if (! $stmt instanceof Return_) {
-                continue;
-            }
-
-            if (! $stmt->expr instanceof Expr) {
-                return null;
-            }
-
-            return $stmt;
-        }
-
-        return null;
-    }
-
-    private function refactorBinaryOp(
-        BinaryOp $binaryOp,
-        ClassMethod|Function_|Closure $functionLike
-    ): null|Function_|ClassMethod|Closure {
-        $leftType = $this->nodeTypeResolver->getNativeType($binaryOp->left);
-        $rightType = $this->nodeTypeResolver->getNativeType($binaryOp->right);
-
-        if ($leftType instanceof IntegerType && $rightType instanceof IntegerType) {
-            $functionLike->returnType = new Identifier('int');
-            return $functionLike;
-        }
-
-        if ($leftType instanceof FloatType && $rightType instanceof FloatType) {
-            $functionLike->returnType = new Identifier('float');
-            return $functionLike;
-        }
-
-        if ($binaryOp instanceof Mul) {
-            if ($leftType instanceof FloatType && $rightType instanceof IntegerType) {
-                $functionLike->returnType = new Identifier('float');
-                return $functionLike;
-            }
-
-            if ($leftType instanceof IntegerType && $rightType instanceof FloatType) {
-                $functionLike->returnType = new Identifier('float');
-                return $functionLike;
-            }
-        }
-
-        return null;
     }
 }
