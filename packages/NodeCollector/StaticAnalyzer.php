@@ -24,10 +24,8 @@ final class StaticAnalyzer
 
                 // use non-cached Class_
                 $classMethod = $class->getMethod($methodName);
-                if ($classMethod instanceof ClassMethod) {
-                    if ($classMethod->isStatic()) {
-                        return true;
-                    }
+                if ($classMethod instanceof ClassMethod && $classMethod->isStatic()) {
+                    return true;
                 }
             }
         }
