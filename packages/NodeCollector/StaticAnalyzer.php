@@ -14,15 +14,15 @@ final class StaticAnalyzer
 {
     public function isStaticMethod(ClassReflection $classReflection, string $methodName, ?Class_ $class = null): bool
     {
-        // cached
         if ($classReflection->hasNativeMethod($methodName)) {
             $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
             if ($extendedMethodReflection->isStatic()) {
-                // non-cached
+                // use cached ClassReflection
                 if (! $class instanceof Class_) {
                     return true;
                 }
 
+                // use non-cached Class_
                 $classMethod = $class->getMethod($methodName);
                 if ($classMethod instanceof ClassMethod) {
                     if ($classMethod->isStatic()) {
