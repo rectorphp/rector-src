@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
@@ -18,6 +20,7 @@ use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeCollector\StaticAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -106,7 +109,11 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable($node, function (Node $node) use (
             $classReflection,
             &$hasChanged
-        ): ?StaticCall {
+        ): int|null|StaticCall {
+            if ($node instanceof ClassMethod && $node->getAttribute(AttributeKey::IS_USE_THIS_CALL) === true) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
             if (! $node instanceof MethodCall) {
                 return null;
             }

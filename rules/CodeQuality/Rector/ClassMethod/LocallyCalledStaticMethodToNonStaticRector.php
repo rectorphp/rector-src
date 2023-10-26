@@ -14,6 +14,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Privatization\VisibilityGuard\ClassMethodVisibilityGuard;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -124,7 +125,12 @@ CODE_SAMPLE
 
         // replace all the calls
         $classMethodName = $this->getName($classMethod);
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($classMethodName): ?MethodCall {
+        $enterClassMethod = null;
+        $this->traverseNodesWithCallable($class, function (Node $node) use ($classMethodName, &$enterClassMethod): ?MethodCall {
+            if ($node instanceof ClassMethod) {
+                $enterClassMethod = $node;
+            }
+
             if (! $node instanceof StaticCall) {
                 return null;
             }
@@ -137,6 +143,7 @@ CODE_SAMPLE
                 return null;
             }
 
+            $enterClassMethod->setAttribute(AttributeKey::IS_USE_THIS_CALL, true);
             return new MethodCall(new Variable('this'), $classMethodName, $node->args);
         });
 
