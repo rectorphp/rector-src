@@ -81,7 +81,7 @@ final class SimplifyConditionsRector extends AbstractRector
         );
 
         if (! $twoNodeMatch instanceof TwoNodeMatch) {
-            return $twoNodeMatch;
+            return null;
         }
 
         /** @var Identical|NotIdentical $firstExpr */

@@ -237,7 +237,7 @@ final class BetterStandardPrinter extends Standard
 
         $content = parent::pArray($nodes, $origNodes, $pos, $indentAdjustment, $parentNodeType, $subNodeName, $fixup);
         if ($content === null) {
-            return $content;
+            return null;
         }
 
         if (! $this->containsNop($nodes)) {

@@ -27,7 +27,7 @@ final class ArrayParametersMerger
         }
 
         if (! is_array($right)) {
-            return $left;
+            return null;
         }
 
         return $right;

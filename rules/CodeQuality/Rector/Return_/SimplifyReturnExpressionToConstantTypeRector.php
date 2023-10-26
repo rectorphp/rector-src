@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\Rector\Return_;
 
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
@@ -95,11 +99,13 @@ CODE_SAMPLE
                 $hasChanged = false;
                 break;
             }
-
-            if (!$stmt instanceof Node\Stmt\Return_
-                || $this->shouldSkip($stmt)
-                || $stmt->expr === null
-            ) {
+            if (!$stmt instanceof Return_) {
+                continue;
+            }
+            if ($this->shouldSkip($stmt)) {
+                continue;
+            }
+            if ($stmt->expr === null) {
                 continue;
             }
 
@@ -110,18 +116,19 @@ CODE_SAMPLE
                 if (is_bool($constantValue)) {
                     $constName = $constantValue ? 'true' : 'false';
                 }
+
                 if (is_null($constantValue)) {
                     $constName = 'null';
                 }
 
                 if ($constName !== null) {
-                    $stmt->expr = new Node\Expr\ConstFetch(new Node\Name($constName));
+                    $stmt->expr = new ConstFetch(new Name($constName));
                     $hasChanged = true;
                 }
             }
 
             if ($nativeType instanceof EnumCaseObjectType) {
-                $stmt->expr = new Node\Expr\ConstFetch(new Node\Name($nativeType->describe(VerbosityLevel::precise())));
+                $stmt->expr = new ConstFetch(new Name($nativeType->describe(VerbosityLevel::precise())));
                 $hasChanged = true;
             }
         }
@@ -133,24 +140,19 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(Node\Stmt\Return_ $node): bool
+    private function shouldSkip(Return_ $return): bool
     {
-        if ($node->expr === null) {
+        if ($return->expr === null) {
             return true;
         }
 
-        if (!$node->expr instanceof Node\Expr\Variable) {
+        if (!$return->expr instanceof Variable) {
             return true;
         }
 
-        if ($this->variableAnalyzer->isStaticOrGlobal($node->expr)) {
+        if ($this->variableAnalyzer->isStaticOrGlobal($return->expr)) {
             return true;
         }
-
-        if ($this->variableAnalyzer->isUsedByReference($node->expr)) {
-            return true;
-        }
-
-        return false;
+        return $this->variableAnalyzer->isUsedByReference($return->expr);
     }
 }
