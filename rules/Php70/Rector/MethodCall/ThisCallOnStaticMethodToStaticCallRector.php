@@ -129,7 +129,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($node, $classReflection, $methodName);
+            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($classReflection, $methodName, $node);
             if (! $isStaticMethod) {
                 return null;
             }

@@ -12,13 +12,23 @@ use Rector\Core\Util\StringUtils;
 
 final class StaticAnalyzer
 {
-    public function isStaticMethod(Class_ $class, ClassReflection $classReflection, string $methodName): bool
+    public function isStaticMethod(ClassReflection $classReflection, string $methodName, ?Class_ $class = null): bool
     {
-        $classMethod = $class->getMethod($methodName);
+        // cached
+        if ($classReflection->hasNativeMethod($methodName)) {
+            $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
+            if ($extendedMethodReflection->isStatic()) {
+                // non-cached
+                if (! $class instanceof Class_) {
+                    return true;
+                }
 
-        if ($classMethod instanceof ClassMethod) {
-            if ($classMethod->isStatic()) {
-                return true;
+                $classMethod = $class->getMethod($methodName);
+                if ($classMethod instanceof ClassMethod) {
+                    if ($classMethod->isStatic()) {
+                        return true;
+                    }
+                }
             }
         }
 
