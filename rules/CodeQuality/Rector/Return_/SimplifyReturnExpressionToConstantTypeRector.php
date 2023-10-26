@@ -109,26 +109,9 @@ CODE_SAMPLE
                 continue;
             }
 
-            $nativeType = $this->nodeTypeResolver->getNativeType($stmt->expr);
-            if ($nativeType instanceof ConstantScalarType) {
-                $constantValue = $nativeType->getValue();
-                $constName = null;
-                if (is_bool($constantValue)) {
-                    $constName = $constantValue ? 'true' : 'false';
-                }
-
-                if (is_null($constantValue)) {
-                    $constName = 'null';
-                }
-
-                if ($constName !== null) {
-                    $stmt->expr = new ConstFetch(new Name($constName));
-                    $hasChanged = true;
-                }
-            }
-
-            if ($nativeType instanceof EnumCaseObjectType) {
-                $stmt->expr = new ConstFetch(new Name($nativeType->describe(VerbosityLevel::precise())));
+            $constantFetch = $this->getConstantFetchValueExpression($stmt->expr);
+            if ($constantFetch !== null) {
+                $stmt->expr = $constantFetch;
                 $hasChanged = true;
             }
         }
@@ -154,5 +137,31 @@ CODE_SAMPLE
             return true;
         }
         return $this->variableAnalyzer->isUsedByReference($return->expr);
+    }
+
+    private function getConstantFetchValueExpression(Node\Expr $expr): ?ConstFetch
+    {
+        $nativeType = $this->nodeTypeResolver->getNativeType($expr);
+        if ($nativeType instanceof ConstantScalarType) {
+            $constantValue = $nativeType->getValue();
+            $constName = null;
+            if (is_bool($constantValue)) {
+                $constName = $constantValue ? 'true' : 'false';
+            }
+
+            if (is_null($constantValue)) {
+                $constName = 'null';
+            }
+
+            if ($constName !== null) {
+                return new ConstFetch(new Name($constName));
+            }
+        }
+
+        if ($nativeType instanceof EnumCaseObjectType) {
+            return new ConstFetch(new Name($nativeType->describe(VerbosityLevel::precise())));
+        }
+
+        return null;
     }
 }
