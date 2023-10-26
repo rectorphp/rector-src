@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\NodeCollector;
 
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDoc\ResolvedPhpDocBlock;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\Util\StringUtils;
 
 final class StaticAnalyzer
 {
-    public function isStaticMethod(ClassReflection $classReflection, string $methodName): bool
+    public function isStaticMethod(Class_ $class, ClassReflection $classReflection, string $methodName): bool
     {
-        if ($classReflection->hasNativeMethod($methodName)) {
-            $extendedMethodReflection = $classReflection->getNativeMethod($methodName);
-            if ($extendedMethodReflection->isStatic()) {
+        $classMethod = $class->getMethod($methodName);
+
+        if ($classMethod instanceof ClassMethod) {
+            if ($classMethod->isStatic()) {
                 return true;
             }
         }
