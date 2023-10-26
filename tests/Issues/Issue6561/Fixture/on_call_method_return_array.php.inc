@@ -15,7 +15,7 @@ final class OnCallMethodReturnArray
     /**
      * @return string[]
      */
-    private function get()
+    private function get(): array
     {
         return ['a', 'b'];
     }
