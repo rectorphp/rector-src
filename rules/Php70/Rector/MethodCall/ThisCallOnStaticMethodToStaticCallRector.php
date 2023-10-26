@@ -103,44 +103,45 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use (
+        $this->traverseNodesWithCallable($node, function (Node $subNode) use (
+            $node,
             $classReflection,
             &$hasChanged
         ): ?StaticCall {
-            if (! $node instanceof MethodCall) {
+            if (! $subNode instanceof MethodCall) {
                 return null;
             }
 
-            if (! $node->var instanceof Variable) {
+            if (! $subNode->var instanceof Variable) {
                 return null;
             }
 
-            if (! $this->nodeNameResolver->isName($node->var, 'this')) {
+            if (! $this->nodeNameResolver->isName($subNode->var, 'this')) {
                 return null;
             }
 
-            if (! $node->name instanceof Identifier) {
+            if (! $subNode->name instanceof Identifier) {
                 return null;
             }
 
-            $methodName = $this->getName($node->name);
+            $methodName = $this->getName($subNode->name);
             if ($methodName === null) {
                 return null;
             }
 
-            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($classReflection, $methodName);
+            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($classReflection, $methodName, $node);
             if (! $isStaticMethod) {
                 return null;
             }
 
-            if ($node->isFirstClassCallable()) {
+            if ($subNode->isFirstClassCallable()) {
                 return null;
             }
 
             $hasChanged = true;
 
-            $objectReference = $this->resolveClassSelf($classReflection, $node);
-            return $this->nodeFactory->createStaticCall($objectReference, $methodName, $node->args);
+            $objectReference = $this->resolveClassSelf($classReflection, $subNode);
+            return $this->nodeFactory->createStaticCall($objectReference, $methodName, $subNode->args);
         });
 
         if ($hasChanged) {
