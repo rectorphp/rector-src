@@ -126,7 +126,10 @@ CODE_SAMPLE
         // replace all the calls
         $classMethodName = $this->getName($classMethod);
         $enterClassMethod = null;
-        $this->traverseNodesWithCallable($class, function (Node $node) use ($classMethodName, &$enterClassMethod): ?MethodCall {
+        $this->traverseNodesWithCallable($class, function (Node $node) use (
+            $classMethodName,
+            &$enterClassMethod
+        ): ?MethodCall {
             if ($node instanceof ClassMethod) {
                 $enterClassMethod = $node;
             }
@@ -143,6 +146,7 @@ CODE_SAMPLE
                 return null;
             }
 
+            /** @var ClassMethod $enterClassMethod */
             $enterClassMethod->setAttribute(AttributeKey::IS_USE_THIS_CALL, true);
             return new MethodCall(new Variable('this'), $classMethodName, $node->args);
         });

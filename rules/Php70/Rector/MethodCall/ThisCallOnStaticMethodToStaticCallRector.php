@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeTraverser;
@@ -93,14 +92,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if (! $scope->isInClass()) {
-            return null;
-        }
-
-        $classReflection = $scope->getClassReflection();
-
-        // skip PHPUnit calls, as they accept both self:: and $this-> formats
-        if ($classReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
+        $classReflection = $this->resolveClassReflection($scope);
+        if (! $classReflection instanceof ClassReflection) {
             return null;
         }
 
@@ -123,10 +116,6 @@ CODE_SAMPLE
             }
 
             if (! $this->nodeNameResolver->isName($node->var, 'this')) {
-                return null;
-            }
-
-            if (! $node->name instanceof Identifier) {
                 return null;
             }
 
@@ -155,6 +144,22 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function resolveClassReflection(Scope $scope): ?ClassReflection
+    {
+        if (! $scope->isInClass()) {
+            return null;
+        }
+
+        $classReflection = $scope->getClassReflection();
+
+        // skip PHPUnit calls, as they accept both self:: and $this-> formats
+        if ($classReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
+            return null;
+        }
+
+        return $classReflection;
     }
 
     /**
