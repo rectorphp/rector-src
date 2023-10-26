@@ -117,7 +117,7 @@ CODE_SAMPLE
 
     private function isArray(Expr $expr): bool
     {
-        return $this->getType($expr)
+        return $this->nodeTypeResolver->getNativeType($expr)
             ->isArray()
             ->yes();
     }
