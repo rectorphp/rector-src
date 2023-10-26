@@ -31,6 +31,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ThisCallOnStaticMethodToStaticCallRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly StaticAnalyzer $staticAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
@@ -98,11 +100,20 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
+        $this->hasChanged = false;
+        $this->processThisToStatic($node, $classReflection);
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use (
+        if ($this->hasChanged) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function processThisToStatic(Class_ $class, ClassReflection $classReflection): void
+    {
+        $this->traverseNodesWithCallable($class, function (Node $node) use (
             $classReflection,
-            &$hasChanged
         ): int|null|StaticCall {
             if ($node instanceof ClassMethod && $node->getAttribute(AttributeKey::IS_USE_THIS_CALL) === true) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -138,17 +149,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $hasChanged = true;
+            $this->hasChanged = true;
 
             $objectReference = $this->resolveClassSelf($classReflection, $node);
             return $this->nodeFactory->createStaticCall($objectReference, $methodName, $node->args);
         });
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
     }
 
     private function resolveClassReflection(Scope $scope): ?ClassReflection
