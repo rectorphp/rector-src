@@ -154,7 +154,7 @@ final class PHPStanNodeScopeResolver
             } elseif ($node instanceof Switch_) {
                 $this->processSwitch($node, $mutatingScope);
             } elseif ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $filePath, $mutatingScope);
+                $this->processTryCatch($node, $mutatingScope);
             } elseif ($node instanceof Catch_) {
                 $this->processCatch($node, $filePath, $mutatingScope);
             } elseif ($node instanceof ArrayItem) {
@@ -289,12 +289,8 @@ final class PHPStanNodeScopeResolver
         $this->processNodes($catch->stmts, $filePath, $catchMutatingScope);
     }
 
-    private function processTryCatch(TryCatch $tryCatch, string $filePath, MutatingScope $mutatingScope): void
+    private function processTryCatch(TryCatch $tryCatch, MutatingScope $mutatingScope): void
     {
-        foreach ($tryCatch->catches as $catch) {
-            $this->processCatch($catch, $filePath, $mutatingScope);
-        }
-
         if ($tryCatch->finally instanceof Finally_) {
             $tryCatch->finally->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         }
