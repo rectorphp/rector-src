@@ -149,8 +149,8 @@ CODE_SAMPLE
         $propertyExistsFuncCall = $this->nodeFactory->createFuncCall('property_exists', $args);
 
         if ($isNegated) {
-            $negatedPropertyExistsFuncCall = new BooleanNot($propertyExistsFuncCall);
-            return new BooleanOr($negatedPropertyExistsFuncCall, $this->createIdenticalToNull($propertyFetch));
+            $booleanNot = new BooleanNot($propertyExistsFuncCall);
+            return new BooleanOr($booleanNot, $this->createIdenticalToNull($propertyFetch));
         }
 
         return new BooleanAnd($propertyExistsFuncCall, $this->createNotIdenticalToNull($propertyFetch));
