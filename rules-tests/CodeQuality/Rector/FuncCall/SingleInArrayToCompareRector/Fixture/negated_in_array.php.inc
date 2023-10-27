@@ -8,8 +8,6 @@ class NegatedInArray
     {
         $isIt = ! in_array(strtolower($type), ['$this'], true);
         $isIt = ! in_array(strtolower($type), ['$this']);
-
-        $isIt = ! in_array(strtolower($type), ['$this', 'two']);
     }
 }
 
@@ -25,8 +23,6 @@ class NegatedInArray
     {
         $isIt = strtolower($type) !== '$this';
         $isIt = strtolower($type) != '$this';
-
-        $isIt = ! in_array(strtolower($type), ['$this', 'two']);
     }
 }
 
