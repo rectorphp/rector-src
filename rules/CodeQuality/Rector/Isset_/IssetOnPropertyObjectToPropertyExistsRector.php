@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
@@ -125,7 +126,8 @@ CODE_SAMPLE
                 $newNodes[] = $this->replaceToPropertyExistsWithNullCheck(
                     $issetExpr->var,
                     $propertyFetchName,
-                    $issetExpr
+                    $issetExpr,
+                    $isNegated
                 );
             } elseif ($isNegated) {
                 $newNodes[] = $this->createIdenticalToNull($issetExpr);
@@ -140,10 +142,16 @@ CODE_SAMPLE
     private function replaceToPropertyExistsWithNullCheck(
         Expr $expr,
         string $property,
-        PropertyFetch $propertyFetch
-    ): BooleanAnd {
+        PropertyFetch $propertyFetch,
+        bool $isNegated
+    ): BooleanAnd|BooleanOr {
         $args = [new Arg($expr), new Arg(new String_($property))];
         $propertyExistsFuncCall = $this->nodeFactory->createFuncCall('property_exists', $args);
+
+        if ($isNegated) {
+            $negatedPropertyExistsFuncCall = new BooleanNot($propertyExistsFuncCall);
+            return new BooleanOr($negatedPropertyExistsFuncCall, $this->createIdenticalToNull($propertyFetch));
+        }
 
         return new BooleanAnd($propertyExistsFuncCall, $this->createNotIdenticalToNull($propertyFetch));
     }

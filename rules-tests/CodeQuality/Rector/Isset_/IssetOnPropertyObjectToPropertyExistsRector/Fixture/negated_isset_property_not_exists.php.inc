@@ -20,7 +20,7 @@ final class NegatedIssetPropertyNotExists
 {
     public function run()
     {
-        return ! property_exists($this, 'x') || $this->x === null;
+        return !property_exists($this, 'x') || $this->x === null;
     }
 }
 
