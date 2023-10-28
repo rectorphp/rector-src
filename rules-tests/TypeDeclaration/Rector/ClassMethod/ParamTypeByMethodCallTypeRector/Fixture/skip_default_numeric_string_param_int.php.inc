@@ -6,7 +6,7 @@ final class SkipDefaultNumericStringParamInt
 {
     public function go($value = '1')
     {
-        return $this->execute($value);
+        $this->execute($value);
     }
 
     private function execute(int $value)
