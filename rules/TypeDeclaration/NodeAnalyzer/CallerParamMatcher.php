@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ComplexType;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -20,12 +22,16 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class CallerParamMatcher
 {
     public function __construct(
         private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver
+        private readonly AstResolver $astResolver,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly TypeComparator $typeComparator
     ) {
     }
 
@@ -36,6 +42,21 @@ final class CallerParamMatcher
     ): null | Identifier | Name | NullableType | UnionType | ComplexType {
         $callParam = $this->matchCallParam($call, $param, $scope);
         if (! $callParam instanceof Param) {
+            return null;
+        }
+
+        if (! $param->default instanceof Expr) {
+            return $callParam->type;
+        }
+
+        if (! $callParam->type instanceof Node) {
+            return null;
+        }
+
+        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callParam->type);
+        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->default);
+
+        if (! $this->typeComparator->areTypesEqual($callParamType, $defaultType)) {
             return null;
         }
 
