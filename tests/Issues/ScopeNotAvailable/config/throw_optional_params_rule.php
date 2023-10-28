@@ -7,8 +7,5 @@ use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ThrowWithPreviousExceptionRector::class,
-        OptionalParametersAfterRequiredRector::class,
-    ]);
+    $rectorConfig->rules([ThrowWithPreviousExceptionRector::class, OptionalParametersAfterRequiredRector::class]);
 };
