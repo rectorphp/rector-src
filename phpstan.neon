@@ -153,25 +153,10 @@ parameters:
             message: '#"@\\var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
             paths:
                 - packages/Caching/ValueObject/Storage/FileCacheStorage.php
-
-        -
-            message: '#Instead of abstract class, use specific service with composition#'
-            paths:
-                - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
-                - packages/PostRector/Rector/AbstractPostRector.php
-                - src/Rector/AbstractRector.php
-                - src/Rector/AbstractCollectorRector.php
-                - src/Rector/AbstractScopeAwareRector.php
-
         -
             message: '#Parameter \#2 \$length of function str_split expects int<1, max\>, int given#'
             paths:
                 - rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php
-
-        # share configuration to avoid duplication in 5 rules
-        -
-            message: '#Instead of abstract class, use specific service with composition#'
-            path: rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
 
         # many internal cases
         - '#Calling (.*?) is not covered by backward compatibility promise\. The method might change in a minor PHPStan version#'
@@ -336,13 +321,6 @@ parameters:
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
                 - packages-tests/Skipper/Skipper/SkipperTest.php
 
-        # false postive, on trait use in multiple classes
-        -
-            message: '#Method name "(.*?)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'
-            paths:
-                - packages/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
-                - packages/BetterPhpDocParser/PhpDoc/ArrayItemNode.php
-
         # @todo resolve later
         -
             message: '#Cognitive complexity#i'
@@ -355,9 +333,6 @@ parameters:
         -
             message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-        -
-            message: '#Instead of abstract class, use specific service with composition#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeVisitor/AbstractPhpDocNodeVisitor.php"
         -
             message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 11#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
@@ -468,11 +443,6 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        # looks like a bug in the PHPStan rule, see https://github.com/rectorphp/rector-src/pull/3645#issuecomment-1561294527
-        -
-            message: '#Method name "(get|has|set)Attribute\(\)" is used in multiple traits\. Make it unique to avoid conflicts#'
-            path: packages/BetterPhpDocParser/PhpDoc/StringNode.php
-
         # resolve later
         - '#Cognitive complexity for "Rector\\(.*?)\:\:refactor\(\)" is (1[0-9]|20), keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\StaticCall\\RemoveParentCallWithoutParentRector\:\:refactor\(\)" is 26, keep it under 11#'
@@ -489,16 +459,10 @@ parameters:
 
         - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
 
-        - '#Parameter \#2 \$callable of method Rector\\Core\\Rector\\AbstractRector\:\:traverseNodesWithCallable\(\) expects callable\(PhpParser\\Node\)\: \(int\|PhpParser\\Node\|null\), Closure\(PhpParser\\Node\)\: \(array<PhpParser\\Node\\Stmt>\|int\|null\) given#'
-
         # false positive
         -
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: packages/VersionBonding/PhpVersionedFilter.php
-
-        -
-            message: '#Do not use static property#'
-            path: src/Configuration/Parameter/SimpleParameterProvider.php
 
         -
             message: '#Only booleans are allowed in an if condition, mixed given#'
@@ -550,7 +514,6 @@ parameters:
         - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
 
         - '#Access to an undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
         - '#Class "Rector\\Utils\\PHPStan\\Rule\\LongAndDependentComplexRectorRule" is missing @see annotation with test case class reference#'
 
         # deprecation
