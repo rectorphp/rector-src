@@ -56,11 +56,15 @@ final class CallerParamMatcher
         $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callParam->type);
         $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->default);
 
-        if (! $this->typeComparator->areTypesEqual($callParamType, $defaultType)) {
-            return null;
+        if ($this->typeComparator->areTypesEqual($callParamType, $defaultType)) {
+            return $callParam->type;
         }
 
-        return $callParam->type;
+        if ($this->typeComparator->isSubtype($defaultType, $callParamType)) {
+            return $callParam->type;
+        }
+
+        return null;
     }
 
     public function matchParentParam(StaticCall $parentStaticCall, Param $param, Scope $scope): ?Param
