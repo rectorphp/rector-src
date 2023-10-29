@@ -21,6 +21,7 @@ use Rector\CodingStyle\Node\NameImporter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -40,6 +41,7 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -60,6 +62,7 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         if ($node instanceof Name) {
+            $node = $this->resolveNameFromAttribute($node);
             return $this->processNodeName($node, $file);
         }
 
@@ -84,6 +87,26 @@ final class NameImportingPostRector extends AbstractPostRector
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
+    }
+
+    private function resolveNameFromAttribute(Name $name): Name
+    {
+        if ($name instanceof FullyQualified) {
+            return $name;
+        }
+
+        if ($name->hasAttribute(AttributeKey::PHP_ATTRIBUTE_NAME)) {
+            $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
+            $phpAttributeName = $name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
+
+            foreach ($oldToNewClasses as $oldName => $newName) {
+                if ($oldName === $phpAttributeName) {
+                    return new FullyQualified($newName);
+                }
+            }
+        }
+
+        return $name;
     }
 
     private function processNodeName(Name $name, File $file): ?Node
