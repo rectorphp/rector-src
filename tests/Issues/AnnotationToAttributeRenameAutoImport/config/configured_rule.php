@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Rector\Renaming\Rector\Name\RenameClassRector;
 
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
@@ -14,7 +15,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->ruleWithConfiguration(
-        \Rector\Renaming\Rector\Name\RenameClassRector::class,
+        RenameClassRector::class,
         [
             'Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted' => 'Symfony\Component\Security\Http\Attribute\IsGranted',
         ],
