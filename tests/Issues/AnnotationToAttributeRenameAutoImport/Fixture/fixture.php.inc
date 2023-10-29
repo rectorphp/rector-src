@@ -6,7 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @IsGranted('TEST')
+ * @IsGranted("TEST")
  */
 class IsGrantedController extends AbstractController
 {
@@ -21,7 +21,7 @@ namespace Rector\Core\Tests\Issues\AnnotationToAttributeRenameAutoImport\Fixture
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[IsGranted("'TEST'")]
+#[IsGranted('TEST')]
 class IsGrantedController extends AbstractController
 {
 }
