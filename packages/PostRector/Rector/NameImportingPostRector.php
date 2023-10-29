@@ -91,6 +91,10 @@ final class NameImportingPostRector extends AbstractPostRector
 
     private function resolveNameFromAttribute(Name $name): Name
     {
+        if ($name instanceof FullyQualified) {
+            return $name;
+        }
+
         if ($name->hasAttribute(AttributeKey::PHP_ATTRIBUTE_NAME)) {
             $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
             $phpAttributeName = $name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
