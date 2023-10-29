@@ -196,12 +196,12 @@ final class ArrayParser
             $key = $rawKey;
         }
 
-        if ($key !== null) {
-            return new ArrayItemNode($value, $key);
-        }
-
         if (is_string($value) && $valueQuoteKind === String_::KIND_SINGLE_QUOTED) {
             $value = trim($value, "'");
+        }
+
+        if ($key !== null) {
+            return new ArrayItemNode($value, $key);
         }
 
         return new ArrayItemNode($value);
