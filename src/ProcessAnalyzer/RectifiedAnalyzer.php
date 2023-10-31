@@ -43,13 +43,9 @@ final class RectifiedAnalyzer
 
     private function isJustAddedAsNewStmt(Node $node, ?Node $originalNode): bool
     {
-        if (! $originalNode instanceof Node && $node instanceof Stmt) {
-            $attributeKeys = array_keys($node->getAttributes());
-            return $attributeKeys === [AttributeKey::SCOPE]
-                || $attributeKeys === [AttributeKey::STMT_KEY, AttributeKey::SCOPE];
-        }
-
-        return false;
+        return ! $originalNode instanceof Node
+            && $node instanceof Stmt
+            && array_keys($node->getAttributes()) === [AttributeKey::SCOPE];
     }
 
     /**
