@@ -7,8 +7,5 @@ use Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector;
 use Rector\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        BreakNotInLoopOrSwitchToReturnRector::class,
-        ContinueToBreakInSwitchRector::class,
-    ]);
+    $rectorConfig->rules([BreakNotInLoopOrSwitchToReturnRector::class, ContinueToBreakInSwitchRector::class]);
 };
