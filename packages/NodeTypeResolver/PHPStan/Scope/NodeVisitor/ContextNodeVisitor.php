@@ -24,6 +24,7 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Unset_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
@@ -41,7 +42,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
 
     public function enterNode(Node $node): ?Node
     {
-        if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_) {
+        if ($node instanceof For_ || $node instanceof Foreach_ || $node instanceof While_ || $node instanceof Do_ || $node instanceof Switch_) {
             $this->processContextInLoop($node);
             return null;
         }
@@ -130,7 +131,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
         }
     }
 
-    private function processContextInLoop(For_|Foreach_|While_|Do_ $node): void
+    private function processContextInLoop(For_|Foreach_|While_|Do_|Switch_ $node): void
     {
         if ($node instanceof Foreach_) {
             if ($node->keyVar instanceof Variable) {
@@ -140,8 +141,9 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
             $node->valueVar->setAttribute(AttributeKey::IS_VARIABLE_LOOP, true);
         }
 
+        $stmts = $node instanceof Switch_ ? $node->cases : $node->stmts;
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $node->stmts,
+            $stmts,
             static function (Node $subNode): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
