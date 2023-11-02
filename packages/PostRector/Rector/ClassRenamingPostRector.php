@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\Option;
