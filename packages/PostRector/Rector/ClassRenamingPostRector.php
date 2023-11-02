@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Application\UseImportsRemover;
 use Rector\Core\Configuration\Option;
@@ -51,8 +50,8 @@ final class ClassRenamingPostRector extends AbstractPostRector
 
     public function enterNode(Node $node): ?Node
     {
-        // cannot be renamed
-        if ($node instanceof Expr || $node instanceof Arg || $node instanceof PropertyProperty) {
+        // no longer need post rename
+        if (! $node instanceof Name) {
             return null;
         }
 
@@ -64,6 +63,13 @@ final class ClassRenamingPostRector extends AbstractPostRector
         /** @var Scope|null $scope */
         $scope = $node->getAttribute(AttributeKey::SCOPE);
         $result = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
+
+        if (! $result instanceof Name && ! $node instanceof FullyQualified) {
+            $phpAttributeName = $node->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
+            if (is_string($phpAttributeName)) {
+                return $this->classRenamer->renameNode(new FullyQualified($phpAttributeName, $node->getAttributes()), $oldToNewClasses, $scope);
+            }
+        }
 
         if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
             return $result;
