@@ -40,7 +40,7 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
                 $shortName = str_contains($shortName, '\\')
-                    ? ltrim(Strings::after($shortName, '\\', -1))
+                    ? ltrim((string) Strings::after($shortName, '\\', -1))
                     : $shortName;
             }
 
