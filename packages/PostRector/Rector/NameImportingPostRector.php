@@ -60,6 +60,10 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         if ($node instanceof Name) {
+            if ($node->tostring() === 'Symfony\Component\Security\Http\Attribute\IsGranted') {
+                d($this->processNodeName($node, $file));
+            }
+
             return $this->processNodeName($node, $file);
         }
 

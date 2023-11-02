@@ -7,6 +7,7 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 use PhpParser\Node;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
@@ -23,6 +24,7 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
 {
     public function __construct(
         private readonly ShortNameResolver $shortNameResolver,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -31,9 +33,14 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         // "new X" or "X::static()"
         /** @var array<string, string> $shortNamesToFullyQualifiedNames */
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectType->getShortName() !== $shortName) {
+                continue;
+            }
+
+            if (in_array($fullyQualifiedName, $removedUses, true)) {
                 continue;
             }
 
