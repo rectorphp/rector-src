@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @IsGranted("TEST")
  */
 #[Route(path: '/pro/{id}/networks/{networkId}/sectors', name: 'api_network_sectors', requirements: ['id' => '\d+', 'networkId' => '\d+'])]
-class IsGrantedController extends AbstractController
+class WithExistingAttribute extends AbstractController
 {
 }
 
@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/pro/{id}/networks/{networkId}/sectors', name: 'api_network_sectors', requirements: ['id' => '\d+', 'networkId' => '\d+'])]
 #[IsGranted('TEST')]
-class IsGrantedController extends AbstractController
+class WithExistingAttribute extends AbstractController
 {
 }
 
