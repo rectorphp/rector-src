@@ -643,4 +643,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const SENSITIVE_PARAMETER_ATTRIBUTE = PhpVersion::PHP_82;
+
+    /**
+     * @see https://wiki.php.net/rfc/marking_overriden_methods
+     * @var int
+     */
+    public const OVERRIDE_ATTRIBUTE = PhpVersion::PHP_83;
 }
