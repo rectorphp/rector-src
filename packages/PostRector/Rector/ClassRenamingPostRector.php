@@ -67,7 +67,11 @@ final class ClassRenamingPostRector extends AbstractPostRector
         if (! $result instanceof Name && ! $node instanceof FullyQualified) {
             $phpAttributeName = $node->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
             if (is_string($phpAttributeName)) {
-                return $this->classRenamer->renameNode(new FullyQualified($phpAttributeName, $node->getAttributes()), $oldToNewClasses, $scope);
+                return $this->classRenamer->renameNode(
+                    new FullyQualified($phpAttributeName, $node->getAttributes()),
+                    $oldToNewClasses,
+                    $scope
+                );
             }
         }
 
