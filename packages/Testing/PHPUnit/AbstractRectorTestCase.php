@@ -29,6 +29,7 @@ use Rector\Testing\Contract\RectorTestInterface;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
+use Rector\Testing\PHPUnit\ValueObject\RectorTestResult;
 
 abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements RectorTestInterface
 {
@@ -228,10 +229,22 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $originalFileContent = FileSystem::read($originalFilePath);
 
         // the file is now changed (if any rule matches)
-        $changedContent = $this->processFilePath($originalFilePath);
+        $rectorTestResult = $this->processFilePath($originalFilePath);
+
+        $changedContent = $rectorTestResult->getChangedContents();
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
+
+        // give more context about used rules in case of set testing
+        if (count($rectorTestResult->getAppliedRectorClasses()) > 1) {
+            $failureMessage .= PHP_EOL . PHP_EOL;
+            $failureMessage .= 'Applied Rector rules:' . PHP_EOL;
+
+            foreach ($rectorTestResult->getAppliedRectorClasses() as $appliedRectorClass) {
+                $failureMessage .= ' * ' . $appliedRectorClass . PHP_EOL;
+            }
+        }
 
         try {
             $this->assertSame($expectedFileContents, $changedContent, $failureMessage);
@@ -243,7 +256,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
     }
 
-    private function processFilePath(string $filePath): string
+    private function processFilePath(string $filePath): RectorTestResult
     {
         $this->dynamicSourceLocatorProvider->setFilePath($filePath);
 
@@ -265,7 +278,8 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
 
         // return changed file contents
-        return FileSystem::read($filePath);
+        $changedFileContents = FileSystem::read($filePath);
+        return new RectorTestResult($changedFileContents, $processResult);
     }
 
     private function createInputFilePath(string $fixtureFilePath): string
