@@ -36,6 +36,7 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
+        $className = $fullyQualifiedObjectType->getClassName();
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -53,11 +54,9 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return false;
             }
 
-            if (! str_contains($fullyQualifiedName, '\\')) {
-                return $shortName !== $fullyQualifiedName;
+            if (str_contains($fullyQualifiedName, '\\')) {
+                return $className !== $fullyQualifiedName;
             }
-
-            return $fullyQualifiedObjectType->getClassName() !== $fullyQualifiedName;
         }
 
         return false;
