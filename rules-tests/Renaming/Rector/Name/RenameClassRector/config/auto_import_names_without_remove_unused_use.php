@@ -10,5 +10,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'Interop\Container\ContainerInterface' => 'Psr\Container\ContainerInterface',
+        'DateTime' => 'DateTimeInterface',
     ]);
 };
