@@ -236,6 +236,16 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
 
+        // give more context about used rules in case of set testing
+        if (count($rectorTestResult->getAppliedRectorClasses()) > 1) {
+            $failureMessage .= PHP_EOL . PHP_EOL;
+            $failureMessage .= 'Applied Rector rules:' . PHP_EOL;
+
+            foreach ($rectorTestResult->getAppliedRectorClasses() as $appliedRectorClass) {
+                $failureMessage .= ' * ' . $appliedRectorClass . PHP_EOL;
+            }
+        }
+
         try {
             $this->assertSame($expectedFileContents, $changedContent, $failureMessage);
         } catch (ExpectationFailedException) {
