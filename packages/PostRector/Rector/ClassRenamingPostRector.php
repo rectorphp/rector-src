@@ -55,6 +55,10 @@ final class ClassRenamingPostRector extends AbstractPostRector
             return null;
         }
 
+        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+            return null;
+        }
+
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
         if ($oldToNewClasses === []) {
             return null;
@@ -69,10 +73,6 @@ final class ClassRenamingPostRector extends AbstractPostRector
             if (is_string($phpAttributeName)) {
                 return $this->classRenamer->renameNode(new FullyQualified($phpAttributeName, $node->getAttributes()), $oldToNewClasses, $scope);
             }
-        }
-
-        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
-            return $result;
         }
 
         if (! $this->rootNode instanceof FileWithoutNamespace && ! $this->rootNode instanceof Namespace_) {
