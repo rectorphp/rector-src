@@ -438,7 +438,7 @@ final class NodeTypeResolver
             return $this->isMatchObjectWithoutClassType($type, $requiredObjectType);
         }
 
-        return $type->isSuperTypeOf($requiredObjectType)
+        return $requiredObjectType->isSuperTypeOf($type)
             ->yes();
     }
 
