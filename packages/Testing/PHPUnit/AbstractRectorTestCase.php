@@ -94,12 +94,10 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->bootFromConfigFiles([$configFile]);
 
             $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
-            if ($rectorsGenerator instanceof RewindableGenerator) {
-                $rectors = iterator_to_array($rectorsGenerator->getIterator());
-            } else {
+            $rectors = $rectorsGenerator instanceof RewindableGenerator
+                ? iterator_to_array($rectorsGenerator->getIterator())
                 // no rules at all, e.g. in case of only post rector run
-                $rectors = [];
-            }
+                : [];
 
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
@@ -231,7 +229,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // the file is now changed (if any rule matches)
         $rectorTestResult = $this->processFilePath($originalFilePath);
 
-        $changedContent = $rectorTestResult->getChangedContents();
+        $changedContents = $rectorTestResult->getChangedContents();
 
         $fixtureFilename = basename($fixtureFilePath);
         $failureMessage = sprintf('Failed on fixture file "%s"', $fixtureFilename);
@@ -247,12 +245,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
 
         try {
-            $this->assertSame($expectedFileContents, $changedContent, $failureMessage);
+            $this->assertSame($expectedFileContents, $changedContents, $failureMessage);
         } catch (ExpectationFailedException) {
-            FixtureFileUpdater::updateFixtureContent($originalFileContent, $changedContent, $fixtureFilePath);
+            FixtureFileUpdater::updateFixtureContent($originalFileContent, $changedContents, $fixtureFilePath);
 
             // if not exact match, check the regex version (useful for generated hashes/uuids in the code)
-            $this->assertStringMatchesFormat($expectedFileContents, $changedContent, $failureMessage);
+            $this->assertStringMatchesFormat($expectedFileContents, $changedContents, $failureMessage);
         }
     }
 
