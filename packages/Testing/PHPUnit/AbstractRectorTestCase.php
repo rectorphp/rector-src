@@ -94,7 +94,10 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
             $this->bootFromConfigFiles([$configFile]);
 
             $rectorsGenerator = $rectorConfig->tagged(RectorInterface::class);
-            $rectors = $rectorsGenerator instanceof RewindableGenerator ? iterator_to_array($rectorsGenerator->getIterator()) : [];
+            $rectors = $rectorsGenerator instanceof RewindableGenerator
+                ? iterator_to_array($rectorsGenerator->getIterator())
+                // no rules at all, e.g. in case of only post rector run
+                : [];
 
             /** @var RectorNodeTraverser $rectorNodeTraverser */
             $rectorNodeTraverser = $rectorConfig->make(RectorNodeTraverser::class);
