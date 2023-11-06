@@ -1,23 +1,27 @@
 <?php
 
-/** @var stdClass|null $value */
-$value = null;
-if ($value) {
-}
+namespace Rector\Tests\CodingStyle\Rector\If_\NullableCompareToNullRector\Fixture;
 
-if (!$value) {
+function doFoo(?stdClass $value) {
+    if ($value) {
+    }
+
+    if (!$value) {
+    }
 }
 
 ?>
 -----
 <?php
 
-/** @var stdClass|null $value */
-$value = null;
-if ($value !== null) {
-}
+namespace Rector\Tests\CodingStyle\Rector\If_\NullableCompareToNullRector\Fixture;
 
-if ($value === null) {
+function doFoo(?stdClass $value) {
+    if ($value !== null) {
+    }
+
+    if ($value === null) {
+    }
 }
 
 ?>
