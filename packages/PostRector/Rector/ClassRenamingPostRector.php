@@ -92,7 +92,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
     }
 
     /**
-     * @param Stmt[] $nodes
+     * @param Node[] $nodes
      * @return Stmt[]
      */
     public function afterTraverse(array $nodes): array
