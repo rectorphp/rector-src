@@ -39,7 +39,6 @@ return static function (RectorConfig $rectorConfig): void {
         RealToFloatTypeCastRector::class,
         NullCoalescingOperatorRector::class,
         ClosureToArrowFunctionRector::class,
-        ArraySpreadInsteadOfArrayMergeRector::class,
         AddLiteralSeparatorToNumberRector::class,
         RestoreDefaultNullToNullableTypePropertyRector::class,
         CurlyToSquareBracketArrayStringRector::class,

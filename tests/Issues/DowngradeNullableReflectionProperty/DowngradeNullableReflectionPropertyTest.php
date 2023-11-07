@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
+namespace Rector\Core\Tests\Issues\DowngradeNullableReflectionProperty;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class DataProviderArrayItemsNewlinedRectorTest extends AbstractRectorTestCase
+final class DowngradeNullableReflectionPropertyTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -16,9 +16,6 @@ final class DataProviderArrayItemsNewlinedRectorTest extends AbstractRectorTestC
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<string>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');

@@ -29,7 +29,7 @@ return static function (RectorConfig $rectorConfig): void {
         new MethodCallRename(DifferentInterface::class, 'renameMe', 'toNewVersion'),
 
         // reflection method name
-        new MethodCallRename(ReflectionMethod::class, 'getTentativeReturnType', 'getReturnType'),
+        new MethodCallRename(ReflectionFunctionAbstract::class, 'getTentativeReturnType', 'getReturnType'),
 
         // with array key
         new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
