@@ -82,7 +82,7 @@ CODE_SAMPLE
         $nativeType = $this->nodeTypeResolver->getNativeType($expr);
 
         // is non-nullable?
-        if (!TypeCombinator::containsNull($nativeType)) {
+        if (! TypeCombinator::containsNull($nativeType)) {
             return false;
         }
 
@@ -98,6 +98,7 @@ CODE_SAMPLE
         }
 
         $nativeType = TypeCombinator::removeNull($nativeType);
-        return !$nativeType->isScalar()->yes();
+        return ! $nativeType->isScalar()
+            ->yes();
     }
 }

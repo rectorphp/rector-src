@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
-use Rector\CodingStyle\Rector\ClassMethod\DataProviderArrayItemsNewlinedRector;
 use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Php71\Rector\FuncCall\CountOnNullRector;
@@ -31,7 +30,6 @@ final class MissingInSetCommand extends Command
         ConfigurableRectorInterface::class,
         DeclareStrictTypesRector::class,
         // optional
-        DataProviderArrayItemsNewlinedRector::class,
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
         // collectors
