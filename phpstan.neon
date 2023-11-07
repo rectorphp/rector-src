@@ -528,6 +528,7 @@ parameters:
         - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictConstructorReadonlyClassRector#'
         - '#Class "Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector" is missing @see annotation with test case class reference#'
         - '#Register "Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector" service to "php71\.php" config set#'
+        - '#Register "Rector\\Php74\\Rector\\FuncCall\\ArraySpreadInsteadOfArrayMergeRector" service to "php74\.php" config set#'
 
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
