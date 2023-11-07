@@ -81,7 +81,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
         foreach ($this->oldToNewTypes as $oldToNewType) {
-            if (! $objectType->equals($oldToNewType->getOldType())) {
+            /** @var ObjectType $oldType */
+            $oldType = $oldToNewType->getOldType();
+            if (! $objectType->equals($oldType)) {
                 continue;
             }
 
@@ -95,7 +97,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
             $this->hasChanged = true;
 
-            $this->renamedNameCollector->add($oldToNewType->getOldType()->getClassName());
+            $this->renamedNameCollector->add($oldType->getClassName());
             return $newTypeNode;
         }
 
