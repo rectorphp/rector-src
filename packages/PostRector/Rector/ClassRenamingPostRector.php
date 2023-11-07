@@ -17,6 +17,7 @@ use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
+use Rector\Renaming\Collector\RenamedNameCollector;
 
 final class ClassRenamingPostRector extends AbstractPostRector
 {
@@ -25,7 +26,8 @@ final class ClassRenamingPostRector extends AbstractPostRector
     public function __construct(
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly UseImportsRemover $useImportsRemover
+        private readonly UseImportsRemover $useImportsRemover,
+        private readonly RenamedNameCollector $renamedNameCollector
     ) {
     }
 
@@ -87,5 +89,15 @@ final class ClassRenamingPostRector extends AbstractPostRector
         $this->rootNode->stmts = $this->useImportsRemover->removeImportsFromStmts($this->rootNode->stmts, $removedUses);
 
         return $result;
+    }
+
+    /**
+     * @param Node[] $nodes
+     * @return Stmt[]
+     */
+    public function afterTraverse(array $nodes): array
+    {
+        $this->renamedNameCollector->reset();
+        return $nodes;
     }
 }

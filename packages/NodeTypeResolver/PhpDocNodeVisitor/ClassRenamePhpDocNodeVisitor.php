@@ -20,6 +20,7 @@ use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
+use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 
@@ -37,6 +38,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly UseImportsResolver $useImportsResolver,
+        private readonly RenamedNameCollector $renamedNameCollector
     ) {
     }
 
@@ -79,7 +81,9 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         // make sure to compare FQNs
         $objectType = $this->expandShortenedObjectType($staticType);
         foreach ($this->oldToNewTypes as $oldToNewType) {
-            if (! $objectType->equals($oldToNewType->getOldType())) {
+            /** @var ObjectType $oldType */
+            $oldType = $oldToNewType->getOldType();
+            if (! $objectType->equals($oldType)) {
                 continue;
             }
 
@@ -93,6 +97,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
             $this->hasChanged = true;
 
+            $this->renamedNameCollector->add($oldType->getClassName());
             return $newTypeNode;
         }
 
