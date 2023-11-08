@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector\Fixture;
 
-final class SkipReadonly
+final class SkipReadonlyPhpdoc
 {
     public const LEVEL_NONE = 'none';
 
