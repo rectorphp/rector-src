@@ -88,7 +88,6 @@ CODE_SAMPLE
 
         $insertByKeys = $this->resolveInsertedByKeys($node);
         $this->insertCaseByKeys($node, $insertByKeys);
-        $this->cleanUpEqualCaseStmts($node);
 
         if (! $this->hasChanged) {
             return null;
@@ -120,10 +119,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($nextKey === $jumpToKey) {
-                    continue 2;
-                }
-
                 $nextCase = $switch->cases[$jumpToKey];
 
                 unset($switch->cases[$jumpToKey]);
@@ -143,25 +138,13 @@ CODE_SAMPLE
     private function insertCaseByKeys(Switch_ $switch, array $insertByKeys): void
     {
         foreach ($insertByKeys as $key => $insertByKey) {
-            $switch->cases[$key]->stmts = [];
             $nextKey = $key + 1;
 
             array_splice($switch->cases, $nextKey, 0, $insertByKey);
-        }
-    }
 
-    private function cleanUpEqualCaseStmts(Switch_ $switch): void
-    {
-        /** @var Case_|null $previousCase */
-        $previousCase = null;
-        foreach ($switch->cases as $case) {
-            if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
-                $previousCase->stmts = [];
-
-                $this->hasChanged = true;
+            for ($jumpToKey = $key; $jumpToKey < $key + count($insertByKey); ++$jumpToKey) {
+                $switch->cases[$jumpToKey]->stmts = [];
             }
-
-            $previousCase = $case;
         }
     }
 
