@@ -18,6 +18,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDuplicatedCaseInSwitchRector extends AbstractRector
 {
+    private bool $hasChanged = false;
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -82,28 +84,90 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var Case_|null $previousCase */
-        $previousCase = null;
-        $hasChanged = false;
-        foreach ($node->cases as $case) {
-            if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
-                $previousCase->stmts = [];
-                $hasChanged = true;
-            }
+        $this->hasChanged = false;
 
-            $previousCase = $case;
-        }
+        $insertByKeys = $this->resolveInsertedByKeys($node);
+        $this->insertCaseByKeys($node, $insertByKeys);
+        $this->cleanUpEqualCaseStmts($node);
 
-        if (! $hasChanged) {
+        if (! $this->hasChanged) {
             return null;
         }
 
         return $node;
     }
 
-    private function areSwitchStmtsEqualsAndWithBreak(Case_ $currentCase, Case_ $previousCase): bool
+    /**
+     * @return array<int, array<int, Case_>>
+     */
+    private function resolveInsertedByKeys(Switch_ $switch): array
     {
-        if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $previousCase->stmts)) {
+        $totalKeys = count($switch->cases);
+        $insertByKeys = [];
+
+        foreach ($switch->cases as $key => $case) {
+            if ($case->stmts === []) {
+                continue;
+            }
+
+            $nextKey = $key + 1;
+            for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
+                if (! isset($switch->cases[$jumpToKey])) {
+                    continue;
+                }
+
+                if (! $this->areSwitchStmtsEqualsAndWithBreak($case, $switch->cases[$jumpToKey])) {
+                    continue;
+                }
+
+                if ($nextKey === $jumpToKey) {
+                    continue 2;
+                }
+
+                $nextCase = $switch->cases[$jumpToKey];
+
+                unset($switch->cases[$jumpToKey]);
+
+                $insertByKeys[$key][] = $nextCase;
+
+                $this->hasChanged = true;
+            }
+        }
+
+        return $insertByKeys;
+    }
+
+    /**
+     * @param array<int, array<int, Case_>> $insertByKeys
+     */
+    private function insertCaseByKeys(Switch_ $switch, array $insertByKeys): void
+    {
+        foreach ($insertByKeys as $key => $insertByKey) {
+            $switch->cases[$key]->stmts = [];
+            $nextKey = $key + 1;
+
+            array_splice($switch->cases, $nextKey, 0, $insertByKey);
+        }
+    }
+
+    private function cleanUpEqualCaseStmts(Switch_ $switch): void
+    {
+        /** @var Case_|null $previousCase */
+        $previousCase = null;
+        foreach ($switch->cases as $case) {
+            if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
+                $previousCase->stmts = [];
+
+                $this->hasChanged = true;
+            }
+
+            $previousCase = $case;
+        }
+    }
+
+    private function areSwitchStmtsEqualsAndWithBreak(Case_ $currentCase, Case_ $nextCase): bool
+    {
+        if (! $this->nodeComparator->areNodesEqual($currentCase->stmts, $nextCase->stmts)) {
             return false;
         }
 
