@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\Property;
 
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
@@ -21,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RestoreDefaultNullToNullableTypePropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector, private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
