@@ -109,7 +109,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            $nextKey = $key + 1;
             for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
                 if (! isset($switch->cases[$jumpToKey])) {
                     continue;
