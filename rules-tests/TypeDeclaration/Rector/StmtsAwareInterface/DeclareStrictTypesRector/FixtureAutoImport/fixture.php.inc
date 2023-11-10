@@ -14,4 +14,4 @@ namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictT
 
 use Foo\Bar;
 
-\Foo\Bar::BAZ;
+Bar::BAZ;
