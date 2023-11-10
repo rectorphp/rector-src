@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\FixtureAutoImport;
+// no namespace on purpose to reproduce issue
 
 \Foo\Bar::BAZ;
 
@@ -10,8 +10,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictT
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\FixtureAutoImport;
+// no namespace on purpose to reproduce issue
 
 use Foo\Bar;
-
 Bar::BAZ;
