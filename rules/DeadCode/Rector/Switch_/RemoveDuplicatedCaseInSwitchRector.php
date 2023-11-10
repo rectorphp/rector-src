@@ -128,7 +128,7 @@ CODE_SAMPLE
                 $this->hasChanged = true;
             }
 
-            $appendKey = count($insertByKeys[$key] ?? []) ?? 0;
+            $appendKey = isset($insertByKeys[$key]) ? count($insertByKeys[$key]) : 0;
         }
 
         return $insertByKeys;
