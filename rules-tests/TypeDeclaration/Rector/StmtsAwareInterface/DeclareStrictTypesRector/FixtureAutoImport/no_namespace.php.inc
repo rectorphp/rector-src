@@ -1,7 +1,6 @@
 <?php
 
 // no namespace on purpose to reproduce issue
-
 \Foo\Bar::BAZ;
 
 ?>
@@ -10,7 +9,7 @@
 
 declare(strict_types=1);
 
-// no namespace on purpose to reproduce issue
-
 use Foo\Bar;
+
+// no namespace on purpose to reproduce issue
 Bar::BAZ;

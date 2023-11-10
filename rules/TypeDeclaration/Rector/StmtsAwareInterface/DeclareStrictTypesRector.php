@@ -64,16 +64,17 @@ CODE_SAMPLE
             return null;
         }
 
-        $stmt = current($newStmts);
+        $rootStmt = current($newStmts);
+        $stmt = $rootStmt;
 
-        if ($stmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($stmt->stmts);
+        if ($rootStmt instanceof FileWithoutNamespace) {
+            $currentStmt = current($rootStmt->stmts);
 
             if (! $currentStmt instanceof Stmt) {
                 return null;
             }
 
-            $nodes = $stmt->stmts;
+            $nodes = $rootStmt->stmts;
             $stmt = $currentStmt;
         }
 
@@ -92,6 +93,11 @@ CODE_SAMPLE
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
+
+        if ($rootStmt instanceof FileWithoutNamespace) {
+            $rootStmt->stmts = [$strictTypesDeclare, new Nop(), ...$nodes];
+            return [$rootStmt];
+        }
 
         return [$strictTypesDeclare, new Nop(), ...$nodes];
     }
