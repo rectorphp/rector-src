@@ -78,14 +78,8 @@ CODE_SAMPLE
             $stmt = $currentStmt;
         }
 
-        // when first stmt is Declare_, verify if there is strict_types definition already,
-        // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
-        if ($stmt instanceof Declare_) {
-            foreach ($stmt->declares as $declare) {
-                if ($declare->key->toString() === 'strict_types') {
-                    return null;
-                }
-            }
+        if ($this->shouldSkip($stmt)) {
+            return null;
         }
 
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
@@ -95,6 +89,7 @@ CODE_SAMPLE
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         if ($rootStmt instanceof FileWithoutNamespace) {
+            /** @var Stmt[] $nodes */
             $rootStmt->stmts = [$strictTypesDeclare, new Nop(), ...$nodes];
             return [$rootStmt];
         }
@@ -117,5 +112,20 @@ CODE_SAMPLE
     {
         // workaroudn, as Rector now only hooks to specific nodes, not arrays
         return null;
+    }
+
+    private function shouldSkip(Stmt $stmt): bool
+    {
+        // when first stmt is Declare_, verify if there is strict_types definition already,
+        // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
+        if ($stmt instanceof Declare_) {
+            foreach ($stmt->declares as $declare) {
+                if ($declare->key->toString() === 'strict_types') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
