@@ -103,13 +103,14 @@ CODE_SAMPLE
     {
         $totalKeys = count($switch->cases);
         $insertByKeys = [];
+        $appendKey = 0;
 
         foreach ($switch->cases as $key => $case) {
             if ($case->stmts === []) {
                 continue;
             }
 
-            for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
+            for ($jumpToKey = $key + 2; $jumpToKey < $totalKeys; ++$jumpToKey) {
                 if (! isset($switch->cases[$jumpToKey])) {
                     continue;
                 }
@@ -122,10 +123,12 @@ CODE_SAMPLE
 
                 unset($switch->cases[$jumpToKey]);
 
-                $insertByKeys[$key][] = $nextCase;
+                $insertByKeys[$key + $appendKey][] = $nextCase;
 
                 $this->hasChanged = true;
             }
+
+            $appendKey = isset($insertByKeys[$key]) ? count($insertByKeys[$key]) : 0;
         }
 
         return $insertByKeys;
@@ -140,10 +143,16 @@ CODE_SAMPLE
             $nextKey = $key + 1;
 
             array_splice($switch->cases, $nextKey, 0, $insertByKey);
+        }
 
-            for ($jumpToKey = $key; $jumpToKey < $key + count($insertByKey); ++$jumpToKey) {
-                $switch->cases[$jumpToKey]->stmts = [];
+        /** @var Case_|null $previousCase */
+        $previousCase = null;
+        foreach ($switch->cases as $case) {
+            if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
+                $previousCase->stmts = [];
             }
+
+            $previousCase = $case;
         }
     }
 
