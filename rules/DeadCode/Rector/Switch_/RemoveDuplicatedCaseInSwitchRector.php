@@ -110,7 +110,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
+            for ($jumpToKey = $key + 2; $jumpToKey < $totalKeys; ++$jumpToKey) {
                 if (! isset($switch->cases[$jumpToKey])) {
                     continue;
                 }

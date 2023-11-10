@@ -40,7 +40,7 @@ class DiffrentIndirectDuplicated2
             case 'b':
             case 'e':
                 return 'B';
-            case 'c';
+            case 'c':
             case 'f':
                 return 'C';
         }
