@@ -94,9 +94,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * @return array<int, array<int, Case_>>
-     */
     private function removeDuplicatedCases(Switch_ $switch): void
     {
         foreach (array_keys($switch->cases) as $key) {
