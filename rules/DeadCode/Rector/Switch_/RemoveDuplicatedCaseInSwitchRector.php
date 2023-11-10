@@ -143,10 +143,16 @@ CODE_SAMPLE
             $nextKey = $key + 1;
 
             array_splice($switch->cases, $nextKey, 0, $insertByKey);
+        }
 
-            for ($jumpToKey = $key; $jumpToKey < $key + count($insertByKey); ++$jumpToKey) {
-                $switch->cases[$jumpToKey]->stmts = [];
+        /** @var Case_|null $previousCase */
+        $previousCase = null;
+        foreach ($switch->cases as $case) {
+            if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
+                $previousCase->stmts = [];
             }
+
+            $previousCase = $case;
         }
     }
 
