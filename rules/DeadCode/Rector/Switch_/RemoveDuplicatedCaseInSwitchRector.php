@@ -103,6 +103,7 @@ CODE_SAMPLE
     {
         $totalKeys = count($switch->cases);
         $insertByKeys = [];
+        $appendKey = 0;
 
         foreach ($switch->cases as $key => $case) {
             if ($case->stmts === []) {
@@ -122,10 +123,12 @@ CODE_SAMPLE
 
                 unset($switch->cases[$jumpToKey]);
 
-                $insertByKeys[$key][] = $nextCase;
+                $insertByKeys[$key + $appendKey][] = $nextCase;
 
                 $this->hasChanged = true;
             }
+
+            $appendKey = count($insertByKeys[$key] ?? []) ?? 0;
         }
 
         return $insertByKeys;
