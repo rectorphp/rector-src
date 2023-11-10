@@ -96,8 +96,8 @@ CODE_SAMPLE
 
     private function removeDuplicatedCases(Switch_ $switch): void
     {
+        $totalKeys = count($switch->cases);
         foreach (array_keys($switch->cases) as $key) {
-            $totalKeys = count($switch->cases);
             $nextCases = [];
             for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
                 if (! isset($switch->cases[$jumpToKey])) {
