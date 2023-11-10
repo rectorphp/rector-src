@@ -150,6 +150,7 @@ CODE_SAMPLE
         foreach ($switch->cases as $case) {
             if ($previousCase instanceof Case_ && $this->areSwitchStmtsEqualsAndWithBreak($case, $previousCase)) {
                 $previousCase->stmts = [];
+                $this->hasChanged = true;
             }
 
             $previousCase = $case;
