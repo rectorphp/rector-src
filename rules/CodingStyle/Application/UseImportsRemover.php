@@ -10,8 +10,9 @@ use Rector\Renaming\Collector\RenamedNameCollector;
 
 final class UseImportsRemover
 {
-    public function __construct(private readonly RenamedNameCollector $renamedNameCollector)
-    {
+    public function __construct(
+        private readonly RenamedNameCollector $renamedNameCollector
+    ) {
     }
 
     /**
