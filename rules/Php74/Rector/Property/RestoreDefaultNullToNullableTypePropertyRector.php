@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Php74\Rector\Property;
 
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
@@ -22,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RestoreDefaultNullToNullableTypePropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ConstructorAssignDetector $constructorAssignDetector, private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -120,7 +121,8 @@ CODE_SAMPLE
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
     }
 
-    private function isReadonly(Property $property): bool {
+    private function isReadonly(Property $property): bool
+    {
         // native readonly
         if ($property->isReadonly()) {
             return true;
