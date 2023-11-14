@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -25,7 +26,8 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly ShortNameResolver $shortNameResolver
+        private readonly ShortNameResolver $shortNameResolver,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -36,6 +38,7 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
         $justRenamed = $node instanceof FullyQualified && ! $node->hasAttribute(AttributeKey::ORIGINAL_NAME);
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
@@ -52,15 +55,19 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return false;
             }
 
-            if ($justRenamed) {
-                if (! str_contains($fullyQualifiedName, '\\')) {
-                    return str_contains($className, '\\');
-                }
-
-                return $shortName !== $fullyQualifiedName;
+            if (! $justRenamed) {
+                return true;
             }
 
-            return true;
+            if (! str_contains($fullyQualifiedName, '\\')) {
+                return str_contains($className, '\\');
+            }
+
+            if (in_array($fullyQualifiedName, $removedUses, true)) {
+                return false;
+            }
+
+            return $shortName !== $fullyQualifiedName;
         }
 
         return false;
