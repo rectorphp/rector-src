@@ -77,8 +77,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Stmt\Function_
     {
-        $classMethodStmts = $node->stmts;
-        if ($classMethodStmts === null || $classMethodStmts === []) {
+        $stmts = $node->stmts;
+        if ($stmts === null || $stmts === []) {
             return null;
         }
 
@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($classMethodStmts);
+        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($stmts);
 
         $hasChanged = false;
 
@@ -101,7 +101,7 @@ CODE_SAMPLE
             }
 
             /** @var Expression<Assign> $currentStmt */
-            $currentStmt = $classMethodStmts[$stmtPosition];
+            $currentStmt = $stmts[$stmtPosition];
 
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
