@@ -6,11 +6,10 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
+use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 /**
@@ -25,7 +24,8 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly ShortNameResolver $shortNameResolver
+        private readonly ShortNameResolver $shortNameResolver,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -36,13 +36,11 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
-        $justRenamed = $node instanceof FullyQualified && ! $node->hasAttribute(AttributeKey::ORIGINAL_NAME);
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
-                $shortName = str_starts_with($shortName, '\\')
-                    ? ltrim((string) Strings::after($shortName, '\\', -1))
-                    : $shortName;
+                $shortName = $this->cleanShortName($shortName);
             }
 
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -54,9 +52,16 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return false;
             }
 
-            return ! $justRenamed;
+            return ! in_array($fullyQualifiedName, $removedUses, true);
         }
 
         return false;
+    }
+
+    private function cleanShortName(string $shortName): string
+    {
+        return str_starts_with($shortName, '\\')
+            ? ltrim((string) Strings::after($shortName, '\\', -1))
+            : $shortName;
     }
 }

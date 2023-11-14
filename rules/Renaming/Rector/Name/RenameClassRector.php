@@ -9,6 +9,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
@@ -80,11 +81,12 @@ CODE_SAMPLE
             Expression::class,
             ClassLike::class,
             Namespace_::class,
+            If_::class,
         ];
     }
 
     /**
-     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property $node
+     * @param FunctionLike|Name|ClassLike|Expression|Namespace_|Property|If_ $node
      */
     public function refactor(Node $node): ?Node
     {
