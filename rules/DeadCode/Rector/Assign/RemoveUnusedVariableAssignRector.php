@@ -69,16 +69,16 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Stmt\Function_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Stmt\Function_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?ClassMethod
+    public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Stmt\Function_
     {
-        $classMethodStmts = $node->stmts;
-        if ($classMethodStmts === null) {
+        $stmts = $node->stmts;
+        if ($stmts === null || $stmts === []) {
             return null;
         }
 
@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($classMethodStmts);
+        $assignedVariableNamesByStmtPosition = $this->resolvedAssignedVariablesByStmtPosition($stmts);
 
         $hasChanged = false;
 
@@ -101,7 +101,7 @@ CODE_SAMPLE
             }
 
             /** @var Expression<Assign> $currentStmt */
-            $currentStmt = $classMethodStmts[$stmtPosition];
+            $currentStmt = $stmts[$stmtPosition];
 
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
@@ -144,15 +144,15 @@ CODE_SAMPLE
     }
 
     private function isVariableUsedInFollowingStmts(
-        ClassMethod $classMethod,
-        int $assignStmtPosition,
-        string $variableName
+        ClassMethod|Stmt\Function_ $functionLike,
+        int                        $assignStmtPosition,
+        string                     $variableName
     ): bool {
-        if ($classMethod->stmts === null) {
+        if ($functionLike->stmts === null) {
             return false;
         }
 
-        foreach ($classMethod->stmts as $key => $stmt) {
+        foreach ($functionLike->stmts as $key => $stmt) {
             // do not look yet
             if ($key <= $assignStmtPosition) {
                 continue;
@@ -172,9 +172,9 @@ CODE_SAMPLE
         return false;
     }
 
-    private function containsCompactFuncCall(ClassMethod|Node $node): bool
+    private function containsCompactFuncCall(ClassMethod|Stmt\Function_ $functionLike): bool
     {
-        $compactFuncCall = $this->betterNodeFinder->findFirst($node, function (Node $node): bool {
+        $compactFuncCall = $this->betterNodeFinder->findFirst($functionLike, function (Node $node): bool {
             if (! $node instanceof FuncCall) {
                 return false;
             }
@@ -185,9 +185,9 @@ CODE_SAMPLE
         return $compactFuncCall instanceof FuncCall;
     }
 
-    private function containsFileIncludes(ClassMethod $classMethod): bool
+    private function containsFileIncludes(ClassMethod|Stmt\Function_ $functionLike): bool
     {
-        return (bool) $this->betterNodeFinder->findInstancesOf($classMethod, [Include_::class]);
+        return (bool) $this->betterNodeFinder->findInstancesOf($functionLike, [Include_::class]);
     }
 
     /**
