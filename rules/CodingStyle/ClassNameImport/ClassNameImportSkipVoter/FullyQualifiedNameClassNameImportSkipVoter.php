@@ -39,7 +39,6 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
-        $justRenamed = $node instanceof FullyQualified && ! $node->hasAttribute(AttributeKey::ORIGINAL_NAME);
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -53,10 +52,6 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
             $fullyQualifiedName = ltrim($fullyQualifiedName, '\\');
             if ($className === $fullyQualifiedName) {
                 return false;
-            }
-
-            if (! $justRenamed) {
-                return true;
             }
 
             return ! in_array($fullyQualifiedName, $removedUses, true);
