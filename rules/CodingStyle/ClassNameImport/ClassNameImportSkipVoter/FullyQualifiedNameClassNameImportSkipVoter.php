@@ -54,7 +54,15 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return false;
             }
 
-            return ! $justRenamed;
+            if ($justRenamed) {
+                if (! str_contains($fullyQualifiedName, '\\')) {
+                    return str_contains($className, '\\');
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         return false;
