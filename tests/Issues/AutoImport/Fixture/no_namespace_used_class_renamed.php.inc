@@ -1,6 +1,6 @@
 <?php
 
-function skipNoNamespaceUsedClassRenamed(
+function NoNamespaceUsedClassRenamed(
     // fqcn
     \Some\Exception $e
 )
@@ -13,7 +13,7 @@ function skipNoNamespaceUsedClassRenamed(
 -----
 <?php
 
-function skipNoNamespaceUsedClassRenamed(
+function NoNamespaceUsedClassRenamed(
     // fqcn
     \Some\Target\Exception $e
 )
