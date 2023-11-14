@@ -59,10 +59,6 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return true;
             }
 
-            if (! str_contains($fullyQualifiedName, '\\')) {
-                return str_contains($className, '\\');
-            }
-
             return ! in_array($fullyQualifiedName, $removedUses, true);
         }
 
