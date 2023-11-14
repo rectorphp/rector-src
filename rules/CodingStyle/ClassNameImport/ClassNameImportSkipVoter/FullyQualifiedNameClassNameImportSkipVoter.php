@@ -6,12 +6,10 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Core\Configuration\RenamedClassesDataCollector;
 use Rector\Core\ValueObject\Application\File;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 /**
