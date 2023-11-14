@@ -69,16 +69,16 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Stmt\Function_::class];
     }
 
     /**
      * @param ClassMethod $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?ClassMethod
+    public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Stmt\Function_
     {
         $classMethodStmts = $node->stmts;
-        if ($classMethodStmts === null) {
+        if ($classMethodStmts === null || $classMethodStmts === []) {
             return null;
         }
 
@@ -144,15 +144,15 @@ CODE_SAMPLE
     }
 
     private function isVariableUsedInFollowingStmts(
-        ClassMethod $classMethod,
-        int $assignStmtPosition,
-        string $variableName
+        ClassMethod|Stmt\Function_ $functionLike,
+        int                        $assignStmtPosition,
+        string                     $variableName
     ): bool {
-        if ($classMethod->stmts === null) {
+        if ($functionLike->stmts === null) {
             return false;
         }
 
-        foreach ($classMethod->stmts as $key => $stmt) {
+        foreach ($functionLike->stmts as $key => $stmt) {
             // do not look yet
             if ($key <= $assignStmtPosition) {
                 continue;
@@ -185,9 +185,9 @@ CODE_SAMPLE
         return $compactFuncCall instanceof FuncCall;
     }
 
-    private function containsFileIncludes(ClassMethod $classMethod): bool
+    private function containsFileIncludes(ClassMethod|Stmt\Function_ $functionLike): bool
     {
-        return (bool) $this->betterNodeFinder->findInstancesOf($classMethod, [Include_::class]);
+        return (bool) $this->betterNodeFinder->findInstancesOf($functionLike, [Include_::class]);
     }
 
     /**
