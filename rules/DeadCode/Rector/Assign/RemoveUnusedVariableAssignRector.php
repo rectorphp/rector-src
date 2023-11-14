@@ -73,7 +73,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Stmt\Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Stmt\Function_
     {
@@ -172,9 +172,9 @@ CODE_SAMPLE
         return false;
     }
 
-    private function containsCompactFuncCall(ClassMethod|Node $node): bool
+    private function containsCompactFuncCall(ClassMethod|Stmt\Function_ $functionLike): bool
     {
-        $compactFuncCall = $this->betterNodeFinder->findFirst($node, function (Node $node): bool {
+        $compactFuncCall = $this->betterNodeFinder->findFirst($functionLike, function (Node $node): bool {
             if (! $node instanceof FuncCall) {
                 return false;
             }
