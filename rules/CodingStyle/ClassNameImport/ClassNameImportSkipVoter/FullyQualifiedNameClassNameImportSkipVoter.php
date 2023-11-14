@@ -40,9 +40,7 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
-                $shortName = str_starts_with($shortName, '\\')
-                    ? ltrim((string) Strings::after($shortName, '\\', -1))
-                    : $shortName;
+                $shortName = $this->cleanShortName($shortName);
             }
 
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -66,5 +64,12 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         }
 
         return false;
+    }
+
+    private function cleanShortName(string $shortName): string
+    {
+        return str_starts_with($shortName, '\\')
+            ? ltrim((string) Strings::after($shortName, '\\', -1))
+            : $shortName;
     }
 }
