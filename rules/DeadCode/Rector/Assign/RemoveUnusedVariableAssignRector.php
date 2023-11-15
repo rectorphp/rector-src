@@ -15,6 +15,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use Rector\Core\NodeAnalyzer\VariableAnalyzer;
 use Rector\Core\Php\ReservedKeywordAnalyzer;
@@ -69,13 +70,13 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Stmt\Function_::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Stmt\Function_ $node
+     * @param ClassMethod|Function_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Stmt\Function_
+    public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Function_
     {
         $stmts = $node->stmts;
         if ($stmts === null || $stmts === []) {
@@ -144,9 +145,9 @@ CODE_SAMPLE
     }
 
     private function isVariableUsedInFollowingStmts(
-        ClassMethod|Stmt\Function_ $functionLike,
-        int                        $assignStmtPosition,
-        string                     $variableName
+        ClassMethod|Function_ $functionLike,
+        int                   $assignStmtPosition,
+        string                $variableName
     ): bool {
         if ($functionLike->stmts === null) {
             return false;
@@ -172,7 +173,7 @@ CODE_SAMPLE
         return false;
     }
 
-    private function containsCompactFuncCall(ClassMethod|Stmt\Function_ $functionLike): bool
+    private function containsCompactFuncCall(ClassMethod|Function_ $functionLike): bool
     {
         $compactFuncCall = $this->betterNodeFinder->findFirst($functionLike, function (Node $node): bool {
             if (! $node instanceof FuncCall) {
@@ -185,7 +186,7 @@ CODE_SAMPLE
         return $compactFuncCall instanceof FuncCall;
     }
 
-    private function containsFileIncludes(ClassMethod|Stmt\Function_ $functionLike): bool
+    private function containsFileIncludes(ClassMethod|Function_ $functionLike): bool
     {
         return (bool) $this->betterNodeFinder->findInstancesOf($functionLike, [Include_::class]);
     }
