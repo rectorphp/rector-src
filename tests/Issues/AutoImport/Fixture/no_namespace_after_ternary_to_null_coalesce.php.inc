@@ -2,7 +2,7 @@
 
 use shop\product\business\ProductFilter;
 
-class ProductController
+class NoNamespaceAfterTernaryToNullCoalesce
 {
     private function sharedProductFilter(): void
     {
@@ -19,7 +19,7 @@ class ProductController
 
 use shop\product\business\ProductFilter;
 
-class ProductController
+class NoNamespaceAfterTernaryToNullCoalesce
 {
     private function sharedProductFilter(): void
     {
