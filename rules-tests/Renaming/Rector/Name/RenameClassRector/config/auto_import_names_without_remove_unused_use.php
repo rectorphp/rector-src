@@ -11,6 +11,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'Interop\Container\ContainerInterface' => 'Psr\Container\ContainerInterface',
         'DateTime' => 'DateTimeInterface',
+        'FqnizeNamespacedImport' => 'Abc\FqnizeNamespacedImport',
         /**
          * This test never renamed as it is annotation @IsGranted
          *
