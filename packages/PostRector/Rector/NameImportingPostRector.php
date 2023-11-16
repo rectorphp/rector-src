@@ -94,14 +94,8 @@ final class NameImportingPostRector extends AbstractPostRector
 
         $namespaces = array_filter(
             $file->getNewStmts(),
-            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
         );
-
-        // handle overlapped resolve last new stmts
-        // @see https://github.com/rectorphp/rector-src/pull/5251
-        if ($namespaces === []) {
-            return null;
-        }
 
         if (count($namespaces) > 1) {
             return null;
