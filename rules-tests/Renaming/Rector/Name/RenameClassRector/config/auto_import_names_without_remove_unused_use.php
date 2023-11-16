@@ -12,6 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
         'Interop\Container\ContainerInterface' => 'Psr\Container\ContainerInterface',
         'DateTime' => 'DateTimeInterface',
         'FqnizeNamespacedImport' => 'Abc\FqnizeNamespacedImport',
+        'Abc2\FqnizeNamespacedImport2' => 'Abc\FqnizeNamespacedImport2',
         /**
          * This test never renamed as it is annotation @IsGranted
          *
