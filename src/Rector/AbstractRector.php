@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Rector;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
@@ -20,7 +18,6 @@ use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
 use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
@@ -333,27 +330,5 @@ CODE_SAMPLE;
         }
 
         return false;
-    }
-
-    /**
-     * @return Node[]|null
-     */
-    public function afterTraverse(array $nodes): ?array
-    {
-        foreach ($nodes as $node) {
-            if ($node instanceof Namespace_) {
-                return parent::afterTraverse($nodes);
-            }
-
-            if ($node instanceof FileWithoutNamespace) {
-                return parent::afterTraverse($nodes);
-            }
-        }
-
-        /** @var Stmt[] $nodes */
-        $newNodes = [new FileWithoutNamespace($nodes)];
-        $this->file->changeNewStmts($newNodes);
-
-        return parent::afterTraverse($newNodes);
     }
 }
