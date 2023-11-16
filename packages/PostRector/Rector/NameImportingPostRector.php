@@ -97,6 +97,8 @@ final class NameImportingPostRector extends AbstractPostRector
             static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
         );
 
+        // handle overlapped resolve last new stmts
+        // @see https://github.com/rectorphp/rector-src/pull/5251
         if ($namespaces === []) {
             return null;
         }
