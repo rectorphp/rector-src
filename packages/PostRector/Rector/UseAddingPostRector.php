@@ -104,6 +104,20 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
+        // just renamed no-namepaced class to namespaced class
+        $namespaces = array_filter($nodes, static fn(Stmt $stmt): bool => $stmt instanceof Namespace_);
+        if ($namespaces !== []) {
+            // then add, to prevent adding + removing false positive of same short use
+            $this->useImportsAdder->addImportsToNamespace(
+                current($namespaces),
+                $useImportTypes,
+                $constantUseImportTypes,
+                $functionUseImportTypes
+            );
+
+            return $nodes;
+        }
+
         // B. no namespace? add in the top
         $useImportTypes = $this->filterOutNonNamespacedNames($useImportTypes);
 
