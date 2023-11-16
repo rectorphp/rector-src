@@ -94,8 +94,12 @@ final class NameImportingPostRector extends AbstractPostRector
 
         $namespaces = array_filter(
             $file->getNewStmts(),
-            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
         );
+
+        if ($namespaces === []) {
+            return null;
+        }
 
         if (count($namespaces) > 1) {
             return null;
