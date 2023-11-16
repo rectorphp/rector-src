@@ -146,8 +146,8 @@ CODE_SAMPLE
 
     private function isVariableUsedInFollowingStmts(
         ClassMethod|Function_ $functionLike,
-        int                   $assignStmtPosition,
-        string                $variableName
+        int $assignStmtPosition,
+        string $variableName
     ): bool {
         if ($functionLike->stmts === null) {
             return false;
