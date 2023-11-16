@@ -117,7 +117,7 @@ final class NameImportingPostRector extends AbstractPostRector
     /**
      * @param Use_[]|GroupUse[] $currentUses
      */
-    private function resolveNameInUse(Name $name, array $currentUses): null|Name
+    private function resolveNameInUse(FullyQualified $name, array $currentUses): null|Name
     {
         $aliasName = $this->aliasNameResolver->resolveByName($name, $currentUses);
         if (is_string($aliasName)) {
