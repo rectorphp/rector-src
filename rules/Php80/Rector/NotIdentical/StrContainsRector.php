@@ -151,13 +151,4 @@ CODE_SAMPLE
 
         return null;
     }
-
-    private function isPositiveInteger(Expr $expr): bool
-    {
-        if (! $expr instanceof LNumber) {
-            return false;
-        }
-
-        return $expr->value > 0;
-    }
 }
