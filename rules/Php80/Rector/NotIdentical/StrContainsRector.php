@@ -100,7 +100,7 @@ CODE_SAMPLE
         if (isset($funcCall->getArgs()[2])) {
             $secondArg = $funcCall->getArgs()[2];
 
-            if ($this->isName($funcCall->name, 'strpos') && $this->isPositiveInteger($secondArg->value)) {
+            if ($this->isName($funcCall->name, 'strpos')) {
                 $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall(
                     'substr',
                     [$funcCall->args[0], $secondArg]
