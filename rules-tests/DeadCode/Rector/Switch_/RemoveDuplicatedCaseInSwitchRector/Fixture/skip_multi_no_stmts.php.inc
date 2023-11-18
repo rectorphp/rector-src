@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector\Fixture;
 
-class MultiNoStmts
+class SkipMultiNoStmts
 {
     public function run($foo)
     {
