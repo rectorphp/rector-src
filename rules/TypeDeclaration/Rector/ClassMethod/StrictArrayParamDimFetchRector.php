@@ -194,12 +194,8 @@ CODE_SAMPLE
             $nodeToCheck = $node->var;
         }
 
-        if ($nodeToCheck instanceof MethodCall) {
-            return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
-        }
-
-        if ($nodeToCheck instanceof ArrayDimFetch) {
-            return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
+        if ($this->isMethodCallOrArrayDimFetch($paramName, $nodeToCheck)) {
+            return true;
         }
 
         if ($nodeToCheck instanceof Variable && $this->isName($nodeToCheck, $paramName)) {
@@ -207,5 +203,18 @@ CODE_SAMPLE
         }
 
         return $this->isEchoed($node, $paramName);
+    }
+
+    private function isMethodCallOrArrayDimFetch(string $paramName, ?Node $node): bool
+    {
+        if ($node instanceof MethodCall) {
+            return $node->var instanceof Variable && $this->isName($node->var, $paramName);
+        }
+
+        if ($node instanceof ArrayDimFetch) {
+            return $node->var instanceof Variable && $this->isName($node->var, $paramName);
+        }
+
+        return false;
     }
 }
