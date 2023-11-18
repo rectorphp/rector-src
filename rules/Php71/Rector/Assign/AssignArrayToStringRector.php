@@ -194,15 +194,9 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($node->var instanceof Variable && $this->isName(
-                $node->var,
-                $variableName
-            ) && $node->var->getStartTokenPos() > $variable->getStartTokenPos()) {
-                $exprType = $this->nodeTypeResolver->getNativeType($node->expr);
-                if ($exprType->isArray()->yes()) {
-                    $assignedArrayDimFetches = [];
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
+            if ($this->isReAssignedAsArray($node, $variableName, $variable)) {
+                $assignedArrayDimFetches = [];
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             if (! $node->var instanceof ArrayDimFetch) {
@@ -222,6 +216,21 @@ CODE_SAMPLE
         });
 
         return $assignedArrayDimFetches;
+    }
+
+    private function isReAssignedAsArray(Assign $assign, string $variableName, Variable $variable): bool
+    {
+        if ($assign->var instanceof Variable && $this->isName(
+            $assign->var,
+            $variableName
+        ) && $assign->var->getStartTokenPos() > $variable->getStartTokenPos()) {
+            $exprType = $this->nodeTypeResolver->getNativeType($assign->expr);
+            if ($exprType->isArray()->yes()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function refactorAssign(
