@@ -6,11 +6,9 @@ final class WithDefaultArrayType
 {
     public function run($param = [])
     {
-	 if (isset($param['bar'])) {
+	    if (isset($param['bar'])) {
             echo $param['bar'];
         }
-
-        echo $param;
     }
 }
 
@@ -24,11 +22,9 @@ final class WithDefaultArrayType
 {
     public function run(array $param = [])
     {
-	 if (isset($param['bar'])) {
+	    if (isset($param['bar'])) {
             echo $param['bar'];
         }
-
-        echo $param;
     }
 }
 
