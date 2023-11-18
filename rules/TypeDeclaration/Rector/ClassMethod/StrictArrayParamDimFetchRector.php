@@ -18,6 +18,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
@@ -155,6 +156,21 @@ CODE_SAMPLE
         return $isParamAccessedArrayDimFetch;
     }
 
+    private function isEchoed(Node $node, string $paramName): bool
+    {
+        if (! $node instanceof Echo_) {
+            return false;
+        }
+
+        foreach ($node->exprs as $expr) {
+            if ($expr instanceof Variable && $this->isName($expr, $paramName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function shouldStop(Node $node, string $paramName): bool
     {
         $nodeToCheck = null;
@@ -186,6 +202,10 @@ CODE_SAMPLE
             return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
         }
 
-        return $nodeToCheck instanceof Variable && $this->isName($nodeToCheck, $paramName);
+        if ($nodeToCheck instanceof Variable && $this->isName($nodeToCheck, $paramName)) {
+            return true;
+        }
+
+        return $this->isEchoed($node, $paramName);
     }
 }
