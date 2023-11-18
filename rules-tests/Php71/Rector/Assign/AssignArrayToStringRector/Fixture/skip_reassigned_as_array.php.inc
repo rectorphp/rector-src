@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php71\Rector\Assign\AssignArrayToStringRector\Fixture;
 
-final class SkipReAssignedNotArray
+final class SkipReAssignedAsArray
 {
     public function fun()
     {
