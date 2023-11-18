@@ -100,7 +100,7 @@ CODE_SAMPLE
         if (isset($funcCall->getArgs()[2])) {
             $secondArg = $funcCall->getArgs()[2];
 
-            if ($this->isName($funcCall->name, 'strpos')) {
+            if ($this->isName($funcCall->name, 'strpos') && ! $this->isZero($secondArg->value)) {
                 $funcCall->args[0] = new Arg($this->nodeFactory->createFuncCall(
                     'substr',
                     [$funcCall->args[0], $secondArg]
@@ -150,5 +150,14 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isZero(Expr $expr): bool
+    {
+        if (! $expr instanceof LNumber) {
+            return false;
+        }
+
+        return $expr->value === 0;
     }
 }
