@@ -223,7 +223,7 @@ CODE_SAMPLE
         if ($assign->var instanceof Variable && $this->isName(
             $assign->var,
             $variableName
-        ) && $assign->var->getStartTokenPos() > $variable->getStartTokenPos()) {
+        ) && ! $this->nodeComparator->areSameNode($assign->var, $variable)) {
             $exprType = $this->nodeTypeResolver->getNativeType($assign->expr);
             if ($exprType->isArray()->yes()) {
                 return true;
