@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
+use PHPStan\Type\Type;
 use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Core\Rector\AbstractRector;
@@ -184,13 +185,24 @@ CODE_SAMPLE
         }
 
         $assignedArrayDimFetches = [];
+        $assignExprTypes = [];
 
         $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (
+            $variable,
             $variableName,
-            &$assignedArrayDimFetches
+            &$assignedArrayDimFetches,
+            &$assignExprTypes
         ) {
             if (! $node instanceof Assign) {
                 return null;
+            }
+
+            if ($node->var instanceof Variable && $this->isName(
+                $node->var,
+                $variableName
+            ) && $node->var->getStartTokenPos() > $variable->getStartTokenPos()) {
+                $exprType = $this->nodeTypeResolver->getNativeType($node->expr);
+                $assignExprTypes[] = $exprType;
             }
 
             if (! $node->var instanceof ArrayDimFetch) {
@@ -208,6 +220,26 @@ CODE_SAMPLE
 
             $assignedArrayDimFetches[] = $arrayDimFetch;
         });
+
+        return $this->resolveCalculatedAssignedArrayDimFetches($assignedArrayDimFetches, $assignExprTypes);
+    }
+
+    /**
+     * @param ArrayDimFetch[] $assignedArrayDimFetches
+     * @param Type[] $assignExprTypes
+     * @return ArrayDimFetch[]
+     */
+    private function resolveCalculatedAssignedArrayDimFetches(
+        array $assignedArrayDimFetches,
+        array $assignExprTypes
+    ): array {
+        if (count($assignExprTypes) > 1) {
+            foreach ($assignExprTypes as $assignExprType) {
+                if (! $assignExprType->isArray()->yes()) {
+                    return [];
+                }
+            }
+        }
 
         return $assignedArrayDimFetches;
     }
