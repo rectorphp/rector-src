@@ -98,7 +98,7 @@ CODE_SAMPLE
     {
         $totalKeys = count($switch->cases);
         foreach (array_keys($switch->cases) as $key) {
-            if (isset($switch->cases[$key - 1]) && $switch->cases[$key-1]->stmts === []) {
+            if (isset($switch->cases[$key - 1]) && $switch->cases[$key - 1]->stmts === []) {
                 continue;
             }
 
