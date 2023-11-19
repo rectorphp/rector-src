@@ -28,10 +28,23 @@ use Webmozart\Assert\Assert;
  */
 final class RenameClassRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    private bool $isMayRequireRestructureNamespace = false;
+
     public function __construct(
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
         private readonly ClassRenamer $classRenamer,
     ) {
+    }
+
+    /**
+     * @param Node[] $nodes
+     * @return Node[]|null
+     */
+    public function beforeTraverse(array $nodes): ?array
+    {
+        $this->isMayRequireRestructureNamespace = false;
+
+        return parent::beforeTraverse($nodes);
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -95,7 +108,13 @@ CODE_SAMPLE
         $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
         if ($oldToNewClasses !== []) {
             $scope = $node->getAttribute(AttributeKey::SCOPE);
-            return $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
+            $renameNode = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
+
+            if ($renameNode instanceof Namespace_) {
+                $this->isMayRequireRestructureNamespace = true;
+            }
+
+            return $renameNode;
         }
 
         return null;
@@ -118,20 +137,24 @@ CODE_SAMPLE
      */
     public function afterTraverse(array $nodes): ?array
     {
+        if (! $this->isMayRequireRestructureNamespace) {
+            return parent::afterTraverse($nodes);
+        }
+
         foreach ($nodes as $node) {
             if ($node instanceof Namespace_) {
                 return parent::afterTraverse($nodes);
             }
 
-            if ($node instanceof FileWithoutNamespace) {
-                foreach ($node->stmts as $stmt) {
-                    if ($stmt instanceof Namespace_) {
-                        $this->restructureUnderNamespace($node);
-                        return $node->stmts;
-                    }
-                }
+            if (! $node instanceof FileWithoutNamespace) {
+                continue;
+            }
 
-                return parent::afterTraverse($nodes);
+            foreach ($node->stmts as $stmt) {
+                if ($stmt instanceof Namespace_) {
+                    $this->restructureUnderNamespace($node);
+                    return $node->stmts;
+                }
             }
         }
 
