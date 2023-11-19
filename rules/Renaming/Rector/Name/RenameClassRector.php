@@ -127,7 +127,7 @@ CODE_SAMPLE
                 foreach ($node->stmts as $stmt) {
                     if ($stmt instanceof Namespace_) {
                         $this->restructureUnderNamespace($node);
-                        return parent::afterTraverse($node->stmts);
+                        return $node->stmts;
                     }
                 }
 
