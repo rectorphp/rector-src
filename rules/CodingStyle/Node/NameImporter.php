@@ -104,8 +104,11 @@ final class NameImporter
         return false;
     }
 
-    private function addUseImport(File $file, FullyQualified $fullyQualified, FullyQualifiedObjectType $fullyQualifiedObjectType): void
-    {
+    private function addUseImport(
+        File $file,
+        FullyQualified $fullyQualified,
+        FullyQualifiedObjectType $fullyQualifiedObjectType
+    ): void {
         if ($this->useNodesToAddCollector->hasImport($file, $fullyQualified, $fullyQualifiedObjectType)) {
             return;
         }
