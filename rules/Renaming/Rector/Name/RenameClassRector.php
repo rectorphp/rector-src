@@ -166,7 +166,10 @@ CODE_SAMPLE
         $stmtsBeforeNamespace = [];
         foreach ($fileWithoutNamespace->stmts as $key => $stmt) {
             if ($stmt instanceof Namespace_) {
-                $stmt->stmts = array_values([...$stmtsBeforeNamespace, ...$stmt->stmts]);
+                if ($stmtsBeforeNamespace !== []) {
+                    $stmt->stmts = array_values([...$stmtsBeforeNamespace, ...$stmt->stmts]);
+                }
+
                 break;
             }
 
@@ -176,6 +179,10 @@ CODE_SAMPLE
 
             $stmtsBeforeNamespace[] = $stmt;
             unset($fileWithoutNamespace->stmts[$key]);
+        }
+
+        if ($stmtsBeforeNamespace === []) {
+            return;
         }
 
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
