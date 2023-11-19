@@ -36,6 +36,10 @@ final class RenameClassRector extends AbstractRector implements ConfigurableRect
     ) {
     }
 
+    /**
+     * @param Node[] $nodes
+     * @return Node[]|null
+     */
     public function beforeTraverse(array $nodes): ?array
     {
         $this->isMayRequireRestructureNamespace = false;
