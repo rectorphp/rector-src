@@ -16,5 +16,3 @@ use A\B;
 class FqnizeNamespacedWithUse
 {
 }
-
-?>

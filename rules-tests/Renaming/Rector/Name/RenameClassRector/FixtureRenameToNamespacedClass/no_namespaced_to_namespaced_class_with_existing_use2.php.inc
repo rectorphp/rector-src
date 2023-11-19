@@ -13,7 +13,6 @@ class FqnizeNamespacedWithUseWithDeclareStrictTypes
 <?php
 
 declare(strict_types=1);
-
 namespace Abc;
 
 use A\B;
