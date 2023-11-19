@@ -163,29 +163,21 @@ CODE_SAMPLE
 
     private function restructureUnderNamespace(FileWithoutNamespace $fileWithoutNamespace): void
     {
-        $stmts = array_reverse($fileWithoutNamespace->stmts, true);
-        $isBeforeNamespace = false;
         $stmtsBeforeNamespace = [];
-        $namepace = null;
-
-        foreach ($stmts as $key => $stmt) {
+        foreach ($fileWithoutNamespace->stmts as $key => $stmt) {
             if ($stmt instanceof Namespace_) {
-                $isBeforeNamespace = true;
-                $namepace = $stmt;
+                $stmt->stmts = array_values([...$stmtsBeforeNamespace, ...$stmt->stmts]);
+                break;
+            }
+
+            if ($stmt instanceof Declare_) {
                 continue;
             }
 
-            if ($isBeforeNamespace && ! $stmt instanceof Declare_) {
-                $stmtsBeforeNamespace[] = $stmt;
-                unset($stmts[$key]);
-            }
+            $stmtsBeforeNamespace[] = $stmt;
+            unset($fileWithoutNamespace->stmts[$key]);
         }
 
-        if ($stmtsBeforeNamespace === [] || ! $namepace instanceof Namespace_) {
-            return;
-        }
-
-        $namepace->stmts = array_values([...$stmtsBeforeNamespace, ...$namepace->stmts]);
-        $fileWithoutNamespace->stmts = array_values(array_reverse($stmts, true));
+        $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
     }
 }
