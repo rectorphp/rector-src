@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector\Fixture;
 
-final class SomeNativeMethodCall
+final class NativeMethodCallReturningUnion
 {
     public function run()
     {
@@ -16,7 +16,7 @@ final class SomeNativeMethodCall
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector\Fixture;
 
-final class SomeNativeMethodCall
+final class NativeMethodCallReturningUnion
 {
     public function run(): array|bool
     {
