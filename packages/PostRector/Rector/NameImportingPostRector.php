@@ -26,7 +26,6 @@ use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
 
 final class NameImportingPostRector extends AbstractPostRector
@@ -59,7 +58,7 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        if ($node instanceof Name) {
+        if ($node instanceof FullyQualified) {
             return $this->processNodeName($node, $file);
         }
 
@@ -86,9 +85,9 @@ final class NameImportingPostRector extends AbstractPostRector
         return $node;
     }
 
-    private function processNodeName(Name $name, File $file): ?Node
+    private function processNodeName(FullyQualified $fullyQualified, File $file): ?Node
     {
-        if ($name->isSpecialClassName()) {
+        if ($fullyQualified->isSpecialClassName()) {
             return null;
         }
 
@@ -103,47 +102,41 @@ final class NameImportingPostRector extends AbstractPostRector
 
         /** @var Use_[]|GroupUse[] $currentUses */
         $currentUses = $this->useImportsResolver->resolve();
-        if ($this->classNameImportSkipper->shouldSkipName($name, $currentUses)) {
+        if ($this->classNameImportSkipper->shouldSkipName($fullyQualified, $currentUses)) {
             return null;
         }
 
-        $nameInUse = $this->resolveNameInUse($name, $currentUses);
+        $nameInUse = $this->resolveNameInUse($fullyQualified, $currentUses);
         if ($nameInUse instanceof Name) {
             return $nameInUse;
         }
 
-        return $this->nameImporter->importName($name, $file);
+        return $this->nameImporter->importName($fullyQualified, $file);
     }
 
     /**
      * @param Use_[]|GroupUse[] $currentUses
      */
-    private function resolveNameInUse(Name $name, array $currentUses): null|Name
+    private function resolveNameInUse(FullyQualified $fullyQualified, array $currentUses): null|Name
     {
-        $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
-
-        if (! $originalName instanceof FullyQualified) {
-            return null;
-        }
-
-        $aliasName = $this->aliasNameResolver->resolveByName($name, $currentUses);
+        $aliasName = $this->aliasNameResolver->resolveByName($fullyQualified, $currentUses);
         if (is_string($aliasName)) {
             return new Name($aliasName);
         }
 
-        return $this->resolveLongNameInUseName($name, $currentUses);
+        return $this->resolveLongNameInUseName($fullyQualified, $currentUses);
     }
 
     /**
      * @param Use_[]|GroupUse[] $currentUses
      */
-    private function resolveLongNameInUseName(Name $name, array $currentUses): ?Name
+    private function resolveLongNameInUseName(FullyQualified $fullyQualified, array $currentUses): ?Name
     {
-        if (substr_count($name->toCodeString(), '\\') === 1) {
+        if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
             return null;
         }
 
-        $lastName = $name->getLast();
+        $lastName = $fullyQualified->getLast();
         foreach ($currentUses as $currentUse) {
             foreach ($currentUse->uses as $useUse) {
                 if ($useUse->name->getLast() !== $lastName) {

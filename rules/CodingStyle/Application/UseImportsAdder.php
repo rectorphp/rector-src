@@ -58,7 +58,7 @@ final class UseImportsAdder
 
         $newUses = $this->createUses($useImportTypes, $constantUseImportTypes, $functionUseImportTypes, null);
         if ($newUses === []) {
-            return $stmts;
+            return [$fileWithoutNamespace];
         }
 
         // place after declare strict_types
@@ -78,7 +78,7 @@ final class UseImportsAdder
                 $fileWithoutNamespace->stmts = $stmts;
                 $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-                return $fileWithoutNamespace->stmts;
+                return [$fileWithoutNamespace];
             }
         }
 
@@ -88,7 +88,7 @@ final class UseImportsAdder
         $fileWithoutNamespace->stmts = array_merge($newUses, $stmts);
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
-        return $fileWithoutNamespace->stmts;
+        return [$fileWithoutNamespace];
     }
 
     /**

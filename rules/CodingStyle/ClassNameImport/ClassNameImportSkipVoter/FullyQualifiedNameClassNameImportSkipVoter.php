@@ -34,15 +34,13 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
         // "new X" or "X::static()"
         /** @var array<string, string> $shortNamesToFullyQualifiedNames */
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
-        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
+        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
-                $shortName = str_starts_with($shortName, '\\')
-                    ? ltrim((string) Strings::after($shortName, '\\', -1))
-                    : $shortName;
+                $shortName = $this->cleanShortName($shortName);
             }
 
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -54,13 +52,16 @@ final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImpor
                 return false;
             }
 
-            if (in_array($fullyQualifiedName, $removedUses, true)) {
-                return false;
-            }
-
-            return str_contains($fullyQualifiedName, '\\');
+            return ! in_array($fullyQualifiedName, $removedUses, true);
         }
 
         return false;
+    }
+
+    private function cleanShortName(string $shortName): string
+    {
+        return str_starts_with($shortName, '\\')
+            ? ltrim((string) Strings::after($shortName, '\\', -1))
+            : $shortName;
     }
 }

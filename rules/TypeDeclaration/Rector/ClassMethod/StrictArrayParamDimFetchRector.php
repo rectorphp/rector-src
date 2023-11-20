@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -17,6 +18,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
@@ -87,6 +89,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($param->default instanceof Expr && ! $this->getType($param->default)->isArray()->yes()) {
+                continue;
+            }
+
             if (! $this->isParamAccessedArrayDimFetch($param, $node)) {
                 continue;
             }
@@ -150,6 +156,21 @@ CODE_SAMPLE
         return $isParamAccessedArrayDimFetch;
     }
 
+    private function isEchoed(Node $node, string $paramName): bool
+    {
+        if (! $node instanceof Echo_) {
+            return false;
+        }
+
+        foreach ($node->exprs as $expr) {
+            if ($expr instanceof Variable && $this->isName($expr, $paramName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function shouldStop(Node $node, string $paramName): bool
     {
         $nodeToCheck = null;
@@ -173,14 +194,27 @@ CODE_SAMPLE
             $nodeToCheck = $node->var;
         }
 
-        if ($nodeToCheck instanceof MethodCall) {
-            return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
+        if ($this->isMethodCallOrArrayDimFetch($paramName, $nodeToCheck)) {
+            return true;
         }
 
-        if ($nodeToCheck instanceof ArrayDimFetch) {
-            return $nodeToCheck->var instanceof Variable && $this->isName($nodeToCheck->var, $paramName);
+        if ($nodeToCheck instanceof Variable && $this->isName($nodeToCheck, $paramName)) {
+            return true;
         }
 
-        return $nodeToCheck instanceof Variable && $this->isName($nodeToCheck, $paramName);
+        return $this->isEchoed($node, $paramName);
+    }
+
+    private function isMethodCallOrArrayDimFetch(string $paramName, ?Node $node): bool
+    {
+        if ($node instanceof MethodCall) {
+            return $node->var instanceof Variable && $this->isName($node->var, $paramName);
+        }
+
+        if ($node instanceof ArrayDimFetch) {
+            return $node->var instanceof Variable && $this->isName($node->var, $paramName);
+        }
+
+        return false;
     }
 }

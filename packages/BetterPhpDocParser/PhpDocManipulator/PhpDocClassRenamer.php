@@ -13,11 +13,13 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\Renaming\Collector\RenamedNameCollector;
 
 final class PhpDocClassRenamer
 {
     public function __construct(
-        private readonly ClassAnnotationMatcher $classAnnotationMatcher
+        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
+        private readonly RenamedNameCollector $renamedNameCollector
     ) {
     }
 
@@ -80,6 +82,7 @@ final class PhpDocClassRenamer
                 continue;
             }
 
+            $this->renamedNameCollector->add($oldClass);
             $classNameStringNode->value = $newClass;
 
             // trigger reprint
@@ -135,6 +138,7 @@ final class PhpDocClassRenamer
                     continue;
                 }
 
+                $this->renamedNameCollector->add($oldClass);
                 $classNameStringNode->value = Strings::replace(
                     $classNameStringNode->value,
                     '#\b' . preg_quote($oldClass, '#') . '\b#',
@@ -197,6 +201,7 @@ final class PhpDocClassRenamer
                 continue;
             }
 
+            $this->renamedNameCollector->add($oldClass);
             $targetEntityStringNode->value = $newClass;
             $targetEntityArrayItemNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, null);
 

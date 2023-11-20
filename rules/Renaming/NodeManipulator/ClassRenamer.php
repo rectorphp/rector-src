@@ -29,6 +29,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class ClassRenamer
@@ -54,6 +55,7 @@ final class ClassRenamer
         private readonly ReflectionProvider $reflectionProvider,
         private readonly FileHasher $fileHasher,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly RenamedNameCollector $renamedNameCollector
     ) {
     }
 
@@ -167,6 +169,7 @@ final class ClassRenamer
             return null;
         }
 
+        $this->renamedNameCollector->add($stringName);
         return new FullyQualified($newName);
     }
 
