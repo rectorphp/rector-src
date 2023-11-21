@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
-use Rector\CodingStyle\Rector\Switch_\BinarySwitchToIfElseRector;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorReadonlyClassRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
@@ -36,9 +34,7 @@ final class MissingInSetCommand extends Command
         // collectors
         FinalizeClassesWithoutChildrenCollectorRector::class,
         // deprecated
-        TypedPropertyFromStrictConstructorReadonlyClassRector::class,
         TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
-        BinarySwitchToIfElseRector::class,
         CountOnNullRector::class,
     ];
 
