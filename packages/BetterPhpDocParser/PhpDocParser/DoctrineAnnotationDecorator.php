@@ -307,6 +307,9 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         return new StartAndEnd($currentStartAndEnd->getStart(), $nextStartAndEnd->getEnd());
     }
 
+    /**
+     * @return SpacelessPhpDocTagNode[]
+     */
     private function resolveFqnAnnotationSpacelessPhpDocTagNode(
         PhpDocTextNode $phpDocTextNode,
         Node $currentPhpNode
