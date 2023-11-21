@@ -2,12 +2,13 @@
 
 namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
 
-class TwoRoutesWithPrevDoc
+class TwoRoutesWithNextDoc2
 {
     /**
-     * @return Response
      * @\Symfony\Component\Routing\Annotation\Route("/first", methods={"GET"})
      * @\Symfony\Component\Routing\Annotation\Route("/second", methods={"GET"})
+     * @return Response
+     * @\Symfony\Component\Routing\Annotation\Route("/third", methods={"GET"})
      */
     public function some(): Response
     {
@@ -22,12 +23,13 @@ class TwoRoutesWithPrevDoc
 namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Symfony\Component\Routing\Annotation\Route;
-class TwoRoutesWithPrevDoc
+class TwoRoutesWithNextDoc2
 {
     /**
-     * @return Response
      * @Route("/first", methods={"GET"})
      * @Route("/second", methods={"GET"})
+     * @return Response
+     * @\Symfony\Component\Routing\Annotation\Route("/third", methods={"GET"})
      */
     public function some(): Response
     {
