@@ -12,8 +12,8 @@ namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
  * @\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity("uuid")
  * @\Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity("email")
  */
-class Entity {
-
+class Entity
+{
     /**
      * @\Symfony\Component\Validator\Constraints\NotBlank()
      * @\Symfony\Component\Validator\Constraints\Email(mode="strict")
