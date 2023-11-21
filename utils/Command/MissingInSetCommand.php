@@ -11,6 +11,7 @@ use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorReadonlyClassRector;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
@@ -36,6 +37,7 @@ final class MissingInSetCommand extends Command
         FinalizeClassesWithoutChildrenCollectorRector::class,
         // deprecated
         TypedPropertyFromStrictConstructorReadonlyClassRector::class,
+        TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
         BinarySwitchToIfElseRector::class,
         CountOnNullRector::class,
     ];

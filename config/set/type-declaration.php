@@ -36,7 +36,6 @@ use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYield
 use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -51,7 +50,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddVoidReturnTypeWhereNoReturnRector::class,
         ReturnTypeFromStrictFluentReturnRector::class,
         ReturnTypeFromReturnNewRector::class,
-        TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
         AddMethodCallBasedStrictParamTypeRector::class,
         ReturnTypeFromStrictBoolReturnExprRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
