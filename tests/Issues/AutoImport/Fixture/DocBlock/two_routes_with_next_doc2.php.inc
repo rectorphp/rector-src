@@ -26,10 +26,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesWithNextDoc2
 {
     /**
-     * @\Symfony\Component\Routing\Annotation\Route("/first", methods={"GET"})
-     * @\Symfony\Component\Routing\Annotation\Route("/second", methods={"GET"})
+     * @Route("/first", methods={"GET"})
+     * @Route("/second", methods={"GET"})
      * @return Response
-     * @\Symfony\Component\Routing\Annotation\Route("/third", methods={"GET"})
+     * @Route("/third", methods={"GET"})
      */
     public function some(): Response
     {

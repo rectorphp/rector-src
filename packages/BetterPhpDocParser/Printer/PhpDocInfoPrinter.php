@@ -257,7 +257,7 @@ final class PhpDocInfoPrinter
         }
 
         if ($lastTokenPosition === 0) {
-            $lastTokenPosition = 1;
+            return $output . "\n */";
         }
 
         return $this->addTokensFromTo($output, $lastTokenPosition, $this->tokenCount, true);
