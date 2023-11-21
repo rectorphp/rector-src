@@ -538,3 +538,7 @@ parameters:
         -
             path: rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php
             message: "#Method \"processToClassConstFetch\\(\\)\" returns bool type, so the name should start with is/has/was#"
+
+        # deprecated code
+        - '#Class "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictGetterMethodReturnTypeRector" is missing @see annotation with test case class reference#'
+        - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictGetterMethodReturnTypeRector#'
