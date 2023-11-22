@@ -29,7 +29,7 @@ class TwoRoutesWithNextDoc2
      * @Route("/first", methods={"GET"})
      * @Route("/second", methods={"GET"})
      * @return Response
-     * @\Symfony\Component\Routing\Annotation\Route("/third", methods={"GET"})
+     * @Route("/third", methods={"GET"})
      */
     public function some(): Response
     {
