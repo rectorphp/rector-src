@@ -106,6 +106,7 @@ parameters:
                 - packages/NodeNameResolver/NodeNameResolver.php
                 - utils/ChangelogGenerator/Command/
                 - packages/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
+                - packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
         # known types
         - '#Call to an undefined method PHPStan\\Type\\ConstantType\:\:getValue\(\)#'
