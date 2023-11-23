@@ -167,6 +167,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 
         // temporary restore keep comment feature to avoid error
         // in nested annotation
+        // @see https://github.com/rectorphp/rector-src/pull/5280#pullrequestreview-1745794426
         unset($phpDocNode->children[$key]);
         array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
     }
