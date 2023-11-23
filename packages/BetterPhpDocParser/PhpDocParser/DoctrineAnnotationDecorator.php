@@ -391,7 +391,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 continue;
             }
 
-            $nestedAnnotationOpen = explode('(', $fullyQualifiedAnnotationClass);
+            $nestedAnnotationOpen = explode('(', (string) $fullyQualifiedAnnotationClass);
             $fullyQualifiedAnnotationClass = $nestedAnnotationOpen[0];
 
             $annotationContent = $match['annotation_content'] ?? null;
