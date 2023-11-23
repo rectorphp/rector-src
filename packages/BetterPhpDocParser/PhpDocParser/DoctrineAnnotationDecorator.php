@@ -217,20 +217,63 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 continue;
             }
 
-            $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
-                $phpDocChildNode->name,
-                $phpDocChildNode->value,
-                $fullyQualifiedAnnotationClass,
-                $currentPhpNode
-            );
-
-            $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
-
             while (isset($phpDocNode->children[$key]) && $phpDocNode->children[$key] !== $phpDocChildNode) {
                 ++$key;
             }
 
-            $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+            $phpDocTextNode = new PhpDocTextNode($phpDocChildNode->value->value);
+            $startAndEnd = $phpDocChildNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
+
+            if (! $startAndEnd instanceof StartAndEnd) {
+                $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
+                    $phpDocChildNode->name,
+                    $phpDocChildNode->value,
+                    $fullyQualifiedAnnotationClass,
+                    $currentPhpNode
+                );
+
+                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+                $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+
+                continue;
+            }
+
+            $phpDocTextNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+            $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
+                $phpDocTextNode,
+                $currentPhpNode
+            );
+
+            if ($spacelessPhpDocTagNodes === []) {
+                $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
+                    $phpDocChildNode->name,
+                    $phpDocChildNode->value,
+                    $fullyQualifiedAnnotationClass,
+                    $currentPhpNode
+                );
+
+                $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+                $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+
+                continue;
+            }
+
+            $texts = explode("\n@\\", $phpDocChildNode->value->value);
+            $phpDocNode->children[$key]->value = new GenericTagValueNode($texts[0]);
+            $phpDocNode->children[$key]->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
+
+            $spacelessPhpDocTagNode = $this->createSpacelessPhpDocTagNode(
+                $phpDocNode->children[$key]->name,
+                $phpDocNode->children[$key]->value,
+                $fullyQualifiedAnnotationClass,
+                $currentPhpNode
+            );
+
+            $this->attributeMirrorer->mirror($phpDocNode->children[$key], $spacelessPhpDocTagNode);
+
+         //   $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+
+            array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
         }
     }
 
