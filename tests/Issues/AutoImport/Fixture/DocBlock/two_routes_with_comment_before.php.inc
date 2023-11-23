@@ -26,7 +26,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesWithCommentBefore
 {
     /**
-     * Testsssssssssss
      * @Route("/first", methods={"GET"})
      * @Route("/second", methods={"GET"})
      */
