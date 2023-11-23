@@ -32,10 +32,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
     private const ALLOWED_SHORT_ANNOTATIONS = ['Target'];
 
     /**
-     * @see https://regex101.com/r/95kIw4/1
+     * @see https://regex101.com/r/95kIw4/2
      * @var string
      */
-    private const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\))#';
+    private const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,)#';
 
     /**
      * @see https://regex101.com/r/xWaLOz/1
@@ -387,15 +387,22 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         $spacelessPhpDocTagNodes = [];
         foreach ($matches as $match) {
             $fullyQualifiedAnnotationClass = $match['class_name'] ?? null;
-
             if ($fullyQualifiedAnnotationClass === null) {
                 continue;
             }
 
+            $nestedAnnotationOpen = explode('(', $fullyQualifiedAnnotationClass);
+            $fullyQualifiedAnnotationClass = $nestedAnnotationOpen[0];
+
             $annotationContent = $match['annotation_content'] ?? null;
+
             $tagName = '@\\' . $fullyQualifiedAnnotationClass;
 
             $formerStartEnd = $phpDocTextNode->getAttribute(PhpDocAttributeKey::START_AND_END);
+
+            if (isset($nestedAnnotationOpen[1])) {
+                $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"') . '")';
+            }
 
             $spacelessPhpDocTagNodes[] = $this->createDoctrineSpacelessPhpDocTagNode(
                 $annotationContent,
