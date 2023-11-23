@@ -5,7 +5,7 @@ namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
 class TwoRoutesWithCommentBefore
 {
     /**
-     * Test
+     * Testsssssssssss
      *
      * @\Symfony\Component\Routing\Annotation\Route("/first", methods={"GET"})
      * @\Symfony\Component\Routing\Annotation\Route("/second", methods={"GET"})
@@ -26,8 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesWithCommentBefore
 {
     /**
-     * Test
-     *
+     * Testsssssssssss
      * @Route("/first", methods={"GET"})
      * @Route("/second", methods={"GET"})
      */
