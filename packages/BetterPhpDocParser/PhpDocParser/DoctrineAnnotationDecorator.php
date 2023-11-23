@@ -150,6 +150,37 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         }
     }
 
+    private function processTextSpacelessInTextNode(
+        PhpDocNode $phpDocNode,
+        PhpDocTextNode $phpDocTextNode,
+        Node $currentPhpNode,
+        int $key
+    ): int {
+        $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
+            $phpDocTextNode,
+            $currentPhpNode
+        );
+
+        if ($spacelessPhpDocTagNodes === []) {
+            return $key;
+        }
+
+        $otherText = Strings::replace($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX, '');
+        if (! in_array($otherText, ["\n", ""], true)) {
+            $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
+            array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
+
+            $key += count($spacelessPhpDocTagNodes);
+        } else {
+            unset($phpDocNode->children[$key]);
+            array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
+
+            $key += count($spacelessPhpDocTagNodes) - 1;
+        }
+
+        return $key;
+    }
+
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
@@ -157,20 +188,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
-                $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
-                    $phpDocChildNode,
-                    $currentPhpNode
-                );
-
-                if ($spacelessPhpDocTagNodes === []) {
-                    continue;
-                }
-
-                unset($phpDocNode->children[$key]);
-                array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
-
-                $key += count($spacelessPhpDocTagNodes);
-
+                $key = $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
                 continue;
             }
 
