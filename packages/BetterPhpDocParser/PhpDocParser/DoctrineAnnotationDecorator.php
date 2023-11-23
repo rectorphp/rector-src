@@ -166,7 +166,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         }
 
         $otherText = Strings::replace($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX, '');
-        if ($otherText !== "\n") {
+        if (! in_array($otherText, ["\n", ""], true)) {
             $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
 
