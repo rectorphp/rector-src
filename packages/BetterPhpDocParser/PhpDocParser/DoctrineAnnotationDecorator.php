@@ -401,7 +401,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             $formerStartEnd = $phpDocTextNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
             if (isset($nestedAnnotationOpen[1])) {
-                $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"') . '")';
+                $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"\'') . '")';
             }
 
             $spacelessPhpDocTagNodes[] = $this->createDoctrineSpacelessPhpDocTagNode(
