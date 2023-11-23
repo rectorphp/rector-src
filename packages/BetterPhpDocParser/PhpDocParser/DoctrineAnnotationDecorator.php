@@ -165,14 +165,20 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             return;
         }
 
-        $otherText = Strings::replace($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX, '');
-        if (! in_array($otherText, ["\n", ""], true)) {
-            $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
-            array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
-        } else {
-            unset($phpDocNode->children[$key]);
-            array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
-        }
+//        $otherText = Strings::replace($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX, '');
+
+        // temporary restore keep comment feature to avoid error
+        // in nested annotation
+        unset($phpDocNode->children[$key]);
+        array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
+
+      //  if (! in_array($otherText, ["\n", ""], true)) {
+       //      $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
+       //      array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
+       // } else {
+        //    unset($phpDocNode->children[$key]);
+        //    array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
+        // }
     }
 
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
