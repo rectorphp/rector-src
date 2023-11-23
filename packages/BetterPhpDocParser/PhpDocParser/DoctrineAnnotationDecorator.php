@@ -229,6 +229,11 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             );
 
             $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+
+            while (isset($phpDocNode->children[$key]) && $phpDocNode->children[$key] !== $phpDocChildNode) {
+                ++$key;
+            }
+
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
