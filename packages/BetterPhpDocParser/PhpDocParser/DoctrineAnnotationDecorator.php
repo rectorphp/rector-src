@@ -185,10 +185,12 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         PhpDocNode $phpDocNode,
         Node $currentPhpNode
     ): void {
+        $lastKey = 0;
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
                 $key = $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
+                $lastKey = $key;
                 continue;
             }
 
@@ -203,6 +205,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                     $currentPhpNode,
                     $key
                 );
+                $lastKey = $key;
                 continue;
             }
 
@@ -229,6 +232,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             );
 
             $this->attributeMirrorer->mirror($phpDocChildNode, $spacelessPhpDocTagNode);
+            $key = $lastKey === 0 ? $key : $lastKey + 1;
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
         }
     }
