@@ -155,30 +155,24 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         PhpDocTextNode $phpDocTextNode,
         Node $currentPhpNode,
         int $key
-    ): int {
+    ): void {
         $spacelessPhpDocTagNodes = $this->resolveFqnAnnotationSpacelessPhpDocTagNode(
             $phpDocTextNode,
             $currentPhpNode
         );
 
         if ($spacelessPhpDocTagNodes === []) {
-            return $key;
+            return;
         }
 
         $otherText = Strings::replace($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX, '');
         if (! in_array($otherText, ["\n", ""], true)) {
             $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
-
-            $key += count($spacelessPhpDocTagNodes);
         } else {
             unset($phpDocNode->children[$key]);
             array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
-
-            $key += count($spacelessPhpDocTagNodes) - 1;
         }
-
-        return $key;
     }
 
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
@@ -188,7 +182,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         foreach ($phpDocNode->children as $key => $phpDocChildNode) {
             // the @\FQN use case
             if ($phpDocChildNode instanceof PhpDocTextNode) {
-                $key = $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
+                $this->processTextSpacelessInTextNode($phpDocNode, $phpDocChildNode, $currentPhpNode, $key);
                 continue;
             }
 
@@ -197,7 +191,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
             }
 
             if (! $phpDocChildNode->value instanceof GenericTagValueNode) {
-                $key = $this->processDescriptionAsSpacelessPhpDoctagNode(
+                $this->processDescriptionAsSpacelessPhpDoctagNode(
                     $phpDocNode,
                     $phpDocChildNode,
                     $currentPhpNode,
@@ -243,20 +237,20 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         PhpDocTagNode $phpDocTagNode,
         Node $currentPhpNode,
         int $key
-    ): int {
+    ): void {
         if (! property_exists($phpDocTagNode->value, 'description')) {
-            return $key;
+            return;
         }
 
         $description = (string) $phpDocTagNode->value->description;
         if (! str_contains($description, "\n")) {
-            return $key;
+            return;
         }
 
         $phpDocTextNode = new PhpDocTextNode($description);
         $startAndEnd = $phpDocTagNode->value->getAttribute(PhpDocAttributeKey::START_AND_END);
         if (! $startAndEnd instanceof StartAndEnd) {
-            return $key;
+            return;
         }
 
         $phpDocTextNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
@@ -266,7 +260,7 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         );
 
         if ($spacelessPhpDocTagNodes === []) {
-            return $key;
+            return;
         }
 
         while (isset($phpDocNode->children[$key]) && $phpDocNode->children[$key] !== $phpDocTagNode) {
@@ -283,8 +277,6 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
         $phpDocNode->children[$key] = $classNode;
 
         array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
-
-        return $key + count($spacelessPhpDocTagNodes);
     }
 
     /**
