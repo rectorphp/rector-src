@@ -70,6 +70,12 @@ final class UseImportNameMatcher
         }
 
         if (! $originalUseUseNode->alias instanceof Identifier) {
+            $lastName = $originalUseUseNode->name->getLast();
+            if (str_starts_with($tag, $lastName . '\\')) {
+                $tagName = Strings::after($tag, '\\');
+                return $prefix . $originalUseUseNode->name->toString() . '\\' . $tagName;
+            }
+
             return $prefix . $originalUseUseNode->name->toString();
         }
 
