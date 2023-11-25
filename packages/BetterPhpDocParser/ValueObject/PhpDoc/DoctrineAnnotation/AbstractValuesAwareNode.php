@@ -14,7 +14,7 @@ abstract class AbstractValuesAwareNode implements PhpDocTagValueNode
 {
     use NodeAttributes;
 
-    protected bool $hasChanged = false;
+    public bool $hasChanged = false;
 
     /**
      * @param ArrayItemNode[] $values Must be public so node traverser can go through them
