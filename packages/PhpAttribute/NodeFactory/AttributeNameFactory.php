@@ -27,10 +27,15 @@ final class AttributeNameFactory
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
         array $uses
     ): FullyQualified|Name {
-        // A. attribute and class name are the same, so we re-use the short form to keep code compatible with previous one
+        // A. attribute and class name are the same, so we re-use the short form to keep code compatible with previous one,
+        // except start with \
         if ($annotationToAttribute->getAttributeClass() === $annotationToAttribute->getTag()) {
             $attributeName = $doctrineAnnotationTagValueNode->identifierTypeNode->name;
             $attributeName = ltrim($attributeName, '@');
+
+            if (str_starts_with($attributeName, '\\')) {
+                return new FullyQualified(ltrim($attributeName, '\\'));
+            }
 
             return new Name($attributeName);
         }
