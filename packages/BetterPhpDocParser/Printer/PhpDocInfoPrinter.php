@@ -345,12 +345,7 @@ final class PhpDocInfoPrinter
         if ($this->changedPhpDocNodeVisitor->hasChanged()) {
             return true;
         }
-
-        if ($phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->getAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC) === true) {
-            return true;
-        }
-
-        return false;
+        return $phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->getAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC) === true;
     }
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
