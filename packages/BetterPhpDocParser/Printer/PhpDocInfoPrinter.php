@@ -16,6 +16,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -341,7 +342,15 @@ final class PhpDocInfoPrinter
     private function shouldReprint(PhpDocChildNode $phpDocChildNode): bool
     {
         $this->changedPhpDocNodeTraverser->traverse($phpDocChildNode);
-        return $this->changedPhpDocNodeVisitor->hasChanged();
+        if ($this->changedPhpDocNodeVisitor->hasChanged()) {
+            return true;
+        }
+
+        if ($phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->getAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC) === true) {
+            return true;
+        }
+
+        return false;
     }
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string

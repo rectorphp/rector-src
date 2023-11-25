@@ -22,6 +22,7 @@ use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Core\Util\StringUtils;
+use Webmozart\Assert\Assert;
 
 final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 {
@@ -258,6 +259,8 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
                 continue;
             }
 
+            Assert::isAOf($phpDocNode->children[$key], PhpDocTagNode::class);
+
             $texts = explode("\n@\\", $phpDocChildNode->value->value);
             $phpDocNode->children[$key]->value = new GenericTagValueNode($texts[0]);
             $phpDocNode->children[$key]->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
@@ -271,6 +274,9 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 
             $this->attributeMirrorer->mirror($phpDocNode->children[$key], $spacelessPhpDocTagNode);
             $phpDocNode->children[$key] = $spacelessPhpDocTagNode;
+
+            // require to reprint the generic
+            $phpDocNode->children[$key]->setAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC, true);
 
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
         }
