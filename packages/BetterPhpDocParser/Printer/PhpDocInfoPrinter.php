@@ -345,6 +345,7 @@ final class PhpDocInfoPrinter
         if ($this->changedPhpDocNodeVisitor->hasChanged()) {
             return true;
         }
+
         return $phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->getAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC) === true;
     }
 
