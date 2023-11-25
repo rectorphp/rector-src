@@ -342,11 +342,7 @@ final class PhpDocInfoPrinter
     private function shouldReprint(PhpDocChildNode $phpDocChildNode): bool
     {
         $this->changedPhpDocNodeTraverser->traverse($phpDocChildNode);
-        if ($this->changedPhpDocNodeVisitor->hasChanged()) {
-            return true;
-        }
-
-        return $phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->getAttribute(PhpDocAttributeKey::IS_AFTER_GENERIC) === true;
+        return $this->changedPhpDocNodeVisitor->hasChanged();
     }
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
