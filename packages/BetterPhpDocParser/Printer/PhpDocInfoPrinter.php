@@ -16,8 +16,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ThrowsTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
-use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
-use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ChangedPhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -342,10 +340,6 @@ final class PhpDocInfoPrinter
 
     private function shouldReprint(PhpDocChildNode $phpDocChildNode): bool
     {
-        if ($phpDocChildNode instanceof SpacelessPhpDocTagNode && $phpDocChildNode->value instanceof DoctrineAnnotationTagValueNode && $phpDocChildNode->value->hasChanged) {
-            return true;
-        }
-
         $this->changedPhpDocNodeTraverser->traverse($phpDocChildNode);
         return $this->changedPhpDocNodeVisitor->hasChanged();
     }
