@@ -18,7 +18,11 @@ final class CloningPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     public function enterNode(Node $node): Node
     {
         $clonedNode = clone $node;
-        $clonedNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, $node);
+
+        if (! $clonedNode->hasAttribute(PhpDocAttributeKey::ORIG_NODE)) {
+            $clonedNode->setAttribute(PhpDocAttributeKey::ORIG_NODE, $node);
+        }
+
         return $clonedNode;
     }
 }
