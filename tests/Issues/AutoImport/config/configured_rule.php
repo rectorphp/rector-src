@@ -15,6 +15,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
     $rectorConfig->rule(TernaryToNullCoalescingRector::class);
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
-        new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity')
+        new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
     ]);
 };
