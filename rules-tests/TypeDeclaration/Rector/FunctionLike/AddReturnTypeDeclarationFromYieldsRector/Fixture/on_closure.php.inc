@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector\Fixture;
 
-$func = function (): iterable {
+$func = function () {
     yield 1;
 };
 
@@ -12,7 +12,7 @@ $func = function (): iterable {
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector\Fixture;
 
-$func = function (): \Iterator {
+$func = function (): \Generator {
     yield 1;
 };
 
