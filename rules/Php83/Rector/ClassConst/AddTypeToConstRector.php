@@ -77,6 +77,10 @@ CODE_SAMPLE
         if ($node instanceof Class_) {
             $implementations = $this->getImplementations($node);
         }
+        $traits = [];
+        if ($node instanceof Class_ or $node instanceof Trait_) {
+            $traits = $this->getTraits($node);
+        }
 
         $changes = false;
 
@@ -87,7 +91,7 @@ CODE_SAMPLE
             }
 
             foreach ($const->consts as $constNode) {
-                if ($this->shouldSkipDueToInheritance($parentClass, $constNode, $implementations)) {
+                if ($this->shouldSkipDueToInheritance($parentClass, $constNode, $implementations, $traits)) {
                     continue;
                 }
                 $valueType = $this->findValueType($constNode->value);
@@ -116,11 +120,13 @@ CODE_SAMPLE
 
     /**
      * @param ClassReflection[] $implementations
+     * @param ClassReflection[] $traits
      */
     public function shouldSkipDueToInheritance(
         ?ClassReflection $parentClass,
         Node\Const_ $constNode,
-        array $implementations
+        array $implementations,
+        array $traits,
     ): bool {
         // If the parent class has the constant then ignore
         if ($parentClass !== null) {
@@ -136,6 +142,16 @@ CODE_SAMPLE
             }
             try {
                 $implementation->getConstant($constNode->name->name);
+                return true;
+            } catch (MissingConstantFromReflectionException) {
+            }
+        }
+        foreach ($traits as $trait) {
+            if ($constNode->name->name === '') {
+                continue;
+            }
+            try {
+                $trait->getConstant($constNode->name->name);
                 return true;
             } catch (MissingConstantFromReflectionException) {
             }
@@ -186,12 +202,31 @@ CODE_SAMPLE
      */
     private function getImplementations(Class_ $class): array
     {
-        return array_filter(array_map(function (Node\Name $name) {
+        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
             if ($this->reflectionProvider->hasClass($name->toString())) {
                 return $this->reflectionProvider->getClass($name->toString());
             }
 
             return null;
         }, $class->implements));
+    }
+
+    /**
+     * @return ClassReflection[]
+     */
+    private function getTraits(Trait_|Class_ $node): array
+    {
+        $traits = [];
+        foreach ($node->getTraitUses() as $traitUse) {
+            $traits = [...$traits, ...$traitUse->traits];
+        }
+
+        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
+            if ($this->reflectionProvider->hasClass($name->toString())) {
+                return $this->reflectionProvider->getClass($name->toString());
+            }
+
+            return null;
+        }, $traits));
     }
 }
