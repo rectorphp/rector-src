@@ -649,4 +649,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const OVERRIDE_ATTRIBUTE = PhpVersion::PHP_83;
+
+    /**
+     * @see https://wiki.php.net/rfc/typed_class_constants
+     * @var int
+     */
+    public const TYPED_CLASS_CONSTANTS = PhpVersion::PHP_83;
 }
