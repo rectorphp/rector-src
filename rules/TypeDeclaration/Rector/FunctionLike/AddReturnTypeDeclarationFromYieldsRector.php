@@ -98,7 +98,7 @@ CODE_SAMPLE
         // skip already filled type
         if ($node->returnType instanceof Node && $this->isNames(
             $node->returnType,
-            ['Iterator', 'Generator', 'Traversable']
+            ['Iterator', 'Generator', 'Traversable', 'iterable']
         )) {
             return null;
         }
