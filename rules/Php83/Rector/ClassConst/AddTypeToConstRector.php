@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MissingConstantFromReflectionException;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Core\Exception\FullyQualifiedNameNotAutoloadedException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -68,19 +69,23 @@ CODE_SAMPLE
             return null;
         }
 
-        /** @var ClassReflection[] $parents */
-        $parents = [];
-        if ($node instanceof Class_ || $node instanceof Interface_) {
-            $parents = $this->getParents($node);
-        }
-        /** @var ClassReflection[] $implementations */
-        $implementations = [];
-        if ($node instanceof Class_) {
-            $implementations = $this->getImplementations($node);
-        }
-        $traits = [];
-        if ($node instanceof Class_ || $node instanceof Trait_) {
-            $traits = $this->getTraits($node);
+        try {
+            /** @var ClassReflection[] $parents */
+            $parents = [];
+            if ($node instanceof Class_ || $node instanceof Interface_) {
+                $parents = $this->getParents($node);
+            }
+            /** @var ClassReflection[] $implementations */
+            $implementations = [];
+            if ($node instanceof Class_) {
+                $implementations = $this->getImplementations($node);
+            }
+            $traits = [];
+            if ($node instanceof Class_ || $node instanceof Trait_) {
+                $traits = $this->getTraits($node);
+            }
+        } catch (FullyQualifiedNameNotAutoloadedException) {
+            return null;
         }
 
         $changes = false;
@@ -176,17 +181,17 @@ CODE_SAMPLE
     {
         $parents = array_filter(is_iterable($class->extends) ? $class->extends : [$class->extends]);
 
-        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
+        return array_map(function (Node\Name $name): ClassReflection {
             if (! $name instanceof FullyQualified) {
-                return null;
+                throw new FullyQualifiedNameNotAutoloadedException($name);
             }
 
             if ($this->reflectionProvider->hasClass($name->toString())) {
                 return $this->reflectionProvider->getClass($name->toString());
             }
 
-            return null;
-        }, $parents));
+            throw new FullyQualifiedNameNotAutoloadedException($name);
+        }, $parents);
     }
 
     /**
@@ -194,13 +199,17 @@ CODE_SAMPLE
      */
     private function getImplementations(Class_ $class): array
     {
-        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
+        return array_map(function (Node\Name $name): ClassReflection {
+            if (! $name instanceof FullyQualified) {
+                throw new FullyQualifiedNameNotAutoloadedException($name);
+            }
+
             if ($this->reflectionProvider->hasClass($name->toString())) {
                 return $this->reflectionProvider->getClass($name->toString());
             }
 
-            return null;
-        }, $class->implements));
+            throw new FullyQualifiedNameNotAutoloadedException($name);
+        }, $class->implements);
     }
 
     /**
@@ -213,12 +222,16 @@ CODE_SAMPLE
             $traits = [...$traits, ...$traitUse->traits];
         }
 
-        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
+        return array_map(function (Node\Name $name): ClassReflection {
+            if (! $name instanceof FullyQualified) {
+                throw new FullyQualifiedNameNotAutoloadedException($name);
+            }
+
             if ($this->reflectionProvider->hasClass($name->toString())) {
                 return $this->reflectionProvider->getClass($name->toString());
             }
 
-            return null;
-        }, $traits));
+            throw new FullyQualifiedNameNotAutoloadedException($name);
+        }, $traits);
     }
 }
