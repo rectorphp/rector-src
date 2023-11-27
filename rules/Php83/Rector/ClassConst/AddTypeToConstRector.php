@@ -7,6 +7,8 @@ namespace Rector\Php83\Rector\ClassConst;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MissingConstantFromReflectionException;
 use PHPStan\Reflection\ReflectionProvider;
@@ -50,13 +52,13 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [Node\Stmt\Class_::class];
+        return [Class_::class, Interface_::class, Trait_::class];
     }
 
     /**
-     * @param Node\Stmt\Class_ $node
+     * @param Class_|Interface_|Trait_ $node
      */
-    public function refactor(Node $node): ?Node\Stmt\Class_
+    public function refactor(Node $node): Class_|Interface_|Trait_|null
     {
         $consts = array_filter($node->stmts, function (Node $stmt) {
             return $stmt instanceof Node\Stmt\ClassConst;
@@ -66,7 +68,15 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentClass = $this->getParentClass($node);
+        $parentClass = null;
+        if ($node instanceof Class_) {
+            $parentClass = $this->getParentClass($node);
+        }
+        /** @var ClassReflection[] $implementations */
+        $implementations = [];
+        if ($node instanceof Class_) {
+            $implementations = $this->getImplementations($node);
+        }
 
         $changes = false;
 
@@ -77,13 +87,8 @@ CODE_SAMPLE
             }
 
             foreach ($const->consts as $constNode) {
-                // If the parent class has the constant then ignore
-                if ($parentClass !== null) {
-                    try {
-                        $parentClass->getConstant($constNode->name->name);
-                        continue;
-                    } catch (MissingConstantFromReflectionException) {
-                    }
+                if ($this->shouldSkipDueToInheritance($parentClass, $constNode, $implementations)) {
+                    continue;
                 }
                 $valueType = $this->findValueType($constNode->value);
             }
@@ -107,6 +112,36 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::TYPED_CLASS_CONSTANTS;
+    }
+
+    /**
+     * @param ClassReflection[] $implementations
+     */
+    public function shouldSkipDueToInheritance(
+        ?ClassReflection $parentClass,
+        Node\Const_ $constNode,
+        array $implementations
+    ): bool {
+        // If the parent class has the constant then ignore
+        if ($parentClass !== null) {
+            try {
+                $parentClass->getConstant($constNode->name->name);
+                return true;
+            } catch (MissingConstantFromReflectionException) {
+            }
+        }
+        foreach ($implementations as $implementation) {
+            if ($constNode->name->name === '') {
+                continue;
+            }
+            try {
+                $implementation->getConstant($constNode->name->name);
+                return true;
+            } catch (MissingConstantFromReflectionException) {
+            }
+        }
+
+        return false;
     }
 
     private function findValueType(Node\Expr $value): ?Node\Identifier
@@ -144,5 +179,19 @@ CODE_SAMPLE
         }
 
         return $this->reflectionProvider->getClass($class->extends->toString());
+    }
+
+    /**
+     * @return ClassReflection[]
+     */
+    private function getImplementations(Class_ $class): array
+    {
+        return array_filter(array_map(function (Node\Name $name) {
+            if ($this->reflectionProvider->hasClass($name->toString())) {
+                return $this->reflectionProvider->getClass($name->toString());
+            }
+
+            return null;
+        }, $class->implements));
     }
 }
