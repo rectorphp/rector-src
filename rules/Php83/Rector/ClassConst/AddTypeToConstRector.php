@@ -68,9 +68,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $parentClass = null;
-        if ($node instanceof Class_) {
-            $parentClass = $this->getParentClass($node);
+        /** @var ClassReflection[] $parents */
+        $parents = [];
+        if ($node instanceof Class_ || $node instanceof Interface_) {
+            $parents = $this->getParents($node);
         }
         /** @var ClassReflection[] $implementations */
         $implementations = [];
@@ -78,7 +79,7 @@ CODE_SAMPLE
             $implementations = $this->getImplementations($node);
         }
         $traits = [];
-        if ($node instanceof Class_ or $node instanceof Trait_) {
+        if ($node instanceof Class_ || $node instanceof Trait_) {
             $traits = $this->getTraits($node);
         }
 
@@ -91,7 +92,7 @@ CODE_SAMPLE
             }
 
             foreach ($const->consts as $constNode) {
-                if ($this->shouldSkipDueToInheritance($parentClass, $constNode, $implementations, $traits)) {
+                if ($this->shouldSkipDueToInheritance($constNode, $parents, $implementations, $traits)) {
                     continue;
                 }
                 $valueType = $this->findValueType($constNode->value);
@@ -119,44 +120,28 @@ CODE_SAMPLE
     }
 
     /**
+     * @param ClassReflection[] $parents
      * @param ClassReflection[] $implementations
      * @param ClassReflection[] $traits
      */
     public function shouldSkipDueToInheritance(
-        ?ClassReflection $parentClass,
         Node\Const_ $constNode,
+        array $parents,
         array $implementations,
         array $traits,
     ): bool {
-        // If the parent class has the constant then ignore
-        if ($parentClass !== null) {
-            try {
-                $parentClass->getConstant($constNode->name->name);
-                return true;
-            } catch (MissingConstantFromReflectionException) {
+        foreach ([$parents, $implementations, $traits] as $inheritance) {
+            foreach ($inheritance as $inheritanceItem) {
+                if ($constNode->name->name === '') {
+                    continue;
+                }
+                try {
+                    $inheritanceItem->getConstant($constNode->name->name);
+                    return true;
+                } catch (MissingConstantFromReflectionException) {
+                }
             }
         }
-        foreach ($implementations as $implementation) {
-            if ($constNode->name->name === '') {
-                continue;
-            }
-            try {
-                $implementation->getConstant($constNode->name->name);
-                return true;
-            } catch (MissingConstantFromReflectionException) {
-            }
-        }
-        foreach ($traits as $trait) {
-            if ($constNode->name->name === '') {
-                continue;
-            }
-            try {
-                $trait->getConstant($constNode->name->name);
-                return true;
-            } catch (MissingConstantFromReflectionException) {
-            }
-        }
-
         return false;
     }
 
@@ -184,17 +169,24 @@ CODE_SAMPLE
         return null;
     }
 
-    private function getParentClass(Class_ $class): ?ClassReflection
+    /**
+     * @return ClassReflection[]
+     */
+    private function getParents(Class_|Interface_ $class): array
     {
-        if (! $class->extends instanceof FullyQualified) {
-            return null;
-        }
+        $parents = array_filter(is_iterable($class->extends) ? $class->extends : [$class->extends]);
 
-        if (! $this->reflectionProvider->hasClass($class->extends->toString())) {
-            return null;
-        }
+        return array_filter(array_map(function (Node\Name $name): ?ClassReflection {
+            if (! $name instanceof FullyQualified) {
+                return null;
+            }
 
-        return $this->reflectionProvider->getClass($class->extends->toString());
+            if ($this->reflectionProvider->hasClass($name->toString())) {
+                return $this->reflectionProvider->getClass($name->toString());
+            }
+
+            return null;
+        }, $parents));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Source;
 
-interface SomeInterface
+interface SomeOtherInterface
 {
-    public const STRING = 'something';
+    public const STRING_ANOTHER = 'something';
 }
