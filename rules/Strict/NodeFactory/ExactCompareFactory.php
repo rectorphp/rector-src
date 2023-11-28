@@ -227,6 +227,18 @@ final class ExactCompareFactory
             return null;
         }
 
+        if ($treatAsNonEmpty) {
+            return new BooleanOr($toNullIdentical, $scalarFalsyIdentical);
+        }
+
+        if ($unionType->isString()->yes()) {
+            $emptyZeroStringOrScalarFalsyIdentical = new BooleanOr(
+                $toNullIdentical, $scalarFalsyIdentical
+            );
+
+            return new BooleanOr($emptyZeroStringOrScalarFalsyIdentical, new Identical($expr, new String_('0')));
+        }
+
         return new BooleanOr($toNullIdentical, $scalarFalsyIdentical);
     }
 }

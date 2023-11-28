@@ -32,7 +32,7 @@ final class UnionWithNull
 
     public function run()
     {
-        if ($this->value === null || $this->value === '') {
+        if ($this->value === null || $this->value === '' || $this->value === '0') {
             return 'empty';
         }
 
