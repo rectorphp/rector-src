@@ -53,13 +53,13 @@ CODE_SAMPLE
 
     public function getNodeTypes(): array
     {
-        return [Class_::class, Interface_::class, Trait_::class];
+        return [Class_::class];
     }
 
     /**
-     * @param Class_|Interface_|Trait_ $node
+     * @param Class_ $node
      */
-    public function refactor(Node $node): Class_|Interface_|Trait_|null
+    public function refactor(Node $node): Class_|null
     {
         $consts = array_filter($node->stmts, function (Node $stmt) {
             return $stmt instanceof Node\Stmt\ClassConst;
@@ -177,7 +177,7 @@ CODE_SAMPLE
     /**
      * @return ClassReflection[]
      */
-    private function getParents(Class_|Interface_ $class): array
+    private function getParents(Class_ $class): array
     {
         $parents = array_filter(is_iterable($class->extends) ? $class->extends : [$class->extends]);
 
@@ -215,7 +215,7 @@ CODE_SAMPLE
     /**
      * @return ClassReflection[]
      */
-    private function getTraits(Trait_|Class_ $node): array
+    private function getTraits(Class_ $node): array
     {
         $traits = [];
         foreach ($node->getTraitUses() as $traitUse) {
