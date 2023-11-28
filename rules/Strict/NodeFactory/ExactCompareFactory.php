@@ -117,11 +117,9 @@ final class ExactCompareFactory
         }
 
         if ($unionType->isString()->yes()) {
-            $emptyZeroStringAndScalarFalsyIdentical = new BooleanAnd(
-                $toNullNotIdentical, $compareExpr
-            );
+            $booleanAnd = new BooleanAnd($toNullNotIdentical, $compareExpr);
 
-            return new BooleanAnd($emptyZeroStringAndScalarFalsyIdentical, new NotIdentical($expr, new String_('0')));
+            return new BooleanAnd($booleanAnd, new NotIdentical($expr, new String_('0')));
         }
 
         return new BooleanAnd($toNullNotIdentical, $compareExpr);
@@ -240,9 +238,7 @@ final class ExactCompareFactory
         }
 
         if ($unionType->isString()->yes()) {
-            $booleanOr = new BooleanOr(
-                $toNullIdentical, $scalarFalsyIdentical
-            );
+            $booleanOr = new BooleanOr($toNullIdentical, $scalarFalsyIdentical);
 
             return new BooleanOr($booleanOr, new Identical($expr, new String_('0')));
         }
