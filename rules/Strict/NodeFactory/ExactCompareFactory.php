@@ -227,10 +227,6 @@ final class ExactCompareFactory
             return null;
         }
 
-        if ($treatAsNonEmpty) {
-            return new BooleanOr($toNullIdentical, $scalarFalsyIdentical);
-        }
-
         if ($unionType->isString()->yes()) {
             $emptyZeroStringOrScalarFalsyIdentical = new BooleanOr(
                 $toNullIdentical, $scalarFalsyIdentical
