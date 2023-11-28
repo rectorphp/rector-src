@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class EmptyStringNullable
+final class NegationEmptyStringNullable
 {
     public function run(string|null $value)
     {
-        return empty($value);
+        return ! empty($value);
     }
 }
 
@@ -16,11 +16,11 @@ final class EmptyStringNullable
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class EmptyStringNullable
+final class NegationEmptyStringNullable
 {
     public function run(string|null $value)
     {
-        return $value === null || $value === '' || $value === '0';
+        return $value !== null && $value !== '' && $value !== '0';
     }
 }
 

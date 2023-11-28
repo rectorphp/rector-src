@@ -24,7 +24,7 @@ final class NullableString
 {
     public function run(string|null $value)
     {
-        return $value !== null && $value !== '' ? 1 : 2;
+        return $value !== null && $value !== '' && $value !== '0' ? 1 : 2;
     }
 }
 
