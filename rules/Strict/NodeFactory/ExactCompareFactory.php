@@ -228,11 +228,11 @@ final class ExactCompareFactory
         }
 
         if ($unionType->isString()->yes()) {
-            $emptyZeroStringOrScalarFalsyIdentical = new BooleanOr(
+            $booleanOr = new BooleanOr(
                 $toNullIdentical, $scalarFalsyIdentical
             );
 
-            return new BooleanOr($emptyZeroStringOrScalarFalsyIdentical, new Identical($expr, new String_('0')));
+            return new BooleanOr($booleanOr, new Identical($expr, new String_('0')));
         }
 
         return new BooleanOr($toNullIdentical, $scalarFalsyIdentical);
