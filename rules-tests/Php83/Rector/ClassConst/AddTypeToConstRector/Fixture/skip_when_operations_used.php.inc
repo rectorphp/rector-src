@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-class SomeClass
+final class SomeClass
 {
     public const string A = 'A';
 

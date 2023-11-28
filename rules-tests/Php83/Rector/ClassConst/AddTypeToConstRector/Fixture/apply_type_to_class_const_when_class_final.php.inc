@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-class ApplyTypes
+final class ApplyTypesWhenClassFinal
 {
     public const STRING = 'some_type';
 
@@ -23,7 +23,7 @@ class ApplyTypes
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-class ApplyTypes
+final class ApplyTypesWhenClassFinal
 {
     public const string STRING = 'some_type';
 

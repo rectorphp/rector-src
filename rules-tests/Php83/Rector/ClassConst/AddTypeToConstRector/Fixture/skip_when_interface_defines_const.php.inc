@@ -4,7 +4,7 @@ namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
 use Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Source\SomeInterface;
 
-class SkipOnInterfaceImplements implements SomeInterface
+final class SkipOnInterfaceImplements implements SomeInterface
 {
     public const STRING = 'some_type';
 }

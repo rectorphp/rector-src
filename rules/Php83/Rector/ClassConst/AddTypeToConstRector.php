@@ -7,8 +7,6 @@ namespace Rector\Php83\Rector\ClassConst;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MissingConstantFromReflectionException;
 use PHPStan\Reflection\ReflectionProvider;
@@ -34,14 +32,14 @@ class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterf
         return new RuleDefinition('Add const to type', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
     public const TYPE = 'some_type';
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass
+final class SomeClass
 {
     public const string TYPE = 'some_type';
 }
@@ -61,6 +59,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): Class_|null
     {
+        if ($node->isAbstract()) {
+            return null;
+        }
+
         $consts = array_filter($node->stmts, function (Node $stmt) {
             return $stmt instanceof Node\Stmt\ClassConst;
         });
@@ -70,20 +72,9 @@ CODE_SAMPLE
         }
 
         try {
-            /** @var ClassReflection[] $parents */
-            $parents = [];
-            if ($node instanceof Class_ || $node instanceof Interface_) {
-                $parents = $this->getParents($node);
-            }
-            /** @var ClassReflection[] $implementations */
-            $implementations = [];
-            if ($node instanceof Class_) {
-                $implementations = $this->getImplementations($node);
-            }
-            $traits = [];
-            if ($node instanceof Class_ || $node instanceof Trait_) {
-                $traits = $this->getTraits($node);
-            }
+            $parents = $this->getParents($node);
+            $implementations = $this->getImplementations($node);
+            $traits = $this->getTraits($node);
         } catch (FullyQualifiedNameNotAutoloadedException) {
             return null;
         }
@@ -98,6 +89,9 @@ CODE_SAMPLE
 
             foreach ($const->consts as $constNode) {
                 if ($this->shouldSkipDueToInheritance($constNode, $parents, $implementations, $traits)) {
+                    continue;
+                }
+                if ($this->canBeInheritied($const, $node)) {
                     continue;
                 }
                 $valueType = $this->findValueType($constNode->value);
@@ -179,7 +173,7 @@ CODE_SAMPLE
      */
     private function getParents(Class_ $class): array
     {
-        $parents = array_filter(is_iterable($class->extends) ? $class->extends : [$class->extends]);
+        $parents = array_filter([$class->extends]);
 
         return array_map(function (Node\Name $name): ClassReflection {
             if (! $name instanceof FullyQualified) {
@@ -233,5 +227,10 @@ CODE_SAMPLE
 
             throw new FullyQualifiedNameNotAutoloadedException($name);
         }, $traits);
+    }
+
+    private function canBeInheritied(Node\Stmt\ClassConst $constNode, Class_ $node): bool
+    {
+        return ! $node->isFinal() && ! $constNode->isPrivate();
     }
 }

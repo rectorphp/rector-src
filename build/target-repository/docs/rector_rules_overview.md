@@ -5295,7 +5295,7 @@ Add const to type
 - class: [`Rector\Php83\Rector\ClassConst\AddTypeToConstRector`](../rules/Php83/Rector/ClassConst/AddTypeToConstRector.php)
 
 ```diff
- class SomeClass
+ final class SomeClass
  {
 -    public const TYPE = 'some_type';
 +    public const string TYPE = 'some_type';

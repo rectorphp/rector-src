@@ -2,10 +2,8 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-final class SkipExtendsNotAutoloadedClass
+abstract class SkipAbstractClass
 {
-    use NotAutoloadedTrait;
-
     public const STRING = 'some_type';
 }
 

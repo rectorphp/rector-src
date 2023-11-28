@@ -4,7 +4,7 @@ namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
 use Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Source\SomeTrait;
 
-class SkipWhenTraitDefinesInterface
+final class SkipWhenTraitDefinesInterface
 {
     use SomeTrait;
 
