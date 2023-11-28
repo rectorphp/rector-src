@@ -33,7 +33,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
-use Rector\TypeDeclaration\Rector\Param\ParamTypeFromStrictTypedPropertyRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector;
@@ -46,7 +45,6 @@ return static function (RectorConfig $rectorConfig): void {
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
         ReturnTypeFromStrictTypedPropertyRector::class,
         TypedPropertyFromStrictConstructorRector::class,
-        ParamTypeFromStrictTypedPropertyRector::class,
         AddVoidReturnTypeWhereNoReturnRector::class,
         ReturnTypeFromStrictFluentReturnRector::class,
         ReturnTypeFromReturnNewRector::class,
