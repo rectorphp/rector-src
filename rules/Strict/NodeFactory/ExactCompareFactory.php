@@ -112,6 +112,18 @@ final class ExactCompareFactory
             return null;
         }
 
+        if ($treatAsNotEmpty) {
+            return new BooleanAnd($toNullNotIdentical, $compareExpr);
+        }
+
+        if ($unionType->isString()->yes()) {
+            $emptyZeroStringAndScalarFalsyIdentical = new BooleanAnd(
+                $toNullNotIdentical, $compareExpr
+            );
+
+            return new BooleanAnd($emptyZeroStringAndScalarFalsyIdentical, new NotIdentical($expr, new String_('0')));
+        }
+
         return new BooleanAnd($toNullNotIdentical, $compareExpr);
     }
 
