@@ -78,7 +78,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     {
         $names = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, static function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace->stmts, static function (Node $node) use (
             &$names
         ): int|null|Name {
             if ($node instanceof Use_) {
