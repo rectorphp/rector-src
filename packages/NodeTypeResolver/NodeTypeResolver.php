@@ -29,6 +29,7 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\NeverType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
@@ -430,6 +431,10 @@ final class NodeTypeResolver
     private function isMatchingUnionType(Type $resolvedType, ObjectType $requiredObjectType): bool
     {
         $type = TypeCombinator::removeNull($resolvedType);
+
+        if ($type instanceof NeverType) {
+            return false;
+        }
 
         // for falsy nullables
         $type = TypeCombinator::remove($type, new ConstantBooleanType(false));
