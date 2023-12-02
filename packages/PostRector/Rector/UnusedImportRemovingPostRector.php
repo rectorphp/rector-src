@@ -205,9 +205,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     {
         if (str_starts_with($name, $namespacedPrefix)) {
             $subNamespace = substr($name, strlen($namespacedPrefix));
-            if (! str_contains($subNamespace, '\\')) {
-                return true;
-            }
+            return ! str_contains($subNamespace, '\\');
         }
 
         return false;
