@@ -172,7 +172,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         // match partial import
         foreach ($names as $name) {
-            if (str_ends_with($comparedName, $name)) {
+            if (str_ends_with($comparedName, '\\' . $name)) {
                 return true;
             }
 
