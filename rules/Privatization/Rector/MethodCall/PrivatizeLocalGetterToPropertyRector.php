@@ -86,6 +86,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
             if (! $node->var instanceof Variable) {
                 return null;
             }
