@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
@@ -156,6 +157,10 @@ CODE_SAMPLE
         }
 
         if (count($if->stmts) !== 1) {
+            return null;
+        }
+
+        if ($if->else instanceof Else_ || $if->elseifs !== []) {
             return null;
         }
 
