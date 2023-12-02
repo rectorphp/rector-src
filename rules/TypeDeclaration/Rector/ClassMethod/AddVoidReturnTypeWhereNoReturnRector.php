@@ -130,9 +130,9 @@ CODE_SAMPLE
         return $classReflection->isFinalByKeyword();
     }
 
-    private function isInsideAbstractClass(ClassMethod $functionLike): bool
+    private function isInsideAbstractClass(ClassMethod $classMethod): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
+        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
