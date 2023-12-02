@@ -81,7 +81,11 @@ CODE_SAMPLE
         $hasChanged = false;
         $isFinal = $class->isFinal();
 
-        $this->traverseNodesWithCallable($node, function (Node $node) use ($class, &$hasChanged, $isFinal): ?PropertyFetch {
+        $this->traverseNodesWithCallable($node, function (Node $node) use (
+            $class,
+            &$hasChanged,
+            $isFinal
+        ): ?PropertyFetch {
             if (! $node instanceof MethodCall) {
                 return null;
             }
