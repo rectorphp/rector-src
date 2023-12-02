@@ -176,11 +176,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return true;
             }
 
-            if (str_starts_with($name, $namespacedPrefix)) {
-                $subNamespace = substr($name, strlen($namespacedPrefix));
-                if (! str_contains($subNamespace, '\\')) {
-                    return true;
-                }
+            if ($this->isSubNamespace($name, $namespacedPrefix)) {
+                return true;
             }
 
             if (! is_string($alias)) {
@@ -197,6 +194,18 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
             $namePrefix = Strings::before($name, '\\', 1);
             if ($alias === $namePrefix) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isSubNamespace(string $name, string $namespacedPrefix): bool
+    {
+        if (str_starts_with($name, $namespacedPrefix)) {
+            $subNamespace = substr($name, strlen($namespacedPrefix));
+            if (! str_contains($subNamespace, '\\')) {
                 return true;
             }
         }
