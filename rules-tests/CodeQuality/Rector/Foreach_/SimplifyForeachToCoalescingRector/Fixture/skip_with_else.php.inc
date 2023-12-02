@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector\Fixture;
 
-class SkipElseDifferentValue
+class SkipWithElse
 {
     public function generateTestFile(): string
     {
