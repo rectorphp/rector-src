@@ -117,7 +117,7 @@ CODE_SAMPLE
             return ! $this->isInsideFinalClass($functionLike);
         }
 
-        return false;
+        return $this->isInsideAbstractClass($functionLike) && $functionLike->getStmts() === [];
     }
 
     private function isInsideFinalClass(ClassMethod $classMethod): bool
@@ -128,5 +128,15 @@ CODE_SAMPLE
         }
 
         return $classReflection->isFinalByKeyword();
+    }
+
+    private function isInsideAbstractClass(ClassMethod $functionLike): bool
+    {
+        $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
+        }
+
+        return $classReflection->isAbstract();
     }
 }
