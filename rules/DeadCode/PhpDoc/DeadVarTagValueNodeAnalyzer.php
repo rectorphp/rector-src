@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc;
 
-use PHPStan\Type\TypeCombinator;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -46,6 +46,9 @@ final class DeadVarTagValueNodeAnalyzer
             return true;
         }
 
-        return $docType instanceof UnionType && $this->typeComparator->areTypesEqual(TypeCombinator::removeNull($docType), $propertyType);
+        return $docType instanceof UnionType && $this->typeComparator->areTypesEqual(
+            TypeCombinator::removeNull($docType),
+            $propertyType
+        );
     }
 }
