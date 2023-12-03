@@ -41,12 +41,15 @@ final class RemoveUselessIsObjectCheckRector extends AbstractRector
         if (!$node->left instanceof FuncCall) {
             return null;
         }
+
         if (!$this->isName($node->left, 'is_object')) {
             return null;
         }
+
         if (!$node->right instanceof Instanceof_) {
             return null;
         }
+
         return $this->processRemoveUselessIsObject($node->left, $node->right);
     }
 
