@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
+use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
 use Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector;
 use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
@@ -190,5 +191,6 @@ return static function (RectorConfig $rectorConfig): void {
         LocallyCalledStaticMethodToNonStaticRector::class,
         NumberCompareToMaxFuncCallRector::class,
         CompleteMissingIfElseBracketRector::class,
+        RemoveUselessIsObjectCheckRector::class,
     ]);
 };
