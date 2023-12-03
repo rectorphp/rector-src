@@ -79,6 +79,7 @@ parameters:
         - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
+        - '#Cognitive complexity for "Rector\\DeadCode\\PhpDoc\\DeadReturnTagValueNodeAnalyzer\:\:isDead\(\)" is 13, keep it under 11#'
 
         # is nested expr
         -
@@ -518,23 +519,9 @@ parameters:
         - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
         - '#Class "Rector\\Utils\\PHPStan\\Rule\\LongAndDependentComplexRectorRule" is missing @see annotation with test case class reference#'
 
-        # deprecation
-        -
-            message: '#Unreachable statement \- code above always terminates#'
-            paths:
-                - rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorReadonlyClassRector.php
-
-        # deprecated
-        - '#Class "Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector" is missing @see annotation with test case class reference#'
-        - '#Register "Rector\\Php71\\Rector\\FuncCall\\CountOnNullRector" service to "php71\.php" config set#'
-
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
         -
             path: rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php
             message: "#Method \"processToClassConstFetch\\(\\)\" returns bool type, so the name should start with is/has/was#"
-
-        # deprecated code
-        - '#Class "Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictGetterMethodReturnTypeRector" is missing @see annotation with test case class reference#'
-        - '#Fetching class constant class of deprecated class Rector\\TypeDeclaration\\Rector\\Property\\TypedPropertyFromStrictGetterMethodReturnTypeRector#'

@@ -6,10 +6,8 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Php71\Rector\FuncCall\CountOnNullRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictGetterMethodReturnTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
@@ -33,9 +31,6 @@ final class MissingInSetCommand extends Command
         WhileNullableToInstanceofRector::class,
         // collectors
         FinalizeClassesWithoutChildrenCollectorRector::class,
-        // deprecated
-        TypedPropertyFromStrictGetterMethodReturnTypeRector::class,
-        CountOnNullRector::class,
     ];
 
     public function __construct(
