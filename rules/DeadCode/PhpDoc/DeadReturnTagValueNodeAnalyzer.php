@@ -82,13 +82,13 @@ final class DeadReturnTagValueNodeAnalyzer
         return ! $this->hasTrueFalsePseudoType($returnTagValueNode->type);
     }
 
-    private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $returnType, ClassMethod $classMethod): bool
+    private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $node, ClassMethod $classMethod): bool
     {
         if ($returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type === 'void') {
             return true;
         }
 
-        $returnType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
+        $nodeType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $returnTagValueNode->type,
             $classMethod
@@ -96,7 +96,7 @@ final class DeadReturnTagValueNodeAnalyzer
 
         return $docType instanceof UnionType && $this->typeComparator->areTypesEqual(
             TypeCombinator::removeNull($docType),
-            $returnType
+            $nodeType
         );
     }
 
