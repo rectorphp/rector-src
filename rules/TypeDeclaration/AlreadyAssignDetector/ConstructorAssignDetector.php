@@ -94,7 +94,7 @@ final class ConstructorAssignDetector
         foreach ($stmts as $stmt) {
             if (! $stmt instanceof Expression) {
                 $isAssigned = false;
-                return false;
+                break;
             }
 
             if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName) instanceof Expr) {
