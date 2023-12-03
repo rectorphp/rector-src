@@ -60,9 +60,10 @@ final class TypeFactory
     {
         $constantTypeHashes = [];
         $uniqueTypes = [];
+        $totalTypes = count($types);
 
         foreach ($types as $type) {
-            if ($type instanceof ObjectWithoutClassTypeWithParentTypes) {
+            if ($totalTypes > 1 && $type instanceof ObjectWithoutClassTypeWithParentTypes) {
                 $parents = $type->getParentTypes();
                 $type = new ObjectType($parents[0]->getClassName());
             }
