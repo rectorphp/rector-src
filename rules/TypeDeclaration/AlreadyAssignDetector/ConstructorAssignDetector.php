@@ -92,6 +92,7 @@ final class ConstructorAssignDetector
     {
         $isAssigned = false;
         foreach ($stmts as $stmt) {
+            // non Expression can be on next stmt
             if (! $stmt instanceof Expression) {
                 $isAssigned = false;
                 break;
@@ -99,7 +100,6 @@ final class ConstructorAssignDetector
 
             if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName) instanceof Expr) {
                 $isAssigned = true;
-                break;
             }
         }
 
