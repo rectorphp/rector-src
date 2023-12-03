@@ -8,7 +8,7 @@
 
 - [CodeQuality](#codequality) (72)
 
-- [CodingStyle](#codingstyle) (28)
+- [CodingStyle](#codingstyle) (27)
 
 - [DeadCode](#deadcode) (42)
 
@@ -1111,12 +1111,12 @@ Changes foreach that returns set value to ??
 ```diff
 -foreach ($this->oldToNewFunctions as $oldFunction => $newFunction) {
 -    if ($currentFunction === $oldFunction) {
--        innerForeachReturn $newFunction;
+-        return $newFunction;
 -    }
 -}
 -
--innerForeachReturn null;
-+innerForeachReturn $this->oldToNewFunctions[$currentFunction] ?? null;
+-return null;
++return $this->oldToNewFunctions[$currentFunction] ?? null;
 ```
 
 <br>
@@ -1571,31 +1571,6 @@ Use ===/!== over ==/!=, it values have the same type
 <br>
 
 ## CodingStyle
-
-### AddArrayDefaultToArrayPropertyRector
-
-Adds array default value to property to prevent foreach over null error
-
-- class: [`Rector\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector`](../rules/CodingStyle/Rector/Class_/AddArrayDefaultToArrayPropertyRector.php)
-
-```diff
- class SomeClass
- {
-     /**
-      * @var int[]
-      */
--    private $values;
-+    private $values = [];
-
-     public function isEmpty()
-     {
--        return $this->values === null;
-+        return $this->values === [];
-     }
- }
-```
-
-<br>
 
 ### ArraySpreadInsteadOfArrayMergeRector
 

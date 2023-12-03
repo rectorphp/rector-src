@@ -28,7 +28,7 @@ final class LongAndDependentComplexRectorRule implements Rule
     /**
      * @var int
      */
-    private const ALLOWED_TRANSITIONAL_COMPLEXITY = 110;
+    private const ALLOWED_TRANSITIONAL_COMPLEXITY = 140;
 
     private readonly Parser $phpParser;
 

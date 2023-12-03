@@ -33,5 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
 
         // with array key
         new MethodCallRenameWithArrayKey('Nette\Utils\Html', 'addToArray', 'addToHtmlArray', 'hey'),
+        // never types
+        new MethodCallRename('Symfony\\Component\\Workflow\\DefinitionBuilder', 'reset', 'clear'),
     ]);
 };

@@ -116,6 +116,9 @@ final class VisibilityManipulator
         $this->addVisibilityFlag($node, Visibility::READONLY);
     }
 
+    /**
+     * @api
+     */
     public function isReadonly(Class_ | Property | Param $node): bool
     {
         return $this->hasVisibility($node, Visibility::READONLY);

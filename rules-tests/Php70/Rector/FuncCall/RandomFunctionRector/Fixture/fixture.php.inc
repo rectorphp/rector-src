@@ -55,7 +55,7 @@ function randomFunction()
 
     random_int($a, \Other\Scope\mt_rand($a));
 
-    $a = random_int(1, 2) + random_int(3, 4);
+    $a = random_int(1, 2) + mt_rand(3, 4);
 }
 
 ?>

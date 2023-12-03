@@ -78,7 +78,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     {
         $names = [];
 
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, static function (Node $node) use (
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace->stmts, static function (Node $node) use (
             &$names
         ): int|null|Name {
             if ($node instanceof Use_) {
@@ -172,11 +172,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         // match partial import
         foreach ($names as $name) {
-            if (str_ends_with($comparedName, $name)) {
+            if (str_ends_with($comparedName, '\\' . $name)) {
                 return true;
             }
 
-            if (str_starts_with($name, $namespacedPrefix)) {
+            if ($this->isSubNamespace($name, $namespacedPrefix)) {
                 return true;
             }
 
@@ -196,6 +196,16 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             if ($alias === $namePrefix) {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    private function isSubNamespace(string $name, string $namespacedPrefix): bool
+    {
+        if (str_starts_with($name, $namespacedPrefix)) {
+            $subNamespace = substr($name, strlen($namespacedPrefix));
+            return ! str_contains($subNamespace, '\\');
         }
 
         return false;

@@ -13,11 +13,13 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Core\Rector\AbstractRector;
+use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -37,6 +39,7 @@ final class AddParamBasedOnParentClassMethodRector extends AbstractRector implem
         private readonly AstResolver $astResolver,
         private readonly BetterStandardPrinter $betterStandardPrinter,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -106,6 +109,15 @@ CODE_SAMPLE
         }
 
         if ($parentMethodReflection->isPrivate()) {
+            return null;
+        }
+
+        $currentClassReflection = $this->reflectionResolver->resolveClassReflection($node);
+        $isPDO = $currentClassReflection instanceof ClassReflection && $currentClassReflection->isSubclassOf('PDO');
+
+        // It relies on phpstorm stubs that define 2 kind of query method for both php 7.4 and php 8.0
+        // @see https://github.com/JetBrains/phpstorm-stubs/blob/e2e898a29929d2f520fe95bdb2109d8fa895ba4a/PDO/PDO.php#L1096-L1126
+        if ($isPDO && $parentMethodReflection->getName() === 'query') {
             return null;
         }
 

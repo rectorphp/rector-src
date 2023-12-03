@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\CodingStyle\Rector\Class_\AddArrayDefaultToArrayPropertyRector;
+namespace Rector\Tests\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AddArrayDefaultToArrayPropertyRectorTest extends AbstractRectorTestCase
+final class RemoveUselessIsObjectCheckRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
