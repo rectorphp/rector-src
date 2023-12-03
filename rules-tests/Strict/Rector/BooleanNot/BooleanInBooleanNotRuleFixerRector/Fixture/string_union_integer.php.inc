@@ -28,7 +28,7 @@ final class StringUnionInteger
 {
     public function run(string|int $maye)
     {
-        if ($maye === '' || $maye === 0) {
+        if ($maye === '' || $maye === '0' || $maye === 0) {
             return true;
         }
 

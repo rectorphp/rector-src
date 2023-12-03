@@ -32,7 +32,7 @@ final class NegatedString
 
     public function run()
     {
-        if ($this->name === '') {
+        if ($this->name === '' || $this->name = '0') {
             return 'name';
         }
 
