@@ -5,16 +5,10 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\BooleanAnd;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
-use Rector\Core\NodeManipulator\BinaryOpManipulator;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Php71\ValueObject\TwoNodeMatch;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -23,11 +17,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUselessIsObjectCheckRector extends AbstractRector
 {
-    public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -49,15 +38,26 @@ final class RemoveUselessIsObjectCheckRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->left instanceof FuncCall && $this->isName($node->left, 'is_object') && $node->right instanceof Instanceof_) {
+        if ($node->left instanceof FuncCall && $this->isName(
+            $node->left,
+            'is_object'
+        ) && $node->right instanceof Instanceof_) {
             return $this->processRemoveUselessIsObject($node->left, $node->right);
         }
 
-        if ($node->left instanceof Instanceof_ && $node->right instanceof FuncCall && $this->isName($node->right, 'is_object')) {
-            return $this->processRemoveUselessIsObject($node->right, $node->left);
+        if (! $node->left instanceof Instanceof_) {
+            return null;
         }
 
-        return null;
+        if (! $node->right instanceof FuncCall) {
+            return null;
+        }
+
+        if (! $this->isName($node->right, 'is_object')) {
+            return null;
+        }
+
+        return $this->processRemoveUselessIsObject($node->right, $node->left);
     }
 
     private function processRemoveUselessIsObject(FuncCall $funcCall, Instanceof_ $instanceof): ?Instanceof_
