@@ -96,7 +96,7 @@ CODE_SAMPLE
             $callLikeTypes[] = $this->getType($nativeCallLike);
         }
 
-        $returnType = $this->typeFactory->createMixedPassedOrUnionType($callLikeTypes);
+        $returnType = $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($callLikeTypes);
         if ($returnType instanceof MixedType) {
             return null;
         }
