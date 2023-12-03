@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
-
 use Rector\Core\Collector\MockedClassCollector;
 use Rector\Core\Collector\ParentClassCollector;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;

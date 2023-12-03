@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\ClassConst;
 
-use PhpParser\Node\Stmt\ClassConst;
-use PhpParser\Node\Identifier;
+use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Scalar\LNumber;
-use PhpParser\Node\Scalar\DNumber;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MissingConstantFromReflectionException;
 use PHPStan\Reflection\ReflectionProvider;
@@ -73,7 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $consts = array_filter($node->stmts, static fn(Node $node): bool => $node instanceof ClassConst);
+        $consts = array_filter($node->stmts, static fn (Node $node): bool => $node instanceof ClassConst);
 
         if ($consts === []) {
             return null;
@@ -107,7 +107,7 @@ CODE_SAMPLE
                 $valueType = $this->findValueType($constNode->value);
             }
 
-            if (!($valueType ?? null) instanceof Identifier) {
+            if (! ($valueType ?? null) instanceof Identifier) {
                 continue;
             }
 

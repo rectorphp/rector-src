@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Acme\Bar\DoNotUpdateExistingTargetNamespace;
 use Rector\Config\RectorConfig;
-
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture\DuplicatedClass;
 use Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\Contract\FirstInterface;

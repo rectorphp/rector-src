@@ -40,10 +40,7 @@ final class ExactCompareFactory
                 return new Identical($expr, new String_(''));
             }
 
-            return new BooleanOr(
-                new Identical($expr, new String_('')),
-                new Identical($expr, new String_('0'))
-            );
+            return new BooleanOr(new Identical($expr, new String_('')), new Identical($expr, new String_('0')));
         }
 
         if ($exprType->isInteger()->yes()) {
