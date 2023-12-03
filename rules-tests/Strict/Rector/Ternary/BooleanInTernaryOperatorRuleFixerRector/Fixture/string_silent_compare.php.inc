@@ -24,7 +24,7 @@ final class StringSilentCompare
 {
     public function run(string $string)
     {
-        return $string !== '' ? 1 : 2;
+        return $string !== '' && $string !== '0' ? 1 : 2;
     }
 }
 

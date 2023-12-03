@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Php83\Rector\ClassConst;
 
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Const_;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\DNumber;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Name;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -20,7 +30,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\AddTypeToConstRectorTest
  */
-class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
+final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -63,9 +73,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $consts = array_filter($node->stmts, function (Node $stmt) {
-            return $stmt instanceof Node\Stmt\ClassConst;
-        });
+        $consts = array_filter($node->stmts, static fn(Node $node): bool => $node instanceof ClassConst);
 
         if ($consts === []) {
             return null;
@@ -91,13 +99,15 @@ CODE_SAMPLE
                 if ($this->shouldSkipDueToInheritance($constNode, $parents, $implementations, $traits)) {
                     continue;
                 }
+
                 if ($this->canBeInheritied($const, $node)) {
                     continue;
                 }
+
                 $valueType = $this->findValueType($constNode->value);
             }
 
-            if (($valueType ?? null) === null) {
+            if (!($valueType ?? null) instanceof Identifier) {
                 continue;
             }
 
@@ -124,45 +134,52 @@ CODE_SAMPLE
      * @param ClassReflection[] $traits
      */
     public function shouldSkipDueToInheritance(
-        Node\Const_ $constNode,
+        Const_ $const,
         array $parents,
         array $implementations,
         array $traits,
     ): bool {
         foreach ([$parents, $implementations, $traits] as $inheritance) {
             foreach ($inheritance as $inheritanceItem) {
-                if ($constNode->name->name === '') {
+                if ($const->name->name === '') {
                     continue;
                 }
+
                 try {
-                    $inheritanceItem->getConstant($constNode->name->name);
+                    $inheritanceItem->getConstant($const->name->name);
                     return true;
                 } catch (MissingConstantFromReflectionException) {
                 }
             }
         }
+
         return false;
     }
 
-    private function findValueType(Node\Expr $value): ?Node\Identifier
+    private function findValueType(Expr $expr): ?Identifier
     {
-        if ($value instanceof Node\Scalar\String_) {
-            return new Node\Identifier('string');
+        if ($expr instanceof String_) {
+            return new Identifier('string');
         }
-        if ($value instanceof Node\Scalar\LNumber) {
-            return new Node\Identifier('int');
+
+        if ($expr instanceof LNumber) {
+            return new Identifier('int');
         }
-        if ($value instanceof Node\Scalar\DNumber) {
-            return new Node\Identifier('float');
+
+        if ($expr instanceof DNumber) {
+            return new Identifier('float');
         }
-        if ($value instanceof Node\Expr\ConstFetch && $value->name->toLowerString() !== 'null') {
-            return new Node\Identifier('bool');
+
+        if ($expr instanceof ConstFetch && $expr->name->toLowerString() !== 'null') {
+            return new Identifier('bool');
         }
-        if ($value instanceof Node\Expr\ConstFetch && $value->name->toLowerString() === 'null') {
-            return new Node\Identifier('null');
+
+        if ($expr instanceof ConstFetch && $expr->name->toLowerString() === 'null') {
+            return new Identifier('null');
         }
-        if ($value instanceof Node\Expr\Array_) {
-            return new Node\Identifier('array');
+
+        if ($expr instanceof Array_) {
+            return new Identifier('array');
         }
 
         return null;
@@ -175,7 +192,7 @@ CODE_SAMPLE
     {
         $parents = array_filter([$class->extends]);
 
-        return array_map(function (Node\Name $name): ClassReflection {
+        return array_map(function (Name $name): ClassReflection {
             if (! $name instanceof FullyQualified) {
                 throw new FullyQualifiedNameNotAutoloadedException($name);
             }
@@ -193,7 +210,7 @@ CODE_SAMPLE
      */
     private function getImplementations(Class_ $class): array
     {
-        return array_map(function (Node\Name $name): ClassReflection {
+        return array_map(function (Name $name): ClassReflection {
             if (! $name instanceof FullyQualified) {
                 throw new FullyQualifiedNameNotAutoloadedException($name);
             }
@@ -209,14 +226,14 @@ CODE_SAMPLE
     /**
      * @return ClassReflection[]
      */
-    private function getTraits(Class_ $node): array
+    private function getTraits(Class_ $class): array
     {
         $traits = [];
-        foreach ($node->getTraitUses() as $traitUse) {
+        foreach ($class->getTraitUses() as $traitUse) {
             $traits = [...$traits, ...$traitUse->traits];
         }
 
-        return array_map(function (Node\Name $name): ClassReflection {
+        return array_map(function (Name $name): ClassReflection {
             if (! $name instanceof FullyQualified) {
                 throw new FullyQualifiedNameNotAutoloadedException($name);
             }
@@ -229,8 +246,8 @@ CODE_SAMPLE
         }, $traits);
     }
 
-    private function canBeInheritied(Node\Stmt\ClassConst $constNode, Class_ $node): bool
+    private function canBeInheritied(ClassConst $classConst, Class_ $class): bool
     {
-        return ! $node->isFinal() && ! $constNode->isPrivate();
+        return ! $class->isFinal() && ! $classConst->isPrivate();
     }
 }

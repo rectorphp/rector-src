@@ -24,7 +24,7 @@ final class ShortTernaryString
 {
     public function run(string $string)
     {
-        return $string !== '' ? $string : 2;
+        return $string !== '' && $string !== '0' ? $string : 2;
     }
 }
 
