@@ -96,7 +96,7 @@ final class ConstructorAssignDetector
                     return false;
                 }
 
-                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName)) {
+                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName) instanceof Expr) {
                     $isInIfStmt = true;
                     break;
                 }
@@ -108,7 +108,7 @@ final class ConstructorAssignDetector
                     return false;
                 }
 
-                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName)) {
+                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName) instanceof Expr) {
                     $isInElseStmt = true;
                     break;
                 }
