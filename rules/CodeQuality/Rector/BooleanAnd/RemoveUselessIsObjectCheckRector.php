@@ -38,10 +38,9 @@ final class RemoveUselessIsObjectCheckRector extends AbstractRector
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->left instanceof FuncCall && $this->isName(
-            $node->left,
-            'is_object'
-        ) && $node->right instanceof Instanceof_) {
+        if ($node->left instanceof FuncCall
+            && $this->isName($node->left, 'is_object')
+            && $node->right instanceof Instanceof_) {
             return $this->processRemoveUselessIsObject($node->left, $node->right);
         }
 
