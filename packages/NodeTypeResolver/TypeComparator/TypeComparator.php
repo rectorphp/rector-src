@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\TypeComparator;
 
+use PHPStan\Type\TypeCombinator;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -97,7 +98,7 @@ final class TypeComparator
             $phpStanDocType
         );
 
-        if ($phpStanDocType instanceof \PHPStan\Type\UnionType && $this->areTypesEqual(\PHPStan\Type\TypeCombinator::removeNull($phpStanDocType), $phpParserNodeType)) {
+        if ($phpStanDocType instanceof UnionType && $this->areTypesEqual(TypeCombinator::removeNull($phpStanDocType), $phpParserNodeType)) {
             return true;
         }
 

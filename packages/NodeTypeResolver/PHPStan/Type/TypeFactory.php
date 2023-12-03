@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Type;
 
+use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
@@ -60,9 +62,9 @@ final class TypeFactory
         $uniqueTypes = [];
 
         foreach ($types as $type) {
-            if ($type instanceof \Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes) {
+            if ($type instanceof ObjectWithoutClassTypeWithParentTypes) {
                 $parents = $type->getParentTypes();
-                $type = new \PHPStan\Type\ObjectType($parents[0]->getClassName());
+                $type = new ObjectType($parents[0]->getClassName());
             }
 
             $removedConstantType = $this->removeValueFromConstantType($type);
