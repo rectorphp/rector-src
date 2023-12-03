@@ -6,6 +6,7 @@ namespace Rector\Strict\NodeFactory;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -32,10 +33,22 @@ final class ExactCompareFactory
     public function createIdenticalFalsyCompare(
         Type $exprType,
         Expr $expr,
-        bool $treatAsNonEmpty
+        bool $treatAsNonEmpty,
+        bool $isOnlyString = true
     ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null {
         if ($exprType->isString()->yes()) {
-            return new Identical($expr, new String_(''));
+            if ($expr instanceof ArrayDimFetch) {
+                return new Identical($expr, new String_(''));
+            }
+
+            if ($treatAsNonEmpty || ! $isOnlyString) {
+                return new Identical($expr, new String_(''));
+            }
+
+            return new BooleanOr(
+                new Identical($expr, new String_('')),
+                new Identical($expr, new String_('0'))
+            );
         }
 
         if ($exprType->isInteger()->yes()) {
@@ -58,7 +71,7 @@ final class ExactCompareFactory
             return null;
         }
 
-        return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty);
+        return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty, false);
     }
 
     public function createNotIdenticalFalsyCompare(
@@ -68,6 +81,10 @@ final class ExactCompareFactory
         bool $isOnlyString = true
     ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
         if ($exprType->isString()->yes()) {
+            if ($expr instanceof ArrayDimFetch) {
+                return new NotIdentical($expr, new String_(''));
+            }
+
             if ($treatAsNotEmpty || ! $isOnlyString) {
                 return new NotIdentical($expr, new String_(''));
             }
@@ -217,7 +234,8 @@ final class ExactCompareFactory
     private function createTruthyFromUnionType(
         UnionType $unionType,
         Expr $expr,
-        bool $treatAsNonEmpty
+        bool $treatAsNonEmpty,
+        bool $isOnlyString
     ): BooleanOr|NotIdentical|Identical|BooleanNot|Instanceof_|BooleanAnd|null {
         $unionType = $this->cleanUpPossibleNullableUnionType($unionType);
 
@@ -241,7 +259,7 @@ final class ExactCompareFactory
         }
 
         // assume we have to check empty string, integer and bools
-        $scalarFalsyIdentical = $this->createIdenticalFalsyCompare($unionType, $expr, $treatAsNonEmpty);
+        $scalarFalsyIdentical = $this->createIdenticalFalsyCompare($unionType, $expr, $treatAsNonEmpty, $isOnlyString);
         if (! $scalarFalsyIdentical instanceof Expr) {
             return null;
         }

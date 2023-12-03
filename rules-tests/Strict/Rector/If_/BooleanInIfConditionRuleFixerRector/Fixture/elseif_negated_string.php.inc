@@ -36,7 +36,7 @@ final class ElseIfNegatedString
     {
         if ($boolValue) {
             return 'bool';
-        } elseif ($this->name !== '') {
+        } elseif ($this->name !== '' && $this->name !== '0') {
             return 'name';
         }
 
