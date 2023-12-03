@@ -9,7 +9,9 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -50,6 +52,11 @@ final class ConstructorAssignDetector
             $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $initializeClassMethod->stmts, function (
                 Node $node
             ) use ($propertyName, &$isAssignedInConstructor): ?int {
+                if ($this->isIfElseAssign($node, $propertyName)) {
+                    $isAssignedInConstructor = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 $expr = $this->matchAssignExprToPropertyName($node, $propertyName);
                 if (! $expr instanceof Expr) {
                     return null;
@@ -75,6 +82,42 @@ final class ConstructorAssignDetector
         }
 
         return $isAssignedInConstructor;
+    }
+
+
+    private function isIfElseAssign(Node $node, string $propertyName): bool
+    {
+        if ($node instanceof If_
+            && $node->elseifs === []
+            && $node->else instanceof Else_) {
+            $isInIfStmt = false;
+            foreach ($node->stmts as $stmt) {
+                if (! $stmt instanceof Expression) {
+                    return false;
+                }
+
+                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName)) {
+                    $isInIfStmt = true;
+                    break;
+                }
+            }
+
+            $isInElseStmt = false;
+            foreach ($node->else->stmts as $stmt) {
+                if (! $stmt instanceof Expression) {
+                    return false;
+                }
+
+                if ($this->matchAssignExprToPropertyName($stmt->expr, $propertyName)) {
+                    $isInElseStmt = true;
+                    break;
+                }
+            }
+
+            return $isInIfStmt && $isInElseStmt;
+        }
+
+        return false;
     }
 
     private function matchAssignExprToPropertyName(Node $node, string $propertyName): ?Expr

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class AnonymousExtendsExistingClassInUnion
+final class AnonymousExtendsExistingClassInUnion2
 {
     private $x;
 
@@ -22,9 +22,9 @@ final class AnonymousExtendsExistingClassInUnion
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\FixtureComplexTypes;
 
-final class AnonymousExtendsExistingClassInUnion
+final class AnonymousExtendsExistingClassInUnion2
 {
-    private ?\DateTime $x = null;
+    private \DateTime $x;
 
     public function __construct()
     {

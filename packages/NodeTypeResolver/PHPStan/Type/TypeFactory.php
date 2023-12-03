@@ -60,6 +60,11 @@ final class TypeFactory
         $uniqueTypes = [];
 
         foreach ($types as $type) {
+            if ($type instanceof \Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes) {
+                $parents = $type->getParentTypes();
+                $type = new \PHPStan\Type\ObjectType($parents[0]->getClassName());
+            }
+
             $removedConstantType = $this->removeValueFromConstantType($type);
             $removedConstantTypeHash = $this->typeHasher->createTypeHash($removedConstantType);
 

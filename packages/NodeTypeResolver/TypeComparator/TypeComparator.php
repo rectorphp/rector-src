@@ -97,6 +97,10 @@ final class TypeComparator
             $phpStanDocType
         );
 
+        if ($phpStanDocType instanceof \PHPStan\Type\UnionType && $this->areTypesEqual(\PHPStan\Type\TypeCombinator::removeNull($phpStanDocType), $phpParserNodeType)) {
+            return true;
+        }
+
         if (! $areDifferentScalarTypes && ! $this->areTypesEqual($phpParserNodeType, $phpStanDocType)) {
             return false;
         }

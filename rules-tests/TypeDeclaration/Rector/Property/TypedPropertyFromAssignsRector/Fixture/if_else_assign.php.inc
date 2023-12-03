@@ -2,16 +2,16 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-final class AnonymousExtendsExistingClassInUnion
+final class IfElseAssign
 {
-    private $x;
+    private $apiUrl;
 
     public function __construct()
     {
         if (rand(0,1)) {
-            $this->x = new \DateTime('now');
+            $this->apiUrl = 'https://example.com/';
         } else {
-            $this->x = new class extends \DateTime {};
+            $this->apiUrl = 'https://another.example.com/';
         }
     }
 }
@@ -22,16 +22,16 @@ final class AnonymousExtendsExistingClassInUnion
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector\Fixture;
 
-final class AnonymousExtendsExistingClassInUnion
+final class IfElseAssign
 {
-    private \DateTime $x;
+    private string $apiUrl;
 
     public function __construct()
     {
         if (rand(0,1)) {
-            $this->x = new \DateTime('now');
+            $this->apiUrl = 'https://example.com/';
         } else {
-            $this->x = new class extends \DateTime {};
+            $this->apiUrl = 'https://another.example.com/';
         }
     }
 }
