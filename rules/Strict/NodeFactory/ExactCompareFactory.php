@@ -6,7 +6,6 @@ namespace Rector\Strict\NodeFactory;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
@@ -37,10 +36,6 @@ final class ExactCompareFactory
         bool $isOnlyString = true
     ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null {
         if ($exprType->isString()->yes()) {
-            if ($expr instanceof ArrayDimFetch) {
-                return new Identical($expr, new String_(''));
-            }
-
             if ($treatAsNonEmpty || ! $isOnlyString) {
                 return new Identical($expr, new String_(''));
             }
@@ -81,10 +76,6 @@ final class ExactCompareFactory
         bool $isOnlyString = true
     ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
         if ($exprType->isString()->yes()) {
-            if ($expr instanceof ArrayDimFetch) {
-                return new NotIdentical($expr, new String_(''));
-            }
-
             if ($treatAsNotEmpty || ! $isOnlyString) {
                 return new NotIdentical($expr, new String_(''));
             }

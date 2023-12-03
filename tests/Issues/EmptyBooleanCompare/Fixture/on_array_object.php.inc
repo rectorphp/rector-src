@@ -28,7 +28,7 @@ final class OnArrayObject
     {
         $parts = new \ArrayObject(['host' => 'test'], \ArrayObject::ARRAY_AS_PROPS);
 
-        if (isset($parts['host']) && $parts['host'] !== '') {
+        if (isset($parts['host']) && ($parts['host'] !== '' && $parts['host'] !== '0')) {
             return $parts['host'];
         }
 
