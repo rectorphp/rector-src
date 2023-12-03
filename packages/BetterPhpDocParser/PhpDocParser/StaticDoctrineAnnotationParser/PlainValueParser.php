@@ -108,6 +108,7 @@ final class PlainValueParser
                 $tokenIterator->next();
             }
         }
+
         return $currentTokenValue;
     }
 
@@ -119,6 +120,7 @@ final class PlainValueParser
             if (! $tokenIterator->isCurrentTokenType(Lexer::TOKEN_PHPDOC_EOL)) {
                 $currentTokenValue .= ' ';
             }
+
             if (str_starts_with($currentTokenValue, '"') && str_contains(
                 $tokenIterator->currentTokenValue(),
                 '"'
@@ -132,12 +134,13 @@ final class PlainValueParser
                 $tokenIterator->next();
                 break;
             }
+
             $currentTokenValue .= $tokenIterator->currentTokenValue();
             $tokenIterator->next();
         }
 
         if (str_starts_with($currentTokenValue, '"') && str_ends_with($currentTokenValue, '"')) {
-            $currentTokenValue = trim(str_replace('"', '', $currentTokenValue));
+            return trim(str_replace('"', '', $currentTokenValue));
         }
 
         return $currentTokenValue;
