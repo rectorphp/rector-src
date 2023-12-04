@@ -133,7 +133,7 @@ final class DeadReturnTagValueNodeAnalyzer
     private function hasUsefullPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
     {
         if ($this->isVoidReturnType($returnType)) {
-            if ($returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type === 'never') {
+            if (! $returnTagValueNode->type instanceof IdentifierTypeNode || (string) $returnTagValueNode->type !== 'never') {
                 return false;
             }
         }
