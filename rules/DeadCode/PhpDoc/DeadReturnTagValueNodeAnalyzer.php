@@ -51,7 +51,7 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         // in case of void, there is no added value in @return tag
-        if ($returnType instanceof Identifier && $returnType->toString() === 'void') {
+        if ($this->isVoidReturnType($returnType)) {
             return ! $returnTagValueNode->type instanceof IdentifierTypeNode || (string) $returnTagValueNode->type !== 'never';
         }
 
@@ -80,6 +80,11 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         return ! $this->hasTrueFalsePseudoType($returnTagValueNode->type);
+    }
+
+    private function isVoidReturnType(Node $node): bool
+    {
+        return $node instanceof Identifier && $node->toString() === 'void';
     }
 
     private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $node, ClassMethod $classMethod): bool
