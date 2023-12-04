@@ -36,12 +36,12 @@ final class DeadReturnTagValueNodeAnalyzer
 
     public function isDead(ReturnTagValueNode $returnTagValueNode, ClassMethod $classMethod): bool
     {
-        $returnType = $classMethod->getReturnType();
-        if ($returnType === null) {
+        if ($returnTagValueNode->description !== '') {
             return false;
         }
-
-        if ($returnTagValueNode->description !== '') {
+        
+        $returnType = $classMethod->getReturnType();
+        if ($returnType === null) {
             return false;
         }
 
