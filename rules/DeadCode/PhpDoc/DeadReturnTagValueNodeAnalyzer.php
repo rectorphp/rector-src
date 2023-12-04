@@ -50,9 +50,8 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        // in case of void, there is no added value in @return tag
-        if ($this->isVoidReturnType($returnType)) {
-            return ! $returnTagValueNode->type instanceof IdentifierTypeNode || (string) $returnTagValueNode->type !== 'never';
+        if (!$this->hasUsefullPhpdocType($returnTagValueNode, $returnType)) {
+            return true;
         }
 
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
@@ -85,6 +84,11 @@ final class DeadReturnTagValueNodeAnalyzer
     private function isVoidReturnType(Node $node): bool
     {
         return $node instanceof Identifier && $node->toString() === 'void';
+    }
+
+    private function isNeverReturnType(Node $node): bool
+    {
+        return $node instanceof Identifier && $node->toString() === 'never';
     }
 
     private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $node, ClassMethod $classMethod): bool
@@ -121,5 +125,22 @@ final class DeadReturnTagValueNodeAnalyzer
         }
 
         return false;
+    }
+
+    /**
+     * in case of void,never there is no added value in "@return tag"
+     */
+    private function hasUsefullPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
+    {
+        if ($this->isVoidReturnType($returnType)) {
+            if (! $returnTagValueNode->type instanceof IdentifierTypeNode || (string) $returnTagValueNode->type !== 'never') {
+                return false;
+            }
+        }
+        if ($this->isNeverReturnType($returnType)) {
+            return false;
+        }
+
+        return true;
     }
 }
