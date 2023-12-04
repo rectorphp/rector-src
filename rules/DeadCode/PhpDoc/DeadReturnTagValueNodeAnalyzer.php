@@ -54,6 +54,9 @@ final class DeadReturnTagValueNodeAnalyzer
         if ($this->isVoidReturnType($returnType)) {
             return ! $returnTagValueNode->type instanceof IdentifierTypeNode || (string) $returnTagValueNode->type !== 'never';
         }
+        if ($this->isNeverReturnType($returnType)) {
+            return true;
+        }
 
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
             $returnType,
@@ -85,6 +88,11 @@ final class DeadReturnTagValueNodeAnalyzer
     private function isVoidReturnType(Node $node): bool
     {
         return $node instanceof Identifier && $node->toString() === 'void';
+    }
+
+    private function isNeverReturnType(Node $node): bool
+    {
+        return $node instanceof Identifier && $node->toString() === 'never';
     }
 
     private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $node, ClassMethod $classMethod): bool
