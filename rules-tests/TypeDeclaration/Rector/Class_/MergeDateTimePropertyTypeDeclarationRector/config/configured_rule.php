@@ -7,6 +7,6 @@ use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::SCALAR_TYPES);
+    $rectorConfig->phpVersion(PhpVersionFeature::TYPED_PROPERTIES);
     $rectorConfig->rule(MergeDateTimePropertyTypeDeclarationRector::class);
 };
