@@ -74,7 +74,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $property->type instanceof FullyQualified && $property->type->toString() !== 'DateTime') {
+            if (! $property->type instanceof FullyQualified || $property->type->toString() !== 'DateTime') {
                 continue;
             }
 
