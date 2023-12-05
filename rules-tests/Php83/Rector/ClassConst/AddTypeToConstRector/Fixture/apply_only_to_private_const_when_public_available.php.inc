@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
+
 class ApplyOnlyToPrivateConstWhenPublicAvailable
 {
     private const A = 1000;
@@ -9,6 +11,8 @@ class ApplyOnlyToPrivateConstWhenPublicAvailable
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
 class ApplyOnlyToPrivateConstWhenPublicAvailable
 {
