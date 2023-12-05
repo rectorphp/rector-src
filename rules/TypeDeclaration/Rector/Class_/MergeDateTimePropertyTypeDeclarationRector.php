@@ -73,9 +73,11 @@ CODE_SAMPLE
             if (! $property->type instanceof Node) {
                 continue;
             }
+
             if (! $property->type instanceof FullyQualified) {
                 continue;
             }
+
             if ($property->type->toString() !== 'DateTime') {
                 continue;
             }
