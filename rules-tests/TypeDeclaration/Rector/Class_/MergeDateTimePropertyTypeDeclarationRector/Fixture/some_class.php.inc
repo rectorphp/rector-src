@@ -18,7 +18,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDe
 
 final class SomeClass
 {
-    private \DateTime $dateTime;
+    private \DateTimeInterface $dateTime;
 }
 
 ?>
