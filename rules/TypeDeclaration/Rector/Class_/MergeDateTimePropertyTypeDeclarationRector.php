@@ -92,7 +92,10 @@ CODE_SAMPLE
             }
 
             $varType = $phpDocInfo->getVarType();
-            if ($varType instanceof FullyQualifiedObjectType && $varType->getClassName() === 'DateTimeInterface') {
+            $className = $varType instanceof \PHPStan\Type\TypeWithClassName
+                ? $this->nodeTypeResolver->getFullyQualifiedClassName($varType)
+                : null;
+            if ($className === 'DateTimeInterface') {
                 $phpDocInfo->removeByType(VarTagValueNode::class);
                 $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
 
