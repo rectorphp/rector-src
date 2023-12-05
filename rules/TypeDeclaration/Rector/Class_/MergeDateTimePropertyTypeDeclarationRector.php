@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Class_;
 
+use PHPStan\Type\TypeWithClassName;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
@@ -13,7 +14,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
-use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -92,7 +92,10 @@ CODE_SAMPLE
             }
 
             $varType = $phpDocInfo->getVarType();
-            if ($varType instanceof FullyQualifiedObjectType && $varType->getClassName() === 'DateTimeInterface') {
+            $className = $varType instanceof TypeWithClassName
+                ? $this->nodeTypeResolver->getFullyQualifiedClassName($varType)
+                : null;
+            if ($className === 'DateTimeInterface') {
                 $phpDocInfo->removeByType(VarTagValueNode::class);
                 $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
 
