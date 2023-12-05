@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector;
 use Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
@@ -72,5 +73,6 @@ return static function (RectorConfig $rectorConfig): void {
         StrictArrayParamDimFetchRector::class,
         ReturnUnionTypeRector::class,
         StrictStringParamConcatRector::class,
+        MergeDateTimePropertyTypeDeclarationRector::class,
     ]);
 };
