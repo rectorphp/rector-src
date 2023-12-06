@@ -50,11 +50,6 @@ final class StaticTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        // special case, for autocomplete of return type
-        if ($type instanceof SimpleStaticType) {
-            return new Name(ObjectReference::STATIC);
-        }
-
         if ($type instanceof SelfStaticType) {
             return new Name(ObjectReference::SELF);
         }
