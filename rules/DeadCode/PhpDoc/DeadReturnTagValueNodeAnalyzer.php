@@ -51,10 +51,6 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if (! $this->hasUsefullPhpdocType($returnTagValueNode, $returnType)) {
-            return true;
-        }
-
         if (! $this->typeComparator->arePhpParserAndPhpStanPhpDocTypesEqual(
             $returnType,
             $returnTagValueNode->type,
@@ -98,6 +94,10 @@ final class DeadReturnTagValueNodeAnalyzer
             return true;
         }
 
+        if (! $this->hasUsefullPhpdocType($returnTagValueNode, $node)) {
+            return true;
+        }
+
         $nodeType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $returnTagValueNode->type,
@@ -129,10 +129,14 @@ final class DeadReturnTagValueNodeAnalyzer
     }
 
     /**
-     * in case of void,never there is no added value in "@return tag"
+     * exact different between @return and node return type
      */
     private function hasUsefullPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
     {
+        if ($returnTagValueNode->type instanceof IdentifierTypeNode && $returnTagValueNode->type->name === 'mixed') {
+            return false;
+        }
+
         if (! $this->isVoidReturnType($returnType)) {
             return ! $this->isNeverReturnType($returnType);
         }
