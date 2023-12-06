@@ -46,7 +46,7 @@ final class StaticTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param StaticType $type
+     * @param SimpleStaticType|StaticType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
@@ -62,8 +62,6 @@ final class StaticTypeMapper implements TypeMapperInterface
             return new Name(ObjectReference::SELF);
         }
 
-        /** @var SimpleStaticType|StaticType $name */
-        $name = new Name(ObjectReference::STATIC);
-        return $name;
+        return new Name(ObjectReference::STATIC);
     }
 }
