@@ -45,11 +45,6 @@ final class StaticTypeMapper implements TypeMapperInterface
         return $type->toPhpDocNode();
     }
 
-    private function isReturnTypeKindAndStaticReturnSupported(string $typeKind): bool
-    {
-        return $typeKind === TypeKind::RETURN && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
-    }
-
     /**
      * @param StaticType $type
      */
@@ -60,7 +55,7 @@ final class StaticTypeMapper implements TypeMapperInterface
         }
 
         /** @var SimpleStaticType|StaticType $type */
-        if ($this->isReturnTypeKindAndStaticReturnSupported($typeKind)) {
+        if ($typeKind === TypeKind::RETURN && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
             return new Name(ObjectReference::STATIC);
         }
 
