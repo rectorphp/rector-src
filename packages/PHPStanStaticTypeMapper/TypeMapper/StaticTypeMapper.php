@@ -45,21 +45,26 @@ final class StaticTypeMapper implements TypeMapperInterface
         return $type->toPhpDocNode();
     }
 
+    private function isReturnTypeKindAndStaticReturnSupported(string $typeKind): bool
+    {
+        return $typeKind === TypeKind::RETURN && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE);
+    }
+
     /**
      * @param StaticType $type
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        // special case, for autocomplete of return type
-        if ($type instanceof SimpleStaticType) {
-            return new Name(ObjectReference::STATIC);
-        }
-
         if ($type instanceof SelfStaticType) {
             return new Name(ObjectReference::SELF);
         }
 
-        if ($typeKind === TypeKind::RETURN && $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::STATIC_RETURN_TYPE)) {
+        // special case, for autocomplete of return type
+        if ($type instanceof SimpleStaticType && $this->isReturnTypeKindAndStaticReturnSupported($typeKind)) {
+            return new Name(ObjectReference::STATIC);
+        }
+
+        if ($this->isReturnTypeKindAndStaticReturnSupported($typeKind)) {
             return new Name(ObjectReference::STATIC);
         }
 
