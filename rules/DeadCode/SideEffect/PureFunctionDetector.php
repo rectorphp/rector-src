@@ -118,6 +118,9 @@ final class PureFunctionDetector
 
         // stream
         'stream_filter_append',
+
+        // early call fill the background
+        'imagecolorallocate',
     ];
 
     public function __construct(
