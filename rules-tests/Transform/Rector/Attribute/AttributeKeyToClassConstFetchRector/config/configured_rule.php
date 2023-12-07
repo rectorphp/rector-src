@@ -12,5 +12,8 @@ return static function (RectorConfig $rectorConfig): void {
             new AttributeKeyToClassConstFetch('Doctrine\ORM\Mapping\Column', 'type', 'Doctrine\DBAL\Types\Types', [
                 'string' => 'STRING',
             ]),
+            new AttributeKeyToClassConstFetch('Rector\Tests\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector\Source\TestAttribute', 'type', 'Rector\Tests\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector\Source\Constant', [
+                'value' => 'VALUE',
+            ]),
         ]);
 };
