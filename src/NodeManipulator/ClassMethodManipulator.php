@@ -62,10 +62,6 @@ final class ClassMethodManipulator
             if ($interfaceReflection->hasMethod($methodName)) {
                 return true;
             }
-
-            if ($interfaceReflection->hasMethod(MethodName::CALL)) {
-                return true;
-            }
         }
 
         return false;
