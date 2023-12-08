@@ -9,6 +9,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Naming\Naming\PropertyNaming;
 use Rector\Naming\ValueObject\ExpectedName;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class MatchParamTypeExpectedNameResolver
@@ -16,6 +17,7 @@ final class MatchParamTypeExpectedNameResolver
     public function __construct(
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly PropertyNaming $propertyNaming,
+        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -28,9 +30,9 @@ final class MatchParamTypeExpectedNameResolver
 
         $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
 
-        // include nullable too
+        // include nullabgitle too
         // skip date time + date time interface, as should be kept
-        if ($this->isDateTimeType($staticType)) {
+        if ($this->nodeTypeResolver->isObjectType($param->type, new ObjectType('DateTimeInterface'))) {
             return null;
         }
 
@@ -40,15 +42,5 @@ final class MatchParamTypeExpectedNameResolver
         }
 
         return $expectedName->getName();
-    }
-
-    private function isDateTimeType(Type $type): bool
-    {
-        if ($type->isSuperTypeOf(new ObjectType('DateTimeInterface'))->yes()) {
-            return true;
-        }
-
-        return $type->isSuperTypeOf(new ObjectType('DateTime'))
-            ->yes();
     }
 }
