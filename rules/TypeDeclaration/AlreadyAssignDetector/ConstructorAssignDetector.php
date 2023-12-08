@@ -196,9 +196,11 @@ final class ConstructorAssignDetector
             if (! $node instanceof PropertyFetch) {
                 return null;
             }
+
             if (! $node->name instanceof Identifier) {
                 return null;
             }
+
             return $node->name->toString() === $propertyName;
         });
     }
