@@ -208,6 +208,12 @@ final class RectorConfig extends Container
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
     }
 
+    public function onlyRule(string $rectorClass)
+    {
+        // keep only this rule, make use of in legacy projects during upgrade
+        // @todo
+    }
+
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
