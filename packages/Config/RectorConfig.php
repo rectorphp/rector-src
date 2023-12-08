@@ -208,12 +208,6 @@ final class RectorConfig extends Container
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
     }
 
-    public function onlyRule(string $rectorClass)
-    {
-        // keep only this rule, make use of in legacy projects during upgrade
-        // @todo
-    }
-
     /**
      * @param class-string<RectorInterface> $rectorClass
      */
@@ -231,6 +225,24 @@ final class RectorConfig extends Container
 
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+    }
+
+    /**
+     * @api
+     * @internal use only for step-by-step upgrade, runs faster and only with this one rule loaded
+     */
+    public function onlyRule(string $rectorClass): void
+    {
+        // keep only this rule, make use of in legacy projects during upgrade
+        ContainerMemento::forgetTag($this, RectorInterface::class);
+
+        $this->rule($rectorClass);
+
+        // set only once
+        SimpleParameterProvider::setParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+
+        // no set
+        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_SETS, []);
     }
 
     /**
