@@ -7,12 +7,15 @@ namespace Rector\TypeDeclaration\AlreadyAssignDetector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\ObjectType;
 use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
@@ -65,6 +68,13 @@ final class ConstructorAssignDetector
 
                 /** @var Assign $assign */
                 $assign = $node;
+
+                // is merged in assign?
+                if ($this->isPropertyUsedInAssign($assign, $propertyName)) {
+                    $isAssignedInConstructor = false;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+
                 $isFirstLevelStatement = $assign->getAttribute(self::IS_FIRST_LEVEL_STATEMENT);
 
                 // cannot be nested
@@ -177,5 +187,19 @@ final class ConstructorAssignDetector
         }
 
         return $initializingClassMethods;
+    }
+
+    private function isPropertyUsedInAssign(Assign $assign, string $propertyName): bool
+    {
+        $nodeFinder = new NodeFinder();
+        return (bool) $nodeFinder->findFirst($assign->expr, static function (Node $node) use ($propertyName): ?bool {
+            if (! $node instanceof PropertyFetch) {
+                return null;
+            }
+            if (! $node->name instanceof Identifier) {
+                return null;
+            }
+            return $node->name->toString() === $propertyName;
+        });
     }
 }

@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\TypeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
@@ -24,6 +25,9 @@ final class PropertyTypeDefaultValueAnalyzer
 
         // the defaults can be in conflict
         $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($propertyProperty->default);
+        if ($defaultType instanceof ArrayType && $propertyType instanceof ArrayType) {
+            return false;
+        }
 
         // type is not matching, skip it
         return ! $defaultType->isSuperTypeOf($propertyType)
