@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
-final class PreSlash
+final class NoPreSlash
 {
     public function preSlash()
     {
@@ -16,11 +16,11 @@ final class PreSlash
 
 namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
-final class PreSlash
+final class NoPreSlash
 {
     public function preSlash()
     {
-        return '\\' . \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass::class;
+        return \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Source\AnotherClass::class;
     }
 }
 

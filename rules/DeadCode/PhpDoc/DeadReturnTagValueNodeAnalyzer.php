@@ -88,8 +88,11 @@ final class DeadReturnTagValueNodeAnalyzer
         return $node instanceof Identifier && $node->toString() === 'never';
     }
 
-    private function isDeadNotEqual(ReturnTagValueNode $returnTagValueNode, Node $node, ClassMethod|Function_ $functionLike): bool
-    {
+    private function isDeadNotEqual(
+        ReturnTagValueNode $returnTagValueNode,
+        Node $node,
+        ClassMethod|Function_ $functionLike
+    ): bool {
         if ($returnTagValueNode->type instanceof IdentifierTypeNode && (string) $returnTagValueNode->type === 'void') {
             return true;
         }
