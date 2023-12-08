@@ -44,11 +44,16 @@ final class MatchParamTypeExpectedNameResolver
 
     private function isDateTimeType(Type $type): bool
     {
-        if ($type->isSuperTypeOf(new ObjectType('DateTimeInterface'))->yes()) {
+        $dateTimeInterfaceObjectType = new ObjectType('DateTimeInterface');
+        if ($type->isSuperTypeOf($dateTimeInterfaceObjectType)->yes()) {
             return true;
         }
 
-        return $type->isSuperTypeOf(new ObjectType('DateTime'))
-            ->yes();
+        if ($type->isSuperTypeOf(new ObjectType('DateTime'))
+            ->yes()) {
+            return true;
+        }
+
+        return $dateTimeInterfaceObjectType->isSuperTypeOf($type)->yes();
     }
 }
