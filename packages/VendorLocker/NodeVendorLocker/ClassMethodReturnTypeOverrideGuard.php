@@ -75,16 +75,26 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        return $this->hasChildrenDifferentTypeClassMethod($classMethod, $childrenClassReflections, $returnType);
+    }
+
+    /**
+     * @param ClassReflection[] $childrenClassReflections
+     */
+    private function hasChildrenDifferentTypeClassMethod(ClassMethod $classMethod, array $childrenClassReflections, \PHPStan\Type\Type $returnType): bool
+    {
         $methodName = $classMethod->name->toString();
         foreach ($childrenClassReflections as $childClassReflection) {
             $methodReflection = $childClassReflection->getNativeMethod($methodName);
-            if ($methodReflection instanceof PhpMethodReflection) {
-                $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
-                $childReturnType = $parametersAcceptor->getNativeReturnType();
+            if (! $methodReflection instanceof PhpMethodReflection) {
+                continue;
+            }
 
-                if (! $returnType->isSuperTypeOf($childReturnType)->yes()) {
-                    return true;
-                }
+            $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+            $childReturnType = $parametersAcceptor->getNativeReturnType();
+
+            if (! $returnType->isSuperTypeOf($childReturnType)->yes()) {
+                return true;
             }
         }
 
