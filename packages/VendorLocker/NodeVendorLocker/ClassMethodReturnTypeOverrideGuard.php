@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker\NodeVendorLocker;
 
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -81,8 +82,11 @@ final class ClassMethodReturnTypeOverrideGuard
     /**
      * @param ClassReflection[] $childrenClassReflections
      */
-    private function hasChildrenDifferentTypeClassMethod(ClassMethod $classMethod, array $childrenClassReflections, \PHPStan\Type\Type $returnType): bool
-    {
+    private function hasChildrenDifferentTypeClassMethod(
+        ClassMethod $classMethod,
+        array $childrenClassReflections,
+        Type $returnType
+    ): bool {
         $methodName = $classMethod->name->toString();
         foreach ($childrenClassReflections as $childClassReflection) {
             $methodReflection = $childClassReflection->getNativeMethod($methodName);
