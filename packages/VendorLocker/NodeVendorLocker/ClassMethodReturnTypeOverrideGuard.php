@@ -71,11 +71,6 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        if (! $returnType->isVoid()
-            ->yes()) {
-            return true;
-        }
-
         return $this->hasChildrenDifferentTypeClassMethod($classMethod, $childrenClassReflections, $returnType);
     }
 
