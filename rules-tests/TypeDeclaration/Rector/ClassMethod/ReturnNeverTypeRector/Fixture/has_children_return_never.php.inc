@@ -11,7 +11,7 @@ class Testr3 {
 
 class ChildTest3 extends Testr3 {
  	public function test(): never {
-     	return "foo";
+        throw new \Exception("Not implemented in child as well");
     }
 }
 
@@ -30,7 +30,7 @@ class Testr3 {
 
 class ChildTest3 extends Testr3 {
  	public function test(): never {
-     	return "foo";
+        throw new \Exception("Not implemented in child as well");
     }
 }
 
