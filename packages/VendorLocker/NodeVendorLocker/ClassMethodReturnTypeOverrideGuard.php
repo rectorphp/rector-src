@@ -10,6 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use Rector\Core\FileSystem\FilePathHelper;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
@@ -68,8 +69,25 @@ final class ClassMethodReturnTypeOverrideGuard
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($classMethod);
-        return ! $returnType->isVoid()
-            ->yes();
+        if (! $returnType->isVoid()
+            ->yes()) {
+            return true;
+        }
+
+        $methodName = $classMethod->name->toString();
+        foreach ($childrenClassReflections as $childClassReflection) {
+            $methodReflection = $childClassReflection->getNativeMethod($methodName);
+            if ($methodReflection instanceof PhpMethodReflection) {
+                $parametersAcceptor = \PHPStan\Reflection\ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+                $childReturnType = $parametersAcceptor->getNativeReturnType();
+
+                if (! $returnType->isSuperTypeOf($childReturnType)->yes()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function isReturnTypeChangeAllowed(ClassMethod $classMethod, Scope $scope): bool
