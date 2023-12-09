@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-abstract class ChangeAbstractMethod
+abstract class ChangeAbstractClassMethod
 {
     public function run()
     {
@@ -12,7 +12,7 @@ abstract class ChangeAbstractMethod
     }
 }
 
-class ChangeAbstractMethodChild extends ChangeAbstractMethod
+class ChangeAbstractClassMethodChild extends ChangeAbstractClassMethod
 {
     public function run(): static
     {
@@ -28,7 +28,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-abstract class ChangeAbstractMethod
+abstract class ChangeAbstractClassMethod
 {
     public function run(): static
     {
@@ -36,7 +36,7 @@ abstract class ChangeAbstractMethod
     }
 }
 
-class ChangeAbstractMethodChild extends ChangeAbstractMethod
+class ChangeAbstractClassMethodChild extends ChangeAbstractClassMethod
 {
     public function run(): static
     {
