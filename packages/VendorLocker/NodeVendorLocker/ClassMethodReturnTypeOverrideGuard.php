@@ -45,6 +45,10 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        if ($classReflection->isInterface()) {
+            return true;
+        }
+
         if (! $this->isReturnTypeChangeAllowed($classMethod, $scope)) {
             return true;
         }
