@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\VendorLocker\NodeVendorLocker;
 
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
@@ -78,7 +79,7 @@ final class ClassMethodReturnTypeOverrideGuard
         foreach ($childrenClassReflections as $childClassReflection) {
             $methodReflection = $childClassReflection->getNativeMethod($methodName);
             if ($methodReflection instanceof PhpMethodReflection) {
-                $parametersAcceptor = \PHPStan\Reflection\ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+                $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
                 $childReturnType = $parametersAcceptor->getNativeReturnType();
 
                 if (! $returnType->isSuperTypeOf($childReturnType)->yes()) {
