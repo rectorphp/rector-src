@@ -45,6 +45,10 @@ final class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
+        if ($classMethod->isAbstract()) {
+            return true;
+        }
+
         if ($classReflection->isInterface()) {
             return true;
         }
