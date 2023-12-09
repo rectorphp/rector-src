@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector\
 
 // both classes must be in same fixture as changed part is the parent
 class Testr3 {
-    public function test(): never {
+    public function test() {
      	throw new \Exception("Not implemented");
     }
 }
@@ -21,7 +21,7 @@ class ChildTest3 extends Testr3 {
 
 // both classes must be in same fixture as changed part is the parent
 class Testr3 {
-    public function test() {
+    public function test(): never {
      	throw new \Exception("Not implemented");
     }
 }
