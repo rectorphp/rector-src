@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\Node as AstNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -90,7 +91,7 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable(
             $phpDocInfo->getPhpDocNode(),
             '',
-            static function (Node $docNode) use ($paramNames) : ?int {
+            static function (AstNode $docNode) use ($paramNames) : ?int {
                 if (! $docNode instanceof PhpDocTagNode) {
                     return null;
                 }
@@ -130,7 +131,7 @@ CODE_SAMPLE
             $paramName = $this->getName($param);
             $paramTagValueNode = $phpdocInfo->getParamTagValueByName($paramName);
 
-            if ($paramTagValueNode instanceof VarTagValueNode && $this->isNull($paramTagValueNode)) {
+            if ($paramTagValueNode instanceof ParamTagValueNode && $this->isNull($paramTagValueNode)) {
                 $removedParamNames[] = $paramTagValueNode->parameterName;
             }
         }
