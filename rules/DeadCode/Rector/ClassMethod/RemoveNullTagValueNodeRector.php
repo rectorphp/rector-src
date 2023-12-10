@@ -93,9 +93,11 @@ CODE_SAMPLE
                 if (! $docNode instanceof PhpDocTagNode) {
                     return null;
                 }
+
                 if (! $docNode->value instanceof ParamTagValueNode) {
                     return null;
                 }
+
                 if (in_array($docNode->value->parameterName , $paramNames, true)) {
                     return PhpDocNodeTraverser::NODE_REMOVE;
                 }
