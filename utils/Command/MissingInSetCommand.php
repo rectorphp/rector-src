@@ -6,6 +6,7 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
@@ -31,6 +32,8 @@ final class MissingInSetCommand extends Command
         WhileNullableToInstanceofRector::class,
         // collectors
         FinalizeClassesWithoutChildrenCollectorRector::class,
+        // changes behavior, should be applied on purpose regardless PHP 7.3 level
+        JsonThrowOnErrorRector::class,
     ];
 
     public function __construct(
