@@ -85,6 +85,9 @@ CODE_SAMPLE
             && $tag->description === '';
     }
 
+    /**
+     * @param string[] $paramNames
+     */
     private function removeParamNullTag(PhpDocInfo $phpDocInfo, array $paramNames): void
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
@@ -103,7 +106,25 @@ CODE_SAMPLE
                 if (in_array($astNode->value->parameterName , $paramNames, true)) {
                     return PhpDocNodeTraverser::NODE_REMOVE;
                 }
+
+                return null;
             });
+    }
+
+    private function processVarTagNull(Expression|Property $node): ?Node
+    {
+        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $varTagValueNode = $phpdocInfo->getVarTagValueNode();
+
+        if ($varTagValueNode instanceof VarTagValueNode && $this->isNull($varTagValueNode)) {
+
+            $phpdocInfo->removeByType(VarTagValueNode::class);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+
+            return $node;
+        }
+
+        return null;
     }
 
     /**
@@ -112,16 +133,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($node instanceof Expression || $node instanceof Property) {
-            $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $varTagValueNode = $phpdocInfo->getVarTagValueNode();
-
-            if ($varTagValueNode instanceof VarTagValueNode && $this->isNull($varTagValueNode)) {
-
-                $phpdocInfo->removeByType(VarTagValueNode::class);
-                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
-                return $node;
-            }
+            return $this->processVarTagNull($node);
         }
 
         $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
