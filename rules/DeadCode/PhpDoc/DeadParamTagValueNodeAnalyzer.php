@@ -44,11 +44,6 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        // param null is always dead
-        if ($this->isNullTagValueNode($paramTagValueNode)) {
-            return true;
-        }
-
         if ($param->type instanceof Name && $this->nodeNameResolver->isName($param->type, 'object')) {
             return $paramTagValueNode->type instanceof IdentifierTypeNode && (string) $paramTagValueNode->type === 'object';
         }
@@ -74,14 +69,5 @@ final class DeadParamTagValueNodeAnalyzer
         }
 
         return ! $this->genericTypeNodeAnalyzer->hasGenericType($paramTagValueNode->type);
-    }
-
-    private function isNullTagValueNode(ParamTagValueNode $paramTagValueNode): bool
-    {
-        if (! $paramTagValueNode->type instanceof IdentifierTypeNode) {
-            return false;
-        }
-
-        return (string) $paramTagValueNode->type === 'null';
     }
 }
