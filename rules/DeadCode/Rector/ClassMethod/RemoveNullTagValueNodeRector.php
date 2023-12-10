@@ -91,16 +91,16 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable(
             $phpDocInfo->getPhpDocNode(),
             '',
-            static function (AstNode $docNode) use ($paramNames) : ?int {
-                if (! $docNode instanceof PhpDocTagNode) {
+            static function (AstNode $astNode) use ($paramNames) : ?int {
+                if (! $astNode instanceof PhpDocTagNode) {
                     return null;
                 }
 
-                if (! $docNode->value instanceof ParamTagValueNode) {
+                if (! $astNode->value instanceof ParamTagValueNode) {
                     return null;
                 }
 
-                if (in_array($docNode->value->parameterName , $paramNames, true)) {
+                if (in_array($astNode->value->parameterName , $paramNames, true)) {
                     return PhpDocNodeTraverser::NODE_REMOVE;
                 }
             });
