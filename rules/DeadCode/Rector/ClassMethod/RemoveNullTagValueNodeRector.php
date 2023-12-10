@@ -56,9 +56,6 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    /**
-     * @return null
-     */
     public function foo()
     {
         return null;
