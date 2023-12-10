@@ -6,6 +6,7 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
@@ -34,6 +35,8 @@ final class MissingInSetCommand extends Command
         FinalizeClassesWithoutChildrenCollectorRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
+        // in confront with sub type safe belt detection on RemoveUseless*TagRector
+        RemoveNullTagValueNodeRector::class,
     ];
 
     public function __construct(
