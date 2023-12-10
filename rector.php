@@ -64,7 +64,7 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Fixture*',
         '*/Source/*',
         '*/Source*',
-        '*/Expected*',
+        '*/Expected/*',
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
