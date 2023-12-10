@@ -80,7 +80,7 @@ CODE_SAMPLE
     {
         return $tag->type instanceof IdentifierTypeNode
             && $tag->type->__toString() === 'null'
-            && $tag->description !== '';
+            && $tag->description === '';
     }
 
     private function removeParamNullTag(PhpDocInfo $phpDocInfo, array $paramNames): void
