@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
@@ -73,7 +74,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Expression::class];
+        return [ClassMethod::class, Function_::class, Expression::class, Property::class];
     }
 
     private function isNull(VarTagValueNode|ParamTagValueNode|ReturnTagValueNode $tag): bool
@@ -105,11 +106,11 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Expression $node
+     * @param ClassMethod|Function_|Expression|Property $node
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node instanceof Expression) {
+        if ($node instanceof Expression || $node instanceof Property) {
             $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
             $varTagValueNode = $phpdocInfo->getVarTagValueNode();
 
