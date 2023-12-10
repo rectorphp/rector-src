@@ -36,17 +36,17 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        // param null is always dead
-        if ($this->isNullTagValueNode($paramTagValueNode)) {
-            return true;
-        }
-
         if ($param->type === null) {
             return false;
         }
 
         if ($paramTagValueNode->description !== '') {
             return false;
+        }
+
+        // param null is always dead
+        if ($this->isNullTagValueNode($paramTagValueNode)) {
+            return true;
         }
 
         if ($param->type instanceof Name && $this->nodeNameResolver->isName($param->type, 'object')) {

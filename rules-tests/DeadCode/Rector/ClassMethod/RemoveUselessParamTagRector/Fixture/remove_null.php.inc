@@ -7,7 +7,7 @@ class RemoveNull
     /**
      * @param null $a
      */
-    public function foo($a = null)
+    public function foo(int $a = null)
     {
 
     }
@@ -21,7 +21,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\F
 
 class RemoveNull
 {
-    public function foo($a = null)
+    public function foo(int $a = null)
     {
 
     }

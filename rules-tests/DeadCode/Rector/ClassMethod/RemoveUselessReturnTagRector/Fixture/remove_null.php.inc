@@ -7,7 +7,7 @@ class RemoveNull
     /**
      * @return null
      */
-    function foo()
+    function foo(): ?int
     {
         return null;
     }
@@ -21,7 +21,7 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\
 
 class RemoveNull
 {
-    function foo()
+    function foo(): ?int
     {
         return null;
     }

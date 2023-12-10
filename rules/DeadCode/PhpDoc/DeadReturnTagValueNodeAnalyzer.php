@@ -39,17 +39,17 @@ final class DeadReturnTagValueNodeAnalyzer
     {
         $returnType = $functionLike->getReturnType();
 
-        if ($this->isNullTagValueNode($returnTagValueNode)) {
-            // return null is always unused
-            return true;
-        }
-
         if ($returnType === null) {
             return false;
         }
 
         if ($returnTagValueNode->description !== '') {
             return false;
+        }
+
+        if ($this->isNullTagValueNode($returnTagValueNode)) {
+            // return null is always unused
+            return true;
         }
 
         $scope = $functionLike->getAttribute(AttributeKey::SCOPE);
