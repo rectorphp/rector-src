@@ -47,11 +47,6 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if ($this->isNullTagValueNode($returnTagValueNode)) {
-            // return null is always unused
-            return true;
-        }
-
         $scope = $functionLike->getAttribute(AttributeKey::SCOPE);
         if ($scope instanceof Scope && $scope->isInTrait() && $returnTagValueNode->type instanceof ThisTypeNode) {
             return false;
@@ -143,6 +138,10 @@ final class DeadReturnTagValueNodeAnalyzer
     private function hasUsefullPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
     {
         if ($returnTagValueNode->type instanceof IdentifierTypeNode && $returnTagValueNode->type->name === 'mixed') {
+            return false;
+        }
+
+        if ($this->isNullTagValueNode($returnTagValueNode)) {
             return false;
         }
 
