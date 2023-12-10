@@ -118,7 +118,7 @@ final class ExpectedNameResolver
         }
 
         $expectedName = $this->propertyNaming->getExpectedNameFromType($returnedType);
-        if ($expectedName !== null) {
+        if ($expectedName instanceof ExpectedName) {
             return $expectedName->getName();
         }
 
@@ -128,7 +128,7 @@ final class ExpectedNameResolver
         }
 
         $expectedNameFromMethodName = $this->propertyNaming->getExpectedNameFromMethodName($name);
-        if ($expectedNameFromMethodName !== null) {
+        if ($expectedNameFromMethodName instanceof ExpectedName) {
             return $expectedNameFromMethodName->getName();
         }
 
@@ -137,17 +137,17 @@ final class ExpectedNameResolver
 
     public function resolveForForeach(VariableAndCallForeach $variableAndCallForeach): ?string
     {
-        $expr = $variableAndCallForeach->getCall();
-        if ($this->isDynamicNameCall($expr)) {
+        $call = $variableAndCallForeach->getCall();
+        if ($this->isDynamicNameCall($call)) {
             return null;
         }
 
-        $name = $this->nodeNameResolver->getName($expr->name);
+        $name = $this->nodeNameResolver->getName($call->name);
         if ($name === null) {
             return null;
         }
 
-        $returnedType = $this->nodeTypeResolver->getType($expr);
+        $returnedType = $this->nodeTypeResolver->getType($call);
         if ($returnedType->isIterable()->no()) {
             return null;
         }
@@ -182,7 +182,7 @@ final class ExpectedNameResolver
         Type $returnedType,
         ?ExpectedName $expectedName
     ): bool {
-        return ($returnedType instanceof ArrayType) && $expectedName !== null;
+        return ($returnedType instanceof ArrayType) && $expectedName instanceof ExpectedName;
     }
 
     private function isDynamicNameCall(MethodCall | StaticCall | FuncCall $expr): bool
