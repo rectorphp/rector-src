@@ -21,7 +21,6 @@ class RemoveNullVar2
 {
     public function foo()
     {
-        /** @var null $var */
         $var = execute();
     }
 }
