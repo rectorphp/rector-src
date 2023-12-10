@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector\Fixture;
 
-class RemoveNull
+class SkipRemoveNull
 {
     /**
      * @return null
