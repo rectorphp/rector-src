@@ -36,6 +36,11 @@ final class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
+        // param null is always dead
+        if ($paramTagValueNode->type instanceof IdentifierTypeNode && (string) $paramTagValueNode->type === 'null') {
+            return true;
+        }
+
         if ($param->type === null) {
             return false;
         }
