@@ -21,9 +21,6 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector\
 
 class RemoveNull
 {
-    /**
-     * @return null
-     */
     function foo()
     {
         return null;
