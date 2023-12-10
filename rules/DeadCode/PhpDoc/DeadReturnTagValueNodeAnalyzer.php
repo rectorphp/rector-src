@@ -141,10 +141,6 @@ final class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
-        if ($this->isNullTagValueNode($returnTagValueNode)) {
-            return false;
-        }
-
         if (! $this->isVoidReturnType($returnType)) {
             return ! $this->isNeverReturnType($returnType);
         }
