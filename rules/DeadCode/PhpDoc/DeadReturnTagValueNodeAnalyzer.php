@@ -151,13 +151,4 @@ final class DeadReturnTagValueNodeAnalyzer
 
         return ! $this->isNeverReturnType($returnType);
     }
-
-    private function isNullTagValueNode(ReturnTagValueNode $returnTagValueNode): bool
-    {
-        if (! $returnTagValueNode->type instanceof IdentifierTypeNode) {
-            return false;
-        }
-
-        return (string) $returnTagValueNode->type === 'null';
-    }
 }
