@@ -89,19 +89,17 @@ CODE_SAMPLE
         $phpDocNodeTraverser->traverseWithCallable(
             $phpDocInfo->getPhpDocNode(),
             '',
-            function (Node $docNode) use ($paramNames): ?int {
-            if (! $docNode instanceof PhpDocTagNode) {
-                return null;
-            }
-
-            if (! $docNode->value instanceof ParamTagValueNode) {
-                return null;
-            }
-
-            if (in_array($docNode->value->parameterName , $paramNames, true)) {
-                return PhpDocNodeTraverser::NODE_REMOVE;
-            }
-        });
+            static function (Node $docNode) use ($paramNames) : ?int {
+                if (! $docNode instanceof PhpDocTagNode) {
+                    return null;
+                }
+                if (! $docNode->value instanceof ParamTagValueNode) {
+                    return null;
+                }
+                if (in_array($docNode->value->parameterName , $paramNames, true)) {
+                    return PhpDocNodeTraverser::NODE_REMOVE;
+                }
+            });
     }
 
     /**
