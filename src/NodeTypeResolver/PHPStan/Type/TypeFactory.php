@@ -70,8 +70,8 @@ final readonly class TypeFactory
                 $type = new ObjectType($parents[0]->getClassName());
             }
 
-            if ($type instanceof \PHPStan\Type\Constant\ConstantBooleanType) {
-                if ($type->getValue() === true) {
+            if ($type instanceof ConstantBooleanType) {
+                if ($type->getValue()) {
                     $hasTrue = true;
                 }
 
@@ -80,7 +80,7 @@ final readonly class TypeFactory
                 }
             }
 
-            if ($hasFalse && $hasTrue && $type instanceof \PHPStan\Type\Constant\ConstantBooleanType) {
+            if ($hasFalse && $hasTrue && $type instanceof ConstantBooleanType) {
                 $type = new BooleanType();
             }
 
