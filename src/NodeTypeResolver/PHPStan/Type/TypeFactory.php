@@ -62,10 +62,26 @@ final readonly class TypeFactory
         $uniqueTypes = [];
         $totalTypes = count($types);
 
+        $hasFalse = false;
+        $hasTrue = false;
         foreach ($types as $type) {
             if ($totalTypes > 1 && $type instanceof ObjectWithoutClassTypeWithParentTypes) {
                 $parents = $type->getParentTypes();
                 $type = new ObjectType($parents[0]->getClassName());
+            }
+
+            if ($type instanceof \PHPStan\Type\Constant\ConstantBooleanType) {
+                if ($type->getValue() === true) {
+                    $hasTrue = true;
+                }
+
+                if ($type->getValue() === false) {
+                    $hasFalse = true;
+                }
+            }
+
+            if ($hasFalse && $hasTrue && $type instanceof \PHPStan\Type\Constant\ConstantBooleanType) {
+                $type = new BooleanType();
             }
 
             $removedConstantType = $this->removeValueFromConstantType($type);

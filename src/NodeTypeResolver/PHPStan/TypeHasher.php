@@ -46,7 +46,7 @@ final class TypeHasher
         }
 
         if ($type instanceof ConstantType) {
-            return $type::class;
+            return $type::class . $type->getValue();
         }
 
         if ($type instanceof UnionType) {
