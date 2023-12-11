@@ -82,7 +82,11 @@ class SomeClass
 }
 CODE_SAMPLE
                 ,
-                ['ClassName', 'AnotherClassName'],
+                [
+                    'ClassName',
+                    'AnotherClassName',
+                    StringClassNameToClassConstantRector::IS_KEEP_FIRST_BACKSLASH_STRING => true,
+                ],
             ),
         ]);
     }
