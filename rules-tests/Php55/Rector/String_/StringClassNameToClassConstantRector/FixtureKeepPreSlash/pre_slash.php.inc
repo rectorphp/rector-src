@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
+namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\FixtureKeepPreSlash;
 
 final class PreSlash
 {
@@ -14,7 +14,7 @@ final class PreSlash
 -----
 <?php
 
-namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
+namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\FixtureKeepPreSlash;
 
 final class PreSlash
 {
