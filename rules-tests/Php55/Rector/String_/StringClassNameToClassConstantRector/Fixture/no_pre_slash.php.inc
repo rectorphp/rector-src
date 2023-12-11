@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\FixtureRemoveFirstBackslashString;
+namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
 final class NoPreSlash
 {
@@ -14,7 +14,7 @@ final class NoPreSlash
 -----
 <?php
 
-namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\FixtureRemoveFirstBackslashString;
+namespace Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\Fixture;
 
 final class NoPreSlash
 {

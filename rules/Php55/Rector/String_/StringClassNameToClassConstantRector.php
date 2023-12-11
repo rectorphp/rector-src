@@ -38,12 +38,12 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
      */
     private array $classesToSkip = [];
 
-    private bool $isKeepFirstBackslashString = true;
+    private bool $shouldKeepPreslash = false;
 
     /**
      * @var string
      */
-    public const IS_KEEP_FIRST_BACKSLASH_STRING = 'is_keep_first_backslash_string';
+    public const SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -143,7 +143,7 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
-        if ($this->isKeepFirstBackslashString && $classLikeName !== $node->value) {
+        if ($this->shouldKeepPreslash && $classLikeName !== $node->value) {
             $preSlashCount = strlen($node->value) - strlen($classLikeName);
             $preSlash = str_repeat('\\', $preSlashCount);
             $string = new String_($preSlash);
@@ -159,9 +159,9 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        if (isset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]) && is_bool($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING])) {
-            $this->isKeepFirstBackslashString = $configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING];
-            unset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]);
+        if (isset($configuration[self::SHOULD_KEEP_PRE_SLASH]) && is_bool($configuration[self::SHOULD_KEEP_PRE_SLASH])) {
+            $this->shouldKeepPreslash = $configuration[self::SHOULD_KEEP_PRE_SLASH];
+            unset($configuration[self::SHOULD_KEEP_PRE_SLASH]);
         }
 
         Assert::allString($configuration);

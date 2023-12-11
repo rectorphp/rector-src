@@ -12,7 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
             'Error',
             'Exception',
 
-            // remove '\\' prefix string on string '\Foo\Bar'
-            StringClassNameToClassConstantRector::IS_KEEP_FIRST_BACKSLASH_STRING => false
+            // keep '\\' prefix string on string '\Foo\Bar'
+            StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => true
         ]);
 };

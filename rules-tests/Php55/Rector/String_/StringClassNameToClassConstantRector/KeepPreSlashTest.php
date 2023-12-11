@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveFirstBackslashStringTest extends AbstractRectorTestCase
+final class KeepPreSlashTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,11 +18,11 @@ final class RemoveFirstBackslashStringTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureRemoveFirstBackslashString');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureKeepPreSlash');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/configured_rule_remove_first_backslash_string.php';
+        return __DIR__ . '/config/configured_rule_keep_pre_slash.php';
     }
 }
