@@ -2,12 +2,15 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class MultiScalar
+/**
+ * true|othertype work on >= php 8.2, ref https://3v4l.org/UJqXT
+ */
+final class TrueInUnion
 {
     public function run($value)
     {
         if ($value) {
-            return false;
+            return true;
         }
 
         return substr('warning', 1);
@@ -20,12 +23,15 @@ final class MultiScalar
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
 
-final class MultiScalar
+/**
+ * true|othertype work on >= php 8.2, ref https://3v4l.org/UJqXT
+ */
+final class TrueInUnion
 {
-    public function run($value): false|string
+    public function run($value): true|string
     {
         if ($value) {
-            return false;
+            return true;
         }
 
         return substr('warning', 1);
