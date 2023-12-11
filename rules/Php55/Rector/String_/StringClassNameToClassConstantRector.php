@@ -85,7 +85,7 @@ CODE_SAMPLE
                 [
                     'ClassName',
                     'AnotherClassName',
-                    StringClassNameToClassConstantRector::IS_KEEP_FIRST_BACKSLASH_STRING => true,
+                    StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => false,
                 ],
             ),
         ]);
