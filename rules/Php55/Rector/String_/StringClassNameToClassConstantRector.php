@@ -159,8 +159,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->isKeepFirstBackslashString = true;
-
         if (isset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]) && is_bool($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING])) {
             $this->isKeepFirstBackslashString = $configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING];
             unset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]);
