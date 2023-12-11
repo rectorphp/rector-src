@@ -11,9 +11,7 @@ use Rector\Php55\Rector\FuncCall\PregReplaceEModifierRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(StringClassNameToClassConstantRector::class, [
-        StringClassNameToClassConstantRector::IS_KEEP_FIRST_BACKSLASH_STRING => true,
-    ]);
+    $rectorConfig->rule(StringClassNameToClassConstantRector::class);
     $rectorConfig->rule(ClassConstantToSelfClassRector::class);
     $rectorConfig->rule(PregReplaceEModifierRector::class);
     $rectorConfig->rule(GetCalledClassToSelfClassRector::class);
