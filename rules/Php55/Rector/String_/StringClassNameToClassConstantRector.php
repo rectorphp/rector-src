@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php55\Rector\String_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
@@ -36,6 +37,13 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
      * @var string[]
      */
     private array $classesToSkip = [];
+
+    private bool $isKeepFirstBackslashString = true;
+
+    /**
+     * @var string
+     */
+    public const IS_KEEP_FIRST_BACKSLASH_STRING = 'is_keep_first_backslash_string';
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -90,7 +98,7 @@ CODE_SAMPLE
     /**
      * @param String_|FuncCall|ClassConst $node
      */
-    public function refactor(Node $node): ClassConstFetch|null|int
+    public function refactor(Node $node): Concat|ClassConstFetch|null|int
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
@@ -131,6 +139,14 @@ CODE_SAMPLE
         }
 
         $fullyQualified = new FullyQualified($classLikeName);
+        if ($this->isKeepFirstBackslashString && $classLikeName !== $node->value) {
+            $preSlashCount = strlen($node->value) - strlen($classLikeName);
+            $preSlash = str_repeat('\\', $preSlashCount);
+            $string = new String_($preSlash);
+
+            return new Concat($string, new ClassConstFetch($fullyQualified, 'class'));
+        }
+
         return new ClassConstFetch($fullyQualified, 'class');
     }
 
@@ -139,6 +155,13 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
+        $this->isKeepFirstBackslashString = true;
+
+        if (isset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]) && is_bool($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING])) {
+            $this->isKeepFirstBackslashString = $configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING];
+            unset($configuration[self::IS_KEEP_FIRST_BACKSLASH_STRING]);
+        }
+
         Assert::allString($configuration);
 
         $this->classesToSkip = $configuration;
