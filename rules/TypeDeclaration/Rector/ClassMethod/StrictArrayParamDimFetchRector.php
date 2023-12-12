@@ -9,6 +9,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -202,7 +203,16 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isEchoed($node, $paramName);
+        return $this->isEchoedOrCasted($node, $paramName);
+    }
+
+    private function isEchoedOrCasted(Node $node, string $paramName): bool
+    {
+        if ($this->isEchoed($node, $paramName)) {
+            return true;
+        }
+
+        return $node instanceof Array_ && $node->expr instanceof Variable && $node->expr->name === $paramName;
     }
 
     private function isMethodCallOrArrayDimFetch(string $paramName, ?Node $node): bool
