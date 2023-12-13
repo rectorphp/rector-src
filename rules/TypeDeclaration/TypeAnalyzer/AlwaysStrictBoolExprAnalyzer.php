@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\Empty_;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final class AlwaysStrictBoolExprAnalyzer
 {
@@ -30,6 +31,10 @@ final class AlwaysStrictBoolExprAnalyzer
         NotIdentical::class,
     ];
 
+    public function __construct(private readonly NodeTypeResolver $nodeTypeResolver)
+    {
+    }
+
     public function isStrictBoolExpr(Expr $expr): bool
     {
         foreach (self::BOOL_TYPE_NODES as $boolTypeNode) {
@@ -38,6 +43,10 @@ final class AlwaysStrictBoolExprAnalyzer
             }
         }
 
-        return $expr instanceof ConstFetch && in_array($expr->name->toLowerString(), ['true', 'false'], true);
+        if ($expr instanceof ConstFetch && in_array($expr->name->toLowerString(), ['true', 'false'], true)) {
+            return true;
+        }
+
+        return $this->nodeTypeResolver->getNativeType($expr)->isBoolean()->yes();
     }
 }
