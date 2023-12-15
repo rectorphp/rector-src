@@ -1,4 +1,4 @@
-# 353 Rules Overview
+# 354 Rules Overview
 
 <br>
 
@@ -56,7 +56,7 @@
 
 - [Transform](#transform) (22)
 
-- [TypeDeclaration](#typedeclaration) (40)
+- [TypeDeclaration](#typedeclaration) (41)
 
 - [Visibility](#visibility) (3)
 
@@ -6671,6 +6671,29 @@ Add "never" return-type for methods that never return anything
 +    public function run(): never
      {
          throw new InvalidException();
+     }
+ }
+```
+
+<br>
+
+### ReturnTypeFromLiteralScalarReturnRector
+
+Change return type based on literal scalar returns - string, int, float or bool
+
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromLiteralScalarReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromLiteralScalarReturnRector.php)
+
+```diff
+ final class SomeClass
+ {
+-    public function run($value)
++    public function run($value): string
+     {
+         if ($value) {
+             return 'yes';
+         }
+
+         return 'no';
      }
  }
 ```
