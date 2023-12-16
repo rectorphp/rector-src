@@ -31,6 +31,11 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     /**
      * @var string
      */
+    public const SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
+
+    /**
+     * @var string
+     */
     private const IS_UNDER_CLASS_CONST = 'is_under_class_const';
 
     /**
@@ -39,11 +44,6 @@ final class StringClassNameToClassConstantRector extends AbstractRector implemen
     private array $classesToSkip = [];
 
     private bool $shouldKeepPreslash = false;
-
-    /**
-     * @var string
-     */
-    public const SHOULD_KEEP_PRE_SLASH = 'should_keep_pre_slash';
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -85,7 +85,7 @@ CODE_SAMPLE
                 [
                     'ClassName',
                     'AnotherClassName',
-                    StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => false,
+StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => false,
                 ],
             ),
         ]);
@@ -159,7 +159,9 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        if (isset($configuration[self::SHOULD_KEEP_PRE_SLASH]) && is_bool($configuration[self::SHOULD_KEEP_PRE_SLASH])) {
+        if (isset($configuration[self::SHOULD_KEEP_PRE_SLASH]) && is_bool(
+            $configuration[self::SHOULD_KEEP_PRE_SLASH]
+        )) {
             $this->shouldKeepPreslash = $configuration[self::SHOULD_KEEP_PRE_SLASH];
             unset($configuration[self::SHOULD_KEEP_PRE_SLASH]);
         }
