@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
+use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
+use PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer;
 use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoEmptyReturnFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
@@ -29,7 +31,7 @@ return static function (ECSConfig $ecsConfig): void {
         __DIR__ . '/build/build-preload.php',
     ]);
 
-    $ecsConfig->rules([\PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer::class]);
+    $ecsConfig->rules([FunctionTypehintSpaceFixer::class]);
 
     $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [
         'allow_mixed' => true,
@@ -56,5 +58,7 @@ return static function (ECSConfig $ecsConfig): void {
         PhpdocNoEmptyReturnFixer::class => [
             __DIR__ . '/rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php',
         ],
+
+        SelfAccessorFixer::class => ['*/*Rector.php'],
     ]);
 };
