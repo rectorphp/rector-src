@@ -105,7 +105,7 @@ class SomeClass
 CODE_SAMPLE
                     ,
                     [
-                        self::INLINE_PUBLIC => false,
+                        ClassPropertyAssignToConstructorPromotionRector::INLINE_PUBLIC => false,
                     ]
                 ),
             ]
