@@ -87,7 +87,7 @@ class SomeClass
 CODE_SAMPLE
                     ,
                     [
-                        self::LIMIT_VALUE => 1_000_000,
+                        AddLiteralSeparatorToNumberRector::LIMIT_VALUE => 1_000_000,
                     ]
                 ),
             ]
