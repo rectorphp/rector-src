@@ -75,55 +75,6 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class, Expression::class, Property::class];
     }
 
-    private function isNull(VarTagValueNode|ParamTagValueNode|ReturnTagValueNode $tag): bool
-    {
-        return $tag->type instanceof IdentifierTypeNode
-            && $tag->type->__toString() === 'null'
-            && $tag->description === '';
-    }
-
-    /**
-     * @param string[] $paramNames
-     */
-    private function removeParamNullTag(PhpDocInfo $phpDocInfo, array $paramNames): void
-    {
-        $phpDocNodeTraverser = new PhpDocNodeTraverser();
-        $phpDocNodeTraverser->traverseWithCallable(
-            $phpDocInfo->getPhpDocNode(),
-            '',
-            static function (AstNode $astNode) use ($paramNames) : ?int {
-                if (! $astNode instanceof PhpDocTagNode) {
-                    return null;
-                }
-
-                if (! $astNode->value instanceof ParamTagValueNode) {
-                    return null;
-                }
-
-                if (in_array($astNode->value->parameterName , $paramNames, true)) {
-                    return PhpDocNodeTraverser::NODE_REMOVE;
-                }
-
-                return null;
-            });
-    }
-
-    private function processVarTagNull(Expression|Property $node): ?Node
-    {
-        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $varTagValueNode = $phpdocInfo->getVarTagValueNode();
-
-        if ($varTagValueNode instanceof VarTagValueNode && $this->isNull($varTagValueNode)) {
-
-            $phpdocInfo->removeByType(VarTagValueNode::class);
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
-            return $node;
-        }
-
-        return null;
-    }
-
     /**
      * @param ClassMethod|Function_|Expression|Property $node
      */
@@ -166,5 +117,54 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    private function isNull(VarTagValueNode|ParamTagValueNode|ReturnTagValueNode $tag): bool
+    {
+        return $tag->type instanceof IdentifierTypeNode
+            && $tag->type->__toString() === 'null'
+            && $tag->description === '';
+    }
+
+    /**
+     * @param string[] $paramNames
+     */
+    private function removeParamNullTag(PhpDocInfo $phpDocInfo, array $paramNames): void
+    {
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+        $phpDocNodeTraverser->traverseWithCallable(
+            $phpDocInfo->getPhpDocNode(),
+            '',
+            static function (AstNode $astNode) use ($paramNames): ?int {
+                if (! $astNode instanceof PhpDocTagNode) {
+                    return null;
+                }
+
+                if (! $astNode->value instanceof ParamTagValueNode) {
+                    return null;
+                }
+
+                if (in_array($astNode->value->parameterName, $paramNames, true)) {
+                    return PhpDocNodeTraverser::NODE_REMOVE;
+                }
+
+                return null;
+            }
+        );
+    }
+
+    private function processVarTagNull(Expression|Property $node): ?Node
+    {
+        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $varTagValueNode = $phpdocInfo->getVarTagValueNode();
+
+        if ($varTagValueNode instanceof VarTagValueNode && $this->isNull($varTagValueNode)) {
+            $phpdocInfo->removeByType(VarTagValueNode::class);
+            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+
+            return $node;
+        }
+
+        return null;
     }
 }
