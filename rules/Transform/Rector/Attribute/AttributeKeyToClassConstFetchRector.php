@@ -132,6 +132,7 @@ CODE_SAMPLE
         AttributeKeyToClassConstFetch $attributeKeyToClassConstFetch
     ): bool {
         $hasChanged = false;
+
         foreach ($attributeGroup->attrs as $attribute) {
             if (! $this->isName($attribute->name, $attributeKeyToClassConstFetch->getAttributeClass())) {
                 continue;
@@ -147,23 +148,38 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $value = $this->valueResolver->getValue($arg->value);
-
-                $constName = $attributeKeyToClassConstFetch->getValuesToConstantsMap()[$value] ?? null;
-                if ($constName === null) {
-                    continue;
+                if ($this->processArg($arg, $attributeKeyToClassConstFetch)) {
+                    $hasChanged = true;
                 }
-
-                $arg->value = $this->nodeFactory->createClassConstFetch(
-                    $attributeKeyToClassConstFetch->getConstantClass(),
-                    $constName
-                );
-
-                $hasChanged = true;
-                continue 2;
             }
         }
 
         return $hasChanged;
+    }
+
+    private function processArg(Node\Arg $arg, AttributeKeyToClassConstFetch $attributeKeyToClassConstFetch): bool
+    {
+        $value = $this->valueResolver->getValue($arg->value);
+
+        $constName = $attributeKeyToClassConstFetch->getValuesToConstantsMap()[$value] ?? null;
+        if ($constName === null) {
+            return false;
+        }
+
+        $newValue = $this->nodeFactory->createClassConstFetch(
+            $attributeKeyToClassConstFetch->getConstantClass(),
+            $constName
+        );
+
+        if (
+            $arg->value instanceof Node\Expr\ClassConstFetch
+            && $this->getName($arg->value) === $this->getName($newValue)
+        ) {
+            return false;
+        }
+
+        $arg->value = $newValue;
+
+        return true;
     }
 }
