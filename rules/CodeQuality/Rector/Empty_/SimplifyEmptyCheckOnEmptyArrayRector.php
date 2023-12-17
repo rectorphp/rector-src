@@ -21,6 +21,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -37,7 +38,8 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer
+        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer
     ) {
     }
 
@@ -91,6 +93,15 @@ CODE_SAMPLE
         return new Identical($node->expr, new Array_());
     }
 
+    private function isAllowedVariable(Variable $variable): bool
+    {
+        if (is_string($variable->name) && $this->reservedKeywordAnalyzer->isNativeVariable($variable->name)) {
+            return false;
+        }
+
+        return ! $this->exprAnalyzer->isNonTypedFromParam($variable);
+    }
+
     private function isAllowedExpr(Expr $expr, Scope $scope): bool
     {
         if (! $scope->getType($expr) instanceof ArrayType) {
@@ -98,7 +109,7 @@ CODE_SAMPLE
         }
 
         if ($expr instanceof Variable) {
-            return ! $this->exprAnalyzer->isNonTypedFromParam($expr);
+            return $this->isAllowedVariable($expr);
         }
 
         if (! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
