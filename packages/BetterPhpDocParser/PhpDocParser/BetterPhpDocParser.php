@@ -36,7 +36,7 @@ final class BetterPhpDocParser extends PhpDocParser
         ConstExprParser $constExprParser,
         private readonly TokenIteratorFactory $tokenIteratorFactory,
         private readonly array $phpDocNodeDecorators,
-        private readonly PrivatesAccessor $privatesAccessor = new PrivatesAccessor(),
+        private readonly PrivatesAccessor $privatesAccessor,
     ) {
         parent::__construct(
             // TypeParser
