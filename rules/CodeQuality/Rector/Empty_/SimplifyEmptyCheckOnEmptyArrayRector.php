@@ -21,6 +21,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
+use Rector\Core\Php\ReservedKeywordAnalyzer;
 use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\Reflection\ReflectionResolver;
@@ -37,7 +38,8 @@ final class SimplifyEmptyCheckOnEmptyArrayRector extends AbstractScopeAwareRecto
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AstResolver $astResolver,
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer
+        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer
     ) {
     }
 
@@ -98,6 +100,10 @@ CODE_SAMPLE
         }
 
         if ($expr instanceof Variable) {
+            if (is_string($expr->name) && $this->reservedKeywordAnalyzer->isNativeVariable($expr->name)) {
+                return false;
+            }
+
             return ! $this->exprAnalyzer->isNonTypedFromParam($expr);
         }
 
