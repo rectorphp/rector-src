@@ -93,6 +93,15 @@ CODE_SAMPLE
         return new Identical($node->expr, new Array_());
     }
 
+    private function isAllowedVariable(Variable $variable): bool
+    {
+        if (is_string($variable->name) && $this->reservedKeywordAnalyzer->isNativeVariable($variable->name)) {
+            return false;
+        }
+
+        return ! $this->exprAnalyzer->isNonTypedFromParam($variable);
+    }
+
     private function isAllowedExpr(Expr $expr, Scope $scope): bool
     {
         if (! $scope->getType($expr) instanceof ArrayType) {
@@ -100,11 +109,7 @@ CODE_SAMPLE
         }
 
         if ($expr instanceof Variable) {
-            if (is_string($expr->name) && $this->reservedKeywordAnalyzer->isNativeVariable($expr->name)) {
-                return false;
-            }
-
-            return ! $this->exprAnalyzer->isNonTypedFromParam($expr);
+            return $this->isAllowedVariable($expr);
         }
 
         if (! $expr instanceof PropertyFetch && ! $expr instanceof StaticPropertyFetch) {
