@@ -24,7 +24,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -38,8 +37,7 @@ final class ReflectionResolver
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly NodeNameResolver $nodeNameResolver,
         private readonly ClassAnalyzer $classAnalyzer,
-        private readonly MethodReflectionResolver $methodReflectionResolver,
-        private readonly AstResolver $astResolver
+        private readonly MethodReflectionResolver $methodReflectionResolver
     ) {
     }
 
@@ -78,25 +76,20 @@ final class ReflectionResolver
     public function resolveClassReflectionSourceObject(
         MethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
     ): ?ClassReflection {
-        if ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) {
-            $objectType = $node instanceof PropertyFetch
-                ? $this->nodeTypeResolver->getType($node->var)
-                : $this->nodeTypeResolver->getType($node->class);
+        $objectType = $node instanceof PropertyFetch || $node instanceof MethodCall
+            ? $this->nodeTypeResolver->getType($node->var)
+            : $this->nodeTypeResolver->getType($node->class);
 
-            if (! $objectType instanceof TypeWithClassName) {
-                return null;
-            }
-
-            $className = $objectType->getClassName();
-            if (! $this->reflectionProvider->hasClass($className)) {
-                return null;
-            }
-
-            return $this->reflectionProvider->getClass($className);
+        if (! $objectType instanceof TypeWithClassName) {
+            return null;
         }
 
-        $classMethod = $this->astResolver->resolveClassMethodFromCall($node);
-        return $this->resolveClassReflection($classMethod);
+        $className = $objectType->getClassName();
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+
+        return $this->reflectionProvider->getClass($className);
     }
 
     /**
