@@ -39,13 +39,11 @@ use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\PhpParser\Parser\InlineCodeParser;
 use Rector\Core\PhpParser\Parser\SimplePhpParser;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use ReflectionParameter;
 
 final class AnonymousFunctionFactory
 {
@@ -63,7 +61,6 @@ final class AnonymousFunctionFactory
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private readonly SimplePhpParser $simplePhpParser,
         private readonly AstResolver $astResolver,
-        private readonly PrivatesAccessor $privatesAccessor,
         private readonly InlineCodeParser $inlineCodeParser
     ) {
     }
@@ -260,7 +257,7 @@ final class AnonymousFunctionFactory
             $variable = new Variable($parameterReflection->getName());
             $defaultExpr = $this->resolveParamDefaultExpr($parameterReflection, $key, $classMethod);
             $type = $this->resolveParamType($parameterReflection);
-            $byRef = $this->isParamByReference($parameterReflection);
+            $byRef = $parameterReflection->passedByReference()->yes();
 
             $params[] = new Param($variable, $defaultExpr, $type, $byRef);
         }
@@ -278,13 +275,6 @@ final class AnonymousFunctionFactory
             $parameterReflection->getType(),
             TypeKind::PARAM
         );
-    }
-
-    private function isParamByReference(ParameterReflection $parameterReflection): bool
-    {
-        /** @var ReflectionParameter $reflection */
-        $reflection = $this->privatesAccessor->getPrivateProperty($parameterReflection, 'reflection');
-        return $reflection->isPassedByReference();
     }
 
     private function resolveParamDefaultExpr(
