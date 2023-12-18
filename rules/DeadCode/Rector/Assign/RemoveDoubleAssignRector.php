@@ -111,7 +111,7 @@ CODE_SAMPLE
 
             // detect call expression has side effect
             // no calls on right, could hide e.g. array_pop()|array_shift()
-            if ($this->sideEffectNodeDetector->detectCallExpr($stmt->expr->expr, $scope)) {
+            if ($this->sideEffectNodeDetector->detect($stmt->expr->expr, $scope)) {
                 continue;
             }
 
