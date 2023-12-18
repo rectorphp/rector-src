@@ -140,7 +140,7 @@ CODE_SAMPLE
     {
         return (bool) $this->betterNodeFinder->findFirst(
             $expr,
-            fn (Node $subNode): bool => $this->sideEffectNodeDetector->detect($subNode, $scope)
+            fn (Node $subNode): bool => $this->sideEffectNodeDetector->detectCallExpr($subNode, $scope)
         );
     }
 
