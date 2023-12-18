@@ -7,6 +7,7 @@ namespace Rector\DeadCode\SideEffect;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
@@ -34,10 +35,14 @@ final class SideEffectNodeDetector
     ) {
     }
 
-    public function detectCallExpr(Node $node, Scope $scope): bool
+    public function detect(Node $node, Scope $scope): bool
     {
         if (! $node instanceof Expr) {
             return false;
+        }
+
+        if ($node instanceof Assign) {
+            return true;
         }
 
         if ($node instanceof StaticCall && $this->isClassCallerThrowable($node)) {
