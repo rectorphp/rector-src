@@ -180,8 +180,9 @@ CODE_SAMPLE
 
             /** @var Empty_ $empty */
             $empty = $previousStmt->cond;
+            // scope need to be pulled from Empty_ node to ensure it get correct type
             $scope = $empty->getAttribute(AttributeKey::SCOPE);
-            if ($scope === null) {
+            if (! $scope instanceof Scope) {
                 continue;
             }
 
