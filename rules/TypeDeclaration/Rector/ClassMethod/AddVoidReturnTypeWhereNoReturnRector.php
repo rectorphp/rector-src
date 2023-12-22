@@ -10,6 +10,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\ClassReflection;
+use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Core\ValueObject\PhpVersionFeature;
@@ -27,7 +28,8 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer
     ) {
     }
 
@@ -105,7 +107,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if ($functionLike->isMagic()) {
+        if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($functionLike)) {
             return true;
         }
 
