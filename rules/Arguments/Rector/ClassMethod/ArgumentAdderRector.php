@@ -38,7 +38,7 @@ use Webmozart\Assert\Assert;
 final class ArgumentAdderRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var ArgumentAdder[]
+     * @var ArgumentAdder[]|ArgumentAdderWithoutDefaultValue[]
      */
     private array $addedArguments = [];
 
