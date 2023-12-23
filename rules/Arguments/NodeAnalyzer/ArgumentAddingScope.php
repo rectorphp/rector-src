@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use Rector\Arguments\ValueObject\ArgumentAdder;
+use Rector\Arguments\ValueObject\ArgumentAdderWithoutDefaultValue;
 use Rector\Core\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 
@@ -36,7 +37,7 @@ final class ArgumentAddingScope
     ) {
     }
 
-    public function isInCorrectScope(MethodCall | StaticCall $expr, ArgumentAdder $argumentAdder): bool
+    public function isInCorrectScope(MethodCall | StaticCall $expr, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder): bool
     {
         if ($argumentAdder->getScope() === null) {
             return true;
