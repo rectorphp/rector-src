@@ -8,18 +8,17 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\NeverType;
+use PHPStan\Reflection\ClassReflection;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeNestingScope\ValueObject\ControlStructure;
+use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -35,6 +34,7 @@ final class ReturnNeverTypeRector extends AbstractScopeAwareRector implements Mi
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
     ) {
     }
 
@@ -99,24 +99,11 @@ CODE_SAMPLE
             return true;
         }
 
-        $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
-        if ($hasReturn) {
+        if ($this->hasReturnOrYields($node)) {
             return true;
         }
 
-        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
-            $node,
-            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
-        );
-
-        if ($hasNotNeverNodes) {
-            return true;
-        }
-
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Throw_::class]);
-        $hasNeverFuncCall = $this->hasNeverFuncCall($node);
-
-        if (! $hasNeverNodes && ! $hasNeverFuncCall) {
+        if (! $this->hasNeverNodesOrNeverFuncCalls($node)) {
             return true;
         }
 
@@ -131,28 +118,34 @@ CODE_SAMPLE
             return false;
         }
 
+        // skip as most likely intentional
+        $classReflection = $scope->getClassReflection();
+        if ($classReflection instanceof ClassReflection && ! $classReflection->isFinalByKeyword() && $this->isName($node->returnType, 'void')) {
+            return true;
+        }
+
         return $this->isName($node->returnType, 'never');
     }
 
-    private function hasNeverFuncCall(ClassMethod | Closure | Function_ $functionLike): bool
+    private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
     {
-        $hasNeverType = false;
-
-        foreach ((array) $functionLike->stmts as $stmt) {
-            if ($stmt instanceof Expression) {
-                $stmt = $stmt->expr;
-            }
-
-            if ($stmt instanceof Stmt) {
-                continue;
-            }
-
-            $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
-            if ($stmtType instanceof NeverType) {
-                $hasNeverType = true;
-            }
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class)) {
+            return true;
         }
 
-        return $hasNeverType;
+        return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
+        );
+    }
+
+    private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_|Closure $node): bool
+    {
+        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Throw_::class]);
+        if ($hasNeverNodes) {
+            return true;
+        }
+
+        return $this->neverFuncCallAnalyzer->hasNeverFuncCall($node);
     }
 }
