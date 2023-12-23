@@ -100,17 +100,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $hasReturn = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class);
-        if ($hasReturn) {
-            return true;
-        }
-
-        $hasNotNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
-            $node,
-            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
-        );
-
-        if ($hasNotNeverNodes) {
+        if ($this->hasReturnOrYields($node)) {
             return true;
         }
 
@@ -163,5 +153,17 @@ CODE_SAMPLE
         }
 
         return $hasNeverType;
+    }
+
+    private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
+    {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class)) {
+            return true;
+        }
+
+        return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $node,
+            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
+        );
     }
 }
