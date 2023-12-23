@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PHPStan\Reflection\ClassReflection;
+use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ReflectionResolver;
+use Rector\Core\Reflection\ClassModifierChecker;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnVendorLockResolver;
@@ -28,8 +28,8 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer
+        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer,
+        private readonly ClassModifierChecker $classModifierChecker,
     ) {
     }
 
@@ -115,30 +115,29 @@ CODE_SAMPLE
             return true;
         }
 
+        // is not final and has only exception? possibly implemented by child
+        if ($this->isNotFinalAndHasExceptionOnly($functionLike)) {
+            return true;
+        }
+
         if ($functionLike->isProtected()) {
-            return ! $this->isInsideFinalClass($functionLike);
+            return ! $this->classModifierChecker->isInsideFinalClass($functionLike);
         }
 
-        return $this->isInsideAbstractClass($functionLike) && $functionLike->getStmts() === [];
+        return $this->classModifierChecker->isInsideAbstractClass($functionLike) && $functionLike->getStmts() === [];
     }
 
-    private function isInsideFinalClass(ClassMethod $classMethod): bool
+    private function isNotFinalAndHasExceptionOnly(ClassMethod $classMethod): bool
     {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-        if (! $classReflection instanceof ClassReflection) {
+        if ($this->classModifierChecker->isInsideFinalClass($classMethod)) {
             return false;
         }
 
-        return $classReflection->isFinalByKeyword();
-    }
-
-    private function isInsideAbstractClass(ClassMethod $classMethod): bool
-    {
-        $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-        if (! $classReflection instanceof ClassReflection) {
+        if (count((array) $classMethod->stmts) !== 1) {
             return false;
         }
 
-        return $classReflection->isAbstract();
+        $onlyStmt = $classMethod->stmts[0] ?? null;
+        return $onlyStmt instanceof Throw_;
     }
 }
