@@ -528,3 +528,8 @@ parameters:
 
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
+
+        # soon to be extended
+        -
+            path: src/Reflection/ClassModifierChecker.php
+            message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
