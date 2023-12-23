@@ -21,7 +21,7 @@ final class StrictBoolReturnTypeAnalyzer
     public function hasAlwaysStrictBoolReturn(ClassMethod|Closure|Function_ $functionLike): bool
     {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
-        if ($returns === null) {
+        if ($returns === []) {
             return false;
         }
 

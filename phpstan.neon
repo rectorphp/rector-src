@@ -79,7 +79,6 @@ parameters:
         - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
         - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
         - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\PhpDoc\\DeadReturnTagValueNodeAnalyzer\:\:isDead\(\)" is 13, keep it under 11#'
 
         # is nested expr
         -

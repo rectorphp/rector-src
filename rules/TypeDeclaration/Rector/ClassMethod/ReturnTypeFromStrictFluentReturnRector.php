@@ -80,6 +80,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        // already typed → skip
         if ($node->returnType instanceof Node) {
             return null;
         }
