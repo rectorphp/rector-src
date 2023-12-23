@@ -37,8 +37,10 @@ final class ArgumentAddingScope
     ) {
     }
 
-    public function isInCorrectScope(MethodCall | StaticCall $expr, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder): bool
-    {
+    public function isInCorrectScope(
+        MethodCall | StaticCall $expr,
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
+    ): bool {
         if ($argumentAdder->getScope() === null) {
             return true;
         }

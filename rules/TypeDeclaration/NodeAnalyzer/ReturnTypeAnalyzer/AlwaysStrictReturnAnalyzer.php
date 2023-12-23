@@ -21,32 +21,32 @@ final class AlwaysStrictReturnAnalyzer
     }
 
     /**
-     * @return Return_[]|null
+     * @return Return_[]
      */
-    public function matchAlwaysStrictReturns(ClassMethod|Closure|Function_ $functionLike): ?array
+    public function matchAlwaysStrictReturns(ClassMethod|Closure|Function_ $functionLike): array
     {
         if ($functionLike->stmts === null) {
-            return null;
+            return [];
         }
 
         if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class])) {
-            return null;
+            return [];
         }
 
         /** @var Return_[] $returns */
         $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
         if ($returns === []) {
-            return null;
+            return [];
         }
 
         // is one statement depth 3?
         if (! $this->returnAnalyzer->areExclusiveExprReturns($returns)) {
-            return null;
+            return [];
         }
 
         // has root return?
         if (! $this->returnAnalyzer->hasClassMethodRootReturn($functionLike)) {
-            return null;
+            return [];
         }
 
         return $returns;
