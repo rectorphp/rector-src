@@ -70,7 +70,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType instanceof \PhpParser\Node) {
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
