@@ -20,6 +20,7 @@ use PHPStan\Type\Type;
 use Rector\Arguments\NodeAnalyzer\ArgumentAddingScope;
 use Rector\Arguments\NodeAnalyzer\ChangedArgumentsDetector;
 use Rector\Arguments\ValueObject\ArgumentAdder;
+use Rector\Arguments\ValueObject\ArgumentAdderWithoutDefaultValue;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Enum\ObjectReference;
 use Rector\Core\Exception\ShouldNotHappenException;
@@ -131,7 +132,7 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, ArgumentAdder::class);
+        Assert::allIsAnyOf($configuration, [ArgumentAdder::class, ArgumentAdderWithoutDefaultValue::class]);
         $this->addedArguments = $configuration;
     }
 
@@ -146,19 +147,18 @@ CODE_SAMPLE
 
     private function processPositionWithDefaultValues(
         ClassMethod | MethodCall | StaticCall $node,
-        ArgumentAdder $argumentAdder
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
     ): void {
         if ($this->shouldSkipParameter($node, $argumentAdder)) {
             return;
         }
 
-        $defaultValue = $argumentAdder->getArgumentDefaultValue();
         $argumentType = $argumentAdder->getArgumentType();
 
         $position = $argumentAdder->getPosition();
 
         if ($node instanceof ClassMethod) {
-            $this->addClassMethodParam($node, $argumentAdder, $defaultValue, $argumentType, $position);
+            $this->addClassMethodParam($node, $argumentAdder, $argumentType, $position);
             return;
         }
 
@@ -167,11 +167,16 @@ CODE_SAMPLE
             return;
         }
 
-        $this->processMethodCall($node, $defaultValue, $position);
+        $this->processMethodCall($node, $argumentAdder, $position);
     }
 
-    private function processMethodCall(MethodCall $methodCall, mixed $defaultValue, int $position): void
+    private function processMethodCall(MethodCall $methodCall, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder, int $position): void
     {
+        if ($argumentAdder instanceof ArgumentAdderWithoutDefaultValue) {
+            return;
+        }
+
+        $defaultValue = $argumentAdder->getArgumentDefaultValue();
         $arg = new Arg(BuilderHelpers::normalizeValue($defaultValue));
         if (isset($methodCall->args[$position])) {
             return;
@@ -211,7 +216,7 @@ CODE_SAMPLE
 
     private function shouldSkipParameter(
         ClassMethod | MethodCall | StaticCall $node,
-        ArgumentAdder $argumentAdder
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
     ): bool {
         $position = $argumentAdder->getPosition();
         $argumentName = $argumentAdder->getArgumentName();
@@ -260,7 +265,7 @@ CODE_SAMPLE
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
 
-        if ($this->changedArgumentsDetector->isDefaultValueChanged(
+        if ($argumentAdder instanceof ArgumentAdder && $this->changedArgumentsDetector->isDefaultValueChanged(
             $classMethod->params[$position],
             $argumentAdder->getArgumentDefaultValue()
         )) {
@@ -273,8 +278,7 @@ CODE_SAMPLE
 
     private function addClassMethodParam(
         ClassMethod $classMethod,
-        ArgumentAdder $argumentAdder,
-        mixed $defaultValue,
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder,
         ?Type $type,
         int $position
     ): void {
@@ -283,7 +287,12 @@ CODE_SAMPLE
             throw new ShouldNotHappenException();
         }
 
-        $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($defaultValue));
+        if ($argumentAdder instanceof ArgumentAdder) {
+            $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($argumentAdder->getArgumentDefaultValue()));
+        } else {
+            $param = new Param(new Variable($argumentName));
+        }
+
         if ($type instanceof Type) {
             $param->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
         }
@@ -292,8 +301,12 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function processStaticCall(StaticCall $staticCall, int $position, ArgumentAdder $argumentAdder): void
+    private function processStaticCall(StaticCall $staticCall, int $position, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder): void
     {
+        if ($argumentAdder instanceof ArgumentAdderWithoutDefaultValue) {
+            return;
+        }
+
         $argumentName = $argumentAdder->getArgumentName();
         if ($argumentName === null) {
             throw new ShouldNotHappenException();
