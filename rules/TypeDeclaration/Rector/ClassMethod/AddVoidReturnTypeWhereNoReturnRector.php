@@ -127,17 +127,17 @@ CODE_SAMPLE
         return $this->classModifierChecker->isInsideAbstractClass($functionLike) && $functionLike->getStmts() === [];
     }
 
-    private function isNotFinalAndHasExceptionOnly(ClassMethod $functionLike): bool
+    private function isNotFinalAndHasExceptionOnly(ClassMethod $classMethod): bool
     {
-        if ($this->classModifierChecker->isInsideFinalClass($functionLike)) {
+        if ($this->classModifierChecker->isInsideFinalClass($classMethod)) {
             return false;
         }
 
-        if (count((array) $functionLike->stmts) !== 1) {
+        if (count((array) $classMethod->stmts) !== 1) {
             return false;
         }
 
-        $onlyStmt = $functionLike->stmts[0] ?? null;
+        $onlyStmt = $classMethod->stmts[0] ?? null;
         return $onlyStmt instanceof Throw_;
     }
 }
