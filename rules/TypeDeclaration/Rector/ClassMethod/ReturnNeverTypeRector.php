@@ -120,7 +120,10 @@ CODE_SAMPLE
 
         // skip as most likely intentional
         $classReflection = $scope->getClassReflection();
-        if ($classReflection instanceof ClassReflection && ! $classReflection->isFinalByKeyword() && $this->isName($node->returnType, 'void')) {
+        if ($classReflection instanceof ClassReflection && ! $classReflection->isFinalByKeyword() && $this->isName(
+            $node->returnType,
+            'void'
+        )) {
             return true;
         }
 
