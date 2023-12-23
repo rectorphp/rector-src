@@ -8,6 +8,6 @@ class SkipExistingVoid
 {
     public function run(): void
     {
-        throw new ShouldNotHappenException('implement by child');
+        throw new ShouldNotHappenException('todo');
     }
 }
