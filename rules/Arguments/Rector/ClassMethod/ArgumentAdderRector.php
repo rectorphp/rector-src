@@ -238,7 +238,7 @@ CODE_SAMPLE
             }
 
             // argument added and default has been changed
-            if ($this->changedArgumentsDetector->isDefaultValueChanged(
+            if ($argumentAdder instanceof ArgumentAdder && $this->changedArgumentsDetector->isDefaultValueChanged(
                 $param,
                 $argumentAdder->getArgumentDefaultValue()
             )) {
