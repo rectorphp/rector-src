@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Throw_;
 use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\Reflection\ClassModifierChecker;
@@ -114,10 +115,29 @@ CODE_SAMPLE
             return true;
         }
 
+        // is not final and has only exception? possibly implemented by child
+        if ($this->isNotFinalAndHasExceptionOnly($functionLike)) {
+            return true;
+        }
+
         if ($functionLike->isProtected()) {
             return ! $this->classModifierChecker->isInsideFinalClass($functionLike);
         }
 
         return $this->classModifierChecker->isInsideAbstractClass($functionLike) && $functionLike->getStmts() === [];
+    }
+
+    private function isNotFinalAndHasExceptionOnly(ClassMethod $functionLike): bool
+    {
+        if ($this->classModifierChecker->isInsideFinalClass($functionLike)) {
+            return false;
+        }
+
+        if (count((array) $functionLike->stmts) !== 1) {
+            return false;
+        }
+
+        $onlyStmt = $functionLike->stmts[0] ?? null;
+        return $onlyStmt instanceof Throw_;
     }
 }
