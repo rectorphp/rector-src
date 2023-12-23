@@ -15,6 +15,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\NeverType;
 use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Core\Rector\AbstractScopeAwareRector;
@@ -129,6 +130,14 @@ CODE_SAMPLE
 
         if (! $node->returnType instanceof Node) {
             return false;
+        }
+
+        // skip as most likely intentional
+        $classReflection = $scope->getClassReflection();
+        if ($classReflection instanceof ClassReflection && ! $classReflection->isFinalByKeyword()) {
+            if ($this->isName($node->returnType, 'void')) {
+                return true;
+            }
         }
 
         return $this->isName($node->returnType, 'never');

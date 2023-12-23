@@ -257,7 +257,8 @@ final class AnonymousFunctionFactory
             $variable = new Variable($parameterReflection->getName());
             $defaultExpr = $this->resolveParamDefaultExpr($parameterReflection, $key, $classMethod);
             $type = $this->resolveParamType($parameterReflection);
-            $byRef = $parameterReflection->passedByReference()->yes();
+            $byRef = $parameterReflection->passedByReference()
+                ->yes();
 
             $params[] = new Param($variable, $defaultExpr, $type, $byRef);
         }
