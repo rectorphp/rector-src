@@ -6,6 +6,7 @@ namespace Rector\Php80\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\NullableType;
@@ -84,12 +85,12 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public float $someVariable;
+    public float $price;
 
     public function __construct(
-        float $someVariable = 0.0
+        float $price = 0.0
     ) {
-        $this->someVariable = $someVariable;
+        $this->price = $price;
     }
 }
 CODE_SAMPLE
@@ -98,7 +99,7 @@ CODE_SAMPLE
 class SomeClass
 {
     public function __construct(
-        public float $someVariable = 0.0
+        public float $price = 0.0
     ) {
     }
 }
@@ -215,6 +216,22 @@ CODE_SAMPLE
                 $param,
                 $paramTagValueNode
             );
+
+            // update variable to property fetch references
+            $this->traverseNodesWithCallable((array) $constructClassMethod->stmts, function (Node $node) use (
+                $promotionCandidate,
+                $propertyName
+            ): ?PropertyFetch {
+                if (! $node instanceof Variable) {
+                    return null;
+                }
+
+                if (! $this->isName($node, $promotionCandidate->getParamName())) {
+                    return null;
+                }
+
+                return new PropertyFetch(new Variable('this'), $propertyName);
+            });
         }
 
         return $node;
