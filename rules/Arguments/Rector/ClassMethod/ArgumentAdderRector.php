@@ -170,8 +170,11 @@ CODE_SAMPLE
         $this->processMethodCall($node, $argumentAdder, $position);
     }
 
-    private function processMethodCall(MethodCall $methodCall, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder, int $position): void
-    {
+    private function processMethodCall(
+        MethodCall $methodCall,
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder,
+        int $position
+    ): void {
         if ($argumentAdder instanceof ArgumentAdderWithoutDefaultValue) {
             return;
         }
@@ -238,10 +241,7 @@ CODE_SAMPLE
             }
 
             // argument added and default has been changed
-            if ($argumentAdder instanceof ArgumentAdder && $this->changedArgumentsDetector->isDefaultValueChanged(
-                $param,
-                $argumentAdder->getArgumentDefaultValue()
-            )) {
+            if ($this->isDefaultValueChanged($argumentAdder, $node, $position)) {
                 return true;
             }
 
@@ -265,15 +265,23 @@ CODE_SAMPLE
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
 
-        if ($argumentAdder instanceof ArgumentAdder && $this->changedArgumentsDetector->isDefaultValueChanged(
-            $classMethod->params[$position],
-            $argumentAdder->getArgumentDefaultValue()
-        )) {
+        if ($this->isDefaultValueChanged($argumentAdder, $classMethod, $position)) {
             // is correct scope?
             return ! $this->argumentAddingScope->isInCorrectScope($node, $argumentAdder);
         }
 
         return true;
+    }
+
+    private function isDefaultValueChanged(
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder,
+        ClassMethod $classMethod,
+        int $position
+    ): bool {
+        return $argumentAdder instanceof ArgumentAdder && $this->changedArgumentsDetector->isDefaultValueChanged(
+            $classMethod->params[$position],
+            $argumentAdder->getArgumentDefaultValue()
+        );
     }
 
     private function addClassMethodParam(
@@ -288,7 +296,9 @@ CODE_SAMPLE
         }
 
         if ($argumentAdder instanceof ArgumentAdder) {
-            $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue($argumentAdder->getArgumentDefaultValue()));
+            $param = new Param(new Variable($argumentName), BuilderHelpers::normalizeValue(
+                $argumentAdder->getArgumentDefaultValue()
+            ));
         } else {
             $param = new Param(new Variable($argumentName));
         }
@@ -301,8 +311,11 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function processStaticCall(StaticCall $staticCall, int $position, ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder): void
-    {
+    private function processStaticCall(
+        StaticCall $staticCall,
+        int $position,
+        ArgumentAdder|ArgumentAdderWithoutDefaultValue $argumentAdder
+    ): void {
         if ($argumentAdder instanceof ArgumentAdderWithoutDefaultValue) {
             return;
         }
