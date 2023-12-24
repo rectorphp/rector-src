@@ -32,8 +32,8 @@ final class Fixture
 {
     public function __construct(private PromotedPropertyObject $promotedPropertyObject)
     {
-        dump($promotedPropertyObject);
-        dump($promotedPropertyObject->someCall('Y-m-d'));
+        dump($this->promotedPropertyObject);
+        dump($this->promotedPropertyObject->someCall('Y-m-d'));
     }
 }
 

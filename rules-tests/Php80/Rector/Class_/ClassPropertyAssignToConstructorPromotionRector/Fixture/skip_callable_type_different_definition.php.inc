@@ -4,7 +4,6 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class SkipCallableTypeDifferentDefinition
 {
-    /** @var CallbackHandler */
     private $fallback;
 
     public function __construct(callable $fallback)
@@ -12,5 +11,3 @@ final class SkipCallableTypeDifferentDefinition
         $this->fallback = $fallback;
     }
 }
-
-?>
