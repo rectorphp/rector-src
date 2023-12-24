@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
@@ -32,7 +31,7 @@ final class AllAssignNodePropertyTypeInferer
             $className = $classReflection->getName();
             $classLike = $this->betterNodeFinder->findFirst(
                 $file->getNewStmts(),
-                fn (Node $node): bool => $node instanceof Class_ && $this->nodeNameResolver->isName($node, $className)
+                fn (Node $node): bool => $node instanceof ClassLike && $this->nodeNameResolver->isName($node, $className)
             );
         } else {
             $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
