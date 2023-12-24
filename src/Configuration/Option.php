@@ -58,6 +58,12 @@ final class Option
     public const AUTO_IMPORT_NAMES = 'auto_import_names';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::polyfillPackages() instead
+     * @var string
+     */
+    public const POLYFILL_PACKAGES = 'polyfill_packages';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::importNames() instead
      * @var string
      */

@@ -3,11 +3,15 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+
+use Rector\Core\ValueObject\PhpVersion;
 use Rector\Php80\Rector\Property\NestedAnnotationToAttributeRector;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
 use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->phpVersion(PhpVersion::PHP_81);
+
     $rectorConfig->ruleWithConfiguration(NestedAnnotationToAttributeRector::class, [
         /** @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.13/reference/attributes-reference.html#joincolumn-inversejoincolumn */
         new NestedAnnotationToAttribute('Doctrine\ORM\Mapping\JoinTable', [
