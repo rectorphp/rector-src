@@ -59,6 +59,7 @@ final class PhpVersionProvider
             }
         }
 
+        // fallback to current PHP runtime version
         return PHP_VERSION_ID;
     }
 

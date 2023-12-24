@@ -31,7 +31,10 @@ final class AllAssignNodePropertyTypeInferer
             $className = $classReflection->getName();
             $classLike = $this->betterNodeFinder->findFirst(
                 $file->getNewStmts(),
-                fn (Node $node): bool => $node instanceof ClassLike && $this->nodeNameResolver->isName($node, $className)
+                fn (Node $node): bool => $node instanceof ClassLike && $this->nodeNameResolver->isName(
+                    $node,
+                    $className
+                )
             );
         } else {
             $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
