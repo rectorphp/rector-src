@@ -76,7 +76,8 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->returnType !== null) {
+        // already has return type → skip
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
@@ -120,6 +121,11 @@ CODE_SAMPLE
             return true;
         }
 
+        // possibly required by child implementation
+        if ($this->isNotFinalAndEmpty($functionLike)) {
+            return true;
+        }
+
         if ($functionLike->isProtected()) {
             return ! $this->classModifierChecker->isInsideFinalClass($functionLike);
         }
@@ -139,5 +145,14 @@ CODE_SAMPLE
 
         $onlyStmt = $classMethod->stmts[0] ?? null;
         return $onlyStmt instanceof Throw_;
+    }
+
+    private function isNotFinalAndEmpty(ClassMethod $classMethod): bool
+    {
+        if ($this->classModifierChecker->isInsideFinalClass($classMethod)) {
+            return false;
+        }
+
+        return $classMethod->stmts === [];
     }
 }
