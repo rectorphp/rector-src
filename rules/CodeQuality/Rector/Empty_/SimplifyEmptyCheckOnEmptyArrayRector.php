@@ -149,7 +149,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection);
+        $type = $this->allAssignNodePropertyTypeInferer->inferProperty($property, $classReflection, $this->file);
         return $type instanceof ArrayType;
     }
 }
