@@ -92,6 +92,11 @@ CODE_SAMPLE
         return $this->nodeFactory->createFuncCall('get_debug_type', [$firstExpr]);
     }
 
+    public function providePolyfillPackage(): string
+    {
+        return PolyfillPackage::PHP_80;
+    }
+
     private function shouldSkip(Ternary $ternary): bool
     {
         if (! $ternary->cond instanceof FuncCall) {
@@ -183,10 +188,5 @@ CODE_SAMPLE
         }
 
         return $this->nodeComparator->areNodesEqual($firstExpr, $thirdExpr);
-    }
-
-    public function providePolyfillPackage(): string
-    {
-        return PolyfillPackage::PHP_80;
     }
 }

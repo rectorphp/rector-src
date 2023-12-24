@@ -10,15 +10,17 @@ use PhpParser\Node\Name;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Core\ValueObject\PolyfillPackage;
 use Rector\Php71\IsArrayAndDualCheckToAble;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\Php73\Rector\BinaryOr\IsCountableRector\IsCountableRectorTest
  */
-final class IsCountableRector extends AbstractRector implements MinPhpVersionInterface
+final class IsCountableRector extends AbstractRector implements MinPhpVersionInterface, RelatedPolyfillInterface
 {
     public function __construct(
         private readonly IsArrayAndDualCheckToAble $isArrayAndDualCheckToAble,
@@ -67,6 +69,11 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::IS_COUNTABLE;
+    }
+
+    public function providePolyfillPackage(): string
+    {
+        return PolyfillPackage::PHP_73;
     }
 
     private function shouldSkip(): bool

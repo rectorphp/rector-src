@@ -121,6 +121,11 @@ CODE_SAMPLE
         return $funcCall;
     }
 
+    public function providePolyfillPackage(): string
+    {
+        return PolyfillPackage::PHP_80;
+    }
+
     private function matchIdenticalOrNotIdenticalToFalse(Identical | NotIdentical | Equal | NotEqual $expr): ?FuncCall
     {
         if ($this->valueResolver->isFalse($expr->left)) {
@@ -161,10 +166,5 @@ CODE_SAMPLE
         }
 
         return $expr->value === 0;
-    }
-
-    public function providePolyfillPackage(): string
-    {
-        return PolyfillPackage::PHP_80;
     }
 }
