@@ -77,7 +77,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         // already has return type → skip
-        if ($node->returnType instanceof \PhpParser\Node) {
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
