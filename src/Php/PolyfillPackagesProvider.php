@@ -13,7 +13,7 @@ use Rector\Core\ValueObject\PolyfillPackage;
 final class PolyfillPackagesProvider
 {
     /**
-     * @var null|array<PolyfillPackage::*>
+     * @var null|array<int, PolyfillPackage::*>
      */
     private null|array $cachedPolyfillPackages = null;
 
