@@ -63,7 +63,10 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $foundFilePaths = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
         $this->assertCount(2, $foundFilePaths);
 
-        $expectedFoundFilePath = [__DIR__ . '/Source/some_config.yml', __DIR__ . '/Source/other_config.yaml'];
+        $expectedFoundFilePath = [
+            __DIR__ . DIRECTORY_SEPARATOR . 'Source' . DIRECTORY_SEPARATOR . 'some_config.yml',
+            __DIR__ . DIRECTORY_SEPARATOR . 'Source' . DIRECTORY_SEPARATOR . 'other_config.yaml',
+        ];
 
         sort($foundFilePaths);
         sort($expectedFoundFilePath);
