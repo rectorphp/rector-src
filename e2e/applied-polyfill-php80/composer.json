@@ -1,0 +1,8 @@
+{
+    "require": {
+        "php": "^8.1",
+        "symfony/polyfill-php80": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
