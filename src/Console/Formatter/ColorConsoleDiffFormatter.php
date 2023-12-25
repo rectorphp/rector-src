@@ -35,9 +35,9 @@ final class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/1
+     * @see https://regex101.com/r/qduj2O/2
      */
-    private const NEWLINES_REGEX = "#\n\r|\n#";
+    private const NEWLINES_REGEX = "#\n#";
 
     private readonly string $template;
 
