@@ -27,22 +27,10 @@ final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
 
     public static function providePaths(): Iterator
     {
-        yield [
-            'path/with/no/asterisk',
-            'path' . DIRECTORY_SEPARATOR . 'with' . DIRECTORY_SEPARATOR . 'no' . DIRECTORY_SEPARATOR . 'asterisk',
-        ];
-        yield [
-            '*path/with/asterisk/begin',
-            '*path' . DIRECTORY_SEPARATOR . 'with' . DIRECTORY_SEPARATOR . 'asterisk' . DIRECTORY_SEPARATOR . 'begin*',
-        ];
-        yield [
-            'path/with/asterisk/end*',
-            '*path' . DIRECTORY_SEPARATOR . 'with' . DIRECTORY_SEPARATOR . 'asterisk' . DIRECTORY_SEPARATOR . 'end*',
-        ];
-        yield [
-            '*path/with/asterisk/begin/and/end*',
-            '*path' . DIRECTORY_SEPARATOR . 'with' . DIRECTORY_SEPARATOR . 'asterisk' . DIRECTORY_SEPARATOR . 'begin' . DIRECTORY_SEPARATOR . 'and' . DIRECTORY_SEPARATOR . 'end*',
-        ];
+        yield ['path/with/no/asterisk', 'path/with/no/asterisk'];
+        yield ['*path/with/asterisk/begin', '*path/with/asterisk/begin*'];
+        yield ['path/with/asterisk/end*', '*path/with/asterisk/end*'];
+        yield ['*path/with/asterisk/begin/and/end*', '*path/with/asterisk/begin/and/end*'];
         yield [
             __DIR__ . '/Fixture/path/with/../in/it',
             __DIR__ . DIRECTORY_SEPARATOR . 'Fixture' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'in' . DIRECTORY_SEPARATOR . 'it',
