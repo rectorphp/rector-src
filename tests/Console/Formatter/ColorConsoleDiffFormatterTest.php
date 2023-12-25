@@ -34,7 +34,7 @@ final class ColorConsoleDiffFormatterTest extends TestCase
         yield ["-old\n+new", __DIR__ . '/Source/expected/expected_old_new.txt'];
 
         yield [
-            str_replace("\r\n", "\n", FileSystem::read(__DIR__ . '/Fixture/with_full_diff_by_phpunit.diff')),
+            FileSystem::read(__DIR__ . '/Fixture/with_full_diff_by_phpunit.diff'),
             __DIR__ . '/Fixture/expected_with_full_diff_by_phpunit.diff',
         ];
     }
