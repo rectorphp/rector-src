@@ -39,7 +39,7 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
         $classMethod->stmts = [$methodCallExpression];
 
         $printed = $this->betterStandardPrinter->print($classMethod) . PHP_EOL;
-        $printed = str_replace("\r\n", "\n", $printed);
+        $printed = str_replace(PHP_EOL, "\n", $printed);
 
         $this->assertStringEqualsFile(
             __DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc',
@@ -53,7 +53,7 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
         $string->setAttribute(AttributeKey::COMMENTS, [new Comment('// todo: fix')]);
 
         $printed = $this->betterStandardPrinter->print($string) . PHP_EOL;
-        $printed = str_replace("\r\n", "\n", $printed);
+        $printed = str_replace(PHP_EOL, "\n", $printed);
 
         $this->assertStringEqualsFile(__DIR__ . '/Source/expected_code_with_comment.php.inc', $printed);
     }
