@@ -18,7 +18,7 @@ final class PolyfillPackagesProvider
     private null|array $cachedPolyfillPackages = null;
 
     /**
-     * @return array<PolyfillPackage::*>
+     * @return array<int, PolyfillPackage::*>
      */
     public function provide(): array
     {
@@ -48,7 +48,7 @@ final class PolyfillPackagesProvider
 
     /**
      * @param array<string, string> $require
-     * @return array<PolyfillPackage::*>
+     * @return array<int, PolyfillPackage::*>
      */
     private function filterPolyfillPackages(array $require): array
     {
