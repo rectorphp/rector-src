@@ -30,6 +30,6 @@ final class ChangelogContentsFactoryTest extends TestCase
         $printed = str_replace("\r\n", "\n", $generatedChangelogContents);
         $fileContent = str_replace("\r\n", "\n", FileSystem::read(__DIR__ . '/Fixture/generated_changelog.md'));
 
-        $this->assertStringEqualsFile($fileContent, $printed);
+        $this->assertSame($fileContent, $printed);
     }
 }
