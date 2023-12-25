@@ -13,10 +13,6 @@ final class NewlineBeforeNewAssignSetRectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        if ($this->isWindows()) {
-            $this->markTestSkipped('doesnt work on windows, see https://github.com/rectorphp/rector/issues/6572');
-        }
-
         $this->doTestFile($filePath);
     }
 
