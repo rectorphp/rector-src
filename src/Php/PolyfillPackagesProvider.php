@@ -13,12 +13,12 @@ use Rector\Core\ValueObject\PolyfillPackage;
 final class PolyfillPackagesProvider
 {
     /**
-     * @var array<PolyfillPackage::*>
+     * @var null|array<int, PolyfillPackage::*>
      */
-    private array $cachedPolyfillPackages = [];
+    private null|array $cachedPolyfillPackages = null;
 
     /**
-     * @return array<PolyfillPackage::*>
+     * @return array<int, PolyfillPackage::*>
      */
     public function provide(): array
     {
@@ -27,12 +27,14 @@ final class PolyfillPackagesProvider
             return SimpleParameterProvider::provideArrayParameter(Option::POLYFILL_PACKAGES);
         }
 
-        $projectComposerJson = getcwd() . '/composer.json';
-        if (! file_exists($projectComposerJson)) {
-            return [];
+        // already cached, even only empty array
+        if ($this->cachedPolyfillPackages !== null) {
+            return $this->cachedPolyfillPackages;
         }
 
-        if ($this->cachedPolyfillPackages !== []) {
+        $projectComposerJson = getcwd() . '/composer.json';
+        if (! file_exists($projectComposerJson)) {
+            $this->cachedPolyfillPackages = [];
             return $this->cachedPolyfillPackages;
         }
 
@@ -46,11 +48,11 @@ final class PolyfillPackagesProvider
 
     /**
      * @param array<string, string> $require
-     * @return array<PolyfillPackage::*>
+     * @return array<int, PolyfillPackage::*>
      */
     private function filterPolyfillPackages(array $require): array
     {
-        return array_filter($require, static fn (string $packageName): bool => ! str_starts_with(
+        return array_filter(array_keys($require), static fn (string $packageName): bool => str_starts_with(
             $packageName,
             'symfony/polyfill-'
         ));

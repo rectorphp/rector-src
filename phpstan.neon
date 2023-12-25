@@ -534,4 +534,4 @@ parameters:
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
 
         # known enum from strings
-        - '#Method Rector\\Core\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array(.*?) but returns array<string, string>#'
+        - '#Method Rector\\Core\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array\<.*\> but returns array<int, non\-falsy\-string>#'
