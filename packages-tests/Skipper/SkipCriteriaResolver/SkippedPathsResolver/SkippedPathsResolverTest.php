@@ -36,7 +36,7 @@ final class SkippedPathsResolverTest extends AbstractLazyTestCase
 
         $this->assertCount(2, $skippedPaths);
 
-        $this->assertSame(__DIR__ . '/Fixture', $skippedPaths[0]);
+        $this->assertSame(__DIR__ . DIRECTORY_SEPARATOR . 'Fixture', $skippedPaths[0]);
         $this->assertSame('*/Mask/*', $skippedPaths[1]);
     }
 }
