@@ -66,6 +66,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
 
         if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
             $expectedCommand = str_replace("'", '"', $expectedCommand);
+            $workerCommandLine = str_replace("'", '"', $workerCommandLine);
         }
 
         $this->assertSame($expectedCommand, $workerCommandLine);
