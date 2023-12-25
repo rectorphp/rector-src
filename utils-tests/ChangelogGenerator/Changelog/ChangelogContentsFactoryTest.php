@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Utils\Tests\ChangelogGenerator\Changelog;
 
+use Nette\Utils\FileSystem;
 use PHPUnit\Framework\TestCase;
 use Rector\Utils\ChangelogGenerator\Changelog\ChangelogContentsFactory;
 
@@ -26,7 +27,9 @@ final class ChangelogContentsFactoryTest extends TestCase
         ];
 
         $generatedChangelogContents = $this->changelogContentsFactory->create($changelogLines);
+        $printed = str_replace("\r\n", "\n", $generatedChangelogContents);
+        $fileContent = str_replace("\r\n", "\n", FileSystem::read(__DIR__ . '/Fixture/generated_changelog.md'));
 
-        $this->assertStringEqualsFile(__DIR__ . '/Fixture/generated_changelog.md', $generatedChangelogContents);
+        $this->assertStringEqualsFile($fileContent, $printed);
     }
 }
