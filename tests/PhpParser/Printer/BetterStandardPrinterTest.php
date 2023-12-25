@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Core\Tests\PhpParser\Printer;
 
 use Iterator;
+use Nette\Utils\FileSystem;
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -40,12 +41,14 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
 
         $printed = $this->betterStandardPrinter->print($classMethod) . PHP_EOL;
         $printed = str_replace("\r\n", "\n", $printed);
-        $fileContent = str_replace("\r\n", "\n", \Nette\Utils\FileSystem::read(__DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc'));
 
-        $this->assertSame(
-            $fileContent,
-            $printed
+        $fileContent = str_replace(
+            "\r\n",
+            "\n",
+            FileSystem::read(__DIR__ . '/Source/expected_code_with_non_stmt_placed_nested_comment.php.inc')
         );
+
+        $this->assertSame($fileContent, $printed);
     }
 
     public function testStringWithAddedComment(): void
@@ -55,7 +58,12 @@ final class BetterStandardPrinterTest extends AbstractLazyTestCase
 
         $printed = $this->betterStandardPrinter->print($string) . PHP_EOL;
         $printed = str_replace("\r\n", "\n", $printed);
-        $fileContent = str_replace("\r\n", "\n", \Nette\Utils\FileSystem::read(__DIR__ . '/Source/expected_code_with_comment.php.inc'));
+
+        $fileContent = str_replace(
+            "\r\n",
+            "\n",
+            FileSystem::read(__DIR__ . '/Source/expected_code_with_comment.php.inc')
+        );
 
         $this->assertSame($fileContent, $printed);
     }
