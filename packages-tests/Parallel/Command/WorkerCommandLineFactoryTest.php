@@ -63,6 +63,11 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
         // running on macOS cause empty string after SPACED_DUMMY_MAIN_SCRIPT constant value removed on run whole unit test
         // this ensure it works
         $workerCommandLine = str_replace("rector' worker", "rector' '' worker", $workerCommandLine);
+
+        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+            $workerCommandLine = str_replace("'", '"', $workerCommandLine);
+        }
+
         $this->assertSame($expectedCommand, $workerCommandLine);
     }
 
