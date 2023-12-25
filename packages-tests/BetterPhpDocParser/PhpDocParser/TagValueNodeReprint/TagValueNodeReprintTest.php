@@ -133,11 +133,6 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
         $hasByAnnotationClass = $phpDocInfo->hasByAnnotationClass($annotationClass);
 
         $relativeFilePath = $this->filePathHelper->relativePath($filePath);
-
-        if (strncasecmp(PHP_OS, 'WIN', 3) === 0) {
-            $relativeFilePath = str_replace('/', DIRECTORY_SEPARATOR, $relativeFilePath);
-        }
-
         $this->assertTrue($hasByAnnotationClass, $relativeFilePath);
     }
 }
