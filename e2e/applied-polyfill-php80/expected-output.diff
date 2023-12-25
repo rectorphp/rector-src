@@ -1,0 +1,21 @@
+1 file with changes
+===================
+
+1) src/SomeStartWith.php:3
+
+    ---------- begin diff ----------
+@@ @@
+ {
+     public function run($a)
+     {
+-        return strpos($a, 'a') === 0;
++        return str_starts_with($a, 'a');
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+
+
+ [OK] 1 file would have changed (dry-run) by Rector
