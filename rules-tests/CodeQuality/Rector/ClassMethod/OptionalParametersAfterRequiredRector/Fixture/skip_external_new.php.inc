@@ -13,3 +13,4 @@ final class SkipExternalNew
         return new SomeOutsideClass(1, 5);
     }
 }
+
