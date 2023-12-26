@@ -25,6 +25,7 @@ use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
+use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
 use Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector;
@@ -71,5 +72,6 @@ return static function (RectorConfig $rectorConfig): void {
         SplitGroupedClassConstantsRector::class,
         ExplicitPublicClassMethodRector::class,
         ArraySpreadInsteadOfArrayMergeRector::class,
+        RemoveUselessAliasInUseStatementRector::class,
     ]);
 };
