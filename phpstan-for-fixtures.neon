@@ -31,3 +31,9 @@ parameters:
         - 'rules-tests/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector/Fixture/skip_result_object.php.inc'
         - 'rules-tests/Php80/Rector/Class_/AnnotationToAttributeRector/Fixture/non_namespaced_class_with_annotation.php.inc'
         - 'rules-tests/Removing/Rector/ClassMethod/ArgumentRemoverRector/Fixture/fixture2.php.inc'
+
+    ignoreErrors:
+        -
+            message: '#Cannot use Doctrine\\ORM\\Mapping as Mapping because the name is already in use#'
+            paths:
+                - rules-tests/CodingStyle/Rector/Stmt/RemoveUselessAliasInUseStatementRector/Fixture/no_namespace_useless_alias.php.inc
