@@ -1869,7 +1869,7 @@ Remove final from constants in classes defined as final
 
 ### RemoveUselessAliasInUseStatementRector
 
-Remove useless alias in use statement
+Remove useless alias in use statement as same name with last use statement name
 
 - class: [`Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector`](../rules/CodingStyle/Rector/Stmt/RemoveUselessAliasInUseStatementRector.php)
 

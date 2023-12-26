@@ -22,7 +22,7 @@ final class RemoveUselessAliasInUseStatementRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Remove useless alias in use statement',
+            'Remove useless alias in use statement as same name with last use statement name',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
