@@ -535,3 +535,6 @@ parameters:
 
         # known enum from strings
         - '#Method Rector\\Core\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array\<.*\> but returns array<int, non\-falsy\-string>#'
+
+        # closure detailed
+        - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'

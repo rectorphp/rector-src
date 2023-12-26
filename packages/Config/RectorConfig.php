@@ -30,6 +30,11 @@ final class RectorConfig extends Container
     private array $ruleConfigurations = [];
 
     /**
+     * @var string[]
+     */
+    private array $autotagInterfaces = [];
+
+    /**
      * @param string[] $paths
      */
     public function paths(array $paths): void
@@ -399,6 +404,30 @@ final class RectorConfig extends Container
     public function disableCollectors(): void
     {
         SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
+    }
+
+    /**
+     * @internal Use to add tag on service registrations
+     */
+    public function autotagInterface(string $interface): void
+    {
+        $this->autotagInterfaces[] = $interface;
+    }
+
+    /**
+     * @param string $abstract
+     */
+    public function singleton($abstract, mixed $concrete = null): void
+    {
+        parent::singleton($abstract, $concrete);
+
+        foreach ($this->autotagInterfaces as $autotagInterface) {
+            if (! is_a($abstract, $autotagInterface, true)) {
+                continue;
+            }
+
+            $this->tag($abstract, $autotagInterface);
+        }
     }
 
     private function isRuleNoLongerExists(mixed $skipRule): bool
