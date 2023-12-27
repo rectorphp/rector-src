@@ -49,6 +49,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if (! $this->isName($node, 'ldap_connect')) {
+            return null;
+        }
+
         return null;
     }
 
