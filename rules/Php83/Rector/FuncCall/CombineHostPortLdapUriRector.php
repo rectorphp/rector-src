@@ -6,6 +6,8 @@ namespace Rector\Php83\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -51,6 +53,27 @@ CODE_SAMPLE
     {
         if (! $this->isName($node, 'ldap_connect')) {
             return null;
+        }
+
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        $args = $node->getArgs();
+        if (count($args) !== 2) {
+            return null;
+        }
+
+        $firstArg = $args[0]->value;
+        $secondArg = $args[1]->value;
+
+        if ($firstArg instanceof String_ && $secondArg instanceof LNumber) {
+            $args[0]->value = new String_($firstArg->value . ':' . $secondArg->value);
+
+            unset($args[1]);
+            $node->args = $args;
+
+            return $node;
         }
 
         return null;
