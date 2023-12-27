@@ -655,4 +655,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const TYPED_CLASS_CONSTANTS = PhpVersion::PHP_83;
+
+    /**
+     * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.ldap
+     * @var int
+     */
+    public const DEPRECATE_HOST_PORT_SEPARATE_ARGS = PhpVersion::PHP_83;
 }
