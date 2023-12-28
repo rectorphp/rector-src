@@ -64,5 +64,7 @@ final class ProcessConfigureDecorator
 
         $command->addOption(Option::PARALLEL_PORT, null, InputOption::VALUE_REQUIRED);
         $command->addOption(Option::PARALLEL_IDENTIFIER, null, InputOption::VALUE_REQUIRED);
+
+        $command->addOption(Option::XDEBUG, null, InputOption::VALUE_NONE, 'Display xdebug output.');
     }
 }

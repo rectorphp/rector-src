@@ -114,10 +114,6 @@ final class WorkerCommandLineFactory
             $workerCommandArray[] = escapeshellarg($this->filePathHelper->relativePath($config));
         }
 
-        if (! in_array('--xdebug', $workerCommandArray, true) && in_array('--xdebug', $args, true)) {
-            $workerCommandArray[] = '--xdebug';
-        }
-
         return implode(' ', $workerCommandArray);
     }
 
