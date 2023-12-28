@@ -100,6 +100,17 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
             ],
             "'" . PHP_BINARY . "' '" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+                '--' . Option::DEBUG => true,
+                '--' . Option::XDEBUG => true,
+            ],
+            "'" . PHP_BINARY . "' '" . self::SPACED_DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
     }
 
     /**
@@ -159,6 +170,17 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::DEBUG => true,
             ],
             "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+        ];
+
+        yield [
+            [
+                self::COMMAND => 'process',
+                Option::SOURCE => ['src'],
+                '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
+                '--' . Option::DEBUG => true,
+                '--' . Option::XDEBUG => true,
+            ],
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --debug --xdebug --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
     }
 
