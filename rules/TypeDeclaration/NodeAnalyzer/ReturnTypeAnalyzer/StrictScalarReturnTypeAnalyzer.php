@@ -6,6 +6,9 @@ namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\Type;
@@ -21,8 +24,10 @@ final class StrictScalarReturnTypeAnalyzer
     ) {
     }
 
-    public function matchAlwaysScalarReturnType(ClassMethod|Closure|Function_ $functionLike): ?Type
-    {
+    public function matchAlwaysScalarReturnType(
+        ClassMethod|Closure|Function_ $functionLike,
+        bool $hardCodedOnly = false
+    ): ?Type {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
         if ($returns === []) {
             return null;
@@ -36,6 +41,10 @@ final class StrictScalarReturnTypeAnalyzer
                 return null;
             }
 
+            if ($hardCodedOnly && ! $this->isHardCodedExpression($return->expr)) {
+                return null;
+            }
+
             $scalarType = $this->alwaysStrictScalarExprAnalyzer->matchStrictScalarExpr($return->expr);
             if (! $scalarType instanceof Type) {
                 return null;
@@ -45,5 +54,26 @@ final class StrictScalarReturnTypeAnalyzer
         }
 
         return $this->typeFactory->createMixedPassedOrUnionType($scalarTypes);
+    }
+
+    private function isHardCodedExpression(Expr $expr): bool
+    {
+        // Normal scalar values like strings, integers and floats
+        if ($expr instanceof Scalar) {
+            return true;
+        }
+
+        // true / false / null are constants
+        if ($expr instanceof ConstFetch &&
+            in_array($expr->name->toLowerString(), ['true', 'false', 'null'], true)) {
+            return true;
+        }
+
+        // Negative numbers are wrapped in UnaryMinus, so check expression inside it
+        if (($expr instanceof UnaryMinus || $expr instanceof Expr\UnaryPlus) && $expr->expr instanceof Scalar) {
+            return true;
+        }
+
+        return false;
     }
 }

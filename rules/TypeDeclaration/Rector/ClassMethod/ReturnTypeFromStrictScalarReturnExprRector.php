@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\Type;
+use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -18,14 +19,22 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictScalarReturnTypeAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\ReturnTypeFromStrictScalarReturnExprRectorTest
  */
-final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
+    /**
+     * @var string
+     */
+    public const HARD_CODED_ONLY = 'hard_coded_only';
+
+    private bool $hardCodedOnly = false;
+
     public function __construct(
         private readonly StrictScalarReturnTypeAnalyzer $strictScalarReturnTypeAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
@@ -36,11 +45,11 @@ final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwar
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change return type based on strict scalar returns - string, int, float or bool', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run($value)
+    public function foo($value)
     {
         if ($value) {
             return 'yes';
@@ -48,14 +57,18 @@ final class SomeClass
 
         return 'no';
     }
+
+    public function bar(string $value)
+    {
+        return strlen($value);
+    }
 }
 CODE_SAMPLE
-
                 ,
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function run($value): string
+    public function foo($value): string
     {
         if ($value) {
             return 'yes';
@@ -63,8 +76,17 @@ final class SomeClass
 
         return 'no';
     }
+
+    public function bar(string $value): int
+    {
+        return strlen($value);
+    }
 }
 CODE_SAMPLE
+                ,
+                [
+                    ReturnTypeFromStrictScalarReturnExprRector::HARD_CODED_ONLY => false,
+                ]
             ),
         ]);
     }
@@ -87,7 +109,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType($node);
+        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType(
+            $node,
+            $this->hardCodedOnly
+        );
         if (! $scalarReturnType instanceof Type) {
             return null;
         }
@@ -115,5 +140,13 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    public function configure(array $configuration): void
+    {
+        $hardCodedOnly = $configuration[self::HARD_CODED_ONLY] ?? false;
+        Assert::boolean($hardCodedOnly);
+
+        $this->hardCodedOnly = $hardCodedOnly;
     }
 }
