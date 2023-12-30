@@ -57,7 +57,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
         SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
-        SimpleParameterProvider::setParameter(Option::POLYFILL_PACKAGES, []);
     }
 
     protected function setUp(): void

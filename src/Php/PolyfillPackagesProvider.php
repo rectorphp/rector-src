@@ -22,11 +22,6 @@ final class PolyfillPackagesProvider
      */
     public function provide(): array
     {
-        // used in tests mostly
-        if (SimpleParameterProvider::hasParameter(Option::POLYFILL_PACKAGES)) {
-            return SimpleParameterProvider::provideArrayParameter(Option::POLYFILL_PACKAGES);
-        }
-
         // already cached, even only empty array
         if ($this->cachedPolyfillPackages !== null) {
             return $this->cachedPolyfillPackages;
