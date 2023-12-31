@@ -64,7 +64,7 @@ use Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher
 
 final class CommentsForTypedProperty
 {
-    private \Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher $eventDispatcher;
+    private \Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher $eventDispatcher;
 
     public function __construct(LocalEventDispatcher $eventDispatcher)
     {

@@ -32,7 +32,7 @@ class Controller
     {
         $document = $id === 1 ? new Document() : null;
 
-        if (!$document instanceof \Rector\Core\Tests\Issues\Issue7099\Source\Document) {
+        if (!$document instanceof \Rector\Tests\Issues\Issue7099\Source\Document) {
             return null;
         }
 

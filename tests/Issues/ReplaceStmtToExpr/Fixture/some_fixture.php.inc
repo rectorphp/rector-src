@@ -49,7 +49,7 @@ final class SomeFixture
     ): bool {
         $user = $this->getUser($user);
 
-        if (!$user instanceof \Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser) {
+        if (!$user instanceof \Rector\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser) {
             return false;
         }
         if ($user->isFoo()) {
