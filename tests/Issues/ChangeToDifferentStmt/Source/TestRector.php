@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentStmt\Source;
+namespace Rector\Tests\Issues\ChangeToDifferentStmt\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;

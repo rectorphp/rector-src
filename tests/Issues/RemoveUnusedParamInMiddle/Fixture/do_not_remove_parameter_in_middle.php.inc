@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedParamInMiddle\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedParamInMiddle\Fixture;
 
 final class DoNotRemoveParameterInMiddle
 {
@@ -30,7 +30,7 @@ final class DoNotRemoveParameterInMiddle
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedParamInMiddle\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedParamInMiddle\Fixture;
 
 final class DoNotRemoveParameterInMiddle
 {

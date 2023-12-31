@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Configuration;
+namespace Rector\Tests\Configuration;
 
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\FileSystem\FilesFinder;

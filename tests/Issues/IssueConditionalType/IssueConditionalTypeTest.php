@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueConditionalType;
+namespace Rector\Tests\Issues\IssueConditionalType;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

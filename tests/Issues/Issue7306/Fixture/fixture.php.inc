@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7306\Fixture;
+namespace Rector\Tests\Issues\Issue7306\Fixture;
 
 class Fixture
 {
@@ -19,7 +19,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7306\Fixture;
+namespace Rector\Tests\Issues\Issue7306\Fixture;
 
 class Fixture
 {

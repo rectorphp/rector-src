@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 function test()
 {
@@ -12,7 +12,7 @@ function test()
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 function test()
 {

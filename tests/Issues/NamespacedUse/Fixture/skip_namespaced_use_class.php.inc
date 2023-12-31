@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUse\Fixture;
+namespace Rector\Tests\Issues\NamespacedUse\Fixture;
 
-use Rector\Core\Tests\Issues\NamespacedUse\Source;
+use Rector\Tests\Issues\NamespacedUse\Source;
 
 final class SkipNamespacedUse extends Source\SomeClass
 {

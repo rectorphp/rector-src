@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\NamespacedUse;
+namespace Rector\Tests\Issues\NamespacedUse;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

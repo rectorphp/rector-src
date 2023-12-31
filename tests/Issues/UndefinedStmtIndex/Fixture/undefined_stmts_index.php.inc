@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\UndefinedStmtIndex\Fixture;
+namespace Rector\Tests\Issues\UndefinedStmtIndex\Fixture;
 
 final class UndefinedStmtsIndex
 {
@@ -23,7 +23,7 @@ final class UndefinedStmtsIndex
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\UndefinedStmtIndex\Fixture;
+namespace Rector\Tests\Issues\UndefinedStmtIndex\Fixture;
 
 final class UndefinedStmtsIndex
 {

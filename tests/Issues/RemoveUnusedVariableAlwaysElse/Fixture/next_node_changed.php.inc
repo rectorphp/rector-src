@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
 class NextNodeChanged
 {
@@ -26,7 +26,7 @@ class NextNodeChanged
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
 class NextNodeChanged
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture;
 
 use OpenApi\Annotations as OA;
 
@@ -23,7 +23,7 @@ class TestResponse
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\ConstructorPromoAnnotationToAttribute\Fixture;
 
 use OpenApi\Annotations as OA;
 

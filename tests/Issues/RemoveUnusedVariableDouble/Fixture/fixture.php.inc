@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableDouble\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableDouble\Fixture;
 
 final class Fixture
 {
@@ -24,7 +24,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableDouble\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableDouble\Fixture;
 
 final class Fixture
 {

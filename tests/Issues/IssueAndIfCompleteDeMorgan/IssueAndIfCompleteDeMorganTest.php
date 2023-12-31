@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan;
+namespace Rector\Tests\Issues\IssueAndIfCompleteDeMorgan;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

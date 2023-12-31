@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AlwaysTrueIfInDeadConstructor\Fixture;
+namespace Rector\Tests\Issues\AlwaysTrueIfInDeadConstructor\Fixture;
 
 final class Fixture
 {
@@ -19,7 +19,7 @@ final class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AlwaysTrueIfInDeadConstructor\Fixture;
+namespace Rector\Tests\Issues\AlwaysTrueIfInDeadConstructor\Fixture;
 
 final class Fixture
 {

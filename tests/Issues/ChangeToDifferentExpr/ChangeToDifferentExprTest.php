@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentExpr;
+namespace Rector\Tests\Issues\ChangeToDifferentExpr;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

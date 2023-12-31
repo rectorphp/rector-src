@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RuleWithConfigurationAfterSet;
+namespace Rector\Tests\Issues\RuleWithConfigurationAfterSet;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

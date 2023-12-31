@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueTraitUseKey;
+namespace Rector\Tests\Issues\IssueTraitUseKey;
 
 trait TraitA
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6670\Fixture;
+namespace Rector\Tests\Issues\Issue6670\Fixture;
 
 final class DoNotRemoveUsedClassMethod
 {
@@ -23,7 +23,7 @@ final class DoNotRemoveUsedClassMethod
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue6670\Fixture;
+namespace Rector\Tests\Issues\Issue6670\Fixture;
 
 final class DoNotRemoveUsedClassMethod
 {

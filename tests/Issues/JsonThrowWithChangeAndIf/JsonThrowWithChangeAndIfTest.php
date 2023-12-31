@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\JsonThrowWithChangeAndIf;
+namespace Rector\Tests\Issues\JsonThrowWithChangeAndIf;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

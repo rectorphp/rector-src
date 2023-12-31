@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

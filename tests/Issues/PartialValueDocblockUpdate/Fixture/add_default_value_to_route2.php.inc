@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Fixture;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate\Fixture;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\Since;
@@ -24,7 +24,7 @@ class AddDefaultValueToRoute2 {
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Fixture;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate\Fixture;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\Since;

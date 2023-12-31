@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ConstructorPromoAnnotationToAttribute;
+namespace Rector\Tests\Issues\ConstructorPromoAnnotationToAttribute;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

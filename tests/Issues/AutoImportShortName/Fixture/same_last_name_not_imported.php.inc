@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
+namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 class SameLastNameNotImported
 {
@@ -17,7 +17,7 @@ class SameLastNameNotImported
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
+namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
 class SameLastNameNotImported

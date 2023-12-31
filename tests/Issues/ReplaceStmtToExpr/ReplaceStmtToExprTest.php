@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReplaceStmtToExpr;
+namespace Rector\Tests\Issues\ReplaceStmtToExpr;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ClassOnObjectGetDebugType;
+namespace Rector\Tests\Issues\ClassOnObjectGetDebugType;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

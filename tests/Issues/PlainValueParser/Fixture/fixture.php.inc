@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\PlainValueParser\Fixture;
+namespace Rector\Tests\Issues\PlainValueParser\Fixture;
 
-use Rector\Core\Tests\Issues\PlainValueParser\Source\CustomAnnotation;
+use Rector\Tests\Issues\PlainValueParser\Source\CustomAnnotation;
 
 final class SomeFixture
 {
@@ -19,9 +19,9 @@ final class SomeFixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\PlainValueParser\Fixture;
+namespace Rector\Tests\Issues\PlainValueParser\Fixture;
 
-use Rector\Core\Tests\Issues\PlainValueParser\Source\CustomAnnotation;
+use Rector\Tests\Issues\PlainValueParser\Source\CustomAnnotation;
 
 final class SomeFixture
 {

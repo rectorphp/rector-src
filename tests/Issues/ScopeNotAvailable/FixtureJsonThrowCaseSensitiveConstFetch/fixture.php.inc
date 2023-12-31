@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureJsonThrowCaseSensitiveConstFetch;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureJsonThrowCaseSensitiveConstFetch;
 
 class Fixture
 {
@@ -26,7 +26,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureJsonThrowCaseSensitiveConstFetch;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureJsonThrowCaseSensitiveConstFetch;
 
 class Fixture
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentExpr\Source;
+namespace Rector\Tests\Issues\ChangeToDifferentExpr\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;

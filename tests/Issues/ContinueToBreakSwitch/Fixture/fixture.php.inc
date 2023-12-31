@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ContinueToBreakSwitch\Fixture;
+namespace Rector\Tests\Issues\ContinueToBreakSwitch\Fixture;
 
 final class Fixture
 {
@@ -25,7 +25,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ContinueToBreakSwitch\Fixture;
+namespace Rector\Tests\Issues\ContinueToBreakSwitch\Fixture;
 
 final class Fixture
 {

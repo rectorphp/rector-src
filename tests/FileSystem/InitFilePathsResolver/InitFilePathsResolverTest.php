@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\FileSystem\InitFilePathsResolver;
+namespace Rector\Tests\FileSystem\InitFilePathsResolver;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Core\FileSystem\InitFilePathsResolver;

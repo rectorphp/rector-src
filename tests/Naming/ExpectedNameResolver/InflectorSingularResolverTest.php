@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Naming\ExpectedNameResolver;
+namespace Rector\Tests\Naming\ExpectedNameResolver;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

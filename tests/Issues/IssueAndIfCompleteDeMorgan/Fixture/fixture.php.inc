@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
+namespace Rector\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
 
-use Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
+use Rector\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
 
 final class Fixture extends ParentClassWithLetter
 {
@@ -18,9 +18,9 @@ final class Fixture extends ParentClassWithLetter
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
+namespace Rector\Tests\Issues\IssueAndIfCompleteDeMorgan\Fixture;
 
-use Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
+use Rector\Tests\Issues\IssueAndIfCompleteDeMorgan\Source\ParentClassWithLetter;
 
 final class Fixture extends ParentClassWithLetter
 {

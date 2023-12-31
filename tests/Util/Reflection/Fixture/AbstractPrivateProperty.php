@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Util\Reflection\Fixture;
+namespace Rector\Tests\Util\Reflection\Fixture;
 
 abstract class AbstractPrivateProperty
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ContinueToBreakSwitch;
+namespace Rector\Tests\Issues\ContinueToBreakSwitch;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

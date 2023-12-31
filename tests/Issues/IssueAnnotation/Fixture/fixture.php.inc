@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture;
+namespace Rector\Tests\Issues\IssueAnnotation\Fixture;
 
-use Rector\Core\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
+use Rector\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
 
 final class Anything extends SomeAttributes
 {
@@ -18,9 +18,9 @@ final class Anything extends SomeAttributes
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAnnotation\Fixture;
+namespace Rector\Tests\Issues\IssueAnnotation\Fixture;
 
-use Rector\Core\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
+use Rector\Tests\Issues\IssueAnnotation\Source\SomeAttributes;
 
 final class Anything extends SomeAttributes
 {

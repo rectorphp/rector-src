@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7112\Fixture;
+namespace Rector\Tests\Issues\Issue7112\Fixture;
 
 class Fixture
 {

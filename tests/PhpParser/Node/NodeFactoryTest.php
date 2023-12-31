@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Node;
+namespace Rector\Tests\PhpParser\Node;
 
 use Iterator;
 use PhpParser\Node\Expr\Array_;

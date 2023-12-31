@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse;
+namespace Rector\Tests\Issues\RemoveUnusedVariableAlwaysElse;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

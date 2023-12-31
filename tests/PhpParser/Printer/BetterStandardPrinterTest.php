@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Printer;
+namespace Rector\Tests\PhpParser\Printer;
 
 use Iterator;
 use PhpParser\Comment;

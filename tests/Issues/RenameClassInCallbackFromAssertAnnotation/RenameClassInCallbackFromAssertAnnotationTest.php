@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RenameClassInCallbackFromAssertAnnotation;
+namespace Rector\Tests\Issues\RenameClassInCallbackFromAssertAnnotation;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

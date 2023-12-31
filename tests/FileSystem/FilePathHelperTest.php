@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\FileSystem;
+namespace Rector\Tests\FileSystem;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -207,16 +207,8 @@ parameters:
         - '#Method "(change|remove)(.*?)" returns bool type, so the name should start with is/has/was#'
 
         -
-            message: '#Casting to float something that.{1}s already float#'
-            path: packages/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php #38
-
-        -
-            message: '#Casting to string something that.{1}s already string#'
-            path: packages/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php #42
-
-        -
-            message: '#Casting to int something that.{1}s already int#'
-            path: packages/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php #46
+            message: '#Casting to (float|string|int) something that.{1}s already (.*?)#'
+            path: packages/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php
 
         -
             message: '#Use value object over return of values#'
@@ -359,7 +351,7 @@ parameters:
             path: src/Util/ArrayParametersMerger.php
 
         # fixture class
-        - '#Class "Rector\\Core\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
+        - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'

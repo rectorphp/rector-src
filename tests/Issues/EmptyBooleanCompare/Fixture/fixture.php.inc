@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
+namespace Rector\Tests\Issues\EmptyBooleanCompare\Fixture;
 
 final class SomeFixture
 {
@@ -20,7 +20,7 @@ final class SomeFixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
+namespace Rector\Tests\Issues\EmptyBooleanCompare\Fixture;
 
 final class SomeFixture
 {

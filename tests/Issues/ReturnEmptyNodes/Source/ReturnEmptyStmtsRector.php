@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReturnEmptyNodes\Source;
+namespace Rector\Tests\Issues\ReturnEmptyNodes\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\If_;

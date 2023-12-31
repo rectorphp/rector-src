@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7374\Fixture;
+namespace Rector\Tests\Issues\Issue7374\Fixture;
 
 final class ClassWithTwoMethods
 {
@@ -22,7 +22,7 @@ final class ClassWithTwoMethods
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7374\Fixture;
+namespace Rector\Tests\Issues\Issue7374\Fixture;
 
 final class ClassWithTwoMethods
 {

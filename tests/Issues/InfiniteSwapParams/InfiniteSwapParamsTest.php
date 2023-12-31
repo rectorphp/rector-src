@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InfiniteSwapParams;
+namespace Rector\Tests\Issues\InfiniteSwapParams;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

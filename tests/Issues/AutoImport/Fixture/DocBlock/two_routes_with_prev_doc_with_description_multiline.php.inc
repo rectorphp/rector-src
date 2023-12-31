@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 class TwoRoutesWithPrevDocWithDescriptionMultiline
 {
@@ -21,7 +21,7 @@ class TwoRoutesWithPrevDocWithDescriptionMultiline
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesWithPrevDocWithDescriptionMultiline

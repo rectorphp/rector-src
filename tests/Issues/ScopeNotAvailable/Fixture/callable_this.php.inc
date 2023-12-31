@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 class CallableThis
 {
@@ -14,7 +14,7 @@ class CallableThis
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 class CallableThis
 {

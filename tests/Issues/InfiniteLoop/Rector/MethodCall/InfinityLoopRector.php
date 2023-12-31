@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InfiniteLoop\Rector\MethodCall;
+namespace Rector\Tests\Issues\InfiniteLoop\Rector\MethodCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -12,7 +12,7 @@ use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Core\Tests\Issues\InfiniteLoop\InfiniteLoopTest
+ * @see \Rector\Tests\Issues\InfiniteLoop\InfiniteLoopTest
  */
 final class InfinityLoopRector extends AbstractRector
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DeadInstanceFlip\Fixture;
+namespace Rector\Tests\Issues\DeadInstanceFlip\Fixture;
 
-use Rector\Core\Tests\Issues\DeadInstanceFlip\Source\SomeEvent;
+use Rector\Tests\Issues\DeadInstanceFlip\Source\SomeEvent;
 
 final class Fixture
 {
@@ -18,9 +18,9 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\DeadInstanceFlip\Fixture;
+namespace Rector\Tests\Issues\DeadInstanceFlip\Fixture;
 
-use Rector\Core\Tests\Issues\DeadInstanceFlip\Source\SomeEvent;
+use Rector\Tests\Issues\DeadInstanceFlip\Source\SomeEvent;
 
 final class Fixture
 {

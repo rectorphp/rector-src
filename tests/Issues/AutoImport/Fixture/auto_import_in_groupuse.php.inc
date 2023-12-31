@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportGroupUse\Fixture;
+namespace Rector\Tests\Issues\AutoImportGroupUse\Fixture;
 
-use Rector\Core\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
+use Rector\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
 
 final class AutoImportInGroupUse extends \Rector\Core\Tests\Issues\AutoImportGroupUse\Source\SomeClass
 {
@@ -12,9 +12,9 @@ final class AutoImportInGroupUse extends \Rector\Core\Tests\Issues\AutoImportGro
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportGroupUse\Fixture;
+namespace Rector\Tests\Issues\AutoImportGroupUse\Fixture;
 
-use Rector\Core\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
+use Rector\Tests\Issues\AutoImportGroupUse\Source\{ SomeClass };
 
 final class AutoImportInGroupUse extends SomeClass
 {

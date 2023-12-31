@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAndIfCompleteDeMorgan\Source;
+namespace Rector\Tests\Issues\IssueAndIfCompleteDeMorgan\Source;
 
 abstract class ParentClassWithLetter
 {

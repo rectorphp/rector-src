@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\FileSystem\FilesFinder\ExcludePaths;
+namespace Rector\Tests\FileSystem\FilesFinder\ExcludePaths;
 
 use Rector\Core\Configuration\Option;
 use Rector\Core\Configuration\Parameter\SimpleParameterProvider;

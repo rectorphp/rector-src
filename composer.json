@@ -91,10 +91,10 @@
         "psr-4": {
             "Rector\\Tests\\": [
                 "packages-tests",
-                "rules-tests"
+                "rules-tests",
+                "tests"
             ],
             "Rector\\Utils\\Tests\\": "utils-tests",
-            "Rector\\Core\\Tests\\": "tests",
             "Rector\\RuleDocGenerator\\": "utils/RuleDocGenerator/src",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",

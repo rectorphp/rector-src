@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReplaceStmtToExpr\Fixture;
+namespace Rector\Tests\Issues\ReplaceStmtToExpr\Fixture;
 
-use Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
+use Rector\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
 
 final class SomeFixture
 {
@@ -33,9 +33,9 @@ final class SomeFixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReplaceStmtToExpr\Fixture;
+namespace Rector\Tests\Issues\ReplaceStmtToExpr\Fixture;
 
-use Rector\Core\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
+use Rector\Tests\Issues\ReplaceStmtToExpr\Source\SomeUser;
 
 final class SomeFixture
 {

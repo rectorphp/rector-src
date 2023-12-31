@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
+namespace Rector\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
 
 final class MultiAssignExtract
 {
@@ -22,7 +22,7 @@ final class MultiAssignExtract
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
+namespace Rector\Tests\Issues\SplitMultiAssignRemovePrivate\Fixture;
 
 final class MultiAssignExtract
 {

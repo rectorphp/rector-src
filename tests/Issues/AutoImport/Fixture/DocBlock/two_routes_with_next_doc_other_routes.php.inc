@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 class TwoRoutesWithNextDoc2
 {
@@ -20,7 +20,7 @@ class TwoRoutesWithNextDoc2
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesWithNextDoc2

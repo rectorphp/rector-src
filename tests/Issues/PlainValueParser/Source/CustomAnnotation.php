@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\PlainValueParser\Source;
+namespace Rector\Tests\Issues\PlainValueParser\Source;
 
 class CustomAnnotation
 {

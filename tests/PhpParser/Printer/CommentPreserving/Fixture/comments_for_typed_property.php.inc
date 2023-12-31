@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Fixture;
+namespace Rector\Tests\PhpParser\Printer\CommentPreserving\Fixture;
 
-use Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher;
+use Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher;
 
 /**
  * This docblock is being deleted when there's an empty docblock after it.
@@ -38,9 +38,9 @@ final class CommentsForTypedProperty
 -----
 <?php
 
-namespace Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Fixture;
+namespace Rector\Tests\PhpParser\Printer\CommentPreserving\Fixture;
 
-use Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher;
+use Rector\Tests\PhpParser\Printer\CommentPreserving\Source\LocalEventDispatcher;
 
 /**
  * This docblock is being deleted when there's an empty docblock after it.

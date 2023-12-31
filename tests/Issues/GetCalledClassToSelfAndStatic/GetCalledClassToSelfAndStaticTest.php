@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\GetCalledClassToSelfAndStatic;
+namespace Rector\Tests\Issues\GetCalledClassToSelfAndStatic;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

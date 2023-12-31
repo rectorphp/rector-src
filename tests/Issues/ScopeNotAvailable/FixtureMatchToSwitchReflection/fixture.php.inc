@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureMatchToSwitchReflection;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureMatchToSwitchReflection;
 
 final class ServiceValueResolver
 {
@@ -22,7 +22,7 @@ final class ServiceValueResolver
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureMatchToSwitchReflection;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureMatchToSwitchReflection;
 
 final class ServiceValueResolver
 {

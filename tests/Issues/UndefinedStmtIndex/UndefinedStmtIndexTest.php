@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\UndefinedStmtIndex;
+namespace Rector\Tests\Issues\UndefinedStmtIndex;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

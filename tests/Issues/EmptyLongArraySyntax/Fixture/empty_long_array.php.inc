@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\EmptyLongArraySyntax\Fixture;
+namespace Rector\Tests\Issues\EmptyLongArraySyntax\Fixture;
 
-use Rector\Core\Tests\Issues\EmptyLongArraySyntax\Source\ParentWithEmptyLongArray;
+use Rector\Tests\Issues\EmptyLongArraySyntax\Source\ParentWithEmptyLongArray;
 
 final class EmptyLongArray extends ParentWithEmptyLongArray
 {
@@ -19,9 +19,9 @@ final class EmptyLongArray extends ParentWithEmptyLongArray
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\EmptyLongArraySyntax\Fixture;
+namespace Rector\Tests\Issues\EmptyLongArraySyntax\Fixture;
 
-use Rector\Core\Tests\Issues\EmptyLongArraySyntax\Source\ParentWithEmptyLongArray;
+use Rector\Tests\Issues\EmptyLongArraySyntax\Source\ParentWithEmptyLongArray;
 
 final class EmptyLongArray extends ParentWithEmptyLongArray
 {

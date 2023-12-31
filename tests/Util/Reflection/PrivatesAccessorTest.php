@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Util\Reflection;
+namespace Rector\Tests\Util\Reflection;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
-use Rector\Core\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
+use Rector\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
 use stdClass;
 
 final class PrivatesAccessorTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
+namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
 
@@ -10,7 +10,7 @@ new \DateTime;
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
+namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
 

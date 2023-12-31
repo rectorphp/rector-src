@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DeadInstanceFlip\Source;
+namespace Rector\Tests\Issues\DeadInstanceFlip\Source;
 
 class SomeEvent
 {

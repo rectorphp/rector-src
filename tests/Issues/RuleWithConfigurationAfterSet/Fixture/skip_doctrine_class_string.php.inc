@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\RuleWithConfigurationAfterSet\Fixture;
+namespace Rector\Tests\Issues\RuleWithConfigurationAfterSet\Fixture;
 
 final class SkipDoctrineClassString
 {

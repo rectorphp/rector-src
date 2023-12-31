@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AnnotationToAttributeRenameAutoImport;
+namespace Rector\Tests\Issues\AnnotationToAttributeRenameAutoImport;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

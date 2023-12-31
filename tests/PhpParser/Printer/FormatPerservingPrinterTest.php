@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Printer;
+namespace Rector\Tests\PhpParser\Printer;
 
 use Nette\Utils\FileSystem;
 use Rector\Core\PhpParser\Printer\FormatPerservingPrinter;
