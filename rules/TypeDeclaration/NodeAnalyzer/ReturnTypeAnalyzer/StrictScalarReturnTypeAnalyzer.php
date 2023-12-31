@@ -69,6 +69,7 @@ final class StrictScalarReturnTypeAnalyzer
             in_array($expr->name->toLowerString(), ['true', 'false', 'null'], true)) {
             return true;
         }
+
         // Negative numbers are wrapped in UnaryMinus, so check expression inside it
         return ($expr instanceof UnaryMinus || $expr instanceof UnaryPlus) && $expr->expr instanceof Scalar;
     }
