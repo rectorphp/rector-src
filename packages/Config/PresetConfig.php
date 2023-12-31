@@ -18,4 +18,9 @@ final class PresetConfig
     {
         return new AttributesConfig($this->rectorConfig);
     }
+
+    public function php(): PhpConfig
+    {
+        return new PhpConfig($this->rectorConfig);
+    }
 }

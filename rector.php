@@ -21,9 +21,13 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->presets()
         ->attributes()
-        ->doctrine()
-        ->symfony()
-        ->gedmo();
+            ->doctrine()
+            ->symfony()
+            ->gedmo();
+
+    $rectorConfig->presets()
+        ->php()
+            ->upToLatest();
 
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81,

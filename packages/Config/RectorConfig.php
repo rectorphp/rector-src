@@ -41,6 +41,7 @@ final class RectorConfig extends Container
     {
         Assert::allString($paths);
 
+        // ensure paths exist
         foreach ($paths as $path) {
             if (str_contains($path, '*')) {
                 continue;
@@ -104,7 +105,8 @@ final class RectorConfig extends Container
      */
     public function skip(array $criteria): void
     {
-        $notExistsRules = [];
+        $nonExistingRules = [];
+
         foreach ($criteria as $key => $value) {
             /**
              * Cover define rule then list of files
@@ -115,8 +117,8 @@ final class RectorConfig extends Container
              *      ],
              * ]);
              */
-            if ($this->isRuleNoLongerExists($key)) {
-                $notExistsRules[] = $key;
+            if (! $this->doesRuleExists($key)) {
+                $nonExistingRules[] = $key;
             }
 
             if (! is_string($value)) {
@@ -130,16 +132,16 @@ final class RectorConfig extends Container
              *      StringClassNameToClassConstantRector::class,
              * ]);
              */
-            if ($this->isRuleNoLongerExists($value)) {
-                $notExistsRules[] = $value;
+            if ($this->doesRuleExists($value)) {
+                $nonExistingRules[] = $value;
             }
         }
 
-        if ($notExistsRules !== []) {
+        if ($nonExistingRules !== []) {
             throw new ShouldNotHappenException(
                 'Following rules on $rectorConfig->skip() do no longer exist or changed to different namespace: ' . implode(
                     ', ',
-                    $notExistsRules
+                    $nonExistingRules
                 )
             );
         }
@@ -445,7 +447,7 @@ final class RectorConfig extends Container
         return new PresetConfig($this);
     }
 
-    private function isRuleNoLongerExists(mixed $skipRule): bool
+    private function doesRuleExists(mixed $skipRule): bool
     {
         return // only validate string
             is_string($skipRule)
