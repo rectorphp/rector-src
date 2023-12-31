@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueDoubleNestedAnnotatoinDocBlock\Fixture;
+namespace Rector\Tests\Issues\IssueDoubleNestedAnnotatoinDocBlock\Fixture;
 
-use Rector\Core\Tests\Issues\IssueDoubleNestedAnnotatoinDocBlock\Source\SomeAnnotation;
+use Rector\Tests\Issues\IssueDoubleNestedAnnotatoinDocBlock\Source\SomeAnnotation;
 
 /**
  * @SomeAnnotation(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 /**
  * @\Doctrine\ORM\Mapping\Entity()
@@ -27,7 +27,7 @@ class SingleQuote
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 #[\Doctrine\ORM\Mapping\Entity]
 #[\Doctrine\ORM\Mapping\Index(name: 'name_index', columns: ['name'])]

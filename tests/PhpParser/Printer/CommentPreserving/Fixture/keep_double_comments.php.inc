@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\PhpParser\Printer\CommentPreserving\Fixture;
+namespace Rector\Tests\PhpParser\Printer\CommentPreserving\Fixture;
 
 class KeepDoubleComments
 {

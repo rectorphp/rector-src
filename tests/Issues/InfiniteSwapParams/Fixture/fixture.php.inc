@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InfiniteSwapParams\Fixture;
+namespace Rector\Tests\Issues\InfiniteSwapParams\Fixture;
 
 class Fixture
 {
@@ -16,7 +16,7 @@ class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InfiniteSwapParams\Fixture;
+namespace Rector\Tests\Issues\InfiniteSwapParams\Fixture;
 
 class Fixture
 {

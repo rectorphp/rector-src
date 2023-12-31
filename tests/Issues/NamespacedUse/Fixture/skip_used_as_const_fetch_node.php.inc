@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUse\Fixture;
+namespace Rector\Tests\Issues\NamespacedUse\Fixture;
 
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 

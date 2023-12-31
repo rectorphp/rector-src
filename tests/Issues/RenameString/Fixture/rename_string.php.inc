@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DoubleRun\Fixture;
+namespace Rector\Tests\Issues\DoubleRun\Fixture;
 
 final class RenameString
 {
@@ -18,7 +18,7 @@ final class RenameString
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\DoubleRun\Fixture;
+namespace Rector\Tests\Issues\DoubleRun\Fixture;
 
 final class RenameString
 {

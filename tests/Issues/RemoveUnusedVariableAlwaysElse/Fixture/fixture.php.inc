@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
 final class Fixture
 {
@@ -25,7 +25,7 @@ final class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
+namespace Rector\Tests\Issues\RemoveUnusedVariableAlwaysElse\Fixture;
 
 final class Fixture
 {

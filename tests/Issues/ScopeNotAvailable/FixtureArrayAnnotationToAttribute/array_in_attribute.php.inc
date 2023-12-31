@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,7 +21,7 @@ class ArrayInAttribtue
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FixtureArrayAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 

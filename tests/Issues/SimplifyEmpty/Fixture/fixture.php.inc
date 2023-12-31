@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SimplifyEmpty\Fixture;
+namespace Rector\Tests\Issues\SimplifyEmpty\Fixture;
 
 class Fixture {
 
@@ -35,7 +35,7 @@ class Fixture {
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SimplifyEmpty\Fixture;
+namespace Rector\Tests\Issues\SimplifyEmpty\Fixture;
 
 class Fixture {
 

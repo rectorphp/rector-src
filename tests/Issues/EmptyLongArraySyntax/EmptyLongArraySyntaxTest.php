@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\EmptyLongArraySyntax;
+namespace Rector\Tests\Issues\EmptyLongArraySyntax;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

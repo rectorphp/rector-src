@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueEarlyReturnAndInsideCase\Fixture;
+namespace Rector\Tests\Issues\IssueEarlyReturnAndInsideCase\Fixture;
 
 class ComplexIfCondAnd
 {
@@ -26,7 +26,7 @@ class ComplexIfCondAnd
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueEarlyReturnAndInsideCase\Fixture;
+namespace Rector\Tests\Issues\IssueEarlyReturnAndInsideCase\Fixture;
 
 class ComplexIfCondAnd
 {

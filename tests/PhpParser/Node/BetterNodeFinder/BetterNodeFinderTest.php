@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Node\BetterNodeFinder;
+namespace Rector\Tests\PhpParser\Node\BetterNodeFinder;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;

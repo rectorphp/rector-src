@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\DowngradeNullableReflectionProperty\Fixture;
+namespace Rector\Tests\Issues\DowngradeNullableReflectionProperty\Fixture;
 
 class UseNullableReflectionProperty
 {
@@ -18,7 +18,7 @@ class UseNullableReflectionProperty
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\DowngradeNullableReflectionProperty\Fixture;
+namespace Rector\Tests\Issues\DowngradeNullableReflectionProperty\Fixture;
 
 class UseNullableReflectionProperty
 {

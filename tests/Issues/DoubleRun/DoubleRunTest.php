@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\DoubleRun;
+namespace Rector\Tests\Issues\DoubleRun;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

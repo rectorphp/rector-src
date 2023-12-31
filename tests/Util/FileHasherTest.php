@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Util;
+namespace Rector\Tests\Util;
 
 use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;

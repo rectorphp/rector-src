@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
+namespace Rector\Tests\Issues\EmptyBooleanCompare\Fixture;
 
 final class AlwaysExistsArrayDimFetchItem
 {
@@ -28,7 +28,7 @@ final class AlwaysExistsArrayDimFetchItem
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
+namespace Rector\Tests\Issues\EmptyBooleanCompare\Fixture;
 
 final class AlwaysExistsArrayDimFetchItem
 {

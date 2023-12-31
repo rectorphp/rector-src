@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Autoloading;
+namespace Rector\Tests\Autoloading;
 
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Core\Autoloading\BootstrapFilesIncluder;

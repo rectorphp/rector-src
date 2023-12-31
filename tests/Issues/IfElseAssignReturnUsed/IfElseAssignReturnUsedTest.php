@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed;
+namespace Rector\Tests\Issues\IfElseAssignReturnUsed;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

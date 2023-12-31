@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IndentationCrash;
+namespace Rector\Tests\Issues\IndentationCrash;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

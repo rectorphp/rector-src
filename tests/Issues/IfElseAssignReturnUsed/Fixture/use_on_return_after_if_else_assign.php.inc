@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
+namespace Rector\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
 final class UseOnReturnAfterIfElseAssign
 {
@@ -24,7 +24,7 @@ final class UseOnReturnAfterIfElseAssign
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IfElseAssignReturnUsed\Fixture;
+namespace Rector\Tests\Issues\IfElseAssignReturnUsed\Fixture;
 
 final class UseOnReturnAfterIfElseAssign
 {

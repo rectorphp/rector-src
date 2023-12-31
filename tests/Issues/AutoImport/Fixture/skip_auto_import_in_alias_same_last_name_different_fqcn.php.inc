@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
+namespace Rector\Tests\Issues\AutoImport\Fixture;
 
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PhpParser\Node\Expr\AssignOp\Plus as AssignPlus;

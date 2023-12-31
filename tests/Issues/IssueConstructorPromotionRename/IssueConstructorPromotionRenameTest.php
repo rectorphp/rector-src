@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueConstructorPromotionRename;
+namespace Rector\Tests\Issues\IssueConstructorPromotionRename;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

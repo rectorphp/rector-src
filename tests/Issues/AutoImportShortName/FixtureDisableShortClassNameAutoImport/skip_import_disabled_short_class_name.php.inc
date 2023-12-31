@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\FixtureDisableShortClassNameAutoImport;
+namespace Rector\Tests\Issues\AutoImportShortName\FixtureDisableShortClassNameAutoImport;
 
 class SkipImportDisabledShortClassName
 {

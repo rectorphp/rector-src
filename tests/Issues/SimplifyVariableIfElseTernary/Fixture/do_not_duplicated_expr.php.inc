@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
+namespace Rector\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
 
 final class DoNotDuplicateExpr
 {
@@ -24,7 +24,7 @@ final class DoNotDuplicateExpr
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
+namespace Rector\Tests\Issues\SimplifyVariableIfElseTernary\Fixture;
 
 final class DoNotDuplicateExpr
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

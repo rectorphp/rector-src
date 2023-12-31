@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints;
@@ -32,7 +32,7 @@ class AliasedAndSubNamespace
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints;

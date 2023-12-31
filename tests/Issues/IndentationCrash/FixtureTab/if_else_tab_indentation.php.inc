@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IndentationCrash\FixtureTab;
+namespace Rector\Tests\Issues\IndentationCrash\FixtureTab;
 
 final class IfElseTabIndentation
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Foo2\Storage;
 use Foo2;
@@ -17,7 +17,7 @@ final class NamespacedUseSingleNamespaceImported
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
 use Foo2\Storage;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Application;
+namespace Rector\Tests\Application;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Core\Application\VersionResolver;

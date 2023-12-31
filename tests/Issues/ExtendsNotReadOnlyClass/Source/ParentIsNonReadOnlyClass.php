@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ExtendsNotReadOnlyClass\Source;
+namespace Rector\Tests\Issues\ExtendsNotReadOnlyClass\Source;
 
 class ParentIsNonReadOnlyClass
 {

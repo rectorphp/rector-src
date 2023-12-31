@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\JsonThrowWithChangeAndIf\Fixture;
+namespace Rector\Tests\Issues\JsonThrowWithChangeAndIf\Fixture;
 
 function f()
 {
@@ -13,7 +13,7 @@ function f()
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\JsonThrowWithChangeAndIf\Fixture;
+namespace Rector\Tests\Issues\JsonThrowWithChangeAndIf\Fixture;
 
 function f()
 {

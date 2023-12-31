@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable;
+namespace Rector\Tests\Issues\ScopeNotAvailable;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

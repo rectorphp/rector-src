@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueConditionalType\Fixture;
+namespace Rector\Tests\Issues\IssueConditionalType\Fixture;
 
 class Fixture
 {
@@ -18,7 +18,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueConditionalType\Fixture;
+namespace Rector\Tests\Issues\IssueConditionalType\Fixture;
 
 class Fixture
 {

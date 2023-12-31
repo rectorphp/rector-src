@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Fixture;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate\Fixture;
 
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToNewRector\Source\SomeJsonResponse;
 use Shopware\Core\Framework\Routing\Annotation\Since;
@@ -23,7 +23,7 @@ final class AddDefaultValueToRoute
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Fixture;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate\Fixture;
 
 use Rector\Tests\Transform\Rector\StaticCall\StaticCallToNewRector\Source\SomeJsonResponse;
 use Shopware\Core\Framework\Routing\Annotation\Since;

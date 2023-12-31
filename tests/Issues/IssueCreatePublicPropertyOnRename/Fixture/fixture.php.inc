@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
+namespace Rector\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
 
-use Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
+use Rector\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
 
 final class Fixture
 {
@@ -23,9 +23,9 @@ final class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
+namespace Rector\Tests\Issues\IssueCreatePublicPropertyOnRename\Fixture;
 
-use Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
+use Rector\Tests\Issues\IssueCreatePublicPropertyOnRename\Source\SomePropertyObject;
 
 final class Fixture
 {

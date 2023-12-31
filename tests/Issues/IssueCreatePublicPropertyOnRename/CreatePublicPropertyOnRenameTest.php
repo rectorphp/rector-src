@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueCreatePublicPropertyOnRename;
+namespace Rector\Tests\Issues\IssueCreatePublicPropertyOnRename;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

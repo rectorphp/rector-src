@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\Issue6561;
+namespace Rector\Tests\Issues\Issue6561;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

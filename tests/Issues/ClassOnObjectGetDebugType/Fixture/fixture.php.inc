@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ClassOnObjectGetDebugType;
+namespace Rector\Tests\Issues\ClassOnObjectGetDebugType;
 
 final class Fixture
 {
@@ -18,7 +18,7 @@ final class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ClassOnObjectGetDebugType;
+namespace Rector\Tests\Issues\ClassOnObjectGetDebugType;
 
 final class Fixture
 {

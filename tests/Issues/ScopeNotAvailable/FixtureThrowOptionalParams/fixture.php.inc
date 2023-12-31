@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureThrowOptionalParams;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureThrowOptionalParams;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +24,7 @@ class TestCommand extends Command
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureThrowOptionalParams;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureThrowOptionalParams;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

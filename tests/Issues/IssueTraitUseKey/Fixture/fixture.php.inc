@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueTraitUseKey\Fixture;
+namespace Rector\Tests\Issues\IssueTraitUseKey\Fixture;
 
-use Rector\Core\Tests\Issues\IssueTraitUseKey\TraitA;
-use Rector\Core\Tests\Issues\IssueTraitUseKey\TraitB;
+use Rector\Tests\Issues\IssueTraitUseKey\TraitA;
+use Rector\Tests\Issues\IssueTraitUseKey\TraitB;
 
 class Fixture
 {
@@ -37,10 +37,10 @@ class Fixture
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\IssueTraitUseKey\Fixture;
+namespace Rector\Tests\Issues\IssueTraitUseKey\Fixture;
 
-use Rector\Core\Tests\Issues\IssueTraitUseKey\TraitA;
-use Rector\Core\Tests\Issues\IssueTraitUseKey\TraitB;
+use Rector\Tests\Issues\IssueTraitUseKey\TraitA;
+use Rector\Tests\Issues\IssueTraitUseKey\TraitB;
 
 final class Fixture
 {

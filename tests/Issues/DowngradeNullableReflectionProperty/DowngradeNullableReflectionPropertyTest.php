@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\DowngradeNullableReflectionProperty;
+namespace Rector\Tests\Issues\DowngradeNullableReflectionProperty;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

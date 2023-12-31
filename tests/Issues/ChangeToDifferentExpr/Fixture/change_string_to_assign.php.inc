@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentExpr\Fixture;
+namespace Rector\Tests\Issues\ChangeToDifferentExpr\Fixture;
 
 final class ChangeStringToAssign
 {
@@ -14,7 +14,7 @@ final class ChangeStringToAssign
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentExpr\Fixture;
+namespace Rector\Tests\Issues\ChangeToDifferentExpr\Fixture;
 
 final class ChangeStringToAssign
 {

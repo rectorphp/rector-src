@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueRemoveAlwaysElseReturnEarlyIfVariable\Fixture;
+namespace Rector\Tests\Issues\IssueRemoveAlwaysElseReturnEarlyIfVariable\Fixture;
 
 final class Fixture
 {
@@ -26,7 +26,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueRemoveAlwaysElseReturnEarlyIfVariable\Fixture;
+namespace Rector\Tests\Issues\IssueRemoveAlwaysElseReturnEarlyIfVariable\Fixture;
 
 final class Fixture
 {

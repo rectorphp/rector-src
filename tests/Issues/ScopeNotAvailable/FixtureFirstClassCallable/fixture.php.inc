@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
 
 final class Fixture
 {
@@ -16,7 +16,7 @@ final class Fixture
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
+namespace Rector\Tests\Issues\ScopeNotAvailable\FixtureFirstClassCallable;
 
 final class Fixture
 {

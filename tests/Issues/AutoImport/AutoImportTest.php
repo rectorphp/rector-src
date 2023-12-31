@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\AutoImport;
+namespace Rector\Tests\Issues\AutoImport;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

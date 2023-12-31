@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImportShortName\Fixture;
+namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
-use Rector\Core\Tests\Issues\AutoImportShortName\Source\DateTime;
+use Rector\Tests\Issues\AutoImportShortName\Source\DateTime;
 
 class SkipSameLastNameImported
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\IssueAnnotation\Source;
+namespace Rector\Tests\Issues\IssueAnnotation\Source;
 
 class SomeAttributes
 {

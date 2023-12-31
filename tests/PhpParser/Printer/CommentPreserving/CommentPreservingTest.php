@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Printer\CommentPreserving;
+namespace Rector\Tests\PhpParser\Printer\CommentPreserving;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

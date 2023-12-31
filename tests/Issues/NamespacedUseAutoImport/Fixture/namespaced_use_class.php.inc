@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
-use Rector\Core\Tests\Issues\NamespacedUseAutoImport\Source;
+use Rector\Tests\Issues\NamespacedUseAutoImport\Source;
 
 final class NamespacedUse extends Source\SomeClass
 {
@@ -12,9 +12,9 @@ final class NamespacedUse extends Source\SomeClass
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUseAutoImport\Fixture;
+namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 
-use Rector\Core\Tests\Issues\NamespacedUseAutoImport\Source\SomeClass;
+use Rector\Tests\Issues\NamespacedUseAutoImport\Source\SomeClass;
 
 final class NamespacedUse extends SomeClass
 {

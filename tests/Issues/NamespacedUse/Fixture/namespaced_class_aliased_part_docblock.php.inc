@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUse\Fixture;
+namespace Rector\Tests\Issues\NamespacedUse\Fixture;
 
 use PhpParser\Node\Scalar as Foo;
 use PhpParser\Node\Stmt\Expression as Bar;
@@ -19,7 +19,7 @@ class NamespacedClassAliasedPartDocblock
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\NamespacedUse\Fixture;
+namespace Rector\Tests\Issues\NamespacedUse\Fixture;
 
 use PhpParser\Node\Scalar as Foo;
 

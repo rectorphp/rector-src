@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 class CountArray
 {
@@ -24,7 +24,7 @@ class CountArray
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ScopeNotAvailable\Fixture;
+namespace Rector\Tests\Issues\ScopeNotAvailable\Fixture;
 
 class CountArray
 {

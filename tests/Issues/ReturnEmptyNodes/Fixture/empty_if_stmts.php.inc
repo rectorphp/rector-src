@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\ReturnEmptyNodes\Fixture;
+namespace Rector\Tests\Issues\ReturnEmptyNodes\Fixture;
 
 final class EmptyIfStmts
 {

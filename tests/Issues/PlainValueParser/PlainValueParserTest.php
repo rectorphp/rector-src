@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\PlainValueParser;
+namespace Rector\Tests\Issues\PlainValueParser;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

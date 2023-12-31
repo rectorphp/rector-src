@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\DependencyInjection;
+namespace Rector\Tests\DependencyInjection;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

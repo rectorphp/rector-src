@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\PhpParser\Node\Value;
+namespace Rector\Tests\PhpParser\Node\Value;
 
 use Iterator;
 use PhpParser\BuilderFactory;
@@ -10,8 +10,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\Tests\PhpParser\Node\Value\Source\ClassForConstant;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Tests\PhpParser\Node\Value\Source\ClassForConstant;
 
 final class ValueResolverTest extends AbstractLazyTestCase
 {

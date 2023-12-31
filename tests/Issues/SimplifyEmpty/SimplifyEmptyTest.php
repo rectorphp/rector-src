@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SimplifyEmpty;
+namespace Rector\Tests\Issues\SimplifyEmpty;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

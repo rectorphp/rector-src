@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedParamInMiddle;
+namespace Rector\Tests\Issues\RemoveUnusedParamInMiddle;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

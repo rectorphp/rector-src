@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 class TwoRoutesAfterGenericWithStringKeyNumeric
 {
@@ -22,7 +22,7 @@ class TwoRoutesAfterGenericWithStringKeyNumeric
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture\DocBlock;
+namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Symfony\Component\Routing\Annotation\Route;
 class TwoRoutesAfterGenericWithStringKeyNumeric

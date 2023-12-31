@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\GetCalledClassToSelfAndStatic\Fixture;
+namespace Rector\Tests\Issues\GetCalledClassToSelfAndStatic\Fixture;
 
 final class OnFinalClass
 {
@@ -14,7 +14,7 @@ final class OnFinalClass
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\GetCalledClassToSelfAndStatic\Fixture;
+namespace Rector\Tests\Issues\GetCalledClassToSelfAndStatic\Fixture;
 
 final class OnFinalClass
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentStmt\Fixture;
+namespace Rector\Tests\Issues\ChangeToDifferentStmt\Fixture;
 
 final class ChangeIfToEcho
 {
@@ -15,7 +15,7 @@ final class ChangeIfToEcho
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\ChangeToDifferentStmt\Fixture;
+namespace Rector\Tests\Issues\ChangeToDifferentStmt\Fixture;
 
 final class ChangeIfToEcho
 {

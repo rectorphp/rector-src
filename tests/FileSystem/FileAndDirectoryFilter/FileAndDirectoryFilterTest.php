@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\FileSystem\FileAndDirectoryFilter;
+namespace Rector\Tests\FileSystem\FileAndDirectoryFilter;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Core\FileSystem\FileAndDirectoryFilter;

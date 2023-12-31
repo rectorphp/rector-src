@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\SplitMultiAssignRemovePrivate;
+namespace Rector\Tests\Issues\SplitMultiAssignRemovePrivate;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

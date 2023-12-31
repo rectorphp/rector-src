@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping;
 
@@ -15,7 +15,7 @@ class SubNamespaceFromUse
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
+namespace Rector\Tests\Issues\FqcnAnnotationToAttribute\Fixture;
 
 use Doctrine\ORM\Mapping;
 

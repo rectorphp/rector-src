@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\PartialValueDocblockUpdate\Source;
+namespace Rector\Tests\Issues\PartialValueDocblockUpdate\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;

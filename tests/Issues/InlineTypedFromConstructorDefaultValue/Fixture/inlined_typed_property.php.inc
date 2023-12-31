@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
+namespace Rector\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
 
 final class InlinedTypedProperty
 {
@@ -20,7 +20,7 @@ final class InlinedTypedProperty
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
+namespace Rector\Tests\Issues\InlineTypedFromConstructorDefaultValue\Fixture;
 
 final class InlinedTypedProperty
 {

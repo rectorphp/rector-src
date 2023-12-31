@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Tests\Issues\RemoveUnusedVariableDouble;
+namespace Rector\Tests\Issues\RemoveUnusedVariableDouble;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

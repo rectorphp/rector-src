@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\PrintMatchPhpstan\Fixture;
+namespace Rector\Tests\Issues\PrintMatchPhpstan\Fixture;
 
 use ReflectionParameter;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;

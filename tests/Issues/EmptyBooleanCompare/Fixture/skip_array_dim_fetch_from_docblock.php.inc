@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\EmptyBooleanCompare\Fixture;
+namespace Rector\Tests\Issues\EmptyBooleanCompare\Fixture;
 
 final class SkipArrayDimFetchFromDocblock
 {

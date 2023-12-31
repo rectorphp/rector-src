@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
+namespace Rector\Tests\Issues\AutoImport\Fixture;
 
 /**
  * License
@@ -24,7 +24,7 @@ final class DemoFile
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\AutoImport\Fixture;
+namespace Rector\Tests\Issues\AutoImport\Fixture;
 
 /**
  * License

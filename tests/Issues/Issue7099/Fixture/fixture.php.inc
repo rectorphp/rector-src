@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7099\Fixture;
+namespace Rector\Tests\Issues\Issue7099\Fixture;
 
-use Rector\Core\Tests\Issues\Issue7099\Source\Document;
+use Rector\Tests\Issues\Issue7099\Source\Document;
 
 class Controller
 {
@@ -22,9 +22,9 @@ class Controller
 -----
 <?php
 
-namespace Rector\Core\Tests\Issues\Issue7099\Fixture;
+namespace Rector\Tests\Issues\Issue7099\Fixture;
 
-use Rector\Core\Tests\Issues\Issue7099\Source\Document;
+use Rector\Tests\Issues\Issue7099\Source\Document;
 
 class Controller
 {
@@ -32,7 +32,7 @@ class Controller
     {
         $document = $id === 1 ? new Document() : null;
 
-        if (!$document instanceof \Rector\Core\Tests\Issues\Issue7099\Source\Document) {
+        if (!$document instanceof \Rector\Tests\Issues\Issue7099\Source\Document) {
             return null;
         }
 
