@@ -73,9 +73,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $consts = array_filter($node->stmts, static fn (Node $node): bool => $node instanceof ClassConst);
-
-        if ($consts === []) {
+        $classConsts = $node->getConstants();
+        if ($classConsts === []) {
             return null;
         }
 
@@ -87,22 +86,22 @@ CODE_SAMPLE
             return null;
         }
 
-        $changes = false;
+        $hasChanged = false;
 
-        foreach ($consts as $const) {
+        foreach ($classConsts  as $classConst) {
             $valueType = null;
 
             // If a type is set, skip
-            if ($const->type !== null) {
+            if ($classConst->type !== null) {
                 continue;
             }
 
-            foreach ($const->consts as $constNode) {
+            foreach ($classConst->consts as $constNode) {
                 if ($this->shouldSkipDueToInheritance($constNode, $parents, $implementations, $traits)) {
                     continue;
                 }
 
-                if ($this->canBeInheritied($const, $node)) {
+                if ($this->canBeInheritied($classConst, $node)) {
                     continue;
                 }
 
@@ -113,12 +112,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $const->type = $valueType;
-
-            $changes = true;
+            $classConst->type = $valueType;
+            $hasChanged = true;
         }
 
-        if (! $changes) {
+        if (! $hasChanged) {
             return null;
         }
 

@@ -106,13 +106,7 @@ CODE_SAMPLE
     {
         // allow class strings to be part of class const arrays, as probably on purpose
         if ($node instanceof ClassConst) {
-            $this->traverseNodesWithCallable($node->consts, static function (Node $subNode) {
-                if ($subNode instanceof String_) {
-                    $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
-                }
-
-                return null;
-            });
+            $this->decorateClassConst($node);
 
             return null;
         }
@@ -207,5 +201,16 @@ CODE_SAMPLE
         }
 
         return false;
+    }
+
+    private function decorateClassConst(ClassConst $classConst): void
+    {
+        $this->traverseNodesWithCallable($classConst->consts, static function (Node $subNode) {
+            if ($subNode instanceof String_) {
+                $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
+            }
+
+            return null;
+        });
     }
 }

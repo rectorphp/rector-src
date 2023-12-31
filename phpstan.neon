@@ -88,8 +88,30 @@ parameters:
                 - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
                 - packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
-                - rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php
                 - packages/Parallel/Application/ParallelFileProcessor.php
+                # rector rules
+                - rules/CodeQuality/Rector/If_/SimplifyIfNullableReturnRector.php
+                - rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php
+                - rules/CodeQuality/Rector/Isset_/IssetOnPropertyObjectToPropertyExistsRector.php
+                - utils/Rector/MoveAbstractRectorToChildrenRector.php
+                - rules/TypeDeclaration/Rector/*
+                - rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php
+                - rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php
+                - rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php
+                - rules/Php83/Rector/ClassConst/AddTypeToConstRector.php
+                - rules/EarlyReturn/Rector/Return_/PreparedValueToEarlyReturnRector.php
+                - rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchExprVariableRector.php
+                - rules/DeadCode/Rector/StaticCall/RemoveParentCallWithoutParentRector.php
+                - rules/DeadCode/Rector/If_/RemoveTypedPropertyDeadInstanceOfRector.php
+                - rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
+                - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
+                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
+                - rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php
+                - rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php
+                - rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php
 
         # is nested expr
         -
@@ -245,8 +267,6 @@ parameters:
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
 
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 11#'
-
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
             paths:
@@ -306,11 +326,6 @@ parameters:
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
                 - packages-tests/Skipper/Skipper/SkipperTest.php
 
-        # @todo resolve later
-        -
-            message: '#Cognitive complexity#i'
-            path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
-
         # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
 
@@ -318,9 +333,7 @@ parameters:
         -
             message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-        -
-            message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 11#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+
         -
             message: '#Variable property access on TNode of PHPStan\\PhpDocParser\\Ast\\Node#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
@@ -425,21 +438,12 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        # resolve later
-        - '#Cognitive complexity for "Rector\\(.*?)\:\:refactor\(\)" is (1[0-9]|20), keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\StaticCall\\RemoveParentCallWithoutParentRector\:\:refactor\(\)" is 26, keep it under 11#'
-
         - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
 
         # false positive
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
-
-        - '#Cognitive complexity for "Rector\\Transform\\Rector\\StaticCall\\StaticCallToMethodCallRector\:\:refactorWithScope\(\)" is 14, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
 
         # false positive
         -
