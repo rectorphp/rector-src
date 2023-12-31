@@ -241,11 +241,7 @@ CODE_SAMPLE
         }
 
         // skip "clone $this" cases, as can create unexpected write to local constructor property
-        if ($this->hasCloneThis($class)) {
-            return true;
-        }
-
-        return false;
+        return $this->hasCloneThis($class);
     }
 
     private function hasCloneThis(Class_ $class): bool

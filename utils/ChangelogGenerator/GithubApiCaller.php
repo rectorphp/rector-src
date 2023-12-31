@@ -6,6 +6,7 @@ namespace Rector\Utils\ChangelogGenerator;
 
 use Httpful\Request;
 use Httpful\Response;
+use InvalidArgumentException;
 use Rector\Utils\ChangelogGenerator\Enum\RepositoryName;
 use Rector\Utils\ChangelogGenerator\Exception\GithubRequestException;
 use Rector\Utils\ChangelogGenerator\ValueObject\Commit;
@@ -17,7 +18,9 @@ final class GithubApiCaller
         private readonly string|false $githubToken
     ) {
         if ($githubToken === false) {
-            throw new \InvalidArgumentException('Provide GitHub token via GH_TOKEN=***');
+            throw new InvalidArgumentException(
+                'Provide GitHub token via: "GITHUB_TOKEN=*** bin/generate-changelog.php ..."'
+            );
         }
     }
 

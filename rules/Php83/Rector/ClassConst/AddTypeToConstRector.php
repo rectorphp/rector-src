@@ -179,12 +179,9 @@ CODE_SAMPLE
 
         $currentClassReflection = $this->reflectionProvider->getClass($className);
 
-        return array_filter($currentClassReflection->getAncestors(), function (ClassReflection $classReflection) use (
-            $currentClassReflection
-        ) {
+        return array_filter($currentClassReflection->getAncestors(), static fn (ClassReflection $classReflection): bool =>
             // skip base class
-            return $currentClassReflection !== $classReflection;
-        });
+            $currentClassReflection !== $classReflection);
     }
 
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool

@@ -160,7 +160,7 @@ final class SwitchExprsResolver
 
     private function areCasesValid(Switch_ $newSwitch): bool
     {
-        foreach ($newSwitch->cases as $key => $case) {
+        foreach ($newSwitch->cases as $case) {
             if (! $this->isValidCase($case)) {
                 return false;
             }
