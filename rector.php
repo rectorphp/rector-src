@@ -34,10 +34,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // finalize using collectors to keep classes with children untouched
     $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
-    $rectorConfig->collectors([
-        ParentClassCollector::class,
-        MockedClassCollector::class,
-    ]);
+    $rectorConfig->collectors([ParentClassCollector::class, MockedClassCollector::class]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
 
