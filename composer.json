@@ -90,7 +90,6 @@
     "autoload-dev": {
         "psr-4": {
             "Rector\\Tests\\": [
-                "packages-tests",
                 "rules-tests",
                 "tests"
             ],

@@ -28,7 +28,7 @@ abstract class AbstractNodeTypeResolverTestCase extends AbstractLazyTestCase
     /**
      * @template T as Node
      * @param class-string<T> $type
-     * @return T[]
+     * @return Node
      */
     protected function getNodesForFileOfType(string $filePath, string $type): array
     {

@@ -61,8 +61,8 @@ final class SkipperTest extends AbstractLazyTestCase
     {
         yield [__DIR__ . '/Fixture/SomeRandom/file.txt', false];
         yield [__DIR__ . '/Fixture/SomeSkipped/any.txt', true];
-        yield ['packages-tests/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt', true];
-        yield ['packages-tests/Skipper/Skipper/Fixture/SomeSkippedPathToFile/any.txt', true];
+        yield ['tests/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt', true];
+        yield ['tests/Skipper/Skipper/Fixture/SomeSkippedPathToFile/any.txt', true];
     }
 
     /**
