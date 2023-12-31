@@ -41,14 +41,8 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
-        # too modern code for PHPStan 0.12.2
-        #- bin/validate-phpstan-version.php
-
         # CI test
         - tests/Fixtures/*
-
-        # temporary stinrgable migration from template type provider
-        #- bin/generate-changelog.php
 
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/Testing/PHPUnit/*.php
@@ -275,7 +269,6 @@ parameters:
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - src/DependencyInjection/LazyContainerFactory.php
-                - packages/Config/RectorConfig.php
                 - packages/Validation/RectorConfigValidator.php
 
         # use of internal phpstan classes

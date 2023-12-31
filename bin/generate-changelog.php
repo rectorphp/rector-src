@@ -10,9 +10,7 @@ use Symfony\Component\Console\Application;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-error_reporting(~E_DEPRECATED);
-
-$githubToken = (string) getenv('GITHUB_TOKEN');
+$githubToken = getenv('GITHUB_TOKEN');
 $githubApiCaller = new GithubApiCaller($githubToken);
 
 $generateChangelogCommand = new GenerateChangelogCommand(
