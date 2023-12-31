@@ -9,5 +9,3 @@ final class SkipOnInterfaceImplements implements SomeInterface
     public const STRING = 'some_type';
 }
 
-?>
-

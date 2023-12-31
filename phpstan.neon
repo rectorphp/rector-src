@@ -6,13 +6,14 @@ rules:
     #- Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
 
 parameters:
+    level: 8
+
     reportUnmatchedIgnoredErrors: false
 
+    # @see https://github.com/tomasVotruba/cognitive-complexity
     cognitive_complexity:
         class: 50
         function: 11
-
-    level: 8
 
     # requires exact closure types
     checkMissingCallableSignature: true
@@ -40,26 +41,10 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
-        # too modern code for PHPStan 0.12.2
-        - bin/validate-phpstan-version.php
-
-        # CI test
-        - tests/Fixtures/*
-
-        # temporary stinrgable migration from template type provider
-        - bin/generate-changelog.php
-
-        # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
-        - packages/Testing/PHPUnit/*.php
-
-        # complex printer
-        - '*tests/Rector/MethodCall/RenameMethodRector/**/SomeClass.php'
-        # tests files
-        - "*tests/*/Expected/*"
         - '*tests/*/Fixture/*'
+        - '*tests/*/Fixture*'
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
-        - '*tests/*/Fixture*'
 
         # tests
         - tests/DependencyInjection/config
@@ -67,18 +52,50 @@ parameters:
         - src/functions
 
     ignoreErrors:
-        - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
-
         -
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
+                - src/PhpParser/Printer/BetterStandardPrinter.php #41
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
-        - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
-        - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
+        -
+            message: '#Cognitive complexity for "(.*?)" is (.*?), keep it under 11#'
+            paths:
+                - rules/Php70/EregToPcreTransformer.php
+                - src/PhpParser/Node/Value/ValueResolver.php
+                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+                - rules/Php80/NodeResolver/SwitchExprsResolver.php
+                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
+                - packages/NodeTypeResolver/NodeTypeResolver.php
+                - packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
+                - packages/Parallel/Application/ParallelFileProcessor.php
+                # rector rules
+                - rules/CodeQuality/Rector/If_/SimplifyIfNullableReturnRector.php
+                - rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php
+                - rules/CodeQuality/Rector/Isset_/IssetOnPropertyObjectToPropertyExistsRector.php
+                - utils/Rector/MoveAbstractRectorToChildrenRector.php
+                - rules/TypeDeclaration/Rector/*
+                - rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php
+                - rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php
+                - rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php
+                - rules/Php83/Rector/ClassConst/AddTypeToConstRector.php
+                - rules/EarlyReturn/Rector/Return_/PreparedValueToEarlyReturnRector.php
+                - rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchExprVariableRector.php
+                - rules/DeadCode/Rector/StaticCall/RemoveParentCallWithoutParentRector.php
+                - rules/DeadCode/Rector/If_/RemoveTypedPropertyDeadInstanceOfRector.php
+                - rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
+                - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
+                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
+                - rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php
+                - rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php
+                - rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php
 
         # is nested expr
         -
@@ -120,17 +137,8 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
 
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 11#'
-
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
-
-        -
-            message: '#Class cognitive complexity is \d+, keep it under \d+#'
-            paths:
-                - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
 
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
 
@@ -166,9 +174,6 @@ parameters:
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: packages/Parallel/Application/ParallelFileProcessor.php
-
-        # parallel complexity
-        - '#Cognitive complexity for "Rector\\Parallel\\Application\\ParallelFileProcessor\:\:process\(\)" is \d+, keep it under 11#'
 
         # strict rules
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
@@ -236,18 +241,12 @@ parameters:
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
 
-        - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
-
-        # stmts refactoring
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
-
+        # import container config
         -
-            message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 11#'
-            paths:
-                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
+            message: '#Use explicit names over dynamic ones#'
+            path: packages/Testing/PHPUnit/AbstractTestCase.php
+
+        - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # known value
         - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000 but returns int#'
@@ -257,8 +256,6 @@ parameters:
             message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
             path: src/Autoloading/BootstrapFilesIncluder.php # 54
 
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\PHPStan\\Scope\\PHPStanNodeScopeResolver\:\:processNodes\(\)" is \d+, keep it under 11#'
-
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
             paths:
@@ -267,7 +264,6 @@ parameters:
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - src/DependencyInjection/LazyContainerFactory.php
-                - packages/Config/RectorConfig.php
                 - packages/Validation/RectorConfigValidator.php
 
         # use of internal phpstan classes
@@ -286,11 +282,6 @@ parameters:
         -
             message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
             path: src/Application/VersionResolver.php
-
-        # complex multiprinter
-        -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
-            path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
@@ -323,11 +314,6 @@ parameters:
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
                 - packages-tests/Skipper/Skipper/SkipperTest.php
 
-        # @todo resolve later
-        -
-            message: '#Cognitive complexity#i'
-            path: rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
-
         # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
 
@@ -335,17 +321,12 @@ parameters:
         -
             message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-        -
-            message: '#Cognitive complexity for "Rector\\PhpDocParser\\PhpDocParser\\PhpDocNodeTraverser\:\:(.*?)\(\)" is \d+, keep it under 11#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
+
         -
             message: '#Variable property access on TNode of PHPStan\\PhpDocParser\\Ast\\Node#'
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
         -
             message: '#Use explicit names over dynamic ones#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-        -
-            message: "#Class cognitive complexity is 69, keep it under 50#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
 
         -
@@ -445,21 +426,12 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        # resolve later
-        - '#Cognitive complexity for "Rector\\(.*?)\:\:refactor\(\)" is (1[0-9]|20), keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\StaticCall\\RemoveParentCallWithoutParentRector\:\:refactor\(\)" is 26, keep it under 11#'
-
         - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
 
         # false positive
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
-
-        - '#Cognitive complexity for "Rector\\Transform\\Rector\\StaticCall\\StaticCallToMethodCallRector\:\:refactorWithScope\(\)" is 14, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\Rector\\ClassMethod\\ParamTypeByMethodCallTypeRector\:\:refactorWithScope\(\)" is 13, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\Php81\\Rector\\Property\\ReadOnlyPropertyRector\:\:refactorWithScope\(\)" is 12, keep it under 11#'
 
         # false positive
         -
