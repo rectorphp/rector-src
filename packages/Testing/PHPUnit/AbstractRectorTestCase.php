@@ -64,8 +64,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
     {
         $this->includePreloadFilesAndScoperAutoload();
 
-        @ini_set('memory_limit', '-1');
-
         $configFile = $this->provideConfigFilePath();
 
         // cleanup all registered rectors, so you can use only the new ones
@@ -128,9 +126,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         }
     }
 
-    /**
-     * @return Iterator<<string>>
-     */
     protected static function yieldFilesFromDirectory(string $directory, string $suffix = '*.php.inc'): Iterator
     {
         return FixtureFileFinder::yieldDirectory($directory, $suffix);

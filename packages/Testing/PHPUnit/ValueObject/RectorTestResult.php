@@ -7,6 +7,9 @@ namespace Rector\Testing\PHPUnit\ValueObject;
 use Rector\Core\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\ProcessResult;
 
+/**
+ * @api used in tests
+ */
 final class RectorTestResult
 {
     public function __construct(

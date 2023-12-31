@@ -41,20 +41,10 @@ parameters:
     checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
-        # CI test
-        - tests/Fixtures/*
-
-        # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
-        - packages/Testing/PHPUnit/*.php
-
-        # complex printer
-        - '*tests/Rector/MethodCall/RenameMethodRector/**/SomeClass.php'
-        # tests files
-        - "*tests/*/Expected/*"
         - '*tests/*/Fixture/*'
+        - '*tests/*/Fixture*'
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
-        - '*tests/*/Fixture*'
 
         # tests
         - tests/DependencyInjection/config
@@ -250,6 +240,11 @@ parameters:
 
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
+
+        # import container config
+        -
+            message: '#Use explicit names over dynamic ones#'
+            path: packages/Testing/PHPUnit/AbstractTestCase.php
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
