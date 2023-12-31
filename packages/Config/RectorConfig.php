@@ -82,7 +82,7 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::COLLECTORS, true);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
+    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 32, int $jobSize = 20): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
         SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
