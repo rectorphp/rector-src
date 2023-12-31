@@ -17,6 +17,14 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
 
 return static function (RectorConfig $rectorConfig): void {
+    // $rectorConfig->level(0-42);
+
+    $rectorConfig->presets()
+        ->attributes()
+        ->doctrine()
+        ->symfony()
+        ->gedmo();
+
     $rectorConfig->sets([
         LevelSetList::UP_TO_PHP_81,
         SetList::CODE_QUALITY,

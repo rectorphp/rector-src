@@ -440,6 +440,11 @@ final class RectorConfig extends Container
         }
     }
 
+    public function presets(): PresetConfig
+    {
+        return new PresetConfig($this);
+    }
+
     private function isRuleNoLongerExists(mixed $skipRule): bool
     {
         return // only validate string
