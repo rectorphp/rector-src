@@ -17,6 +17,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Core\ValueObject\PolyfillPackage;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Validation\RectorConfigValidator;
 use Webmozart\Assert\Assert;
 
 /**
@@ -41,6 +42,7 @@ final class RectorConfig extends Container
     {
         Assert::allString($paths);
 
+        // ensure paths exist
         foreach ($paths as $path) {
             if (str_contains($path, '*')) {
                 continue;
@@ -81,7 +83,7 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::COLLECTORS, true);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
+    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 32, int $jobSize = 20): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
         SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
@@ -100,51 +102,14 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param array<int|string, mixed> $criteria
+     * @see https://getrector.com/documentation/ignoring-rules-or-paths
+     * @param array<int|string, mixed> $skip
      */
-    public function skip(array $criteria): void
+    public function skip(array $skip): void
     {
-        $notExistsRules = [];
-        foreach ($criteria as $key => $value) {
-            /**
-             * Cover define rule then list of files
-             *
-             * $rectorConfig->skip([
-             *      RenameVariableToMatchMethodCallReturnTypeRector::class => [
-             *          __DIR__ . '/packages/Config/RectorConfig.php'
-             *      ],
-             * ]);
-             */
-            if ($this->isRuleNoLongerExists($key)) {
-                $notExistsRules[] = $key;
-            }
+        RectorConfigValidator::ensureRectorRulesExist($skip);
 
-            if (! is_string($value)) {
-                continue;
-            }
-
-            /**
-             * Cover direct value without array list of files, eg:
-             *
-             * $rectorConfig->skip([
-             *      StringClassNameToClassConstantRector::class,
-             * ]);
-             */
-            if ($this->isRuleNoLongerExists($value)) {
-                $notExistsRules[] = $value;
-            }
-        }
-
-        if ($notExistsRules !== []) {
-            throw new ShouldNotHappenException(
-                'Following rules on $rectorConfig->skip() do no longer exist or changed to different namespace: ' . implode(
-                    ', ',
-                    $notExistsRules
-                )
-            );
-        }
-
-        SimpleParameterProvider::addParameter(Option::SKIP, $criteria);
+        SimpleParameterProvider::addParameter(Option::SKIP, $skip);
     }
 
     public function removeUnusedImports(bool $removeUnusedImports = true): void
@@ -234,6 +199,16 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @param array<class-string<Collector>> $collectorClasses
+     */
+    public function collectors(array $collectorClasses): void
+    {
+        foreach ($collectorClasses as $collectorClass) {
+            $this->collector($collectorClass);
+        }
+    }
+
+    /**
      * @param class-string<Collector> $collectorClass
      */
     public function collector(string $collectorClass): void
@@ -266,7 +241,8 @@ final class RectorConfig extends Container
     public function rules(array $rectorClasses): void
     {
         Assert::allString($rectorClasses);
-        $this->ensureNotDuplicatedClasses($rectorClasses);
+
+        RectorConfigValidator::ensureNoDuplicatedClasses($rectorClasses);
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
@@ -365,16 +341,9 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @api deprecated, just for BC layer warning
+     * @internal
+     * @api used only in tests
      */
-    public function services(): void
-    {
-        trigger_error(
-            'The services() method is deprecated. Use $rectorConfig->singleton(ServiceType::class) instead',
-            E_USER_ERROR
-        );
-    }
-
     public function resetRuleConfigurations(): void
     {
         $this->ruleConfigurations = [];
@@ -428,55 +397,5 @@ final class RectorConfig extends Container
 
             $this->tag($abstract, $autotagInterface);
         }
-    }
-
-    private function isRuleNoLongerExists(mixed $skipRule): bool
-    {
-        return // only validate string
-            is_string($skipRule)
-            // not regex path
-            && ! str_contains($skipRule, '*')
-            // a Rector end
-            && str_ends_with($skipRule, 'Rector')
-            // not directory
-            && ! is_dir($skipRule)
-            // not file
-            && ! is_file($skipRule)
-            // class not exists
-            && ! class_exists($skipRule);
-    }
-
-    /**
-     * @param string[] $values
-     * @return string[]
-     */
-    private function resolveDuplicatedValues(array $values): array
-    {
-        $counted = array_count_values($values);
-        $duplicates = [];
-
-        foreach ($counted as $value => $count) {
-            if ($count > 1) {
-                $duplicates[] = $value;
-            }
-        }
-
-        return array_unique($duplicates);
-    }
-
-    /**
-     * @param string[] $rectorClasses
-     */
-    private function ensureNotDuplicatedClasses(array $rectorClasses): void
-    {
-        $duplicatedRectorClasses = $this->resolveDuplicatedValues($rectorClasses);
-        if ($duplicatedRectorClasses === []) {
-            return;
-        }
-
-        throw new ShouldNotHappenException('Following rules are registered twice: ' . implode(
-            ', ',
-            $duplicatedRectorClasses
-        ));
     }
 }

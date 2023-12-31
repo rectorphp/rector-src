@@ -268,6 +268,7 @@ parameters:
                 - src/Bootstrap/ExtensionConfigResolver.php
                 - src/DependencyInjection/LazyContainerFactory.php
                 - packages/Config/RectorConfig.php
+                - packages/Validation/RectorConfigValidator.php
 
         # use of internal phpstan classes
         -
