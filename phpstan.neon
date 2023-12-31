@@ -502,3 +502,6 @@ parameters:
 
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
+
+        # @todo handler later
+        - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
