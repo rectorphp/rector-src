@@ -17,10 +17,14 @@ final class PhpConfig
     public function latest(): self
     {
         // @todo discover from composer.json project
+        // $this->rectorConfig->sets();
+        return $this;
     }
 
     public function upToLatest(): self
     {
         // @todo discover from composer.json project
+        // $this->rectorConfig->sets();
+        return $this;
     }
 }
