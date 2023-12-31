@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
+use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
@@ -68,12 +69,7 @@ final class StrictScalarReturnTypeAnalyzer
             in_array($expr->name->toLowerString(), ['true', 'false', 'null'], true)) {
             return true;
         }
-
         // Negative numbers are wrapped in UnaryMinus, so check expression inside it
-        if (($expr instanceof UnaryMinus || $expr instanceof Expr\UnaryPlus) && $expr->expr instanceof Scalar) {
-            return true;
-        }
-
-        return false;
+        return ($expr instanceof UnaryMinus || $expr instanceof UnaryPlus) && $expr->expr instanceof Scalar;
     }
 }
