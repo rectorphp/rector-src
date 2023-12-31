@@ -8,6 +8,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\UnaryMinus;
+use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -70,10 +71,10 @@ final class StrictScalarReturnTypeAnalyzer
         }
 
         // Negative numbers are wrapped in UnaryMinus, so check expression inside it
-        if (($expr instanceof UnaryMinus || $expr instanceof Expr\UnaryPlus) && $expr->expr instanceof Scalar) {
-            return true;
+        if (! $expr instanceof UnaryMinus && ! $expr instanceof UnaryPlus) {
+            return false;
         }
 
-        return false;
+        return $expr->expr instanceof Scalar;
     }
 }

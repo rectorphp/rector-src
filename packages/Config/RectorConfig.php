@@ -17,6 +17,7 @@ use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Core\ValueObject\PolyfillPackage;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
+use Rector\Validation\ConfigValidation;
 use Webmozart\Assert\Assert;
 
 /**
@@ -102,13 +103,13 @@ final class RectorConfig extends Container
 
     /**
      * @see https://getrector.com/documentation/ignoring-rules-or-paths
-     * @param array<int|string, mixed> $criteria
+     * @param array<int|string, mixed> $skip
      */
-    public function skip(array $criteria): void
+    public function skip(array $skip): void
     {
-        $this->ensureRectorRulesExist($criteria);
+        ConfigValidation::ensureRectorRulesExist($skip);
 
-        SimpleParameterProvider::addParameter(Option::SKIP, $criteria);
+        SimpleParameterProvider::addParameter(Option::SKIP, $skip);
     }
 
     public function removeUnusedImports(bool $removeUnusedImports = true): void
@@ -240,7 +241,8 @@ final class RectorConfig extends Container
     public function rules(array $rectorClasses): void
     {
         Assert::allString($rectorClasses);
-        $this->ensureNotDuplicatedClasses($rectorClasses);
+
+        ConfigValidation::ensureNoDuplicatedClasses($rectorClasses);
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
@@ -339,16 +341,9 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @api deprecated, just for BC layer warning
+     * @internal
+     * @api used only in tests
      */
-    public function services(): void
-    {
-        trigger_error(
-            'The services() method is deprecated. Use $rectorConfig->singleton(ServiceType::class) instead',
-            E_USER_ERROR
-        );
-    }
-
     public function resetRuleConfigurations(): void
     {
         $this->ruleConfigurations = [];
@@ -407,97 +402,5 @@ final class RectorConfig extends Container
     public function presets(): PresetConfig
     {
         return new PresetConfig($this);
-    }
-
-    private function isRectorRuleValue(mixed $value): bool
-    {
-        // only validate string
-        if (! is_string($value)) {
-            return false;
-        }
-
-        // not regex path
-        if (str_contains($value, '*')) {
-            return false;
-        }
-
-        // not if no Rector suffix
-        if (! str_ends_with($value, 'Rector')) {
-            return false;
-        }
-
-        // not directory
-        if (is_dir($value)) {
-            return false;
-        }
-
-        // not file
-        return ! is_file($value);
-    }
-
-    /**
-     * @param string[] $values
-     * @return string[]
-     */
-    private function resolveDuplicatedValues(array $values): array
-    {
-        $counted = array_count_values($values);
-        $duplicates = [];
-
-        foreach ($counted as $value => $count) {
-            if ($count > 1) {
-                $duplicates[] = $value;
-            }
-        }
-
-        return array_unique($duplicates);
-    }
-
-    /**
-     * @param string[] $rectorClasses
-     */
-    private function ensureNotDuplicatedClasses(array $rectorClasses): void
-    {
-        $duplicatedRectorClasses = $this->resolveDuplicatedValues($rectorClasses);
-        if ($duplicatedRectorClasses === []) {
-            return;
-        }
-
-        throw new ShouldNotHappenException('Following rules are registered twice: ' . implode(
-            ', ',
-            $duplicatedRectorClasses
-        ));
-    }
-
-    /**
-     * @param mixed[] $skip
-     */
-    private function ensureRectorRulesExist(array $skip): void
-    {
-        $nonExistingRules = [];
-
-        foreach ($skip as $key => $value) {
-            if ($this->isRectorRuleValue($key) && ! class_exists($key)) {
-                $nonExistingRules[] = $key;
-                continue;
-            }
-
-            if ($this->isRectorRuleValue($value) && ! class_exists($value)) {
-                $nonExistingRules[] = $value;
-            }
-        }
-
-        if ($nonExistingRules === []) {
-            return;
-        }
-
-        $nonExistingRulesString = '';
-        foreach ($nonExistingRules as $nonExistingRule) {
-            $nonExistingRulesString .= ' * ' . $nonExistingRule . PHP_EOL;
-        }
-
-        throw new ShouldNotHappenException(
-            'These rules from "$rectorConfig->skip()" does not exist:' . PHP_EOL . $nonExistingRulesString
-        );
     }
 }

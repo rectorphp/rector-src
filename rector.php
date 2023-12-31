@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\Collector\MockedClassCollector;
@@ -18,11 +19,11 @@ use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
 return static function (RectorConfig $rectorConfig): void {
     // $rectorConfig->level(0-42);
 
-    $rectorConfig->presets()
-        ->attributes()
-            ->doctrine()
-            ->symfony()
-            ->gedmo();
+    //    $rectorConfig->presets()
+    //        ->attributes()
+    //            ->doctrine()
+    //            ->symfony()
+    //            ->gedmo();
 
     $rectorConfig->presets()
         ->php()
@@ -43,8 +44,8 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     // finalize using collectors to keep classes with children untouched
-    $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
-    $rectorConfig->collectors([ParentClassCollector::class, MockedClassCollector::class]);
+    //    $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
+    //    $rectorConfig->collectors([ParentClassCollector::class, MockedClassCollector::class]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
 
@@ -67,7 +68,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         StringClassNameToClassConstantRector::class,
-        __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
         '*/Fixture/*',
         '*/Fixture*',
@@ -75,11 +75,11 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Source*',
         '*/Expected/*',
 
-        // keep configs untouched, as the classes are just strings
+        // keep configs untouched, as the classes that seem loaded are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
 
         // avoid simplifying itself
-        \Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector::class => [
+        SimplifyRegexPatternRector::class => [
             __DIR__ . '/rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php',
         ],
 
