@@ -234,6 +234,16 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @param array<class-string<Collector>> $collectorClasses
+     */
+    public function collectors(array $collectorClasses): void
+    {
+        foreach ($collectorClasses as $collectorClass) {
+            $this->collector($collectorClass);
+        }
+    }
+
+    /**
      * @param class-string<Collector> $collectorClass
      */
     public function collector(string $collectorClass): void

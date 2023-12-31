@@ -32,10 +32,12 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_100,
     ]);
 
-    // testing collectors
-    $rectorConfig->collector(ParentClassCollector::class);
-    $rectorConfig->collector(MockedClassCollector::class);
+    // finalize using collectors to keep classes with children untouched
     $rectorConfig->rule(FinalizeClassesWithoutChildrenCollectorRector::class);
+    $rectorConfig->collectors([
+        ParentClassCollector::class,
+        MockedClassCollector::class,
+    ]);
 
     $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
 
