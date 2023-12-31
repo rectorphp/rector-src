@@ -2,13 +2,9 @@
 
 declare(strict_types=1);
 
-use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer;
-use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocNoEmptyReturnFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
-use PhpCsFixer\Fixer\PhpUnit\PhpUnitStrictFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -33,10 +29,6 @@ return static function (ECSConfig $ecsConfig): void {
 
     $ecsConfig->rules([FunctionTypehintSpaceFixer::class]);
 
-    $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [
-        'allow_mixed' => true,
-    ]);
-
     $ecsConfig->skip([
         '*/Source/*',
         '*/Fixture/*',
@@ -47,16 +39,6 @@ return static function (ECSConfig $ecsConfig): void {
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
             // skip for enum types
             __DIR__ . '/rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php',
-        ],
-
-        // breaking and handled better by Rector PHPUnit code quality set, removed in symplify dev-main
-        PhpUnitStrictFixer::class,
-
-        AssignmentInConditionSniff::class . '.FoundInWhileCondition',
-
-        // null on purpose as no change
-        PhpdocNoEmptyReturnFixer::class => [
-            __DIR__ . '/rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php',
         ],
 
         SelfAccessorFixer::class => ['*/*Rector.php'],
