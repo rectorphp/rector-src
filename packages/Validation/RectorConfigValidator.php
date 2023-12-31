@@ -36,12 +36,15 @@ final class RectorConfigValidator
                 $nonExistingRules[] = $key;
                 continue;
             }
+
             if (! self::isRectorClassValue($value)) {
                 continue;
             }
+
             if (class_exists($value)) {
                 continue;
             }
+
             $nonExistingRules[] = $value;
         }
 

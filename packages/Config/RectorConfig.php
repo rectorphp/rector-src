@@ -83,10 +83,14 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::COLLECTORS, true);
     }
 
-    public function parallel(int $seconds = 120, int $maxNumberOfProcess = 32, int $jobSize = 20): void
+    /**
+     * Defaults in sync with https://phpstan.org/config-reference#parallel-processing
+     * as we run PHPStan as well
+     */
+    public function parallel(int $processTimeout = 60, int $maxNumberOfProcess = 32, int $jobSize = 20): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
-        SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $seconds);
+        SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_TIMEOUT_IN_SECONDS, $processTimeout);
         SimpleParameterProvider::setParameter(Option::PARALLEL_MAX_NUMBER_OF_PROCESSES, $maxNumberOfProcess);
         SimpleParameterProvider::setParameter(Option::PARALLEL_JOB_SIZE, $jobSize);
     }
