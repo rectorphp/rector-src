@@ -6,13 +6,14 @@ rules:
     #- Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
 
 parameters:
+    level: 8
+
     reportUnmatchedIgnoredErrors: false
 
+    # @see https://github.com/tomasVotruba/cognitive-complexity
     cognitive_complexity:
         class: 50
         function: 11
-
-    level: 8
 
     # requires exact closure types
     checkMissingCallableSignature: true
@@ -41,13 +42,13 @@ parameters:
 
     excludePaths:
         # too modern code for PHPStan 0.12.2
-        - bin/validate-phpstan-version.php
+        #- bin/validate-phpstan-version.php
 
         # CI test
         - tests/Fixtures/*
 
         # temporary stinrgable migration from template type provider
-        - bin/generate-changelog.php
+        #- bin/generate-changelog.php
 
         # broken in PHPStan https://github.com/rectorphp/rector/runs/1305002460#step:5:56
         - packages/Testing/PHPUnit/*.php
@@ -67,18 +68,28 @@ parameters:
         - src/functions
 
     ignoreErrors:
-        - '#Cognitive complexity for "Rector\\Php80\\NodeResolver\\SwitchExprsResolver\:\:resolve\(\)" is (.*?), keep it under 11#'
-
         -
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/NodeTypeResolver/NodeTypeResolver.php
                 - packages/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
+                - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
+                - src/PhpParser/Printer/BetterStandardPrinter.php #41
+                - packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
 
-        - "#^Cognitive complexity for \"Rector\\\\Php70\\\\EregToPcreTransformer\\:\\:(.*?)\" is (.*?), keep it under 11$#"
-        - '#Cognitive complexity for "Rector\\Core\\PhpParser\\Node\\Value\\ValueResolver\:\:getValue\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\DeadCode\\NodeManipulator\\LivingCodeManipulator\:\:keepLivingCodeFromExpr\(\)" is \d+, keep it under 11#'
+        -
+            message: '#Cognitive complexity for "(.*?)" is (.*?), keep it under 11#'
+            paths:
+                - rules/Php70/EregToPcreTransformer.php
+                - src/PhpParser/Node/Value/ValueResolver.php
+                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+                - rules/Php80/NodeResolver/SwitchExprsResolver.php
+                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
+                - packages/NodeTypeResolver/NodeTypeResolver.php
+                - packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
+                - rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php
+                - packages/Parallel/Application/ParallelFileProcessor.php
 
         # is nested expr
         -
@@ -120,17 +131,8 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - packages/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
 
-        - '#Cognitive complexity for "Rector\\BetterPhpDocParser\\PhpDocParser\\DoctrineAnnotationDecorator\:\:mergeNestedDoctrineAnnotations\(\)" is \d+, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\NodeTypeResolver\\NodeTypeResolver\:\:getType\(\)" is \d+, keep it under 11#'
-
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
-
-        -
-            message: '#Class cognitive complexity is \d+, keep it under \d+#'
-            paths:
-                - packages/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
 
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
 
@@ -166,9 +168,6 @@ parameters:
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: packages/Parallel/Application/ParallelFileProcessor.php
-
-        # parallel complexity
-        - '#Cognitive complexity for "Rector\\Parallel\\Application\\ParallelFileProcessor\:\:process\(\)" is \d+, keep it under 11#'
 
         # strict rules
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
@@ -238,17 +237,6 @@ parameters:
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
-        # stmts refactoring
-        - '#Cognitive complexity for "Rector\\DeadCode\\Rector\\Assign\\RemoveDoubleAssignRector\:\:refactorWithScope\(\)" is \d+, keep it under 11#'
-
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:matchShortenedObjectType\(\)" is \d+, keep it under 11#'
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:narrowToFullyQualifiedOrAliasedObjectType\(\)" is \d+, keep it under 11#'
-
-        -
-            message: '#Cognitive complexity for "Rector\\(.*?)Rector\:\:refactor\(\)" is \d+, keep it under 11#'
-            paths:
-                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-
         # known value
         - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000 but returns int#'
 
@@ -286,11 +274,6 @@ parameters:
         -
             message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
             path: src/Application/VersionResolver.php
-
-        # complex multiprinter
-        -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
-            path: src/PhpParser/Printer/BetterStandardPrinter.php #41
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
@@ -343,9 +326,6 @@ parameters:
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
         -
             message: '#Use explicit names over dynamic ones#'
-            path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-        -
-            message: "#Class cognitive complexity is 69, keep it under 50#"
             path: "packages/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
 
         -

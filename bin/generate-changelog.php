@@ -12,7 +12,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 error_reporting(~E_DEPRECATED);
 
-$githubToken = getenv('GITHUB_TOKEN');
+$githubToken = (string) getenv('GITHUB_TOKEN');
 $githubApiCaller = new GithubApiCaller($githubToken);
 
 $generateChangelogCommand = new GenerateChangelogCommand(

@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Core\FileSystem\JsonFileSystem;
 use Symfony\Component\Console\Command\Command;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -30,16 +29,12 @@ echo sprintf(
 ) . PHP_EOL;
 exit(Command::FAILURE);
 
+
 final class PackageVersionResolver
 {
-    public function __construct(
-        private readonly JsonFileReader $jsonFileReader = new JsonFileReader(),
-    ) {
-    }
-
     public function resolve(string $composerFilePath, string $packageName): string
     {
-        $composerJson = $this->jsonFileReader->readFilePath($composerFilePath);
+        $composerJson = JsonFileSystem::readFilePath($composerFilePath);
         $packageVersion = $composerJson['require'][$packageName] ?? null;
 
         if ($packageVersion === null) {
@@ -47,18 +42,5 @@ final class PackageVersionResolver
         }
 
         return $packageVersion;
-    }
-}
-
-
-final class JsonFileReader
-{
-    /**
-     * @return array<string, mixed>
-     */
-    public function readFilePath(string $filePath): array
-    {
-        $fileContents = FileSystem::read($filePath);
-        return Json::decode($fileContents, Json::FORCE_ARRAY);
     }
 }

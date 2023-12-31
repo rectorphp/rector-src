@@ -14,8 +14,11 @@ use stdClass;
 final class GithubApiCaller
 {
     public function __construct(
-        private readonly string $githubToken
+        private readonly string|false $githubToken
     ) {
+        if ($githubToken === false) {
+            throw new \InvalidArgumentException('Provide GitHub token via GH_TOKEN=***');
+        }
     }
 
     public function searchIssues(Commit $commit): stdClass
