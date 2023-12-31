@@ -45,7 +45,6 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/rules',
         __DIR__ . '/rules-tests',
         __DIR__ . '/packages',
-        __DIR__ . '/packages-tests',
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',

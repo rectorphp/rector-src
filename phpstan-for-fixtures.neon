@@ -13,7 +13,7 @@ parameters:
         - inc
 
     paths:
-        - packages-tests/
+        - tests/
         - rules-tests/
 
     excludePaths:

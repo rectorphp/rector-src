@@ -26,7 +26,6 @@ parameters:
         - rules
         - packages
         # tests
-        - packages-tests
         - tests
         - rules-tests
         - utils
@@ -304,7 +303,7 @@ parameters:
                 - bin/rector.php
                 - src/Bootstrap/RectorConfigsResolver.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
-                - packages-tests/Skipper/Skipper/SkipperTest.php
+                - tests/Skipper/Skipper/SkipperTest.php
 
         # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'

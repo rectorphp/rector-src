@@ -104,7 +104,6 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
     /**
      * @template T as Node
      * @param class-string<T> $nodeType
-     * @return Node
      */
     private function parseFileAndGetFirstNodeOfType(string $filePath, string $nodeType): Node
     {
