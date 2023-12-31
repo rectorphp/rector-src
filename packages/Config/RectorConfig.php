@@ -101,50 +101,12 @@ final class RectorConfig extends Container
     }
 
     /**
+     * @see https://getrector.com/documentation/ignoring-rules-or-paths
      * @param array<int|string, mixed> $criteria
      */
     public function skip(array $criteria): void
     {
-        $nonExistingRules = [];
-
-        foreach ($criteria as $key => $value) {
-            /**
-             * Cover define rule then list of files
-             *
-             * $rectorConfig->skip([
-             *      RenameVariableToMatchMethodCallReturnTypeRector::class => [
-             *          __DIR__ . '/packages/Config/RectorConfig.php'
-             *      ],
-             * ]);
-             */
-            if (! $this->doesRuleExists($key)) {
-                $nonExistingRules[] = $key;
-            }
-
-            if (! is_string($value)) {
-                continue;
-            }
-
-            /**
-             * Cover direct value without array list of files, eg:
-             *
-             * $rectorConfig->skip([
-             *      StringClassNameToClassConstantRector::class,
-             * ]);
-             */
-            if ($this->doesRuleExists($value)) {
-                $nonExistingRules[] = $value;
-            }
-        }
-
-        if ($nonExistingRules !== []) {
-            throw new ShouldNotHappenException(
-                'Following rules on $rectorConfig->skip() do no longer exist or changed to different namespace: ' . implode(
-                    ', ',
-                    $nonExistingRules
-                )
-            );
-        }
+        $this->ensureRectorRulesExist($criteria);
 
         SimpleParameterProvider::addParameter(Option::SKIP, $criteria);
     }
@@ -447,20 +409,30 @@ final class RectorConfig extends Container
         return new PresetConfig($this);
     }
 
-    private function doesRuleExists(mixed $skipRule): bool
+    private function isRectorRuleValue(mixed $value): bool
     {
-        return // only validate string
-            is_string($skipRule)
-            // not regex path
-            && ! str_contains($skipRule, '*')
-            // a Rector end
-            && str_ends_with($skipRule, 'Rector')
-            // not directory
-            && ! is_dir($skipRule)
-            // not file
-            && ! is_file($skipRule)
-            // class not exists
-            && ! class_exists($skipRule);
+        // only validate string
+        if (! is_string($value)) {
+            return false;
+        }
+
+        // not regex path
+        if (str_contains($value, '*')) {
+            return false;
+        }
+
+        // not if no Rector suffix
+        if (! str_ends_with($value, 'Rector')) {
+            return false;
+        }
+
+        // not directory
+        if (is_dir($value)) {
+            return false;
+        }
+
+        // not file
+        return ! is_file($value);
     }
 
     /**
@@ -495,5 +467,37 @@ final class RectorConfig extends Container
             ', ',
             $duplicatedRectorClasses
         ));
+    }
+
+    /**
+     * @param mixed[] $skip
+     */
+    private function ensureRectorRulesExist(array $skip): void
+    {
+        $nonExistingRules = [];
+
+        foreach ($skip as $key => $value) {
+            if ($this->isRectorRuleValue($key) && ! class_exists($key)) {
+                $nonExistingRules[] = $key;
+                continue;
+            }
+
+            if ($this->isRectorRuleValue($value) && ! class_exists($value)) {
+                $nonExistingRules[] = $value;
+            }
+        }
+
+        if ($nonExistingRules === []) {
+            return;
+        }
+
+        $nonExistingRulesString = '';
+        foreach ($nonExistingRules as $nonExistingRule) {
+            $nonExistingRulesString .= ' * ' . $nonExistingRule . PHP_EOL;
+        }
+
+        throw new ShouldNotHappenException(
+            'These rules from "$rectorConfig->skip()" does not exist:' . PHP_EOL . $nonExistingRulesString
+        );
     }
 }
