@@ -8,10 +8,6 @@ use Rector\Core\Exception\ShouldNotHappenException;
 
 final class ConfigValidation
 {
-    public static function asdf()
-    {
-    }
-
     /**
      * @param string[] $rectorClasses
      */
