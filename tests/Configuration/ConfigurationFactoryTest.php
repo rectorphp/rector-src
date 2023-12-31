@@ -6,9 +6,9 @@ namespace Rector\Tests\Configuration;
 
 use Rector\Core\Configuration\ConfigurationFactory;
 use Rector\Core\FileSystem\FilesFinder;
-use Rector\Testing\PHPUnit\AbstractTestCase;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ConfigurationFactoryTest extends AbstractTestCase
+final class ConfigurationFactoryTest extends AbstractLazyTestCase
 {
     public function test(): void
     {
