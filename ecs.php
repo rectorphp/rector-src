@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-use PHP_CodeSniffer\Standards\Generic\Sniffs\CodeAnalysis\AssignmentInConditionSniff;
 use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\FunctionNotation\FunctionTypehintSpaceFixer;
-use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
@@ -32,10 +30,6 @@ return static function (ECSConfig $ecsConfig): void {
 
     $ecsConfig->rules([FunctionTypehintSpaceFixer::class]);
 
-    $ecsConfig->ruleWithConfiguration(NoSuperfluousPhpdocTagsFixer::class, [
-        'allow_mixed' => true,
-    ]);
-
     $ecsConfig->skip([
         '*/Source/*',
         '*/Fixture/*',
@@ -53,7 +47,6 @@ return static function (ECSConfig $ecsConfig): void {
             __DIR__ . '/rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php',
         ],
 
-        AssignmentInConditionSniff::class . '.FoundInWhileCondition',
         SelfAccessorFixer::class => ['*/*Rector.php'],
     ]);
 };
