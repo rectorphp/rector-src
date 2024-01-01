@@ -6,7 +6,7 @@ namespace Rector\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\ValueObject\Configuration;
+use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

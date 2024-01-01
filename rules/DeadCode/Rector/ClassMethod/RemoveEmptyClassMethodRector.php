@@ -11,11 +11,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\DeprecatedTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\Rector\AbstractRector;
-use Rector\Core\ValueObject\MethodName;
 use Rector\DeadCode\NodeManipulator\ControllerClassMethodManipulator;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\NodeManipulator\ClassMethodManipulator;
+use Rector\Rector\AbstractRector;
+use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

@@ -8,9 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Ternary;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

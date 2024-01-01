@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Bootstrap;
 
-use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
+use Rector\ValueObject\Bootstrap\BootstrapConfigs;
 use Symfony\Component\Console\Input\ArgvInput;
 use Webmozart\Assert\Assert;
 

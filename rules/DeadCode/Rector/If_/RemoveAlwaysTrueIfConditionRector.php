@@ -16,10 +16,10 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

@@ -6,7 +6,7 @@ namespace Rector\Tests\Issues\ReturnEmptyNodes\Source;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class ReturnEmptyStmtsRector extends AbstractRector

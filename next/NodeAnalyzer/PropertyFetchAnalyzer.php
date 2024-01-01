@@ -20,13 +20,13 @@ use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
-use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\ReflectionResolver;
+use Rector\ValueObject\MethodName;
 
 final class PropertyFetchAnalyzer
 {

@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Rector\Transform\ValueObject\WrapReturn;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;

@@ -6,8 +6,8 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Core\ValueObject\FuncCallAndExpr;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\ValueObject\FuncCallAndExpr;
 
 final class BinaryOpAnalyzer
 {

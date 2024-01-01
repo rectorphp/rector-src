@@ -14,10 +14,10 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
-use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\SprintfStringAndArgs;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Util\StringUtils;
+use Rector\ValueObject\SprintfStringAndArgs;
 
 /**
  * @api used in phpunit

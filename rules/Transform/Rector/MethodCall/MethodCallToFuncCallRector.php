@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Rector\Transform\ValueObject\MethodCallToFuncCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;

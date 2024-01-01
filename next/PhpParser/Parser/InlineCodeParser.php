@@ -11,9 +11,9 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
-use Rector\Core\Util\StringUtils;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
+use Rector\Util\StringUtils;
 
 final class InlineCodeParser
 {

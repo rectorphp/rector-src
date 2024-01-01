@@ -19,8 +19,8 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\ReflectionResolver;
 
 final class SilentVoidResolver
 {

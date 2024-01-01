@@ -19,15 +19,15 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\Reflection\ClassReflectionAnalyzer;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ConstFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Provider\CurrentFileProvider;
+use Rector\Reflection\ClassReflectionAnalyzer;
+use Rector\Reflection\ReflectionResolver;
 use TypeError;
 
 /**
@@ -234,7 +234,7 @@ final class ValueResolver
     private function resolveDirConstant(): string
     {
         $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof \Rector\Core\ValueObject\Application\File) {
+        if (! $file instanceof \Rector\ValueObject\Application\File) {
             throw new ShouldNotHappenException();
         }
 
@@ -244,7 +244,7 @@ final class ValueResolver
     private function resolveFileConstant(File $file): string
     {
         $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof \Rector\Core\ValueObject\Application\File) {
+        if (! $file instanceof \Rector\ValueObject\Application\File) {
             throw new ShouldNotHappenException();
         }
 

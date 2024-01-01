@@ -16,9 +16,9 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\CodeQuality\NodeAnalyzer\VariableDimFetchAssignResolver;
 use Rector\CodeQuality\ValueObject\KeyAndExpr;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

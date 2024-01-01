@@ -22,7 +22,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocClassRenamer;
 use Rector\BetterPhpDocParser\ValueObject\NodeTypes;
 use Rector\CodingStyle\Naming\ClassNaming;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Core\Util\FileHasher;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockClassRenamer;
@@ -31,6 +30,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\Util\FileHasher;
 
 final class ClassRenamer
 {

@@ -14,10 +14,10 @@ use PhpParser\Node\Stmt\For_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

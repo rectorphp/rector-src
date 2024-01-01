@@ -7,7 +7,7 @@ namespace Rector\Php\PhpVersionResolver;
 use Composer\Semver\VersionParser;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Rector\Core\Util\PhpVersionFactory;
+use Rector\Util\PhpVersionFactory;
 
 /**
  * @see \Rector\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver\ProjectComposerJsonPhpVersionResolverTest

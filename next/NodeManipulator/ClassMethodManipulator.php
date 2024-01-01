@@ -7,9 +7,9 @@ namespace Rector\NodeManipulator;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Reflection\ReflectionResolver;
+use Rector\ValueObject\MethodName;
 
 final class ClassMethodManipulator
 {

@@ -9,7 +9,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Node\CollectedDataNode;
 use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Core\ValueObject\Configuration;
+use Rector\ValueObject\Configuration;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser

@@ -11,13 +11,13 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Reflection\ClassReflectionAnalyzer;
 use Rector\Enum\ObjectReference;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeManipulator\PropertyManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\ClassReflectionAnalyzer;
 
 final class ParentPropertyLookupGuard
 {

@@ -16,8 +16,8 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

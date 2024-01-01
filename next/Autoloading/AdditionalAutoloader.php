@@ -6,7 +6,7 @@ namespace Rector\Autoloading;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
+use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Symfony\Component\Console\Input\InputInterface;
 use Webmozart\Assert\Assert;
 

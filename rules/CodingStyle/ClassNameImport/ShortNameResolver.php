@@ -18,13 +18,13 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\ValueObject\Application\File;
 use ReflectionClass;
 
 /**

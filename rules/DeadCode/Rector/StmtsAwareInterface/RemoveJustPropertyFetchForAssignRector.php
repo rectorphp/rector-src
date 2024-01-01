@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\DeadCode\NodeAnalyzer\JustPropertyFetchVariableAssignMatcher;
 use Rector\DeadCode\ValueObject\VariableAndPropertyFetchAssign;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

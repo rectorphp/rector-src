@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

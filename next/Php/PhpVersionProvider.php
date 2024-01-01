@@ -6,11 +6,11 @@ namespace Rector\Php;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Util\StringUtils;
-use Rector\Core\ValueObject\PhpVersion;
 use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Rector\Util\StringUtils;
+use Rector\ValueObject\PhpVersion;
 use ReflectionClass;
 
 /**

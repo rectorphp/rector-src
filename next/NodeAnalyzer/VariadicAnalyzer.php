@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
 use Rector\PhpParser\AstResolver;
+use Rector\Reflection\ReflectionResolver;
 
 final class VariadicAnalyzer
 {

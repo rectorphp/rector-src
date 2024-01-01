@@ -8,11 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\Rector\AbstractRector;
 use Rector\Naming\ExpectedNameResolver\InflectorSingularResolver;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

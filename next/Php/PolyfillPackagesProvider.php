@@ -8,7 +8,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\ValueObject\PolyfillPackage;
+use Rector\ValueObject\PolyfillPackage;
 
 final class PolyfillPackagesProvider
 {

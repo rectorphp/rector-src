@@ -12,7 +12,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

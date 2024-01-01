@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Rector\AbstractRector;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
+use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

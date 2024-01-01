@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Validation\RectorAssert;
+use Rector\Validation\RectorAssert;
 use Webmozart\Assert\InvalidArgumentException;
 
 final class RectorAssertTest extends TestCase

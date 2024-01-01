@@ -20,7 +20,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Parser\ArrayMapArgVisitor;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
@@ -29,6 +28,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Reflection\ReflectionResolver;
 
 final class IsClassMethodUsedAnalyzer
 {

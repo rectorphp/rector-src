@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Console\Formatter;
 
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Util\Reflection\PrivatesAccessor;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
 /**

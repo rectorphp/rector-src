@@ -11,11 +11,11 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\Rector\AbstractRector;
 use Rector\NodeManipulator\ClassDependencyManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PostRector\ValueObject\PropertyMetadata;
+use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -55,7 +55,7 @@ final class MoveAbstractRectorToChildrenRector extends AbstractRector
             return null;
         }
 
-        if (! $this->isObjectType($node, new ObjectType('Rector\Core\Rector\AbstractRector'))) {
+        if (! $this->isObjectType($node, new ObjectType('Rector\Rector\AbstractRector'))) {
             return null;
         }
 

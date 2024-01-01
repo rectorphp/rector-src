@@ -29,14 +29,14 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Core\PhpParser\class;
-use Rector\Core\Reflection\MethodReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\MethodReflectionResolver;
+use Rector\ValueObject\MethodName;
 use Throwable;
 
 /**

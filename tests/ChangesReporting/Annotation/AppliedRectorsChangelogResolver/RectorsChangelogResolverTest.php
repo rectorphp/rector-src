@@ -6,11 +6,11 @@ namespace Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolv
 
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Core\ValueObject\Reporting\FileDiff;
 use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithChangelog;
 use Rector\Tests\ChangesReporting\Annotation\AppliedRectorsChangelogResolver\Source\RectorWithOutChangelog;
+use Rector\ValueObject\Reporting\FileDiff;
 
 final class RectorsChangelogResolverTest extends AbstractLazyTestCase
 {

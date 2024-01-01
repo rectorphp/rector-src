@@ -19,7 +19,6 @@ use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Core\NodeManipulator\class;
-use Rector\Core\ValueObject\MethodName;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -30,6 +29,7 @@ use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
+use Rector\ValueObject\MethodName;
 
 /**
  * For inspiration to improve this service,

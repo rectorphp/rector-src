@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Class_;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Rector\Transform\NodeAnalyzer\FuncCallStaticCallToMethodCallAnalyzer;
 use Rector\Transform\ValueObject\FuncCallToMethodCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;

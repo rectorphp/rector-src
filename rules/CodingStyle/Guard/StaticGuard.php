@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Reflection\MethodReflection;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\ReflectionResolver;
 
 final class StaticGuard
 {

@@ -9,11 +9,11 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Type;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
+use Rector\ValueObject\Application\File;
 
 final class AllAssignNodePropertyTypeInferer
 {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Util;
 
-use Rector\Core\Util\FileHasher;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Util\FileHasher;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class FileHasherTest extends AbstractLazyTestCase

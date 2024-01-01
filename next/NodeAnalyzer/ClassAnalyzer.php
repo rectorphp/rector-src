@@ -9,8 +9,8 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Util\StringUtils;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\Util\StringUtils;
 
 final class ClassAnalyzer
 {

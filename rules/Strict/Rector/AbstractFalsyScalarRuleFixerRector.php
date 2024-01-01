@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector;
 
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractScopeAwareRector;
+use Rector\Rector\AbstractScopeAwareRector;
 use Webmozart\Assert\Assert;
 
 /**

@@ -11,13 +11,13 @@ use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
-use Rector\Core\Util\PhpVersionFactory;
 use Rector\DeadCode\Contract\ConditionInterface;
 use Rector\DeadCode\ValueObject\BinaryToVersionCompareCondition;
 use Rector\DeadCode\ValueObject\VersionCompareCondition;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Util\PhpVersionFactory;
 
 final class ConditionResolver
 {

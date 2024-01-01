@@ -14,10 +14,10 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
 

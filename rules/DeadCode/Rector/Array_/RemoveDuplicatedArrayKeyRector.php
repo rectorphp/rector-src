@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\PreDec;
 use PhpParser\Node\Expr\PreInc;
-use Rector\Core\Rector\AbstractRector;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

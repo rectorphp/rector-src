@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Rector\Renaming\Contract\RenameClassConstFetchInterface;
 use Rector\Renaming\ValueObject\RenameClassAndConstFetch;
 use Rector\Renaming\ValueObject\RenameClassConstFetch;

@@ -14,16 +14,16 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Type;
-use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Enum\ObjectReference;
 use Rector\NodeAnalyzer\PropertyPresenceChecker;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PostRector\ValueObject\PropertyMetadata;
+use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
+use Rector\ValueObject\MethodName;
+use Rector\ValueObject\PhpVersionFeature;
 
 final class ClassDependencyManipulator
 {

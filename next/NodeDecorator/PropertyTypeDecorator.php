@@ -10,10 +10,10 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\ValueObject\PhpVersionFeature;
 
 final class PropertyTypeDecorator
 {
