@@ -105,8 +105,6 @@ final class PhpDocNodeTraverser
 
     /**
      * @template TNode of Node
-     * @param Node $node
-     * @return Node
      */
     private function traverseNode(Node $node): Node
     {

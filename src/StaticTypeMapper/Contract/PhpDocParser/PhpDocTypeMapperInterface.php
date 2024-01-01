@@ -19,8 +19,5 @@ interface PhpDocTypeMapperInterface
      */
     public function getNodeType(): string;
 
-    /**
-     * @param TypeNode $typeNode
-     */
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type;
 }

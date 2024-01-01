@@ -648,7 +648,7 @@ final class LazyContainerFactory
             \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
             static function (
                 \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
-                Container                                                  $container
+                Container $container
             ): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
                 $unionTypeMapper->autowire($phpStanStaticTypeMapper);
