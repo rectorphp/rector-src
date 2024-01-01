@@ -8,7 +8,7 @@ use Rector\Core\Util\StringUtils;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**
- * @see \Rector\Core\Tests\Validation\RectorAssertTest
+ * @see \Rector\Tests\Validation\RectorAssertTest
  */
 final class RectorAssert
 {

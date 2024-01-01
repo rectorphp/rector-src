@@ -10,7 +10,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 
 /**
- * @see \Rector\Core\Tests\Util\Reflection\PrivatesAccessorTest
+ * @see \Rector\Tests\Util\Reflection\PrivatesAccessorTest
  */
 final class PrivatesAccessor
 {
