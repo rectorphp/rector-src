@@ -9,7 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Node\CollectedDataNode;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Collector\ParentClassCollector;
+use Rector\Collector\ParentClassCollector;
 use Rector\Core\NodeAnalyzer\ClassAnalyzer;
 use Rector\Core\NodeAnalyzer\DoctrineEntityAnalyzer;
 use Rector\Core\Rector\AbstractCollectorRector;

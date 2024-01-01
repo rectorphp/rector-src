@@ -4,9 +4,9 @@
 // runs a rector e2e test.
 // checks whether we expect a certain output, or alternatively that rector just processed everything without errors
 
-use Rector\Core\Console\Formatter\ColorConsoleDiffFormatter;
-use Rector\Core\Console\Formatter\ConsoleDiffer;
-use Rector\Core\Console\Style\SymfonyStyleFactory;
+use Rector\Console\Formatter\ColorConsoleDiffFormatter;
+use Rector\Console\Formatter\ConsoleDiffer;
+use Rector\Console\Style\SymfonyStyleFactory;
 use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 

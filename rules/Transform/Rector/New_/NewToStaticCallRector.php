@@ -6,7 +6,7 @@ namespace Rector\Transform\Rector\New_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Transform\ValueObject\NewToStaticCall;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;

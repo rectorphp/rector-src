@@ -6,9 +6,9 @@ namespace Rector\Tests\Skipper\Skipper;
 
 use Illuminate\Container\RewindableGenerator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 

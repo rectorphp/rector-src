@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Configuration;
 
-use Rector\Core\Configuration\ConfigurationFactory;
+use Rector\Configuration\ConfigurationFactory;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 

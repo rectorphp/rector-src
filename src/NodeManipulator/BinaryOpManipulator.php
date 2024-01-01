@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BooleanNot;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 
 final class BinaryOpManipulator

@@ -6,8 +6,8 @@ namespace Rector\Core\Php;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\ValueObject\PolyfillPackage;
 
 final class PolyfillPackagesProvider

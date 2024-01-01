@@ -76,7 +76,8 @@
         "psr-4": {
             "Rector\\": [
                 "packages",
-                "rules"
+                "rules",
+                "next"
             ],
             "Rector\\Core\\": "src",
             "Rector\\Utils\\": "utils"

@@ -13,7 +13,7 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Isset_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Strict\NodeAnalyzer\UnitializedPropertyAnalyzer;
 use Rector\Strict\NodeFactory\ExactCompareFactory;

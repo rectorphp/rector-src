@@ -8,7 +8,7 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Console\Formatter\ColorConsoleDiffFormatter;
+use Rector\Console\Formatter\ColorConsoleDiffFormatter;
 
 final class ColorConsoleDiffFormatterTest extends TestCase
 {

@@ -6,8 +6,8 @@ namespace Rector\Tests\FileSystem\FilesFinder;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Core\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 

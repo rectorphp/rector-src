@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Utils\Command;
 
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\Set\ValueObject\SetList;
 use Rector\Utils\Finder\RectorClassFinder;
 use Rector\Utils\Finder\SetRectorClassesResolver;

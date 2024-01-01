@@ -7,8 +7,8 @@ namespace Rector\Core\PhpParser\NodeTraverser;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PHPStan\Node\CollectedDataNode;
-use Rector\Core\Contract\Rector\CollectorRectorInterface;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\CollectorRectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\Core\ValueObject\Configuration;
 use Rector\VersionBonding\PhpVersionedFilter;
 

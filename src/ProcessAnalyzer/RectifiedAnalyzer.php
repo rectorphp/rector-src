@@ -6,7 +6,7 @@ namespace Rector\Core\ProcessAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
