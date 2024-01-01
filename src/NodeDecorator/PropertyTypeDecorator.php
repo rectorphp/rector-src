@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\NodeDecorator;
+namespace Rector\NodeDecorator;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Property;
@@ -10,10 +10,10 @@ use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\ValueObject\PhpVersionFeature;
 
 final class PropertyTypeDecorator
 {

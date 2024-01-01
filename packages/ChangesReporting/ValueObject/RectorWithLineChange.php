@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\ValueObject;
 
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 

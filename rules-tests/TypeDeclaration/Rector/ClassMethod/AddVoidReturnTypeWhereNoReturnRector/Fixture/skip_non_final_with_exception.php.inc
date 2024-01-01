@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector\Fixture;
 
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Exception\ShouldNotHappenException;
 
 class SkipNonFinalWithException
 {

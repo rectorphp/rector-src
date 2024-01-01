@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console;
+namespace Rector\Console;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Configuration\Option;
+use Rector\Configuration\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;

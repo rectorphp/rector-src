@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\NodeManipulator;
+namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;

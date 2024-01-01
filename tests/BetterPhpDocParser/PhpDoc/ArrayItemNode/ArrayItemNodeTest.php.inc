@@ -9,10 +9,10 @@ use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Core\PhpParser\Parser\RectorParser;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PhpParser\Parser\RectorParser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\ValueObject\Application\File;
 
 class ArrayItemNodeTest extends AbstractLazyTestCase
 {

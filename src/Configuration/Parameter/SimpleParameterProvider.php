@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Configuration\Parameter;
+namespace Rector\Configuration\Parameter;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Configuration\Option;
+use Rector\Exception\ShouldNotHappenException;
 use Webmozart\Assert\Assert;
 
 /**

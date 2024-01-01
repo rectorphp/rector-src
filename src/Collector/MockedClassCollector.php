@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Collector;
+namespace Rector\Collector;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;

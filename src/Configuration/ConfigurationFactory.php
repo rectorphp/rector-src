@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Configuration;
+namespace Rector\Configuration;
 
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\ValueObject\Configuration;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\ValueObject\Configuration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

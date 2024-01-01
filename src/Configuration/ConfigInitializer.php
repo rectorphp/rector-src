@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Configuration;
+namespace Rector\Configuration;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\FileSystem\InitFilePathsResolver;
-use Rector\Core\Php\PhpVersionProvider;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\FileSystem\InitFilePathsResolver;
+use Rector\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

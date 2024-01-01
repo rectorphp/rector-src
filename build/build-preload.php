@@ -5,8 +5,8 @@
 declare(strict_types=1);
 
 use Nette\Utils\Strings;
-use Rector\Core\Console\Style\SymfonyStyleFactory;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Finder\Finder;
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\Application;
 
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Application\VersionResolver;
+use Rector\Application\VersionResolver;
 
 final class VersionResolverTest extends TestCase
 {

@@ -9,9 +9,9 @@ use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Accessory\AccessoryNonEmptyStringType;
 use PHPStan\Type\Type;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @implements TypeMapperInterface<AccessoryNonEmptyStringType>

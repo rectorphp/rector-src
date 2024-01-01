@@ -16,7 +16,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Rules\Rule;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use TomasVotruba\CognitiveComplexity\AstCognitiveComplexityAnalyzer;
 
 /**

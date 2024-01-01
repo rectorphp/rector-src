@@ -20,9 +20,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\PhpParser\AstResolver;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\PhpParser\AstResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class CallerParamMatcher

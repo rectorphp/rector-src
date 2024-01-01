@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Reflection;
+namespace Rector\Reflection;
 
 use PhpParser\Node;
 use PHPStan\Reflection\ClassReflection;

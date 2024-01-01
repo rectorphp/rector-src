@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Exception\Reflection;
+namespace Rector\Exception\Reflection;
 
 use Exception;
 

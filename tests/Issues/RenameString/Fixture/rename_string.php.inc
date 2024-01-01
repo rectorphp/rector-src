@@ -8,7 +8,7 @@ final class RenameString
     {
         return is_a(
             $variable,
-            'Rector\Core\Tests\Issues\DoubleRun\Fixture\RenameString',
+            'Rector\Tests\Issues\DoubleRun\Fixture\RenameString',
             true
         );
     }

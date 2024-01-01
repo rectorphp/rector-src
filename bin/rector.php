@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Nette\Utils\Json;
+use Rector\Bootstrap\RectorConfigsResolver;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
-use Rector\Core\Bootstrap\RectorConfigsResolver;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Console\Style\SymfonyStyleFactory;
-use Rector\Core\DependencyInjection\LazyContainerFactory;
-use Rector\Core\DependencyInjection\RectorContainerFactory;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Configuration\Option;
+use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\DependencyInjection\LazyContainerFactory;
+use Rector\DependencyInjection\RectorContainerFactory;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;

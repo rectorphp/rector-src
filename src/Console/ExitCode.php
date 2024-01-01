@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console;
+namespace Rector\Console;
 
 use Symfony\Component\Console\Command\Command;
 

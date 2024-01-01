@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Core\Console\Formatter\ConsoleDiffer;
-use Rector\Core\Differ\DefaultDiffer;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\ValueObject\Application\File;
-use Rector\Core\ValueObject\Reporting\FileDiff;
+use Rector\Console\Formatter\ConsoleDiffer;
+use Rector\Differ\DefaultDiffer;
+use Rector\FileSystem\FilePathHelper;
+use Rector\ValueObject\Application\File;
+use Rector\ValueObject\Reporting\FileDiff;
 
 final class FileDiffFactory
 {

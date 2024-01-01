@@ -6,10 +6,10 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use PhpParser\Node;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Core\Configuration\RenamedClassesDataCollector;
-use Rector\Core\ValueObject\Application\File;
+use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\ValueObject\Application\File;
 
 /**
  * This prevents importing:

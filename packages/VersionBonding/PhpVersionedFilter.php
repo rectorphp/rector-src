@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\VersionBonding;
 
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\Php\PolyfillPackagesProvider;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\Php\PhpVersionProvider;
+use Rector\Php\PolyfillPackagesProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 

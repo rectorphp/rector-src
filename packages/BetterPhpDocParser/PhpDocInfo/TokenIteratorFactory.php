@@ -7,7 +7,7 @@ namespace Rector\BetterPhpDocParser\PhpDocInfo;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Util\Reflection\PrivatesAccessor;
 
 final class TokenIteratorFactory
 {

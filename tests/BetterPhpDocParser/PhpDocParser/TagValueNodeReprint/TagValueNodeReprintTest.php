@@ -11,10 +11,10 @@ use PhpParser\Node;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\FileSystem\FilePathHelper;
 use Rector\FileSystemRector\Parser\FileInfoParser;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
@@ -102,9 +102,9 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
     }
 
     /**
-     * @template T as Node
-     * @param class-string<T> $nodeType
-     * @return T
+     * @template TNode as Node
+     * @param class-string<TNode> $nodeType
+     * @return TNode
      */
     private function parseFileAndGetFirstNodeOfType(string $filePath, string $nodeType): Node
     {

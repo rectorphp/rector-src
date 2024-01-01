@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\ValueObject\Application;
+namespace Rector\ValueObject\Application;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\ValueObject\Reporting\FileDiff;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\ValueObject\Reporting\FileDiff;
 
 /**
- * @see \Rector\Core\ValueObjectFactory\Application\FileFactory
+ * @see \Rector\ValueObjectFactory\Application\FileFactory
  */
 final class File
 {

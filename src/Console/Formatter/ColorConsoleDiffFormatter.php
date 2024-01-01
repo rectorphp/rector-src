@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Formatter;
+namespace Rector\Console\Formatter;
 
 use Nette\Utils\Strings;
 use Symfony\Component\Console\Formatter\OutputFormatter;

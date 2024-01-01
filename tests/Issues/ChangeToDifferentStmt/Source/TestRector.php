@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Echo_;
 use PhpParser\Node\Stmt\If_;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class TestRector extends AbstractRector

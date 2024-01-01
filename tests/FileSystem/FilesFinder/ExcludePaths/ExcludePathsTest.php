@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\FileSystem\FilesFinder\ExcludePaths;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\FileSystem\FilesFinder;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ExcludePathsTest extends AbstractLazyTestCase

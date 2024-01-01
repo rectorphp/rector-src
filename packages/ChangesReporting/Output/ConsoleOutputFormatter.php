@@ -7,10 +7,10 @@ namespace Rector\ChangesReporting\Output;
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
-use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\Error\SystemError;
-use Rector\Core\ValueObject\ProcessResult;
-use Rector\Core\ValueObject\Reporting\FileDiff;
+use Rector\ValueObject\Configuration;
+use Rector\ValueObject\Error\SystemError;
+use Rector\ValueObject\ProcessResult;
+use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class ConsoleOutputFormatter implements OutputFormatterInterface

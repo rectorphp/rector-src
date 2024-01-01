@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Rector;
+namespace Rector\Rector;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -16,20 +16,20 @@ use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
-use Rector\Core\Application\ChangedNodeScopeRefresher;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Comparing\NodeComparator;
+use Rector\PhpParser\Node\NodeFactory;
+use Rector\Provider\CurrentFileProvider;
 use Rector\Skipper\Skipper\Skipper;
+use Rector\ValueObject\Application\File;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface
 {

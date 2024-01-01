@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Style;
+namespace Rector\Console\Style;
 
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;

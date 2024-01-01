@@ -12,12 +12,12 @@ use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php80\Contract\StrStartWithMatchAndRefactorInterface;
 use Rector\Php80\NodeFactory\StrStartsWithFuncCallFactory;
 use Rector\Php80\ValueObject\StrStartsWith;
 use Rector\Php80\ValueObjectFactory\StrStartsWithFactory;
+use Rector\PhpParser\Comparing\NodeComparator;
 
 final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
 {

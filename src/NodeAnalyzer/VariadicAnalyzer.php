@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\NodeAnalyzer;
+namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use Rector\Core\PhpParser\AstResolver;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
+use Rector\PhpParser\AstResolver;
+use Rector\Reflection\ReflectionResolver;
 
 final class VariadicAnalyzer
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\ValueObject;
+namespace Rector\ValueObject;
 
 use PHPStan\Collectors\CollectedData;
-use Rector\Core\ValueObject\Error\SystemError;
-use Rector\Core\ValueObject\Reporting\FileDiff;
+use Rector\ValueObject\Error\SystemError;
+use Rector\ValueObject\Reporting\FileDiff;
 use Webmozart\Assert\Assert;
 
 final class FileProcessResult

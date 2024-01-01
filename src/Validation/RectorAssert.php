@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Validation;
+namespace Rector\Validation;
 
-use Rector\Core\Util\StringUtils;
+use Rector\Util\StringUtils;
 use Webmozart\Assert\InvalidArgumentException;
 
 /**

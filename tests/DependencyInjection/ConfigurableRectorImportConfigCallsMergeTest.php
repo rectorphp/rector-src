@@ -6,7 +6,7 @@ namespace Rector\Tests\DependencyInjection;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\Configuration\RenamedClassesDataCollector;
+use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Renaming\Rector\Name\RenameClassRector;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 

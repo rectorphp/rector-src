@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Command;
+namespace Rector\Console\Command;
 
+use Rector\Application\ApplicationFileProcessor;
+use Rector\Autoloading\AdditionalAutoloader;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
-use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\Autoloading\AdditionalAutoloader;
-use Rector\Core\Configuration\ConfigInitializer;
-use Rector\Core\Configuration\ConfigurationFactory;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Console\ExitCode;
-use Rector\Core\Console\Output\OutputFormatterCollector;
-use Rector\Core\Console\ProcessConfigureDecorator;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
-use Rector\Core\Util\MemoryLimiter;
-use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\ProcessResult;
+use Rector\Configuration\ConfigInitializer;
+use Rector\Configuration\ConfigurationFactory;
+use Rector\Configuration\Option;
+use Rector\Console\ExitCode;
+use Rector\Console\Output\OutputFormatterCollector;
+use Rector\Console\ProcessConfigureDecorator;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\StaticReflection\DynamicSourceLocatorDecorator;
+use Rector\Util\MemoryLimiter;
+use Rector\ValueObject\Configuration;
+use Rector\ValueObject\ProcessResult;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

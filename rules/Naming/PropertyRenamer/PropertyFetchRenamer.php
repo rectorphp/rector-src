@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\VarLikeIdentifier;
-use Rector\Core\NodeAnalyzer\PropertyFetchAnalyzer;
+use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final class PropertyFetchRenamer

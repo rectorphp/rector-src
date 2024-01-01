@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\Config\RectorConfig;
-use Rector\Core\ValueObject\MethodName;
 use Rector\Tests\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector\Fixture\ReplaceInConstructor;
+use Rector\ValueObject\MethodName;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig

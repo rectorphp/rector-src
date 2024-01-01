@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Util;
+namespace Rector\Util;
 
 final class ArrayChecker
 {

@@ -8,9 +8,9 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Core\Configuration\RenamedClassesDataCollector;
-use Rector\Core\ValueObject\Application\File;
+use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\ValueObject\Application\File;
 
 /**
  * Prevents adding:

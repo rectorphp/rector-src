@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Command;
+namespace Rector\Console\Command;
 
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Configuration\Option;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Symfony\Component\Console\Command\Command;

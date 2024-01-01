@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeAnalyzer\ClassAnalyzer;
 
 final class RenameParamDoc
 {
@@ -26,7 +26,7 @@ final class RenameParamDoc
 
 namespace Rector\Tests\Naming\Rector\Class_\RenamePropertyToMatchTypeRector\Fixture;
 
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeAnalyzer\ClassAnalyzer;
 
 final class RenameParamDoc
 {

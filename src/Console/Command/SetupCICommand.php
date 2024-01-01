@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Command;
+namespace Rector\Console\Command;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;

@@ -7,11 +7,11 @@ namespace Rector\NodeTypeResolver;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use Rector\Core\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
-use Rector\Core\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamArgPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
+use Rector\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
+use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 
 final class NodeScopeAndMetadataDecorator
 {

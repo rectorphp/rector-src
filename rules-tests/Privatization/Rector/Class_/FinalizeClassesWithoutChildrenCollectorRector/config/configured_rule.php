@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Collector\ParentClassCollector;
 use Rector\Config\RectorConfig;
-use Rector\Core\Collector\ParentClassCollector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenCollectorRector;
 
 return static function (RectorConfig $rectorConfig): void {

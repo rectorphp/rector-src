@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Style;
+namespace Rector\Console\Style;
 
 use OndraM\CiDetector\CiDetector;
 use Symfony\Component\Console\Exception\RuntimeException;

@@ -6,7 +6,7 @@ namespace Rector\DeadCode\NodeCollector;
 
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Core\NodeAnalyzer\ParamAnalyzer;
+use Rector\NodeAnalyzer\ParamAnalyzer;
 
 final class UnusedParameterResolver
 {

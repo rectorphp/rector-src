@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver;
 
 use PhpParser\Node;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Testing\TestingParser\TestingParser;
 

@@ -12,11 +12,11 @@ use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_ as ThrowsStmt;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\Php80\ValueObject\MatchResult;
+use Rector\PhpParser\Comparing\NodeComparator;
 
 final class MatchFactory
 {

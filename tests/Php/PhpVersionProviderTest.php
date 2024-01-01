@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Php;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Php\PhpVersionProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Php\PhpVersionProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class PhpVersionProviderTest extends AbstractLazyTestCase

@@ -6,8 +6,8 @@ namespace Rector\Php74\Guard;
 
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\NodeAnalyzer\PropertyAnalyzer;
-use Rector\Core\NodeManipulator\PropertyManipulator;
+use Rector\NodeAnalyzer\PropertyAnalyzer;
+use Rector\NodeManipulator\PropertyManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 

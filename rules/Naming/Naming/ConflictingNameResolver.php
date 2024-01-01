@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use Rector\Core\NodeManipulator\FunctionLikeManipulator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\Naming\ExpectedNameResolver\MatchParamTypeExpectedNameResolver;
 use Rector\Naming\PhpArray\ArrayFilter;
+use Rector\NodeManipulator\FunctionLikeManipulator;
+use Rector\PhpParser\Node\BetterNodeFinder;
 
 final class ConflictingNameResolver
 {

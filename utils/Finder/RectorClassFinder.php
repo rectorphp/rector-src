@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Utils\Finder;
 
 use Nette\Loaders\RobotLoader;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 
 final class RectorClassFinder
 {

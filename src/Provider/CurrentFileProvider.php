@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Provider;
+namespace Rector\Provider;
 
-use Rector\Core\ValueObject\Application\File;
+use Rector\ValueObject\Application\File;
 
 final class CurrentFileProvider
 {

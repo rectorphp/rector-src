@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\FileSystem;
+namespace Rector\FileSystem;
 
 use Rector\Caching\UnchangedFilesFilter;
-use Rector\Core\Util\StringUtils;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
+use Rector\Util\StringUtils;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 

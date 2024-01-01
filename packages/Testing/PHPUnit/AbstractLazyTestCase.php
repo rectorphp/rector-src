@@ -6,7 +6,7 @@ namespace Rector\Testing\PHPUnit;
 
 use PHPUnit\Framework\TestCase;
 use Rector\Config\RectorConfig;
-use Rector\Core\DependencyInjection\LazyContainerFactory;
+use Rector\DependencyInjection\LazyContainerFactory;
 
 abstract class AbstractLazyTestCase extends TestCase
 {

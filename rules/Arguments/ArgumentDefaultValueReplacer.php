@@ -16,8 +16,8 @@ use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
-use Rector\Core\PhpParser\Node\NodeFactory;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Node\Value\ValueResolver;
 
 final class ArgumentDefaultValueReplacer
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\NodeDecorator;
+namespace Rector\NodeDecorator;
 
 use PhpParser\Node;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 final class CreatedByRuleDecorator

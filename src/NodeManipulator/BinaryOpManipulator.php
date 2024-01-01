@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\NodeManipulator;
+namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BooleanNot;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\AssignAndBinaryMap;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Php71\ValueObject\TwoNodeMatch;
+use Rector\PhpParser\Node\AssignAndBinaryMap;
 
 final class BinaryOpManipulator
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\ValueObject;
+namespace Rector\PhpParser\ValueObject;
 
 use PhpParser\Node\Stmt;
 

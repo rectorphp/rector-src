@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Parallel\Command;
 
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
-use Rector\Core\Configuration\Option;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\Configuration\Option;
+use Rector\FileSystem\FilePathHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symplify\EasyParallel\Exception\ParallelShouldNotHappenException;

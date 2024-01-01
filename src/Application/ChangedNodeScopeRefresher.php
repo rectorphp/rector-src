@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Application;
+namespace Rector\Application;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -22,8 +22,8 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Analyser\MutatingScope;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\ScopeAnalyzer;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeAnalyzer\ScopeAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 
 /**

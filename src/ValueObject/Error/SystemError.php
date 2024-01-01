@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\ValueObject\Error;
+namespace Rector\ValueObject\Error;
 
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;

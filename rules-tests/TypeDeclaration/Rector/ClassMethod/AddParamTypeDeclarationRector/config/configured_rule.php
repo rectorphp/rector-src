@@ -6,13 +6,13 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use Rector\Config\RectorConfig;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\ClassMetadataFactory;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\Contract\ParentInterfaceWithChangeTypeInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\Contract\ParentTypeToMixed;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\Source\ParserInterface;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeDeclaration;
+use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig

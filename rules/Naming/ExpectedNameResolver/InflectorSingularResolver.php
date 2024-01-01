@@ -6,7 +6,7 @@ namespace Rector\Naming\ExpectedNameResolver;
 
 use Doctrine\Inflector\Inflector;
 use Nette\Utils\Strings;
-use Rector\Core\Util\StringUtils;
+use Rector\Util\StringUtils;
 
 /**
  * @see \Rector\Tests\Naming\ExpectedNameResolver\InflectorSingularResolverTest

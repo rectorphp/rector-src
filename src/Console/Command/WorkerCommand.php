@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console\Command;
+namespace Rector\Console\Command;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
@@ -10,14 +10,14 @@ use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
-use Rector\Core\Application\ApplicationFileProcessor;
-use Rector\Core\Configuration\ConfigurationFactory;
-use Rector\Core\Console\ProcessConfigureDecorator;
-use Rector\Core\StaticReflection\DynamicSourceLocatorDecorator;
-use Rector\Core\Util\MemoryLimiter;
-use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Application\ApplicationFileProcessor;
+use Rector\Configuration\ConfigurationFactory;
+use Rector\Console\ProcessConfigureDecorator;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\StaticReflection\DynamicSourceLocatorDecorator;
+use Rector\Util\MemoryLimiter;
+use Rector\ValueObject\Configuration;
+use Rector\ValueObject\Error\SystemError;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

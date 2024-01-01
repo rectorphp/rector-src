@@ -15,9 +15,9 @@ use PHPStan\Analyser\Scope;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\PhpParser\NodeFinder\PropertyFetchFinder;
-use Rector\Core\Rector\AbstractScopeAwareRector;
 use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
+use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
+use Rector\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

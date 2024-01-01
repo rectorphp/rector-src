@@ -48,8 +48,8 @@
         "phpstan/phpstan-phpunit": "^1.3.11",
         "phpstan/phpstan-strict-rules": "^1.5",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
-        "phpunit/phpunit": "^10.1",
-        "rector/phpstan-rules": "dev-main",
+        "phpunit/phpunit": "^10.5",
+        "rector/phpstan-rules": "^0.7.4",
         "rector/rector-generator": "^0.7",
         "spatie/enum": "^3.13",
         "symplify/easy-ci": "^11.3",
@@ -76,13 +76,14 @@
         "psr-4": {
             "Rector\\": [
                 "packages",
-                "rules"
+                "rules",
+                "src"
             ],
-            "Rector\\Core\\": "src",
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "src/functions/node_helper.php"
+            "src/functions/node_helper.php",
+            "src/core_namespace_aliases.php"
         ]
     },
     "autoload-dev": {

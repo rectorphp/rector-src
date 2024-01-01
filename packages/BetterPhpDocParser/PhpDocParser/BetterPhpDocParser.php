@@ -20,8 +20,8 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\Util\Reflection\PrivatesAccessor;
 
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\TagValueNodeReprintTest

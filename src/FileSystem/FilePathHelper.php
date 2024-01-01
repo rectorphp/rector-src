@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\FileSystem;
+namespace Rector\FileSystem;
 
 use Nette\Utils\Strings;
 use Symfony\Component\Filesystem\Filesystem;

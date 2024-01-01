@@ -21,7 +21,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
 use Rector\BetterPhpDocParser\ValueObject\DoctrineAnnotation\SilentKeyMap;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
-use Rector\Core\Util\StringUtils;
+use Rector\Util\StringUtils;
 use Webmozart\Assert\Assert;
 
 final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface

@@ -6,7 +6,7 @@ namespace Rector\Utils\Finder;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 
 final class SetRectorClassesResolver
 {

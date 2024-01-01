@@ -7,7 +7,7 @@ namespace Rector\Tests\FileSystem;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\FileSystem\FilePathHelper;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class FilePathHelperTest extends TestCase

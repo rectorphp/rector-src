@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\BetterPhpDocParser\DataProvider;
 
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Exception\ShouldNotHappenException;
 
 final class CurrentTokenIteratorProvider
 {

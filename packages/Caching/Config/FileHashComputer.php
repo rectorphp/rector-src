@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Caching\Config;
 
-use Rector\Core\Application\VersionResolver;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Application\VersionResolver;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Exception\ShouldNotHappenException;
 
 /**
  * Inspired by https://github.com/symplify/easy-coding-standard/blob/e598ab54686e416788f28fcfe007fd08e0f371d9/packages/changed-files-detector/src/FileHashComputer.php

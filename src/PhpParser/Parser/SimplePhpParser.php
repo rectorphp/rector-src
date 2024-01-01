@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\Parser;
+namespace Rector\PhpParser\Parser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt;

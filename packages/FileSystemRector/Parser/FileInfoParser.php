@@ -6,10 +6,10 @@ namespace Rector\FileSystemRector\Parser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt;
-use Rector\Core\PhpParser\Parser\RectorParser;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PhpParser\Parser\RectorParser;
+use Rector\Provider\CurrentFileProvider;
+use Rector\ValueObject\Application\File;
 
 /**
  * Only for testing, @todo move to testing

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Util\Reflection;
+namespace Rector\Util\Reflection;
 
-use Rector\Core\Exception\Reflection\MissingPrivatePropertyException;
+use Rector\Exception\Reflection\MissingPrivatePropertyException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;

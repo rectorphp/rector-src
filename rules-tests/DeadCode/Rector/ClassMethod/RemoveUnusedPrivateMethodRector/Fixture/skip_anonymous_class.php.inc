@@ -6,7 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\PhpParser\Node\Manipulator\ClassManipulator;
 use Rector\PhpParser\Node\VariableInfo;
 

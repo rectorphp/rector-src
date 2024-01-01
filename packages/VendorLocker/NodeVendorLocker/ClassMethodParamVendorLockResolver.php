@@ -6,10 +6,10 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\FileSystem\FilePathHelper;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Reflection\ReflectionResolver;
 
 final class ClassMethodParamVendorLockResolver
 {

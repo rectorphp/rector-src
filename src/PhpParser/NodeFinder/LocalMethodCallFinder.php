@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\NodeFinder;
+namespace Rector\PhpParser\NodeFinder;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 
 final class LocalMethodCallFinder
 {

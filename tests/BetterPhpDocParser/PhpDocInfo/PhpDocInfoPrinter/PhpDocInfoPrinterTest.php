@@ -8,7 +8,7 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use PhpParser\Node\Stmt\Nop;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\Fixture\FixtureFileFinder;
 
 final class PhpDocInfoPrinterTest extends AbstractPhpDocInfoPrinterTestCase

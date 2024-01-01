@@ -7,9 +7,9 @@ namespace Rector\Tests\Util\Reflection;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
 use Rector\Tests\Util\Reflection\Fixture\SomeClassWithPrivateMethods;
 use Rector\Tests\Util\Reflection\Fixture\SomeClassWithPrivateProperty;
+use Rector\Util\Reflection\PrivatesAccessor;
 use stdClass;
 
 final class PrivatesAccessorTest extends TestCase

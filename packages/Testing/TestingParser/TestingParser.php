@@ -6,11 +6,11 @@ namespace Rector\Testing\TestingParser;
 
 use Nette\Utils\FileSystem;
 use PhpParser\Node;
-use Rector\Core\PhpParser\Parser\RectorParser;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Rector\PhpParser\Parser\RectorParser;
+use Rector\Provider\CurrentFileProvider;
+use Rector\ValueObject\Application\File;
 
 /**
  * @api

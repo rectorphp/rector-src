@@ -12,7 +12,7 @@ use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\TypeCombinator;
-use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Node\NodeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 final class ExprParameterReflectionTypeCorrector

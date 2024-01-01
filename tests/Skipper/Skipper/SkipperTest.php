@@ -6,8 +6,8 @@ namespace Rector\Tests\Skipper\Skipper;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\Skipper\Skipper\Fixture\Element\FifthElement;

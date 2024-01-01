@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\Node;
+namespace Rector\PhpParser\Node;
 
 use PhpParser\Builder\Method;
 use PhpParser\Builder\Param as ParamBuilder;
@@ -40,10 +40,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Exception\NotImplementedYetException;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeDecorator\PropertyTypeDecorator;
+use Rector\Enum\ObjectReference;
+use Rector\Exception\NotImplementedYetException;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeDecorator\PropertyTypeDecorator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\StaticReflection;
+namespace Rector\StaticReflection;
 
-use Rector\Core\FileSystem\FileAndDirectoryFilter;
-use Rector\Core\FileSystem\FilesystemTweaker;
+use Rector\FileSystem\FileAndDirectoryFilter;
+use Rector\FileSystem\FilesystemTweaker;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 /**

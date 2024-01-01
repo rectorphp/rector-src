@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\FileSystem\FileAndDirectoryFilter;
 
 use PHPUnit\Framework\TestCase;
-use Rector\Core\FileSystem\FileAndDirectoryFilter;
+use Rector\FileSystem\FileAndDirectoryFilter;
 
 final class FileAndDirectoryFilterTest extends TestCase
 {

@@ -6,7 +6,7 @@ namespace Rector\Tests\Issues\ReturnEmptyNodes;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
 final class ReturnEmptyNodesTest extends AbstractRectorTestCase

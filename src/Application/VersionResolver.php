@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Application;
+namespace Rector\Application;
 
 use DateTime;
-use Rector\Core\Exception\VersionException;
+use Rector\Exception\VersionException;
 
 /**
  * @api

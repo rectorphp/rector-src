@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Console;
+namespace Rector\Console;
 
 use Composer\XdebugHandler\XdebugHandler;
+use Rector\Application\VersionResolver;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
-use Rector\Core\Application\VersionResolver;
-use Rector\Core\Configuration\Option;
+use Rector\Configuration\Option;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;

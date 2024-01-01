@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\PhpParser\Node;
+namespace Rector\PhpParser\Node;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
@@ -14,7 +14,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
+use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Webmozart\Assert\Assert;
@@ -63,8 +63,6 @@ final class BetterNodeFinder
     /**
      * @template T of Node
      * @param class-string<T> $type
-     * @return T|null
-     *
      * @param Node|Node[] $nodes
      */
     public function findFirstInstanceOf(Node | array $nodes, string $type): ?Node
@@ -189,7 +187,7 @@ final class BetterNodeFinder
     /**
      * @template T of Node
      * @param array<class-string<T>>|class-string<T> $types
-     * @return T[]
+     * @return array<T>
      */
     public function findInstancesOfInFunctionLikeScoped(
         ClassMethod | Function_ | Closure $functionLike,

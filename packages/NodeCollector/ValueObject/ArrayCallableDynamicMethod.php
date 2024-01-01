@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\NodeCollector\ValueObject;
 
 use PhpParser\Node\Expr;
-use Rector\Core\Validation\RectorAssert;
+use Rector\Validation\RectorAssert;
 
 /**
  * @api

@@ -10,9 +10,9 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ClosureUse;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Return_;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\Util\ArrayChecker;
+use Rector\PhpParser\Comparing\NodeComparator;
+use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Util\ArrayChecker;
 
 final class ClosureArrowFunctionAnalyzer
 {

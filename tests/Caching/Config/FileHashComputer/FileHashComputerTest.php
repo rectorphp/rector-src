@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\Caching\Config\FileHashComputer;
 
 use Rector\Caching\Config\FileHashComputer;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class FileHashComputerTest extends AbstractLazyTestCase

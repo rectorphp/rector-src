@@ -12,7 +12,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Node\NodeFactory;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class NodeFactoryTest extends AbstractLazyTestCase

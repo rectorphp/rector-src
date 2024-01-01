@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\DependencyInjection;
+namespace Rector\DependencyInjection;
 
 use Illuminate\Container\Container;
+use Rector\Autoloading\BootstrapFilesIncluder;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\Autoloading\BootstrapFilesIncluder;
-use Rector\Core\ValueObject\Bootstrap\BootstrapConfigs;
+use Rector\ValueObject\Bootstrap\BootstrapConfigs;
 
 final class RectorContainerFactory
 {

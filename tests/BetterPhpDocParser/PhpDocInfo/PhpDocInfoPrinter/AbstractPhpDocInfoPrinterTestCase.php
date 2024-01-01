@@ -9,7 +9,7 @@ use PhpParser\Node;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 abstract class AbstractPhpDocInfoPrinterTestCase extends AbstractLazyTestCase

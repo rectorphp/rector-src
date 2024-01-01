@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rector\Core\Autoloading;
+namespace Rector\Autoloading;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Exception\ShouldNotHappenException;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Exception\ShouldNotHappenException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;

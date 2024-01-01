@@ -10,10 +10,10 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\Contract\AnnotationToAttributeMapperInterface;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Webmozart\Assert\Assert;
 
 /**
