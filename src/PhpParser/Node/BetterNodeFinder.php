@@ -64,6 +64,8 @@ final class BetterNodeFinder
      * @template T of Node
      * @param class-string<T> $type
      * @param Node|Node[] $nodes
+     *
+     * @return T|null
      */
     public function findFirstInstanceOf(Node | array $nodes, string $type): ?Node
     {

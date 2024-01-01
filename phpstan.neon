@@ -502,8 +502,25 @@ parameters:
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         # skip for now
         - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
 
         # generics glitch
         - '#Method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:parseFileAndGetFirstNodeOfType\(\) should return TNode of PhpParser\\Node but returns PhpParser\\Node#'
+=======
+        # resolve later
+        - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
+>>>>>>> fe66ff7171 (fixup! tidy up)
+=======
+        # skip for now
+        - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
+
+        -
+            message: '#Variable property access on PHPStan\\PhpDocParser\\Ast\\Node#'
+            path: src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+
+        # generics glitch
+        - '#Method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:parseFileAndGetFirstNodeOfType\(\) should return TNode of PhpParser\\Node but returns PhpParser\\Node#'
+>>>>>>> f7de8a92cf (fixup! tidy up)
