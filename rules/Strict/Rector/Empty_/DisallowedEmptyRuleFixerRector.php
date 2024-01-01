@@ -115,6 +115,10 @@ CODE_SAMPLE
             $this->treatAsNonEmpty
         );
 
+        if (! $result instanceof Expr) {
+            return null;
+        }
+
         if ($this->unitializedPropertyAnalyzer->isUnitialized($empty->expr)) {
             return new BooleanAnd(new Isset_([$empty->expr]), $result);
         }
@@ -130,6 +134,9 @@ CODE_SAMPLE
 
         $exprType = $scope->getNativeType($empty->expr);
         $result = $this->exactCompareFactory->createIdenticalFalsyCompare($exprType, $empty->expr, $treatAsNonEmpty);
+        if (! $result instanceof Expr) {
+            return null;
+        }
 
         if ($this->unitializedPropertyAnalyzer->isUnitialized($empty->expr)) {
             return new BooleanOr(new BooleanNot(new Isset_([$empty->expr])), $result);
