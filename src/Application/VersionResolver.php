@@ -13,7 +13,7 @@ use Rector\Core\Exception\VersionException;
  * Inspired by https://github.com/composer/composer/blob/master/src/Composer/Composer.php
  * See https://github.com/composer/composer/blob/6587715d0f8cae0cd39073b3bc5f018d0e6b84fe/src/Composer/Compiler.php#L208
  *
- * @see \Rector\Core\Tests\Application\VersionResolverTest
+ * @see \Rector\Tests\Application\VersionResolverTest
  */
 final class VersionResolver
 {

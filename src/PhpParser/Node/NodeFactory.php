@@ -51,7 +51,7 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**
- * @see \Rector\Core\Tests\PhpParser\Node\NodeFactoryTest
+ * @see \Rector\Tests\PhpParser\Node\NodeFactoryTest
  */
 final class NodeFactory
 {

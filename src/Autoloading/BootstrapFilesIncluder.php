@@ -13,7 +13,7 @@ use SplFileInfo;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Core\Tests\Autoloading\BootstrapFilesIncluderTest
+ * @see \Rector\Tests\Autoloading\BootstrapFilesIncluderTest
  */
 final class BootstrapFilesIncluder
 {

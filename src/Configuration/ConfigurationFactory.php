@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * @see \Rector\Core\Tests\Configuration\ConfigurationFactoryTest
+ * @see \Rector\Tests\Configuration\ConfigurationFactoryTest
  */
 final class ConfigurationFactory
 {

@@ -9,7 +9,7 @@ use Rector\Core\ValueObject\Application\File;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @see \Rector\Core\Tests\PhpParser\Printer\FormatPerservingPrinterTest
+ * @see \Rector\Tests\PhpParser\Printer\FormatPerservingPrinterTest
  */
 final class FormatPerservingPrinter
 {

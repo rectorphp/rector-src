@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Core\Tests\FileSystem\FilePathHelperTest
+ * @see \Rector\Tests\FileSystem\FilePathHelperTest
  */
 final class FilePathHelper
 {

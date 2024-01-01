@@ -14,7 +14,7 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use ReflectionClass;
 
 /**
- * @see \Rector\Core\Tests\Php\PhpVersionProviderTest
+ * @see \Rector\Tests\Php\PhpVersionProviderTest
  */
 final class PhpVersionProvider
 {
