@@ -35,7 +35,7 @@ php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
 
 # Work around possible PHP memory limits
-php -d memory_limit=-1 php-scoper.phar add-prefix bin config src packages rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
+php -d memory_limit=-1 php-scoper.phar add-prefix bin config src rules vendor composer.json --output-dir "../$RESULT_DIRECTORY" --config scoper.php --force --ansi --working-dir "$BUILD_DIRECTORY";
 
 note "Dumping Composer Autoload"
 

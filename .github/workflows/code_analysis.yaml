@@ -27,7 +27,7 @@ jobs:
 
                     -
                         name: 'Validate Max File Length'
-                        run: vendor/bin/easy-ci validate-file-length packages rules src tests
+                        run: vendor/bin/easy-ci validate-file-length rules src tests
 
                     -
                         name: 'PHPStan'
@@ -39,12 +39,12 @@ jobs:
 
                     -
                         name: 'Commented Code'
-                        run: vendor/bin/easy-ci check-commented-code src packages rules tests rules-tests --line-limit 5 --ansi
+                        run: vendor/bin/easy-ci check-commented-code src rules tests rules-tests --line-limit 5 --ansi
 
                     -
                         name: 'Active Classes'
                         run: |
-                            vendor/bin/class-leak check bin config src rules packages \
+                            vendor/bin/class-leak check bin config src rules \
                                 --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface" \

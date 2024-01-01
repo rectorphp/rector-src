@@ -103,6 +103,7 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
 
     /**
      * @template TNode as Node
+     *
      * @param class-string<TNode> $nodeType
      * @return TNode
      */

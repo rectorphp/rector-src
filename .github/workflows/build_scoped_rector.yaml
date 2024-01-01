@@ -61,7 +61,7 @@ jobs:
             -  run: rm -rf rector-build/rules-tests rector-build/tests rector-build/bin/generate-changelog.php rector-build/bin/validate-phpstan-version.php rector-build/vendor/tracy/tracy/examples rector-build/vendor/symfony/console/Tester rector-build/vendor/symfony/console/Event rector-build/vendor/symfony/console/EventListener  rector-build/vendor/tracy/tracy/examples rector-build/vendor/tracy/tracy/src/Bridges rector-build/vendor/tracy/tracy/src/Tracy/Bar rector-build/vendor/tracy/tracy/src/Tracy/Session rector-build/vendor/symfony/service-contracts/Test
 
             # 2. downgrade rector
-            -   run: php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/packages rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
+            -   run: php -d memory_limit=-1 bin/rector process rector-build/bin rector-build/config rector-build/src rector-build/rules rector-build/vendor --config build/config/config-downgrade.php --ansi --no-diffs
 
             # 3. prefix classes
             -   run: sh build/build-rector-scoped.sh rector-build rector-prefixed-downgraded
