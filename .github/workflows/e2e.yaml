@@ -22,7 +22,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php_version: ['8.1']
+                php_version: ['8.2']
                 directory:
                     - 'e2e/applied-rule-change-docblock'
                     - 'e2e/applied-rule-return-array-nodes'

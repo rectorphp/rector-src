@@ -10,11 +10,11 @@ use Rector\ValueObject\ProcessResult;
 /**
  * @api used in tests
  */
-final class RectorTestResult
+final readonly class RectorTestResult
 {
     public function __construct(
-        private readonly string $changedContents,
-        private readonly ProcessResult $processResult
+        private string $changedContents,
+        private ProcessResult $processResult
     ) {
     }
 

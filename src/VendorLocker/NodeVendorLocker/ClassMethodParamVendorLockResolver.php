@@ -11,13 +11,13 @@ use Rector\FileSystem\FilePathHelper;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class ClassMethodParamVendorLockResolver
+final readonly class ClassMethodParamVendorLockResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly FilePathHelper $filePathHelper
+        private NodeNameResolver $nodeNameResolver,
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private ReflectionResolver $reflectionResolver,
+        private FilePathHelper $filePathHelper
     ) {
     }
 

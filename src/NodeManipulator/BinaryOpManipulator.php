@@ -14,10 +14,10 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 
-final class BinaryOpManipulator
+final readonly class BinaryOpManipulator
 {
     public function __construct(
-        private readonly AssignAndBinaryMap $assignAndBinaryMap
+        private AssignAndBinaryMap $assignAndBinaryMap
     ) {
     }
 

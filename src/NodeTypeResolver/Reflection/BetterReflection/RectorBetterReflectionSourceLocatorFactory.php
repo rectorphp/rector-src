@@ -12,11 +12,11 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocator\Intermedia
 /**
  * @api used on phpstan config factory
  */
-final class RectorBetterReflectionSourceLocatorFactory
+final readonly class RectorBetterReflectionSourceLocatorFactory
 {
     public function __construct(
-        private readonly BetterReflectionSourceLocatorFactory $betterReflectionSourceLocatorFactory,
-        private readonly IntermediateSourceLocator $intermediateSourceLocator
+        private BetterReflectionSourceLocatorFactory $betterReflectionSourceLocatorFactory,
+        private IntermediateSourceLocator $intermediateSourceLocator
     ) {
     }
 

@@ -18,11 +18,11 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 
-final class PhpAttributeAnalyzer
+final readonly class PhpAttributeAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider,
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionProvider $reflectionProvider,
     ) {
     }
 

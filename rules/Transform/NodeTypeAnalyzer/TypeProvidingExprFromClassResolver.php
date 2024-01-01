@@ -24,12 +24,12 @@ use Rector\Naming\Naming\PropertyNaming;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\ValueObject\MethodName;
 
-final class TypeProvidingExprFromClassResolver
+final readonly class TypeProvidingExprFromClassResolver
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PropertyNaming $propertyNaming,
+        private ReflectionProvider $reflectionProvider,
+        private NodeNameResolver $nodeNameResolver,
+        private PropertyNaming $propertyNaming,
     ) {
     }
 

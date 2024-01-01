@@ -9,16 +9,16 @@ use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\Reporting\FileDiff;
 use Webmozart\Assert\Assert;
 
-final class FileProcessResult
+final readonly class FileProcessResult
 {
     /**
      * @param SystemError[] $systemErrors
      * @param CollectedData[] $collectedDatas
      */
     public function __construct(
-        private readonly array $systemErrors,
-        private readonly ?FileDiff $fileDiff,
-        private readonly array $collectedDatas
+        private array $systemErrors,
+        private ?FileDiff $fileDiff,
+        private array $collectedDatas
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($collectedDatas, CollectedData::class);

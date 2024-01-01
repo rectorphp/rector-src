@@ -16,10 +16,10 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<AccessoryNonEmptyStringType>
  */
-final class AccessoryNonEmptyStringTypeMapper implements TypeMapperInterface
+final readonly class AccessoryNonEmptyStringTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

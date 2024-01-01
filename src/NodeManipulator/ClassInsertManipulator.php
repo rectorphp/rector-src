@@ -13,10 +13,10 @@ use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\NodeFactory;
 
-final class ClassInsertManipulator
+final readonly class ClassInsertManipulator
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory,
+        private NodeFactory $nodeFactory,
     ) {
     }
 

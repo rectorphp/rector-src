@@ -32,7 +32,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\PhpDocParser\ParamPhpDocNodeFactory;
 
-final class PhpDocTypeChanger
+final readonly class PhpDocTypeChanger
 {
     /**
      * @var array<class-string<Node>>
@@ -50,11 +50,11 @@ final class PhpDocTypeChanger
     private const ALLOWED_IDENTIFIER_TYPENODE_TYPES = ['class-string'];
 
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly TypeComparator $typeComparator,
-        private readonly ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
-        private readonly NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private StaticTypeMapper $staticTypeMapper,
+        private TypeComparator $typeComparator,
+        private ParamPhpDocNodeFactory $paramPhpDocNodeFactory,
+        private NewPhpDocFromPHPStanTypeGuard $newPhpDocFromPHPStanTypeGuard,
+        private DocBlockUpdater $docBlockUpdater
     ) {
     }
 

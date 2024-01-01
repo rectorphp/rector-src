@@ -18,10 +18,10 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
  *
  * @implements NodeTypeResolverInterface<Trait_>
  */
-final class TraitTypeResolver implements NodeTypeResolverInterface
+final readonly class TraitTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

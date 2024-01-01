@@ -15,14 +15,14 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\Exception\UnresolvableClassException;
 
-final class ParentClassMethodTypeOverrideGuard
+final readonly class ParentClassMethodTypeOverrideGuard
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly TypeComparator $typeComparator,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionResolver $reflectionResolver,
+        private TypeComparator $typeComparator,
+        private StaticTypeMapper $staticTypeMapper,
+        private ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 

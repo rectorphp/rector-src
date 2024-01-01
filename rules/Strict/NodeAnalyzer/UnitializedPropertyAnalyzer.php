@@ -15,13 +15,13 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 
-final class UnitializedPropertyAnalyzer
+final readonly class UnitializedPropertyAnalyzer
 {
     public function __construct(
-        private readonly AstResolver $astResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly NodeNameResolver $nodeNameResolver
+        private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ConstructorAssignDetector $constructorAssignDetector,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

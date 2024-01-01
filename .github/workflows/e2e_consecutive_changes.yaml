@@ -21,7 +21,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php_version: ['8.1']
+                php_version: ['8.2']
                 rector_disable_parallel: ['true', 'false']
                 directory:
                     - 'e2e/consecutive-changes-with-cache'

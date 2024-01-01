@@ -9,7 +9,7 @@ use PHPStan\PhpDocParser\Parser\TokenIterator;
 use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 use Rector\Util\Reflection\PrivatesAccessor;
 
-final class TokenIteratorFactory
+final readonly class TokenIteratorFactory
 {
     /**
      * @var string
@@ -17,8 +17,8 @@ final class TokenIteratorFactory
     private const INDEX = 'index';
 
     public function __construct(
-        private readonly Lexer $lexer,
-        private readonly PrivatesAccessor $privatesAccessor
+        private Lexer $lexer,
+        private PrivatesAccessor $privatesAccessor
     ) {
     }
 

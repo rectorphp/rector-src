@@ -9,10 +9,10 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 
-final class AttrGroupsFactory
+final readonly class AttrGroupsFactory
 {
     public function __construct(
-        private readonly PhpAttributeGroupFactory $phpAttributeGroupFactory
+        private PhpAttributeGroupFactory $phpAttributeGroupFactory
     ) {
     }
 

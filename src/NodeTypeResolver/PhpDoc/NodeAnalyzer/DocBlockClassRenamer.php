@@ -10,10 +10,10 @@ use Rector\NodeTypeResolver\PhpDocNodeVisitor\ClassRenamePhpDocNodeVisitor;
 use Rector\NodeTypeResolver\ValueObject\OldToNewType;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
-final class DocBlockClassRenamer
+final readonly class DocBlockClassRenamer
 {
     public function __construct(
-        private readonly ClassRenamePhpDocNodeVisitor $classRenamePhpDocNodeVisitor,
+        private ClassRenamePhpDocNodeVisitor $classRenamePhpDocNodeVisitor,
     ) {
     }
 

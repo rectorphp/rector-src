@@ -30,16 +30,16 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\TypeDeclaration\TypeNormalizer;
 
-final class TypeComparator
+final readonly class TypeComparator
 {
     public function __construct(
-        private readonly TypeHasher $typeHasher,
-        private readonly TypeNormalizer $typeNormalizer,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ArrayTypeComparator $arrayTypeComparator,
-        private readonly ScalarTypeComparator $scalarTypeComparator,
-        private readonly TypeFactory $typeFactory,
-        private readonly ReflectionResolver $reflectionResolver
+        private TypeHasher $typeHasher,
+        private TypeNormalizer $typeNormalizer,
+        private StaticTypeMapper $staticTypeMapper,
+        private ArrayTypeComparator $arrayTypeComparator,
+        private ScalarTypeComparator $scalarTypeComparator,
+        private TypeFactory $typeFactory,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

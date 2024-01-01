@@ -12,10 +12,10 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ClassMethodAndPropertyAnalyzer
+final readonly class ClassMethodAndPropertyAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

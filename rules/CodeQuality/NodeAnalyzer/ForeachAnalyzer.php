@@ -11,10 +11,10 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class ForeachAnalyzer
+final readonly class ForeachAnalyzer
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
+        private NodeComparator $nodeComparator,
     ) {
     }
 

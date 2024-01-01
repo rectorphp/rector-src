@@ -10,12 +10,12 @@ use Rector\Naming\PhpArray\ArrayFilter;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class MatchPropertyTypeConflictingNameGuard
+final readonly class MatchPropertyTypeConflictingNameGuard
 {
     public function __construct(
-        private readonly MatchPropertyTypeExpectedNameResolver $matchPropertyTypeExpectedNameResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ArrayFilter $arrayFilter
+        private MatchPropertyTypeExpectedNameResolver $matchPropertyTypeExpectedNameResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private ArrayFilter $arrayFilter
     ) {
     }
 

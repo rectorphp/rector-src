@@ -12,12 +12,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\TypeDeclaration\FunctionLikeReturnTypeResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
 
-final class GetterTypeDeclarationPropertyTypeInferer
+final readonly class GetterTypeDeclarationPropertyTypeInferer
 {
     public function __construct(
-        private readonly FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
-        private readonly ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver
+        private FunctionLikeReturnTypeResolver $functionLikeReturnTypeResolver,
+        private ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

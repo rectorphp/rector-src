@@ -7,10 +7,10 @@ namespace Rector\NodeManipulator;
 use PhpParser\Node\FunctionLike;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class FunctionLikeManipulator
+final readonly class FunctionLikeManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
+        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

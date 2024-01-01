@@ -22,10 +22,10 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
 use Rector\NodeTypeResolver\PHPStan\TypeHasher;
 
-final class TypeFactory
+final readonly class TypeFactory
 {
     public function __construct(
-        private readonly TypeHasher $typeHasher,
+        private TypeHasher $typeHasher,
     ) {
     }
 

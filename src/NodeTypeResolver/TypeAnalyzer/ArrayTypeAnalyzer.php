@@ -19,11 +19,11 @@ use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class ArrayTypeAnalyzer
+final readonly class ArrayTypeAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

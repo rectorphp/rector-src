@@ -19,12 +19,12 @@ use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
-final class CallTypesResolver
+final readonly class CallTypesResolver
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeFactory $typeFactory,
-        private readonly ReflectionProvider $reflectionProvider
+        private NodeTypeResolver $nodeTypeResolver,
+        private TypeFactory $typeFactory,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

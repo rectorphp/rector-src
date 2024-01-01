@@ -12,10 +12,10 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\NeverType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class NeverFuncCallAnalyzer
+final readonly class NeverFuncCallAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

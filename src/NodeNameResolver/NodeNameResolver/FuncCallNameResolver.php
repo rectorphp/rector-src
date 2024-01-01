@@ -16,10 +16,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 /**
  * @implements NodeNameResolverInterface<FuncCall>
  */
-final class FuncCallNameResolver implements NodeNameResolverInterface
+final readonly class FuncCallNameResolver implements NodeNameResolverInterface
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

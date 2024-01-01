@@ -9,10 +9,10 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpNestedAttributeGroupFactory;
 
-final class NestedAttrGroupsFactory
+final readonly class NestedAttrGroupsFactory
 {
     public function __construct(
-        private readonly PhpNestedAttributeGroupFactory $phpNestedAttributeGroupFactory
+        private PhpNestedAttributeGroupFactory $phpNestedAttributeGroupFactory
     ) {
     }
 

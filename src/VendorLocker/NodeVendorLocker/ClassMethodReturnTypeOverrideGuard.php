@@ -22,15 +22,15 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 
-final class ClassMethodReturnTypeOverrideGuard
+final readonly class ClassMethodReturnTypeOverrideGuard
 {
     public function __construct(
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ReturnTypeInferer $returnTypeInferer,
-        private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
-        private readonly FilePathHelper $filePathHelper,
-        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private ReflectionResolver $reflectionResolver,
+        private ReturnTypeInferer $returnTypeInferer,
+        private ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
+        private FilePathHelper $filePathHelper,
+        private MagicClassMethodAnalyzer $magicClassMethodAnalyzer
     ) {
     }
 

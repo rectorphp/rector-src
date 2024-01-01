@@ -17,11 +17,11 @@ use Rector\StaticTypeMapper\Naming\NameScopeFactory;
  * Decorate node with fully qualified class name for const epxr,
  * e.g. Direction::*
  */
-final class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
+final readonly class ConstExprClassNameDecorator implements PhpDocNodeDecoratorInterface
 {
     public function __construct(
-        private readonly NameScopeFactory $nameScopeFactory,
-        private readonly PhpDocNodeTraverser $phpDocNodeTraverser
+        private NameScopeFactory $nameScopeFactory,
+        private PhpDocNodeTraverser $phpDocNodeTraverser
     ) {
     }
 

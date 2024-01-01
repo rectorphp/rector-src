@@ -18,13 +18,13 @@ use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class VariableRenamer
+final readonly class VariableRenamer
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private VarTagValueNodeRenamer $varTagValueNodeRenamer,
+        private PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 
@@ -78,7 +78,7 @@ final class VariableRenamer
                 }
 
                 // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
-                if ($this->isParamInParentFunction($node, $currentClosure)) {
+                if ($this->isParamInParentFunction()) {
                     return null;
                 }
 
@@ -98,23 +98,8 @@ final class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(Variable $variable, ?Closure $closure): bool
+    private function isParamInParentFunction(): bool
     {
-        if (! $closure instanceof Closure) {
-            return false;
-        }
-
-        $variableName = $this->nodeNameResolver->getName($variable);
-        if ($variableName === null) {
-            return false;
-        }
-
-        foreach ($closure->params as $param) {
-            if ($this->nodeNameResolver->isName($param, $variableName)) {
-                return true;
-            }
-        }
-
         return false;
     }
 

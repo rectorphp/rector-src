@@ -19,12 +19,12 @@ use Rector\Php80\NodeFactory\StrStartsWithFuncCallFactory;
 use Rector\Php80\ValueObject\StrStartsWith;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
+final readonly class StrposMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ValueResolver $valueResolver,
-        private readonly StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
+        private NodeNameResolver $nodeNameResolver,
+        private ValueResolver $valueResolver,
+        private StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
     ) {
     }
 

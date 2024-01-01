@@ -10,11 +10,11 @@ use Rector\Php\PolyfillPackagesProvider;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Rector\VersionBonding\Contract\RelatedPolyfillInterface;
 
-final class PhpVersionedFilter
+final readonly class PhpVersionedFilter
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly PolyfillPackagesProvider $polyfillPackagesProvider,
+        private PhpVersionProvider $phpVersionProvider,
+        private PolyfillPackagesProvider $polyfillPackagesProvider,
     ) {
     }
 

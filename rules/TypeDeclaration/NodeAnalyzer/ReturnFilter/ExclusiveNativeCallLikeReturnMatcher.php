@@ -12,10 +12,10 @@ use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
 use Rector\Reflection\ReflectionResolver;
 
-final class ExclusiveNativeCallLikeReturnMatcher
+final readonly class ExclusiveNativeCallLikeReturnMatcher
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 

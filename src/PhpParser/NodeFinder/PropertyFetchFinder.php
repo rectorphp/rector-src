@@ -33,16 +33,16 @@ use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 
-final class PropertyFetchFinder
+final readonly class PropertyFetchFinder
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly AstResolver $astResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionResolver $reflectionResolver,
+        private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -104,7 +104,7 @@ final class PropertyFetchFinder
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $class->getMethods(),
-            function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName) {
+            function (Node $subNode) use (&$propertyArrayDimFetches, $propertyName): null {
                 if (! $subNode instanceof Assign) {
                     return null;
                 }

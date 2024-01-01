@@ -7,14 +7,14 @@ namespace Rector\Transform\ValueObject;
 use Rector\Validation\RectorAssert;
 use Webmozart\Assert\Assert;
 
-final class ParentClassToTraits
+final readonly class ParentClassToTraits
 {
     /**
      * @param string[] $traitNames
      */
     public function __construct(
-        private readonly string $parentType,
-        private readonly array $traitNames
+        private string $parentType,
+        private array $traitNames
     ) {
         RectorAssert::className($parentType);
         Assert::allString($traitNames);

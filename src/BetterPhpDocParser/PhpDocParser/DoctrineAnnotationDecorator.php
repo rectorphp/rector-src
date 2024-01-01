@@ -24,7 +24,7 @@ use Rector\BetterPhpDocParser\ValueObject\StartAndEnd;
 use Rector\Util\StringUtils;
 use Webmozart\Assert\Assert;
 
-final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
+final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 {
     /**
      * Special short annotations, that are resolved as FQN by Doctrine annotation parser
@@ -45,10 +45,10 @@ final class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
     private const NESTED_ANNOTATION_END_REGEX = '#(\s+)?\}\)(\s+)?#';
 
     public function __construct(
-        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
-        private readonly StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
-        private readonly TokenIteratorFactory $tokenIteratorFactory,
-        private readonly AttributeMirrorer $attributeMirrorer
+        private ClassAnnotationMatcher $classAnnotationMatcher,
+        private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
+        private TokenIteratorFactory $tokenIteratorFactory,
+        private AttributeMirrorer $attributeMirrorer
     ) {
     }
 

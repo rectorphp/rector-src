@@ -22,7 +22,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         timeout-minutes: 3
 
-        name: PHP 8.1 tests
+        name: PHP 8.2 tests
         steps:
             -   uses: actions/checkout@v4
 

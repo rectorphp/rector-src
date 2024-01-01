@@ -20,13 +20,13 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 /**
  * Can be local property, parent property etc.
  */
-final class PropertyPresenceChecker
+final readonly class PropertyPresenceChecker
 {
     public function __construct(
-        private readonly PromotedPropertyResolver $promotedPropertyResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly AstResolver $astResolver,
+        private PromotedPropertyResolver $promotedPropertyResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionProvider $reflectionProvider,
+        private AstResolver $astResolver,
     ) {
     }
 

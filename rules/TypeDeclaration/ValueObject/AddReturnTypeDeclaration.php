@@ -11,12 +11,12 @@ use Rector\Validation\RectorAssert;
 /**
  * @api
  */
-final class AddReturnTypeDeclaration
+final readonly class AddReturnTypeDeclaration
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly Type $returnType
+        private string $class,
+        private string $method,
+        private Type $returnType
     ) {
         RectorAssert::className($class);
     }

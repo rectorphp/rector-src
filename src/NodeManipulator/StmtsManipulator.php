@@ -13,12 +13,12 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class StmtsManipulator
+final readonly class StmtsManipulator
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -45,7 +45,7 @@ final class StmtsManipulator
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $classMethod->stmts,
-            function (Node $node) use (&$stmts) {
+            function (Node $node) use (&$stmts): null {
                 foreach ($stmts as $key => $assign) {
                     if (! $this->nodeComparator->areNodesEqual($node, $assign)) {
                         continue;

@@ -17,13 +17,13 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 /**
  * Should add extra null type
  */
-final class NullTypeAssignDetector
+final readonly class NullTypeAssignDetector
 {
     public function __construct(
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyAssignMatcher $propertyAssignMatcher,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyAssignMatcher $propertyAssignMatcher,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 

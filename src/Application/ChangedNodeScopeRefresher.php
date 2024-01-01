@@ -29,11 +29,11 @@ use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 /**
  * In case of changed node, we need to re-traverse the PHPStan Scope to make all the new nodes aware of what is going on.
  */
-final class ChangedNodeScopeRefresher
+final readonly class ChangedNodeScopeRefresher
 {
     public function __construct(
-        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private readonly ScopeAnalyzer $scopeAnalyzer
+        private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private ScopeAnalyzer $scopeAnalyzer
     ) {
     }
 

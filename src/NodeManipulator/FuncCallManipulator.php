@@ -8,10 +8,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class FuncCallManipulator
+final readonly class FuncCallManipulator
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private ValueResolver $valueResolver
     ) {
     }
 

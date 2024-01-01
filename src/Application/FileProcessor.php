@@ -26,20 +26,20 @@ use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
-final class FileProcessor
+final readonly class FileProcessor
 {
     public function __construct(
-        private readonly FormatPerservingPrinter $formatPerservingPrinter,
-        private readonly RectorNodeTraverser $rectorNodeTraverser,
-        private readonly SymfonyStyle $symfonyStyle,
-        private readonly FileDiffFactory $fileDiffFactory,
-        private readonly ChangedFilesDetector $changedFilesDetector,
-        private readonly ErrorFactory $errorFactory,
-        private readonly FilePathHelper $filePathHelper,
-        private readonly CollectorProcessor $collectorProcessor,
-        private readonly PostFileProcessor $postFileProcessor,
-        private readonly RectorParser $rectorParser,
-        private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private FormatPerservingPrinter $formatPerservingPrinter,
+        private RectorNodeTraverser $rectorNodeTraverser,
+        private SymfonyStyle $symfonyStyle,
+        private FileDiffFactory $fileDiffFactory,
+        private ChangedFilesDetector $changedFilesDetector,
+        private ErrorFactory $errorFactory,
+        private FilePathHelper $filePathHelper,
+        private CollectorProcessor $collectorProcessor,
+        private PostFileProcessor $postFileProcessor,
+        private RectorParser $rectorParser,
+        private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
     ) {
     }
 

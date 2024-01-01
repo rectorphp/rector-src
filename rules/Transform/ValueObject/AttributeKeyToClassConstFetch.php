@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Transform\ValueObject;
 
-final class AttributeKeyToClassConstFetch
+final readonly class AttributeKeyToClassConstFetch
 {
     /**
      * @param array<string, string> $valuesToConstantsMap
      */
     public function __construct(
-        private readonly string $attributeClass,
-        private readonly string $attributeKey,
-        private readonly string $constantClass,
-        private readonly array $valuesToConstantsMap
+        private string $attributeClass,
+        private string $attributeKey,
+        private string $constantClass,
+        private array $valuesToConstantsMap
     ) {
     }
 

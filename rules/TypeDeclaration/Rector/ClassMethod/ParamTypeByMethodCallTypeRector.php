@@ -147,7 +147,7 @@ CODE_SAMPLE
 
         $this->traverseNodesWithCallable(
             $newParamType,
-            static function (Node $node) {
+            static function (Node $node): null {
                 // original node has to removed to avoid tokens crashing from origin positions
                 $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 return null;

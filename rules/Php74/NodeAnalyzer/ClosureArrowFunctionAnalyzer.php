@@ -14,12 +14,12 @@ use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Util\ArrayChecker;
 
-final class ClosureArrowFunctionAnalyzer
+final readonly class ClosureArrowFunctionAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator,
-        private readonly ArrayChecker $arrayChecker
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator,
+        private ArrayChecker $arrayChecker
     ) {
     }
 

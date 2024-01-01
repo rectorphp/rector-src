@@ -13,10 +13,10 @@ use Webmozart\Assert\Assert;
 /**
  * Should it pass autoload files/directories to PHPStan analyzer?
  */
-final class AdditionalAutoloader
+final readonly class AdditionalAutoloader
 {
     public function __construct(
-        private readonly DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
+        private DynamicSourceLocatorDecorator $dynamicSourceLocatorDecorator
     ) {
     }
 

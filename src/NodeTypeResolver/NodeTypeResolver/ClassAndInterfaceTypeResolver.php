@@ -22,10 +22,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *
  * @implements NodeTypeResolverInterface<Class_|Interface_>
  */
-final class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
+final readonly class ClassAndInterfaceTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

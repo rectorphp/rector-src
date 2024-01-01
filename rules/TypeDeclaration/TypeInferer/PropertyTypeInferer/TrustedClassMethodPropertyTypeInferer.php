@@ -38,19 +38,19 @@ use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 /**
  * @internal
  */
-final class TrustedClassMethodPropertyTypeInferer
+final readonly class TrustedClassMethodPropertyTypeInferer
 {
     public function __construct(
-        private readonly ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly TypeFactory $typeFactory,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
-        private readonly TypeComparator $typeComparator,
+        private ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator,
+        private ReflectionProvider $reflectionProvider,
+        private NodeNameResolver $nodeNameResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private TypeFactory $typeFactory,
+        private StaticTypeMapper $staticTypeMapper,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ParamAnalyzer $paramAnalyzer,
+        private AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
+        private TypeComparator $typeComparator,
     ) {
     }
 

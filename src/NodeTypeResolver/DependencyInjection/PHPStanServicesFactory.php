@@ -23,9 +23,9 @@ use Webmozart\Assert\Assert;
  *
  * @see \Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory
  */
-final class PHPStanServicesFactory
+final readonly class PHPStanServicesFactory
 {
-    private readonly Container $container;
+    private Container $container;
 
     public function __construct()
     {

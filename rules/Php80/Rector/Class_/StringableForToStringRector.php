@@ -151,7 +151,7 @@ CODE_SAMPLE
             return;
         }
 
-        $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode) {
+        $this->traverseNodesWithCallable((array) $toStringClassMethod->stmts, function (Node $subNode): null {
             if (! $subNode instanceof Return_) {
                 return null;
             }

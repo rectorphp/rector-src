@@ -14,13 +14,13 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Webmozart\Assert\Assert;
 
-final class PHPStanStaticTypeMapper
+final readonly class PHPStanStaticTypeMapper
 {
     /**
      * @param TypeMapperInterface[] $typeMappers
      */
     public function __construct(
-        private readonly array $typeMappers
+        private array $typeMappers
     ) {
         Assert::notEmpty($typeMappers);
     }

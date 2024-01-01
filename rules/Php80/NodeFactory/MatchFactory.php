@@ -18,12 +18,12 @@ use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\Php80\ValueObject\MatchResult;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class MatchFactory
+final readonly class MatchFactory
 {
     public function __construct(
-        private readonly MatchArmsFactory $matchArmsFactory,
-        private readonly MatchSwitchAnalyzer $matchSwitchAnalyzer,
-        private readonly NodeComparator $nodeComparator
+        private MatchArmsFactory $matchArmsFactory,
+        private MatchSwitchAnalyzer $matchSwitchAnalyzer,
+        private NodeComparator $nodeComparator
     ) {
     }
 

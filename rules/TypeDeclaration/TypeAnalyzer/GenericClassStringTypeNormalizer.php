@@ -19,12 +19,12 @@ use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\DetailedTypeAnalyzer;
 
-final class GenericClassStringTypeNormalizer
+final readonly class GenericClassStringTypeNormalizer
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly DetailedTypeAnalyzer $detailedTypeAnalyzer,
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer
+        private ReflectionProvider $reflectionProvider,
+        private DetailedTypeAnalyzer $detailedTypeAnalyzer,
+        private UnionTypeAnalyzer $unionTypeAnalyzer
     ) {
     }
 

@@ -8,16 +8,16 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
 
-final class AddParamTypeDeclaration
+final readonly class AddParamTypeDeclaration
 {
     /**
      * @param int<0, max> $position
      */
     public function __construct(
-        private readonly string $className,
-        private readonly string $methodName,
-        private readonly int $position,
-        private readonly Type $paramType
+        private string $className,
+        private string $methodName,
+        private int $position,
+        private Type $paramType
     ) {
         RectorAssert::className($className);
     }

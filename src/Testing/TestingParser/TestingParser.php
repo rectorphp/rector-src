@@ -15,13 +15,13 @@ use Rector\ValueObject\Application\File;
 /**
  * @api
  */
-final class TestingParser
+final readonly class TestingParser
 {
     public function __construct(
-        private readonly RectorParser $rectorParser,
-        private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private readonly CurrentFileProvider $currentFileProvider,
-        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private RectorParser $rectorParser,
+        private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private CurrentFileProvider $currentFileProvider,
+        private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
     ) {
     }
 

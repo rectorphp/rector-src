@@ -23,19 +23,19 @@ use TomasVotruba\CognitiveComplexity\AstCognitiveComplexityAnalyzer;
  * @implements Rule<InClassNode>
  * This rule helps to find overly complex rules, that usually have little value, but are costrly to run.
  */
-final class LongAndDependentComplexRectorRule implements Rule
+final readonly class LongAndDependentComplexRectorRule implements Rule
 {
     /**
      * @var int
      */
     private const ALLOWED_TRANSITIONAL_COMPLEXITY = 140;
 
-    private readonly Parser $phpParser;
+    private Parser $phpParser;
 
-    private readonly NodeFinder $nodeFinder;
+    private NodeFinder $nodeFinder;
 
     public function __construct(
-        private readonly AstCognitiveComplexityAnalyzer $astCognitiveComplexityAnalyzer,
+        private AstCognitiveComplexityAnalyzer $astCognitiveComplexityAnalyzer,
     ) {
         $parserFactory = new ParserFactory();
         $this->phpParser = $parserFactory->create(ParserFactory::PREFER_PHP7);

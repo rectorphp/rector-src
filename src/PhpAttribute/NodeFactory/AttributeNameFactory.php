@@ -12,10 +12,10 @@ use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
 use Rector\PhpAttribute\UseAliasNameMatcher;
 use Rector\PhpAttribute\ValueObject\UseAliasMetadata;
 
-final class AttributeNameFactory
+final readonly class AttributeNameFactory
 {
     public function __construct(
-        private readonly UseAliasNameMatcher $useAliasNameMatcher
+        private UseAliasNameMatcher $useAliasNameMatcher
     ) {
     }
 

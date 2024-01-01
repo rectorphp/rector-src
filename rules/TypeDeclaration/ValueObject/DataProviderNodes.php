@@ -7,13 +7,13 @@ namespace Rector\TypeDeclaration\ValueObject;
 use PhpParser\Node\Attribute;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 
-final class DataProviderNodes
+final readonly class DataProviderNodes
 {
     /**
      * @param array<array-key, Attribute|PhpDocTagNode> $nodes
      */
     public function __construct(
-        public readonly array $nodes,
+        public array $nodes,
     ) {
     }
 
