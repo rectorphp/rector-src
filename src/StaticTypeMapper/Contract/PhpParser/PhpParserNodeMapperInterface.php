@@ -17,5 +17,8 @@ interface PhpParserNodeMapperInterface
      */
     public function getNodeType(): string;
 
+    /**
+     * @param TNode $node
+     */
     public function mapToPHPStan(Node $node): Type;
 }

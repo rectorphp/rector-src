@@ -24,9 +24,6 @@ final class NullTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return NullType::class;

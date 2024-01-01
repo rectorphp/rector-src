@@ -17,9 +17,6 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
  */
 final class OversizedArrayTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return OversizedArrayType::class;

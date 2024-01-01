@@ -23,9 +23,6 @@ final class AccessoryNumericStringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return AccessoryNumericStringType::class;

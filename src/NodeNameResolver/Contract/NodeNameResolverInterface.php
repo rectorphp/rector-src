@@ -17,5 +17,8 @@ interface NodeNameResolverInterface
      */
     public function getNode(): string;
 
+    /**
+     * @param TNode $node
+     */
     public function resolve(Node $node, ?Scope $scope): ?string;
 }

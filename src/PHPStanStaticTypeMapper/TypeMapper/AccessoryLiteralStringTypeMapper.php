@@ -23,9 +23,6 @@ final class AccessoryLiteralStringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return AccessoryLiteralStringType::class;

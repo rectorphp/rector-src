@@ -30,9 +30,6 @@ final class IntersectionTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return IntersectionType::class;

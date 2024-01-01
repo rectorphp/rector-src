@@ -42,7 +42,9 @@ vendor/bin/rector
 And modify it:
 
 ```php
-use Rector\Config\RectorConfig;use Rector\Set\ValueObject\SetList;use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
+use Rector\Config\RectorConfig;
+use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return static function (RectorConfig $rectorConfig): void {
     // register single rule

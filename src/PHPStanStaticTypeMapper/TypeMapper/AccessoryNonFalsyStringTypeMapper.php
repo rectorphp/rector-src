@@ -23,9 +23,6 @@ final class AccessoryNonFalsyStringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return AccessoryNonFalsyStringType::class;

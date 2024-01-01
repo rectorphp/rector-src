@@ -18,13 +18,17 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 interface TypeMapperInterface
 {
     /**
-     * @return class-string<Type>
+     * @return class-string<TType>
      */
     public function getNodeClass(): string;
 
+    /**
+     * @param TType $type
+     */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode;
 
     /**
+     * @param TType $type
      * @param TypeKind::* $typeKind
      * @return Name|ComplexType|Identifier|null
      */

@@ -118,7 +118,6 @@ parameters:
             paths:
                 # on PhpParser Nodes
                 - src/NodeNameResolver/NodeNameResolver.php
-                - utils/ChangelogGenerator/Command/
                 - src/BetterPhpDocParser/PhpDocParser/BetterPhpDocParser.php
                 - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
@@ -138,8 +137,6 @@ parameters:
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
 
         - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
-
-        - '#expects class\-string<TNode of PHPStan\\PhpDocParser\\Ast\\Node\>, string given#'
 
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
@@ -353,11 +350,6 @@ parameters:
         # returns bool for notifications
         - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
 
-        # changelog generator
-        -
-            message: '#Anonymous (variable|variables) in#'
-            path: utils/ChangelogGenerator
-
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000, (.*?) given#'
             path: rules-tests
@@ -454,9 +446,6 @@ parameters:
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
-        # allow generic use
-        - '#Parameters should use "Illuminate\\Container\\Container\|string\|callable" types as the only types passed to this method#'
-
         # checks for rector always autoloaded rules only
         -
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
@@ -501,25 +490,5 @@ parameters:
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         # skip for now
         - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
-
-        # generics glitch
-        - '#Method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:parseFileAndGetFirstNodeOfType\(\) should return TNode of PhpParser\\Node but returns PhpParser\\Node#'
-=======
-        # resolve later
-        - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
->>>>>>> fe66ff7171 (fixup! tidy up)
-=======
-        # skip for now
-        - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
-
-        -
-            message: '#Variable property access on PHPStan\\PhpDocParser\\Ast\\Node#'
-            path: src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-
-        # generics glitch
-        - '#Method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:parseFileAndGetFirstNodeOfType\(\) should return TNode of PhpParser\\Node but returns PhpParser\\Node#'
->>>>>>> f7de8a92cf (fixup! tidy up)

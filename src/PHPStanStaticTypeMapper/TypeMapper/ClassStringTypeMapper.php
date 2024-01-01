@@ -23,9 +23,6 @@ final class ClassStringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return ClassStringType::class;

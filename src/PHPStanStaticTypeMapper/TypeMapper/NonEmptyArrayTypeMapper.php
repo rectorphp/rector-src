@@ -16,9 +16,6 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
  */
 final class NonEmptyArrayTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return NonEmptyArrayType::class;

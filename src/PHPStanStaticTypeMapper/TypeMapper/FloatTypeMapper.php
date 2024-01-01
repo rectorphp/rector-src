@@ -23,9 +23,6 @@ final class FloatTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return FloatType::class;

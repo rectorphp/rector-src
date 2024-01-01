@@ -25,9 +25,6 @@ final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return ObjectWithoutClassType::class;

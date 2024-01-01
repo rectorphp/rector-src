@@ -16,9 +16,6 @@ use Rector\StaticTypeMapper\ValueObject\Type\SelfObjectType;
  */
 final class SelfObjectTypeMapper implements TypeMapperInterface
 {
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return SelfObjectType::class;

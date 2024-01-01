@@ -28,9 +28,6 @@ final class ClosureTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return ClosureType::class;

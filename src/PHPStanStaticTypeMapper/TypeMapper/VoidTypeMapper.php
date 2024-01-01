@@ -29,9 +29,6 @@ final class VoidTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return VoidType::class;

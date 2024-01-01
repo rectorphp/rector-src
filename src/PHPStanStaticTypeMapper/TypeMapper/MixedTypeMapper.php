@@ -23,9 +23,6 @@ final class MixedTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return MixedType::class;

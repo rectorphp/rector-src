@@ -23,9 +23,6 @@ final class AccessoryNonEmptyStringTypeMapper implements TypeMapperInterface
     ) {
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return AccessoryNonEmptyStringType::class;

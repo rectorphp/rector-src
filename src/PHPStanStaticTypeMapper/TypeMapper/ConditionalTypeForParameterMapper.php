@@ -25,9 +25,6 @@ final class ConditionalTypeForParameterMapper implements TypeMapperInterface
         $this->phpStanStaticTypeMapper = $phpStanStaticTypeMapper;
     }
 
-    /**
-     * @return class-string<Type>
-     */
     public function getNodeClass(): string
     {
         return ConditionalTypeForParameter::class;

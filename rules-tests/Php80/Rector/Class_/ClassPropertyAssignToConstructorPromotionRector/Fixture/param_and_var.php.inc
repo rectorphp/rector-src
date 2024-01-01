@@ -28,6 +28,7 @@ final class ParamAndVar
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
+use Rector\PhpDocParser\PhpDocParser\Contract\PhpDocNodeVisitorInterface;
 
 final class ParamAndVar
 {

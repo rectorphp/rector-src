@@ -9,12 +9,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
-/**
- * @template TNode as \PHPStan\PhpDocParser\Ast\Node
- */
 final class PhpDocNodeByTypeFinder
 {
     /**
+     * @template TNode as \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<TNode> $desiredType
      * @return array<TNode>
      */
@@ -32,7 +30,7 @@ final class PhpDocNodeByTypeFinder
                 return $node;
             }
 
-            /** @var Node $node */
+            /** @var TNode $node */
             $foundNodes[] = $node;
             return $node;
         });
