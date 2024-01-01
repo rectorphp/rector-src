@@ -31,6 +31,9 @@ use Rector\Testing\Fixture\FixtureFileUpdater;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\PHPUnit\ValueObject\RectorTestResult;
 
+/**
+ * @api used by public
+ */
 abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements RectorTestInterface
 {
     private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider;

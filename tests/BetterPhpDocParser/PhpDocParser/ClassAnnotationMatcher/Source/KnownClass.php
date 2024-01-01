@@ -4,5 +4,4 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\So
 
 class KnownClass
 {
-
 }

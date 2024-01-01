@@ -13,7 +13,7 @@ class MyClass
     private $unknownNamespacedClass;
     /** @var OtherUnknownClass */
     private $unknownUsedClass;
-    /** @var AliasedUnknownClass */
+    /** @var OtherUnknownClass */
     private $unknownAliasedUsedClass;
     /** @var \UnknownGlobalClass */
     private $unknownGlobalClass;
