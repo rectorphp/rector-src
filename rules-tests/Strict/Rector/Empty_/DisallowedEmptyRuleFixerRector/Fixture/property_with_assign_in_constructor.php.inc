@@ -2,9 +2,14 @@
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class MayUnitializedPropertyNoDefaultValue
+final class PropertyWithAssignInConstructor
 {
     public array $items;
+
+    public function __construct()
+    {
+        $this->items = [];
+    }
 
     public function isEmpty()
     {
@@ -23,18 +28,23 @@ final class MayUnitializedPropertyNoDefaultValue
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class MayUnitializedPropertyNoDefaultValue
+final class PropertyWithAssignInConstructor
 {
     public array $items;
 
+    public function __construct()
+    {
+        $this->items = [];
+    }
+
     public function isEmpty()
     {
-        return !isset($this->items) || $this->items === [];
+        return $this->items === [];
     }
 
     public function isNotEmpty()
     {
-        return isset($this->items) && $this->items !== [];
+        return $this->items !== [];
     }
 }
 
