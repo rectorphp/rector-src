@@ -28,7 +28,7 @@ note "Starts"
 
 # 2. scope it
 note "Downloading php-scoper.phar"
-wget https://github.com/humbug/php-scoper/releases/download/0.17.7/php-scoper.phar -N --no-verbose
+wget https://github.com/humbug/php-scoper/releases/download/0.18.10/php-scoper.phar -N --no-verbose
 
 # avoid phpstan/phpstan dependency duplicate
 note "Remove PHPStan to avoid duplicating it"
