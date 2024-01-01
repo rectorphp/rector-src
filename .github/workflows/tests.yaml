@@ -29,7 +29,7 @@ jobs:
             -
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: 8.1
+                    php-version: 8.2
                     coverage: none
                     # to display warning when assert() is called, eg: on direct getArgs() on CallLike
                     # and check against first class callable strlen(...)
