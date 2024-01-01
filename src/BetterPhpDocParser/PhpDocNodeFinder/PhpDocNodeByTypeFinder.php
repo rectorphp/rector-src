@@ -32,7 +32,7 @@ final class PhpDocNodeByTypeFinder
                 return $node;
             }
 
-            /** @var TNode $node */
+            /** @var Node $node */
             $foundNodes[] = $node;
             return $node;
         });

@@ -18,7 +18,7 @@ interface NodeTypeResolverInterface
     public function getNodeClasses(): array;
 
     /**
-     * @param TNode $node
+     * @param Node $node
      */
     public function resolve(Node $node): Type;
 }
