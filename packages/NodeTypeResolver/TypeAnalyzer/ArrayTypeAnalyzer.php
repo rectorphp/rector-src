@@ -16,8 +16,8 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\Reflection\ReflectionResolver;
 
 final class ArrayTypeAnalyzer
 {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Skipper\Skipper;
 
 use PhpParser\Node;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\ProcessAnalyzer\RectifiedAnalyzer;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\ProcessAnalyzer\RectifiedAnalyzer;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Webmozart\Assert\Assert;
 

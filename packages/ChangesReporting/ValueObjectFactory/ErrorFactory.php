@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\ValueObjectFactory;
 
 use PHPStan\AnalysedCodeException;
-use Rector\Core\Error\ExceptionCorrector;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\ValueObject\Error\SystemError;
+use Rector\Error\ExceptionCorrector;
+use Rector\FileSystem\FilePathHelper;
+use Rector\ValueObject\Error\SystemError;
 
 final class ErrorFactory
 {

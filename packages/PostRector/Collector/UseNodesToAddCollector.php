@@ -7,11 +7,11 @@ namespace Rector\PostRector\Collector;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\Provider\CurrentFileProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\ValueObject\Application\File;
 
 final class UseNodesToAddCollector
 {

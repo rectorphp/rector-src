@@ -52,15 +52,15 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\ClassAnalyzer;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
-use Rector\Core\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
-use Rector\Core\Util\Reflection\PrivatesAccessor;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
+use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
+use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
 
 /**

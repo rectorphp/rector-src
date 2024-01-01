@@ -20,8 +20,8 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Trait_;
 use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Naming\ClassNaming;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\NodeAnalyzer\CallAnalyzer;
+use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 

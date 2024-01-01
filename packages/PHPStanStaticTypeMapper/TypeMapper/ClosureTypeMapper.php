@@ -12,11 +12,11 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ClosureType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @implements TypeMapperInterface<ClosureType>

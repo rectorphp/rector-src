@@ -11,11 +11,11 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
 use Rector\CodingStyle\Application\UseImportsRemover;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Configuration\RenamedClassesDataCollector;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Renaming\Collector\RenamedNameCollector;
 use Rector\Renaming\NodeManipulator\ClassRenamer;
 

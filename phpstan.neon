@@ -112,7 +112,7 @@ parameters:
         - '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
 
-        - '#Property Rector\\Core\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
+        - '#Property Rector\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
 
         -
             message: '#Function "property_exists\(\)" cannot be used/left in the code#'
@@ -177,10 +177,10 @@ parameters:
         - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
 
         # specific generics
-        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:(refactor|refactorWithScope)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Core\\Contract\\Rector#'
+        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:(refactor|refactorWithScope)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Contract\\Rector#'
 
         # generics
-        - '#Parameter \#1 \$stmts of class Rector\\Core\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
+        - '#Parameter \#1 \$stmts of class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
 
         # strict - resolve later
         - '#Foreach overwrites \$(.*?) with its value variable#'
@@ -220,7 +220,7 @@ parameters:
                 - src/PhpParser/NodeTransformer.php
 
         # impossible to validate json string is a class-string
-        - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Core\\Contract\\Rector\\RectorInterface\>\|Rector\\Core\\Contract\\Rector\\RectorInterface, string given#'
+        - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Contract\\Rector\\RectorInterface\>\|Rector\\Contract\\Rector\\RectorInterface, string given#'
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
@@ -239,7 +239,7 @@ parameters:
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
         # known value
-        - '#Method Rector\\Core\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000 but returns int#'
+        - '#Method Rector\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|100000 but returns int#'
 
         # stubs-rector directory exists on target-repository
         -
@@ -345,7 +345,7 @@ parameters:
             path: packages/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
         -
-            message: '#Method Rector\\Core\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
+            message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
             path: src/Util/ArrayParametersMerger.php
 
         # fixture class
@@ -405,7 +405,7 @@ parameters:
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
 
         # false positive on enums
-        - '#Method Rector\\Core\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
+        - '#Method Rector\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
 
         -
             message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
@@ -416,7 +416,7 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Core\\Contract\\Rector(.*?)\:\:(.*?)#'
+        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Contract\\Rector(.*?)\:\:(.*?)#'
 
         # false positive
         -
@@ -477,8 +477,8 @@ parameters:
         # collectors
         - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
 
-        - '#Access to an undefined property (.*?)\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
-        - '#Property Rector\\Core\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
+        - '#Access to an undefined property (.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
+        - '#Property Rector\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts \(array<PhpParser\\Node\\Stmt>\|null\) does not accept array<PhpParser\\Node\\Stmt\|null>#'
         - '#Class "Rector\\Utils\\PHPStan\\Rule\\LongAndDependentComplexRectorRule" is missing @see annotation with test case class reference#'
 
         # dev rule
@@ -497,10 +497,13 @@ parameters:
             message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
 
         # known enum from strings
-        - '#Method Rector\\Core\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array\<.*\> but returns array<int, non\-falsy\-string>#'
+        - '#Method Rector\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array\<.*\> but returns array<int, non\-falsy\-string>#'
 
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
         # skip for now
         - '#Class with base "AutoImportTest" name is already used in "Rector\\Tests\\Issues\\AutoImport\\AutoImportTest", "Rector\\Tests\\TypeDeclaration\\Rector\\StmtsAwareInterface\\DeclareStrictTypesRector\\AutoImportTest"\. Use unique name to make classes easy to recognize#'
+
+        # generics glitch
+        - '#Method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:parseFileAndGetFirstNodeOfType\(\) should return TNode of PhpParser\\Node but returns PhpParser\\Node#'

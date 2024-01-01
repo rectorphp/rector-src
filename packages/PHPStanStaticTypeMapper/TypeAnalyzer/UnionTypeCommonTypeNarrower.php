@@ -17,7 +17,7 @@ use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 
 final class UnionTypeCommonTypeNarrower

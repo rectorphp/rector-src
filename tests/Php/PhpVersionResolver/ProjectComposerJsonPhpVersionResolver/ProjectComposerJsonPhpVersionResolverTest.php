@@ -6,7 +6,7 @@ namespace Rector\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResol
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ProjectComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase

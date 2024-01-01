@@ -7,7 +7,7 @@ namespace Rector\Caching\Detector;
 use Rector\Caching\Cache;
 use Rector\Caching\Config\FileHashComputer;
 use Rector\Caching\Enum\CacheKey;
-use Rector\Core\Util\FileHasher;
+use Rector\Util\FileHasher;
 
 /**
  * Inspired by https://github.com/symplify/symplify/pull/90/files#diff-72041b2e1029a08930e13d79d298ef11

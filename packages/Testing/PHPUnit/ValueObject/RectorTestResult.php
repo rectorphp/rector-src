@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Testing\PHPUnit\ValueObject;
 
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\ValueObject\ProcessResult;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\ValueObject\ProcessResult;
 
 /**
  * @api used in tests

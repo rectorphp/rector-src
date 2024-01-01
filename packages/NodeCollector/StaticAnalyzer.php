@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDoc\ResolvedPhpDocBlock;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Core\Util\StringUtils;
+use Rector\Util\StringUtils;
 
 final class StaticAnalyzer
 {

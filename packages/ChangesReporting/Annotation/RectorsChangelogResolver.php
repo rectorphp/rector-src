@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\Annotation;
 
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 
 final class RectorsChangelogResolver
 {

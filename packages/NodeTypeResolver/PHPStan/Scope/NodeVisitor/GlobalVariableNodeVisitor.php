@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Global_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
-use Rector\Core\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;

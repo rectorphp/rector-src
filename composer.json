@@ -82,7 +82,7 @@
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "next/functions/node_helper.php"
+            "src/functions/node_helper.php"
         ]
     },
     "autoload-dev": {

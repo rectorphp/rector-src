@@ -10,10 +10,10 @@ use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\ValueObject\PhpVersionFeature;
 use Rector\NodeTypeResolver\PHPStan\ObjectWithoutClassTypeWithParentTypes;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @implements TypeMapperInterface<ObjectWithoutClassType>

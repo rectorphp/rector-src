@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\ChangesReporting\Contract\Output;
 
-use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\ProcessResult;
+use Rector\ValueObject\Configuration;
+use Rector\ValueObject\ProcessResult;
 
 interface OutputFormatterInterface
 {

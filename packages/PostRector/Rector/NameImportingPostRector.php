@@ -19,14 +19,14 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\Provider\CurrentFileProvider;
+use Rector\ValueObject\Application\File;
 
 final class NameImportingPostRector extends AbstractPostRector
 {

@@ -13,7 +13,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(
         RenameStringRector::class,
         [
-            'Rector\Core\Tests\Issues\DoubleRun\Fixture\RenameString' => 'new test',
+            'Rector\Tests\Issues\DoubleRun\Fixture\RenameString' => 'new test',
         ]
     );
 };

@@ -7,10 +7,10 @@ namespace Rector\ChangesReporting\Output;
 use Nette\Utils\Json;
 use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
-use Rector\Core\ValueObject\Configuration;
-use Rector\Core\ValueObject\Error\SystemError;
-use Rector\Core\ValueObject\ProcessResult;
 use Rector\Parallel\ValueObject\Bridge;
+use Rector\ValueObject\Configuration;
+use Rector\ValueObject\Error\SystemError;
+use Rector\ValueObject\ProcessResult;
 
 final class JsonOutputFormatter implements OutputFormatterInterface
 {

@@ -8,7 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Type;
-use Rector\Core\Enum\ObjectReference;
+use Rector\Enum\ObjectReference;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\StaticTypeMapper\ValueObject\Type\ParentStaticType;
 

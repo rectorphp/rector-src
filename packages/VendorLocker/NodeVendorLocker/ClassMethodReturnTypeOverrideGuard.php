@@ -14,11 +14,11 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\Core\FileSystem\FilePathHelper;
-use Rector\Core\NodeAnalyzer\MagicClassMethodAnalyzer;
-use Rector\Core\Reflection\ReflectionResolver;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\FileSystem\FilePathHelper;
+use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
+use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
 

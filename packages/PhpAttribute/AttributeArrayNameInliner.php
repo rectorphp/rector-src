@@ -11,7 +11,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use Rector\Core\Exception\NotImplementedYetException;
+use Rector\Exception\NotImplementedYetException;
 use Webmozart\Assert\Assert;
 
 final class AttributeArrayNameInliner

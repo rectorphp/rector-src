@@ -7,17 +7,17 @@ namespace Rector\Config;
 use Illuminate\Container\Container;
 use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\Contract\Rector\CollectorRectorInterface;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Contract\Rector\RectorInterface;
-use Rector\Core\DependencyInjection\Laravel\ContainerMemento;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\ValueObject\PhpVersion;
-use Rector\Core\ValueObject\PolyfillPackage;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Contract\Rector\CollectorRectorInterface;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Contract\Rector\RectorInterface;
+use Rector\DependencyInjection\Laravel\ContainerMemento;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
+use Rector\ValueObject\PhpVersion;
+use Rector\ValueObject\PolyfillPackage;
 use Webmozart\Assert\Assert;
 
 /**

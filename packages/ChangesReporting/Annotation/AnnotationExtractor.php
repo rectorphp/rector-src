@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\Annotation;
 
 use Nette\Utils\Strings;
-use Rector\Core\Contract\Rector\RectorInterface;
+use Rector\Contract\Rector\RectorInterface;
 use ReflectionClass;
 
 /**

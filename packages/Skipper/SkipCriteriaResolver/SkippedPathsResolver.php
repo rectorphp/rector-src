@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\SkipCriteriaResolver;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilePathHelper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 /**

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\SkipCriteriaResolver;
 
-use Rector\Core\Configuration\Option;
-use Rector\Core\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
 final class SkippedClassResolver

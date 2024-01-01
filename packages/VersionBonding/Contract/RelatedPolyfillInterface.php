@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\VersionBonding\Contract;
 
-use Rector\Core\ValueObject\PolyfillPackage;
+use Rector\ValueObject\PolyfillPackage;
 
 /**
- * Can be implemented by @see \Rector\Core\Contract\Rector\RectorInterface
+ * Can be implemented by @see \Rector\Contract\Rector\RectorInterface
  */
 interface RelatedPolyfillInterface
 {

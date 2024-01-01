@@ -17,7 +17,7 @@ use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
-use Rector\Core\Exception\NotImplementedYetException;
+use Rector\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 
 /**

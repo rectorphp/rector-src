@@ -18,14 +18,14 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
-use Rector\Core\Reflection\ReflectionResolver;
-use Rector\Core\ValueObject\MethodName;
+use Rector\Enum\ObjectReference;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeCollector\ValueObject\ArrayCallableDynamicMethod;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\Reflection\ReflectionResolver;
+use Rector\ValueObject\MethodName;
 
 final class ArrayCallableMethodMatcher
 {

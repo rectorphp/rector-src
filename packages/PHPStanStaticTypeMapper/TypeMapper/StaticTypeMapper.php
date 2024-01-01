@@ -9,13 +9,13 @@ use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
-use Rector\Core\Enum\ObjectReference;
-use Rector\Core\Php\PhpVersionProvider;
-use Rector\Core\ValueObject\PhpVersionFeature;
+use Rector\Enum\ObjectReference;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @see \Rector\Tests\NodeTypeResolver\StaticTypeMapper\StaticTypeMapperTest

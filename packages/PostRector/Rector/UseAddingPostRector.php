@@ -7,13 +7,13 @@ namespace Rector\PostRector\Rector;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\CodingStyle\Application\UseImportsAdder;
-use Rector\Core\Exception\ShouldNotHappenException;
-use Rector\Core\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Core\Provider\CurrentFileProvider;
-use Rector\Core\ValueObject\Application\File;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\Provider\CurrentFileProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\ValueObject\Application\File;
 
 final class UseAddingPostRector extends AbstractPostRector
 {
