@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\Core\ValueObjectFactory\Application;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Core\FileSystem\FilesFinder;
 use Rector\Core\ValueObject\Configuration;
+use Rector\FileSystem\FilesFinder;
 
 /**
  * @see \Rector\Core\ValueObject\Application\File

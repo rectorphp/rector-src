@@ -14,8 +14,12 @@ use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\Isset_;
 use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+<<<<<<< HEAD
 use Rector\Core\NodeAnalyzer\ExprAnalyzer;
 use Rector\Strict\NodeAnalyzer\UnitializedPropertyAnalyzer;
+=======
+use Rector\NodeAnalyzer\ExprAnalyzer;
+>>>>>>> e9dcd653cd ([psr-4] Move second group of classes from Rector Core to Rector namespace)
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;

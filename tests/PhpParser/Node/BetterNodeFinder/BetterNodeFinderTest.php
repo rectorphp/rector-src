@@ -7,8 +7,8 @@ namespace Rector\Tests\PhpParser\Node\BetterNodeFinder;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
-use Rector\Core\PhpParser\Node\BetterNodeFinder;
-use Rector\Core\PhpParser\Parser\SimplePhpParser;
+use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\Parser\SimplePhpParser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class BetterNodeFinderTest extends AbstractLazyTestCase

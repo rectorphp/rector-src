@@ -13,7 +13,7 @@ use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
+use Rector\PhpParser\Comparing\NodeComparator;
 
 final class UselessIfCondBeforeForeachDetector
 {

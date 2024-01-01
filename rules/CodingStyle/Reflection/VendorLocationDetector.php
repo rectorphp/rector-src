@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Reflection;
 
 use PHPStan\Reflection\MethodReflection;
-use Rector\Core\FileSystem\FilePathHelper;
+use Rector\FileSystem\FilePathHelper;
 
 final class VendorLocationDetector
 {

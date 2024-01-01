@@ -8,8 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Include_;
 use PhpParser\Node\Expr\Variable;
-use Rector\Core\NodeAnalyzer\CompactFuncCallAnalyzer;
-use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
+use Rector\NodeAnalyzer\CompactFuncCallAnalyzer;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 
 final class ExprUsedInNodeAnalyzer
 {

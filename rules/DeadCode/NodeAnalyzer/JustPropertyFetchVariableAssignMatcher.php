@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
 use Rector\DeadCode\ValueObject\VariableAndPropertyFetchAssign;
+use Rector\PhpParser\Comparing\NodeComparator;
 
 final class JustPropertyFetchVariableAssignMatcher
 {

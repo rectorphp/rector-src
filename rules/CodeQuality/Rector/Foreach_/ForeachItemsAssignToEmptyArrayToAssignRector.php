@@ -15,8 +15,8 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeTraverser;
 use Rector\CodeQuality\NodeAnalyzer\ForeachAnalyzer;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Core\Rector\AbstractRector;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

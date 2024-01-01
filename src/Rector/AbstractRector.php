@@ -19,16 +19,16 @@ use PHPStan\Type\Type;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Core\NodeDecorator\CreatedByRuleDecorator;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\Core\Provider\CurrentFileProvider;
 use Rector\Core\ValueObject\Application\File;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Comparing\NodeComparator;
+use Rector\PhpParser\Node\NodeFactory;
 use Rector\Skipper\Skipper\Skipper;
 
 abstract class AbstractRector extends NodeVisitorAbstract implements RectorInterface

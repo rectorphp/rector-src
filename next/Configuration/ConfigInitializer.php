@@ -7,8 +7,8 @@ namespace Rector\Configuration;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\Core\FileSystem\InitFilePathsResolver;
-use Rector\Core\Php\PhpVersionProvider;
+use Rector\FileSystem\InitFilePathsResolver;
+use Rector\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 

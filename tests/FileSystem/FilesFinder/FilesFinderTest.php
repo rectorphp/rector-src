@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Core\FileSystem\FilesFinder;
+use Rector\FileSystem\FilesFinder;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class FilesFinderTest extends AbstractLazyTestCase

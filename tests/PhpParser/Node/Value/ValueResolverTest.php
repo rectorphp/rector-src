@@ -9,7 +9,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Plus;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\PhpParser\Node\Value\Source\ClassForConstant;
 

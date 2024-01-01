@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\FileSystem\InitFilePathsResolver;
 
 use PHPUnit\Framework\TestCase;
-use Rector\Core\FileSystem\InitFilePathsResolver;
+use Rector\FileSystem\InitFilePathsResolver;
 
 final class InitFilePathsResolverTest extends TestCase
 {

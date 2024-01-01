@@ -14,8 +14,8 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Core\PhpParser\Printer\BetterStandardPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class BetterStandardPrinterTest extends AbstractLazyTestCase

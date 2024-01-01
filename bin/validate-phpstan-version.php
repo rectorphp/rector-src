@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Rector\Core\FileSystem\JsonFileSystem;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\FileSystem\JsonFileSystem;
 use Symfony\Component\Console\Command\Command;
 
 require __DIR__ . '/../vendor/autoload.php';

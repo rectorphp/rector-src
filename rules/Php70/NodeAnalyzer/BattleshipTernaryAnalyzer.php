@@ -8,10 +8,10 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\Ternary;
-use Rector\Core\PhpParser\Comparing\NodeComparator;
-use Rector\Core\PhpParser\Node\Value\ValueResolver;
 use Rector\Php70\Enum\BattleshipCompareOrder;
 use Rector\Php70\ValueObject\ComparedExprs;
+use Rector\PhpParser\Comparing\NodeComparator;
+use Rector\PhpParser\Node\Value\ValueResolver;
 
 final class BattleshipTernaryAnalyzer
 {

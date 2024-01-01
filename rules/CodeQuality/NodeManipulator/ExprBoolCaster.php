@@ -12,9 +12,9 @@ use PhpParser\Node\Expr\Cast\Bool_;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
-use Rector\Core\PhpParser\Node\NodeFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\StaticTypeAnalyzer;
+use Rector\PhpParser\Node\NodeFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 
 final class ExprBoolCaster
