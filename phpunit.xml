@@ -12,15 +12,8 @@
         <testsuite name="main">
             <directory>tests</directory>
             <directory>rules-tests</directory>
-            <directory>utils-tests</directory>
         </testsuite>
     </testsuites>
-
-    <extensions>
-        <bootstrap class="RobinIngelbrecht\PHPUnitPrettyPrint\PhpUnitExtension">
-            <parameter name="enableByDefault" value="false"/>
-        </bootstrap>
-    </extensions>
 
     <php>
         <ini name="memory_limit" value="-1"/>
