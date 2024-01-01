@@ -29,7 +29,6 @@ parameters:
         - tests
         - rules-tests
         - utils
-        - utils-tests
 
     scanDirectories:
         - stubs
