@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHPStan\Collectors;
 
+use PhpParser\Node;
 use PHPStan\Analyser\Scope;
 
 if (class_exists('PHPStan\Collectors\Collector', false)) {
