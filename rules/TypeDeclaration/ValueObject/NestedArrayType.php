@@ -7,12 +7,12 @@ namespace Rector\TypeDeclaration\ValueObject;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 
-final class NestedArrayType
+final readonly class NestedArrayType
 {
     public function __construct(
-        private readonly Type $type,
-        private readonly int $arrayNestingLevel,
-        private readonly ?Type $keyType = null
+        private Type $type,
+        private int $arrayNestingLevel,
+        private ?Type $keyType = null
     ) {
     }
 

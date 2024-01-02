@@ -6,12 +6,12 @@ namespace Rector\Php80\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class AnnotationPropertyToAttributeClass
+final readonly class AnnotationPropertyToAttributeClass
 {
     public function __construct(
-        private readonly string $attributeClass,
-        private readonly string|int|null $annotationProperty = null,
-        private readonly bool $doesNeedNewImport = false
+        private string $attributeClass,
+        private string|int|null $annotationProperty = null,
+        private bool $doesNeedNewImport = false
     ) {
         RectorAssert::className($attributeClass);
     }

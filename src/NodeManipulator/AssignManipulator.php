@@ -16,12 +16,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class AssignManipulator
+final readonly class AssignManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

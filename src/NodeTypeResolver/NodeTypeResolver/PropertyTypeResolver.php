@@ -17,10 +17,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
  *
  * @implements NodeTypeResolverInterface<Property>
  */
-final class PropertyTypeResolver implements NodeTypeResolverInterface
+final readonly class PropertyTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
-        private readonly PropertyFetchTypeResolver $propertyFetchTypeResolver
+        private PropertyFetchTypeResolver $propertyFetchTypeResolver
     ) {
     }
 

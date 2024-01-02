@@ -19,13 +19,13 @@ use Rector\Php80\ValueObject\PropertyPromotionCandidate;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class PromotedPropertyCandidateResolver
+final readonly class PromotedPropertyCandidateResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

@@ -9,10 +9,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\NameImportingPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
-final class DocBlockNameImporter
+final readonly class DocBlockNameImporter
 {
     public function __construct(
-        private readonly NameImportingPhpDocNodeVisitor $nameImportingPhpDocNodeVisitor,
+        private NameImportingPhpDocNodeVisitor $nameImportingPhpDocNodeVisitor,
     ) {
     }
 

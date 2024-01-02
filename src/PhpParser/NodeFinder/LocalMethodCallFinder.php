@@ -13,12 +13,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class LocalMethodCallFinder
+final readonly class LocalMethodCallFinder
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeTypeResolver $nodeTypeResolver,
+        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

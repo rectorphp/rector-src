@@ -11,12 +11,12 @@ use PhpParser\Node\Stmt\Property;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class PropertyPromotionCandidate
+final readonly class PropertyPromotionCandidate
 {
     public function __construct(
-        private readonly Property $property,
-        private readonly Param $param,
-        private readonly Expression $expression,
+        private Property $property,
+        private Param $param,
+        private Expression $expression,
     ) {
     }
 

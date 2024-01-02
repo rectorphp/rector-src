@@ -7,13 +7,13 @@ namespace Rector\Removing\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final class ArgumentRemover
+final readonly class ArgumentRemover
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly int $position,
-        private readonly mixed $value
+        private string $class,
+        private string $method,
+        private int $position,
+        private mixed $value
     ) {
         RectorAssert::className($class);
     }

@@ -11,10 +11,10 @@ use PHPStan\Type\TypeWithClassName;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
 
-final class SameNamespacedTypeSpecifier implements TypeWithClassTypeSpecifierInterface
+final readonly class SameNamespacedTypeSpecifier implements TypeWithClassTypeSpecifierInterface
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
+        private ReflectionProvider $reflectionProvider,
     ) {
     }
 

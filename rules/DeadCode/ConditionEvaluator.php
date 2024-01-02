@@ -14,10 +14,10 @@ use Rector\DeadCode\ValueObject\VersionCompareCondition;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Php\PhpVersionProvider;
 
-final class ConditionEvaluator
+final readonly class ConditionEvaluator
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

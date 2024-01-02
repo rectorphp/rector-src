@@ -14,11 +14,11 @@ use PHPStan\Type\MixedType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 
-final class SwitchAnalyzer
+final readonly class SwitchAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeFactory $typeFactory
+        private NodeTypeResolver $nodeTypeResolver,
+        private TypeFactory $typeFactory
     ) {
     }
 

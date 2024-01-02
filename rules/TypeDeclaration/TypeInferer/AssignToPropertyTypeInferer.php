@@ -32,19 +32,19 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 /**
  * @internal
  */
-final class AssignToPropertyTypeInferer
+final readonly class AssignToPropertyTypeInferer
 {
     public function __construct(
-        private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly PropertyAssignMatcher $propertyAssignMatcher,
-        private readonly PropertyDefaultAssignDetector $propertyDefaultAssignDetector,
-        private readonly NullTypeAssignDetector $nullTypeAssignDetector,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly TypeFactory $typeFactory,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ValueResolver $valueResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private ConstructorAssignDetector $constructorAssignDetector,
+        private PropertyAssignMatcher $propertyAssignMatcher,
+        private PropertyDefaultAssignDetector $propertyDefaultAssignDetector,
+        private NullTypeAssignDetector $nullTypeAssignDetector,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private TypeFactory $typeFactory,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ExprAnalyzer $exprAnalyzer,
+        private ValueResolver $valueResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
     ) {
     }
 

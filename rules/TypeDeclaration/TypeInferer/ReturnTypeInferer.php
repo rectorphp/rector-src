@@ -36,17 +36,17 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @internal
  */
-final class ReturnTypeInferer
+final readonly class ReturnTypeInferer
 {
     public function __construct(
-        private readonly TypeNormalizer $typeNormalizer,
-        private readonly ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer,
-        private readonly GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private TypeNormalizer $typeNormalizer,
+        private ReturnedNodesReturnTypeInfererTypeInferer $returnedNodesReturnTypeInfererTypeInferer,
+        private GenericClassStringTypeNormalizer $genericClassStringTypeNormalizer,
+        private PhpVersionProvider $phpVersionProvider,
+        private BetterNodeFinder $betterNodeFinder,
+        private ReflectionResolver $reflectionResolver,
+        private ReflectionProvider $reflectionProvider,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

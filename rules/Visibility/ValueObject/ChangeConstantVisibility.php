@@ -7,12 +7,12 @@ namespace Rector\Visibility\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final class ChangeConstantVisibility
+final readonly class ChangeConstantVisibility
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $constant,
-        private readonly int $visibility
+        private string $class,
+        private string $constant,
+        private int $visibility
     ) {
         RectorAssert::className($class);
     }

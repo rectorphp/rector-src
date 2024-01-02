@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 
-final class PropertyAssignMatcher
+final readonly class PropertyAssignMatcher
 {
     public function __construct(
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

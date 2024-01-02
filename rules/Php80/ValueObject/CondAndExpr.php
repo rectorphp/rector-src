@@ -7,16 +7,16 @@ namespace Rector\Php80\ValueObject;
 use PhpParser\Node\Expr;
 use Rector\Php80\Enum\MatchKind;
 
-final class CondAndExpr
+final readonly class CondAndExpr
 {
     /**
      * @param Expr[]|null $condExprs
      * @param MatchKind::* $matchKind
      */
     public function __construct(
-        private readonly array|null $condExprs,
-        private readonly Expr $expr,
-        private readonly string $matchKind
+        private array|null $condExprs,
+        private Expr $expr,
+        private string $matchKind
     ) {
     }
 

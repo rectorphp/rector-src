@@ -13,11 +13,11 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class IfAndAnalyzer
+final readonly class IfAndAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeComparator $nodeComparator,
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeComparator $nodeComparator,
     ) {
     }
 

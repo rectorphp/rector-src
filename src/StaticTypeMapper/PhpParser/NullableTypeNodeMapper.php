@@ -16,13 +16,13 @@ use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 /**
  * @implements PhpParserNodeMapperInterface<NullableType>
  */
-final class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
+final readonly class NullableTypeNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private readonly TypeFactory $typeFactory,
-        private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
-        private readonly NameNodeMapper $nameNodeMapper,
-        private readonly IdentifierNodeMapper $identifierNodeMapper
+        private TypeFactory $typeFactory,
+        private FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
+        private NameNodeMapper $nameNodeMapper,
+        private IdentifierNodeMapper $identifierNodeMapper
     ) {
     }
 

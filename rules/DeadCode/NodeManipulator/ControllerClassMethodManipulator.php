@@ -11,11 +11,11 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ControllerClassMethodManipulator
+final readonly class ControllerClassMethodManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private NodeNameResolver $nodeNameResolver,
+        private PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

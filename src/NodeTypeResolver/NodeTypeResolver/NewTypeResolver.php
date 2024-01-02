@@ -24,11 +24,11 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 /**
  * @implements NodeTypeResolverInterface<New_>
  */
-final class NewTypeResolver implements NodeTypeResolverInterface
+final readonly class NewTypeResolver implements NodeTypeResolverInterface
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer,
+        private NodeNameResolver $nodeNameResolver,
+        private ClassAnalyzer $classAnalyzer,
     ) {
     }
 

@@ -15,12 +15,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class IsArrayAndDualCheckToAble
+final readonly class IsArrayAndDualCheckToAble
 {
     public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator
+        private BinaryOpManipulator $binaryOpManipulator,
+        private NodeNameResolver $nodeNameResolver,
+        private NodeComparator $nodeComparator
     ) {
     }
 

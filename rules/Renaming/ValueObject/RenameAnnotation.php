@@ -9,11 +9,11 @@ use Rector\Renaming\Contract\RenameAnnotationInterface;
 /**
  * @api
  */
-final class RenameAnnotation implements RenameAnnotationInterface
+final readonly class RenameAnnotation implements RenameAnnotationInterface
 {
     public function __construct(
-        private readonly string $oldAnnotation,
-        private readonly string $newAnnotation
+        private string $oldAnnotation,
+        private string $newAnnotation
     ) {
     }
 

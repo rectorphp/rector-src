@@ -10,12 +10,12 @@ use PHPStan\Type\ObjectType;
 use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ClassManipulator
+final readonly class ClassManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ClassChildAnalyzer $classChildAnalyzer
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionProvider $reflectionProvider,
+        private ClassChildAnalyzer $classChildAnalyzer
     ) {
     }
 

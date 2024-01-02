@@ -13,10 +13,10 @@ use PhpParser\Node\Scalar\String_;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class CompactConverter
+final readonly class CompactConverter
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private ValueResolver $valueResolver
     ) {
     }
 

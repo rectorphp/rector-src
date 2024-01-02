@@ -6,15 +6,15 @@ namespace Rector\PhpParser\ValueObject;
 
 use PhpParser\Node\Stmt;
 
-final class StmtsAndTokens
+final readonly class StmtsAndTokens
 {
     /**
      * @param Stmt[] $stmts
      * @param array<int, array{int, string, int}|string> $tokens
      */
     public function __construct(
-        private readonly array $stmts,
-        private readonly array $tokens
+        private array $stmts,
+        private array $tokens
     ) {
     }
 

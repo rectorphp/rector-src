@@ -14,13 +14,13 @@ use Rector\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 
-final class PhpParserNodeMapper
+final readonly class PhpParserNodeMapper
 {
     /**
      * @param PhpParserNodeMapperInterface[] $phpParserNodeMappers
      */
     public function __construct(
-        private readonly iterable $phpParserNodeMappers
+        private iterable $phpParserNodeMappers
     ) {
     }
 

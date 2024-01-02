@@ -17,15 +17,15 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\TypeDeclaration\NodeAnalyzer\ParamAnalyzer;
 
-final class DeadParamTagValueNodeAnalyzer
+final readonly class DeadParamTagValueNodeAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly TypeComparator $typeComparator,
-        private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
-        private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
-        private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private NodeNameResolver $nodeNameResolver,
+        private TypeComparator $typeComparator,
+        private GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
+        private MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
+        private ParamAnalyzer $paramAnalyzer,
+        private PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 

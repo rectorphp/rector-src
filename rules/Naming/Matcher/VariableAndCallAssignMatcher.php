@@ -14,12 +14,12 @@ use Rector\Naming\ValueObject\VariableAndCallAssign;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class VariableAndCallAssignMatcher
+final readonly class VariableAndCallAssignMatcher
 {
     public function __construct(
-        private readonly CallMatcher $callMatcher,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private CallMatcher $callMatcher,
+        private NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
     ) {
     }
 

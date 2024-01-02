@@ -12,10 +12,10 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class TypeNodeUnwrapper
+final readonly class TypeNodeUnwrapper
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator
     ) {
     }
 

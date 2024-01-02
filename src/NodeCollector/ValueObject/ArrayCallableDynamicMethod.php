@@ -10,12 +10,12 @@ use Rector\Validation\RectorAssert;
 /**
  * @api
  */
-final class ArrayCallableDynamicMethod
+final readonly class ArrayCallableDynamicMethod
 {
     public function __construct(
-        private readonly Expr $callerExpr,
-        private readonly string $class,
-        private readonly Expr $method
+        private Expr $callerExpr,
+        private string $class,
+        private Expr $method
     ) {
         RectorAssert::className($class);
     }

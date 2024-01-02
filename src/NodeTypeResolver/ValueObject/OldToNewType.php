@@ -6,11 +6,11 @@ namespace Rector\NodeTypeResolver\ValueObject;
 
 use PHPStan\Type\Type;
 
-final class OldToNewType
+final readonly class OldToNewType
 {
     public function __construct(
-        private readonly Type $oldType,
-        private readonly Type $newType
+        private Type $oldType,
+        private Type $newType
     ) {
     }
 

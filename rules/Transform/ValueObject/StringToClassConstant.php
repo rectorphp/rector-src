@@ -6,12 +6,12 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class StringToClassConstant
+final readonly class StringToClassConstant
 {
     public function __construct(
-        private readonly string $string,
-        private readonly string $class,
-        private readonly string $constant
+        private string $string,
+        private string $class,
+        private string $constant
     ) {
         RectorAssert::className($class);
     }

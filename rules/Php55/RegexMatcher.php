@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\String_;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class RegexMatcher
+final readonly class RegexMatcher
 {
     /**
      * @var string
@@ -31,7 +31,7 @@ final class RegexMatcher
     private const ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
 
     public function __construct(
-        private readonly ValueResolver $valueResolver
+        private ValueResolver $valueResolver
     ) {
     }
 

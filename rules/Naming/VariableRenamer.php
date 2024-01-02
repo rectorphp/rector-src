@@ -18,13 +18,13 @@ use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class VariableRenamer
+final readonly class VariableRenamer
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly VarTagValueNodeRenamer $varTagValueNodeRenamer,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private VarTagValueNodeRenamer $varTagValueNodeRenamer,
+        private PhpDocInfoFactory $phpDocInfoFactory
     ) {
     }
 

@@ -6,11 +6,11 @@ namespace Rector\Php70\ValueObject;
 
 use PhpParser\Node\Expr;
 
-final class ComparedExprs
+final readonly class ComparedExprs
 {
     public function __construct(
-        private readonly Expr $firstExpr,
-        private readonly Expr $secondExpr,
+        private Expr $firstExpr,
+        private Expr $secondExpr,
     ) {
     }
 

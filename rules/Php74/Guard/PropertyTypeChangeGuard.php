@@ -11,13 +11,13 @@ use Rector\NodeManipulator\PropertyManipulator;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Privatization\Guard\ParentPropertyLookupGuard;
 
-final class PropertyTypeChangeGuard
+final readonly class PropertyTypeChangeGuard
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PropertyAnalyzer $propertyAnalyzer,
-        private readonly PropertyManipulator $propertyManipulator,
-        private readonly ParentPropertyLookupGuard $parentPropertyLookupGuard
+        private NodeNameResolver $nodeNameResolver,
+        private PropertyAnalyzer $propertyAnalyzer,
+        private PropertyManipulator $propertyManipulator,
+        private ParentPropertyLookupGuard $parentPropertyLookupGuard
     ) {
     }
 

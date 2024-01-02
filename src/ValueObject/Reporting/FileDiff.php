@@ -11,7 +11,7 @@ use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
-final class FileDiff implements SerializableInterface
+final readonly class FileDiff implements SerializableInterface
 {
     /**
      * @var string
@@ -28,10 +28,10 @@ final class FileDiff implements SerializableInterface
      * @param RectorWithLineChange[] $rectorsWithLineChanges
      */
     public function __construct(
-        private readonly string $relativeFilePath,
-        private readonly string $diff,
-        private readonly string $diffConsoleFormatted,
-        private readonly array $rectorsWithLineChanges = []
+        private string $relativeFilePath,
+        private string $diff,
+        private string $diffConsoleFormatted,
+        private array $rectorsWithLineChanges = []
     ) {
         Assert::allIsInstanceOf($rectorsWithLineChanges, RectorWithLineChange::class);
     }

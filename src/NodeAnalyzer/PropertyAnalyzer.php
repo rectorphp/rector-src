@@ -13,10 +13,10 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
-final class PropertyAnalyzer
+final readonly class PropertyAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

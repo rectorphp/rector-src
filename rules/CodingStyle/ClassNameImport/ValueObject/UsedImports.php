@@ -7,7 +7,7 @@ namespace Rector\CodingStyle\ClassNameImport\ValueObject;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class UsedImports
+final readonly class UsedImports
 {
     /**
      * @param array<FullyQualifiedObjectType|AliasedObjectType> $useImports
@@ -15,9 +15,9 @@ final class UsedImports
      * @param FullyQualifiedObjectType[] $constantImports
      */
     public function __construct(
-        private readonly array $useImports,
-        private readonly array $functionImports,
-        private readonly array $constantImports
+        private array $useImports,
+        private array $functionImports,
+        private array $constantImports
     ) {
     }
 

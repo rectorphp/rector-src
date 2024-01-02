@@ -21,13 +21,13 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\ValueObject\AssignToVariable;
 
-final class StrictReturnNewAnalyzer
+final readonly class StrictReturnNewAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ReturnAnalyzer $returnAnalyzer
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ReturnAnalyzer $returnAnalyzer
     ) {
     }
 

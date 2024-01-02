@@ -18,13 +18,13 @@ use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class IfManipulator
+final readonly class IfManipulator
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StmtsManipulator $stmtsManipulator,
-        private readonly ValueResolver $valueResolver,
-        private readonly NodeComparator $nodeComparator
+        private BetterNodeFinder $betterNodeFinder,
+        private StmtsManipulator $stmtsManipulator,
+        private ValueResolver $valueResolver,
+        private NodeComparator $nodeComparator
     ) {
     }
 

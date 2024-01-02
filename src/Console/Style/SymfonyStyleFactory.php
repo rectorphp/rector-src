@@ -11,10 +11,10 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class SymfonyStyleFactory
+final readonly class SymfonyStyleFactory
 {
     public function __construct(
-        private readonly PrivatesAccessor $privatesAccessor
+        private PrivatesAccessor $privatesAccessor
     ) {
     }
 

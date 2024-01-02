@@ -7,10 +7,10 @@ namespace Rector\Naming\Guard;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Naming\ValueObject\PropertyRename;
 
-final class HasMagicGetSetGuard
+final readonly class HasMagicGetSetGuard
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

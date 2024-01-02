@@ -8,10 +8,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Renaming\Collector\RenamedNameCollector;
 
-final class UseImportsRemover
+final readonly class UseImportsRemover
 {
     public function __construct(
-        private readonly RenamedNameCollector $renamedNameCollector
+        private RenamedNameCollector $renamedNameCollector
     ) {
     }
 

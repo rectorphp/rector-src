@@ -10,15 +10,15 @@ use PhpParser\Node\Stmt\PropertyProperty;
 use Rector\Naming\Contract\RenamePropertyValueObjectInterface;
 use Rector\Validation\RectorAssert;
 
-final class PropertyRename implements RenamePropertyValueObjectInterface
+final readonly class PropertyRename implements RenamePropertyValueObjectInterface
 {
     public function __construct(
-        private readonly Property $property,
-        private readonly string $expectedName,
-        private readonly string $currentName,
-        private readonly ClassLike $classLike,
-        private readonly string $classLikeName,
-        private readonly PropertyProperty $propertyProperty
+        private Property $property,
+        private string $expectedName,
+        private string $currentName,
+        private ClassLike $classLike,
+        private string $classLikeName,
+        private PropertyProperty $propertyProperty
     ) {
         // name must be valid
         RectorAssert::propertyName($currentName);

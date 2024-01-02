@@ -281,7 +281,7 @@ CODE_SAMPLE;
             return;
         }
 
-        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes) {
+        $this->traverseNodesWithCallable($node, static function (Node $subNode) use ($otherTypes): null {
             if (in_array($subNode::class, $otherTypes, true)) {
                 $subNode->setAttribute(AttributeKey::SKIPPED_BY_RECTOR_RULE, static::class);
             }

@@ -32,10 +32,10 @@ use PhpParser\Node\Scalar;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class LivingCodeManipulator
+final readonly class LivingCodeManipulator
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

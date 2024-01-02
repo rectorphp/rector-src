@@ -16,11 +16,11 @@ use Rector\Exception\Cache\CachingException;
  * Inspired by https://github.com/phpstan/phpstan-src/blob/1e7ceae933f07e5a250b61ed94799e6c2ea8daa2/src/Cache/FileCacheStorage.php
  * @see \Rector\Tests\Caching\ValueObject\Storage\FileCacheStorageTest
  */
-final class FileCacheStorage implements CacheStorageInterface
+final readonly class FileCacheStorage implements CacheStorageInterface
 {
     public function __construct(
-        private readonly string $directory,
-        private readonly \Symfony\Component\Filesystem\Filesystem $filesystem
+        private string $directory,
+        private \Symfony\Component\Filesystem\Filesystem $filesystem
     ) {
     }
 

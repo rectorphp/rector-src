@@ -10,10 +10,10 @@ use PhpParser\Node\Param;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ParamRenameFactory
+final readonly class ParamRenameFactory
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

@@ -222,7 +222,7 @@ CODE_SAMPLE
         $this->traverseNodesWithCallable($catch->stmts, function (Node $node) use (
             $oldVariableName,
             $newVariableName
-        ) {
+        ): null {
             if (! $node instanceof Variable) {
                 return null;
             }

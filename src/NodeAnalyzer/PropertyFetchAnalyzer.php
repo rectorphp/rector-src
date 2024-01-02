@@ -28,7 +28,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 
-final class PropertyFetchAnalyzer
+final readonly class PropertyFetchAnalyzer
 {
     /**
      * @var string
@@ -36,11 +36,11 @@ final class PropertyFetchAnalyzer
     private const THIS = 'this';
 
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly AstResolver $astResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private NodeNameResolver $nodeNameResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private AstResolver $astResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

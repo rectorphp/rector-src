@@ -25,18 +25,18 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
-final class ClassDependencyManipulator
+final readonly class ClassDependencyManipulator
 {
     public function __construct(
-        private readonly ClassInsertManipulator $classInsertManipulator,
-        private readonly ClassMethodAssignManipulator $classMethodAssignManipulator,
-        private readonly NodeFactory $nodeFactory,
-        private readonly StmtsManipulator $stmtsManipulator,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly PropertyPresenceChecker $propertyPresenceChecker,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private ClassInsertManipulator $classInsertManipulator,
+        private ClassMethodAssignManipulator $classMethodAssignManipulator,
+        private NodeFactory $nodeFactory,
+        private StmtsManipulator $stmtsManipulator,
+        private PhpVersionProvider $phpVersionProvider,
+        private PropertyPresenceChecker $propertyPresenceChecker,
+        private NodeNameResolver $nodeNameResolver,
+        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

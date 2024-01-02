@@ -11,7 +11,7 @@ use PHPStan\Reflection\Native\NativeFunctionReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class PureFunctionDetector
+final readonly class PureFunctionDetector
 {
     /**
      * @see https://github.com/vimeo/psalm/blob/d470903722cfcbc1cd04744c5491d3e6d13ec3d9/src/Psalm/Internal/Codebase/Functions.php#L288
@@ -121,8 +121,8 @@ final class PureFunctionDetector
     ];
 
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

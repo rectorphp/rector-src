@@ -16,12 +16,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class CountManipulator
+final readonly class CountManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator,
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeNameResolver $nodeNameResolver,
+        private NodeComparator $nodeComparator,
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

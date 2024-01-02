@@ -15,11 +15,11 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Renaming\Collector\RenamedNameCollector;
 
-final class PhpDocClassRenamer
+final readonly class PhpDocClassRenamer
 {
     public function __construct(
-        private readonly ClassAnnotationMatcher $classAnnotationMatcher,
-        private readonly RenamedNameCollector $renamedNameCollector
+        private ClassAnnotationMatcher $classAnnotationMatcher,
+        private RenamedNameCollector $renamedNameCollector
     ) {
     }
 

@@ -18,11 +18,11 @@ use Rector\ValueObject\Application\File;
  * if there is already:
  * - use App\Another\Product
  */
-final class UsesClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
+final readonly class UsesClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private UseNodesToAddCollector $useNodesToAddCollector,
+        private RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 

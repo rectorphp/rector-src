@@ -8,15 +8,15 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
 
-final class ArgumentAdderWithoutDefaultValue
+final readonly class ArgumentAdderWithoutDefaultValue
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly int $position,
-        private readonly ?string $argumentName = null,
-        private readonly Type | null $argumentType = null,
-        private readonly ?string $scope = null
+        private string $class,
+        private string $method,
+        private int $position,
+        private ?string $argumentName = null,
+        private Type | null $argumentType = null,
+        private ?string $scope = null
     ) {
         RectorAssert::className($class);
     }

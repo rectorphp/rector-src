@@ -17,13 +17,13 @@ use Rector\NodeTypeResolver\PHPStan\Type\StaticTypeAnalyzer;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 
-final class ExprBoolCaster
+final readonly class ExprBoolCaster
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeUnwrapper $typeUnwrapper,
-        private readonly StaticTypeAnalyzer $staticTypeAnalyzer,
-        private readonly NodeFactory $nodeFactory
+        private NodeTypeResolver $nodeTypeResolver,
+        private TypeUnwrapper $typeUnwrapper,
+        private StaticTypeAnalyzer $staticTypeAnalyzer,
+        private NodeFactory $nodeFactory
     ) {
     }
 

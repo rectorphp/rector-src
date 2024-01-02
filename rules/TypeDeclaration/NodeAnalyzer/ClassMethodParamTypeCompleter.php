@@ -22,13 +22,13 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 
-final class ClassMethodParamTypeCompleter
+final readonly class ClassMethodParamTypeCompleter
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
-        private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
-        private readonly PhpVersionProvider $phpVersionProvider,
+        private StaticTypeMapper $staticTypeMapper,
+        private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
+        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
+        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 

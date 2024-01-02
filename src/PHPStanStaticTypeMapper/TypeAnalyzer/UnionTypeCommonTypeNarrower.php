@@ -20,7 +20,7 @@ use PHPStan\Type\UnionType;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeTypeResolver\NodeTypeCorrector\GenericClassStringTypeCorrector;
 
-final class UnionTypeCommonTypeNarrower
+final readonly class UnionTypeCommonTypeNarrower
 {
     /**
      * Key = the winner Array = the group of types matched
@@ -39,8 +39,8 @@ final class UnionTypeCommonTypeNarrower
     ];
 
     public function __construct(
-        private readonly GenericClassStringTypeCorrector $genericClassStringTypeCorrector,
-        private readonly ReflectionProvider $reflectionProvider
+        private GenericClassStringTypeCorrector $genericClassStringTypeCorrector,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

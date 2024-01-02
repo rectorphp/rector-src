@@ -7,10 +7,10 @@ namespace Rector\Reflection;
 use PhpParser\Node;
 use PHPStan\Reflection\ClassReflection;
 
-final class ClassModifierChecker
+final readonly class ClassModifierChecker
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

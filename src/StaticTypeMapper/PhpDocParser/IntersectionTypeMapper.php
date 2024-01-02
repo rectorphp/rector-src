@@ -17,10 +17,10 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 /**
  * @implements PhpDocTypeMapperInterface<IntersectionTypeNode>
  */
-final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
+final readonly class IntersectionTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private readonly IdentifierTypeMapper $identifierTypeMapper
+        private IdentifierTypeMapper $identifierTypeMapper
     ) {
     }
 

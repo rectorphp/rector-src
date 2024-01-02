@@ -17,7 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class CallAnalyzer
+final readonly class CallAnalyzer
 {
     /**
      * @var array<class-string<Expr>>
@@ -25,7 +25,7 @@ final class CallAnalyzer
     private const OBJECT_CALL_TYPES = [MethodCall::class, NullsafeMethodCall::class, StaticCall::class];
 
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

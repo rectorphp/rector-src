@@ -7,11 +7,11 @@ namespace Rector\DeadCode\ValueObject;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 
-final class VariableAndPropertyFetchAssign
+final readonly class VariableAndPropertyFetchAssign
 {
     public function __construct(
-        private readonly Variable $variable,
-        private readonly PropertyFetch $propertyFetch
+        private Variable $variable,
+        private PropertyFetch $propertyFetch
     ) {
     }
 

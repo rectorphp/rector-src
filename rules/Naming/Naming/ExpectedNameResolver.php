@@ -23,13 +23,13 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class ExpectedNameResolver
+final readonly class ExpectedNameResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyNaming $propertyNaming,
-        private readonly MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver
+        private NodeNameResolver $nodeNameResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyNaming $propertyNaming,
+        private MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver
     ) {
     }
 

@@ -16,7 +16,7 @@ use Symplify\EasyParallel\Reflection\CommandFromReflectionFactory;
  * @see \Rector\Tests\Parallel\Command\WorkerCommandLineFactoryTest
  * @todo possibly extract to symplify/easy-parallel
  */
-final class WorkerCommandLineFactory
+final readonly class WorkerCommandLineFactory
 {
     /**
      * @var string
@@ -24,8 +24,8 @@ final class WorkerCommandLineFactory
     private const OPTION_DASHES = '--';
 
     public function __construct(
-        private readonly CommandFromReflectionFactory $commandFromReflectionFactory,
-        private readonly FilePathHelper $filePathHelper
+        private CommandFromReflectionFactory $commandFromReflectionFactory,
+        private FilePathHelper $filePathHelper
     ) {
     }
 

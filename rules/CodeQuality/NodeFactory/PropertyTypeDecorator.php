@@ -10,12 +10,12 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Privatization\TypeManipulator\TypeNormalizer;
 
-final class PropertyTypeDecorator
+final readonly class PropertyTypeDecorator
 {
     public function __construct(
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly TypeNormalizer $typeNormalizer
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private TypeNormalizer $typeNormalizer
     ) {
     }
 

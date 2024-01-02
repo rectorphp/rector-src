@@ -7,12 +7,12 @@ namespace Rector\Transform\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final class StaticCallToFuncCall
+final readonly class StaticCallToFuncCall
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly string $function
+        private string $class,
+        private string $method,
+        private string $function
     ) {
         RectorAssert::className($class);
         RectorAssert::methodName($method);

@@ -7,10 +7,10 @@ namespace Rector\Php74\Guard;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 
-final class MakePropertyTypedGuard
+final readonly class MakePropertyTypedGuard
 {
     public function __construct(
-        private readonly PropertyTypeChangeGuard $propertyTypeChangeGuard
+        private PropertyTypeChangeGuard $propertyTypeChangeGuard
     ) {
     }
 

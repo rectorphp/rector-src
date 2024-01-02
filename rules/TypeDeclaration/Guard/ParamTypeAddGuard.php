@@ -16,12 +16,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class ParamTypeAddGuard
+final readonly class ParamTypeAddGuard
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private NodeNameResolver $nodeNameResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

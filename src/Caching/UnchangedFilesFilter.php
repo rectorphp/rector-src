@@ -6,10 +6,10 @@ namespace Rector\Caching;
 
 use Rector\Caching\Detector\ChangedFilesDetector;
 
-final class UnchangedFilesFilter
+final readonly class UnchangedFilesFilter
 {
     public function __construct(
-        private readonly ChangedFilesDetector $changedFilesDetector
+        private ChangedFilesDetector $changedFilesDetector
     ) {
     }
 

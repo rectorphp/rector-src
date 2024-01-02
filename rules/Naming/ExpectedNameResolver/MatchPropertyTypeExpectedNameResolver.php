@@ -19,15 +19,15 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class MatchPropertyTypeExpectedNameResolver
+final readonly class MatchPropertyTypeExpectedNameResolver
 {
     public function __construct(
-        private readonly PropertyNaming $propertyNaming,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PropertyManipulator $propertyManipulator,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private PropertyNaming $propertyNaming,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private NodeNameResolver $nodeNameResolver,
+        private PropertyManipulator $propertyManipulator,
+        private ReflectionResolver $reflectionResolver,
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 

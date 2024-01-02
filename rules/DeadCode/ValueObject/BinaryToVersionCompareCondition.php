@@ -6,12 +6,12 @@ namespace Rector\DeadCode\ValueObject;
 
 use Rector\DeadCode\Contract\ConditionInterface;
 
-final class BinaryToVersionCompareCondition implements ConditionInterface
+final readonly class BinaryToVersionCompareCondition implements ConditionInterface
 {
     public function __construct(
-        private readonly VersionCompareCondition $versionCompareCondition,
-        private readonly string $binaryClass,
-        private readonly mixed $expectedValue
+        private VersionCompareCondition $versionCompareCondition,
+        private string $binaryClass,
+        private mixed $expectedValue
     ) {
     }
 

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject\Bootstrap;
 
-final class BootstrapConfigs
+final readonly class BootstrapConfigs
 {
     /**
      * @param string[] $setConfigFiles
      */
     public function __construct(
-        private readonly ?string $mainConfigFile,
-        private readonly array $setConfigFiles
+        private ?string $mainConfigFile,
+        private array $setConfigFiles
     ) {
     }
 

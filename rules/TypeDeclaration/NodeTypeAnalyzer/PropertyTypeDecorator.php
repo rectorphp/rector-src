@@ -18,13 +18,13 @@ use Rector\PhpParser\Node\NodeFactory;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 
-final class PropertyTypeDecorator
+final readonly class PropertyTypeDecorator
 {
     public function __construct(
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly NodeFactory $nodeFactory,
+        private UnionTypeAnalyzer $unionTypeAnalyzer,
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private PhpVersionProvider $phpVersionProvider,
+        private NodeFactory $nodeFactory,
     ) {
     }
 

@@ -23,14 +23,14 @@ use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
 
-final class PhpNestedAttributeGroupFactory
+final readonly class PhpNestedAttributeGroupFactory
 {
     public function __construct(
-        private readonly AnnotationToAttributeMapper $annotationToAttributeMapper,
-        private readonly AttributeNameFactory $attributeNameFactory,
-        private readonly NamedArgsFactory $namedArgsFactory,
-        private readonly ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
-        private readonly AttributeArrayNameInliner $attributeArrayNameInliner
+        private AnnotationToAttributeMapper $annotationToAttributeMapper,
+        private AttributeNameFactory $attributeNameFactory,
+        private NamedArgsFactory $namedArgsFactory,
+        private ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
+        private AttributeArrayNameInliner $attributeArrayNameInliner
     ) {
     }
 

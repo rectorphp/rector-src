@@ -8,10 +8,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\ValueObject\MethodName;
 
-final class MagicClassMethodAnalyzer
+final readonly class MagicClassMethodAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

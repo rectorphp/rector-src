@@ -21,12 +21,12 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<IntersectionType>
  */
-final class IntersectionTypeMapper implements TypeMapperInterface
+final readonly class IntersectionTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
-        private readonly ObjectTypeMapper $objectTypeMapper,
+        private PhpVersionProvider $phpVersionProvider,
+        private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
+        private ObjectTypeMapper $objectTypeMapper,
     ) {
     }
 

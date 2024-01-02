@@ -6,10 +6,10 @@ namespace Rector\ChangesReporting\Annotation;
 
 use Rector\Contract\Rector\RectorInterface;
 
-final class RectorsChangelogResolver
+final readonly class RectorsChangelogResolver
 {
     public function __construct(
-        private readonly AnnotationExtractor $annotationExtractor
+        private AnnotationExtractor $annotationExtractor
     ) {
     }
 

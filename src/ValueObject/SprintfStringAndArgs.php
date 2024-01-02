@@ -7,14 +7,14 @@ namespace Rector\ValueObject;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Scalar\String_;
 
-final class SprintfStringAndArgs
+final readonly class SprintfStringAndArgs
 {
     /**
      * @param Expr[] $arrayItems
      */
     public function __construct(
-        private readonly String_ $string,
-        private readonly array $arrayItems
+        private String_ $string,
+        private array $arrayItems
     ) {
     }
 

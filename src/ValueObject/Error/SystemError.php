@@ -7,13 +7,13 @@ namespace Rector\ValueObject\Error;
 use Rector\Parallel\ValueObject\BridgeItem;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 
-final class SystemError implements SerializableInterface
+final readonly class SystemError implements SerializableInterface
 {
     public function __construct(
-        private readonly string $message,
-        private readonly string|null $relativeFilePath = null,
-        private readonly int|null $line = null,
-        private readonly string|null $rectorClass = null
+        private string $message,
+        private string|null $relativeFilePath = null,
+        private int|null $line = null,
+        private string|null $rectorClass = null
     ) {
     }
 

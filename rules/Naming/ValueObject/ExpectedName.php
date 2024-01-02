@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\Naming\ValueObject;
 
-final class ExpectedName
+final readonly class ExpectedName
 {
     public function __construct(
-        private readonly string $name,
-        private readonly string $singularized
+        private string $name,
+        private string $singularized
     ) {
     }
 

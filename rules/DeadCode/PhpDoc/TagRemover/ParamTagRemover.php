@@ -14,11 +14,11 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadParamTagValueNodeAnalyzer;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 
-final class ParamTagRemover
+final readonly class ParamTagRemover
 {
     public function __construct(
-        private readonly DeadParamTagValueNodeAnalyzer $deadParamTagValueNodeAnalyzer,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private DeadParamTagValueNodeAnalyzer $deadParamTagValueNodeAnalyzer,
+        private DocBlockUpdater $docBlockUpdater,
     ) {
     }
 

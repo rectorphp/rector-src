@@ -13,10 +13,10 @@ use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 /**
  * @see \Rector\Tests\NodeTypeResolver\TypeComparator\ArrayTypeComparatorTest
  */
-final class ArrayTypeComparator
+final readonly class ArrayTypeComparator
 {
     public function __construct(
-        private readonly UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower
+        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower
     ) {
     }
 

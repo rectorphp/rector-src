@@ -11,10 +11,10 @@ use PHPStan\Reflection\ReflectionProvider;
 /**
  * Verify whether Class_'s method or property allowed to be overridden by verify class parent or implements exists
  */
-final class OverrideByParentClassGuard
+final readonly class OverrideByParentClassGuard
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

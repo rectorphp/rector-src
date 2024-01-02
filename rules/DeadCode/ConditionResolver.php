@@ -19,13 +19,13 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Util\PhpVersionFactory;
 
-final class ConditionResolver
+final readonly class ConditionResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ValueResolver $valueResolver,
-        private readonly PhpVersionFactory $phpVersionFactory
+        private NodeNameResolver $nodeNameResolver,
+        private PhpVersionProvider $phpVersionProvider,
+        private ValueResolver $valueResolver,
+        private PhpVersionFactory $phpVersionFactory
     ) {
     }
 

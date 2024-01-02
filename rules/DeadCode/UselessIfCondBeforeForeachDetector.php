@@ -15,10 +15,10 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class UselessIfCondBeforeForeachDetector
+final readonly class UselessIfCondBeforeForeachDetector
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator
     ) {
     }
 

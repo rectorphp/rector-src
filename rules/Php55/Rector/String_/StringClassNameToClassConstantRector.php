@@ -205,7 +205,7 @@ CODE_SAMPLE
 
     private function decorateClassConst(ClassConst $classConst): void
     {
-        $this->traverseNodesWithCallable($classConst->consts, static function (Node $subNode) {
+        $this->traverseNodesWithCallable($classConst->consts, static function (Node $subNode): null {
             if ($subNode instanceof String_) {
                 $subNode->setAttribute(self::IS_UNDER_CLASS_CONST, true);
             }

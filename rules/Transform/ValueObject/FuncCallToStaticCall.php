@@ -6,12 +6,12 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class FuncCallToStaticCall
+final readonly class FuncCallToStaticCall
 {
     public function __construct(
-        private readonly string $oldFuncName,
-        private readonly string $newClassName,
-        private readonly string $newMethodName
+        private string $oldFuncName,
+        private string $newClassName,
+        private string $newMethodName
     ) {
         RectorAssert::functionName($oldFuncName);
 

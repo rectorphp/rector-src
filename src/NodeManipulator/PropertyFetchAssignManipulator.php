@@ -16,12 +16,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\ValueObject\MethodName;
 
-final class PropertyFetchAssignManipulator
+final readonly class PropertyFetchAssignManipulator
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

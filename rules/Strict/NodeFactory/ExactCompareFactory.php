@@ -22,10 +22,10 @@ use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\PhpParser\Node\NodeFactory;
 
-final class ExactCompareFactory
+final readonly class ExactCompareFactory
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory
+        private NodeFactory $nodeFactory
     ) {
     }
 

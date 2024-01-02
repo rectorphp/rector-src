@@ -7,12 +7,12 @@ namespace Rector\Transform\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final class WrapReturn
+final readonly class WrapReturn
 {
     public function __construct(
-        private readonly string $type,
-        private readonly string $method,
-        private readonly bool $isArrayWrap
+        private string $type,
+        private string $method,
+        private bool $isArrayWrap
     ) {
         RectorAssert::className($type);
     }

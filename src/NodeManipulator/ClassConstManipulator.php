@@ -13,12 +13,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class ClassConstManipulator
+final readonly class ClassConstManipulator
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private AstResolver $astResolver
     ) {
     }
 

@@ -7,10 +7,10 @@ namespace Rector\CodingStyle\Reflection;
 use PHPStan\Reflection\MethodReflection;
 use Rector\FileSystem\FilePathHelper;
 
-final class VendorLocationDetector
+final readonly class VendorLocationDetector
 {
     public function __construct(
-        private readonly FilePathHelper $filePathHelper
+        private FilePathHelper $filePathHelper
     ) {
     }
 

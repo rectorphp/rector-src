@@ -6,11 +6,11 @@ namespace Rector\Php80\ValueObject;
 
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 
-final class DoctrineTagAndAnnotationToAttribute
+final readonly class DoctrineTagAndAnnotationToAttribute
 {
     public function __construct(
-        private readonly DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
-        private readonly AnnotationToAttribute $annotationToAttribute,
+        private DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode,
+        private AnnotationToAttribute $annotationToAttribute,
     ) {
     }
 

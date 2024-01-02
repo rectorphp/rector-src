@@ -14,11 +14,11 @@ use PhpParser\Node\Stmt\Return_;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 
-final class AlwaysStrictReturnAnalyzer
+final readonly class AlwaysStrictReturnAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReturnAnalyzer $returnAnalyzer
+        private BetterNodeFinder $betterNodeFinder,
+        private ReturnAnalyzer $returnAnalyzer
     ) {
     }
 

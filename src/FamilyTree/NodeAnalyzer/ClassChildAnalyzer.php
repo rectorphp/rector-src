@@ -11,10 +11,10 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
-final class ClassChildAnalyzer
+final readonly class ClassChildAnalyzer
 {
     public function __construct(
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer
+        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
     ) {
     }
 

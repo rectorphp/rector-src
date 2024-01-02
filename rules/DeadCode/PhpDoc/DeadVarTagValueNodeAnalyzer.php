@@ -12,11 +12,11 @@ use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class DeadVarTagValueNodeAnalyzer
+final readonly class DeadVarTagValueNodeAnalyzer
 {
     public function __construct(
-        private readonly TypeComparator $typeComparator,
-        private readonly StaticTypeMapper $staticTypeMapper,
+        private TypeComparator $typeComparator,
+        private StaticTypeMapper $staticTypeMapper,
     ) {
     }
 

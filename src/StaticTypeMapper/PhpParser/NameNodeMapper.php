@@ -31,12 +31,12 @@ use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 /**
  * @implements PhpParserNodeMapperInterface<Name>
  */
-final class NameNodeMapper implements PhpParserNodeMapperInterface
+final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver
+        private RenamedClassesDataCollector $renamedClassesDataCollector,
+        private ReflectionProvider $reflectionProvider,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

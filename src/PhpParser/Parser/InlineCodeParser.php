@@ -15,7 +15,7 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Util\StringUtils;
 
-final class InlineCodeParser
+final readonly class InlineCodeParser
 {
     /**
      * @var string
@@ -60,9 +60,9 @@ final class InlineCodeParser
     private const BACKREFERENCE_NO_DOUBLE_QUOTE_START_REGEX = '#(?<!")(?<backreference>\$\d+)#';
 
     public function __construct(
-        private readonly BetterStandardPrinter $betterStandardPrinter,
-        private readonly SimplePhpParser $simplePhpParser,
-        private readonly ValueResolver $valueResolver,
+        private BetterStandardPrinter $betterStandardPrinter,
+        private SimplePhpParser $simplePhpParser,
+        private ValueResolver $valueResolver,
     ) {
     }
 

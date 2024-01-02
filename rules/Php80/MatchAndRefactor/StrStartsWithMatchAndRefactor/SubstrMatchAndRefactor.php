@@ -19,13 +19,13 @@ use Rector\Php80\ValueObject\StrStartsWith;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
+final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ValueResolver $valueResolver,
-        private readonly NodeComparator $nodeComparator,
-        private readonly StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
+        private NodeNameResolver $nodeNameResolver,
+        private ValueResolver $valueResolver,
+        private NodeComparator $nodeComparator,
+        private StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
     ) {
     }
 

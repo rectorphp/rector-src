@@ -13,10 +13,10 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\TypeWithClassName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class ArrayCallableToMethodCallFactory
+final readonly class ArrayCallableToMethodCallFactory
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

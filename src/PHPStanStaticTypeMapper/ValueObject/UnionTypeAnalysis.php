@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\ValueObject;
 
-final class UnionTypeAnalysis
+final readonly class UnionTypeAnalysis
 {
     public function __construct(
-        private readonly bool $hasIterable,
-        private readonly bool $hasArray
+        private bool $hasIterable,
+        private bool $hasArray
     ) {
     }
 

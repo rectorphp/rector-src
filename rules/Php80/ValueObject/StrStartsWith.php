@@ -7,13 +7,13 @@ namespace Rector\Php80\ValueObject;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 
-final class StrStartsWith
+final readonly class StrStartsWith
 {
     public function __construct(
-        private readonly FuncCall $funcCall,
-        private readonly Expr $haystackExpr,
-        private readonly Expr $needleExpr,
-        private readonly bool $isPositive
+        private FuncCall $funcCall,
+        private Expr $haystackExpr,
+        private Expr $needleExpr,
+        private bool $isPositive
     ) {
     }
 

@@ -34,7 +34,7 @@ use Rector\ValueObject\MethodName;
  * For inspiration to improve this service,
  * @see examples of variable modifications in https://wiki.php.net/rfc/readonly_properties_v2#proposal
  */
-final class PropertyManipulator
+final readonly class PropertyManipulator
 {
     /**
      * @var string[]|class-string<Table>[]
@@ -46,17 +46,17 @@ final class PropertyManipulator
     ];
 
     public function __construct(
-        private readonly AssignManipulator $assignManipulator,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PropertyFetchFinder $propertyFetchFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PromotedPropertyResolver $promotedPropertyResolver,
-        private readonly ConstructorAssignDetector $constructorAssignDetector,
-        private readonly AstResolver $astResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private AssignManipulator $assignManipulator,
+        private BetterNodeFinder $betterNodeFinder,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private PropertyFetchFinder $propertyFetchFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PromotedPropertyResolver $promotedPropertyResolver,
+        private ConstructorAssignDetector $constructorAssignDetector,
+        private AstResolver $astResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

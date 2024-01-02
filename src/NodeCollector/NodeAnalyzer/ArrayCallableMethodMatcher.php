@@ -27,13 +27,13 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 
-final class ArrayCallableMethodMatcher
+final readonly class ArrayCallableMethodMatcher
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly ValueResolver $valueResolver,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private ValueResolver $valueResolver,
+        private ReflectionProvider $reflectionProvider,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

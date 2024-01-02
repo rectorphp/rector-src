@@ -15,10 +15,10 @@ use Rector\BetterPhpDocParser\ValueObject\Parser\BetterTokenIterator;
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParserTest
  */
-final class ArrayParser
+final readonly class ArrayParser
 {
     public function __construct(
-        private readonly PlainValueParser $plainValueParser
+        private PlainValueParser $plainValueParser
     ) {
     }
 

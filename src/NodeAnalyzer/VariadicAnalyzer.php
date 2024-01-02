@@ -14,12 +14,12 @@ use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
 use Rector\PhpParser\AstResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class VariadicAnalyzer
+final readonly class VariadicAnalyzer
 {
     public function __construct(
-        private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly VariadicFunctionLikeDetector $variadicFunctionLikeDetector
+        private AstResolver $astResolver,
+        private ReflectionResolver $reflectionResolver,
+        private VariadicFunctionLikeDetector $variadicFunctionLikeDetector
     ) {
     }
 

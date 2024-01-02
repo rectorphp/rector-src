@@ -18,15 +18,15 @@ use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class PropertyPromotionDocBlockMerger
+final readonly class PropertyPromotionDocBlockMerger
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly VarTagRemover $varTagRemover,
-        private readonly PhpDocInfoPrinter $phpDocInfoPrinter,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private StaticTypeMapper $staticTypeMapper,
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private VarTagRemover $varTagRemover,
+        private PhpDocInfoPrinter $phpDocInfoPrinter,
+        private DocBlockUpdater $docBlockUpdater,
     ) {
     }
 

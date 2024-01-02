@@ -7,7 +7,7 @@ namespace Rector\Naming;
 use Doctrine\Inflector\Inflector;
 use Nette\Utils\Strings;
 
-final class RectorNamingInflector
+final readonly class RectorNamingInflector
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ final class RectorNamingInflector
     private const DATA_INFO_SUFFIX_REGEX = '#^(?<prefix>.+)(?<suffix>Data|Info)$#';
 
     public function __construct(
-        private readonly Inflector $inflector
+        private Inflector $inflector
     ) {
     }
 

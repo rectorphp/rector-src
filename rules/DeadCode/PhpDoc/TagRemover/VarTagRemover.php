@@ -17,14 +17,14 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 
-final class VarTagRemover
+final readonly class VarTagRemover
 {
     public function __construct(
-        private readonly DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private DoctrineTypeAnalyzer $doctrineTypeAnalyzer,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer,
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private DocBlockUpdater $docBlockUpdater,
     ) {
     }
 

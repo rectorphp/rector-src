@@ -6,11 +6,11 @@ namespace Rector\BetterPhpDocParser\ValueObject;
 
 use Rector\Exception\ShouldNotHappenException;
 
-final class StartAndEnd
+final readonly class StartAndEnd
 {
     public function __construct(
-        private readonly int $start,
-        private readonly int $end
+        private int $start,
+        private int $end
     ) {
         if ($end < $start) {
             throw new ShouldNotHappenException();

@@ -20,15 +20,15 @@ use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\Transform\NodeFactory\PropertyFetchFactory;
 use Rector\Transform\NodeTypeAnalyzer\TypeProvidingExprFromClassResolver;
 
-final class FuncCallStaticCallToMethodCallAnalyzer
+final readonly class FuncCallStaticCallToMethodCallAnalyzer
 {
     public function __construct(
-        private readonly TypeProvidingExprFromClassResolver $typeProvidingExprFromClassResolver,
-        private readonly PropertyNaming $propertyNaming,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeFactory $nodeFactory,
-        private readonly PropertyFetchFactory $propertyFetchFactory,
-        private readonly ClassDependencyManipulator $classDependencyManipulator,
+        private TypeProvidingExprFromClassResolver $typeProvidingExprFromClassResolver,
+        private PropertyNaming $propertyNaming,
+        private NodeNameResolver $nodeNameResolver,
+        private NodeFactory $nodeFactory,
+        private PropertyFetchFactory $propertyFetchFactory,
+        private ClassDependencyManipulator $classDependencyManipulator,
     ) {
     }
 

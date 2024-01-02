@@ -18,13 +18,13 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 /**
  * @implements PhpDocTypeMapperInterface<UnionTypeNode>
  */
-final class UnionTypeMapper implements PhpDocTypeMapperInterface
+final readonly class UnionTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private readonly TypeFactory $typeFactory,
-        private readonly IdentifierTypeMapper $identifierTypeMapper,
-        private readonly IntersectionTypeMapper $intersectionTypeMapper,
-        private readonly TypeNodeResolver $typeNodeResolver
+        private TypeFactory $typeFactory,
+        private IdentifierTypeMapper $identifierTypeMapper,
+        private IntersectionTypeMapper $intersectionTypeMapper,
+        private TypeNodeResolver $typeNodeResolver
     ) {
     }
 

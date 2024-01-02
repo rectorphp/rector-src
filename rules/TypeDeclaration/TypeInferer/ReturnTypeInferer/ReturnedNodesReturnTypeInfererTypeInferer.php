@@ -24,15 +24,15 @@ use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
 /**
  * @internal
  */
-final class ReturnedNodesReturnTypeInfererTypeInferer
+final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 {
     public function __construct(
-        private readonly SilentVoidResolver $silentVoidResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly TypeFactory $typeFactory,
-        private readonly SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
-        private readonly ReflectionResolver $reflectionResolver,
+        private SilentVoidResolver $silentVoidResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private TypeFactory $typeFactory,
+        private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 

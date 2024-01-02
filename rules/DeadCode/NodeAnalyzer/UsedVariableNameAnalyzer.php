@@ -10,10 +10,10 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class UsedVariableNameAnalyzer
+final readonly class UsedVariableNameAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

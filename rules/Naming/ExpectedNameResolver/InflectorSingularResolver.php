@@ -11,7 +11,7 @@ use Rector\Util\StringUtils;
 /**
  * @see \Rector\Tests\Naming\ExpectedNameResolver\InflectorSingularResolverTest
  */
-final class InflectorSingularResolver
+final readonly class InflectorSingularResolver
 {
     /**
      * @var array<string, string>
@@ -38,7 +38,7 @@ final class InflectorSingularResolver
     private const CAMELCASE = 'camelcase';
 
     public function __construct(
-        private readonly Inflector $inflector
+        private Inflector $inflector
     ) {
     }
 

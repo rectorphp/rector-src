@@ -12,12 +12,12 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Util\Reflection\PrivatesAccessor;
 
-final class FamilyRelationsAnalyzer
+final readonly class FamilyRelationsAnalyzer
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly PrivatesAccessor $privatesAccessor,
-        private readonly NodeNameResolver $nodeNameResolver,
+        private ReflectionProvider $reflectionProvider,
+        private PrivatesAccessor $privatesAccessor,
+        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

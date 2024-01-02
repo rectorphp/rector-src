@@ -12,7 +12,7 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 
-final class JsonOutputFormatter implements OutputFormatterInterface
+final readonly class JsonOutputFormatter implements OutputFormatterInterface
 {
     /**
      * @var string
@@ -20,7 +20,7 @@ final class JsonOutputFormatter implements OutputFormatterInterface
     public const NAME = 'json';
 
     public function __construct(
-        private readonly RectorsChangelogResolver $rectorsChangelogResolver
+        private RectorsChangelogResolver $rectorsChangelogResolver
     ) {
     }
 

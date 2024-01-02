@@ -8,11 +8,11 @@ use PhpParser\Node;
 use Rector\Comments\CommentRemover;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 
-final class NodeComparator
+final readonly class NodeComparator
 {
     public function __construct(
-        private readonly CommentRemover $commentRemover,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private CommentRemover $commentRemover,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 

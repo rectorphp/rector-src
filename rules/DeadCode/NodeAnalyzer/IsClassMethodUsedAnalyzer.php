@@ -30,17 +30,17 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class IsClassMethodUsedAnalyzer
+final readonly class IsClassMethodUsedAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ValueResolver $valueResolver,
-        private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
-        private readonly CallCollectionAnalyzer $callCollectionAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private NodeNameResolver $nodeNameResolver,
+        private AstResolver $astResolver,
+        private BetterNodeFinder $betterNodeFinder,
+        private ValueResolver $valueResolver,
+        private ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
+        private CallCollectionAnalyzer $callCollectionAnalyzer,
+        private ReflectionResolver $reflectionResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 

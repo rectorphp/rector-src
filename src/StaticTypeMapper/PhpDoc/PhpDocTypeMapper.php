@@ -15,14 +15,14 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\StaticTypeMapper\PhpDoc\PhpDocTypeMapperTest
  */
-final class PhpDocTypeMapper
+final readonly class PhpDocTypeMapper
 {
     /**
      * @param PhpDocTypeMapperInterface[] $phpDocTypeMappers
      */
     public function __construct(
-        private readonly array $phpDocTypeMappers,
-        private readonly TypeNodeResolver $typeNodeResolver
+        private array $phpDocTypeMappers,
+        private TypeNodeResolver $typeNodeResolver
     ) {
         Assert::notEmpty($phpDocTypeMappers);
     }

@@ -32,12 +32,12 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 
-final class ReturnStrictTypeAnalyzer
+final readonly class ReturnStrictTypeAnalyzer
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly TypeNodeUnwrapper $typeNodeUnwrapper,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private ReflectionResolver $reflectionResolver,
+        private TypeNodeUnwrapper $typeNodeUnwrapper,
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 

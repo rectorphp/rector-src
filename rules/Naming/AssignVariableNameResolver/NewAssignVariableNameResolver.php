@@ -13,10 +13,10 @@ use Rector\NodeNameResolver\NodeNameResolver;
 /**
  * @implements AssignVariableNameResolverInterface<New_>
  */
-final class NewAssignVariableNameResolver implements AssignVariableNameResolverInterface
+final readonly class NewAssignVariableNameResolver implements AssignVariableNameResolverInterface
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

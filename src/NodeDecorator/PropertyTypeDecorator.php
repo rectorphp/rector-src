@@ -15,13 +15,13 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 
-final class PropertyTypeDecorator
+final readonly class PropertyTypeDecorator
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpVersionProvider $phpVersionProvider,
+        private StaticTypeMapper $staticTypeMapper,
+        private PhpDocTypeChanger $phpDocTypeChanger,
     ) {
     }
 

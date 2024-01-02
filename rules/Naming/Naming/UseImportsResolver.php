@@ -13,10 +13,10 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Provider\CurrentFileProvider;
 use Rector\ValueObject\Application\File;
 
-final class UseImportsResolver
+final readonly class UseImportsResolver
 {
     public function __construct(
-        private readonly CurrentFileProvider $currentFileProvider
+        private CurrentFileProvider $currentFileProvider
     ) {
     }
 

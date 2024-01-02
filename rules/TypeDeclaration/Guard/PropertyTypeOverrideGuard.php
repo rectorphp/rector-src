@@ -9,11 +9,11 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 
-final class PropertyTypeOverrideGuard
+final readonly class PropertyTypeOverrideGuard
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly MakePropertyTypedGuard $makePropertyTypedGuard
+        private NodeNameResolver $nodeNameResolver,
+        private MakePropertyTypedGuard $makePropertyTypedGuard
     ) {
     }
 

@@ -8,7 +8,7 @@ use PHPStan\Type\ObjectType;
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 use Rector\Validation\RectorAssert;
 
-final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
+final readonly class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
     /**
      * @var string
@@ -19,11 +19,11 @@ final class ReplaceArgumentDefaultValue implements ReplaceArgumentDefaultValueIn
      * @param int<0, max> $position
      */
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly int $position,
-        private readonly mixed $valueBefore,
-        private readonly mixed $valueAfter
+        private string $class,
+        private string $method,
+        private int $position,
+        private mixed $valueBefore,
+        private mixed $valueAfter
     ) {
         RectorAssert::className($class);
     }

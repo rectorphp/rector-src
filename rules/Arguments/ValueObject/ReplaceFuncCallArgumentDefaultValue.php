@@ -6,13 +6,13 @@ namespace Rector\Arguments\ValueObject;
 
 use Rector\Arguments\Contract\ReplaceArgumentDefaultValueInterface;
 
-final class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
+final readonly class ReplaceFuncCallArgumentDefaultValue implements ReplaceArgumentDefaultValueInterface
 {
     public function __construct(
-        private readonly string $function,
-        private readonly int $position,
-        private readonly mixed $valueBefore,
-        private readonly mixed $valueAfter
+        private string $function,
+        private int $position,
+        private mixed $valueBefore,
+        private mixed $valueAfter
     ) {
     }
 

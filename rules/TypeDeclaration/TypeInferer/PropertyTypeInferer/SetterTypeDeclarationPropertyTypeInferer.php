@@ -13,12 +13,12 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ClassMethodAndPropertyAnalyzer;
 
-final class SetterTypeDeclarationPropertyTypeInferer
+final readonly class SetterTypeDeclarationPropertyTypeInferer
 {
     public function __construct(
-        private readonly ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly StaticTypeMapper $staticTypeMapper,
+        private ClassMethodAndPropertyAnalyzer $classMethodAndPropertyAnalyzer,
+        private NodeNameResolver $nodeNameResolver,
+        private StaticTypeMapper $staticTypeMapper,
     ) {
     }
 

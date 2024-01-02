@@ -15,12 +15,12 @@ use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class ExprParameterReflectionTypeCorrector
+final readonly class ExprParameterReflectionTypeCorrector
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeFactory $nodeFactory
+        private StaticTypeMapper $staticTypeMapper,
+        private ReflectionProvider $reflectionProvider,
+        private NodeFactory $nodeFactory
     ) {
     }
 

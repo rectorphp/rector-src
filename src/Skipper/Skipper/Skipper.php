@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
  * @api
  * @see \Rector\Tests\Skipper\Skipper\SkipperTest
  */
-final class Skipper
+final readonly class Skipper
 {
     /**
      * @var string
@@ -25,8 +25,8 @@ final class Skipper
      * @param array<SkipVoterInterface> $skipVoters
      */
     public function __construct(
-        private readonly RectifiedAnalyzer $rectifiedAnalyzer,
-        private readonly array $skipVoters,
+        private RectifiedAnalyzer $rectifiedAnalyzer,
+        private array $skipVoters,
     ) {
         Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }

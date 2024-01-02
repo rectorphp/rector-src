@@ -25,18 +25,18 @@ use Rector\Php\PhpVersionProvider;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
-final class PropertyPromotionRenamer
+final readonly class PropertyPromotionRenamer
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver,
-        private readonly ParamRenameFactory $paramRenameFactory,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ParamRenamer $paramRenamer,
-        private readonly PropertyFetchRenamer $propertyFetchRenamer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly VariableRenamer $variableRenamer,
-        private readonly DocBlockUpdater $docBlockUpdater,
+        private PhpVersionProvider $phpVersionProvider,
+        private MatchParamTypeExpectedNameResolver $matchParamTypeExpectedNameResolver,
+        private ParamRenameFactory $paramRenameFactory,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private ParamRenamer $paramRenamer,
+        private PropertyFetchRenamer $propertyFetchRenamer,
+        private NodeNameResolver $nodeNameResolver,
+        private VariableRenamer $variableRenamer,
+        private DocBlockUpdater $docBlockUpdater,
     ) {
     }
 

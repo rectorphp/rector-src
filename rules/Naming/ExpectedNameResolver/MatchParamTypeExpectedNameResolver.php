@@ -11,12 +11,12 @@ use Rector\Naming\ValueObject\ExpectedName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class MatchParamTypeExpectedNameResolver
+final readonly class MatchParamTypeExpectedNameResolver
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PropertyNaming $propertyNaming,
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private StaticTypeMapper $staticTypeMapper,
+        private PropertyNaming $propertyNaming,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

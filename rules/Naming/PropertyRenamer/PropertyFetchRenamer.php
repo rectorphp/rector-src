@@ -13,11 +13,11 @@ use PhpParser\Node\VarLikeIdentifier;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class PropertyFetchRenamer
+final readonly class PropertyFetchRenamer
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer
     ) {
     }
 

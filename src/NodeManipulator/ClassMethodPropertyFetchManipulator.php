@@ -18,12 +18,12 @@ use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class ClassMethodPropertyFetchManipulator
+final readonly class ClassMethodPropertyFetchManipulator
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly FunctionLikeManipulator $functionLikeManipulator
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private FunctionLikeManipulator $functionLikeManipulator
     ) {
     }
 

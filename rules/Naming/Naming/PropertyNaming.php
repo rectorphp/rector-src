@@ -23,7 +23,7 @@ use Rector\Util\StringUtils;
 /**
  * @see \Rector\Tests\Naming\Naming\PropertyNamingTest
  */
-final class PropertyNaming
+final readonly class PropertyNaming
 {
     /**
      * @var string[]
@@ -55,8 +55,8 @@ final class PropertyNaming
     private const GET_PREFIX_REGEX = '#^get(?<root_name>[A-Z].+)#';
 
     public function __construct(
-        private readonly RectorNamingInflector $rectorNamingInflector,
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private RectorNamingInflector $rectorNamingInflector,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

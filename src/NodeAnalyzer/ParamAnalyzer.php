@@ -24,14 +24,14 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class ParamAnalyzer
+final readonly class ParamAnalyzer
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly FuncCallManipulator $funcCallManipulator,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private NodeComparator $nodeComparator,
+        private NodeNameResolver $nodeNameResolver,
+        private FuncCallManipulator $funcCallManipulator,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

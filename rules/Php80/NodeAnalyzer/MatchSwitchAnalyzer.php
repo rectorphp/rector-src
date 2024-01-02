@@ -20,13 +20,13 @@ use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 
-final class MatchSwitchAnalyzer
+final readonly class MatchSwitchAnalyzer
 {
     public function __construct(
-        private readonly SwitchAnalyzer $switchAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly NodeComparator $nodeComparator,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private SwitchAnalyzer $switchAnalyzer,
+        private NodeNameResolver $nodeNameResolver,
+        private NodeComparator $nodeComparator,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 

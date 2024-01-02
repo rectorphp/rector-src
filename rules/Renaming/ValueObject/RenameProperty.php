@@ -7,12 +7,12 @@ namespace Rector\Renaming\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final class RenameProperty
+final readonly class RenameProperty
 {
     public function __construct(
-        private readonly string $type,
-        private readonly string $oldProperty,
-        private readonly string $newProperty
+        private string $type,
+        private string $oldProperty,
+        private string $newProperty
     ) {
         RectorAssert::className($type);
         RectorAssert::propertyName($oldProperty);

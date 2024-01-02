@@ -9,11 +9,11 @@ use Rector\Error\ExceptionCorrector;
 use Rector\FileSystem\FilePathHelper;
 use Rector\ValueObject\Error\SystemError;
 
-final class ErrorFactory
+final readonly class ErrorFactory
 {
     public function __construct(
-        private readonly ExceptionCorrector $exceptionCorrector,
-        private readonly FilePathHelper $filePathHelper
+        private ExceptionCorrector $exceptionCorrector,
+        private FilePathHelper $filePathHelper
     ) {
     }
 

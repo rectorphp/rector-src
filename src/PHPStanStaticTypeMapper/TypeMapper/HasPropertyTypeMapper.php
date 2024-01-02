@@ -13,10 +13,10 @@ use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 /**
  * @implements TypeMapperInterface<HasPropertyType>
  */
-final class HasPropertyTypeMapper implements TypeMapperInterface
+final readonly class HasPropertyTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper
+        private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper
     ) {
     }
 

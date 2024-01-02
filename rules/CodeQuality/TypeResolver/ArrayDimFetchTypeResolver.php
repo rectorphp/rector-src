@@ -12,10 +12,10 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class ArrayDimFetchTypeResolver
+final readonly class ArrayDimFetchTypeResolver
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

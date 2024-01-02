@@ -11,11 +11,11 @@ use PHPStan\Type\MixedType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 
-final class ClassMethodReturnVendorLockResolver
+final readonly class ClassMethodReturnVendorLockResolver
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

@@ -25,7 +25,7 @@ use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Rector\ValueObject\MethodName;
 
-final class ConstructorAssignDetector
+final readonly class ConstructorAssignDetector
 {
     /**
      * @var string
@@ -33,11 +33,11 @@ final class ConstructorAssignDetector
     private const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
 
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyAssignMatcher $propertyAssignMatcher,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyAssignMatcher $propertyAssignMatcher,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
     ) {
     }
 

@@ -17,7 +17,7 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<VoidType>
  */
-final class VoidTypeMapper implements TypeMapperInterface
+final readonly class VoidTypeMapper implements TypeMapperInterface
 {
     /**
      * @var string
@@ -25,7 +25,7 @@ final class VoidTypeMapper implements TypeMapperInterface
     private const VOID = 'void';
 
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

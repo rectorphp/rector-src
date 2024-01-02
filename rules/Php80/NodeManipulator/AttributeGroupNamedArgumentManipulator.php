@@ -8,10 +8,10 @@ use PhpParser\Node\AttributeGroup;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\AttributeDecorator\SensioParamConverterAttributeDecorator;
 
-final class AttributeGroupNamedArgumentManipulator
+final readonly class AttributeGroupNamedArgumentManipulator
 {
     public function __construct(
-        private readonly SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator
+        private SensioParamConverterAttributeDecorator $sensioParamConverterAttributeDecorator
     ) {
     }
 

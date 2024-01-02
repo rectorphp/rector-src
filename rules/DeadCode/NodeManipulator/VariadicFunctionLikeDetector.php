@@ -11,7 +11,7 @@ use PhpParser\NodeTraverser;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class VariadicFunctionLikeDetector
+final readonly class VariadicFunctionLikeDetector
 {
     /**
      * @var string[]
@@ -19,8 +19,8 @@ final class VariadicFunctionLikeDetector
     private const VARIADIC_FUNCTION_NAMES = ['func_get_arg', 'func_get_args', 'func_num_args'];
 
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

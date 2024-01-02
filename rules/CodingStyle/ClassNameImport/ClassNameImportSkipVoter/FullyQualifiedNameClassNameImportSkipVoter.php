@@ -21,11 +21,11 @@ use Rector\ValueObject\Application\File;
  *
  * SomeClass::callThis();
  */
-final class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
+final readonly class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly ShortNameResolver $shortNameResolver,
-        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
+        private ShortNameResolver $shortNameResolver,
+        private RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 

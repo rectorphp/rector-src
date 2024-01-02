@@ -15,14 +15,14 @@ use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
 
-final class ClassNameImportSkipper
+final readonly class ClassNameImportSkipper
 {
     /**
      * @param ClassNameImportSkipVoterInterface[] $classNameImportSkipVoters
      */
     public function __construct(
-        private readonly iterable $classNameImportSkipVoters,
-        private readonly UseImportsResolver $useImportsResolver
+        private iterable $classNameImportSkipVoters,
+        private UseImportsResolver $useImportsResolver
     ) {
     }
 

@@ -11,11 +11,11 @@ use Rector\ValueObject\Configuration;
 /**
  * @see \Rector\ValueObject\Application\File
  */
-final class FileFactory
+final readonly class FileFactory
 {
     public function __construct(
-        private readonly FilesFinder $filesFinder,
-        private readonly ChangedFilesDetector $changedFilesDetector,
+        private FilesFinder $filesFinder,
+        private ChangedFilesDetector $changedFilesDetector,
     ) {
     }
 

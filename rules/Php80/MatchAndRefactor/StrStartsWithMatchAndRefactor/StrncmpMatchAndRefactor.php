@@ -19,7 +19,7 @@ use Rector\Php80\ValueObject\StrStartsWith;
 use Rector\Php80\ValueObjectFactory\StrStartsWithFactory;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
+final readonly class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInterface
 {
     /**
      * @var string
@@ -27,10 +27,10 @@ final class StrncmpMatchAndRefactor implements StrStartWithMatchAndRefactorInter
     private const FUNCTION_NAME = 'strncmp';
 
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly StrStartsWithFactory $strStartsWithFactory,
-        private readonly NodeComparator $nodeComparator,
-        private readonly StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
+        private NodeNameResolver $nodeNameResolver,
+        private StrStartsWithFactory $strStartsWithFactory,
+        private NodeComparator $nodeComparator,
+        private StrStartsWithFuncCallFactory $strStartsWithFuncCallFactory,
     ) {
     }
 

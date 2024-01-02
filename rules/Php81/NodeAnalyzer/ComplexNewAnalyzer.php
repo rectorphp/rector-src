@@ -11,10 +11,10 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 
-final class ComplexNewAnalyzer
+final readonly class ComplexNewAnalyzer
 {
     public function __construct(
-        private readonly ExprAnalyzer $exprAnalyzer
+        private ExprAnalyzer $exprAnalyzer
     ) {
     }
 
