@@ -91,7 +91,6 @@
                 "rules-tests",
                 "tests"
             ],
-            "Rector\\RuleDocGenerator\\": "utils/RuleDocGenerator/src",
             "E2e\\Parallel\\Reflection\\Resolver\\": [
                 "e2e/parallel-reflection-resolver/src/",
                 "e2e/no-parallel-reflection-resolver/src"
