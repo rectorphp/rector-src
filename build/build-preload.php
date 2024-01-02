@@ -302,9 +302,7 @@ CODE_SAMPLE;
         $fileInfos = $this->findPhpDocParserFiles($vendorDir);
 
         // 2. put first-class usages first
-        $fileInfos = $this->sortFileInfos($fileInfos);
-
-        return $fileInfos;
+        return $this->sortFileInfos($fileInfos);
     }
 
     /**
