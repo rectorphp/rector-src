@@ -81,8 +81,7 @@
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "src/functions/node_helper.php",
-            "src/core_namespace_aliases.php"
+            "src/functions/node_helper.php"
         ]
     },
     "autoload-dev": {
