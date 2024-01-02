@@ -9,7 +9,10 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -19,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDeadConditionAboveReturnRector extends AbstractRector
 {
+    public function __construct(
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove dead condition above return', [
@@ -73,7 +81,13 @@ CODE_SAMPLE
                 continue;
             }
 
-            dd($previousNode->cond);
+            /** @var Scope $scope */
+            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
+
+            /** @var If_ $previousNode */
+            if ($this->sideEffectNodeDetector->detect($previousNode->cond, $scope)) {
+                continue;
+            }
 
             $countStmt = count($previousNode->stmts);
             if ($countStmt === 0) {
