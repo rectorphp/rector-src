@@ -78,7 +78,7 @@ final readonly class VariableRenamer
                 }
 
                 // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
-                if ($this->isParamInParentFunction()) {
+                if ($this->isParamInParentFunction($node, $currentClosure)) {
                     return null;
                 }
 
@@ -98,8 +98,23 @@ final readonly class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(): bool
+    private function isParamInParentFunction(Variable $variable, ?Closure $closure): bool
     {
+        if (! $closure instanceof Closure) {
+            return false;
+        }
+
+        $variableName = $this->nodeNameResolver->getName($variable);
+        if ($variableName === null) {
+            return false;
+        }
+
+        foreach ($closure->params as $param) {
+            if ($this->nodeNameResolver->isName($param, $variableName)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
