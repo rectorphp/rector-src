@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -14,6 +16,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\DeadCode\NodeManipulator\ControllerClassMethodManipulator;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\NodeManipulator\ClassMethodManipulator;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -29,6 +32,7 @@ final class RemoveEmptyClassMethodRector extends AbstractRector
         private readonly ControllerClassMethodManipulator $controllerClassMethodManipulator,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
@@ -127,6 +131,19 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
+        $desiredClassMethodName = $this->getName($classMethod);
+
+        // is method called somewhere else in the class?
+        foreach ($class->getMethods() as $anotherClassMethod) {
+            if ($anotherClassMethod === $classMethod) {
+                continue;
+            }
+
+            if ($this->containsMethodCall($anotherClassMethod, $desiredClassMethodName)) {
+                return true;
+            }
+        }
+
         if ($this->classMethodManipulator->isNamedConstructor($classMethod)) {
             return true;
         }
@@ -163,5 +180,26 @@ CODE_SAMPLE
         }
 
         return $phpDocInfo->hasByType(DeprecatedTagValueNode::class);
+    }
+
+    private function containsMethodCall(ClassMethod $anotherClassMethod, string $desiredClassMethodName): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirst($anotherClassMethod, function (Node $node) use (
+            $desiredClassMethodName
+        ): bool {
+            if (! $node instanceof MethodCall) {
+                return false;
+            }
+
+            if (! $node->var instanceof Variable) {
+                return false;
+            }
+
+            if (! $this->isName($node->var, 'this')) {
+                return false;
+            }
+
+            return $this->isName($node->name, $desiredClassMethodName);
+        });
     }
 }
