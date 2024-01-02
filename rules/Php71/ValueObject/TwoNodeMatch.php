@@ -6,11 +6,11 @@ namespace Rector\Php71\ValueObject;
 
 use PhpParser\Node\Expr;
 
-final class TwoNodeMatch
+final readonly class TwoNodeMatch
 {
     public function __construct(
-        private readonly Expr $firstExpr,
-        private readonly Expr $secondExpr
+        private Expr $firstExpr,
+        private Expr $secondExpr
     ) {
     }
 

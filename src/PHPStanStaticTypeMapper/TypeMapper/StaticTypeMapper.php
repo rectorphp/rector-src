@@ -22,10 +22,10 @@ use Rector\ValueObject\PhpVersionFeature;
  *
  * @implements TypeMapperInterface<StaticType>
  */
-final class StaticTypeMapper implements TypeMapperInterface
+final readonly class StaticTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

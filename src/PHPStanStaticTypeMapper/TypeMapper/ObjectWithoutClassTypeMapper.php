@@ -18,10 +18,10 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<ObjectWithoutClassType>
  */
-final class ObjectWithoutClassTypeMapper implements TypeMapperInterface
+final readonly class ObjectWithoutClassTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

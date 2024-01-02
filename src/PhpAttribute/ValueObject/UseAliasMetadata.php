@@ -6,12 +6,12 @@ namespace Rector\PhpAttribute\ValueObject;
 
 use PhpParser\Node\Stmt\UseUse;
 
-final class UseAliasMetadata
+final readonly class UseAliasMetadata
 {
     public function __construct(
-        private readonly string $shortAttributeName,
-        private readonly string $useImportName,
-        private readonly UseUse $useUse
+        private string $shortAttributeName,
+        private string $useImportName,
+        private UseUse $useUse
     ) {
     }
 

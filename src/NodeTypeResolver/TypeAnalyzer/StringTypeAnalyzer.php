@@ -7,10 +7,10 @@ namespace Rector\NodeTypeResolver\TypeAnalyzer;
 use PhpParser\Node\Expr;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class StringTypeAnalyzer
+final readonly class StringTypeAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

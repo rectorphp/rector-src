@@ -11,11 +11,11 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\AssignedToNodeVisitor;
 
-final class SimplePhpParser
+final readonly class SimplePhpParser
 {
-    private readonly Parser $phpParser;
+    private Parser $phpParser;
 
-    private readonly NodeTraverser $nodeTraverser;
+    private NodeTraverser $nodeTraverser;
 
     public function __construct()
     {

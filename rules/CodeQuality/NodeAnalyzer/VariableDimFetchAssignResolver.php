@@ -15,11 +15,11 @@ use Rector\CodeQuality\ValueObject\KeyAndExpr;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class VariableDimFetchAssignResolver
+final readonly class VariableDimFetchAssignResolver
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private NodeComparator $nodeComparator,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

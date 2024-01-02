@@ -12,10 +12,10 @@ use PHPStan\Parser\Parser;
  *
  * @api
  */
-final class SmartPhpParser
+final readonly class SmartPhpParser
 {
     public function __construct(
-        private readonly Parser $parser
+        private Parser $parser
     ) {
     }
 

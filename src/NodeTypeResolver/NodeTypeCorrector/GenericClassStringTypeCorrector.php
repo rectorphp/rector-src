@@ -11,10 +11,10 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 
-final class GenericClassStringTypeCorrector
+final readonly class GenericClassStringTypeCorrector
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

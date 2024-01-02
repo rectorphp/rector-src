@@ -11,12 +11,12 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class ChangedArgumentsDetector
+final readonly class ChangedArgumentsDetector
 {
     public function __construct(
-        private readonly ValueResolver $valueResolver,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly TypeComparator $typeComparator
+        private ValueResolver $valueResolver,
+        private StaticTypeMapper $staticTypeMapper,
+        private TypeComparator $typeComparator
     ) {
     }
 

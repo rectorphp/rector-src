@@ -16,12 +16,12 @@ use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\TypeAnalyzer\AlwaysStrictScalarExprAnalyzer;
 
-final class StrictScalarReturnTypeAnalyzer
+final readonly class StrictScalarReturnTypeAnalyzer
 {
     public function __construct(
-        private readonly AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer,
-        private readonly AlwaysStrictScalarExprAnalyzer $alwaysStrictScalarExprAnalyzer,
-        private readonly TypeFactory $typeFactory,
+        private AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer,
+        private AlwaysStrictScalarExprAnalyzer $alwaysStrictScalarExprAnalyzer,
+        private TypeFactory $typeFactory,
     ) {
     }
 

@@ -13,11 +13,11 @@ use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class InvertedIfFactory
+final readonly class InvertedIfFactory
 {
     public function __construct(
-        private readonly ConditionInverter $conditionInverter,
-        private readonly ContextAnalyzer $contextAnalyzer
+        private ConditionInverter $conditionInverter,
+        private ContextAnalyzer $contextAnalyzer
     ) {
     }
 

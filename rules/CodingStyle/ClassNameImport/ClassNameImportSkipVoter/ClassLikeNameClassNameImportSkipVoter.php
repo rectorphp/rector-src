@@ -19,10 +19,10 @@ use Rector\ValueObject\Application\File;
  *
  * class SomeClass {}
  */
-final class ClassLikeNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
+final readonly class ClassLikeNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly ShortNameResolver $shortNameResolver
+        private ShortNameResolver $shortNameResolver
     ) {
     }
 

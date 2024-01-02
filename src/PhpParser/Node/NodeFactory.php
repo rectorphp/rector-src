@@ -53,7 +53,7 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 /**
  * @see \Rector\Tests\PhpParser\Node\NodeFactoryTest
  */
-final class NodeFactory
+final readonly class NodeFactory
 {
     /**
      * @var string
@@ -61,11 +61,11 @@ final class NodeFactory
     private const THIS = 'this';
 
     public function __construct(
-        private readonly BuilderFactory $builderFactory,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly PropertyTypeDecorator $propertyTypeDecorator,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private BuilderFactory $builderFactory,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private StaticTypeMapper $staticTypeMapper,
+        private PropertyTypeDecorator $propertyTypeDecorator,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 

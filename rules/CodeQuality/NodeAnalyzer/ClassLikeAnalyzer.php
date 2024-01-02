@@ -7,10 +7,10 @@ namespace Rector\CodeQuality\NodeAnalyzer;
 use PhpParser\Node\Stmt\Class_;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ClassLikeAnalyzer
+final readonly class ClassLikeAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

@@ -10,10 +10,10 @@ use PhpParser\Node\Expr\StaticCall;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Util\StringUtils;
 
-final class NamingConventionAnalyzer
+final readonly class NamingConventionAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

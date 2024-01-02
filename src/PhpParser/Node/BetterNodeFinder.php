@@ -22,13 +22,13 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\PhpParser\Node\BetterNodeFinder\BetterNodeFinderTest
  */
-final class BetterNodeFinder
+final readonly class BetterNodeFinder
 {
     public function __construct(
-        private readonly NodeFinder $nodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private NodeFinder $nodeFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private ClassAnalyzer $classAnalyzer,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 

@@ -11,11 +11,11 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * @see \Rector\Tests\PhpParser\Printer\FormatPerservingPrinterTest
  */
-final class FormatPerservingPrinter
+final readonly class FormatPerservingPrinter
 {
     public function __construct(
-        private readonly BetterStandardPrinter $betterStandardPrinter,
-        private readonly Filesystem $filesystem
+        private BetterStandardPrinter $betterStandardPrinter,
+        private Filesystem $filesystem
     ) {
     }
 

@@ -7,12 +7,12 @@ namespace Rector\PostRector\ValueObject;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\Type;
 
-final class PropertyMetadata
+final readonly class PropertyMetadata
 {
     public function __construct(
-        private readonly string $name,
-        private readonly ?Type $type,
-        private readonly int $flags = Class_::MODIFIER_PRIVATE,
+        private string $name,
+        private ?Type $type,
+        private int $flags = Class_::MODIFIER_PRIVATE,
     ) {
     }
 

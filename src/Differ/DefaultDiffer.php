@@ -7,9 +7,9 @@ namespace Rector\Differ;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
 
-final class DefaultDiffer
+final readonly class DefaultDiffer
 {
-    private readonly Differ $differ;
+    private Differ $differ;
 
     public function __construct()
     {

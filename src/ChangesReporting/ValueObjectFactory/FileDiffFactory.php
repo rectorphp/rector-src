@@ -11,12 +11,12 @@ use Rector\FileSystem\FilePathHelper;
 use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Reporting\FileDiff;
 
-final class FileDiffFactory
+final readonly class FileDiffFactory
 {
     public function __construct(
-        private readonly DefaultDiffer $defaultDiffer,
-        private readonly ConsoleDiffer $consoleDiffer,
-        private readonly FilePathHelper $filePathHelper,
+        private DefaultDiffer $defaultDiffer,
+        private ConsoleDiffer $consoleDiffer,
+        private FilePathHelper $filePathHelper,
     ) {
     }
 

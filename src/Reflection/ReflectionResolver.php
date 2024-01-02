@@ -31,15 +31,15 @@ use Rector\PhpParser\AstResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\MethodName;
 
-final class ReflectionResolver
+final readonly class ReflectionResolver
 {
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer,
-        private readonly MethodReflectionResolver $methodReflectionResolver,
-        private readonly AstResolver $astResolver
+        private ReflectionProvider $reflectionProvider,
+        private NodeTypeResolver $nodeTypeResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private ClassAnalyzer $classAnalyzer,
+        private MethodReflectionResolver $methodReflectionResolver,
+        private AstResolver $astResolver
     ) {
     }
 

@@ -14,12 +14,12 @@ use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 /**
  * @implements PhpParserNodeMapperInterface<Node\IntersectionType>
  */
-final class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
+final readonly class IntersectionTypeNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private readonly FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
-        private readonly NameNodeMapper $nameNodeMapper,
-        private readonly IdentifierNodeMapper $identifierNodeMapper
+        private FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
+        private NameNodeMapper $nameNodeMapper,
+        private IdentifierNodeMapper $identifierNodeMapper
     ) {
     }
 

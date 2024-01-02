@@ -11,12 +11,12 @@ use PhpParser\Node\Expr\Variable;
 use Rector\NodeAnalyzer\CompactFuncCallAnalyzer;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 
-final class ExprUsedInNodeAnalyzer
+final readonly class ExprUsedInNodeAnalyzer
 {
     public function __construct(
-        private readonly UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
-        private readonly CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
-        private readonly BetterStandardPrinter $betterStandardPrinter
+        private UsedVariableNameAnalyzer $usedVariableNameAnalyzer,
+        private CompactFuncCallAnalyzer $compactFuncCallAnalyzer,
+        private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
 

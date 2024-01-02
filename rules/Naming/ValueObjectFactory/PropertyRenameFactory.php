@@ -9,10 +9,10 @@ use PhpParser\Node\Stmt\Property;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class PropertyRenameFactory
+final readonly class PropertyRenameFactory
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
+        private NodeNameResolver $nodeNameResolver,
     ) {
     }
 

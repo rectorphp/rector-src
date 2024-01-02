@@ -10,10 +10,10 @@ use Rector\Comments\NodeTraverser\CommentRemovingNodeTraverser;
 /**
  * @see \Rector\Tests\Comments\CommentRemover\CommentRemoverTest
  */
-final class CommentRemover
+final readonly class CommentRemover
 {
     public function __construct(
-        private readonly CommentRemovingNodeTraverser $commentRemovingNodeTraverser
+        private CommentRemovingNodeTraverser $commentRemovingNodeTraverser
     ) {
     }
 

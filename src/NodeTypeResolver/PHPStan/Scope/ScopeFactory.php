@@ -8,10 +8,10 @@ use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Analyser\ScopeFactory as PHPStanScopeFactory;
 
-final class ScopeFactory
+final readonly class ScopeFactory
 {
     public function __construct(
-        private readonly PHPStanScopeFactory $phpStanScopeFactory
+        private PHPStanScopeFactory $phpStanScopeFactory
     ) {
     }
 

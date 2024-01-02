@@ -6,12 +6,12 @@ namespace Rector\Visibility\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class ChangeMethodVisibility
+final readonly class ChangeMethodVisibility
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method,
-        private readonly int $visibility
+        private string $class,
+        private string $method,
+        private int $visibility
     ) {
         RectorAssert::className($class);
     }

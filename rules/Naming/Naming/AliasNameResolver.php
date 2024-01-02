@@ -9,10 +9,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 
-final class AliasNameResolver
+final readonly class AliasNameResolver
 {
     public function __construct(
-        private readonly UseImportsResolver $useImportsResolver,
+        private UseImportsResolver $useImportsResolver,
     ) {
     }
 

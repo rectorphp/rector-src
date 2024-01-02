@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rector\Transform\ValueObject;
 
-final class MethodCallToFuncCall
+final readonly class MethodCallToFuncCall
 {
     public function __construct(
-        private readonly string $objectType,
-        private readonly string $methodName,
-        private readonly string $functionName
+        private string $objectType,
+        private string $methodName,
+        private string $functionName
     ) {
     }
 

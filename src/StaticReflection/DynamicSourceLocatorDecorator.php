@@ -12,12 +12,12 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\Dy
  * @see https://phpstan.org/blog/zero-config-analysis-with-static-reflection
  * @see https://github.com/rectorphp/rector/issues/3490
  */
-final class DynamicSourceLocatorDecorator
+final readonly class DynamicSourceLocatorDecorator
 {
     public function __construct(
-        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
-        private readonly FileAndDirectoryFilter $fileAndDirectoryFilter,
-        private readonly FilesystemTweaker $filesystemTweaker
+        private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private FileAndDirectoryFilter $fileAndDirectoryFilter,
+        private FilesystemTweaker $filesystemTweaker
     ) {
     }
 

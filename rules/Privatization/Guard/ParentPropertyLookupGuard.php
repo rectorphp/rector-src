@@ -19,15 +19,15 @@ use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ClassReflectionAnalyzer;
 
-final class ParentPropertyLookupGuard
+final readonly class ParentPropertyLookupGuard
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly AstResolver $astResolver,
-        private readonly PropertyManipulator $propertyManipulator,
-        private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
+        private BetterNodeFinder $betterNodeFinder,
+        private NodeNameResolver $nodeNameResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private AstResolver $astResolver,
+        private PropertyManipulator $propertyManipulator,
+        private ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
     }
 

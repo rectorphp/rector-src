@@ -15,12 +15,12 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class UsedImportsResolver
+final readonly class UsedImportsResolver
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly UseImportsTraverser $useImportsTraverser,
-        private readonly NodeNameResolver $nodeNameResolver
+        private BetterNodeFinder $betterNodeFinder,
+        private UseImportsTraverser $useImportsTraverser,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

@@ -11,11 +11,11 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Symfony\Contracts\Service\Attribute\Required;
 
-final class AutowiredClassMethodOrPropertyAnalyzer
+final readonly class AutowiredClassMethodOrPropertyAnalyzer
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 

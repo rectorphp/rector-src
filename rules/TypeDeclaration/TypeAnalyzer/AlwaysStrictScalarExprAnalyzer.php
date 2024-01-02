@@ -23,10 +23,10 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class AlwaysStrictScalarExprAnalyzer
+final readonly class AlwaysStrictScalarExprAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

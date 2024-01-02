@@ -11,10 +11,10 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
-final class DocBlockUpdater
+final readonly class DocBlockUpdater
 {
     public function __construct(
-        private readonly PhpDocInfoPrinter $phpDocInfoPrinter
+        private PhpDocInfoPrinter $phpDocInfoPrinter
     ) {
     }
 

@@ -18,13 +18,13 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\PhpAttribute\AnnotationToAttributeMapper\AnnotationToAttributeMapperTest
  */
-final class AnnotationToAttributeMapper
+final readonly class AnnotationToAttributeMapper
 {
     /**
      * @param AnnotationToAttributeMapperInterface[] $annotationToAttributeMappers
      */
     public function __construct(
-        private readonly array $annotationToAttributeMappers
+        private array $annotationToAttributeMappers
     ) {
         Assert::notEmpty($annotationToAttributeMappers);
     }

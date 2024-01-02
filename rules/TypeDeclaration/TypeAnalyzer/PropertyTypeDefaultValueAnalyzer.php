@@ -10,10 +10,10 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class PropertyTypeDefaultValueAnalyzer
+final readonly class PropertyTypeDefaultValueAnalyzer
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 

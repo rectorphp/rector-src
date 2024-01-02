@@ -24,14 +24,14 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class EnumFactory
+final readonly class EnumFactory
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BuilderFactory $builderFactory,
-        private readonly ValueResolver $valueResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private NodeNameResolver $nodeNameResolver,
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private BuilderFactory $builderFactory,
+        private ValueResolver $valueResolver,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

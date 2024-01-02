@@ -13,10 +13,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @see \Rector\Tests\Configuration\ConfigurationFactoryTest
  */
-final class ConfigurationFactory
+final readonly class ConfigurationFactory
 {
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle
+        private SymfonyStyle $symfonyStyle
     ) {
     }
 

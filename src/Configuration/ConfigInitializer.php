@@ -12,16 +12,16 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ConfigInitializer
+final readonly class ConfigInitializer
 {
     /**
      * @param RectorInterface[] $rectors
      */
     public function __construct(
-        private readonly array $rectors,
-        private readonly InitFilePathsResolver $initFilePathsResolver,
-        private readonly SymfonyStyle $symfonyStyle,
-        private readonly PhpVersionProvider $phpVersionProvider,
+        private array $rectors,
+        private InitFilePathsResolver $initFilePathsResolver,
+        private SymfonyStyle $symfonyStyle,
+        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 

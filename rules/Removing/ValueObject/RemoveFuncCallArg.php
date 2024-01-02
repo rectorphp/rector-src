@@ -6,11 +6,11 @@ namespace Rector\Removing\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class RemoveFuncCallArg
+final readonly class RemoveFuncCallArg
 {
     public function __construct(
-        private readonly string $function,
-        private readonly int $argumentPosition
+        private string $function,
+        private int $argumentPosition
     ) {
         RectorAssert::functionName($function);
     }

@@ -17,10 +17,10 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<IntegerType>
  */
-final class IntegerTypeMapper implements TypeMapperInterface
+final readonly class IntegerTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

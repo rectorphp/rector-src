@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\FuncCall;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\ValueObject\FuncCallAndExpr;
 
-final class BinaryOpAnalyzer
+final readonly class BinaryOpAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

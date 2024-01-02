@@ -9,10 +9,10 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class AssignVariableTypeResolver
+final readonly class AssignVariableTypeResolver
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver
+        private NodeTypeResolver $nodeTypeResolver
     ) {
     }
 

@@ -9,11 +9,11 @@ use PhpParser\Node\Stmt;
 use PHPStan\Parser\Parser;
 use Rector\PhpParser\ValueObject\StmtsAndTokens;
 
-final class RectorParser
+final readonly class RectorParser
 {
     public function __construct(
-        private readonly Lexer $lexer,
-        private readonly Parser $parser,
+        private Lexer $lexer,
+        private Parser $parser,
     ) {
     }
 

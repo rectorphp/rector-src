@@ -9,10 +9,10 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class NullableTypeAnalyzer
+final readonly class NullableTypeAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
+        private NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 

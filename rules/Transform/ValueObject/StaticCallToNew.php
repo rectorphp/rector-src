@@ -6,11 +6,11 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class StaticCallToNew
+final readonly class StaticCallToNew
 {
     public function __construct(
-        private readonly string $class,
-        private readonly string $method
+        private string $class,
+        private string $method
     ) {
         RectorAssert::className($class);
         RectorAssert::methodName($method);

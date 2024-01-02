@@ -10,12 +10,12 @@ use Rector\Naming\Guard\HasMagicGetSetGuard;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class PropertyRenameGuard
+final readonly class PropertyRenameGuard
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly DateTimeAtNamingConventionGuard $dateTimeAtNamingConventionGuard,
-        private readonly HasMagicGetSetGuard $hasMagicGetSetGuard,
+        private NodeTypeResolver $nodeTypeResolver,
+        private DateTimeAtNamingConventionGuard $dateTimeAtNamingConventionGuard,
+        private HasMagicGetSetGuard $hasMagicGetSetGuard,
     ) {
     }
 

@@ -13,11 +13,11 @@ use Rector\Php70\ValueObject\ComparedExprs;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class BattleshipTernaryAnalyzer
+final readonly class BattleshipTernaryAnalyzer
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator,
-        private readonly ValueResolver $valueResolver,
+        private NodeComparator $nodeComparator,
+        private ValueResolver $valueResolver,
     ) {
     }
 

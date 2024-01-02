@@ -25,13 +25,13 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PhpParser\AstResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class CallerParamMatcher
+final readonly class CallerParamMatcher
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly TypeComparator $typeComparator
+        private NodeNameResolver $nodeNameResolver,
+        private AstResolver $astResolver,
+        private StaticTypeMapper $staticTypeMapper,
+        private TypeComparator $typeComparator
     ) {
     }
 

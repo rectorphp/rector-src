@@ -19,11 +19,11 @@ use Rector\Arguments\ValueObject\ReplaceArgumentDefaultValue;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\PhpParser\Node\Value\ValueResolver;
 
-final class ArgumentDefaultValueReplacer
+final readonly class ArgumentDefaultValueReplacer
 {
     public function __construct(
-        private readonly NodeFactory $nodeFactory,
-        private readonly ValueResolver $valueResolver
+        private NodeFactory $nodeFactory,
+        private ValueResolver $valueResolver
     ) {
     }
 

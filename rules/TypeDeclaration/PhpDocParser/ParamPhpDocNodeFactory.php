@@ -9,10 +9,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ParamPhpDocNodeFactory
+final readonly class ParamPhpDocNodeFactory
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

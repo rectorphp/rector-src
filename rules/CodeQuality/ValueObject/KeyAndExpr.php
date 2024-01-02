@@ -7,15 +7,15 @@ namespace Rector\CodeQuality\ValueObject;
 use PhpParser\Comment;
 use PhpParser\Node\Expr;
 
-final class KeyAndExpr
+final readonly class KeyAndExpr
 {
     /**
      * @param Comment[] $comments
      */
     public function __construct(
-        private readonly ?Expr $keyExpr,
-        private readonly Expr $expr,
-        private readonly array $comments
+        private ?Expr $keyExpr,
+        private Expr $expr,
+        private array $comments
     ) {
     }
 

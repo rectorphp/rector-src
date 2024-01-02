@@ -10,10 +10,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\DeadCode\PhpDoc\DeadReturnTagValueNodeAnalyzer;
 
-final class ReturnTagRemover
+final readonly class ReturnTagRemover
 {
     public function __construct(
-        private readonly DeadReturnTagValueNodeAnalyzer $deadReturnTagValueNodeAnalyzer
+        private DeadReturnTagValueNodeAnalyzer $deadReturnTagValueNodeAnalyzer
     ) {
     }
 

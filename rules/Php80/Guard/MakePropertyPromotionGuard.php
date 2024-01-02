@@ -11,10 +11,10 @@ use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ClassReflection;
 use Rector\Php74\Guard\PropertyTypeChangeGuard;
 
-final class MakePropertyPromotionGuard
+final readonly class MakePropertyPromotionGuard
 {
     public function __construct(
-        private readonly PropertyTypeChangeGuard $propertyTypeChangeGuard
+        private PropertyTypeChangeGuard $propertyTypeChangeGuard
     ) {
     }
 

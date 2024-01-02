@@ -13,11 +13,11 @@ use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class CallCollectionAnalyzer
+final readonly class CallCollectionAnalyzer
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeTypeResolver $nodeTypeResolver,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

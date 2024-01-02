@@ -9,10 +9,10 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class FunctionLikeReturnTypeResolver
+final readonly class FunctionLikeReturnTypeResolver
 {
     public function __construct(
-        private readonly StaticTypeMapper $staticTypeMapper
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 

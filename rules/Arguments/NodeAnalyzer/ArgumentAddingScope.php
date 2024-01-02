@@ -12,7 +12,7 @@ use Rector\Arguments\ValueObject\ArgumentAdderWithoutDefaultValue;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ArgumentAddingScope
+final readonly class ArgumentAddingScope
 {
     /**
      * @api
@@ -33,7 +33,7 @@ final class ArgumentAddingScope
     public const SCOPE_CLASS_METHOD = 'class_method';
 
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

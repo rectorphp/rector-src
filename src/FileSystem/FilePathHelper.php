@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\FileSystem\FilePathHelperTest
  */
-final class FilePathHelper
+final readonly class FilePathHelper
 {
     /**
      * @see https://regex101.com/r/d4F5Fm/1
@@ -31,7 +31,7 @@ final class FilePathHelper
     private const SCHEME_UNDEFINED = 'undefined';
 
     public function __construct(
-        private readonly Filesystem $filesystem,
+        private Filesystem $filesystem,
     ) {
     }
 

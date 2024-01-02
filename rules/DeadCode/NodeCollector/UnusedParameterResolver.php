@@ -8,10 +8,10 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 
-final class UnusedParameterResolver
+final readonly class UnusedParameterResolver
 {
     public function __construct(
-        private readonly ParamAnalyzer $paramAnalyzer
+        private ParamAnalyzer $paramAnalyzer
     ) {
     }
 

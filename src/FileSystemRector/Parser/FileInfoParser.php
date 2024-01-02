@@ -14,12 +14,12 @@ use Rector\ValueObject\Application\File;
 /**
  * Only for testing, @todo move to testing
  */
-final class FileInfoParser
+final readonly class FileInfoParser
 {
     public function __construct(
-        private readonly NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
-        private readonly RectorParser $rectorParser,
-        private readonly CurrentFileProvider $currentFileProvider
+        private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private RectorParser $rectorParser,
+        private CurrentFileProvider $currentFileProvider
     ) {
     }
 

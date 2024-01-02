@@ -9,10 +9,10 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PHPStan\Type\Type;
 
-final class MissingPropertiesFactory
+final readonly class MissingPropertiesFactory
 {
     public function __construct(
-        private readonly PropertyTypeDecorator $propertyTypeDecorator
+        private PropertyTypeDecorator $propertyTypeDecorator
     ) {
     }
 

@@ -16,10 +16,10 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<FloatType>
  */
-final class FloatTypeMapper implements TypeMapperInterface
+final readonly class FloatTypeMapper implements TypeMapperInterface
 {
     public function __construct(
-        private readonly PhpVersionProvider $phpVersionProvider
+        private PhpVersionProvider $phpVersionProvider
     ) {
     }
 

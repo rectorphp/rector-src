@@ -26,7 +26,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
-final class LocalPropertyAnalyzer
+final readonly class LocalPropertyAnalyzer
 {
     /**
      * @var string
@@ -34,12 +34,12 @@ final class LocalPropertyAnalyzer
     private const LARAVEL_COLLECTION_CLASS = 'Illuminate\Support\Collection';
 
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ArrayDimFetchTypeResolver $arrayDimFetchTypeResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly TypeFactory $typeFactory,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private NodeNameResolver $nodeNameResolver,
+        private ArrayDimFetchTypeResolver $arrayDimFetchTypeResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private TypeFactory $typeFactory,
     ) {
     }
 

@@ -6,11 +6,11 @@ namespace Rector\Php80\ValueObject;
 
 use PhpParser\Node\Expr\Match_;
 
-final class MatchResult
+final readonly class MatchResult
 {
     public function __construct(
-        private readonly Match_ $match,
-        private readonly bool $shouldRemoveNextStmt
+        private Match_ $match,
+        private bool $shouldRemoveNextStmt
     ) {
     }
 

@@ -10,10 +10,10 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BooleanNot;
 use Rector\NodeManipulator\BinaryOpManipulator;
 
-final class ConditionInverter
+final readonly class ConditionInverter
 {
     public function __construct(
-        private readonly BinaryOpManipulator $binaryOpManipulator
+        private BinaryOpManipulator $binaryOpManipulator
     ) {
     }
 

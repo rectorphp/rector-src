@@ -12,10 +12,10 @@ use PhpParser\Node\Stmt\Class_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class PropertyWriteonlyAnalyzer
+final readonly class PropertyWriteonlyAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

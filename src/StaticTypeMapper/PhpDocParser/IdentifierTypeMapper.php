@@ -34,13 +34,13 @@ use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
 /**
  * @implements PhpDocTypeMapperInterface<IdentifierTypeNode>
  */
-final class IdentifierTypeMapper implements PhpDocTypeMapperInterface
+final readonly class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private readonly ObjectTypeSpecifier $objectTypeSpecifier,
-        private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly ReflectionResolver $reflectionResolver
+        private ObjectTypeSpecifier $objectTypeSpecifier,
+        private ScalarStringToTypeMapper $scalarStringToTypeMapper,
+        private ReflectionProvider $reflectionProvider,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

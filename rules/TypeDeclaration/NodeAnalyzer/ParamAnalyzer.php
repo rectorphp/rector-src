@@ -8,10 +8,10 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ParamAnalyzer
+final readonly class ParamAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

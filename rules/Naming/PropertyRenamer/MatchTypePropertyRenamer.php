@@ -10,12 +10,12 @@ use Rector\Naming\Guard\PropertyConflictingNameGuard\MatchPropertyTypeConflictin
 use Rector\Naming\RenameGuard\PropertyRenameGuard;
 use Rector\Naming\ValueObject\PropertyRename;
 
-final class MatchTypePropertyRenamer
+final readonly class MatchTypePropertyRenamer
 {
     public function __construct(
-        private readonly MatchPropertyTypeConflictingNameGuard $matchPropertyTypeConflictingNameGuard,
-        private readonly PropertyRenameGuard $propertyRenameGuard,
-        private readonly PropertyFetchRenamer $propertyFetchRenamer,
+        private MatchPropertyTypeConflictingNameGuard $matchPropertyTypeConflictingNameGuard,
+        private PropertyRenameGuard $propertyRenameGuard,
+        private PropertyFetchRenamer $propertyFetchRenamer,
     ) {
     }
 

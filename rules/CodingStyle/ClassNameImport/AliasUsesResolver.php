@@ -11,10 +11,10 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 
-final class AliasUsesResolver
+final readonly class AliasUsesResolver
 {
     public function __construct(
-        private readonly UseImportsTraverser $useImportsTraverser
+        private UseImportsTraverser $useImportsTraverser
     ) {
     }
 

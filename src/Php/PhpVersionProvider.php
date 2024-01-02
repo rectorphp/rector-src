@@ -16,7 +16,7 @@ use ReflectionClass;
 /**
  * @see \Rector\Tests\Php\PhpVersionProviderTest
  */
-final class PhpVersionProvider
+final readonly class PhpVersionProvider
 {
     /**
      * @var string
@@ -25,7 +25,7 @@ final class PhpVersionProvider
     private const VALID_PHP_VERSION_REGEX = '#^\d{5,6}$#';
 
     public function __construct(
-        private readonly ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver
+        private ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver
     ) {
     }
 

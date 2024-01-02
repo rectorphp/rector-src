@@ -6,10 +6,10 @@ namespace Rector\Skipper\Skipper;
 
 use Rector\Skipper\Matcher\FileInfoMatcher;
 
-final class SkipSkipper
+final readonly class SkipSkipper
 {
     public function __construct(
-        private readonly FileInfoMatcher $fileInfoMatcher
+        private FileInfoMatcher $fileInfoMatcher
     ) {
     }
 

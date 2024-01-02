@@ -14,10 +14,10 @@ use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 
-final class StaticTypeAnalyzer
+final readonly class StaticTypeAnalyzer
 {
     public function __construct(
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer
+        private UnionTypeAnalyzer $unionTypeAnalyzer
     ) {
     }
 

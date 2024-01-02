@@ -7,11 +7,11 @@ namespace Rector\ValueObject;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 
-final class FuncCallAndExpr
+final readonly class FuncCallAndExpr
 {
     public function __construct(
-        private readonly FuncCall $funcCall,
-        private readonly Expr $expr
+        private FuncCall $funcCall,
+        private Expr $expr
     ) {
     }
 

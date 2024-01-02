@@ -9,10 +9,10 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 
-final class DocBlockTagReplacer
+final readonly class DocBlockTagReplacer
 {
     public function __construct(
-        private readonly AnnotationNaming $annotationNaming
+        private AnnotationNaming $annotationNaming
     ) {
     }
 

@@ -13,7 +13,7 @@ use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class ConsoleOutputFormatter implements OutputFormatterInterface
+final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 {
     /**
      * @var string
@@ -27,8 +27,8 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
     private const ON_LINE_REGEX = '# on line #';
 
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
-        private readonly RectorsChangelogResolver $rectorsChangelogResolver,
+        private SymfonyStyle $symfonyStyle,
+        private RectorsChangelogResolver $rectorsChangelogResolver,
     ) {
     }
 

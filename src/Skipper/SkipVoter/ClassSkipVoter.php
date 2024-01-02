@@ -9,12 +9,12 @@ use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\Skipper\SkipSkipper;
 
-final class ClassSkipVoter implements SkipVoterInterface
+final readonly class ClassSkipVoter implements SkipVoterInterface
 {
     public function __construct(
-        private readonly SkipSkipper $skipSkipper,
-        private readonly SkippedClassResolver $skippedClassResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private SkipSkipper $skipSkipper,
+        private SkippedClassResolver $skippedClassResolver,
+        private ReflectionProvider $reflectionProvider
     ) {
     }
 

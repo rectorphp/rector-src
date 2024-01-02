@@ -8,11 +8,11 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\If_;
 
-final class BareSingleAssignIf
+final readonly class BareSingleAssignIf
 {
     public function __construct(
-        private readonly If_ $if,
-        private readonly Assign $assign
+        private If_ $if,
+        private Assign $assign
     ) {
     }
 

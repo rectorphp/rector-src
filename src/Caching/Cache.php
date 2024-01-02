@@ -6,10 +6,10 @@ namespace Rector\Caching;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 
-final class Cache
+final readonly class Cache
 {
     public function __construct(
-        private readonly CacheStorageInterface $cacheStorage
+        private CacheStorageInterface $cacheStorage
     ) {
     }
 

@@ -11,12 +11,12 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\AlwaysStrictReturnAnalyzer;
 
-final class StrictReturnClassConstReturnTypeAnalyzer
+final readonly class StrictReturnClassConstReturnTypeAnalyzer
 {
     public function __construct(
-        private readonly AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeFactory $typeFactory
+        private AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer,
+        private NodeTypeResolver $nodeTypeResolver,
+        private TypeFactory $typeFactory
     ) {
     }
 

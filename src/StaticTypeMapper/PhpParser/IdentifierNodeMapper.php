@@ -13,10 +13,10 @@ use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 /**
  * @implements PhpParserNodeMapperInterface<Identifier>
  */
-final class IdentifierNodeMapper implements PhpParserNodeMapperInterface
+final readonly class IdentifierNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper
+        private ScalarStringToTypeMapper $scalarStringToTypeMapper
     ) {
     }
 

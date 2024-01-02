@@ -10,7 +10,7 @@ use PHPStan\Reflection\ClassReflection;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 
-final class DoctrineEntityAnalyzer
+final readonly class DoctrineEntityAnalyzer
 {
     /**
      * @var string[]
@@ -23,7 +23,7 @@ final class DoctrineEntityAnalyzer
     ];
 
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

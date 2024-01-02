@@ -8,12 +8,12 @@ use Rector\Skipper\FileSystem\FnMatchPathNormalizer;
 use Rector\Skipper\Fnmatcher;
 use Rector\Skipper\RealpathMatcher;
 
-final class FileInfoMatcher
+final readonly class FileInfoMatcher
 {
     public function __construct(
-        private readonly FnMatchPathNormalizer $fnMatchPathNormalizer,
-        private readonly Fnmatcher $fnmatcher,
-        private readonly RealpathMatcher $realpathMatcher
+        private FnMatchPathNormalizer $fnMatchPathNormalizer,
+        private Fnmatcher $fnmatcher,
+        private RealpathMatcher $realpathMatcher
     ) {
     }
 

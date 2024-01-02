@@ -19,10 +19,10 @@ use Rector\ValueObject\Application\File;
  *
  * use App\Something as SomeClass;
  */
-final class AliasClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
+final readonly class AliasClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private readonly AliasUsesResolver $aliasUsesResolver
+        private AliasUsesResolver $aliasUsesResolver
     ) {
     }
 

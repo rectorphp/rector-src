@@ -8,12 +8,12 @@ use PHPStan\Type\ObjectType;
 use Rector\Renaming\Contract\RenameAnnotationInterface;
 use Rector\Validation\RectorAssert;
 
-final class RenameAnnotationByType implements RenameAnnotationInterface
+final readonly class RenameAnnotationByType implements RenameAnnotationInterface
 {
     public function __construct(
-        private readonly string $type,
-        private readonly string $oldAnnotation,
-        private readonly string $newAnnotation
+        private string $type,
+        private string $oldAnnotation,
+        private string $newAnnotation
     ) {
         RectorAssert::className($type);
     }

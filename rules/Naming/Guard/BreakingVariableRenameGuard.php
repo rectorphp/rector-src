@@ -28,7 +28,7 @@ use Rector\Util\StringUtils;
 /**
  * This class check if a variable name change breaks existing code in class method
  */
-final class BreakingVariableRenameGuard
+final readonly class BreakingVariableRenameGuard
 {
     /**
      * @var string
@@ -37,12 +37,12 @@ final class BreakingVariableRenameGuard
     public const AT_NAMING_REGEX = '#[\w+]At$#';
 
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ConflictingNameResolver $conflictingNameResolver,
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly OverridenExistingNamesResolver $overridenExistingNamesResolver,
-        private readonly TypeUnwrapper $typeUnwrapper,
-        private readonly NodeNameResolver $nodeNameResolver
+        private BetterNodeFinder $betterNodeFinder,
+        private ConflictingNameResolver $conflictingNameResolver,
+        private NodeTypeResolver $nodeTypeResolver,
+        private OverridenExistingNamesResolver $overridenExistingNamesResolver,
+        private TypeUnwrapper $typeUnwrapper,
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

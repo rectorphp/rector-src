@@ -13,11 +13,11 @@ use PHPStan\Reflection\MethodReflection;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 
-final class StaticGuard
+final readonly class StaticGuard
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver
+        private BetterNodeFinder $betterNodeFinder,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 

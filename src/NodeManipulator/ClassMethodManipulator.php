@@ -11,11 +11,11 @@ use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 
-final class ClassMethodManipulator
+final readonly class ClassMethodManipulator
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ReflectionResolver $reflectionResolver,
+        private NodeNameResolver $nodeNameResolver,
+        private ReflectionResolver $reflectionResolver,
     ) {
     }
 

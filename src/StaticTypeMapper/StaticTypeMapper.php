@@ -28,13 +28,13 @@ use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
  * Maps PhpParser <=> PHPStan <=> PHPStan doc <=> string type nodes between all possible formats
  * @see \Rector\Tests\NodeTypeResolver\StaticTypeMapper\StaticTypeMapperTest
  */
-final class StaticTypeMapper
+final readonly class StaticTypeMapper
 {
     public function __construct(
-        private readonly NameScopeFactory $nameScopeFactory,
-        private readonly PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
-        private readonly PhpDocTypeMapper $phpDocTypeMapper,
-        private readonly PhpParserNodeMapper $phpParserNodeMapper
+        private NameScopeFactory $nameScopeFactory,
+        private PHPStanStaticTypeMapper $phpStanStaticTypeMapper,
+        private PhpDocTypeMapper $phpDocTypeMapper,
+        private PhpParserNodeMapper $phpParserNodeMapper
     ) {
     }
 

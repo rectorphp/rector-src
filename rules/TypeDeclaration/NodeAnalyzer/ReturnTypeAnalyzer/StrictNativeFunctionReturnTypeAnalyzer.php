@@ -14,12 +14,12 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnFilter\ExclusiveNativeCallLikeReturnMatcher;
 
-final class StrictNativeFunctionReturnTypeAnalyzer
+final readonly class StrictNativeFunctionReturnTypeAnalyzer
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ExclusiveNativeCallLikeReturnMatcher $exclusiveNativeCallLikeReturnMatcher,
-        private readonly ReturnAnalyzer $returnAnalyzer,
+        private BetterNodeFinder $betterNodeFinder,
+        private ExclusiveNativeCallLikeReturnMatcher $exclusiveNativeCallLikeReturnMatcher,
+        private ReturnAnalyzer $returnAnalyzer,
     ) {
     }
 

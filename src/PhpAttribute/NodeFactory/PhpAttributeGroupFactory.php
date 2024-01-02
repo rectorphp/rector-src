@@ -21,14 +21,14 @@ use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
 /**
  * @see \Rector\Tests\PhpAttribute\Printer\PhpAttributeGroupFactoryTest
  */
-final class PhpAttributeGroupFactory
+final readonly class PhpAttributeGroupFactory
 {
     public function __construct(
-        private readonly AnnotationToAttributeMapper $annotationToAttributeMapper,
-        private readonly AttributeNameFactory $attributeNameFactory,
-        private readonly NamedArgsFactory $namedArgsFactory,
-        private readonly ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
-        private readonly AttributeArrayNameInliner $attributeArrayNameInliner
+        private AnnotationToAttributeMapper $annotationToAttributeMapper,
+        private AttributeNameFactory $attributeNameFactory,
+        private NamedArgsFactory $namedArgsFactory,
+        private ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
+        private AttributeArrayNameInliner $attributeArrayNameInliner
     ) {
     }
 

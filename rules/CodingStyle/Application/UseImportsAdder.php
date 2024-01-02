@@ -19,11 +19,11 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
-final class UseImportsAdder
+final readonly class UseImportsAdder
 {
     public function __construct(
-        private readonly UsedImportsResolver $usedImportsResolver,
-        private readonly TypeFactory $typeFactory
+        private UsedImportsResolver $usedImportsResolver,
+        private TypeFactory $typeFactory
     ) {
     }
 

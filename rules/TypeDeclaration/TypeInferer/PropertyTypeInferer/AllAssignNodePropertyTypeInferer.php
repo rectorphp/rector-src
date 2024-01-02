@@ -15,13 +15,13 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Rector\ValueObject\Application\File;
 
-final class AllAssignNodePropertyTypeInferer
+final readonly class AllAssignNodePropertyTypeInferer
 {
     public function __construct(
-        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly AstResolver $astResolver,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
+        private NodeNameResolver $nodeNameResolver,
+        private AstResolver $astResolver,
+        private BetterNodeFinder $betterNodeFinder
     ) {
     }
 

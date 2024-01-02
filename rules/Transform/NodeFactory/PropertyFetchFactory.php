@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\Variable;
 use PHPStan\Type\ObjectType;
 use Rector\Naming\Naming\PropertyNaming;
 
-final class PropertyFetchFactory
+final readonly class PropertyFetchFactory
 {
     public function __construct(
-        private readonly PropertyNaming $propertyNaming
+        private PropertyNaming $propertyNaming
     ) {
     }
 

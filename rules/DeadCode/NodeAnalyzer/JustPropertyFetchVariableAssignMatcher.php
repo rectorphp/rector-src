@@ -13,10 +13,10 @@ use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\ValueObject\VariableAndPropertyFetchAssign;
 use Rector\PhpParser\Comparing\NodeComparator;
 
-final class JustPropertyFetchVariableAssignMatcher
+final readonly class JustPropertyFetchVariableAssignMatcher
 {
     public function __construct(
-        private readonly NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator
     ) {
     }
 

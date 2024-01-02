@@ -23,15 +23,15 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
-final class DeadReturnTagValueNodeAnalyzer
+final readonly class DeadReturnTagValueNodeAnalyzer
 {
     public function __construct(
-        private readonly TypeComparator $typeComparator,
-        private readonly GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
-        private readonly MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
-        private readonly StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private TypeComparator $typeComparator,
+        private GenericTypeNodeAnalyzer $genericTypeNodeAnalyzer,
+        private MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
+        private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
+        private PhpDocTypeChanger $phpDocTypeChanger,
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 

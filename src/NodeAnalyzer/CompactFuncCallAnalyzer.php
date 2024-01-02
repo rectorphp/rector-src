@@ -13,10 +13,10 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\VariadicPlaceholder;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class CompactFuncCallAnalyzer
+final readonly class CompactFuncCallAnalyzer
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver
+        private NodeNameResolver $nodeNameResolver
     ) {
     }
 

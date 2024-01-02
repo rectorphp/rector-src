@@ -15,12 +15,12 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
 
-final class NameImporter
+final readonly class NameImporter
 {
     public function __construct(
-        private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector
+        private ClassNameImportSkipper $classNameImportSkipper,
+        private StaticTypeMapper $staticTypeMapper,
+        private UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 

@@ -13,11 +13,11 @@ use PhpParser\Node\Stmt\Function_;
 use Rector\Naming\ValueObject\VariableAndCallForeach;
 use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ForeachMatcher
+final readonly class ForeachMatcher
 {
     public function __construct(
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly CallMatcher $callMatcher,
+        private NodeNameResolver $nodeNameResolver,
+        private CallMatcher $callMatcher,
     ) {
     }
 

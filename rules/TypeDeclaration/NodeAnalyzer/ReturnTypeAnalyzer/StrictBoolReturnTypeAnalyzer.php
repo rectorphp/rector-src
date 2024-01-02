@@ -10,11 +10,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\TypeDeclaration\TypeAnalyzer\AlwaysStrictBoolExprAnalyzer;
 
-final class StrictBoolReturnTypeAnalyzer
+final readonly class StrictBoolReturnTypeAnalyzer
 {
     public function __construct(
-        private readonly AlwaysStrictBoolExprAnalyzer $alwaysStrictBoolExprAnalyzer,
-        private readonly AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer
+        private AlwaysStrictBoolExprAnalyzer $alwaysStrictBoolExprAnalyzer,
+        private AlwaysStrictReturnAnalyzer $alwaysStrictReturnAnalyzer
     ) {
     }
 

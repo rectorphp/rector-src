@@ -13,13 +13,13 @@ use Symfony\Component\Finder\SplFileInfo;
 /**
  * @see \Rector\Tests\FileSystem\FilesFinder\FilesFinderTest
  */
-final class FilesFinder
+final readonly class FilesFinder
 {
     public function __construct(
-        private readonly FilesystemTweaker $filesystemTweaker,
-        private readonly SkippedPathsResolver $skippedPathsResolver,
-        private readonly UnchangedFilesFilter $unchangedFilesFilter,
-        private readonly FileAndDirectoryFilter $fileAndDirectoryFilter,
+        private FilesystemTweaker $filesystemTweaker,
+        private SkippedPathsResolver $skippedPathsResolver,
+        private UnchangedFilesFilter $unchangedFilesFilter,
+        private FileAndDirectoryFilter $fileAndDirectoryFilter,
     ) {
     }
 

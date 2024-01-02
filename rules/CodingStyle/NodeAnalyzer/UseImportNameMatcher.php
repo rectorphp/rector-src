@@ -16,7 +16,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Util\StringUtils;
 
-final class UseImportNameMatcher
+final readonly class UseImportNameMatcher
 {
     /**
      * @var string
@@ -27,8 +27,8 @@ final class UseImportNameMatcher
     private const SHORT_NAME_REGEX = '#^%s(\\\\[\w]+)?$#i';
 
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly UseImportsResolver $useImportsResolver
+        private BetterNodeFinder $betterNodeFinder,
+        private UseImportsResolver $useImportsResolver
     ) {
     }
 

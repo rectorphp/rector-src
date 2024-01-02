@@ -11,11 +11,11 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Util\StringUtils;
 
-final class DateTimeAtNamingConventionGuard
+final readonly class DateTimeAtNamingConventionGuard
 {
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly TypeUnwrapper $typeUnwrapper
+        private NodeTypeResolver $nodeTypeResolver,
+        private TypeUnwrapper $typeUnwrapper
     ) {
     }
 

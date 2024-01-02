@@ -12,12 +12,12 @@ use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\VariableRenamer;
 
-final class ParamRenamer
+final readonly class ParamRenamer
 {
     public function __construct(
-        private readonly VariableRenamer $variableRenamer,
-        private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private VariableRenamer $variableRenamer,
+        private DocBlockUpdater $docBlockUpdater,
+        private PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 

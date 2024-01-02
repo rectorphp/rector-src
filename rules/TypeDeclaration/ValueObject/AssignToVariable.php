@@ -6,11 +6,11 @@ namespace Rector\TypeDeclaration\ValueObject;
 
 use PhpParser\Node\Expr;
 
-final class AssignToVariable
+final readonly class AssignToVariable
 {
     public function __construct(
-        private readonly string $variableName,
-        private readonly Expr $assignedExpr
+        private string $variableName,
+        private Expr $assignedExpr
     ) {
     }
 

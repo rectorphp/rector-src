@@ -25,7 +25,7 @@ use PHPStan\Type\ConstantType;
 use PHPStan\Type\ObjectType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 
-final class SideEffectNodeDetector
+final readonly class SideEffectNodeDetector
 {
     /**
      * @var array<class-string<Expr>>
@@ -43,8 +43,8 @@ final class SideEffectNodeDetector
     ];
 
     public function __construct(
-        private readonly NodeTypeResolver $nodeTypeResolver,
-        private readonly PureFunctionDetector $pureFunctionDetector
+        private NodeTypeResolver $nodeTypeResolver,
+        private PureFunctionDetector $pureFunctionDetector
     ) {
     }
 
