@@ -95,6 +95,8 @@ CODE_SAMPLE
                 return null;
             }
 
+            // dd($previousFirstStmt);
+
             if (! $this->nodeComparator->areNodesEqual($previousFirstStmt, $stmt)) {
                 return null;
             }
