@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Return_;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Analyser\Scope;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,6 +22,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveDeadConditionAboveReturnRector extends AbstractRector
 {
+    public function __construct(
+        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Remove dead condition above return', [
@@ -68,16 +77,16 @@ CODE_SAMPLE
             }
 
             $previousNode = $node->stmts[$key - 1] ?? null;
-            if (! $previousNode instanceof If_) {
-                return null;
+            if (! $this->isBareIf($previousNode)) {
+                continue;
             }
 
-            if ($previousNode->elseifs !== []) {
-                return null;
-            }
+            /** @var Scope $scope */
+            $scope = $stmt->getAttribute(AttributeKey::SCOPE);
 
-            if ($previousNode->else instanceof Else_) {
-                return null;
+            /** @var If_ $previousNode */
+            if ($this->sideEffectNodeDetector->detect($previousNode->cond, $scope)) {
+                continue;
             }
 
             $countStmt = count($previousNode->stmts);
@@ -104,5 +113,18 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isBareIf(?Stmt $stmt): bool
+    {
+        if (! $stmt instanceof If_) {
+            return false;
+        }
+
+        if ($stmt->elseifs !== []) {
+            return false;
+        }
+
+        return ! $stmt->else instanceof Else_;
     }
 }
