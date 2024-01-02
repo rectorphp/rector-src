@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\Rector\Return_;
 
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -68,17 +69,11 @@ CODE_SAMPLE
             }
 
             $previousNode = $node->stmts[$key - 1] ?? null;
-            if (! $previousNode instanceof If_) {
-                return null;
+            if (! $this->isBareIf($previousNode)) {
+                continue;
             }
 
-            if ($previousNode->elseifs !== []) {
-                return null;
-            }
-
-            if ($previousNode->else instanceof Else_) {
-                return null;
-            }
+            dd($previousNode->cond);
 
             $countStmt = count($previousNode->stmts);
             if ($countStmt === 0) {
@@ -95,8 +90,6 @@ CODE_SAMPLE
                 return null;
             }
 
-            // dd($previousFirstStmt);
-
             if (! $this->nodeComparator->areNodesEqual($previousFirstStmt, $stmt)) {
                 return null;
             }
@@ -106,5 +99,18 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function isBareIf(?Stmt $stmt): bool
+    {
+        if (! $stmt instanceof If_) {
+            return false;
+        }
+
+        if ($stmt->elseifs !== []) {
+            return false;
+        }
+
+        return ! $stmt->else instanceof Else_;
     }
 }
