@@ -113,7 +113,7 @@ final class ContextNodeVisitor extends NodeVisitorAbstract implements ScopeResol
     {
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $attribute->args,
-            static function (Node $subNode) {
+            static function (Node $subNode): null {
                 if ($subNode instanceof Array_) {
                     $subNode->setAttribute(AttributeKey::IS_ARRAY_IN_ATTRIBUTE, true);
                 }
