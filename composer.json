@@ -56,7 +56,7 @@
         "symplify/easy-coding-standard": "^12.0",
         "symplify/phpstan-extensions": "^11.4",
         "symplify/phpstan-rules": "^12.2",
-        "symplify/rule-doc-generator": "^12.0",
+        "symplify/rule-doc-generator": "^12.1",
         "symplify/vendor-patches": "^11.2",
         "tomasvotruba/class-leak": "^0.2",
         "tomasvotruba/cognitive-complexity": "^0.2",

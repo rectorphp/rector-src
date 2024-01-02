@@ -36,29 +36,21 @@ final class FinalizeClassesWithoutChildrenRector extends AbstractRector
         return new RuleDefinition('Finalize every class that has no children', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class FirstClass
+class FirstClass extends SecondClass
 {
 }
 
 class SecondClass
-{
-}
-
-class ThirdClass extends SecondClass
 {
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-final class FirstClass
+final class FirstClass extends SecondClass
 {
 }
 
 class SecondClass
-{
-}
-
-final class ThirdClass extends SecondClass
 {
 }
 CODE_SAMPLE
