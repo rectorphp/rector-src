@@ -132,6 +132,7 @@ parameters:
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/Php70/EregToPcreTransformer.php
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
+                - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
 
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
