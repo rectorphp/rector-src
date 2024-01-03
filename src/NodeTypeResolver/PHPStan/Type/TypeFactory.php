@@ -62,11 +62,11 @@ final readonly class TypeFactory
         $uniqueTypes = [];
         $totalTypes = count($types);
 
+        $hasFalse = false;
+        $hasTrue = false;
         foreach ($types as $type) {
-            if ($totalTypes > 1 && $type instanceof ObjectWithoutClassTypeWithParentTypes) {
-                $parents = $type->getParentTypes();
-                $type = new ObjectType($parents[0]->getClassName());
-            }
+            $type = $this->normalizeObjectType($totalTypes, $type);
+            $type = $this->normalizeBooleanType($hasFalse, $hasTrue, $type);
 
             $removedConstantType = $this->removeValueFromConstantType($type);
             $removedConstantTypeHash = $this->typeHasher->createTypeHash($removedConstantType);
@@ -90,6 +90,35 @@ final readonly class TypeFactory
 
         // re-index
         return array_values($uniqueTypes);
+    }
+
+    private function normalizeObjectType(int $totalTypes, Type $type): Type
+    {
+        if ($totalTypes > 1 && $type instanceof ObjectWithoutClassTypeWithParentTypes) {
+            $parents = $type->getParentTypes();
+            return new ObjectType($parents[0]->getClassName());
+        }
+
+        return $type;
+    }
+
+    private function normalizeBooleanType(bool &$hasFalse, bool &$hasTrue, Type $type): Type
+    {
+        if ($type instanceof ConstantBooleanType) {
+            if ($type->getValue()) {
+                $hasTrue = true;
+            }
+
+            if ($type->getValue() === false) {
+                $hasFalse = true;
+            }
+        }
+
+        if ($hasFalse && $hasTrue && $type instanceof ConstantBooleanType) {
+            return new BooleanType();
+        }
+
+        return $type;
     }
 
     /**
