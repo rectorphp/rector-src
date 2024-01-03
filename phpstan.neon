@@ -1,10 +1,6 @@
 includes:
     - vendor/symplify/phpstan-rules/config/symplify-rules.neon
 
-rules:
-    # @todo this rule is costly and designed for hand-on refactoring; enable only when needed
-    #- Rector\Utils\PHPStan\Rule\LongAndDependentComplexRectorRule
-
 parameters:
     level: 8
 
