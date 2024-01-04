@@ -32,7 +32,7 @@ final readonly class UnitializedPropertyAnalyzer
             return false;
         }
 
-        $varType =  $expr instanceof PropertyFetch
+        $varType = $expr instanceof PropertyFetch
             ? $this->nodeTypeResolver->getType($expr->var)
             : $this->nodeTypeResolver->getType($expr->class);
 
