@@ -13,7 +13,6 @@ use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
-use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector;
 use Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector;
@@ -71,7 +70,6 @@ return static function (RectorConfig $rectorConfig): void {
         SplitGroupedPropertiesRector::class,
         SplitGroupedClassConstantsRector::class,
         ExplicitPublicClassMethodRector::class,
-        ArraySpreadInsteadOfArrayMergeRector::class,
         RemoveUselessAliasInUseStatementRector::class,
     ]);
 };
