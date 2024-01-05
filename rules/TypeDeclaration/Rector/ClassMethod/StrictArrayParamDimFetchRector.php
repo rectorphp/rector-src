@@ -156,7 +156,7 @@ CODE_SAMPLE
                 return NodeTraverser::STOP_TRAVERSAL;
             }
 
-            // continue in possibly string type as string can be accessed via int
+            // skip integer in possibly string type as string can be accessed via int
             $dimType = $this->getType($node->dim);
             if ($dimType->isInteger()->yes() && $variableType->isString()->maybe()) {
                 return null;
