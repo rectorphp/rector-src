@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php81\NodeFactory;
 
+use Nette\Utils\Strings;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -65,7 +66,7 @@ final readonly class EnumFactory
         return $enum;
     }
 
-    public function createFromSpatieClass(Class_ $class): Enum_
+    public function createFromSpatieClass(Class_ $class, bool $enumNameInSnakeCase = false): Enum_
     {
         $shortClassName = $this->nodeNameResolver->getShortName($class);
         $enum = new Enum_($shortClassName, [], [
@@ -84,7 +85,7 @@ final readonly class EnumFactory
             $enum->scalarType = new Identifier($identifierType);
 
             foreach ($docBlockMethods as $docBlockMethod) {
-                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod, $class, $mapping);
+                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod, $class, $mapping, $enumNameInSnakeCase);
             }
         }
 
@@ -117,12 +118,23 @@ final readonly class EnumFactory
     private function createEnumCaseFromDocComment(
         PhpDocTagNode $phpDocTagNode,
         Class_ $class,
-        array $mapping = []
+        array $mapping = [],
+        bool $enumNameInSnakeCase = false,
     ): EnumCase {
         /** @var MethodTagValueNode $nodeValue */
         $nodeValue = $phpDocTagNode->value;
         $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
-        $enumName = strtoupper($nodeValue->methodName);
+        if ($enumNameInSnakeCase) {
+            $enumName = strtoupper(
+                Strings::replace(
+                    $nodeValue->methodName,
+                    '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/',
+                    '_$0'
+                )
+            );
+        } else {
+            $enumName = strtoupper($nodeValue->methodName);
+        }
         $enumExpr = $this->builderFactory->val($enumValue);
 
         return new EnumCase(
