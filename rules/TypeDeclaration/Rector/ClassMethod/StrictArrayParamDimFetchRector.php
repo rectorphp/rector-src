@@ -224,7 +224,7 @@ CODE_SAMPLE
         return $this->isReassignAndUseAsArg($node, $paramName);
     }
 
-    private function isReassignAndUseAsArg(Node $node, $paramName): bool
+    private function isReassignAndUseAsArg(Node $node, string $paramName): bool
     {
         if (! $node instanceof Assign) {
             return false;
