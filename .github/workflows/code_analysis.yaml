@@ -34,10 +34,6 @@ jobs:
                         run: vendor/bin/phpstan analyse --ansi --error-format symplify
 
                     -
-                        name: 'PHPStan for config'
-                        run: composer phpstan-config
-
-                    -
                         name: 'Commented Code'
                         run: vendor/bin/easy-ci check-commented-code src rules tests rules-tests --line-limit 5 --ansi
 
