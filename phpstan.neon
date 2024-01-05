@@ -54,6 +54,7 @@ parameters:
                 - src/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
                 - src/PhpParser/Printer/BetterStandardPrinter.php #41
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                - rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php
 
         -
             message: '#Cognitive complexity for "(.*?)" is (.*?), keep it under 11#'

@@ -7,8 +7,10 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast\Array_;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Empty_;
@@ -215,7 +217,42 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->isEmptyOrEchoedOrCasted($node, $paramName);
+        if ($this->isEmptyOrEchoedOrCasted($node, $paramName)) {
+            return true;
+        }
+
+        return $this->isReassignAndUseAsArg($node, $paramName);
+    }
+
+    private function isReassignAndUseAsArg(Node $node, string $paramName): bool
+    {
+        if (! $node instanceof Assign) {
+            return false;
+        }
+
+        if (! $node->var instanceof Variable) {
+            return false;
+        }
+
+        if (! $this->isName($node->var, $paramName)) {
+            return false;
+        }
+
+        if (! $node->expr instanceof CallLike) {
+            return false;
+        }
+
+        if ($node->expr->isFirstClassCallable()) {
+            return false;
+        }
+
+        foreach ($node->expr->getArgs() as $arg) {
+            if ($arg->value instanceof Variable && $this->isName($arg->value, $paramName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isEmptyOrEchoedOrCasted(Node $node, string $paramName): bool
@@ -228,7 +265,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $node instanceof Array_ && $node->expr instanceof Variable && $node->expr->name === $paramName;
+        return $node instanceof Array_ && $node->expr instanceof Variable && $this->isName($node->expr, $paramName);
     }
 
     private function isMethodCallOrArrayDimFetch(string $paramName, ?Node $node): bool
