@@ -47,7 +47,7 @@ final class IntermediateSourceLocator implements SourceLocator
         try {
             $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
         } catch (CouldNotReadFileException) {
-            return null;
+            return [];
         }
 
         if ($reflections !== []) {
