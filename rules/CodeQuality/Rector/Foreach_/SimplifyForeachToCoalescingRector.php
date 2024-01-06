@@ -113,6 +113,11 @@ CODE_SAMPLE
                 $nextStmt = $node->stmts[$key + 1] ?? null;
 
                 $return = $this->processForeachNodeWithReturnInside($foreach, $foreachReturnOrAssign, $nextStmt);
+
+                if ($return === null) {
+                    continue;
+                }
+
                 $node->stmts[$key] = $return;
 
                 // cleanup next return
