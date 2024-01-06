@@ -130,13 +130,8 @@ final readonly class EnumFactory
         $nodeValue = $phpDocTagNode->value;
         $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
         if ($enumNameInSnakeCase) {
-            $enumName = strtoupper(
-                Strings::replace(
-                    $nodeValue->methodName,
-                    '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/',
-                    '_$0'
-                )
-            );
+            $upperCaseToSnakeCasePattern = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
+            $enumName = strtoupper(Strings::replace($nodeValue->methodName, $upperCaseToSnakeCasePattern, '_$0'));
         } else {
             $enumName = strtoupper($nodeValue->methodName);
         }
