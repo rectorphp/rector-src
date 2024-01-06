@@ -45,7 +45,7 @@ final readonly class CallerParamMatcher
             return null;
         }
 
-        if (! $param->default instanceof Expr) {
+        if (! $param->default instanceof Expr && ! $callParam->default instanceof Expr) {
             return $callParam->type;
         }
 
@@ -54,7 +54,7 @@ final readonly class CallerParamMatcher
         }
 
         $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callParam->type);
-        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->default);
+        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->default ?? $callParam->default);
 
         if ($this->typeComparator->areTypesEqual($callParamType, $defaultType)) {
             return $callParam->type;
@@ -62,6 +62,10 @@ final readonly class CallerParamMatcher
 
         if ($this->typeComparator->isSubtype($defaultType, $callParamType)) {
             return $callParam->type;
+        }
+
+        if ($defaultType instanceof \PHPStan\Type\NullType) {
+            return new NullableType($callParam->type);
         }
 
         return null;
