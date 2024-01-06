@@ -44,7 +44,12 @@ final class IntermediateSourceLocator implements SourceLocator
     {
         $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-        $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
+        try {
+            $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
+        } catch (CouldNotReadFileException) {
+            return null;
+        }
+
         if ($reflections !== []) {
             return $reflections;
         }
