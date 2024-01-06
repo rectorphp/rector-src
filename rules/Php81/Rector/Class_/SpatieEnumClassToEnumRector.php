@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Enum_;
 use PHPStan\Type\ObjectType;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Php81\NodeFactory\EnumFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -21,8 +22,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\Php81\Rector\Class_\SpatieEnumClassToEnumRector\SpatieEnumClassToEnumRectorTest
  */
-final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhpVersionInterface
+final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
+    private bool $toUpperSnakeCase = false;
+
     public function __construct(
         private readonly EnumFactory $enumFactory
     ) {
@@ -80,6 +83,14 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->enumFactory->createFromSpatieClass($node);
+        return $this->enumFactory->createFromSpatieClass($node, $this->toUpperSnakeCase);
+    }
+
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->toUpperSnakeCase = true === ($configuration['toUpperSnakeCase'] ?? false);
     }
 }
