@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -54,8 +55,13 @@ final readonly class CallerParamMatcher
             return null;
         }
 
+        $default = $param->default ?? $callParam->default;
+        if (! $default instanceof Expr) {
+            return null;
+        }
+
         $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callParam->type);
-        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->default ?? $callParam->default);
+        $defaultType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($default);
 
         if ($this->typeComparator->areTypesEqual($callParamType, $defaultType)) {
             return $callParam->type;
@@ -65,12 +71,16 @@ final readonly class CallerParamMatcher
             return $callParam->type;
         }
 
-        if ($defaultType instanceof NullType) {
-            if ($callParam->type instanceof Name || $callParam->type instanceof Identifier) {
-                return new NullableType($callParam->type);
-            }
+        if (! $defaultType instanceof NullType) {
+            return null;
+        }
 
-            return new UnionType([$callParam->type, new Name('null')]);
+        if ($callParam->type instanceof Name || $callParam->type instanceof Identifier) {
+            return new NullableType($callParam->type);
+        }
+
+        if ($callParam->type instanceof IntersectionType || $callParam->type instanceof UnionType) {
+            return new UnionType([...$callParam->type->types, new Identifier('null')]);
         }
 
         return null;
