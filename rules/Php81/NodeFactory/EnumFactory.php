@@ -34,7 +34,7 @@ final readonly class EnumFactory
      * @see https://regex101.com/r/Ykm6ub/1 for changing XMLParser to XML_Parser
      * @see https://regex101.com/r/Zv4JhD/1 for changing needsReview to needs_Review
      */
-    private const UPPER_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
+    private const PASCAL_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
 
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
@@ -139,7 +139,7 @@ final readonly class EnumFactory
         $nodeValue = $phpDocTagNode->value;
         $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
         if ($enumNameInSnakeCase) {
-            $enumName = strtoupper(Strings::replace($nodeValue->methodName, self::UPPER_CASE_TO_UNDERSCORE_REGEX, '_$0'));
+            $enumName = strtoupper(Strings::replace($nodeValue->methodName, self::PASCAL_CASE_TO_UNDERSCORE_REGEX, '_$0'));
         } else {
             $enumName = strtoupper($nodeValue->methodName);
         }
