@@ -66,7 +66,11 @@ final readonly class CallerParamMatcher
         }
 
         if ($defaultType instanceof NullType) {
-            return new NullableType($callParam->type);
+            if ($callParam->type instanceof Name || $callParam->type instanceof Identifier) {
+                return new NullableType($callParam->type);
+            }
+
+            return new UnionType([$callParam->type, new Name('null')]);
         }
 
         return null;

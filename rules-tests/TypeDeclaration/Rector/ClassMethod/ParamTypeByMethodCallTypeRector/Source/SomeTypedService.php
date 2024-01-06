@@ -17,4 +17,8 @@ final class SomeTypedService
     public function withDefaultNull(string $name = null)
     {
     }
+
+    public function withDefaultNullUnion(bool|string $name = null)
+    {
+    }
 }
