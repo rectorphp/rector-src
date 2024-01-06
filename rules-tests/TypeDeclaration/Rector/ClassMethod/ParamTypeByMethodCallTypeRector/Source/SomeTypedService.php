@@ -13,4 +13,8 @@ final class SomeTypedService
     public static function fun($surname, string $name)
     {
     }
+
+    public function withDefaultNull(string $name = null)
+    {
+    }
 }
