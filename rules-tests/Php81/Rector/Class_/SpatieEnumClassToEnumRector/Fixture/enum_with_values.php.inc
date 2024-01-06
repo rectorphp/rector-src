@@ -8,7 +8,6 @@ use Spatie\Enum\Enum;
  * @method static self draft()
  * @method static self published()
  * @method static self archived()
- * @method static self needsReview()
  */
 class StatusEnum extends Enum
 {
@@ -18,7 +17,6 @@ class StatusEnum extends Enum
             'draft' => 1,
             'published' => 2,
             'archived' => 3,
-            'needsReview' => 4,
         ];
     }
 }
@@ -36,7 +34,6 @@ enum StatusEnum : int
     case DRAFT = 1;
     case PUBLISHED = 2;
     case ARCHIVED = 3;
-    case NEEDSREVIEW = 4;
 }
 
 ?>

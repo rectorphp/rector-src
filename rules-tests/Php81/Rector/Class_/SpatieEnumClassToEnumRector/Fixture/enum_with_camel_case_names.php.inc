@@ -5,9 +5,10 @@ namespace Rector\Tests\Php81\Rector\Class_\SpatieEnumClassToEnumRector\Fixture;
 use Spatie\Enum\Enum;
 
 /**
- * @method static self draft()
- * @method static self published()
- * @method static self archived()
+ * @method static self isOK()
+ * @method static self needsReview()
+ * @method static self isV2()
+ * @method static self IS_OBSOLETE()
  */
 class StatusEnum extends Enum
 {
@@ -23,9 +24,10 @@ use Spatie\Enum\Enum;
 
 enum StatusEnum : string
 {
-    case DRAFT = 'draft';
-    case PUBLISHED = 'published';
-    case ARCHIVED = 'archived';
+    case ISOK = 'isOK';
+    case NEEDSREVIEW = 'needsReview';
+    case ISV2 = 'isV2';
+    case IS_OBSOLETE = 'IS_OBSOLETE';
 }
 
 ?>
