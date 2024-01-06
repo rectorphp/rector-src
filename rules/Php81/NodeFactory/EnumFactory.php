@@ -85,7 +85,12 @@ final readonly class EnumFactory
             $enum->scalarType = new Identifier($identifierType);
 
             foreach ($docBlockMethods as $docBlockMethod) {
-                $enum->stmts[] = $this->createEnumCaseFromDocComment($docBlockMethod, $class, $mapping, $enumNameInSnakeCase);
+                $enum->stmts[] = $this->createEnumCaseFromDocComment(
+                    $docBlockMethod,
+                    $class,
+                    $mapping,
+                    $enumNameInSnakeCase
+                );
             }
         }
 
