@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
+use PHPStan\Type\NullType;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ComplexType;
@@ -64,7 +65,7 @@ final readonly class CallerParamMatcher
             return $callParam->type;
         }
 
-        if ($defaultType instanceof \PHPStan\Type\NullType) {
+        if ($defaultType instanceof NullType) {
             return new NullableType($callParam->type);
         }
 
