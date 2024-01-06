@@ -27,6 +27,15 @@ use Rector\PhpParser\Node\Value\ValueResolver;
 
 final readonly class EnumFactory
 {
+    /**
+     * @var string
+     * @see https://stackoverflow.com/a/2560017
+     * @see https://regex101.com/r/2xEQVj/1 for changing iso9001 to iso_9001
+     * @see https://regex101.com/r/Ykm6ub/1 for changing XMLParser to XML_Parser
+     * @see https://regex101.com/r/Zv4JhD/1 for changing needsReview to needs_Review
+     */
+    private const UPPER_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
+
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
@@ -130,8 +139,7 @@ final readonly class EnumFactory
         $nodeValue = $phpDocTagNode->value;
         $enumValue = $mapping[$nodeValue->methodName] ?? $nodeValue->methodName;
         if ($enumNameInSnakeCase) {
-            $upperCaseToSnakeCasePattern = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
-            $enumName = strtoupper(Strings::replace($nodeValue->methodName, $upperCaseToSnakeCasePattern, '_$0'));
+            $enumName = strtoupper(Strings::replace($nodeValue->methodName, self::UPPER_CASE_TO_UNDERSCORE_REGEX, '_$0'));
         } else {
             $enumName = strtoupper($nodeValue->methodName);
         }
