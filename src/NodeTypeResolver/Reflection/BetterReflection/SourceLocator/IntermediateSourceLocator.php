@@ -9,6 +9,7 @@ use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflection\Reflection;
 use PHPStan\BetterReflection\Reflector\Reflector;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use PHPStan\File\CouldNotReadFileException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 
 final class IntermediateSourceLocator implements SourceLocator
@@ -22,7 +23,12 @@ final class IntermediateSourceLocator implements SourceLocator
     {
         $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-        $reflection = $sourceLocator->locateIdentifier($reflector, $identifier);
+        try {
+            $reflection = $sourceLocator->locateIdentifier($reflector, $identifier);
+        } catch (CouldNotReadFileException) {
+            return null;
+        }
+
         if ($reflection instanceof Reflection) {
             return $reflection;
         }
@@ -38,7 +44,12 @@ final class IntermediateSourceLocator implements SourceLocator
     {
         $sourceLocator = $this->dynamicSourceLocatorProvider->provide();
 
-        $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
+        try {
+            $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierType);
+        } catch (CouldNotReadFileException) {
+            return [];
+        }
+
         if ($reflections !== []) {
             return $reflections;
         }
