@@ -43,9 +43,7 @@ return [
         '#^Symplify\\\\RuleDocGenerator#',
         '#^Symfony\\\\Polyfill#',
     ],
-    'exclude-files' => [
-        ...$polyfillsBootstraps,
-    ],
+    'exclude-files' => [...$polyfillsBootstraps],
 
     // expose
     'expose-classes' => ['Normalizer'],
@@ -60,7 +58,7 @@ return [
             $content
         ),
 
-        static fn(string $filePath, string $prefix, string $content): string =>
+        static fn (string $filePath, string $prefix, string $content): string =>
             // comment out
             str_replace('\\' . $prefix . '\trigger_deprecation(', '// \trigger_deprecation(', $content),
 

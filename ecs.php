@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
@@ -16,20 +18,18 @@ return ECSConfig::configure()
         __DIR__ . '/config',
         __DIR__ . '/build/build-preload.php',
     ])
-    ->withRootFiles();
+    ->withSkip([
+        '*/Source/*',
+        '*/Fixture/*',
+        '*/Expected/*',
 
-//
-//    $ecsConfig->skip([
-//        '*/Source/*',
-//        '*/Fixture/*',
-//        '*/Expected/*',
-//
-//        PhpdocTypesFixer::class => [
-//            // double to Double false positive
-//            __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
-//            // skip for enum types
-//            __DIR__ . '/rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php',
-//        ],
-//
-//        SelfAccessorFixer::class => ['*/*Rector.php'],
-//    ]);
+        PhpdocTypesFixer::class => [
+            // double to Double false positive
+            __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
+            // skip for enum types
+            __DIR__ . '/rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php',
+        ],
+
+        SelfAccessorFixer::class => ['*/*Rector.php'],
+    ])
+    ->withRootFiles();
