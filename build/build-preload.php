@@ -26,7 +26,6 @@ foreach ($possiblePaths as $possiblePath) {
     break;
 }
 
-
 $buildDirectory = $argv[1];
 
 $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());

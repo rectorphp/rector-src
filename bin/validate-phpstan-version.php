@@ -29,7 +29,6 @@ echo sprintf(
 ) . PHP_EOL;
 exit(Command::FAILURE);
 
-
 final class PackageVersionResolver
 {
     public function resolve(string $composerFilePath, string $packageName): string
