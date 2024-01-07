@@ -18,6 +18,7 @@ use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
+use Symfony\Component\Console\Command\Command;
 use Webmozart\Assert\Assert;
 
 /**
@@ -33,7 +34,7 @@ final class RectorConfig extends Container
     /**
      * @var string[]
      */
-    private array $autotagInterfaces = [];
+    private array $autotagInterfaces = [Command::class];
 
     /**
      * @param string[] $paths
