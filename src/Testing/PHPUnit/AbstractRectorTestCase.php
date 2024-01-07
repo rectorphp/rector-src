@@ -204,7 +204,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         if (file_exists(__DIR__ . '/../../../preload.php')) {
             if (file_exists(__DIR__ . '/../../../vendor')) {
                 require_once __DIR__ . '/../../../preload.php';
-                // test case in rector split package
+            // test case in rector split package
             } elseif (file_exists(__DIR__ . '/../../../../../../vendor')) {
                 require_once __DIR__ . '/../../../preload-split-package.php';
             }

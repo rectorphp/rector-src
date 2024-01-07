@@ -406,8 +406,6 @@ final class LazyContainerFactory
             return $inflectorFactory->build();
         });
 
-        $rectorConfig->autotagInterface(Command::class);
-
         $rectorConfig->singleton(ProcessCommand::class);
         $rectorConfig->singleton(WorkerCommand::class);
         $rectorConfig->singleton(SetupCICommand::class);
