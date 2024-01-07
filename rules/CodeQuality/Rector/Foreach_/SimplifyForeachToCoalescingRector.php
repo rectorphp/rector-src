@@ -114,7 +114,7 @@ CODE_SAMPLE
 
                 $return = $this->processForeachNodeWithReturnInside($foreach, $foreachReturnOrAssign, $nextStmt);
 
-                if (!$return instanceof Return_) {
+                if (! $return instanceof Return_) {
                     continue;
                 }
 
