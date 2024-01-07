@@ -145,6 +145,7 @@ final readonly class EnumFactory
         } else {
             $enumName = strtoupper($nodeValue->methodName);
         }
+
         $enumExpr = $this->builderFactory->val($enumValue);
 
         return new EnumCase(
