@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
@@ -76,7 +77,7 @@ final readonly class ReflectionResolver
     }
 
     public function resolveClassReflectionSourceObject(
-        MethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
+        MethodCall|NullsafeMethodCall|StaticCall|PropertyFetch|StaticPropertyFetch $node
     ): ?ClassReflection {
         if ($node instanceof PropertyFetch || $node instanceof StaticPropertyFetch) {
             $objectType = $node instanceof PropertyFetch
