@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
@@ -174,9 +175,9 @@ final class AstResolver
         return $classMethod;
     }
 
-    public function resolveClassMethodFromCall(MethodCall | StaticCall $call): ?ClassMethod
+    public function resolveClassMethodFromCall(MethodCall | StaticCall | NullsafeMethodCall $call): ?ClassMethod
     {
-        $callerStaticType = $call instanceof MethodCall
+        $callerStaticType = ($call instanceof MethodCall || $call instanceof NullsafeMethodCall)
             ? $this->nodeTypeResolver->getType($call->var)
             : $this->nodeTypeResolver->getType($call->class);
 

@@ -8,6 +8,7 @@ use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
@@ -68,11 +69,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [MethodCall::class, StaticCall::class, Class_::class, Interface_::class];
+        return [MethodCall::class, NullsafeMethodCall::class, StaticCall::class, Class_::class, Interface_::class];
     }
 
     /**
-     * @param MethodCall|StaticCall|Class_|Interface_ $node
+     * @param MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -94,7 +95,7 @@ CODE_SAMPLE
     }
 
     private function shouldSkipClassMethod(
-        MethodCall | StaticCall $call,
+        MethodCall|NullsafeMethodCall|StaticCall $call,
         MethodCallRenameInterface $methodCallRename
     ): bool {
         $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($call);
@@ -212,8 +213,8 @@ CODE_SAMPLE
     }
 
     private function refactorMethodCallAndStaticCall(
-        StaticCall|MethodCall $call
-    ): ArrayDimFetch|null|MethodCall|StaticCall {
+        StaticCall|MethodCall|NullsafeMethodCall $call
+    ): ArrayDimFetch|null|MethodCall|StaticCall|NullsafeMethodCall {
         $callName = $this->getName($call->name);
         if ($callName === null) {
             return null;
