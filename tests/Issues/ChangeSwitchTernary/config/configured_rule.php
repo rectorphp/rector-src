@@ -7,6 +7,8 @@ use Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector;
 use Rector\Config\RectorConfig;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(ChangeSwitchToMatchRector::class);
-    $rectorConfig->rule(TernaryFalseExpressionToIfRector::class);
+    $rectorConfig->rules([
+        ChangeSwitchToMatchRector::class,
+        TernaryFalseExpressionToIfRector::class
+    ]);
 };
