@@ -25,10 +25,8 @@ final class FixtureFileUpdater
         FileSystem::write($fixtureFilePath, $newOriginalContent);
     }
 
-    private static function resolveNewFixtureContent(
-        string $originalContent,
-        string $changedContent
-    ): string {
+    private static function resolveNewFixtureContent(string $originalContent, string $changedContent): string
+    {
         if ($originalContent === $changedContent) {
             return $originalContent;
         }
