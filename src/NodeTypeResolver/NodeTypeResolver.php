@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver;
 
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -301,7 +302,7 @@ final class NodeTypeResolver
 
     public function isMethodStaticCallOrClassMethodObjectType(Node $node, ObjectType $objectType): bool
     {
-        if ($node instanceof MethodCall || $node instanceof Expr\NullsafeMethodCall) {
+        if ($node instanceof MethodCall || $node instanceof NullsafeMethodCall) {
             // method call is variable return
             return $this->isObjectType($node->var, $objectType);
         }

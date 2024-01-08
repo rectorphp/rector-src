@@ -52,6 +52,7 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -124,6 +125,12 @@ final class PHPStanNodeScopeResolver
                 $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
 
                 return;
+            }
+
+            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
+                foreach ($node->stmts as $stmt) {
+                    $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
             }
 
             if ((
