@@ -126,7 +126,7 @@ final class BetterPhpDocParser extends PhpDocParser
         $startAndEnd = new StartAndEnd($startPosition, $endPosition);
         $phpDocTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
-        if ($phpDocTagValueNode instanceof GenericTagValueNode && is_string($phpDocTagValueNode->value)) {
+        if ($phpDocTagValueNode instanceof GenericTagValueNode) {
             $phpDocTagValueNode->value = Strings::replace($phpDocTagValueNode->value, self::MULTI_NEW_LINES_REGEX, "\n");
         }
 
