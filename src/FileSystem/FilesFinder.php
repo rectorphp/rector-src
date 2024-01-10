@@ -31,7 +31,10 @@ final readonly class FilesFinder
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-        $filePaths = array_filter($filePaths, fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath));
+        $filePaths = array_filter(
+            $filePaths,
+            fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
+        );
 
         $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
 

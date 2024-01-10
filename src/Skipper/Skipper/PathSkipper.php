@@ -19,9 +19,6 @@ final readonly class PathSkipper
     {
         $filePath = str_replace('\\', '/', $filePath);
         $skippedPaths = $this->skippedPathsResolver->resolve();
-        return $this->fileInfoMatcher->doesFileInfoMatchPatterns(
-            $filePath,
-            $skippedPaths
-        );
+        return $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
     }
 }
