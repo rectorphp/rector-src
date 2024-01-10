@@ -61,8 +61,6 @@ return static function (RectorConfig $rectorConfig): void {
         '*/Source*',
         '*/Expected/*',
 
-        __DIR__ . '/src/Console/ExitCode.php',
-
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
 
