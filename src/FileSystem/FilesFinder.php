@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\FileSystem;
 
 use Rector\Caching\UnchangedFilesFilter;
-use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
-use Rector\Util\StringUtils;
+use Rector\Skipper\Skipper\PathSkipper;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * @see \Rector\Tests\FileSystem\FilesFinder\FilesFinderTest
@@ -17,9 +15,9 @@ final readonly class FilesFinder
 {
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
-        private SkippedPathsResolver $skippedPathsResolver,
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
+        private PathSkipper $pathSkipper,
     ) {
     }
 
@@ -33,10 +31,11 @@ final readonly class FilesFinder
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-        $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
+        $filePaths = array_filter($filePaths, fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath));
 
         $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
 
+        $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
         return [...$currentAndDependentFilePaths, ...$this->findInDirectories($directories, $suffixes, $sortByName)];
     }
 
@@ -66,8 +65,6 @@ final readonly class FilesFinder
             $finder->name($suffixesPattern);
         }
 
-        $this->addFilterWithExcludedPaths($finder);
-
         $filePaths = [];
         foreach ($finder as $fileInfo) {
             // getRealPath() function will return false when it checks broken symlinks.
@@ -75,9 +72,15 @@ final readonly class FilesFinder
 
             /** @var string|false $path */
             $path = $fileInfo->getRealPath();
-            if ($path !== false) {
-                $filePaths[] = $path;
+            if ($path === false) {
+                continue;
             }
+
+            if ($this->pathSkipper->shouldSkip($path)) {
+                continue;
+            }
+
+            $filePaths[] = $path;
         }
 
         return $this->unchangedFilesFilter->filterFileInfos($filePaths);
@@ -90,60 +93,5 @@ final readonly class FilesFinder
     {
         $suffixesPattern = implode('|', $suffixes);
         return '#\.(' . $suffixesPattern . ')$#';
-    }
-
-    private function addFilterWithExcludedPaths(Finder $finder): void
-    {
-        $excludePaths = $this->skippedPathsResolver->resolve();
-        if ($excludePaths === []) {
-            return;
-        }
-
-        $finder->filter(function (SplFileInfo $splFileInfo) use ($excludePaths): bool {
-            /** @var string|false $realPath */
-            $realPath = $splFileInfo->getRealPath();
-            if ($realPath === false) {
-                // dead symlink
-                return false;
-            }
-
-            // make the path work accross different OSes
-            $realPath = str_replace('\\', '/', $realPath);
-
-            // return false to remove file
-            foreach ($excludePaths as $excludePath) {
-                // make the path work accross different OSes
-                $excludePath = str_replace('\\', '/', $excludePath);
-
-                if (fnmatch($this->normalizeForFnmatch($excludePath), $realPath)) {
-                    return false;
-                }
-
-                if (str_contains($excludePath, '**')) {
-                    // prevent matching a fnmatch pattern as a regex
-                    // which is a waste of resources
-                    continue;
-                }
-
-                if (StringUtils::isMatch($realPath, '#' . preg_quote($excludePath, '#') . '#')) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-    }
-
-    /**
-     * "value*" → "*value*"
-     * "*value" → "*value*"
-     */
-    private function normalizeForFnmatch(string $path): string
-    {
-        if (str_ends_with($path, '*') || str_starts_with($path, '*')) {
-            return '*' . trim($path, '*') . '*';
-        }
-
-        return $path;
     }
 }
