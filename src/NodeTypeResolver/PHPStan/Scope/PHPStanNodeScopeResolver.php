@@ -127,12 +127,6 @@ final class PHPStanNodeScopeResolver
                 return;
             }
 
-            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
-                foreach ($node->stmts as $stmt) {
-                    $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            }
-
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
