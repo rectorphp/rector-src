@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\FileSystem;
 
 use Rector\Caching\UnchangedFilesFilter;
-use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\Skipper\Skipper\PathSkipper;
 use Symfony\Component\Finder\Finder;
 
@@ -16,7 +15,6 @@ final readonly class FilesFinder
 {
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
-        private SkippedPathsResolver $skippedPathsResolver,
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
         private PathSkipper $pathSkipper,
@@ -34,6 +32,7 @@ final readonly class FilesFinder
 
         $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
         $filePaths = array_filter($filePaths, fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath));
+
         $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
 
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
