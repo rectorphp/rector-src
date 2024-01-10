@@ -15,9 +15,9 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 final class SkippedPathsResolver
 {
     /**
-     * @var string[]
+     * @var null|string[]
      */
-    private array $skippedPaths = [];
+    private ?array $skippedPaths = null;
 
     public function __construct(
         private readonly FilePathHelper $filePathHelper
@@ -29,17 +29,18 @@ final class SkippedPathsResolver
      */
     public function resolve(): array
     {
+        // disable cache in tests
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
-            // disable cache in tests
-            $this->skippedPaths = [];
+            $this->skippedPaths = null;
         }
 
-        // disable cache in tests
-        if ($this->skippedPaths !== []) {
+        // already filled, even empty array
+        if ($this->skippedPaths !== null) {
             return $this->skippedPaths;
         }
 
         $skip = SimpleParameterProvider::provideArrayParameter(Option::SKIP);
+        $this->skippedPaths = [];
 
         foreach ($skip as $key => $value) {
             if (! is_int($key)) {

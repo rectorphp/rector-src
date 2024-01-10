@@ -9,11 +9,6 @@ use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
 final class PathSkipper
 {
-    /**
-     * @var array<string, bool>
-     */
-    private array $skippedFiles = [];
-
     public function __construct(
         private readonly FileInfoMatcher $fileInfoMatcher,
         private readonly SkippedPathsResolver $skippedPathsResolver
@@ -22,12 +17,8 @@ final class PathSkipper
 
     public function shouldSkip(string $filePath): bool
     {
-        if (isset($this->skippedFiles[$filePath])) {
-            return $this->skippedFiles[$filePath];
-        }
-
         $skippedPaths = $this->skippedPathsResolver->resolve();
-        return $this->skippedFiles[$filePath] = $this->fileInfoMatcher->doesFileInfoMatchPatterns(
+        return $this->fileInfoMatcher->doesFileInfoMatchPatterns(
             $filePath,
             $skippedPaths
         );
