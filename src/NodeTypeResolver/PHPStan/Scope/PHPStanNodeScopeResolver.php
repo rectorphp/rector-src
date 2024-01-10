@@ -52,7 +52,6 @@ use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
-use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
