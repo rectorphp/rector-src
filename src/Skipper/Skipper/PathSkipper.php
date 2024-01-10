@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rector\Skipper\SkipVoter;
+namespace Rector\Skipper\Skipper;
 
-use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
-final class PathSkipVoter implements SkipVoterInterface
+final class PathSkipper
 {
     /**
      * @var array<string, bool>
@@ -21,12 +20,7 @@ final class PathSkipVoter implements SkipVoterInterface
     ) {
     }
 
-    public function match(string | object $element): bool
-    {
-        return true;
-    }
-
-    public function shouldSkip(string | object $element, string $filePath): bool
+    public function shouldSkip(string $filePath): bool
     {
         if (isset($this->skippedFiles[$filePath])) {
             return $this->skippedFiles[$filePath];
