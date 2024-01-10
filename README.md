@@ -44,11 +44,6 @@ This project adheres to a [Contributor Code of Conduct](/CODE_OF_CONDUCT.md) By 
 * ![](https://github.com/rectorphp/rector-generator/actions/workflows/tests.yaml/badge.svg)
 ![](https://github.com/rectorphp/rector-generator/actions/workflows/code_analysis.yaml/badge.svg)
 
-**PHPStan Rules** - https://github.com/rectorphp/phpstan-rules
-
-* ![](https://github.com/rectorphp/phpstan-rules/actions/workflows/tests.yaml/badge.svg)
-![](https://github.com/rectorphp/phpstan-rules/actions/workflows/code_analysis.yaml/badge.svg)
-
 **Symfony** - https://github.com/rectorphp/rector-symfony
 
 * ![](https://github.com/rectorphp/rector-symfony/actions/workflows/tests.yaml/badge.svg)
