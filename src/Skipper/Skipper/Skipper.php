@@ -22,7 +22,7 @@ final readonly class Skipper
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private array $skipVoters,
-        private readonly PathSkipper $pathSkipper
+        private PathSkipper $pathSkipper
     ) {
         Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }
