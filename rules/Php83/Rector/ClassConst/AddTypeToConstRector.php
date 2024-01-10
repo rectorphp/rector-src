@@ -179,9 +179,7 @@ CODE_SAMPLE
 
         $currentClassReflection = $this->reflectionProvider->getClass($className);
 
-        return array_filter($currentClassReflection->getAncestors(), static fn (ClassReflection $classReflection): bool =>
-            // skip base class
-            $currentClassReflection !== $classReflection);
+        return [...$currentClassReflection->getParents(), ...$currentClassReflection->getInterfaces()];
     }
 
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool

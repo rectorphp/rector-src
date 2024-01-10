@@ -32,19 +32,16 @@ final readonly class ClassMethodReturnVendorLockResolver
 
     private function isVendorLockedByAncestors(ClassReflection $classReflection, string $methodName): bool
     {
-        foreach ($classReflection->getAncestors() as $ancestorClassReflections) {
-            if ($ancestorClassReflections === $classReflection) {
-                continue;
-            }
-
-            $nativeClassReflection = $ancestorClassReflections->getNativeReflection();
+        $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
+        foreach ($ancestorClassReflections as $ancestorClassReflection) {
+            $nativeClassReflection = $ancestorClassReflection->getNativeReflection();
 
             // this should avoid detecting @method as real method
             if (! $nativeClassReflection->hasMethod($methodName)) {
                 continue;
             }
 
-            $parentClassMethodReflection = $ancestorClassReflections->getNativeMethod($methodName);
+            $parentClassMethodReflection = $ancestorClassReflection->getNativeMethod($methodName);
             $parametersAcceptor = $parentClassMethodReflection->getVariants()[0];
             if (! $parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
                 continue;
