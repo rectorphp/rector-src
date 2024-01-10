@@ -34,7 +34,7 @@ final readonly class DateTimeAtNamingConventionGuard
 
         return StringUtils::isMatch(
             $propertyRename->getCurrentName(),
-            BreakingVariableRenameGuard::AT_NAMING_REGEX . ''
+            BreakingVariableRenameGuard::AT_NAMING_REGEX
         );
     }
 }
