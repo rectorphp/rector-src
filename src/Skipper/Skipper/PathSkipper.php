@@ -7,11 +7,11 @@ namespace Rector\Skipper\Skipper;
 use Rector\Skipper\Matcher\FileInfoMatcher;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
-final class PathSkipper
+final readonly class PathSkipper
 {
     public function __construct(
-        private readonly FileInfoMatcher $fileInfoMatcher,
-        private readonly SkippedPathsResolver $skippedPathsResolver
+        private FileInfoMatcher $fileInfoMatcher,
+        private SkippedPathsResolver $skippedPathsResolver
     ) {
     }
 
