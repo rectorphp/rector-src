@@ -11,6 +11,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Provider\CurrentFileProvider;
+use Rector\Skipper\Skipper\PathSkipper;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
 use Rector\ValueObject\Application\File;
@@ -49,6 +50,7 @@ final class ApplicationFileProcessor
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
+        private readonly PathSkipper $pathSkipper
     ) {
     }
 
@@ -122,6 +124,10 @@ final class ApplicationFileProcessor
         $collectedData = [];
 
         foreach ($filePaths as $filePath) {
+            if ($this->pathSkipper->shouldSkip($filePath)) {
+                continue;
+            }
+
             if ($preFileCallback !== null) {
                 $preFileCallback($filePath);
             }

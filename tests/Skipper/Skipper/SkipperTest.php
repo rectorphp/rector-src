@@ -63,6 +63,8 @@ final class SkipperTest extends AbstractLazyTestCase
         yield [__DIR__ . '/Fixture/SomeSkipped/any.txt', true];
         yield ['tests/Skipper/Skipper/Fixture/SomeSkippedPath/any.txt', true];
         yield ['tests/Skipper/Skipper/Fixture/SomeSkippedPathToFile/any.txt', true];
+        yield [__DIR__ . '/Fixture/AlwaysSkippedPath/some_file.txt', true];
+        yield [__DIR__ . '/Fixture/PathSkippedWithMask/another_file.txt', true];
     }
 
     /**
@@ -91,9 +93,6 @@ final class SkipperTest extends AbstractLazyTestCase
 
         yield [NotSkippedClass::class, __DIR__ . '/Fixture/someFile', false];
         yield [NotSkippedClass::class, __DIR__ . '/Fixture/someOtherFile', false];
-
-        yield ['anything', __DIR__ . '/Fixture/AlwaysSkippedPath/some_file.txt', true];
-        yield ['anything', __DIR__ . '/Fixture/PathSkippedWithMask/another_file.txt', true];
     }
 
     public static function provideDataShouldSkipElement(): Iterator

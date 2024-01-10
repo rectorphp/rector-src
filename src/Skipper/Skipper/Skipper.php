@@ -17,16 +17,12 @@ use Webmozart\Assert\Assert;
 final readonly class Skipper
 {
     /**
-     * @var string
-     */
-    private const FILE_ELEMENT = 'file_elements';
-
-    /**
      * @param array<SkipVoterInterface> $skipVoters
      */
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private array $skipVoters,
+        private PathSkipper $pathSkipper
     ) {
         Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }
@@ -38,7 +34,7 @@ final readonly class Skipper
 
     public function shouldSkipFilePath(string $filePath): bool
     {
-        return $this->shouldSkipElementAndFilePath(self::FILE_ELEMENT, $filePath);
+        return $this->pathSkipper->shouldSkip($filePath);
     }
 
     public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
