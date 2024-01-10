@@ -82,7 +82,7 @@ final class RectifiedAnalyzer
         }
 
         if ($node instanceof Stmt) {
-            return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()));
+            return ! in_array(AttributeKey::SCOPE, array_keys($node->getAttributes()), true);
         }
 
         return $node->getAttributes() === [];
