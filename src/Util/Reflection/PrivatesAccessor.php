@@ -62,9 +62,7 @@ final class PrivatesAccessor
 
     private function createAccessibleMethodReflection(object $object, string $methodName): ReflectionMethod
     {
-        $reflectionClass = new ReflectionClass($object::class);
-
-        $reflectionMethod = $reflectionClass->getMethod($methodName);
+        $reflectionMethod = new ReflectionMethod($object, $methodName);
         $reflectionMethod->setAccessible(true);
 
         return $reflectionMethod;
