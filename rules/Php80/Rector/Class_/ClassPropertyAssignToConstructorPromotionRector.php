@@ -53,6 +53,12 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
     public const INLINE_PUBLIC = 'inline_public';
 
     /**
+     * @api
+     * @var string
+     */
+    public const RENAME_PROPERTY = 'rename_property';
+
+    /**
      * Default to false, which only apply changes:
      *
      *  – private modifier property
@@ -61,6 +67,11 @@ final class ClassPropertyAssignToConstructorPromotionRector extends AbstractRect
      * Set to true will allow change whether property is typed or not as far as not forbidden, eg: callable type, null type, etc.
      */
     private bool $inlinePublic = false;
+
+    /**
+     * Set to false will skip property promotion when parameter and property have different names.
+     */
+    private bool $renameProperty = true;
 
     public function __construct(
         private readonly PromotedPropertyCandidateResolver $promotedPropertyCandidateResolver,
@@ -115,7 +126,8 @@ CODE_SAMPLE
 
     public function configure(array $configuration): void
     {
-        $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? (bool) current($configuration);
+        $this->inlinePublic = $configuration[self::INLINE_PUBLIC] ?? false;
+        $this->renameProperty = $configuration[self::RENAME_PROPERTY] ?? true;
     }
 
     /**
@@ -166,6 +178,15 @@ CODE_SAMPLE
                 continue;
             }
 
+            $paramName = $this->getName($param);
+
+            // rename also following calls
+            $propertyName = $this->getName($property->props[0]);
+
+            if (! $this->renameProperty && $paramName !== $propertyName) {
+                continue;
+            }
+
             // remove property from class
             $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
             unset($node->stmts[$propertyStmtKey]);
@@ -173,11 +194,6 @@ CODE_SAMPLE
             // remove assign in constructor
             $assignStmtPosition = $promotionCandidate->getStmtPosition();
             unset($constructClassMethod->stmts[$assignStmtPosition]);
-
-            $paramName = $this->getName($param);
-
-            // rename also following calls
-            $propertyName = $this->getName($property->props[0]);
 
             /** @var string $oldName */
             $oldName = $this->getName($param->var);
