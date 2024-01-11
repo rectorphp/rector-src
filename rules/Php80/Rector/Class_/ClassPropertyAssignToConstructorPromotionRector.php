@@ -118,31 +118,6 @@ CODE_SAMPLE
                     ,
                     [
                         ClassPropertyAssignToConstructorPromotionRector::INLINE_PUBLIC => false,
-                    ]
-                ),
-                new ConfiguredCodeSample(
-                    <<<'CODE_SAMPLE'
-class SomeClass
-{
-    private HttpClientInterface $client;
-
-    public function __construct(HttpClientInterface $githubClient)
-    {
-        $this->client = $githubClient;
-    }
-}
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function __construct(private HttpClientInterface $client)
-    {
-    }
-}
-CODE_SAMPLE
-                    ,
-                    [
                         ClassPropertyAssignToConstructorPromotionRector::RENAME_PROPERTY => true,
                     ]
                 ),
