@@ -19,7 +19,7 @@ final readonly class ClosureArrowFunctionAnalyzer
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private NodeComparator $nodeComparator,
-        private ArrayChecker $arrayChecker
+        private ArrayChecker $arrayChecker,
     ) {
     }
 

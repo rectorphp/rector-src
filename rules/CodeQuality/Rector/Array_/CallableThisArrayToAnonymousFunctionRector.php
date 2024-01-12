@@ -8,9 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\Php\PhpMethodReflection;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeCollector\NodeAnalyzer\ArrayCallableMethodMatcher;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\Php72\NodeFactory\AnonymousFunctionFactory;
+use Rector\Php74\NodeConverter\ClosureToArrowFunctionConverter;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,10 +25,15 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  *
  * @see \Rector\Tests\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector\CallableThisArrayToAnonymousFunctionRectorTest
  */
-final class CallableThisArrayToAnonymousFunctionRector extends AbstractScopeAwareRector
+final class CallableThisArrayToAnonymousFunctionRector extends AbstractScopeAwareRector implements ConfigurableRectorInterface
 {
+    public const ARROW_FUNCTION = 'arrow_function';
+
+    private bool $toArrowFunction = false;
+
     public function __construct(
         private readonly AnonymousFunctionFactory $anonymousFunctionFactory,
+        private readonly ClosureToArrowFunctionConverter $closureArrowFunctionDecorator,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArrayCallableMethodMatcher $arrayCallableMethodMatcher,
     ) {
@@ -112,10 +119,20 @@ CODE_SAMPLE
             return null;
         }
 
-        return $this->anonymousFunctionFactory->createFromPhpMethodReflection(
+        $closure = $this->anonymousFunctionFactory->createFromPhpMethodReflection(
             $phpMethodReflection,
-            $arrayCallable->getCallerExpr()
+            $arrayCallable->getCallerExpr(),
         );
+        if ($this->toArrowFunction && $closure !== null) {
+            return $this->closureArrowFunctionDecorator->convert($closure) ?? $closure;
+        }
+
+        return $closure;
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->toArrowFunction = $configuration[self::ARROW_FUNCTION] ?? false;
     }
 
     private function shouldSkipTwigExtension(Scope $scope): bool
