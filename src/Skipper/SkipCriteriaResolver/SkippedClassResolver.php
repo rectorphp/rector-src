@@ -22,7 +22,6 @@ final class SkippedClassResolver
     {
         // disable cache in tests
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
-            // disable cache in tests
             $this->skippedClasses = null;
         }
 
