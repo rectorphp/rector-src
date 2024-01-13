@@ -36,6 +36,14 @@ final readonly class FilesFinder
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
 
+        if ($suffixes !== []) {
+            $fileWithExtensionsFilter = static function (string $filePath) use ($suffixes): bool {
+                $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
+                return in_array($filePathExtension, $suffixes, true);
+            };
+            $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
+        }
+
         $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
 
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
