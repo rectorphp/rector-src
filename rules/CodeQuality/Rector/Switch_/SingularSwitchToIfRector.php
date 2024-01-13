@@ -88,10 +88,9 @@ CODE_SAMPLE
         // only default → basically unwrap
         if (! $onlyCase->cond instanceof Expr) {
             // remove default clause because it cause syntax error
-            return array_filter($onlyCase->stmts, function (Stmt $statement) {
-                return ! $statement instanceof Break_;
-            });
+            return array_filter($onlyCase->stmts, static fn(Stmt $stmt): bool => ! $stmt instanceof Break_);
         }
+
         $if = new If_(new Identical($node->cond, $onlyCase->cond));
         $if->stmts = $this->switchManipulator->removeBreakNodes($onlyCase->stmts);
 
