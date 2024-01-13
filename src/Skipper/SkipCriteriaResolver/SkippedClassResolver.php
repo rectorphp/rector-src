@@ -13,24 +13,26 @@ final class SkippedClassResolver
     /**
      * @var array<string, string[]|null>
      */
-    private array $skippedClasses = [];
+    private null|array $skippedClasses = null;
 
     /**
      * @return array<string, string[]|null>
      */
     public function resolve(): array
     {
+        // disable cache in tests
         if (StaticPHPUnitEnvironment::isPHPUnitRun()) {
             // disable cache in tests
-            $this->skippedClasses = [];
+            $this->skippedClasses = null;
         }
 
-        // skip cache in tests
-        if ($this->skippedClasses !== []) {
+        // already cached, even only empty array
+        if ($this->skippedClasses !== null) {
             return $this->skippedClasses;
         }
 
         $skip = SimpleParameterProvider::provideArrayParameter(Option::SKIP);
+        $this->skippedClasses = [];
 
         foreach ($skip as $key => $value) {
             // e.g. [SomeClass::class] → shift values to [SomeClass::class => null]
