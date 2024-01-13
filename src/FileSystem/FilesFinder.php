@@ -30,9 +30,9 @@ final readonly class FilesFinder
     {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
-        $filePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-        $filePaths = array_filter(
-            $filePaths,
+        $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
+        $filteredFilePaths = array_filter(
+            $files,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
 
@@ -41,13 +41,14 @@ final readonly class FilesFinder
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                 return in_array($filePathExtension, $suffixes, true);
             };
-            $filePaths = array_filter($filePaths, $fileWithExtensionsFilter);
+            $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
         }
 
-        $currentAndDependentFilePaths = $this->unchangedFilesFilter->filterFileInfos($filePaths);
-
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
-        return [...$currentAndDependentFilePaths, ...$this->findInDirectories($directories, $suffixes, $sortByName)];
+        $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
+        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+
+        return  $this->unchangedFilesFilter->filterFileInfos($filePaths);
     }
 
     /**
@@ -94,7 +95,7 @@ final readonly class FilesFinder
             $filePaths[] = $path;
         }
 
-        return $this->unchangedFilesFilter->filterFileInfos($filePaths);
+        return $filePaths;
     }
 
     /**
