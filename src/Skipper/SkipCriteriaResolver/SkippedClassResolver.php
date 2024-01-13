@@ -11,7 +11,7 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 final class SkippedClassResolver
 {
     /**
-     * @var array<string, string[]|null>
+     * @var null|array<string, string[]|null>
      */
     private null|array $skippedClasses = null;
 
