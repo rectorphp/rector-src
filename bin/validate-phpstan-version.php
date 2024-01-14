@@ -50,7 +50,6 @@ final class PackageVersionResolver
     }
 }
 
-
 final class JsonFileReader
 {
     /**

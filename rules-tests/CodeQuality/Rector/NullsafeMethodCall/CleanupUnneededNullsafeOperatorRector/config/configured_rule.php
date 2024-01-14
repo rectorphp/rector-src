@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector;
-
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersionFeature;
 

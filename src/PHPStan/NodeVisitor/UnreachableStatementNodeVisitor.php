@@ -48,7 +48,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
                 continue;
             }
 
-            if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true)  {
+            if ($stmt->getAttribute(AttributeKey::IS_UNREACHABLE) === true) {
                 $isPassedUnreachableStmt = true;
                 continue;
             }

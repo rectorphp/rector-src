@@ -24,7 +24,6 @@ gc_disable();
 
 define('__RECTOR_RUNNING__', true);
 
-
 // Require Composer autoload.php
 $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();

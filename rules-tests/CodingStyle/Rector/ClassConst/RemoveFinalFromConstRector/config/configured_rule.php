@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
-
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersionFeature;
 

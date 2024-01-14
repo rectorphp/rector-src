@@ -77,7 +77,13 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->sideEffectNodeDetector->detect($ternary->else, $scope) || $this->sideEffectNodeDetector->detectCallExpr($ternary->else, $scope)) {
+        if ($this->sideEffectNodeDetector->detect(
+            $ternary->else,
+            $scope
+        ) || $this->sideEffectNodeDetector->detectCallExpr(
+            $ternary->else,
+            $scope
+        )) {
             return null;
         }
 
