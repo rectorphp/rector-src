@@ -80,10 +80,7 @@ CODE_SAMPLE
         if ($this->sideEffectNodeDetector->detect(
             $ternary->else,
             $scope
-        ) || $this->sideEffectNodeDetector->detectCallExpr(
-            $ternary->else,
-            $scope
-        )) {
+        ) || $this->sideEffectNodeDetector->detectCallExpr($ternary->else, $scope)) {
             return null;
         }
 
