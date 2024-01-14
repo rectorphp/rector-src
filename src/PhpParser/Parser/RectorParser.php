@@ -30,9 +30,9 @@ final readonly class RectorParser
     /**
      * @return Stmt[]
      */
-    public function parseString(string $filePath): array
+    public function parseString(string $fileContent): array
     {
-        return $this->parser->parseString($filePath);
+        return $this->parser->parseString($fileContent);
     }
 
     public function parseFileContentToStmtsAndTokens(string $fileContent): StmtsAndTokens
