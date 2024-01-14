@@ -48,7 +48,7 @@ final readonly class FilesFinder
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
 
-        return  $this->unchangedFilesFilter->filterFileInfos($filePaths);
+        return $this->unchangedFilesFilter->filterFileInfos($filePaths);
     }
 
     /**
