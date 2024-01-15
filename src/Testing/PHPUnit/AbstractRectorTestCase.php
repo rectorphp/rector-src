@@ -59,7 +59,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);
-        SimpleParameterProvider::setParameter(Option::COLLECTORS, false);
         SimpleParameterProvider::setParameter(Option::POLYFILL_PACKAGES, []);
     }
 
@@ -266,17 +265,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $configuration = $configurationFactory->createForTests([$filePath]);
 
         $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
-
-        if ($processResult->getCollectedData() !== [] && $configuration->isCollectors()) {
-            // second run with collected data
-            $configuration->setCollectedData($processResult->getCollectedData());
-            $configuration->enableSecondRun();
-
-            $rectorNodeTraverser = $this->make(RectorNodeTraverser::class);
-            $rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
-
-            $this->applicationFileProcessor->processFiles([$filePath], $configuration);
-        }
 
         // return changed file contents
         $changedFileContents = FileSystem::read($filePath);

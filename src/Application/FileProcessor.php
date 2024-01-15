@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use PHPStan\AnalysedCodeException;
-use Rector\Application\Collector\CollectorProcessor;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
@@ -36,7 +35,6 @@ final readonly class FileProcessor
         private ChangedFilesDetector $changedFilesDetector,
         private ErrorFactory $errorFactory,
         private FilePathHelper $filePathHelper,
-        private CollectorProcessor $collectorProcessor,
         private PostFileProcessor $postFileProcessor,
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
@@ -45,16 +43,11 @@ final readonly class FileProcessor
 
     public function processFile(File $file, Configuration $configuration): FileProcessResult
     {
-        if ($configuration->isSecondRun() && $configuration->isCollectors()) {
-            // 2nd run
-            $this->rectorNodeTraverser->prepareCollectorRectorsRun($configuration);
-        }
-
         // 1. parse files to nodes
         $parsingSystemError = $this->parseFileAndDecorateNodes($file);
         if ($parsingSystemError instanceof SystemError) {
             // we cannot process this file as the parsing and type resolving itself went wrong
-            return new FileProcessResult([$parsingSystemError], null, []);
+            return new FileProcessResult([$parsingSystemError], null);
         }
 
         $fileHasChanged = false;
@@ -67,9 +60,6 @@ final readonly class FileProcessor
             $file->changeHasChanged(false);
 
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
-
-            // collect data
-            $fileCollectedData = $configuration->isCollectors() ? $this->collectorProcessor->process($newStmts) : [];
 
             // apply post rectors
             $postNewStmts = $this->postFileProcessor->traverse($newStmts, $filePath);
@@ -106,7 +96,7 @@ final readonly class FileProcessor
             $file->setFileDiff($currentFileDiff);
         }
 
-        return new FileProcessResult([], $file->getFileDiff(), $fileCollectedData);
+        return new FileProcessResult([], $file->getFileDiff());
     }
 
     private function parseFileAndDecorateNodes(File $file): ?SystemError
