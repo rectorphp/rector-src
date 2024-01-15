@@ -34,7 +34,6 @@ final class Configuration
         private readonly bool $isParallel = false,
         private readonly string|null $memoryLimit = null,
         private readonly bool $isDebug = false,
-        private readonly bool $isCollectors = false,
     ) {
     }
 
@@ -143,13 +142,5 @@ final class Configuration
     public function reset(): void
     {
         $this->isSecondRun = false;
-    }
-
-    /**
-     * @api
-     */
-    public function isCollectors(): bool
-    {
-        return $this->isCollectors;
     }
 }

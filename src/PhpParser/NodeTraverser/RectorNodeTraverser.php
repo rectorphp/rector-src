@@ -6,7 +6,6 @@ namespace Rector\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use PHPStan\Node\CollectedDataNode;
 use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ValueObject\Configuration;
@@ -18,11 +17,9 @@ final class RectorNodeTraverser extends NodeTraverser
 
     /**
      * @param RectorInterface[] $rectors
-     * @param CollectorRectorInterface[] $collectorRectors
      */
     public function __construct(
         private array $rectors,
-        private array $collectorRectors,
         private readonly PhpVersionedFilter $phpVersionedFilter
     ) {
         parent::__construct();
@@ -49,23 +46,6 @@ final class RectorNodeTraverser extends NodeTraverser
         $this->visitors = [];
 
         $this->areNodeVisitorsPrepared = false;
-    }
-
-    public function prepareCollectorRectorsRun(Configuration $configuration): void
-    {
-        if ($this->collectorRectors === []) {
-            return;
-        }
-
-        $collectedDataNode = new CollectedDataNode($configuration->getCollectedData(), false);
-
-        // hydrate abstract collector rector with configuration
-        foreach ($this->collectorRectors as $collectorRector) {
-            $collectorRector->setCollectedDataNode($collectedDataNode);
-        }
-
-        $this->visitors = $this->collectorRectors;
-        $this->areNodeVisitorsPrepared = true;
     }
 
     /**

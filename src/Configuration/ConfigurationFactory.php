@@ -28,8 +28,6 @@ final readonly class ConfigurationFactory
     {
         $fileExtensions = SimpleParameterProvider::provideArrayParameter(Option::FILE_EXTENSIONS);
 
-        $isCollectors = SimpleParameterProvider::provideBoolParameter(Option::COLLECTORS, false);
-
         return new Configuration(
             false,
             true,
@@ -43,7 +41,6 @@ final readonly class ConfigurationFactory
             false,
             null,
             false,
-            $isCollectors
         );
     }
 
@@ -70,7 +67,6 @@ final readonly class ConfigurationFactory
         $isDebug = (bool) $input->getOption(Option::DEBUG);
 
         $memoryLimit = $this->resolveMemoryLimit($input);
-        $isCollectors = SimpleParameterProvider::provideBoolParameter(Option::COLLECTORS);
 
         return new Configuration(
             $isDryRun,
@@ -85,7 +81,6 @@ final readonly class ConfigurationFactory
             $isParallel,
             $memoryLimit,
             $isDebug,
-            $isCollectors
         );
     }
 

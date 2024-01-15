@@ -10,25 +10,18 @@ class_alias(
     'Rector\Application\Collector\CollectorNodeVisitor',
     'Rector\Core\Application\Collector\CollectorNodeVisitor'
 );
-class_alias('Rector\Application\Collector\CollectorProcessor', 'Rector\Core\Application\Collector\CollectorProcessor');
 class_alias('Rector\Application\FileProcessor', 'Rector\Core\Application\FileProcessor');
 class_alias('Rector\Application\VersionResolver', 'Rector\Core\Application\VersionResolver');
 class_alias('Rector\Autoloading\AdditionalAutoloader', 'Rector\Core\Autoloading\AdditionalAutoloader');
 class_alias('Rector\Autoloading\BootstrapFilesIncluder', 'Rector\Core\Autoloading\BootstrapFilesIncluder');
 class_alias('Rector\Bootstrap\ExtensionConfigResolver', 'Rector\Core\Bootstrap\ExtensionConfigResolver');
 class_alias('Rector\Bootstrap\RectorConfigsResolver', 'Rector\Core\Bootstrap\RectorConfigsResolver');
-class_alias('Rector\Collector\MockedClassCollector', 'Rector\Core\Collector\MockedClassCollector');
-class_alias('Rector\Collector\ParentClassCollector', 'Rector\Core\Collector\ParentClassCollector');
 class_alias('Rector\Configuration\ConfigInitializer', 'Rector\Core\Configuration\ConfigInitializer');
 class_alias('Rector\Configuration\ConfigurationFactory', 'Rector\Core\Configuration\ConfigurationFactory');
 class_alias('Rector\Configuration\Option', 'Rector\Core\Configuration\Option');
 class_alias(
     'Rector\Configuration\Parameter\SimpleParameterProvider',
     'Rector\Core\Configuration\Parameter\SimpleParameterProvider'
-);
-class_alias(
-    'Rector\Configuration\RenamedClassesDataCollector',
-    'Rector\Core\Configuration\RenamedClassesDataCollector'
 );
 class_alias('Rector\Console\Command\ListRulesCommand', 'Rector\Core\Console\Command\ListRulesCommand');
 class_alias('Rector\Console\Command\ProcessCommand', 'Rector\Core\Console\Command\ProcessCommand');
@@ -196,7 +189,6 @@ class_alias(
 class_alias('Rector\PhpParser\ValueObject\StmtsAndTokens', 'Rector\Core\PhpParser\ValueObject\StmtsAndTokens');
 class_alias('Rector\ProcessAnalyzer\RectifiedAnalyzer', 'Rector\Core\ProcessAnalyzer\RectifiedAnalyzer');
 class_alias('Rector\Provider\CurrentFileProvider', 'Rector\Core\Provider\CurrentFileProvider');
-class_alias('Rector\Rector\AbstractCollectorRector', 'Rector\Core\Rector\AbstractCollectorRector');
 class_alias('Rector\Rector\AbstractRector', 'Rector\Core\Rector\AbstractRector');
 class_alias('Rector\Rector\AbstractScopeAwareRector', 'Rector\Core\Rector\AbstractScopeAwareRector');
 class_alias('Rector\Reflection\ClassModifierChecker', 'Rector\Core\Reflection\ClassModifierChecker');

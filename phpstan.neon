@@ -455,12 +455,6 @@ parameters:
             message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
             path: rules/CodingStyle/ClassNameImport/UseImportsTraverser.php
 
-        # rector collectors
-        - '#Creating new PHPStan\\Collectors\\CollectedData is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-
-        # collectors
-        - '#Creating new PHPStan\\Node\\CollectedDataNode is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
-
         - '#(.*?)\\Contract\\PhpParser\\Node\\StmtsAwareInterface\:\:\$stmts#'
 
         # dev rule

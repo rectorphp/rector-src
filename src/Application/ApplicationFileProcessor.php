@@ -141,8 +141,6 @@ final class ApplicationFileProcessor
                     $fileDiffs[] = $currentFileDiff;
                 }
 
-                $collectedData = array_merge($collectedData, $fileProcessResult->getCollectedData());
-
                 // progress bar on parallel handled on runParallel()
                 if (is_callable($postFileCallback)) {
                     $postFileCallback(1);
