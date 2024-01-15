@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
-use Rector\ValueObject\Configuration;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
