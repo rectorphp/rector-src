@@ -13,6 +13,10 @@ use Rector\Php81\NodeFactory\EnumFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+<<<<<<< HEAD
+=======
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+>>>>>>> 3b6a960c85 (regenerate docs)
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +33,11 @@ final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhp
     /**
      * @var string
      */
+<<<<<<< HEAD
     public const TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
+=======
+    public const TO_UPPER_SNAKE_CASE = 'to_upper_snake_case';
+>>>>>>> 3b6a960c85 (regenerate docs)
 
     public function __construct(
         private readonly EnumFactory $enumFactory
