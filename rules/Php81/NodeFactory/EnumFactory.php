@@ -36,6 +36,12 @@ final readonly class EnumFactory
      */
     private const PASCAL_CASE_TO_UNDERSCORE_REGEX = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/FneU33/1
+     */
+    private const MULTI_UNDERSCORES_REGEX = '#_{2,}#';
+
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private PhpDocInfoFactory $phpDocInfoFactory,
@@ -142,6 +148,7 @@ final readonly class EnumFactory
             $enumName = strtoupper(
                 Strings::replace($nodeValue->methodName, self::PASCAL_CASE_TO_UNDERSCORE_REGEX, '_$0')
             );
+            $enumName = Strings::replace($enumName, self::MULTI_UNDERSCORES_REGEX, '_');
         } else {
             $enumName = strtoupper($nodeValue->methodName);
         }

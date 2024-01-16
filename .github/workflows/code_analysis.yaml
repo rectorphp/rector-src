@@ -44,8 +44,7 @@ jobs:
                                 --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface" \
-                                --skip-type="Rector\\BetterPhpDocParser\\ValueObject\\Type\\FullyQualifiedIdentifierTypeNode" \
-                                --skip-type="Rector\\Contract\\Rector\\CollectorRectorInterface"
+                                --skip-type="Rector\\BetterPhpDocParser\\ValueObject\\Type\\FullyQualifiedIdentifierTypeNode"
 
                     -
                         name: 'Compatible PHPStan versions'

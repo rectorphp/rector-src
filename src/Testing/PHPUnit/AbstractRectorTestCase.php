@@ -8,7 +8,6 @@ use Illuminate\Container\RewindableGenerator;
 use Iterator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use PHPStan\Collectors\Collector;
 use PHPUnit\Framework\ExpectationFailedException;
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
@@ -17,7 +16,6 @@ use Rector\Configuration\ConfigurationFactory;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
-use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
@@ -89,8 +87,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
-            $this->assertEmpty($rectorConfig->tagged(CollectorRectorInterface::class));
-            $this->assertEmpty($rectorConfig->tagged(Collector::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
@@ -174,8 +170,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         // 1. forget tagged services
         ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
-        ContainerMemento::forgetTag($rectorConfig, Collector::class);
-        ContainerMemento::forgetTag($rectorConfig, CollectorRectorInterface::class);
 
         // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();

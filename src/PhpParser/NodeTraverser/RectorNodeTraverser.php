@@ -6,7 +6,6 @@ namespace Rector\PhpParser\NodeTraverser;
 
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
@@ -60,15 +59,7 @@ final class RectorNodeTraverser extends NodeTraverser
         }
 
         // filer out by version
-        $activeRectors = $this->phpVersionedFilter->filter($this->rectors);
-
-        $nonCollectorActiveRectors = array_filter(
-            $activeRectors,
-            static fn (RectorInterface $rector): bool => ! $rector instanceof CollectorRectorInterface
-        );
-
-        $this->visitors = [...$this->visitors, ...$nonCollectorActiveRectors];
-
+        $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
         $this->areNodeVisitorsPrepared = true;
     }
 }

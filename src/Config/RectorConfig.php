@@ -9,7 +9,6 @@ use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Contract\Rector\CollectorRectorInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
@@ -186,10 +185,6 @@ final class RectorConfig extends Container
 
         $this->singleton($rectorClass);
         $this->tag($rectorClass, RectorInterface::class);
-
-        if (is_a($rectorClass, CollectorRectorInterface::class, true)) {
-            $this->tag($rectorClass, CollectorRectorInterface::class);
-        }
 
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);

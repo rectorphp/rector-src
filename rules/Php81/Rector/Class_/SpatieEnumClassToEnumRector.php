@@ -13,7 +13,7 @@ use Rector\Php81\NodeFactory\EnumFactory;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
@@ -25,6 +25,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
     private bool $toUpperSnakeCase = false;
+
+    /**
+     * @var string
+     */
+    public const TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
 
     public function __construct(
         private readonly EnumFactory $enumFactory
@@ -39,7 +44,7 @@ final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhp
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Refactor Spatie enum class to native Enum', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 use \Spatie\Enum\Enum;
 
@@ -61,7 +66,10 @@ enum StatusEnum : string
     case PUBLISHED = 'published';
     case ARCHIVED = 'archived';
 }
-CODE_SAMPLE
+CODE_SAMPLE,
+[
+    SpatieEnumClassToEnumRector::TO_UPPER_SNAKE_CASE => false,
+]
             ),
         ]);
     }
@@ -91,6 +99,6 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $this->toUpperSnakeCase = true === ($configuration['toUpperSnakeCase'] ?? false);
+        $this->toUpperSnakeCase = $configuration[self::TO_UPPER_SNAKE_CASE] ?? false;
     }
 }
