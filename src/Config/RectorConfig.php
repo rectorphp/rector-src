@@ -75,10 +75,6 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::PARALLEL, false);
     }
 
-    /**
-     * Defaults in sync with https://phpstan.org/config-reference#parallel-processing
-     * as we run PHPStan as well
-     */
     public function parallel(int $processTimeout = 120, int $maxNumberOfProcess = 16, int $jobSize = 15): void
     {
         SimpleParameterProvider::setParameter(Option::PARALLEL, true);
