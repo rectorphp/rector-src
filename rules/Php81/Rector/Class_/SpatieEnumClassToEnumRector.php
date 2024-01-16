@@ -99,6 +99,6 @@ CODE_SAMPLE,
      */
     public function configure(array $configuration): void
     {
-        $this->toUpperSnakeCase = true === ($configuration['toUpperSnakeCase'] ?? false);
+        $this->toUpperSnakeCase = $configuration['toUpperSnakeCase'] ?? false;
     }
 }
