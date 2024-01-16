@@ -29,7 +29,7 @@ final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhp
     /**
      * @var string
      */
-    public const TO_UPPER_SNAKE_CASE = 'to_upper_snake_case';
+    public const TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
 
     public function __construct(
         private readonly EnumFactory $enumFactory
