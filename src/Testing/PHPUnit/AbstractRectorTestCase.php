@@ -88,7 +88,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
             // this has to be always empty, so we can add new rules with their configuration
             $this->assertEmpty($rectorConfig->tagged(RectorInterface::class));
-            $this->assertEmpty($rectorConfig->tagged(Collector::class));
 
             $this->bootFromConfigFiles([$configFile]);
 
@@ -172,7 +171,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
 
         // 1. forget tagged services
         ContainerMemento::forgetTag($rectorConfig, RectorInterface::class);
-        ContainerMemento::forgetTag($rectorConfig, Collector::class);
 
         // 2. remove after binding too, to avoid setting configuration over and over again
         $privatesAccessor = new PrivatesAccessor();
