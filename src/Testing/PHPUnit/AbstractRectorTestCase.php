@@ -206,10 +206,6 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         if (\file_exists(__DIR__ . '/../../../vendor/scoper-autoload.php')) {
             require_once __DIR__ . '/../../../vendor/scoper-autoload.php';
         }
-
-        if (\file_exists(__DIR__ . '/../../core_namespace_aliases.php')) {
-            require_once __DIR__ . '/../../core_namespace_aliases.php';
-        }
     }
 
     private function doTestFileMatchesExpectedContent(
