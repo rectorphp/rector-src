@@ -24,12 +24,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class SpatieEnumClassToEnumRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
 {
-    private bool $toUpperSnakeCase = false;
-
     /**
      * @var string
      */
     public const TO_UPPER_SNAKE_CASE = 'toUpperSnakeCase';
+
+    private bool $toUpperSnakeCase = false;
 
     public function __construct(
         private readonly EnumFactory $enumFactory
@@ -66,10 +66,11 @@ enum StatusEnum : string
     case PUBLISHED = 'published';
     case ARCHIVED = 'archived';
 }
-CODE_SAMPLE,
-[
-    SpatieEnumClassToEnumRector::TO_UPPER_SNAKE_CASE => false,
-]
+CODE_SAMPLE
+                ,
+                [
+                    SpatieEnumClassToEnumRector::TO_UPPER_SNAKE_CASE => false,
+                ]
             ),
         ]);
     }
