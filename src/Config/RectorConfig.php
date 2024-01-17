@@ -81,7 +81,7 @@ final class RectorConfig extends Container
                 // show warning, to avoid confusion
                 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
                 $symfonyStyle->warning(
-                    "The Symfony/Twig/PHPUnit level sets are deprecated since Rector 0.19.2, because of heavy performance load and conflicting overrides. Instead, use latest major set instead.\n\nFor more, see https://getrector.com/blog/5-common-mistakes-in-rector-config-and-how-to-avoid-them"
+                    "The Symfony/Twig/PHPUnit level sets have been deprecated since Rector 0.19.2 due to heavy performance loads and conflicting overrides. Instead, please use the latest major set.\n\nFor more information, visit https://getrector.com/blog/5-common-mistakes-in-rector-config-and-how-to-avoid-them"
                 );
 
                 break;
