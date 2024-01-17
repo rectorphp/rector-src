@@ -18,6 +18,9 @@ use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\PhpVersion;
 use Rector\ValueObject\PolyfillPackage;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 /**
@@ -64,6 +67,25 @@ final class RectorConfig extends Container
         foreach ($sets as $set) {
             Assert::fileExists($set);
             $this->import($set);
+        }
+
+        // notify about deprecated sets
+        foreach ($sets as $set) {
+            if (! str_contains($set, 'deprecated-level-set')) {
+                continue;
+            }
+
+            // display only on main command run, skip spamming in workers
+            $commandArguments = $_SERVER['argv'];
+            if (! in_array('worker', $commandArguments, true)) {
+                // show warning, to avoid confusion
+                $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+                $symfonyStyle->warning(
+                    "The Symfony/Twig/PHPUnit level sets have been deprecated since Rector 0.19.2 due to heavy performance loads and conflicting overrides. Instead, please use the latest major set.\n\nFor more information, visit https://getrector.com/blog/5-common-mistakes-in-rector-config-and-how-to-avoid-them"
+                );
+
+                break;
+            }
         }
 
         // for cache invalidation in case of sets change
