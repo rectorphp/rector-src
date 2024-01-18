@@ -203,9 +203,10 @@ final class BetterStandardPrinter extends Standard
     protected function outdent(): void
     {
         if ($this->getIndentCharacter() === ' ') {
+            $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
             // - 4 spaces
-            assert($this->indentLevel >= 4);
-            $this->indentLevel -= 4;
+            assert($this->indentLevel >= $indentSize);
+            $this->indentLevel -= $indentSize;
         } else {
             // - 1 tab
             assert($this->indentLevel >= 1);
