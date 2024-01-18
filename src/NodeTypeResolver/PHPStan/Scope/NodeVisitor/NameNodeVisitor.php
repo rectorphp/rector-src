@@ -20,11 +20,6 @@ final class NameNodeVisitor extends NodeVisitorAbstract implements ScopeResolver
 {
     public function enterNode(Node $node): ?Node
     {
-        if ($node instanceof UseUse && ($node->type === Use_::TYPE_NORMAL || $node->type === Use_::TYPE_UNKNOWN)) {
-            $node->name->setAttribute(AttributeKey::IS_USEUSE_NAME, true);
-            return null;
-        }
-
         if ($node instanceof FuncCall && $node->name instanceof Name) {
             $node->name->setAttribute(AttributeKey::IS_FUNCCALL_NAME, true);
             return null;

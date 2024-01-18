@@ -392,26 +392,6 @@ final class BetterStandardPrinter extends Standard
         return parent::pExpr_Ternary($ternary);
     }
 
-    /**
-     * Remove extra \\ from FQN use imports, for easier use in the code
-     */
-    protected function pStmt_Use(Use_ $use): string
-    {
-        if ($use->type !== Use_::TYPE_NORMAL) {
-            return parent::pStmt_Use($use);
-        }
-
-        foreach ($use->uses as $useUse) {
-            if (! $useUse->name instanceof FullyQualified) {
-                continue;
-            }
-
-            $useUse->name = new Name($useUse->name->toString());
-        }
-
-        return parent::pStmt_Use($use);
-    }
-
     protected function pScalar_EncapsedStringPart(EncapsedStringPart $encapsedStringPart): string
     {
         // parent throws exception, but we need to compare string
