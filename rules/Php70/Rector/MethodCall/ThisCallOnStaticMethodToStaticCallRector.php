@@ -9,7 +9,9 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\Php\PhpMethodReflection;
@@ -28,6 +30,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class ThisCallOnStaticMethodToStaticCallRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
+    private bool $hasChanged = false;
+
     public function __construct(
         private readonly StaticAnalyzer $staticAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
@@ -101,13 +105,27 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
+        $this->hasChanged = false;
 
-        $this->traverseNodesWithCallable($node, function (Node $subNode) use (
-            $node,
-            $classReflection,
-            &$hasChanged
-        ): ?StaticCall {
+        $this->processThisToStatic($node, $classReflection);
+
+        if ($this->hasChanged) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function processThisToStatic(Class_ $class, ClassReflection $classReflection): void
+    {
+        $this->traverseNodesWithCallable($class, function (Node $subNode) use (
+            $class,
+            $classReflection
+        ): null|StaticCall|int {
+            if ($subNode instanceof Encapsed) {
+                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+            }
+
             if (! $subNode instanceof MethodCall) {
                 return null;
             }
@@ -129,7 +147,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($classReflection, $methodName, $node);
+            $isStaticMethod = $this->staticAnalyzer->isStaticMethod($classReflection, $methodName, $class);
             if (! $isStaticMethod) {
                 return null;
             }
@@ -138,17 +156,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $hasChanged = true;
+            $this->hasChanged = true;
 
             $objectReference = $this->resolveClassSelf($classReflection, $subNode);
             return $this->nodeFactory->createStaticCall($objectReference, $methodName, $subNode->args);
         });
-
-        if ($hasChanged) {
-            return $node;
-        }
-
-        return null;
     }
 
     /**
