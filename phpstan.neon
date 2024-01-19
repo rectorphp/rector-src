@@ -480,3 +480,6 @@ parameters:
 
         # will be used in rector-downgrade-php
         - '#Public method "Rector\\PhpParser\\Parser\\InlineCodeParser\:\:parseFile\(\)" is never used#'
+
+        # deprecated
+        - '#Public method "Rector\\PhpParser\\Parser\\InlineCodeParser\:\:parse\(\)" is never used#'
