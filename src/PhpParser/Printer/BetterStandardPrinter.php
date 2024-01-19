@@ -204,7 +204,6 @@ final class BetterStandardPrinter extends Standard
     {
         if ($this->getIndentCharacter() === ' ') {
             $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
-            // - 4 spaces
             assert($this->indentLevel >= $indentSize);
             $this->indentLevel -= $indentSize;
         } else {
