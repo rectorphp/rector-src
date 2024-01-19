@@ -68,6 +68,8 @@ final readonly class InlineCodeParser
 
     /**
      * @return Stmt[]
+     *
+     * @deprecate use parseFile() or parseString() instead
      */
     public function parse(string $content): array
     {
@@ -76,11 +78,24 @@ final readonly class InlineCodeParser
             $content = FileSystem::read($content);
         }
 
-        // wrap code so php-parser can interpret it
-        $content = StringUtils::isMatch($content, self::OPEN_PHP_TAG_REGEX) ? $content : '<?php ' . $content;
-        $content = StringUtils::isMatch($content, self::ENDING_SEMI_COLON_REGEX) ? $content : $content . ';';
+        return $this->parseCode($content);
+    }
 
-        return $this->simplePhpParser->parseString($content);
+    /**
+     * @return Stmt[]
+     */
+    public function parseFile(string $fileName): array
+    {
+        $fileContent = FileSystem::read($fileName);
+        return $this->parseCode($fileContent);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    public function parseString(string $fileContent): array
+    {
+        return $this->parseCode($fileContent);
     }
 
     public function stringify(Expr $expr): string
@@ -110,6 +125,18 @@ final readonly class InlineCodeParser
         }
 
         return $this->betterStandardPrinter->print($expr);
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function parseCode(string $code): array
+    {
+        // wrap code so php-parser can interpret it
+        $code = StringUtils::isMatch($code, self::OPEN_PHP_TAG_REGEX) ? $code : '<?php ' . $code;
+        $code = StringUtils::isMatch($code, self::ENDING_SEMI_COLON_REGEX) ? $code : $code . ';';
+
+        return $this->simplePhpParser->parseString($code);
     }
 
     private function resolveEncapsedValue(Encapsed $encapsed): string
