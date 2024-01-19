@@ -69,7 +69,8 @@ final readonly class InlineCodeParser
     /**
      * @return Stmt[]
      *
-     * @deprecate use parseFile() or parseString() instead
+     * @api
+     * @deprecated use parseFile() or parseString() instead
      */
     public function parse(string $content): array
     {
