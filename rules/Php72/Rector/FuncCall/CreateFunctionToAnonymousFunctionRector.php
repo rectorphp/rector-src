@@ -162,7 +162,7 @@ CODE_SAMPLE
         }
 
         $content = $this->inlineCodeParser->stringify($expr);
-        return $this->inlineCodeParser->parse($content);
+        return $this->inlineCodeParser->parseString($content);
     }
 
     private function createEval(Expr $expr): Expression
