@@ -7,7 +7,6 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
-use SplFileInfo;
 
 final class RemoveUselessReturnTagRectorTest extends AbstractRectorTestCase
 {
@@ -17,9 +16,6 @@ final class RemoveUselessReturnTagRectorTest extends AbstractRectorTestCase
         $this->doTestFile($filePath);
     }
 
-    /**
-     * @return Iterator<SplFileInfo>
-     */
     public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
