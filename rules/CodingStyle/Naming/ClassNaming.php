@@ -34,11 +34,4 @@ final class ClassNaming
 
         return $name;
     }
-
-    public function getNamespace(string $fullyQualifiedName): ?string
-    {
-        $fullyQualifiedName = trim($fullyQualifiedName, '\\');
-
-        return Strings::before($fullyQualifiedName, '\\', -1);
-    }
 }
