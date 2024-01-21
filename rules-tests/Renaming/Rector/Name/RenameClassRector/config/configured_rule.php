@@ -23,7 +23,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig
         ->ruleWithConfiguration(RenameClassRector::class, [
-            'FqnizeNamespaced' => 'Abc\FqnizeNamespaced',
             OldClass::class => NewClass::class,
             // interface to class
             SomeBasicDateTime::class =>
@@ -35,10 +34,6 @@ return static function (RectorConfig $rectorConfig): void {
             'Twig_Extension_Sandbox' => 'Twig\Extension\SandboxExtension',
             // Renaming class itself and its namespace
             'MyNamespace\MylegacyClass' => 'MyNewNamespace\MyNewClass',
-            'MyNamespace\MyTrait' => 'MyNewNamespace\MyNewTrait',
-            'MyOldClass' => 'MyNamespace\MyNewClass2',
-            'AnotherMyOldClass' => 'AnotherMyNewClass',
-            'MyNamespace\AnotherMyClass' => 'MyNewClassWithoutNamespace',
             // test duplicated class - @see https://github.com/rectorphp/rector/issues/1438
             'Rector\Tests\Renaming\Rector\Name\RenameClassRector\Fixture\SingularClass' => DuplicatedClass::class,
             // test duplicated class - @see https://github.com/rectorphp/rector/issues/5389
