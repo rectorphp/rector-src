@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
-use Rector\NodeTypeResolver\NodeVisitor\FunctionLikeParamPositionNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 use Rector\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
@@ -20,7 +19,6 @@ final class NodeScopeAndMetadataDecorator
     public function __construct(
         CloningVisitor $cloningVisitor,
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        FunctionLikeParamPositionNodeVisitor $functionLikeParamPositionNodeVisitor,
         private readonly ScopeFactory $scopeFactory,
         private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
@@ -28,7 +26,6 @@ final class NodeScopeAndMetadataDecorator
 
         // needed for format preserving printing
         $this->nodeTraverser->addVisitor($cloningVisitor);
-        $this->nodeTraverser->addVisitor($functionLikeParamPositionNodeVisitor);
     }
 
     /**

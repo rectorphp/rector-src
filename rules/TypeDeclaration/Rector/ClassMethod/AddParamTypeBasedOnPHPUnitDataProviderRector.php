@@ -11,7 +11,6 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -25,7 +24,6 @@ use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -152,15 +150,10 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(Class_ $class, Param $param, PhpDocTagNode | Attribute $dataProviderNode): Type
+    private function inferParam(Class_ $class, int $parameterPosition, PhpDocTagNode | Attribute $dataProviderNode): Type
     {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
-            return new MixedType();
-        }
-
-        $parameterPosition = $param->getAttribute(AttributeKey::PARAMETER_POSITION);
-        if ($parameterPosition === null) {
             return new MixedType();
         }
 
@@ -339,14 +332,14 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        foreach ($classMethod->getParams() as $param) {
+        foreach ($classMethod->getParams() as $parameterPosition => $param) {
             if ($param->type instanceof Node) {
                 continue;
             }
 
             $paramTypes = [];
             foreach ($dataProviderNodes as $dataProviderNode) {
-                $paramTypes[] = $this->inferParam($class, $param, $dataProviderNode);
+                $paramTypes[] = $this->inferParam($class, $parameterPosition, $dataProviderNode);
             }
 
             $paramTypeDeclaration = TypeCombinator::union(...$paramTypes);
