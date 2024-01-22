@@ -152,15 +152,10 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(Class_ $class, Param $param, PhpDocTagNode | Attribute $dataProviderNode): Type
+    private function inferParam(Class_ $class, int $parameterPosition, Param $param, PhpDocTagNode | Attribute $dataProviderNode): Type
     {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
-            return new MixedType();
-        }
-
-        $parameterPosition = $param->getAttribute(AttributeKey::PARAMETER_POSITION);
-        if ($parameterPosition === null) {
             return new MixedType();
         }
 
@@ -339,14 +334,14 @@ CODE_SAMPLE
     {
         $hasChanged = false;
 
-        foreach ($classMethod->getParams() as $param) {
+        foreach ($classMethod->getParams() as $parameterPosition => $param) {
             if ($param->type instanceof Node) {
                 continue;
             }
 
             $paramTypes = [];
             foreach ($dataProviderNodes as $dataProviderNode) {
-                $paramTypes[] = $this->inferParam($class, $param, $dataProviderNode);
+                $paramTypes[] = $this->inferParam($class, $parameterPosition, $param, $dataProviderNode);
             }
 
             $paramTypeDeclaration = TypeCombinator::union(...$paramTypes);
