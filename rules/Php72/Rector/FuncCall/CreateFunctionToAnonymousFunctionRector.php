@@ -135,7 +135,7 @@ CODE_SAMPLE
         $content = $this->inlineCodeParser->stringify($expr);
         $content = '<?php $value = function(' . $content . ') {};';
 
-        $nodes = $this->inlineCodeParser->parse($content);
+        $nodes = $this->inlineCodeParser->parseString($content);
 
         /** @var Expression $expression */
         $expression = $nodes[0];
@@ -161,8 +161,8 @@ CODE_SAMPLE
             return [$this->createEval($expr)];
         }
 
-        $expr = $this->inlineCodeParser->stringify($expr);
-        return $this->inlineCodeParser->parse($expr);
+        $content = $this->inlineCodeParser->stringify($expr);
+        return $this->inlineCodeParser->parseString($content);
     }
 
     private function createEval(Expr $expr): Expression
