@@ -92,8 +92,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $countSqureOpenBracket = substr_count($simplifiedValue, '[');
-            if ($countSqureOpenBracket % 2 === 1) {
+            if (str_contains($originalValue, '[^' . $complexPattern)) {
                 continue;
             }
 
