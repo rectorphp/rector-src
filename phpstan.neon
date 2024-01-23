@@ -208,7 +208,6 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
                 - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-                - src/FileSystem/FilesFinder.php
                 - src/PhpParser/NodeTransformer.php
 
         # impossible to validate json string is a class-string
@@ -260,10 +259,6 @@ parameters:
                 - src/PhpParser/Printer/BetterStandardPrinter.php
                 # regex
                 - rules/Php70/EregToPcreTransformer.php
-
-        -
-            message: '#Instead of "DateTime" class/interface use "Nette\\Utils\\DateTime"#'
-            path: src/Application/VersionResolver.php
 
         - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
         - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
