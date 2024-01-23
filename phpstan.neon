@@ -472,6 +472,3 @@ parameters:
 
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
-
-        # will be used in rector-downgrade-php
-        - '#Public method "Rector\\PhpParser\\Parser\\InlineCodeParser\:\:parseFile\(\)" is never used#'
