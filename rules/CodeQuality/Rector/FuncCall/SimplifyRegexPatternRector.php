@@ -92,6 +92,11 @@ CODE_SAMPLE
                 continue;
             }
 
+            $countSqureOpenBracket = substr_count($simplifiedValue, '[');
+            if ($countSqureOpenBracket % 2 === 1) {
+                continue;
+            }
+
             $node->value = $simplifiedValue;
             return $node;
         }
