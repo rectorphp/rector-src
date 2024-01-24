@@ -5,23 +5,16 @@ declare(strict_types=1);
 namespace Rector\Console\Command;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use OndraM\CiDetector\CiDetector;
+use Rector\Git\RepositoryHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Process\Process;
 use function sprintf;
 
 final class SetupCICommand extends Command
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/etcmog/2
-     */
-    private const GITHUB_REPOSITORY_REGEX = '#github\.com[:\/](?<repository_name>.*?)\.git#';
-
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle
     ) {
@@ -39,42 +32,22 @@ final class SetupCICommand extends Command
         // detect current CI
         $ci = $this->resolveCurrentCI();
 
-        if ($ci === null) {
-            $noteMessage = sprintf(
-                'Only Github Actions and GitLab are supported for now.%s Contribute your CI to Rector to make this work: %s',
-                PHP_EOL,
-                'https://github.com/rectorphp/rector-src/'
-            );
-
-            $this->symfonyStyle->note($noteMessage);
-            return self::SUCCESS;
-        }
-
-        $rectorWorkflowFilePath = getcwd() . '/.github/workflows/rector.yaml';
-        if (file_exists($rectorWorkflowFilePath)) {
-            $response = $this->symfonyStyle->ask('The "rector.yaml" workflow already exists. Overwrite it?', 'Yes');
-            if (! in_array($response, ['y', 'yes', 'Yes'], true)) {
-                $this->symfonyStyle->note('Nothing changed');
-                return self::SUCCESS;
-            }
-        }
-
-        $currentRepository = $this->resolveCurrentRepositoryName(getcwd());
-        if ($currentRepository === null) {
-            $this->symfonyStyle->error('Current repository name could not be resolved');
-
-            return self::FAILURE;
-        }
-
         if ($ci === CiDetector::CI_GITLAB) {
-            // add snippet in the end of file or include it?
+            return $this->handleGitlabCi();
         }
 
         if ($ci === CiDetector::CI_GITHUB_ACTIONS) {
-            $this->addGithubActionsWorkflow($currentRepository, $rectorWorkflowFilePath);
+            return $this->handleGithubActions();
         }
 
-        return Command::SUCCESS;
+        $noteMessage = sprintf(
+            'Only Github and GitLab are currently supported.%s Contribute your CI template to Rector to make this work: %s',
+            PHP_EOL,
+            'https://github.com/rectorphp/rector-src/'
+        );
+
+        $this->symfonyStyle->note($noteMessage);
+        return self::SUCCESS;
     }
 
     /**
@@ -93,26 +66,14 @@ final class SetupCICommand extends Command
         return null;
     }
 
-    private function resolveCurrentRepositoryName(string $currentDirectory): ?string
-    {
-        // resolve current repository name
-        $process = new Process(['git', 'remote', 'get-url', 'origin'], $currentDirectory, null, null, null);
-        $process->run();
-
-        $output = $process->getOutput();
-
-        $match = Strings::match($output, self::GITHUB_REPOSITORY_REGEX);
-        return $match['repository_name'] ?? null;
-    }
-
-    private function addGithubActionsWorkflow(string $currentRepository, string $rectorWorkflowFilePath): void
+    private function addGithubActionsWorkflow(string $currentRepository, string $targetWorkflowFilePath): void
     {
         $workflowTemplate = FileSystem::read(__DIR__ . '/../../../templates/rector-github-action-check.yaml');
         $workflowContents = strtr($workflowTemplate, [
             '__CURRENT_REPOSITORY__' => $currentRepository,
         ]);
 
-        FileSystem::write($rectorWorkflowFilePath, $workflowContents);
+        FileSystem::write($targetWorkflowFilePath, $workflowContents);
 
         $this->symfonyStyle->newLine();
         $this->symfonyStyle->success('The ".github/workflows/rector.yaml" file was added');
@@ -130,5 +91,67 @@ final class SetupCICommand extends Command
         $this->symfonyStyle->writeln(
             '2) Add the token to Action secrets as "ACCESS_TOKEN":' . \PHP_EOL . $repositoryNewSecretsLink
         );
+    }
+
+    private function addGitlabFile(string $targetGitlabFilePath): void
+    {
+        $gitlabTemplate = FileSystem::read(__DIR__ . '/../../../templates/rector-gitlab-check.yaml');
+        FileSystem::write($targetGitlabFilePath, $gitlabTemplate);
+
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->success('The "gitlab/rector.yaml" file was added');
+
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->writeln(
+            '1) Register it in your ".gitlab-ci.yml" file:' . \PHP_EOL . 'include:' . \PHP_EOL . '    - local: gitlab/rector.yaml'
+        );
+    }
+
+    /**
+     * @return self::SUCCESS
+     */
+    private function handleGitlabCi(): int
+    {
+        // add snippet in the end of file or include it?
+        $ciRectorFilePath = getcwd() . '/gitlab/rector.yaml';
+
+        if (file_exists($ciRectorFilePath)) {
+            $response = $this->symfonyStyle->ask(
+                'The "gitlab/rector.yaml" workflow already exists. Overwrite it?',
+                'Yes'
+            );
+            if (! in_array($response, ['y', 'yes', 'Yes'], true)) {
+                $this->symfonyStyle->note('Nothing changed');
+                return self::SUCCESS;
+            }
+        }
+
+        $this->addGitlabFile($ciRectorFilePath);
+        return self::SUCCESS;
+    }
+
+    /**
+     * @return self::SUCCESS|self::FAILURE
+     */
+    private function handleGithubActions(): int
+    {
+        $rectorWorkflowFilePath = getcwd() . '/.github/workflows/rector.yaml';
+        if (file_exists($rectorWorkflowFilePath)) {
+            $response = $this->symfonyStyle->ask('The "rector.yaml" workflow already exists. Overwrite it?', 'Yes');
+            if (! in_array($response, ['y', 'yes', 'Yes'], true)) {
+                $this->symfonyStyle->note('Nothing changed');
+                return self::SUCCESS;
+            }
+        }
+
+        $currentRepository = RepositoryHelper::resolveGithubRepositoryName(getcwd());
+        if ($currentRepository === null) {
+            $this->symfonyStyle->error('Current repository name could not be resolved');
+
+            return self::FAILURE;
+        }
+
+        $this->addGithubActionsWorkflow($currentRepository, $rectorWorkflowFilePath);
+        return self::SUCCESS;
     }
 }
