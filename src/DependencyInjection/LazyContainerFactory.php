@@ -49,6 +49,7 @@ use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterfac
 use Rector\Config\RectorConfig;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\RenamedClassesDataCollector;
+use Rector\Console\Command\CustomRuleCommand;
 use Rector\Console\Command\ListRulesCommand;
 use Rector\Console\Command\ProcessCommand;
 use Rector\Console\Command\SetupCICommand;
@@ -397,6 +398,7 @@ final class LazyContainerFactory
         $rectorConfig->singleton(WorkerCommand::class);
         $rectorConfig->singleton(SetupCICommand::class);
         $rectorConfig->singleton(ListRulesCommand::class);
+        $rectorConfig->singleton(CustomRuleCommand::class);
 
         $rectorConfig->when(ListRulesCommand::class)
             ->needs('$rectors')
