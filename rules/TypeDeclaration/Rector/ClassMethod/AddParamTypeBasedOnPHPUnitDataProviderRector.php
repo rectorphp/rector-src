@@ -150,8 +150,11 @@ CODE_SAMPLE
         return null;
     }
 
-    private function inferParam(Class_ $class, int $parameterPosition, PhpDocTagNode | Attribute $dataProviderNode): Type
-    {
+    private function inferParam(
+        Class_ $class,
+        int $parameterPosition,
+        PhpDocTagNode | Attribute $dataProviderNode
+    ): Type {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
             return new MixedType();
