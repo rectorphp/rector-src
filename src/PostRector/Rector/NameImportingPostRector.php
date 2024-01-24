@@ -54,8 +54,19 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         $firstStmt = current($file->getNewStmts());
-        if ($firstStmt instanceof FileWithoutNamespace && current($firstStmt->stmts) instanceof InlineHTML) {
-            return null;
+        if ($firstStmt instanceof FileWithoutNamespace) {
+            $currentStmt = current($firstStmt->stmts);
+
+            if ($currentStmt instanceof InlineHTML) {
+                return null;
+            }
+
+            $oldTokens = $file->getOldTokens();
+            $tokenStartPos = $currentStmt->getStartTokenPos();
+
+            if (isset($oldTokens[$tokenStartPos][1]) && $oldTokens[$tokenStartPos][1] === '<?=') {
+                return null;
+            }
         }
 
         if ($node instanceof FullyQualified) {
