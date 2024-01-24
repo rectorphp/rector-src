@@ -38,16 +38,12 @@ final class SetupCICommand extends Command
     {
         // detect current CI
         $ci = $this->resolveCurrentCI();
-        if ($ci === null) {
-            $this->symfonyStyle->error('No CI detected');
-            return self::FAILURE;
-        }
 
-        if ($ci !== CiDetector::CI_GITHUB_ACTIONS) {
+        if ($ci === null) {
             $noteMessage = sprintf(
-                'Only Github Action is supported for now.%sCreate an issue to add your CI %s',
+                'Only Github Actions and GitLab are supported for now.%s Contribute your CI to Rector to make this work: %s',
                 PHP_EOL,
-                'https://github.com/rectorphp/rector/issues/'
+                'https://github.com/rectorphp/rector-src/'
             );
 
             $this->symfonyStyle->note($noteMessage);
@@ -70,31 +66,13 @@ final class SetupCICommand extends Command
             return self::FAILURE;
         }
 
-        $workflowTemplate = FileSystem::read(__DIR__ . '/../../../templates/rector-github-action-check.yaml');
+        if ($ci === CiDetector::CI_GITLAB) {
+            // add snippet in the end of file or include it?
+        }
 
-        $workflowContents = strtr($workflowTemplate, [
-            '__CURRENT_REPOSITORY__' => $currentRepository,
-        ]);
-
-        FileSystem::write($rectorWorkflowFilePath, $workflowContents);
-
-        $this->symfonyStyle->newLine();
-
-        $this->symfonyStyle->success('The ".github/workflows/rector.yaml" file was added');
-
-        $this->symfonyStyle->writeln('<comment>2 more steps to run Rector in CI:</comment>');
-
-        $this->symfonyStyle->newLine();
-        $this->symfonyStyle->writeln(
-            '1) Generate token with "repo" scope:' . \PHP_EOL . 'https://github.com/settings/tokens/new'
-        );
-
-        $this->symfonyStyle->newLine();
-
-        $repositoryNewSecretsLink = sprintf('https://github.com/%s/settings/secrets/actions/new', $currentRepository);
-        $this->symfonyStyle->writeln(
-            '2) Add the token to Action secrets as "ACCESS_TOKEN":' . \PHP_EOL . $repositoryNewSecretsLink
-        );
+        if ($ci === CiDetector::CI_GITHUB_ACTIONS) {
+            $this->addGithubActionsWorkflow($currentRepository, $rectorWorkflowFilePath);
+        }
 
         return Command::SUCCESS;
     }
@@ -106,6 +84,10 @@ final class SetupCICommand extends Command
     {
         if (file_exists(getcwd() . '/.github')) {
             return CiDetector::CI_GITHUB_ACTIONS;
+        }
+
+        if (file_exists(getcwd() . '/.gitlab-ci.yml')) {
+            return CiDetector::CI_GITLAB;
         }
 
         return null;
@@ -121,5 +103,32 @@ final class SetupCICommand extends Command
 
         $match = Strings::match($output, self::GITHUB_REPOSITORY_REGEX);
         return $match['repository_name'] ?? null;
+    }
+
+    private function addGithubActionsWorkflow(string $currentRepository, string $rectorWorkflowFilePath): void
+    {
+        $workflowTemplate = FileSystem::read(__DIR__ . '/../../../templates/rector-github-action-check.yaml');
+        $workflowContents = strtr($workflowTemplate, [
+            '__CURRENT_REPOSITORY__' => $currentRepository,
+        ]);
+
+        FileSystem::write($rectorWorkflowFilePath, $workflowContents);
+
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->success('The ".github/workflows/rector.yaml" file was added');
+
+        $this->symfonyStyle->writeln('<comment>2 more steps to run Rector in CI:</comment>');
+
+        $this->symfonyStyle->newLine();
+        $this->symfonyStyle->writeln(
+            '1) Generate token with "repo" scope:' . \PHP_EOL . 'https://github.com/settings/tokens/new'
+        );
+
+        $this->symfonyStyle->newLine();
+
+        $repositoryNewSecretsLink = sprintf('https://github.com/%s/settings/secrets/actions/new', $currentRepository);
+        $this->symfonyStyle->writeln(
+            '2) Add the token to Action secrets as "ACCESS_TOKEN":' . \PHP_EOL . $repositoryNewSecretsLink
+        );
     }
 }
