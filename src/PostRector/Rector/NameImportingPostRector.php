@@ -53,20 +53,8 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $firstStmt = current($file->getNewStmts());
-        if ($firstStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($firstStmt->stmts);
-
-            if ($currentStmt instanceof InlineHTML) {
-                return null;
-            }
-
-            $oldTokens = $file->getOldTokens();
-            $tokenStartPos = $currentStmt->getStartTokenPos();
-
-            if (isset($oldTokens[$tokenStartPos][1]) && $oldTokens[$tokenStartPos][1] === '<?=') {
-                return null;
-            }
+        if ($this->shouldSkipFileWithoutNamespace($file)) {
+            return null;
         }
 
         if ($node instanceof FullyQualified) {
@@ -94,6 +82,25 @@ final class NameImportingPostRector extends AbstractPostRector
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
+    }
+
+    private function shouldSkipFileWithoutNamespace(File $file): bool
+    {
+        $firstStmt = current($file->getNewStmts());
+        if (! $firstStmt instanceof FileWithoutNamespace) {
+            return false;
+        }
+
+        $currentStmt = current($firstStmt->stmts);
+
+        if ($currentStmt instanceof InlineHTML || $currentStmt === false) {
+            return true;
+        }
+
+        $oldTokens = $file->getOldTokens();
+        $tokenStartPos = $currentStmt->getStartTokenPos();
+
+        return isset($oldTokens[$tokenStartPos][1]) && $oldTokens[$tokenStartPos][1] === '<?=';
     }
 
     private function processNodeName(FullyQualified $fullyQualified, File $file): ?Node
