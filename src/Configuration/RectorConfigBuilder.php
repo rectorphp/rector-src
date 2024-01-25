@@ -142,7 +142,9 @@ final class RectorConfigBuilder
             $rectorConfig->bootstrapFiles($this->bootstrapFiles);
         }
 
-        $rectorConfig->indent($this->indentChar, $this->indentSize);
+        if ($this->indentChar !== ' ' || $this->indentSize !== 4) {
+            $rectorConfig->indent($this->indentChar, $this->indentSize);
+        }
 
         if ($this->parallel) {
             $rectorConfig->parallel(
