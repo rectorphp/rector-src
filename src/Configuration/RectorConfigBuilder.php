@@ -364,9 +364,6 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    /**
-     * @param array $phpstanConfigs
-     */
     public function withPHPStanConfigs(array $phpstanConfigs): self
     {
         $this->phpstanConfigs = $phpstanConfigs;
