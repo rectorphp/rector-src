@@ -15,15 +15,15 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
 use Rector\Exception\ShouldNotHappenException;
-use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Testing\TestingParser\TestingParser;
 
 final class TestModifyReprintTest extends AbstractLazyTestCase
 {
-    private FileInfoParser $fileInfoParser;
+    private TestingParser $testingParser;
 
     private BetterNodeFinder $betterNodeFinder;
 
@@ -33,7 +33,7 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->testingParser = $this->make(TestingParser::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
         $this->phpDocInfoFactory = $this->make(PhpDocInfoFactory::class);
@@ -71,7 +71,7 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
     private function parseFileAndGetFirstNodeOfType(string $fileContents, string $nodeType): PhpDocInfo
     {
         $fixtureFilePath = FixtureTempFileDumper::dump($fileContents);
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($fixtureFilePath);
+        $nodes = $this->testingParser->parseFileToDecoratedNodes($fixtureFilePath);
 
         FileSystem::delete($fixtureFilePath);
 

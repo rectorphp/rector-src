@@ -12,7 +12,9 @@ use Rector\Provider\CurrentFileProvider;
 use Rector\ValueObject\Application\File;
 
 /**
- * Only for testing, @todo move to testing
+ * @deprecated use \Rector\Testing\TestingParser\TestingParser instead
+ *
+ * Only for testing
  */
 final readonly class FileInfoParser
 {

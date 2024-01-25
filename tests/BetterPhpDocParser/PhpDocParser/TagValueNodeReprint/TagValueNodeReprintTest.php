@@ -13,16 +13,16 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
-use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Testing\TestingParser\TestingParser;
 
 final class TagValueNodeReprintTest extends AbstractLazyTestCase
 {
-    private FileInfoParser $fileInfoParser;
+    private TestingParser $testingParser;
 
     private BetterNodeFinder $betterNodeFinder;
 
@@ -34,7 +34,7 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
 
     protected function setUp(): void
     {
-        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->testingParser = $this->make(TestingParser::class);
         $this->filePathHelper = $this->make(FilePathHelper::class);
         $this->betterNodeFinder = $this->make(BetterNodeFinder::class);
         $this->phpDocInfoPrinter = $this->make(PhpDocInfoPrinter::class);
@@ -109,7 +109,7 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
      */
     private function parseFileAndGetFirstNodeOfType(string $filePath, string $nodeType): Node
     {
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($filePath);
+        $nodes = $this->testingParser->parseFileToDecoratedNodes($filePath);
 
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);
         if (! $node instanceof Node) {
