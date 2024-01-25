@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
-use PHP_CodeSniffer\Sniffs\Sniff;
-use PhpCsFixer\Fixer\FixerInterface;
 use Rector\Config\RectorConfig;
 use Rector\Contract\Rector\RectorInterface;
 use Symfony\Component\Finder\Finder;
