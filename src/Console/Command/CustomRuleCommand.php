@@ -33,7 +33,7 @@ final class CustomRuleCommand extends Command
         $rectorName = $this->symfonyStyle->ask(
             'What is the name of the rule class (e.g. "LegacyCallToDbalMethodCall")?',
             null,
-            static function (string $answer) : string {
+            static function (string $answer): string {
                 if ($answer === '') {
                     throw new ShouldNotHappenException('Rector name cannot be empty');
                 }
