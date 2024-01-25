@@ -98,6 +98,9 @@ final class RectorConfigBuilder
      */
     private array $phpstanConfigs = [];
 
+    /**
+     * @var null|PhpVersion::*
+     */
     private ?int $phpVersion = null;
 
     public function __invoke(RectorConfig $rectorConfig): void
