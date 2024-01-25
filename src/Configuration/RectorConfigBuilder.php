@@ -187,7 +187,7 @@ final class RectorConfigBuilder
      */
     public function withPaths(array $paths): self
     {
-        $this->paths = array_merge($this->paths, $paths);
+        $this->paths = $paths;
 
         return $this;
     }
