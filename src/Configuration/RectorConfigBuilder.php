@@ -90,6 +90,13 @@ final class RectorConfigBuilder
 
     private int $indentSize = 4;
 
+    private ?string $phpstanConfig = null;
+
+    /**
+     * @var string[]
+     */
+    private array $phpstanConfigs = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $rectorConfig->sets($this->sets);
@@ -144,6 +151,14 @@ final class RectorConfigBuilder
 
         if ($this->indentChar !== ' ' || $this->indentSize !== 4) {
             $rectorConfig->indent($this->indentChar, $this->indentSize);
+        }
+
+        if ($this->phpstanConfig !== null) {
+            $rectorConfig->phpstanConfig($this->phpstanConfig);
+        }
+
+        if ($this->phpstanConfigs !== []) {
+            $rectorConfig->phpstanConfigs($this->phpstanConfigs);
         }
 
         if ($this->parallel) {
@@ -340,6 +355,21 @@ final class RectorConfigBuilder
     public function withBootstrapFiles(array $bootstrapFiles): self
     {
         $this->bootstrapFiles = $bootstrapFiles;
+        return $this;
+    }
+
+    public function withPHPStanConfig(string $phpstanConfig): self
+    {
+        $this->phpstanConfig = $phpstanConfig;
+        return $this;
+    }
+
+    /**
+     * @param array $phpstanConfigs
+     */
+    public function withPHPStanConfigs(array $phpstanConfigs): self
+    {
+        $this->phpstanConfigs = $phpstanConfigs;
         return $this;
     }
 }
