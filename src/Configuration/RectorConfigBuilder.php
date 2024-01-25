@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use PHP_CodeSniffer\Sniffs\Sniff;
 use PhpCsFixer\Fixer\FixerInterface;
 use Rector\Config\RectorConfig;
@@ -46,7 +47,7 @@ final class RectorConfigBuilder
     private array $fileExtensions = [];
 
     /**
-     * @var null|class-string<\Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface>
+     * @var null|class-string<CacheStorageInterface>
      */
     private ?string $cacheClass = null;
 
@@ -233,7 +234,7 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param class-string<\Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface> $cacheClass
+     * @param class-string<CacheStorageInterface> $cacheClass
      */
     public function withClassCache(string $cacheClass): self
     {
