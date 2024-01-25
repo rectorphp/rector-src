@@ -37,6 +37,7 @@ final class CustomRuleCommand extends Command
                 if ($answer === '') {
                     throw new ShouldNotHappenException('Rector name cannot be empty');
                 }
+
                 return $answer;
             }
         );
