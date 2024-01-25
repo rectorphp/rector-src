@@ -90,10 +90,7 @@ final class RectorConfigBuilder
         $rectorConfig->rules($this->rules);
 
         foreach ($this->rulesWithConfiguration as $ruleWithConfiguration) {
-            $rectorConfig->ruleWithConfiguration(
-                $ruleWithConfiguration[0],
-                $ruleWithConfiguration[1]
-            );
+            $rectorConfig->ruleWithConfiguration($ruleWithConfiguration[0], $ruleWithConfiguration[1]);
         }
 
         if ($this->fileExtensions !== []) {

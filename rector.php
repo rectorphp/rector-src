@@ -25,9 +25,7 @@ return RectorConfig::configure()
         SetList::EARLY_RETURN,
         SetList::CODING_STYLE,
         SetList::STRICT_BOOLEANS,
-    ])->withRules(
-        [DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]
-    )
+    ])->withRules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class])
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
