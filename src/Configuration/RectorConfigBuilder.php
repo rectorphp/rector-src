@@ -97,6 +97,8 @@ final class RectorConfigBuilder
      */
     private array $phpstanConfigs = [];
 
+    private ?int $phpVersion = null;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $rectorConfig->sets($this->sets);
@@ -159,6 +161,10 @@ final class RectorConfigBuilder
 
         if ($this->phpstanConfigs !== []) {
             $rectorConfig->phpstanConfigs($this->phpstanConfigs);
+        }
+
+        if ($this->phpVersion !== null) {
+            $rectorConfig->phpVersion($this->phpVersion);
         }
 
         if ($this->parallel) {
@@ -370,6 +376,12 @@ final class RectorConfigBuilder
     public function withPHPStanConfigs(array $phpstanConfigs): self
     {
         $this->phpstanConfigs = $phpstanConfigs;
+        return $this;
+    }
+
+    public function withPhpVersion(int $phpVersion): self
+    {
+        $this->phpVersion = $phpVersion;
         return $this;
     }
 }
