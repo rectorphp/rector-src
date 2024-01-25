@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Config;
 
 use Illuminate\Container\Container;
-use PHPStan\Collectors\Collector;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -206,24 +205,6 @@ final class RectorConfig extends Container
 
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
-    }
-
-    /**
-     * @param array<class-string<Collector>> $collectorClasses
-     */
-    public function collectors(array $collectorClasses): void
-    {
-        foreach ($collectorClasses as $collectorClass) {
-            $this->collector($collectorClass);
-        }
-    }
-
-    /**
-     * @param class-string<Collector> $collectorClass
-     */
-    public function collector(string $collectorClass): void
-    {
-        trigger_error('collector have been deprecated as performance costly and not valuable');
     }
 
     /**
