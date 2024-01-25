@@ -7,6 +7,7 @@ namespace Rector\Configuration;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\RectorConfig;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -379,6 +380,9 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    /**
+     * @param PhpVersion::* $phpVersion
+     */
     public function withPhpVersion(int $phpVersion): self
     {
         $this->phpVersion = $phpVersion;
