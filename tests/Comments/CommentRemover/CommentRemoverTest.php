@@ -8,25 +8,25 @@ use Iterator;
 use Nette\Utils\FileSystem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Comments\CommentRemover;
-use Rector\FileSystemRector\Parser\FileInfoParser;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\Testing\Fixture\FixtureFileFinder;
 use Rector\Testing\Fixture\FixtureSplitter;
 use Rector\Testing\Fixture\FixtureTempFileDumper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
+use Rector\Testing\TestingParser\TestingParser;
 
 final class CommentRemoverTest extends AbstractLazyTestCase
 {
     private CommentRemover $commentRemover;
 
-    private FileInfoParser $fileInfoParser;
+    private TestingParser $testingParser;
 
     private BetterStandardPrinter $betterStandardPrinter;
 
     protected function setUp(): void
     {
         $this->commentRemover = $this->make(CommentRemover::class);
-        $this->fileInfoParser = $this->make(FileInfoParser::class);
+        $this->testingParser = $this->make(TestingParser::class);
         $this->betterStandardPrinter = $this->make(BetterStandardPrinter::class);
     }
 
@@ -36,7 +36,7 @@ final class CommentRemoverTest extends AbstractLazyTestCase
         [$inputContents, $expectedOutputContents] = FixtureSplitter::split($filePath);
         $inputFilePath = FixtureTempFileDumper::dump($inputContents);
 
-        $nodes = $this->fileInfoParser->parseFileInfoToNodesAndDecorate($inputFilePath);
+        $nodes = $this->testingParser->parseFileToDecoratedNodes($inputFilePath);
 
         FileSystem::delete($inputFilePath);
 
