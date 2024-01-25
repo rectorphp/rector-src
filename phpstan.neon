@@ -91,6 +91,7 @@ parameters:
                 - rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php
                 - rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php
                 - rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php
+                - src/Configuration/RectorConfigBuilder.php
 
         # is nested expr
         -

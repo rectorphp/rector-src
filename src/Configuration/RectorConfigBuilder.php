@@ -45,6 +45,9 @@ final class RectorConfigBuilder
      */
     private array $fileExtensions = [];
 
+    /**
+     * @var null|class-string<\Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface>
+     */
     private ?string $cacheClass = null;
 
     private ?string $cacheDirectory = null;
@@ -74,8 +77,14 @@ final class RectorConfigBuilder
 
     private ?string $memoryLimit = null;
 
+    /**
+     * @var string[]
+     */
     private array $autoloadPaths = [];
 
+    /**
+     * @var string[]
+     */
     private array $bootstrapFiles = [];
 
     private string $indentChar = ' ';
@@ -223,6 +232,9 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    /**
+     * @param class-string<\Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface> $cacheClass
+     */
     public function withClassCache(string $cacheClass): self
     {
         $this->cacheClass = $cacheClass;
@@ -231,12 +243,12 @@ final class RectorConfigBuilder
     }
 
     /**
-     * @param class-string<(FixerInterface | Sniff)> $checkerClass
+     * @param class-string<(RectorInterface)> $rectorClass
      * @param mixed[] $configuration
      */
-    public function withConfiguredRule(string $checkerClass, array $configuration): self
+    public function withConfiguredRule(string $rectorClass, array $configuration): self
     {
-        $this->rulesWithConfiguration[$checkerClass] = $configuration;
+        $this->rulesWithConfiguration[$rectorClass] = $configuration;
 
         return $this;
     }
@@ -312,12 +324,18 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    /**
+     * @param string[] $autoloadPaths
+     */
     public function withAutoloadPaths(array $autoloadPaths): self
     {
         $this->autoloadPaths = $autoloadPaths;
         return $this;
     }
 
+    /**
+     * @param string[] $bootstrapFiles
+     */
     public function withBootstrapFiles(array $bootstrapFiles): self
     {
         $this->bootstrapFiles = $bootstrapFiles;
