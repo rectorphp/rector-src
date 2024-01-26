@@ -84,16 +84,10 @@ final class PhpDocInfoPrinter
         }
 
         if ($phpDocInfo->getNode() instanceof InlineHTML) {
-            $docContent = $this->normalizeOutput($docContent);
             return "<?php\n" . $docContent . "\n?>";
         }
 
         return $docContent;
-    }
-
-    private function normalizeOutput(string $docContent): string
-    {
-        return str_replace(PHP_EOL, "\n", $docContent);
     }
 
     /**
@@ -115,11 +109,10 @@ final class PhpDocInfoPrinter
             }
 
             if ($phpDocInfo->getNode() instanceof InlineHTML) {
-                $phpDocString = $this->normalizeOutput((string) $phpDocInfo->getPhpDocNode());
-                return "<?php\n" . $phpDocString .  "\n?>";
+                return "<?php\n" . $phpDocInfo->getPhpDocNode() .  "\n?>";
             }
 
-            return $this->normalizeOutput((string) $phpDocInfo->getPhpDocNode());
+            return (string) $phpDocInfo->getPhpDocNode();
         }
 
         $phpDocNode = $phpDocInfo->getPhpDocNode();
@@ -355,7 +348,7 @@ final class PhpDocInfoPrinter
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
     {
-        $printedNode = $this->normalizeOutput((string) $phpDocChildNode);
+        $printedNode = (string) $phpDocChildNode;
 
         if ($this->getCurrentPhpDocInfo()->isSingleLine()) {
             return ' ' . $printedNode;
