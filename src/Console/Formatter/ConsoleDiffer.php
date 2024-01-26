@@ -22,10 +22,6 @@ final readonly class ConsoleDiffer
 
     public function diff(string $old, string $new): string
     {
-        // avoid Strings contain different line endings warning
-        $old = str_replace(PHP_EOL, "\n", $old);
-        $new = str_replace(PHP_EOL, "\n", $new);
-
         $diff = $this->differ->diff($old, $new);
         return $this->colorConsoleDiffFormatter->format($diff);
     }
