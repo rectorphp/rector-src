@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
@@ -12,8 +13,8 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeR
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->sets([
+return RectorConfig::configure()
+    ->withSets([
         LevelSetList::UP_TO_PHP_82,
         SetList::CODE_QUALITY,
         SetList::DEAD_CODE,
@@ -24,11 +25,8 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::EARLY_RETURN,
         SetList::CODING_STYLE,
         SetList::STRICT_BOOLEANS,
-    ]);
-
-    $rectorConfig->rules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class]);
-
-    $rectorConfig->paths([
+    ])->withRules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class])
+    ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
         __DIR__ . '/rules',
@@ -36,14 +34,11 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',
-        __DIR__ . '/scoper.php',
-        __DIR__ . '/build/build-preload.php',
-    ]);
-
-    $rectorConfig->importNames();
-    $rectorConfig->removeUnusedImports();
-
-    $rectorConfig->skip([
+    ])
+    ->withRootFiles()
+    ->withImportNames()
+    ->withRemoveUnusedImports()
+    ->withSkip([
         StringClassNameToClassConstantRector::class,
         __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
@@ -57,7 +52,7 @@ return static function (RectorConfig $rectorConfig): void {
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
 
         // avoid simplifying itself
-        \Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector::class => [
+        SimplifyRegexPatternRector::class => [
             __DIR__ . '/rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php',
         ],
 
@@ -68,4 +63,3 @@ return static function (RectorConfig $rectorConfig): void {
 
         RemovePhpVersionIdCheckRector::class => [__DIR__ . '/src/Util/FileHasher.php'],
     ]);
-};
