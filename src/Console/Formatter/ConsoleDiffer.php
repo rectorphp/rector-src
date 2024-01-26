@@ -27,8 +27,8 @@ final readonly class ConsoleDiffer
     {
         // avoid Strings contain different line endings warning
         if ($this->isWindows) {
-            $old = str_replace("\r\n", "\n", $old);
-            $new = str_replace("\r\n", "\n", $new);
+            $old = str_replace(PHP_EOL, "\n", $old);
+            $new = str_replace(PHP_EOL, "\n", $new);
         }
 
         $diff = $this->differ->diff($old, $new);
