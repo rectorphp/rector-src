@@ -44,9 +44,9 @@ final readonly class ColorConsoleDiffFormatter
     public function __construct()
     {
         $this->template = sprintf(
-            '<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>' . PHP_EOL,
-            PHP_EOL,
-            PHP_EOL
+            "<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>\n" ,
+            "\n",
+            "\n"
         );
     }
 
