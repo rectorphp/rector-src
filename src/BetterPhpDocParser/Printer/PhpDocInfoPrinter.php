@@ -175,7 +175,7 @@ final class PhpDocInfoPrinter
             $output .= ' */';
         }
 
-        return str_replace(" \n", "\n", $output);
+        return str_replace(" " . PHP_EOL, "\n", $output);
     }
 
     private function hasDocblockStart(string $output): bool
@@ -257,7 +257,7 @@ final class PhpDocInfoPrinter
         }
 
         if ($lastTokenPosition === 0) {
-            return $output . "\n */";
+            return $output . PHP_EOL . " */";
         }
 
         return $this->addTokensFromTo($output, $lastTokenPosition, $this->tokenCount, true);
