@@ -287,8 +287,6 @@ final class PhpDocInfoPrinter
 
         // skip extra empty lines above if this is the last one
         if ($shouldSkipEmptyLinesAbove &&
-            // PHP_EOL for windows is \r\n, \n is part of \r\n if found windows
-            // so str_contains catch it
             \str_contains((string) $this->tokens[$from][0], "\n") &&
             \str_contains((string) $this->tokens[$from + 1][0], "\n")
         ) {
