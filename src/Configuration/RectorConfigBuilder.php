@@ -226,7 +226,7 @@ final class RectorConfigBuilder
      */
     public function withSets(array $sets): self
     {
-        $this->sets = $sets;
+        $this->sets = array_merge($this->sets, $sets);
 
         return $this;
     }
