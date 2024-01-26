@@ -13,7 +13,7 @@ final class FixtureSplitter
 {
     public static function containsSplit(string $fixtureFileContent): bool
     {
-        return str_contains($fixtureFileContent, '-----' . PHP_EOL);
+        return str_contains($fixtureFileContent, "-----\n") || str_contains($fixtureFileContent, "-----\r\n");
     }
 
     /**
@@ -31,7 +31,7 @@ final class FixtureSplitter
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        $fixtureFileContents = str_replace(PHP_EOL, "\n", $fixtureFileContents);
+        $fixtureFileContents = str_replace("\r\n", "\n", $fixtureFileContents);
         return explode("-----\n", $fixtureFileContents);
     }
 }
