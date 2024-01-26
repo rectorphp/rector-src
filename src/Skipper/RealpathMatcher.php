@@ -12,13 +12,13 @@ final class RealpathMatcher
     {
         /** @var string|false $realPathMatchingPath */
         $realPathMatchingPath = realpath($matchingPath);
-        if (! is_string($realPathMatchingPath)) {
+        if ($realPathMatchingPath === false) {
             return false;
         }
 
         /** @var string|false $realpathFilePath */
         $realpathFilePath = realpath($filePath);
-        if (! is_string($realpathFilePath)) {
+        if ($realpathFilePath === false) {
             return false;
         }
 
