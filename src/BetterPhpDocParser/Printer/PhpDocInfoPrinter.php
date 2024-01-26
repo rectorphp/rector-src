@@ -294,8 +294,8 @@ final class PhpDocInfoPrinter
 
         // skip extra empty lines above if this is the last one
         if ($shouldSkipEmptyLinesAbove &&
-            \str_contains((string) $this->tokens[$from][0], PHP_EOL) &&
-            \str_contains((string) $this->tokens[$from + 1][0], PHP_EOL)
+            \str_contains((string) $this->tokens[$from][0], "\n") &&
+            \str_contains((string) $this->tokens[$from + 1][0], "\n")
         ) {
             ++$from;
         }
