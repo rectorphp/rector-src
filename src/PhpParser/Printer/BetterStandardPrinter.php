@@ -82,7 +82,7 @@ final class BetterStandardPrinter extends Standard
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
-        if (count($newStmts) !== count($origStmts) && ! str_ends_with($content, PHP_EOL)) {
+        if (count($newStmts) !== count($origStmts) && ! str_ends_with($content, "\n")) {
             $content .= $this->nl;
         }
 
