@@ -45,7 +45,8 @@ final class File
         private readonly string $filePath,
         private string $fileContent
     ) {
-        $this->originalFileContent = $fileContent;
+        $this->fileContent = str_replace(PHP_EOL, "\n", $fileContent);
+        $this->originalFileContent = $this->fileContent;
     }
 
     public function getFilePath(): string
