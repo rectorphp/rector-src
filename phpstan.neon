@@ -291,6 +291,7 @@ parameters:
                 - src/Bootstrap/RectorConfigsResolver.php
                 - tests/FileSystem/FilesFinder/FilesFinderTest.php
                 - tests/Skipper/Skipper/SkipperTest.php
+                - src/Console/Command/CustomRuleCommand.php
 
         # validation
         - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
