@@ -52,7 +52,10 @@ final readonly class ColorConsoleDiffFormatter
 
     public function format(string $diff): string
     {
-        return $this->formatWithTemplate($diff, $this->template);
+        $formatted = $this->formatWithTemplate($diff, $this->template);
+
+        // as OS based on formatting
+        return str_replace("\n", PHP_EOL, $formatted);
     }
 
     private function formatWithTemplate(string $diff, string $template): string
