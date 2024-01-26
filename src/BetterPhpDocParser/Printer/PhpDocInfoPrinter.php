@@ -84,10 +84,16 @@ final class PhpDocInfoPrinter
         }
 
         if ($phpDocInfo->getNode() instanceof InlineHTML) {
-            return '<?php' . PHP_EOL . $docContent . PHP_EOL . '?>';
+            $docContent = $this->normalizeOutput($docContent);
+            return "<?php\n" . $docContent . "\n?>";
         }
 
         return $docContent;
+    }
+
+    private function normalizeOutput(string $docContent): string
+    {
+        return str_replace(PHP_EOL, "\n", $docContent);
     }
 
     /**
@@ -109,11 +115,11 @@ final class PhpDocInfoPrinter
             }
 
             if ($phpDocInfo->getNode() instanceof InlineHTML) {
-                $phpDocString = str_replace(PHP_EOL, "\n", (string) $phpDocInfo->getPhpDocNode());
+                $phpDocString = $this->normalizeOutput((string) $phpDocInfo->getPhpDocNode());
                 return "<?php\n" . $phpDocString .  "\n?>";
             }
 
-            return (string) $phpDocInfo->getPhpDocNode();
+            return $this->normalizeOutput((string) $phpDocInfo->getPhpDocNode());
         }
 
         $phpDocNode = $phpDocInfo->getPhpDocNode();
@@ -176,7 +182,7 @@ final class PhpDocInfoPrinter
             $output .= ' */';
         }
 
-        return str_replace(" " . PHP_EOL, "\n", $output);
+        return str_replace(" \n", "\n", $output);
     }
 
     private function hasDocblockStart(string $output): bool
@@ -258,7 +264,7 @@ final class PhpDocInfoPrinter
         }
 
         if ($lastTokenPosition === 0) {
-            return $output . PHP_EOL . " */";
+            return $output .  "\n */";
         }
 
         return $this->addTokensFromTo($output, $lastTokenPosition, $this->tokenCount, true);
