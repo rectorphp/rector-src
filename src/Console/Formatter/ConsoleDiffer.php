@@ -22,9 +22,6 @@ final readonly class ConsoleDiffer
 
     public function diff(string $old, string $new): string
     {
-        $old = str_replace("\r\n", "\n", $old);
-        $new = str_replace("\r\n", "\n", $new);
-
         $diff = $this->differ->diff($old, $new);
         return $this->colorConsoleDiffFormatter->format($diff);
     }
