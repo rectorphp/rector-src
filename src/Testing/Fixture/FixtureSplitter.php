@@ -31,7 +31,7 @@ final class FixtureSplitter
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        $fixtureFileContents = str_replace(PHP_EOL, '\n', $fixtureFileContents);
+        $fixtureFileContents = str_replace(PHP_EOL, "\n", $fixtureFileContents);
         return explode("-----\n", $fixtureFileContents);
     }
 }
