@@ -29,7 +29,7 @@ final class FilePathHelperTest extends TestCase
     public static function provideData(): Iterator
     {
         // based on Linux
-        yield ['/any/path', DIRECTORY_SEPARATOR . 'any' . DIRECTORY_SEPARATOR . 'path'];
-        yield ['\any\path', DIRECTORY_SEPARATOR . 'any' . DIRECTORY_SEPARATOR . 'path'];
+        yield ['/any/path', '/any/path'];
+        yield ['\any\path', '/any/path'];
     }
 }
