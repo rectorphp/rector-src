@@ -11,8 +11,6 @@ final readonly class DefaultDiffer
 {
     private Differ $differ;
 
-    private readonly bool $isWindows;
-
     public function __construct()
     {
         $strictUnifiedDiffOutputBuilder = new StrictUnifiedDiffOutputBuilder([
@@ -20,7 +18,6 @@ final readonly class DefaultDiffer
             'toFile' => 'New',
         ]);
         $this->differ = new Differ($strictUnifiedDiffOutputBuilder);
-        $this->isWindows = strncasecmp(PHP_OS, 'WIN', 3) === 0;
     }
 
     public function diff(string $old, string $new): string
@@ -30,10 +27,8 @@ final readonly class DefaultDiffer
         }
 
         // avoid Strings contain different line endings warning
-        if ($this->isWindows) {
-            $old = str_replace(PHP_EOL, "\n", $old);
-            $new = str_replace(PHP_EOL, "\n", $new);
-        }
+        $old = str_replace(PHP_EOL, "\n", $old);
+        $new = str_replace(PHP_EOL, "\n", $new);
 
         return $this->differ->diff($old, $new);
     }

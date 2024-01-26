@@ -16,10 +16,6 @@ final class SensitiveHereNowDocRectorTest extends AbstractRectorTestCase
     #[DataProvider('provideData')]
     public function test(string $filePath): void
     {
-        if ($this->isWindows()) {
-            $this->markTestSkipped('minor differences on windows, see https://github.com/rectorphp/rector/issues/6571');
-        }
-
         $this->doTestFile($filePath);
     }
 
