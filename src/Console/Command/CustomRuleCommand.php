@@ -55,12 +55,21 @@ final class CustomRuleCommand extends Command
             ->in(__DIR__ . '/../../../templates/custom-rule')
             ->getIterator();
 
+        // 0. resolve if local phpunit is at least PHPUnit 10 (which supports #[DataProvider])
+        // to provide annotation if not
+        $composerJsonFilePath = getcwd() . '/composer.json';
+        if (file_exists($composerJsonFilePath)) {
+            $composerJson = JsonFileSystem::readFilePath($composerJsonFilePath);
+            dump($composerJson['require-dev']['phpunit/phpunist'] ?? null);
+            die;
+        }
+
         $generatedFilePaths = [];
 
         foreach ($fileInfos as $fileInfo) {
             // replace __Name__ with $rectorName
-            $newContent = str_replace('__Name__', $rectorName, $fileInfo->getContents());
-            $newFilePath = str_replace('__Name__', $rectorName, $fileInfo->getRelativePathname());
+            $newContent = $this->replaceNameVariable($rectorName, $fileInfo->getContents());
+            $newFilePath = $this->replaceNameVariable($rectorName, $fileInfo->getRelativePathname());
 
             FileSystem::write(getcwd() . '/' . $newFilePath, $newContent);
 
@@ -94,5 +103,10 @@ final class CustomRuleCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    private function replaceNameVariable(string $rectorName, string $contents): string
+    {
+        return str_replace('__Name__', $rectorName, $contents);
     }
 }
