@@ -57,6 +57,7 @@ final readonly class ColorConsoleDiffFormatter
 
     private function formatWithTemplate(string $diff, string $template): string
     {
+        $diff = str_replace("\r\n", "\n", $diff);
         $escapedDiff = OutputFormatter::escape(rtrim($diff));
 
         $escapedDiffLines = Strings::split($escapedDiff, self::NEWLINES_REGEX);
