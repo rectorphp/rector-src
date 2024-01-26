@@ -6,6 +6,7 @@ namespace Rector\Tests\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\Skipper\SkipCriteriaResolver\SkippedPathsResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
@@ -36,7 +37,7 @@ final class SkippedPathsResolverTest extends AbstractLazyTestCase
 
         $this->assertCount(2, $skippedPaths);
 
-        $this->assertSame(__DIR__ . '/Fixture', $skippedPaths[0]);
+        $this->assertSame(PathNormalizer::normalize(__DIR__ . '/Fixture'), $skippedPaths[0]);
         $this->assertSame('*/Mask/*', $skippedPaths[1]);
     }
 }
