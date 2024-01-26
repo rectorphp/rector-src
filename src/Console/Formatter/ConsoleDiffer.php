@@ -10,6 +10,7 @@ use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 final readonly class ConsoleDiffer
 {
     private Differ $differ;
+
     private readonly bool $isWindows;
 
     public function __construct(
