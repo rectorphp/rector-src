@@ -17,7 +17,6 @@ final readonly class PathSkipper
 
     public function shouldSkip(string $filePath): bool
     {
-        $filePath = str_replace('\\', '/', $filePath);
         $skippedPaths = $this->skippedPathsResolver->resolve();
         return $this->fileInfoMatcher->doesFileInfoMatchPatterns($filePath, $skippedPaths);
     }

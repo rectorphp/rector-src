@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Skipper;
 
+use Rector\Skipper\FileSystem\PathNormalizer;
+
 final class RealpathMatcher
 {
     public function match(string $matchingPath, string $filePath): bool
@@ -20,8 +22,8 @@ final class RealpathMatcher
             return false;
         }
 
-        $normalizedMatchingPath = $this->normalizePath($realPathMatchingPath);
-        $normalizedFilePath = $this->normalizePath($realpathFilePath);
+        $normalizedMatchingPath = PathNormalizer::normalize($realPathMatchingPath);
+        $normalizedFilePath = PathNormalizer::normalize($realpathFilePath);
 
         // skip define direct path
         if (is_file($normalizedMatchingPath)) {
@@ -34,10 +36,5 @@ final class RealpathMatcher
         }
 
         return str_starts_with($normalizedFilePath, $normalizedMatchingPath);
-    }
-
-    private function normalizePath(string $path): string
-    {
-        return \str_replace('\\', '/', $path);
     }
 }

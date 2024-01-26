@@ -7,6 +7,7 @@ namespace Rector\Tests\Skipper\FileSystem;
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Skipper\FileSystem\FnMatchPathNormalizer;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
@@ -31,7 +32,7 @@ final class FnMatchPathNormalizerTest extends AbstractLazyTestCase
         yield ['*path/with/asterisk/begin', '*path/with/asterisk/begin*'];
         yield ['path/with/asterisk/end*', '*path/with/asterisk/end*'];
         yield ['*path/with/asterisk/begin/and/end*', '*path/with/asterisk/begin/and/end*'];
-        yield [__DIR__ . '/Fixture/path/with/../in/it', __DIR__ . '/Fixture/path/in/it'];
-        yield [__DIR__ . '/Fixture/path/with/../../in/it', __DIR__ . '/Fixture/in/it'];
+        yield [__DIR__ . '/Fixture/path/with/../in/it', PathNormalizer::normalize(__DIR__ . '/Fixture/path/in/it')];
+        yield [__DIR__ . '/Fixture/path/with/../../in/it', PathNormalizer::normalize(__DIR__ . '/Fixture/in/it')];
     }
 }
