@@ -35,9 +35,9 @@ final readonly class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/1
+     * @see https://regex101.com/r/qduj2O/2
      */
-    private const NEWLINES_REGEX = "#\n\r|\n#";
+    private const NEWLINES_REGEX = "#\n#";
 
     private string $template;
 
@@ -52,6 +52,7 @@ final readonly class ColorConsoleDiffFormatter
 
     public function format(string $diff): string
     {
+        $diff = str_replace("\r\n", "\n", $diff);
         return $this->formatWithTemplate($diff, $this->template);
     }
 
