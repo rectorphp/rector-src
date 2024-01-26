@@ -8,24 +8,24 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
-use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
-use Rector\Utils\Rector\MoveAbstractRectorToChildrenRector;
 
 return RectorConfig::configure()
-    ->withSets([
-        LevelSetList::UP_TO_PHP_82,
-        SetList::CODE_QUALITY,
-        SetList::DEAD_CODE,
-        SetList::PRIVATIZATION,
-        SetList::NAMING,
-        SetList::TYPE_DECLARATION,
-        SetList::INSTANCEOF,
-        SetList::EARLY_RETURN,
-        SetList::CODING_STYLE,
-        SetList::STRICT_BOOLEANS,
-    ])->withRules([DeclareStrictTypesRector::class, MoveAbstractRectorToChildrenRector::class])
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+        typeDeclarations: true,
+        privatization: true,
+        strictBooleans: true,
+        instanceOf: true,
+        earlyReturn: true,
+        naming: true
+    )
+    // @todo improve
+    ->withSets([LevelSetList::UP_TO_PHP_82])
+    ->withRules([DeclareStrictTypesRector::class])
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
