@@ -32,7 +32,7 @@ final class BetterPhpDocParser extends PhpDocParser
 {
     /**
      * @var string
-     * @see https://regex101.com/r/JOKSmr/1
+     * @see https://regex101.com/r/JOKSmr/2
      */
     private const MULTI_NEW_LINES_REGEX = '#(\r\n|\n){2,}#';
 
