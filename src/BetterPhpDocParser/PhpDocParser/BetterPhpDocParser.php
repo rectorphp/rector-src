@@ -120,17 +120,19 @@ final class BetterPhpDocParser extends PhpDocParser
         $endPosition = $tokenIterator->currentPosition();
 
         if ($isPrecededByHorizontalWhitespace && property_exists($phpDocTagValueNode, 'description')) {
-            $phpDocTagValueNode->description = str_replace(PHP_EOL, PHP_EOL . " * ", (string) $phpDocTagValueNode->description);
+            $phpDocTagValueNode->description = str_replace(PHP_EOL, "\n", $phpDocTagValueNode->description);
+            $phpDocTagValueNode->description = str_replace("\n", "\n * ", (string) $phpDocTagValueNode->description);
         }
 
         $startAndEnd = new StartAndEnd($startPosition, $endPosition);
         $phpDocTagValueNode->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
         if ($phpDocTagValueNode instanceof GenericTagValueNode) {
+            $phpDocTagValueNode->value = str_replace(PHP_EOL, "\n", $phpDocTagValueNode->value);
             $phpDocTagValueNode->value = Strings::replace(
                 $phpDocTagValueNode->value,
                 self::MULTI_NEW_LINES_REGEX,
-                PHP_EOL
+                "\n"
             );
         }
 
