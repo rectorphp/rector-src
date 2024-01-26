@@ -52,7 +52,6 @@ final readonly class ColorConsoleDiffFormatter
 
     public function format(string $diff): string
     {
-        $diff = str_replace("\r\n", "\n", $diff);
         return $this->formatWithTemplate($diff, $this->template);
     }
 
