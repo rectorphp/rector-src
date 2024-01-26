@@ -31,6 +31,9 @@ final class FixtureFileUpdater
             return $originalContent;
         }
 
-        return $originalContent . '-----' . PHP_EOL . $changedContent;
+        $originalContent = str_replace(PHP_EOL, "\n", $originalContent);
+        $changedContent = str_replace(PHP_EOL, "\n", $originalContent);
+
+        return $originalContent . '-----\n' .  $changedContent;
     }
 }
