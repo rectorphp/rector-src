@@ -353,7 +353,7 @@ final class PhpDocInfoPrinter
 
     private function standardPrintPhpDocChildNode(PhpDocChildNode $phpDocChildNode): string
     {
-        $printedNode = (string) $phpDocChildNode;
+        $printedNode = $this->normalizeOutput((string) $phpDocChildNode);
 
         if ($this->getCurrentPhpDocInfo()->isSingleLine()) {
             return ' ' . $printedNode;
