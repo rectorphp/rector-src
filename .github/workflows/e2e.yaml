@@ -17,11 +17,12 @@ env:
 
 jobs:
     end_to_end:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         timeout-minutes: 3
         strategy:
             fail-fast: false
             matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
                 php_version: ['8.2']
                 directory:
                     - 'e2e/applied-rule-change-docblock'
@@ -46,7 +47,7 @@ jobs:
                     coverage: none
 
             # run in root rector-src
-            -   run: composer install --ansi
+            -   uses: "ramsey/composer-install@v2"
 
             # run in e2e subdir
             -
