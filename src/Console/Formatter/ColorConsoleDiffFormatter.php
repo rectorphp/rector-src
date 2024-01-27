@@ -54,7 +54,7 @@ final readonly class ColorConsoleDiffFormatter
     {
         $formatted = $this->formatWithTemplate($diff, $this->template);
 
-        if (trim($formatted) === "---------- begin diff ----------\n----------- end diff -----------") {
+        if ($diff === '') {
             return '';
         }
 
