@@ -98,8 +98,6 @@ final class RectorConfigBuilder
 
     private int $indentSize = 4;
 
-    private ?string $phpstanConfig = null;
-
     /**
      * @var string[]
      */
@@ -164,10 +162,6 @@ final class RectorConfigBuilder
 
         if ($this->indentChar !== ' ' || $this->indentSize !== 4) {
             $rectorConfig->indent($this->indentChar, $this->indentSize);
-        }
-
-        if ($this->phpstanConfig !== null) {
-            $rectorConfig->phpstanConfig($this->phpstanConfig);
         }
 
         if ($this->phpstanConfigs !== []) {
