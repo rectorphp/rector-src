@@ -7,7 +7,13 @@ namespace Rector\Configuration;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\RectorConfig;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Set\FOSRestSetList;
+use Rector\Symfony\Set\JMSSetList;
+use Rector\Symfony\Set\SensiolabsSetList;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
 
@@ -227,6 +233,54 @@ final class RectorConfigBuilder
     public function withSets(array $sets): self
     {
         $this->sets = array_merge($this->sets, $sets);
+
+        return $this;
+    }
+
+    /**
+     * Upgrade your annotations to attributes
+     */
+    public function withAttributesSets(
+        bool $symfony = false,
+        bool $doctrine = false,
+        bool $mongoDb = false,
+        bool $gedmo = false,
+        bool $phpunit = false,
+        bool $fosRest = false,
+        bool $jms = false,
+        bool $sensiolabs = false,
+    ): self {
+        if ($symfony) {
+            $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($doctrine) {
+            $this->sets[] = DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($mongoDb) {
+            $this->sets[] = DoctrineSetList::MONGODB__ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($gedmo) {
+            $this->sets[] = DoctrineSetList::GEDMO_ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($phpunit) {
+            $this->sets[] = PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($fosRest) {
+            $this->sets[] = FOSRestSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($jms) {
+            $this->sets[] = JMSSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($sensiolabs) {
+            $this->sets[] = SensiolabsSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
 
         return $this;
     }
