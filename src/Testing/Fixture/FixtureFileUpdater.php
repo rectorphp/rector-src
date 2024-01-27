@@ -32,7 +32,7 @@ final class FixtureFileUpdater
         }
 
         $originalContent = str_replace("\r\n", "\n", $originalContent);
-        $changedContent = str_replace("\r\n", "\n", $originalContent);
+        $changedContent = str_replace("\r\n", "\n", $changedContent);
 
         return $originalContent . '-----\n' .  $changedContent;
     }
