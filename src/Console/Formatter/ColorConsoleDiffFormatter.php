@@ -54,6 +54,10 @@ final readonly class ColorConsoleDiffFormatter
     {
         $formatted = $this->formatWithTemplate($diff, $this->template);
 
+        if ($formatted === "---------- begin diff ----------\n----------- end diff -----------") {
+            return '';
+        }
+
         // as OS based on formatting
         return str_replace("\n", PHP_EOL, $formatted);
     }
