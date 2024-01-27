@@ -78,7 +78,7 @@ final class PhpDocInfoPrinter
 
     public function printNew(PhpDocInfo $phpDocInfo): string
     {
-        $docContent = str_replace("\r\n", "\n", (string) $phpDocInfo->getPhpDocNode());
+        $docContent = (string) $phpDocInfo->getPhpDocNode();
         if ($phpDocInfo->isSingleLine()) {
             return $this->docBlockInliner->inline($docContent);
         }
@@ -108,12 +108,11 @@ final class PhpDocInfoPrinter
                 return '';
             }
 
-            $docContent = str_replace("\r\n", "\n", (string) $phpDocInfo->getPhpDocNode());
             if ($phpDocInfo->getNode() instanceof InlineHTML) {
-                return "<?php\n" . $docContent . "\n?>";
+                return "<?php\n" . $phpDocInfo->getPhpDocNode() .  "\n?>";
             }
 
-            return $docContent;
+            return (string) $phpDocInfo->getPhpDocNode();
         }
 
         $phpDocNode = $phpDocInfo->getPhpDocNode();
