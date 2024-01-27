@@ -26,6 +26,9 @@ final readonly class DefaultDiffer
             return '';
         }
 
+        $old = str_replace("\r\n", "\n", $old);
+        $new = str_replace("\r\n", "\n", $new);
+
         return $this->differ->diff($old, $new);
     }
 }
