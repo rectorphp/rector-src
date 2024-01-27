@@ -301,20 +301,14 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function withCacheDirectory(string $cacheDirectory, ?string $containerCacheDirectory = null): self
+    /**
+     * @param class-string<CacheStorageInterface>|null $cacheClass
+     */
+    public function withCache(?string $cacheDirectory = null, ?string $cacheClass = null, ?string $containerCacheDirectory = null): self
     {
         $this->cacheDirectory = $cacheDirectory;
-        $this->containerCacheDirectory = $containerCacheDirectory;
-
-        return $this;
-    }
-
-    /**
-     * @param class-string<CacheStorageInterface> $cacheClass
-     */
-    public function withClassCache(string $cacheClass): self
-    {
         $this->cacheClass = $cacheClass;
+        $this->containerCacheDirectory = $containerCacheDirectory;
 
         return $this;
     }
