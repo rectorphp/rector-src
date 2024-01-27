@@ -304,8 +304,11 @@ final class RectorConfigBuilder
     /**
      * @param class-string<CacheStorageInterface>|null $cacheClass
      */
-    public function withCache(?string $cacheDirectory = null, ?string $cacheClass = null, ?string $containerCacheDirectory = null): self
-    {
+    public function withCache(
+        ?string $cacheDirectory = null,
+        ?string $cacheClass = null,
+        ?string $containerCacheDirectory = null
+    ): self {
         $this->cacheDirectory = $cacheDirectory;
         $this->cacheClass = $cacheClass;
         $this->containerCacheDirectory = $containerCacheDirectory;
@@ -353,25 +356,16 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function withImportNames(bool $importNames = true, bool $importDocBlockNames = true): self
-    {
+    public function withImportNames(
+        bool $importNames = true,
+        bool $importDocBlockNames = true,
+        bool $importShortClasses = true,
+        bool $removeUnusedImports = false
+    ): self {
         $this->importNames = $importNames;
         $this->importDocBlockNames = $importDocBlockNames;
-
-        return $this;
-    }
-
-    public function withImporShortClasses(bool $importShortClasses = true): self
-    {
         $this->importShortClasses = $importShortClasses;
-
-        return $this;
-    }
-
-    public function withRemoveUnusedImports(bool $removeUnusedImports = false): self
-    {
         $this->removeUnusedImports = $removeUnusedImports;
-
         return $this;
     }
 
@@ -410,12 +404,6 @@ final class RectorConfigBuilder
     public function withBootstrapFiles(array $bootstrapFiles): self
     {
         $this->bootstrapFiles = $bootstrapFiles;
-        return $this;
-    }
-
-    public function withPHPStanConfig(string $phpstanConfig): self
-    {
-        $this->phpstanConfig = $phpstanConfig;
         return $this;
     }
 
