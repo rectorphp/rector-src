@@ -138,6 +138,12 @@ final class Option
     public const CACHE_CLASS = FileCacheStorage::class;
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::vendorPath() instead
+     * @var string
+     */
+    public const VENDOR_PATH = 'vendor_path';
+
+    /**
      * @var string
      */
     public const DEBUG = 'debug';
