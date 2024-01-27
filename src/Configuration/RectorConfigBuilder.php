@@ -7,7 +7,13 @@ namespace Rector\Configuration;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\RectorConfig;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Set\FOSRestSetList;
+use Rector\Symfony\Set\JMSSetList;
+use Rector\Symfony\Set\SensiolabsSetList;
+use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
 
@@ -92,8 +98,6 @@ final class RectorConfigBuilder
 
     private int $indentSize = 4;
 
-    private ?string $phpstanConfig = null;
-
     /**
      * @var string[]
      */
@@ -160,10 +164,6 @@ final class RectorConfigBuilder
             $rectorConfig->indent($this->indentChar, $this->indentSize);
         }
 
-        if ($this->phpstanConfig !== null) {
-            $rectorConfig->phpstanConfig($this->phpstanConfig);
-        }
-
         if ($this->phpstanConfigs !== []) {
             $rectorConfig->phpstanConfigs($this->phpstanConfigs);
         }
@@ -227,6 +227,54 @@ final class RectorConfigBuilder
     public function withSets(array $sets): self
     {
         $this->sets = array_merge($this->sets, $sets);
+
+        return $this;
+    }
+
+    /**
+     * Upgrade your annotations to attributes
+     */
+    public function withAttributesSets(
+        bool $symfony = false,
+        bool $doctrine = false,
+        bool $mongoDb = false,
+        bool $gedmo = false,
+        bool $phpunit = false,
+        bool $fosRest = false,
+        bool $jms = false,
+        bool $sensiolabs = false,
+    ): self {
+        if ($symfony) {
+            $this->sets[] = SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($doctrine) {
+            $this->sets[] = DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($mongoDb) {
+            $this->sets[] = DoctrineSetList::MONGODB__ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($gedmo) {
+            $this->sets[] = DoctrineSetList::GEDMO_ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($phpunit) {
+            $this->sets[] = PHPUnitSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($fosRest) {
+            $this->sets[] = FOSRestSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($jms) {
+            $this->sets[] = JMSSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
+
+        if ($sensiolabs) {
+            $this->sets[] = SensiolabsSetList::ANNOTATIONS_TO_ATTRIBUTES;
+        }
 
         return $this;
     }
@@ -301,20 +349,17 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function withCacheDirectory(string $cacheDirectory, ?string $containerCacheDirectory = null): self
-    {
-        $this->cacheDirectory = $cacheDirectory;
-        $this->containerCacheDirectory = $containerCacheDirectory;
-
-        return $this;
-    }
-
     /**
-     * @param class-string<CacheStorageInterface> $cacheClass
+     * @param class-string<CacheStorageInterface>|null $cacheClass
      */
-    public function withClassCache(string $cacheClass): self
-    {
+    public function withCache(
+        ?string $cacheDirectory = null,
+        ?string $cacheClass = null,
+        ?string $containerCacheDirectory = null
+    ): self {
+        $this->cacheDirectory = $cacheDirectory;
         $this->cacheClass = $cacheClass;
+        $this->containerCacheDirectory = $containerCacheDirectory;
 
         return $this;
     }
@@ -359,25 +404,16 @@ final class RectorConfigBuilder
         return $this;
     }
 
-    public function withImportNames(bool $importNames = true, bool $importDocBlockNames = true): self
-    {
+    public function withImportNames(
+        bool $importNames = true,
+        bool $importDocBlockNames = true,
+        bool $importShortClasses = true,
+        bool $removeUnusedImports = false
+    ): self {
         $this->importNames = $importNames;
         $this->importDocBlockNames = $importDocBlockNames;
-
-        return $this;
-    }
-
-    public function withImporShortClasses(bool $importShortClasses = true): self
-    {
         $this->importShortClasses = $importShortClasses;
-
-        return $this;
-    }
-
-    public function withRemoveUnusedImports(bool $removeUnusedImports = false): self
-    {
         $this->removeUnusedImports = $removeUnusedImports;
-
         return $this;
     }
 
@@ -416,12 +452,6 @@ final class RectorConfigBuilder
     public function withBootstrapFiles(array $bootstrapFiles): self
     {
         $this->bootstrapFiles = $bootstrapFiles;
-        return $this;
-    }
-
-    public function withPHPStanConfig(string $phpstanConfig): self
-    {
-        $this->phpstanConfig = $phpstanConfig;
         return $this;
     }
 
