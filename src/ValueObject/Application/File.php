@@ -45,7 +45,7 @@ final class File
         private readonly string $filePath,
         private string $fileContent
     ) {
-        // PHP_EOL is detect by OS, while \r\n may exists when opened from different OS
+        // PHP_EOL is detect by OS, while existing new line already \r\n when opened from different OS
         // so need to be normalized whatever the OS is
         $this->fileContent = str_replace("\r\n", "\n", $fileContent);
         $this->originalFileContent = $this->fileContent;
