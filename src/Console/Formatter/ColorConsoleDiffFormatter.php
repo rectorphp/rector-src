@@ -84,7 +84,7 @@ final readonly class ColorConsoleDiffFormatter
             return $string;
         }, $escapedDiffLines);
 
-        return sprintf($template, implode("\n", $coloredLines));
+        return sprintf($template, implode(PHP_EOL, $coloredLines));
     }
 
     private function makePlusLinesGreen(string $string): string
