@@ -54,11 +54,11 @@ final readonly class FileCacheStorage implements CacheStorageInterface
         $secondDirectory = $cacheFilePaths->getSecondDirectory();
 
         if (! is_dir($firstDirectory)) {
-            mkdir($firstDirectory);
+            mkdir($firstDirectory, 0777, true);
         }
 
         if (! is_dir($secondDirectory)) {
-            mkdir($secondDirectory);
+            mkdir($secondDirectory, 0777, true);
         }
 
         $filePath = $cacheFilePaths->getFilePath();
