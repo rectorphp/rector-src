@@ -65,7 +65,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
         $this->docBlockTagReplacer->replaceTagByAnother($phpDocInfo, 'test', 'flow');
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
-        $printedPhpDocInfo = str_replace("\n", PHP_EOL, $printedPhpDocInfo);
+        $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
         $this->assertStringEqualsFile(__DIR__ . '/Source/expected-replaced-tag.txt', $printedPhpDocInfo);
     }
 
@@ -75,7 +75,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
         $this->phpDocInfo->addPhpDocTagNode(new PhpDocTextNode('Some text'));
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($this->phpDocInfo);
-        $printedPhpDocInfo = str_replace("\r\n", PHP_EOL, $printedPhpDocInfo);
+        $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
         $this->assertStringEqualsFile(__DIR__ . '/Source/expected-without-space-when-add-empty-string.txt', $printedPhpDocInfo);
     }
 
