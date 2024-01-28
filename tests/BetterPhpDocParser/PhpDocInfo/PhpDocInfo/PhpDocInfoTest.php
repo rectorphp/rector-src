@@ -66,17 +66,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
         $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
-
-        $fileContent = str_replace(
-            "\r\n",
-            "\n",
-            FileSystem::read(__DIR__ . '/Source/expected-replaced-tag.txt')
-        );
-
-        $this->assertSame(
-            $fileContent,
-            $printedPhpDocInfo
-        );
+        $this->assertStringEqualsFile(__DIR__ . '/Source/expected-replaced-tag.txt', $printedPhpDocInfo);
     }
 
     public function testDoNotAddSpaseWhenAddEmptyString(): void
@@ -86,17 +76,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($this->phpDocInfo);
         $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
-
-        $fileContent = str_replace(
-            "\r\n",
-            "\n",
-            FileSystem::read(__DIR__ . '/Source/expected-without-space-when-add-empty-string.txt')
-        );
-
-        $this->assertSame(
-            $fileContent,
-            $printedPhpDocInfo
-        );
+        $this->assertStringEqualsFile(__DIR__ . '/Source/expected-without-space-when-add-empty-string.txt', $printedPhpDocInfo);
     }
 
     private function createPhpDocInfoFromFile(string $path): ?PhpDocInfo
