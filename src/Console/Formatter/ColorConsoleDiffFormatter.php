@@ -35,18 +35,18 @@ final readonly class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/2
+     * @see https://regex101.com/r/qduj2O/1
      */
-    private const NEWLINES_REGEX = "#\n#";
+    private const NEWLINES_REGEX = "#\n\r|\n#";
 
     private string $template;
 
     public function __construct()
     {
         $this->template = sprintf(
-            "<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>\n",
-            "\n",
-            "\n"
+            '<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>' . PHP_EOL,
+            PHP_EOL,
+            PHP_EOL
         );
     }
 
@@ -84,7 +84,7 @@ final readonly class ColorConsoleDiffFormatter
             return $string;
         }, $escapedDiffLines);
 
-        return sprintf($template, implode("\n", $coloredLines));
+        return sprintf($template, implode(PHP_EOL, $coloredLines));
     }
 
     private function makePlusLinesGreen(string $string): string

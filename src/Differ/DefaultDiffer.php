@@ -26,9 +26,6 @@ final readonly class DefaultDiffer
             return '';
         }
 
-        $old = DiffNormalizer::normalize($old);
-        $new = DiffNormalizer::normalize($new);
-
         return $this->differ->diff($old, $new);
     }
 }
