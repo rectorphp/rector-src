@@ -15,6 +15,6 @@ $composerJson = Json::decode($composerJsonFileContents, Json::FORCE_ARRAY);
 $composerJson['replace']['phpstan/phpstan'] = $composerJson['require']['phpstan/phpstan'];
 
 $modifiedComposerJsonFileContents = Json::encode($composerJson, Json::PRETTY);
-FileSystem::write(__DIR__ . '/../composer.json', $modifiedComposerJsonFileContents);
+FileSystem::write(__DIR__ . '/../composer.json', $modifiedComposerJsonFileContents, null);
 
 echo 'Done!' . PHP_EOL;

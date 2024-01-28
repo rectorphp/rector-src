@@ -22,7 +22,7 @@ final class FixtureTempFileDumper
         $temporaryFileName = sys_get_temp_dir() . self::TEMP_FIXTURE_DIRECTORY . '/' . md5(
             $fileContents
         ) . '.' . $suffix;
-        FileSystem::write($temporaryFileName, $fileContents);
+        FileSystem::write($temporaryFileName, $fileContents, null);
 
         return $temporaryFileName;
     }

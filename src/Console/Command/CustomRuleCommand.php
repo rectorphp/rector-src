@@ -95,7 +95,7 @@ final class CustomRuleCommand extends Command
             $newContent = $this->replaceNameVariable($rectorName, $fileInfo->getContents());
             $newFilePath = $this->replaceNameVariable($rectorName, $fileInfo->getRelativePathname());
 
-            FileSystem::write(getcwd() . '/' . $newFilePath, $newContent);
+            FileSystem::write(getcwd() . '/' . $newFilePath, $newContent, null);
 
             $generatedFilePaths[] = $newFilePath;
         }

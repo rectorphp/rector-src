@@ -19,8 +19,7 @@ use Rector\Exception\Cache\CachingException;
 final readonly class FileCacheStorage implements CacheStorageInterface
 {
     public function __construct(
-        private string $directory,
-        private \Symfony\Component\Filesystem\Filesystem $filesystem
+        private string $directory
     ) {
     }
 
@@ -50,8 +49,17 @@ final readonly class FileCacheStorage implements CacheStorageInterface
     public function save(string $key, string $variableKey, mixed $data): void
     {
         $cacheFilePaths = $this->getCacheFilePaths($key);
-        $this->filesystem-> mkdir($cacheFilePaths->getFirstDirectory());
-        $this->filesystem->mkdir($cacheFilePaths->getSecondDirectory());
+
+        $firstDirectory = $cacheFilePaths->getFirstDirectory();
+        $secondDirectory = $cacheFilePaths->getSecondDirectory();
+
+        if (! is_dir($firstDirectory)) {
+            mkdir($firstDirectory);
+        }
+
+        if (! is_dir($secondDirectory)) {
+            mkdir($secondDirectory);
+        }
 
         $filePath = $cacheFilePaths->getFilePath();
 
@@ -69,8 +77,8 @@ final readonly class FileCacheStorage implements CacheStorageInterface
         }
 
         // for performance reasons we don't use SmartFileSystem
-        FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported));
-        $renameSuccess = @\rename($tmpPath, $filePath);
+        FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
+        $renameSuccess = @\copy($tmpPath, $filePath);
         if ($renameSuccess) {
             return;
         }
@@ -91,22 +99,22 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
     public function clear(): void
     {
-        $this->filesystem->remove($this->directory);
+        FileSystem::delete($this->directory);
     }
 
     private function processRemoveCacheFilePath(CacheFilePaths $cacheFilePaths): void
     {
         $filePath = $cacheFilePaths->getFilePath();
-        if (! $this->filesystem->exists($filePath)) {
+        if (! file_exists($filePath)) {
             return;
         }
 
-        $this->filesystem->remove($filePath);
+        FileSystem::delete($filePath);
     }
 
     private function processRemoveEmptyDirectory(string $directory): void
     {
-        if (! $this->filesystem->exists($directory)) {
+        if (! is_dir($directory)) {
             return;
         }
 
@@ -114,7 +122,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        $this->filesystem->remove($directory);
+        FileSystem::delete($directory);
     }
 
     private function isNotEmptyDirectory(string $directory): bool

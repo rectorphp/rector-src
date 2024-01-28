@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Util;
 
+use Nette\Utils\FileSystem;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Util\FileHasher;
-use Symfony\Component\Filesystem\Filesystem;
 
 final class FileHasherTest extends AbstractLazyTestCase
 {
     private FileHasher $fileHasher;
 
-    private Filesystem $filesystem;
-
     protected function setUp(): void
     {
         $this->fileHasher = $this->make(FileHasher::class);
-        $this->filesystem = $this->make(Filesystem::class);
     }
 
     public function testHash(): void
@@ -32,12 +29,12 @@ final class FileHasherTest extends AbstractLazyTestCase
         $file = $dir . '/FileHasherTest-fixture.txt';
 
         try {
-            $this->filesystem->dumpFile($file, 'some string');
+            FileSystem::write($file, 'some string', null);
 
             $hash = $this->fileHasher->hashFiles([$file]);
             $this->assertSame('8df638f91bacc826bf50c04efd7df1b1', $hash);
         } finally {
-            $this->filesystem->remove($file);
+            FileSystem::delete($file);
         }
     }
 
