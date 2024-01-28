@@ -78,7 +78,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
         // for performance reasons we don't use SmartFileSystem
         FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
-        $renameSuccess = @\copy($tmpPath, $filePath);
+        $renameSuccess = @\rename($tmpPath, $filePath);
         if ($renameSuccess) {
             return;
         }
