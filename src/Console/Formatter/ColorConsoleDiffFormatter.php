@@ -35,36 +35,28 @@ final readonly class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/2
+     * @see https://regex101.com/r/qduj2O/3
      */
-    private const NEWLINES_REGEX = "#\n#";
+    private const NEWLINES_REGEX = "#\r\n|\n#";
 
     private string $template;
 
     public function __construct()
     {
         $this->template = sprintf(
-            "<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>\n" ,
-            "\n",
-            "\n"
+            '<comment>    ---------- begin diff ----------</comment>%s%%s%s<comment>    ----------- end diff -----------</comment>' . PHP_EOL,
+            PHP_EOL,
+            PHP_EOL
         );
     }
 
     public function format(string $diff): string
     {
-        $formatted = $this->formatWithTemplate($diff, $this->template);
-
-        if ($diff === '') {
-            return '';
-        }
-
-        // as OS based on formatting
-        return str_replace("\n", PHP_EOL, $formatted);
+        return $this->formatWithTemplate($diff, $this->template);
     }
 
     private function formatWithTemplate(string $diff, string $template): string
     {
-        $diff = str_replace("\r\n", "\n", $diff);
         $escapedDiff = OutputFormatter::escape(rtrim($diff));
 
         $escapedDiffLines = Strings::split($escapedDiff, self::NEWLINES_REGEX);
@@ -92,7 +84,7 @@ final readonly class ColorConsoleDiffFormatter
             return $string;
         }, $escapedDiffLines);
 
-        return sprintf($template, implode("\n", $coloredLines));
+        return sprintf($template, implode(PHP_EOL, $coloredLines));
     }
 
     private function makePlusLinesGreen(string $string): string

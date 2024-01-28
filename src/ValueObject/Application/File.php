@@ -45,10 +45,6 @@ final class File
         private readonly string $filePath,
         private string $fileContent
     ) {
-        // PHP_EOL is new line by OS, while existing new line may already \r\n when opened from different OS
-        // so need to be normalized whatever the OS is open it
-        $this->fileContent = str_replace("\r\n", "\n", $fileContent);
-        $this->originalFileContent = $this->fileContent;
     }
 
     public function getFilePath(): string
