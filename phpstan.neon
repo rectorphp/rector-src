@@ -146,7 +146,7 @@ parameters:
             paths:
                 - src/Caching/ValueObject/Storage/FileCacheStorage.php
         -
-            message: '#"@\\rename(.*?)" is forbidden to use#'
+            message: '#"@\\copy(.*?)" is forbidden to use#'
             paths:
                 - src/Caching/ValueObject/Storage/FileCacheStorage.php
         -
