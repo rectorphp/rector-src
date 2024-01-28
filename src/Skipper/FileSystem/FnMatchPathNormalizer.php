@@ -16,11 +16,13 @@ final class FnMatchPathNormalizer
         }
 
         if (\str_contains($path, '..')) {
-            /** @var string|false $path */
-            $path = realpath($path);
-            if ($path === false) {
+            /** @var string|false $realPath */
+            $realPath = realpath($path);
+            if ($realPath === false) {
                 return '';
             }
+
+            return PathNormalizer::normalize($realPath);
         }
 
         return $path;

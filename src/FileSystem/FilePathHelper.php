@@ -69,7 +69,7 @@ final readonly class FilePathHelper
         $normalizedPathParts = $this->normalizePathParts($pathParts, $scheme);
 
         $pathStart = ($scheme !== self::SCHEME_UNDEFINED ? $scheme . '://' : '');
-        return $pathStart . $pathRoot . implode($directorySeparator, $normalizedPathParts);
+        return $this->normalizePath($pathStart . $pathRoot . implode($directorySeparator, $normalizedPathParts));
     }
 
     private function relativeFilePathFromDirectory(string $fileRealPath, string $directory): string
