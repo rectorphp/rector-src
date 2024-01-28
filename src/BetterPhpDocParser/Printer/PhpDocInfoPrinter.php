@@ -51,6 +51,12 @@ final class PhpDocInfoPrinter
      */
     private const NEWLINE_WITH_ASTERISK = "\n" . ' *';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/ME5Fcn/1
+     */
+    private const NEW_LINE_WITH_SPACE = "# (?<new_line>\r\n|\n)#";
+
     private int $tokenCount = 0;
 
     private int $currentTokenPosition = 0;
@@ -175,7 +181,7 @@ final class PhpDocInfoPrinter
             $output .= ' */';
         }
 
-        return str_replace(" \n", "\n", $output);
+        return Strings::replace($output, self::NEW_LINE_WITH_SPACE, static fn (array $match) => $match['new_line']);
     }
 
     private function hasDocblockStart(string $output): bool
