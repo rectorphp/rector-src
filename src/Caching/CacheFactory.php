@@ -8,9 +8,15 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Caching\ValueObject\Storage\MemoryCacheStorage;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
 final readonly class CacheFactory
 {
+    public function __construct(
+        private Filesystem $fileSystem
+    ) {
+    }
+
     /**
      * @api config factory
      */
@@ -26,11 +32,11 @@ final readonly class CacheFactory
 
         if ($cacheClass === FileCacheStorage::class) {
             // ensure cache directory exists
-            if (! is_dir($cacheDirectory)) {
-                mkdir($cacheDirectory);
+            if (! $this->fileSystem->exists($cacheDirectory)) {
+                $this->fileSystem->mkdir($cacheDirectory);
             }
 
-            $fileCacheStorage = new FileCacheStorage($cacheDirectory);
+            $fileCacheStorage = new FileCacheStorage($cacheDirectory, $this->fileSystem);
             return new Cache($fileCacheStorage);
         }
 

@@ -19,7 +19,8 @@ use Rector\Exception\Cache\CachingException;
 final readonly class FileCacheStorage implements CacheStorageInterface
 {
     public function __construct(
-        private string $directory
+        private string $directory,
+        private \Symfony\Component\Filesystem\Filesystem $filesystem
     ) {
     }
 
@@ -49,17 +50,8 @@ final readonly class FileCacheStorage implements CacheStorageInterface
     public function save(string $key, string $variableKey, mixed $data): void
     {
         $cacheFilePaths = $this->getCacheFilePaths($key);
-
-        $firstDirectory = $cacheFilePaths->getFirstDirectory();
-        $secondDirectory = $cacheFilePaths->getSecondDirectory();
-
-        if (! is_dir($firstDirectory)) {
-            mkdir($firstDirectory, 0777, true);
-        }
-
-        if (! is_dir($secondDirectory)) {
-            mkdir($secondDirectory, 0777, true);
-        }
+        $this->filesystem-> mkdir($cacheFilePaths->getFirstDirectory());
+        $this->filesystem->mkdir($cacheFilePaths->getSecondDirectory());
 
         $filePath = $cacheFilePaths->getFilePath();
 
@@ -100,22 +92,22 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
     public function clear(): void
     {
-        FileSystem::delete($this->directory);
+        $this->filesystem->remove($this->directory);
     }
 
     private function processRemoveCacheFilePath(CacheFilePaths $cacheFilePaths): void
     {
         $filePath = $cacheFilePaths->getFilePath();
-        if (! file_exists($filePath)) {
+        if (! $this->filesystem->exists($filePath)) {
             return;
         }
 
-        FileSystem::delete($filePath);
+        $this->filesystem->remove($filePath);
     }
 
     private function processRemoveEmptyDirectory(string $directory): void
     {
-        if (! is_dir($directory)) {
+        if (! $this->filesystem->exists($directory)) {
             return;
         }
 
@@ -123,7 +115,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        FileSystem::delete($directory);
+        $this->filesystem->remove($directory);
     }
 
     private function isNotEmptyDirectory(string $directory): bool
