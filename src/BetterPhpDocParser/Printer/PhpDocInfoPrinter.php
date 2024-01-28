@@ -84,7 +84,7 @@ final class PhpDocInfoPrinter
         }
 
         if ($phpDocInfo->getNode() instanceof InlineHTML) {
-            return "<?php\n" . $docContent . "\n?>";
+            return '<?php' . PHP_EOL . $docContent . PHP_EOL . '?>';
         }
 
         return $docContent;
@@ -109,7 +109,7 @@ final class PhpDocInfoPrinter
             }
 
             if ($phpDocInfo->getNode() instanceof InlineHTML) {
-                return "<?php\n" . $phpDocInfo->getPhpDocNode() .  "\n?>";
+                return '<?php' . PHP_EOL . $phpDocInfo->getPhpDocNode() . PHP_EOL . '?>';
             }
 
             return (string) $phpDocInfo->getPhpDocNode();
