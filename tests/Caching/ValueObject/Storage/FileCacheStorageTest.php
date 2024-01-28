@@ -7,7 +7,6 @@ namespace Rector\Tests\Caching\ValueObject\Storage;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 final class FileCacheStorageTest extends AbstractLazyTestCase
 {
@@ -17,7 +16,7 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
     {
         parent::setUp();
 
-        $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source', new Filesystem());
+        $this->fileCacheStorage = new FileCacheStorage(__DIR__ . '/Source');
     }
 
     #[DoesNotPerformAssertions]
