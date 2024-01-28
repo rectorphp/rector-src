@@ -92,7 +92,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
     public function clear(): void
     {
-        $this->filesystem->remove($this->directory);
+        FileSystem::delete($this->directory);
     }
 
     private function processRemoveCacheFilePath(CacheFilePaths $cacheFilePaths): void
@@ -102,7 +102,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        $this->filesystem->remove($filePath);
+        FileSystem::delete($filePath);
     }
 
     private function processRemoveEmptyDirectory(string $directory): void
@@ -115,7 +115,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        $this->filesystem->remove($directory);
+        FileSystem::delete($directory);
     }
 
     private function isNotEmptyDirectory(string $directory): bool
