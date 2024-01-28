@@ -98,7 +98,7 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
     private function splitListByEOL(string $content): array
     {
         $trimmedContent = trim($content);
-        return explode(PHP_EOL, $trimmedContent);
+        return explode("\n", $trimmedContent);
     }
 
     /**
