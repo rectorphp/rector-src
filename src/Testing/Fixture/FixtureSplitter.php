@@ -31,10 +31,9 @@ final class FixtureSplitter
      */
     public static function splitFixtureFileContents(string $fixtureFileContents): array
     {
-        $explodeUnixLine = explode("-----\n", $fixtureFileContents);
-
-        if (count($explodeUnixLine) > 1) {
-            return $explodeUnixLine;
+        $posixContents = explode("-----\n", $fixtureFileContents);
+        if (isset($posixContents[1])) {
+            return $posixContents;
         }
 
         return explode("-----\r\n", $fixtureFileContents);
