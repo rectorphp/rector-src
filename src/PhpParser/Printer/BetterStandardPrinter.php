@@ -86,7 +86,7 @@ final class BetterStandardPrinter extends Standard
             $content .= $this->nl;
         }
 
-        return str_replace("\r\n", "\n", $content);
+        return $content;
     }
 
     /**
