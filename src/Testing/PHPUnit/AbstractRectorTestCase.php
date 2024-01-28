@@ -161,7 +161,12 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $inputFileContents, $expectedFileContents, $fixtureFilePath);
+        $this->doTestFileMatchesExpectedContent(
+            $inputFilePath,
+            $inputFileContents,
+            $expectedFileContents,
+            $fixtureFilePath
+        );
     }
 
     protected function forgetRectorsRulesAndCollectors(): void
