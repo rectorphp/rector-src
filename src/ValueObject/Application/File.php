@@ -45,6 +45,7 @@ final class File
         private readonly string $filePath,
         private string $fileContent
     ) {
+        $this->originalFileContent = $fileContent;
     }
 
     public function getFilePath(): string
