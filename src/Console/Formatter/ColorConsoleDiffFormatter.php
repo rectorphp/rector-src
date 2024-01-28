@@ -35,9 +35,9 @@ final readonly class ColorConsoleDiffFormatter
 
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/3
+     * @see https://regex101.com/r/qduj2O/2
      */
-    private const NEWLINES_REGEX = "#\r\n|\n#";
+    private const NEWLINES_REGEX = "#\n#";
 
     private string $template;
 
@@ -84,7 +84,7 @@ final readonly class ColorConsoleDiffFormatter
             return $string;
         }, $escapedDiffLines);
 
-        return sprintf($template, implode(PHP_EOL, $coloredLines));
+        return sprintf($template, implode("\n", $coloredLines));
     }
 
     private function makePlusLinesGreen(string $string): string
