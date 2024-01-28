@@ -129,7 +129,7 @@ final class BetterPhpDocParser extends PhpDocParser
             $phpDocTagValueNode->description = Strings::replace(
                 (string) $phpDocTagValueNode->description,
                 self::NEW_LINE_REGEX,
-                static fn (array $match) => $match['new_line'] . ' * '
+                static fn (array $match): string => $match['new_line'] . ' * '
             );
         }
 
