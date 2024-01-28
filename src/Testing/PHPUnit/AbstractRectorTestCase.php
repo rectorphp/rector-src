@@ -18,6 +18,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
+use Rector\Differ\DiffNormalizer;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
@@ -161,7 +162,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         // write temp file
         FileSystem::write($inputFilePath, $inputFileContents);
 
-        $this->doTestFileMatchesExpectedContent($inputFilePath, $expectedFileContents, $fixtureFilePath);
+        $this->doTestFileMatchesExpectedContent($inputFilePath, DiffNormalizer::normalize($expectedFileContents), $fixtureFilePath);
     }
 
     protected function forgetRectorsRulesAndCollectors(): void
@@ -216,7 +217,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::SOURCE, [$originalFilePath]);
 
         // the original file content must be loaded first
-        $originalFileContent = FileSystem::read($originalFilePath);
+        $originalFileContent = DiffNormalizer::normalize(FileSystem::read($originalFilePath));
 
         // the file is now changed (if any rule matches)
         $rectorTestResult = $this->processFilePath($originalFilePath);
@@ -257,7 +258,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
 
         // return changed file contents
-        $changedFileContents = FileSystem::read($filePath);
+        $changedFileContents = DiffNormalizer::normalize(FileSystem::read($filePath));
         return new RectorTestResult($changedFileContents, $processResult);
     }
 
