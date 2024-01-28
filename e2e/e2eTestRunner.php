@@ -32,7 +32,7 @@ if (isset($argv[1]) && $argv[1] === '-a') {
 }
 
 exec($e2eCommand, $output, $exitCode);
-$output = trim(implode(PHP_EOL, $output));
+$output = trim(implode("\n", $output));
 $output = str_replace(__DIR__, '.', $output);
 
 $expectedDiff = 'expected-output.diff';
@@ -45,7 +45,7 @@ $symfonyStyleFactory = new SymfonyStyleFactory(new PrivatesAccessor());
 $symfonyStyle =  $symfonyStyleFactory->create();
 
 $matchedExpectedOutput = false;
-$expectedOutput = str_replace("\n", PHP_EOL, trim(file_get_contents($expectedDiff)));
+$expectedOutput = trim(file_get_contents($expectedDiff));
 if ($output === $expectedOutput) {
     $symfonyStyle->success('End-to-end test successfully completed');
     exit(Command::SUCCESS);
