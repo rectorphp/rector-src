@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Console\Formatter;
 
+use Rector\Differ\DiffNormalizer;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 
@@ -22,6 +23,13 @@ final readonly class ConsoleDiffer
 
     public function diff(string $old, string $new): string
     {
+        if ($old === $new) {
+            return '';
+        }
+
+        $old = DiffNormalizer::normalize($old);
+        $new = DiffNormalizer::normalize($new);
+
         $diff = $this->differ->diff($old, $new);
         return $this->colorConsoleDiffFormatter->format($diff);
     }

@@ -22,12 +22,12 @@ final readonly class DefaultDiffer
 
     public function diff(string $old, string $new): string
     {
-        $old = str_replace("\r\n", "\n", $old);
-        $new = str_replace("\r\n", "\n", $new);
-
         if ($old === $new) {
             return '';
         }
+
+        $old = DiffNormalizer::normalize($old);
+        $new = DiffNormalizer::normalize($new);
 
         return $this->differ->diff($old, $new);
     }
