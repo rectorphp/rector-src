@@ -43,13 +43,13 @@ final class CommentRemoverTest extends AbstractLazyTestCase
         $nodesWithoutComments = $this->commentRemover->removeFromNode($nodes);
 
         $fileContent = $this->betterStandardPrinter->print($nodesWithoutComments);
-        $fileContent = str_replace("\r\n", "\n", trim($fileContent));
+        $fileContent = trim($fileContent);
 
-        $expectedContent = str_replace("\r\n", "\n", trim($expectedOutputContents));
+        $expectedContent = trim($expectedOutputContents);
         $this->assertSame($fileContent, $expectedContent);
 
         // original nodes are not touched
-        $originalContent = str_replace("\r\n", "\n", $this->betterStandardPrinter->print($nodes));
+        $originalContent = $this->betterStandardPrinter->print($nodes);
         $this->assertNotSame($expectedContent, $originalContent);
     }
 

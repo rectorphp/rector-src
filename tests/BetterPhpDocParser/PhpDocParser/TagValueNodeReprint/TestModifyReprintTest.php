@@ -59,11 +59,9 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
         ]);
         $doctrineAnnotationTagValueNode->values[] = new ArrayItemNode($methodsCurlyListNode, 'methods');
 
-        $expectedDocContent = str_replace("\r\n", "\n", trim($expectedContent));
+        $expectedDocContent = trim($expectedContent);
 
         $printedPhpDocInfo = $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
-        $printedPhpDocInfo = str_replace("\r\n", "\n", $printedPhpDocInfo);
-
         $this->assertSame($expectedDocContent, $printedPhpDocInfo);
     }
 
