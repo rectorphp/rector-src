@@ -31,9 +31,6 @@ final class FixtureFileUpdater
             return $originalContent;
         }
 
-        $originalContent = str_replace("\r\n", "\n", $originalContent);
-        $changedContent = str_replace("\r\n", "\n", $changedContent);
-
-        return $originalContent . '-----\n' .  $changedContent;
+        return $originalContent . '-----' . PHP_EOL . $changedContent;
     }
 }
