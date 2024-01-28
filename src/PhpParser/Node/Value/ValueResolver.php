@@ -19,6 +19,7 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
+use PHPStan\Type\ConstantType;
 use PHPStan\Type\TypeWithClassName;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
@@ -91,13 +92,8 @@ final class ValueResolver
         }
 
         $nodeStaticType = $this->nodeTypeResolver->getType($expr);
-
-        if ($nodeStaticType instanceof ConstantArrayType) {
-            return $this->extractConstantArrayTypeValue($nodeStaticType);
-        }
-
-        if ($nodeStaticType instanceof ConstantScalarType) {
-            return $nodeStaticType->getValue();
+        if ($nodeStaticType instanceof ConstantType) {
+            return $this->resolveConstantType($nodeStaticType);
         }
 
         return null;
@@ -345,5 +341,18 @@ final class ValueResolver
         }
 
         return $parentClassName;
+    }
+
+    private function resolveConstantType(ConstantType $constantType): mixed
+    {
+        if ($constantType instanceof ConstantArrayType) {
+            return $this->extractConstantArrayTypeValue($constantType);
+        }
+
+        if ($constantType instanceof ConstantScalarType) {
+            return $constantType->getValue();
+        }
+
+        return null;
     }
 }

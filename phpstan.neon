@@ -474,3 +474,7 @@ parameters:
 
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
+
+        -
+            message: '#Class cognitive complexity is 52, keep it under 50#'
+            path: src/PhpParser/Node/Value/ValueResolver.php
