@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node;
 use Rector\ValueObject\Application\File;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @see \Rector\Tests\PhpParser\Printer\FormatPerservingPrinterTest
@@ -15,7 +15,6 @@ final readonly class FormatPerservingPrinter
 {
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,
-        private Filesystem $filesystem
     ) {
     }
 
@@ -46,6 +45,6 @@ final readonly class FormatPerservingPrinter
 
     public function dumpFile(string $filePath, string $newContent): void
     {
-        $this->filesystem->dumpFile($filePath, $newContent);
+        FileSystem::write($filePath, $newContent, null);
     }
 }

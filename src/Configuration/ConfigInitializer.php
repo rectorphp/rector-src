@@ -46,7 +46,7 @@ final readonly class ConfigInitializer
 
         $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
-        FileSystem::write($commonRectorConfigPath, $configContents);
+        FileSystem::write($commonRectorConfigPath, $configContents, null);
         $this->symfonyStyle->success('The config is added now. Re-run command to make Rector do the work!');
     }
 

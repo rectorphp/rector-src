@@ -69,13 +69,14 @@ final readonly class FileCacheStorage implements CacheStorageInterface
         }
 
         // for performance reasons we don't use SmartFileSystem
-        FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported));
-        $renameSuccess = @\rename($tmpPath, $filePath);
-        if ($renameSuccess) {
+        FileSystem::write($tmpPath, \sprintf("<?php declare(strict_types = 1);\n\nreturn %s;", $exported), null);
+        $copySuccess = @\copy($tmpPath, $filePath);
+        @\unlink($tmpPath);
+
+        if ($copySuccess) {
             return;
         }
 
-        @\unlink($tmpPath);
         if (\DIRECTORY_SEPARATOR === '/' || ! \file_exists($filePath)) {
             throw new CachingException(\sprintf('Could not write data to cache file %s.', $filePath));
         }
@@ -91,7 +92,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
 
     public function clear(): void
     {
-        $this->filesystem->remove($this->directory);
+        FileSystem::delete($this->directory);
     }
 
     private function processRemoveCacheFilePath(CacheFilePaths $cacheFilePaths): void
@@ -101,7 +102,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        $this->filesystem->remove($filePath);
+        FileSystem::delete($filePath);
     }
 
     private function processRemoveEmptyDirectory(string $directory): void
@@ -114,7 +115,7 @@ final readonly class FileCacheStorage implements CacheStorageInterface
             return;
         }
 
-        $this->filesystem->remove($directory);
+        FileSystem::delete($directory);
     }
 
     private function isNotEmptyDirectory(string $directory): bool

@@ -73,7 +73,7 @@ final class SetupCICommand extends Command
             '__CURRENT_REPOSITORY__' => $currentRepository,
         ]);
 
-        FileSystem::write($targetWorkflowFilePath, $workflowContents);
+        FileSystem::write($targetWorkflowFilePath, $workflowContents, null);
 
         $this->symfonyStyle->newLine();
         $this->symfonyStyle->success('The ".github/workflows/rector.yaml" file was added');
@@ -96,7 +96,7 @@ final class SetupCICommand extends Command
     private function addGitlabFile(string $targetGitlabFilePath): void
     {
         $gitlabTemplate = FileSystem::read(__DIR__ . '/../../../templates/rector-gitlab-check.yaml');
-        FileSystem::write($targetGitlabFilePath, $gitlabTemplate);
+        FileSystem::write($targetGitlabFilePath, $gitlabTemplate, null);
 
         $this->symfonyStyle->newLine();
         $this->symfonyStyle->success('The "gitlab/rector.yaml" file was added');
