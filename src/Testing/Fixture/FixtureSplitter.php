@@ -37,6 +37,6 @@ final class FixtureSplitter
             return $explodeUnixLine;
         }
 
-        return str_replace("\r\n", "\n", $fixtureFileContents);
+        return explode("-----\r\n", $fixtureFileContents);
     }
 }
