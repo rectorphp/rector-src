@@ -97,7 +97,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                 )) {
                     // @todo how to detect previously opened brackets?
                     // probably local property with holding count of opened brackets
-                    $composedContent = $genericTagValueNode->value . "\n" . $nextPhpDocChildNode->text;
+                    $composedContent = $genericTagValueNode->value . PHP_EOL . $nextPhpDocChildNode->text;
                     $genericTagValueNode->value = $composedContent;
 
                     $startAndEnd = $this->combineStartAndEnd($phpDocChildNode, $nextPhpDocChildNode);
@@ -120,7 +120,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
                     break;
                 }
 
-                $composedContent = $genericTagValueNode->value . "\n" . $nextPhpDocChildNode->name . $nextPhpDocChildNode->value->value;
+                $composedContent = $genericTagValueNode->value . PHP_EOL . $nextPhpDocChildNode->name . $nextPhpDocChildNode->value->value;
 
                 // cleanup the next from closing
                 $genericTagValueNode->value = $composedContent;
