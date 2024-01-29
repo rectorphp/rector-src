@@ -48,11 +48,6 @@ final class VersionCompareFuncCallToConstantRector extends AbstractRector
         'le' => SmallerOrEqual::class,
     ];
 
-    public function __construct(
-        private readonly PhpVersionFactory $phpVersionFactory,
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -155,7 +150,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $value = $this->phpVersionFactory->createIntVersion($expr->value);
+        $value = PhpVersionFactory::createIntVersion($expr->value);
         return new LNumber($value);
     }
 }

@@ -11,17 +11,10 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class ProjectComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase
 {
-    private ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver;
-
-    protected function setUp(): void
-    {
-        $this->projectComposerJsonPhpVersionResolver = $this->make(ProjectComposerJsonPhpVersionResolver::class);
-    }
-
     #[DataProvider('provideData')]
     public function test(string $composerJsonFilePath, int $expectedPhpVersion): void
     {
-        $resolvePhpVersion = $this->projectComposerJsonPhpVersionResolver->resolve($composerJsonFilePath);
+        $resolvePhpVersion = ProjectComposerJsonPhpVersionResolver::resolve($composerJsonFilePath);
         $this->assertSame($expectedPhpVersion, $resolvePhpVersion);
     }
 
