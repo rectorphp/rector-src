@@ -6,7 +6,7 @@ final class SomeClass
 {
     public const string A = 'A';
 
-    public const B = self::A . 'b';
+    public const string B = self::A . 'b';
 
     public const int INT = 1;
 
