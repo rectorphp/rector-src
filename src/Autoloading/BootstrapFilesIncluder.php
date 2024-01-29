@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Autoloading;
 
+use Phar;
 use FilesystemIterator;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -36,7 +37,7 @@ final class BootstrapFilesIncluder
 
             // load phar file
             if (str_ends_with($bootstrapFile, '.phar')) {
-                \Phar::loadPhar($bootstrapFile);
+                Phar::loadPhar($bootstrapFile);
                 continue;
             }
 
