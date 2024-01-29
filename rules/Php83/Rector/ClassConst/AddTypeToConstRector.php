@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\DNumber;
@@ -163,6 +164,10 @@ CODE_SAMPLE
 
         if ($expr instanceof Array_) {
             return new Identifier('array');
+        }
+
+        if ($expr instanceof Concat) {
+            return new Identifier('string');
         }
 
         return null;

@@ -15,6 +15,8 @@ final class ApplyTypesWhenClassFinal
     public const NULL = null;
 
     public const ARRAY = [];
+
+    public const CONCAT = self::STRING . 'concat';
 }
 
 ?>
@@ -36,6 +38,8 @@ final class ApplyTypesWhenClassFinal
     public const null NULL = null;
 
     public const array ARRAY = [];
+
+    public const string CONCAT = self::STRING . 'concat';
 }
 
 ?>

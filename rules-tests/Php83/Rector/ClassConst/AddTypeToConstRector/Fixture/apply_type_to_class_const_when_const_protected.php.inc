@@ -15,6 +15,8 @@ class ApplyTypesToPrivateConsts
     private const NULL = null;
 
     private const ARRAY = [];
+
+    private const CONCAT = self::STRING . 'concat';
 }
 
 ?>
@@ -36,6 +38,8 @@ class ApplyTypesToPrivateConsts
     private const null NULL = null;
 
     private const array ARRAY = [];
+
+    private const string CONCAT = self::STRING . 'concat';
 }
 
 ?>
