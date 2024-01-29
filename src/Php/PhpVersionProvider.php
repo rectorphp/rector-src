@@ -26,11 +26,6 @@ final class PhpVersionProvider
 
     private int|null $phpVersionFeatures = null;
 
-    public function __construct(
-        private readonly ProjectComposerJsonPhpVersionResolver $projectComposerJsonPhpVersionResolver
-    ) {
-    }
-
     /**
      * @return PhpVersion::*
      */
@@ -53,7 +48,7 @@ final class PhpVersionProvider
 
         $projectComposerJson = getcwd() . '/composer.json';
         if (file_exists($projectComposerJson)) {
-            $phpVersion = $this->projectComposerJsonPhpVersionResolver->resolve($projectComposerJson);
+            $phpVersion = ProjectComposerJsonPhpVersionResolver::resolve($projectComposerJson);
             if ($phpVersion !== null) {
                 return $this->phpVersionFeatures = $phpVersion;
             }

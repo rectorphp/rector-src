@@ -17,18 +17,12 @@ final class ProjectComposerJsonPhpVersionResolver
     /**
      * @var array<string, int>
      */
-    private array $cachedPhpVersions = [];
+    private static array $cachedPhpVersions = [];
 
-    public function __construct(
-        private readonly VersionParser $versionParser,
-        private readonly PhpVersionFactory $phpVersionFactory
-    ) {
-    }
-
-    public function resolve(string $composerJson): ?int
+    public static function resolve(string $composerJson): ?int
     {
-        if (isset($this->cachedPhpVersions[$composerJson])) {
-            return $this->cachedPhpVersions[$composerJson];
+        if (isset(self::$cachedPhpVersions[$composerJson])) {
+            return self::$cachedPhpVersions[$composerJson];
         }
 
         $composerJsonContents = FileSystem::read($composerJson);
@@ -37,8 +31,8 @@ final class ProjectComposerJsonPhpVersionResolver
         // see https://getcomposer.org/doc/06-config.md#platform
         $platformPhp = $projectComposerJson['config']['platform']['php'] ?? null;
         if ($platformPhp !== null) {
-            $this->cachedPhpVersions[$composerJson] = $this->phpVersionFactory->createIntVersion($platformPhp);
-            return $this->cachedPhpVersions[$composerJson];
+            self::$cachedPhpVersions[$composerJson] = PhpVersionFactory::createIntVersion($platformPhp);
+            return self::$cachedPhpVersions[$composerJson];
         }
 
         $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;
@@ -46,17 +40,19 @@ final class ProjectComposerJsonPhpVersionResolver
             return null;
         }
 
-        $this->cachedPhpVersions[$composerJson] = $this->createIntVersionFromComposerVersion($requirePhpVersion);
-        return $this->cachedPhpVersions[$composerJson];
+        self::$cachedPhpVersions[$composerJson] = self::createIntVersionFromComposerVersion($requirePhpVersion);
+
+        return self::$cachedPhpVersions[$composerJson];
     }
 
-    private function createIntVersionFromComposerVersion(string $projectPhpVersion): int
+    private static function createIntVersionFromComposerVersion(string $projectPhpVersion): int
     {
-        $constraint = $this->versionParser->parseConstraints($projectPhpVersion);
+        $versionParser = new VersionParser();
+        $constraint = $versionParser->parseConstraints($projectPhpVersion);
 
         $lowerBound = $constraint->getLowerBound();
         $lowerBoundVersion = $lowerBound->getVersion();
 
-        return $this->phpVersionFactory->createIntVersion($lowerBoundVersion);
+        return PhpVersionFactory::createIntVersion($lowerBoundVersion);
     }
 }

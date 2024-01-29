@@ -25,7 +25,6 @@ final readonly class ConditionResolver
         private NodeNameResolver $nodeNameResolver,
         private PhpVersionProvider $phpVersionProvider,
         private ValueResolver $valueResolver,
-        private PhpVersionFactory $phpVersionFactory
     ) {
     }
 
@@ -129,7 +128,7 @@ final readonly class ConditionResolver
         }
 
         if (is_string($version)) {
-            return $this->phpVersionFactory->createIntVersion($version);
+            return PhpVersionFactory::createIntVersion($version);
         }
 
         return $version;
