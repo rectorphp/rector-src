@@ -169,7 +169,7 @@ final class RectorConfig extends Container
     }
 
     /**
-     * @param class-string<ConfigurableRectorInterface&RectorInterface> $rectorClass
+     * @param class-string<ConfigurableRectorInterface> $rectorClass
      * @param mixed[] $configuration
      */
     public function ruleWithConfiguration(string $rectorClass, array $configuration): void
