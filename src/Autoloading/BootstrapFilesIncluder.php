@@ -34,6 +34,12 @@ final class BootstrapFilesIncluder
                 throw new ShouldNotHappenException(sprintf('Bootstrap file "%s" does not exist.', $bootstrapFile));
             }
 
+            // load phar file
+            if (str_ends_with($bootstrapFile, '.phar')) {
+                \Phar::loadPhar($bootstrapFile);
+                continue;
+            }
+
             require $bootstrapFile;
         }
 
