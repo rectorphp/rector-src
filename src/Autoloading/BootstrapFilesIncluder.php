@@ -39,7 +39,7 @@ final class BootstrapFilesIncluder
             require $bootstrapFile;
         }
 
-        $this->requireRectorStubs($isLoadPHPUnitPhar);
+        $this->requireRectorStubs();
     }
 
     private function requireRectorStubs(): void
