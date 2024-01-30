@@ -9,6 +9,7 @@ use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
+use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
@@ -37,6 +38,7 @@ final class MissingInSetCommand extends Command
         RemoveNullTagValueNodeRector::class,
         // personal preference, enable on purpose
         ArraySpreadInsteadOfArrayMergeRector::class,
+        FinalizeClassesWithoutChildrenRector::class,
     ];
 
     public function __construct(
