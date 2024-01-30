@@ -42,7 +42,7 @@ final class ArrayReverseIndex
         }
     }
 
-    private function someOtherMethod(int|string $index, string $uri)
+    private function someOtherMethod(int $index, string $uri)
     {
         return sprintf('%d-%s', $index, $uri);
     }
