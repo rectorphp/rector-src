@@ -112,6 +112,10 @@ final class RectorConfigBuilder
      */
     private ?int $phpVersion = null;
 
+    private ?string $symfonyContainerXmlFile = null;
+
+    private ?string $symfonyContainerPhpFile = null;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $rectorConfig->sets($this->sets);
@@ -186,6 +190,14 @@ final class RectorConfigBuilder
             );
         } else {
             $rectorConfig->disableParallel();
+        }
+
+        if ($this->symfonyContainerXmlFile !== null) {
+            $rectorConfig->symfonyContainerXml($this->symfonyContainerXmlFile);
+        }
+
+        if ($this->symfonyContainerPhpFile !== null) {
+            $rectorConfig->symfonyContainerPhp($this->symfonyContainerPhpFile);
         }
     }
 
@@ -554,6 +566,18 @@ final class RectorConfigBuilder
     public function withPhpVersion(int $phpVersion): self
     {
         $this->phpVersion = $phpVersion;
+        return $this;
+    }
+
+    public function withSymfonyContainerXml(string $symfonyContainerXmlFile): self
+    {
+        $this->symfonyContainerXmlFile = $symfonyContainerXmlFile;
+        return $this;
+    }
+
+    public function withSymfonyContainerPhp(string $symfonyContainerPhpFile): self
+    {
+        $this->symfonyContainerPhpFile = $symfonyContainerPhpFile;
         return $this;
     }
 }
