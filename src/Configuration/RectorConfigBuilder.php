@@ -112,6 +112,20 @@ final class RectorConfigBuilder
      */
     private ?int $phpVersion = null;
 
+    private ?string $symfonyContainerXmlFile = null;
+
+    private ?string $symfonyContainerPhpFile = null;
+
+    /**
+     * @var array<string, mixed>
+     */
+    private array $singletons = [];
+
+    /**
+     * @var array<string, string>
+     */
+    private array $aliases = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $rectorConfig->sets($this->sets);
@@ -186,6 +200,26 @@ final class RectorConfigBuilder
             );
         } else {
             $rectorConfig->disableParallel();
+        }
+
+        if ($this->symfonyContainerXmlFile !== null) {
+            $rectorConfig->symfonyContainerXml($this->symfonyContainerXmlFile);
+        }
+
+        if ($this->symfonyContainerPhpFile !== null) {
+            $rectorConfig->symfonyContainerPhp($this->symfonyContainerPhpFile);
+        }
+
+        if ($this->singletons !== []) {
+            foreach ($this->singletons as $abstract => $concrete) {
+                $rectorConfig->singleton($abstract, $concrete);
+            }
+        }
+
+        if ($this->aliases !== []) {
+            foreach ($this->aliases as $abstract => $alias) {
+                $rectorConfig->alias($abstract, $alias);
+            }
         }
     }
 
@@ -554,6 +588,37 @@ final class RectorConfigBuilder
     public function withPhpVersion(int $phpVersion): self
     {
         $this->phpVersion = $phpVersion;
+        return $this;
+    }
+
+    public function withSymfonyContainerXml(string $symfonyContainerXmlFile): self
+    {
+        $this->symfonyContainerXmlFile = $symfonyContainerXmlFile;
+        return $this;
+    }
+
+    public function withSymfonyContainerPhp(string $symfonyContainerPhpFile): self
+    {
+        $this->symfonyContainerPhpFile = $symfonyContainerPhpFile;
+        return $this;
+    }
+
+    /**
+     * Key is abstract, value is concrete
+     * @param  array<string, mixed>  $singletons
+     */
+    public function withSingletons(array $singletons): self
+    {
+        $this->singletons = $singletons;
+        return $this;
+    }
+
+    /**
+     * @param  array<string, string>  $aliases
+     */
+    public function withAliases(array $aliases): self
+    {
+        $this->aliases = $aliases;
         return $this;
     }
 }
