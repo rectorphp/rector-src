@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Configuration;
 
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -24,7 +26,7 @@ final class VendorMissAnalyseGuard
         $registeredRectorSets = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_SETS);
 
         foreach ($registeredRectorSets as $registeredRectorSet) {
-            if (str_contains($registeredRectorSet, 'downgrade-')) {
+            if (str_contains((string) $registeredRectorSet, 'downgrade-')) {
                 return true;
             }
         }
