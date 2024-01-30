@@ -4,36 +4,28 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
-use PHPStan\Collectors\CollectedData;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Webmozart\Assert\Assert;
 
-final class Configuration
+final readonly class Configuration
 {
-    private bool $isSecondRun = false;
-
-    /**
-     * @var CollectedData[]
-     */
-    private array $collectedData = [];
-
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
      */
     public function __construct(
-        private readonly bool $isDryRun = false,
-        private readonly bool $showProgressBar = true,
-        private readonly bool $shouldClearCache = false,
-        private readonly string $outputFormat = ConsoleOutputFormatter::NAME,
-        private readonly array $fileExtensions = ['php'],
-        private readonly array $paths = [],
-        private readonly bool $showDiffs = true,
-        private readonly string | null $parallelPort = null,
-        private readonly string | null $parallelIdentifier = null,
-        private readonly bool $isParallel = false,
-        private readonly string|null $memoryLimit = null,
-        private readonly bool $isDebug = false,
+        private bool $isDryRun = false,
+        private bool $showProgressBar = true,
+        private bool $shouldClearCache = false,
+        private string $outputFormat = ConsoleOutputFormatter::NAME,
+        private array $fileExtensions = ['php'],
+        private array $paths = [],
+        private bool $showDiffs = true,
+        private string | null $parallelPort = null,
+        private string | null $parallelIdentifier = null,
+        private bool $isParallel = false,
+        private string|null $memoryLimit = null,
+        private bool $isDebug = false,
     ) {
     }
 
@@ -102,45 +94,5 @@ final class Configuration
     public function isDebug(): bool
     {
         return $this->isDebug;
-    }
-
-    /**
-     * @param CollectedData[] $collectedData
-     */
-    public function setCollectedData(array $collectedData): void
-    {
-        $this->collectedData = $collectedData;
-    }
-
-    /**
-     * @return CollectedData[]
-     */
-    public function getCollectedData(): array
-    {
-        return $this->collectedData;
-    }
-
-    /**
-     * @api
-     */
-    public function enableSecondRun(): void
-    {
-        $this->isSecondRun = true;
-    }
-
-    /**
-     * @api
-     */
-    public function isSecondRun(): bool
-    {
-        return $this->isSecondRun;
-    }
-
-    /**
-     * @api used in tests
-     */
-    public function reset(): void
-    {
-        $this->isSecondRun = false;
     }
 }
