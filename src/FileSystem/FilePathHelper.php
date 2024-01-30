@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\FileSystem;
 
 use Nette\Utils\Strings;
+use Rector\Skipper\FileSystem\PathNormalizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Assert\Assert;
 
@@ -60,7 +61,7 @@ final readonly class FilePathHelper
             $path = $originalPath;
         }
 
-        $normalizedPath = str_replace('\\', '/', (string) $path);
+        $normalizedPath = PathNormalizer::normalize((string) $path);
         $path = Strings::replace($normalizedPath, self::TWO_AND_MORE_SLASHES_REGEX, '/');
 
         $pathRoot = str_starts_with($path, '/') ? $directorySeparator : '';
@@ -69,21 +70,16 @@ final readonly class FilePathHelper
         $normalizedPathParts = $this->normalizePathParts($pathParts, $scheme);
 
         $pathStart = ($scheme !== self::SCHEME_UNDEFINED ? $scheme . '://' : '');
-        return $this->normalizePath($pathStart . $pathRoot . implode($directorySeparator, $normalizedPathParts));
+        return PathNormalizer::normalize($pathStart . $pathRoot . implode($directorySeparator, $normalizedPathParts));
     }
 
     private function relativeFilePathFromDirectory(string $fileRealPath, string $directory): string
     {
         Assert::directory($directory);
-        $normalizedFileRealPath = $this->normalizePath($fileRealPath);
+        $normalizedFileRealPath = PathNormalizer::normalize($fileRealPath);
 
         $relativeFilePath = $this->filesystem->makePathRelative($normalizedFileRealPath, $directory);
         return rtrim($relativeFilePath, '/');
-    }
-
-    private function normalizePath(string $filePath): string
-    {
-        return \str_replace('\\', '/', $filePath);
     }
 
     /**

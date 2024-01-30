@@ -5,17 +5,6 @@ declare(strict_types=1);
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
 
-// @deprecated, use dump() or dd() instead
-if (! function_exists('dump_node')) {
-    function dump_node(mixed $variable, int $depth = 2): never
-    {
-        trigger_error(
-            'This function is deprecated, to avoid enforcing of Rector debug package. Use your own favorite debugging package instead'
-        );
-        exit;
-    }
-}
-
 if (! function_exists('print_node')) {
     /**
      * @param Node|Node[] $node
