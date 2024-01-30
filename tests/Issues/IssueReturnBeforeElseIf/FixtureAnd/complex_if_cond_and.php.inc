@@ -38,11 +38,13 @@ class ComplexIfCondAnd
         if ($d && $e) {
             return false;
         }
-        elseif ($f && $g) {
-            return 1;
+        if (!$f) {
+            return 0;
         }
-
-        return 0;
+        if (!$g) {
+            return 0;
+        }
+        return 1;
     }
 }
 
