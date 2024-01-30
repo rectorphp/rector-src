@@ -8,9 +8,9 @@ use Nette\Utils\FileSystem as UtilsFileSystem;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\VendorMissAnalyseGuard;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Provider\CurrentFileProvider;
-use Rector\Skipper\FileSystem\PathNormalizer;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
 use Rector\ValueObject\Application\File;
@@ -48,7 +48,8 @@ final class ApplicationFileProcessor
         private readonly ChangedFilesDetector $changedFilesDetector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly FileProcessor $fileProcessor,
-        private readonly ArrayParametersMerger $arrayParametersMerger
+        private readonly ArrayParametersMerger $arrayParametersMerger,
+        private readonly VendorMissAnalyseGuard $vendorMissAnalyseGuard,
     ) {
     }
 
@@ -56,7 +57,7 @@ final class ApplicationFileProcessor
     {
         $filePaths = $this->fileFactory->findFilesInPaths($configuration->getPaths(), $configuration);
 
-        if ($this->containsVendorPath($filePaths)) {
+        if ($this->vendorMissAnalyseGuard->isVendorAnalyzed($filePaths)) {
             $this->symfonyStyle->warning(sprintf(
                 'Rector is running on your "/vendor" directory. This is not necessary, as Rector access /vendor by composer autoload. It will cause Rector tu run much slower and possibly with errors.%sRemove "/vendor" from Rector paths and run again.',
                 PHP_EOL . PHP_EOL
@@ -264,19 +265,5 @@ final class ApplicationFileProcessor
         }
 
         return $potentialRectorBinaryPath;
-    }
-
-    /**
-     * @param string[] $filePaths
-     */
-    private function containsVendorPath(array $filePaths): bool
-    {
-        foreach ($filePaths as $filePath) {
-            if (str_contains(PathNormalizer::normalize($filePath), '/vendor/')) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
