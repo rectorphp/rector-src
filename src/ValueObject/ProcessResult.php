@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\ValueObject;
 
-use PHPStan\Collectors\CollectedData;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\Reporting\FileDiff;
 use Webmozart\Assert\Assert;
@@ -14,16 +13,13 @@ final class ProcessResult
     /**
      * @param SystemError[] $systemErrors
      * @param FileDiff[] $fileDiffs
-     * @param CollectedData[] $collectedData
      */
     public function __construct(
         private array $systemErrors,
         private readonly array $fileDiffs,
-        private readonly array $collectedData
     ) {
         Assert::allIsInstanceOf($systemErrors, SystemError::class);
         Assert::allIsInstanceOf($fileDiffs, FileDiff::class);
-        Assert::allIsInstanceOf($collectedData, CollectedData::class);
     }
 
     /**
@@ -40,14 +36,6 @@ final class ProcessResult
     public function getFileDiffs(): array
     {
         return $this->fileDiffs;
-    }
-
-    /**
-     * @return CollectedData[]
-     */
-    public function getCollectedData(): array
-    {
-        return $this->collectedData;
     }
 
     /**

@@ -7,7 +7,6 @@ namespace Rector\Parallel\Application;
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
 use Nette\Utils\Random;
-use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpServer;
@@ -80,28 +79,17 @@ final class ParallelFileProcessor
         /** @var FileDiff[] $fileDiffs */
         $fileDiffs = [];
 
-        /** @var CollectedData[] $collectedData */
-        $collectedData = [];
-
         /** @var SystemError[] $systemErrors */
         $systemErrors = [];
 
         $tcpServer = new TcpServer('127.0.0.1:0', $streamSelectLoop);
         $this->processPool = new ProcessPool($tcpServer);
 
-        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (
-            &$jobs,
-            $configuration
-        ): void {
+        $tcpServer->on(ReactEvent::CONNECTION, function (ConnectionInterface $connection) use (&$jobs): void {
             $inDecoder = new Decoder($connection, true, 512, 0, 4 * 1024 * 1024);
             $outEncoder = new Encoder($connection);
 
-            $inDecoder->on(ReactEvent::DATA, function (array $data) use (
-                &$jobs,
-                $inDecoder,
-                $outEncoder,
-                $configuration
-            ): void {
+            $inDecoder->on(ReactEvent::DATA, function (array $data) use (&$jobs, $inDecoder, $outEncoder): void {
                 $action = $data[ReactCommand::ACTION];
                 if ($action !== Action::HELLO) {
                     return;
@@ -121,7 +109,6 @@ final class ParallelFileProcessor
                 $parallelProcess->request([
                     ReactCommand::ACTION => Action::MAIN,
                     Content::FILES => $jobsChunk,
-                    Bridge::PREVIOUSLY_COLLECTED_DATA => $configuration->getCollectedData(),
                 ]);
             });
         });
@@ -162,7 +149,6 @@ final class ParallelFileProcessor
         $processSpawner = function () use (
             &$systemErrors,
             &$fileDiffs,
-            &$collectedData,
             &$jobs,
             $postFileCallback,
             &$systemErrorsCount,
@@ -198,7 +184,6 @@ final class ParallelFileProcessor
                     &$jobs,
                     $postFileCallback,
                     &$systemErrorsCount,
-                    &$collectedData,
                     &$reachedInternalErrorsCountLimit,
                     $processIdentifier,
                     &$fileChunksBudgetPerProcess,
@@ -216,10 +201,6 @@ final class ParallelFileProcessor
 
                     foreach ($json[Bridge::FILE_DIFFS] as $jsonFileDiff) {
                         $fileDiffs[] = FileDiff::decode($jsonFileDiff);
-                    }
-
-                    foreach ($json[Bridge::COLLECTED_DATA] as $collectedDataItem) {
-                        $collectedData[] = CollectedData::decode($collectedDataItem);
                     }
 
                     $postFileCallback($json[Bridge::FILES_COUNT]);
@@ -290,6 +271,6 @@ final class ParallelFileProcessor
             ));
         }
 
-        return new ProcessResult($systemErrors, $fileDiffs, $collectedData);
+        return new ProcessResult($systemErrors, $fileDiffs);
     }
 }

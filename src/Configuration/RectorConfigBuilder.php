@@ -325,11 +325,14 @@ final class RectorConfigBuilder
                     return $this;
                 }
             }
+
             throw new InvalidConfigurationException(sprintf(
                 'We could not find local "composer.json" to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
                 PHP_EOL
             ));
-        } elseif ($php53) {
+        }
+
+        if ($php53) {
             $this->sets[] = LevelSetList::UP_TO_PHP_53;
         } elseif ($php54) {
             $this->sets[] = LevelSetList::UP_TO_PHP_54;

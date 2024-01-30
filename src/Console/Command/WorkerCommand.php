@@ -6,7 +6,6 @@ namespace Rector\Console\Command;
 
 use Clue\React\NDJson\Decoder;
 use Clue\React\NDJson\Encoder;
-use PHPStan\Collectors\CollectedData;
 use React\EventLoop\StreamSelectLoop;
 use React\Socket\ConnectionInterface;
 use React\Socket\TcpConnector;
@@ -132,22 +131,6 @@ final class WorkerCommand extends Command
                 return;
             }
 
-            $previouslyCollectedDataItems = $json[Bridge::PREVIOUSLY_COLLECTED_DATA] ?? [];
-            if ($previouslyCollectedDataItems !== []) {
-                // turn to value objects
-                $previouslyCollectedDatas = [];
-                foreach ($previouslyCollectedDataItems as $previouslyCollectedDataItem) {
-                    Assert::keyExists($previouslyCollectedDataItem, 'data');
-                    Assert::keyExists($previouslyCollectedDataItem, 'filePath');
-                    Assert::keyExists($previouslyCollectedDataItem, 'collectorType');
-
-                    $previouslyCollectedDatas[] = CollectedData::decode($previouslyCollectedDataItem);
-                }
-
-                $configuration->setCollectedData($previouslyCollectedDatas);
-                $configuration->enableSecondRun();
-            }
-
             /** @var string[] $filePaths */
             $filePaths = $json[Bridge::FILES] ?? [];
 
@@ -169,7 +152,6 @@ final class WorkerCommand extends Command
                     Bridge::FILES_COUNT => count($filePaths),
                     Bridge::SYSTEM_ERRORS => $processResult->getSystemErrors(),
                     Bridge::SYSTEM_ERRORS_COUNT => count($processResult->getSystemErrors()),
-                    Bridge::COLLECTED_DATA => $processResult->getCollectedData(),
                 ],
             ]);
         });
