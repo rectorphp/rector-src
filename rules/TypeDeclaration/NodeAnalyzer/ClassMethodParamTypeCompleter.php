@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -58,6 +59,11 @@ final readonly class ClassMethodParamTypeCompleter
             $param = $classMethod->params[$position];
 
             if (! $this->isAcceptedByDefault($param, $argumentStaticType)) {
+                continue;
+            }
+
+            // skip if param type already filled
+            if ($param->type instanceof Identifier) {
                 continue;
             }
 
