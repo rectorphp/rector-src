@@ -1,23 +1,24 @@
 <?php
 
-namespace Rector\Composer;
+namespace Rector\VersionBonding\Composer;
 
 use Composer\InstalledVersions;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Webmozart\Assert\Assert;
 
 class ComposerContextSwitcher
 {
     protected ?array $originalDependencies = null;
-    protected ?array $targetDependencies = null;
 
-    public function __construct(protected string $vendorPath)
-    {
-    }
+    protected ?array $targetDependencies = null;
 
     public function loadTargetDependencies(): void
     {
-        Assert::fileExists($this->vendorPath . '/composer/installed.php');
-        $dependencies = require $this->vendorPath . '/composer/installed.php';
+        $vendorPath = SimpleParameterProvider::provideStringParameter(Option::VENDOR_PATH, getcwd() . '/vendor');
+
+        Assert::fileExists($vendorPath . '/composer/installed.php');
+        $dependencies = require $vendorPath . '/composer/installed.php';
 
         Assert::isArray($dependencies);
         $this->targetDependencies = $dependencies;
@@ -25,6 +26,9 @@ class ComposerContextSwitcher
 
     public function setComposerToTargetDependencies(): void
     {
+        if ($this->targetDependencies === null) {
+            throw new \RuntimeException('Target dependencies must be loaded first before setting them can be called.');
+        }
         $this->originalDependencies = InstalledVersions::getAllRawData();
         InstalledVersions::reload($this->targetDependencies);
     }

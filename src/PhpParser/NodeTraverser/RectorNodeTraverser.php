@@ -7,6 +7,7 @@ namespace Rector\PhpParser\NodeTraverser;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use Rector\Contract\Rector\RectorInterface;
+use Rector\VersionBonding\Composer\ComposerCompatibilityFilter;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
@@ -18,7 +19,8 @@ final class RectorNodeTraverser extends NodeTraverser
      */
     public function __construct(
         private array $rectors,
-        private readonly PhpVersionedFilter $phpVersionedFilter
+        private readonly PhpVersionedFilter $phpVersionedFilter,
+        private readonly ComposerCompatibilityFilter $compatibilityFilter,
     ) {
         parent::__construct();
     }
@@ -60,6 +62,7 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
+        $this->visitors = $this->compatibilityFilter->filter($this->visitors);
         $this->areNodeVisitorsPrepared = true;
     }
 }

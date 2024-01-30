@@ -1,21 +1,24 @@
 <?php
 
-namespace Rector\Tests\Composer;
+namespace Rector\Tests\VersionBonding\Composer;
 
 use Composer\InstalledVersions;
 use PHPUnit\Framework\TestCase;
-use Rector\Composer\ComposerContextSwitcher;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\VersionBonding\Composer\ComposerContextSwitcher;
 
 class ComposerContextSwitcherTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         InstalledVersions::getAllRawData();
     }
 
-    public function test_it_can_load_different_composer()
+    public function testItCanLoadDifferentComposer()
     {
-        $contextSwitcher = new ComposerContextSwitcher(__DIR__ . '/Fixture/vendor');
+        SimpleParameterProvider::setParameter(Option::VENDOR_PATH, __DIR__ . '/Fixture/vendor');
+        $contextSwitcher = new ComposerContextSwitcher();
 
         $this->assertFalse(InstalledVersions::isInstalled('fixture/fake-package'));
 
@@ -25,9 +28,10 @@ class ComposerContextSwitcherTest extends TestCase
         $this->assertTrue(InstalledVersions::isInstalled('fixture/fake-package'));
     }
 
-    public function test_it_can_reset_the_composer_class_to_its_own_dependencies()
+    public function testItCanResetTheComposerClassToItsOwnDependencies()
     {
-        $contextSwitcher = new ComposerContextSwitcher(__DIR__ . '/Fixture/vendor');
+        SimpleParameterProvider::setParameter(Option::VENDOR_PATH, __DIR__ . '/Fixture/vendor');
+        $contextSwitcher = new ComposerContextSwitcher();
 
         $contextSwitcher->loadTargetDependencies();
         $contextSwitcher->setComposerToTargetDependencies();
@@ -36,9 +40,10 @@ class ComposerContextSwitcherTest extends TestCase
         $this->assertFalse(InstalledVersions::isInstalled('fixture/fake-package'));
     }
 
-    public function test_it_can_provide_the_state_of_the_dependencies_loaded()
+    public function testItCanProvideTheStateOfTheDependenciesLoaded()
     {
-        $contextSwitcher = new ComposerContextSwitcher(__DIR__ . '/Fixture/vendor');
+        SimpleParameterProvider::setParameter(Option::VENDOR_PATH, __DIR__ . '/Fixture/vendor');
+        $contextSwitcher = new ComposerContextSwitcher();
 
         $this->assertFalse($contextSwitcher->hasTargetDependencies());
 
@@ -52,20 +57,22 @@ class ComposerContextSwitcherTest extends TestCase
         $this->assertFalse($contextSwitcher->hasTargetDependencies());
     }
 
-    public function test_it_handles_the_installed_php_file_not_existing()
+    public function testItHandlesTheInstalledPhpFileNotExisting()
     {
         $this->expectException(\InvalidArgumentException::class);
         // /Fixture/vendor2 doesn't exist in the fixture folder
-        $contextSwitcher = new ComposerContextSwitcher(__DIR__ . '/Fixture/vendor2');
+        SimpleParameterProvider::setParameter(Option::VENDOR_PATH, __DIR__ . '/Fixture/vendor2');
+        $contextSwitcher = new ComposerContextSwitcher();
 
         $contextSwitcher->loadTargetDependencies();
     }
 
-    public function test_it_handles_the_installed_php_file_being_the_wrong_format()
+    public function testItHandlesTheInstalledPhpFileBeingTheWrongFormat()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected an array. Got: NULL');
-        $contextSwitcher = new ComposerContextSwitcher(__DIR__ . '/Fixture/vendor-error');
+        SimpleParameterProvider::setParameter(Option::VENDOR_PATH, __DIR__ . '/Fixture/vendor-error');
+        $contextSwitcher = new ComposerContextSwitcher();
 
         $contextSwitcher->loadTargetDependencies();
     }

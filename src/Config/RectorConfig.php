@@ -339,9 +339,6 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, $count);
     }
 
-    /**
-     * @param string $vendorPath
-     */
     public function vendorPath(string $vendorPath): void
     {
         SimpleParameterProvider::setParameter(Option::VENDOR_PATH, $vendorPath);

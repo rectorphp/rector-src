@@ -5,7 +5,7 @@
         'version' => '1.0.0.0',
         'reference' => NULL,
         'type' => 'project',
-        'install_path' => __DIR__ . '/../../',
+        'install_path' => __DIR__ . '/../Fixture/',
         'aliases' => array(),
         'dev' => true,
     ),
