@@ -29,6 +29,8 @@ final class BootstrapFilesIncluder
 
         Assert::allString($bootstrapFiles);
 
+        $isLoadPHPUnitPhar = false;
+
         /** @var string[] $bootstrapFiles */
         foreach ($bootstrapFiles as $bootstrapFile) {
             if (! is_file($bootstrapFile)) {
@@ -38,16 +40,21 @@ final class BootstrapFilesIncluder
             // load phar file
             if (str_ends_with($bootstrapFile, '.phar')) {
                 Phar::loadPhar($bootstrapFile);
+
+                if (str_ends_with($bootstrapFile, 'phpunit.phar')) {
+                    $isLoadPHPUnitPhar = true;
+                }
+
                 continue;
             }
 
             require $bootstrapFile;
         }
 
-        $this->requireRectorStubs();
+        $this->requireRectorStubs($isLoadPHPUnitPhar);
     }
 
-    private function requireRectorStubs(): void
+    private function requireRectorStubs(bool $isLoadPHPUnitPhar): void
     {
         /** @var false|string $stubsRectorDirectory */
         $stubsRectorDirectory = realpath(__DIR__ . '/../../stubs-rector');
@@ -63,7 +70,13 @@ final class BootstrapFilesIncluder
         $stubs = new RecursiveIteratorIterator($dir);
 
         foreach ($stubs as $stub) {
-            require_once $stub->getRealPath();
+            $realPath = $stub->getRealPath();
+
+            if ($isLoadPHPUnitPhar && str_ends_with($realPath, 'TestCase.php')) {
+                continue;
+            }
+
+            require_once $realPath;
         }
     }
 }
