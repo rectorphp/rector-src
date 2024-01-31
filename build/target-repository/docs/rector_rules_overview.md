@@ -1,4 +1,4 @@
-# 355 Rules Overview
+# 354 Rules Overview
 
 <br>
 
@@ -54,9 +54,9 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (22)
+- [Transform](#transform) (23)
 
-- [TypeDeclaration](#typedeclaration) (40)
+- [TypeDeclaration](#typedeclaration) (38)
 
 - [Visibility](#visibility) (3)
 
@@ -6085,6 +6085,21 @@ Replaces properties assign calls be defined methods.
 
 <br>
 
+### RectorConfigBuilderRector
+
+Change RectorConfig to RectorConfigBuilder
+
+- class: [`Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector`](../rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php)
+
+```diff
+-return static function (RectorConfig $rectorConfig): void {
+-    $rectorConfig->rule(SomeRector::class);
+-};
++return RectorConfig::configure()->rules([SomeRector::class]);
+```
+
+<br>
+
 ### ReplaceParentCallByPropertyCallRector
 
 Changes method calls in child of specific types to defined property method call
@@ -6966,44 +6981,6 @@ Add union return type
          }
 
          return new stdClass;
-     }
- }
-```
-
-<br>
-
-### StrictArrayParamDimFetchRector
-
-Add array type based on array dim fetch use
-
-- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php)
-
-```diff
- class SomeClass
- {
--    public function resolve($item)
-+    public function resolve(array $item)
-     {
-         return $item['name'];
-     }
- }
-```
-
-<br>
-
-### StrictStringParamConcatRector
-
-Add string type based on concat use
-
-- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictStringParamConcatRector.php)
-
-```diff
- class SomeClass
- {
--    public function resolve($item)
-+    public function resolve(string $item)
-     {
-         return $item . ' world';
      }
  }
 ```
