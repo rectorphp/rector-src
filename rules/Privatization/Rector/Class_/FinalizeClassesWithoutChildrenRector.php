@@ -6,30 +6,16 @@ namespace Rector\Privatization\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ClassReflection;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
-use Rector\NodeAnalyzer\ClassAnalyzer;
-use Rector\NodeAnalyzer\DoctrineEntityAnalyzer;
-use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector\FinalizeClassesWithoutChildrenRectorTest
+ * @deprecated This was deprecated, as its functionality caused bugs. Without knowing the full dependency tree, its very risky to use. Use https://github.com/TomasVotruba/finalize instead as it runs with full context.
  */
 final class FinalizeClassesWithoutChildrenRector extends AbstractRector
 {
-    public function __construct(
-        private readonly ClassAnalyzer $classAnalyzer,
-        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
-        private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly DoctrineEntityAnalyzer $doctrineEntityAnalyzer,
-    ) {
-    }
+    private bool $hasWarned = false;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -71,48 +57,21 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($this->shouldSkipClass($node)) {
+        if ($this->hasWarned) {
             return null;
         }
 
-        if ($this->doctrineEntityAnalyzer->hasClassAnnotation($node)) {
-            return null;
-        }
+        trigger_error(
+            sprintf(
+                'The "%s" rule was deprecated, as its functionality caused bugs. Without knowing the full dependency tree, its risky to change.',
+                self::class
+            )
+        );
 
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
+        sleep(3);
 
-        if ($this->doctrineEntityAnalyzer->hasClassReflectionAttribute($classReflection)) {
-            return null;
-        }
+        $this->hasWarned = true;
 
-        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-        if ($childrenClassReflections !== []) {
-            return null;
-        }
-
-        if ($node->attrGroups !== []) {
-            // improve reprint with correct newline
-            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-        }
-
-        $this->visibilityManipulator->makeFinal($node);
-
-        return $node;
-    }
-
-    private function shouldSkipClass(Class_ $class): bool
-    {
-        if ($class->isFinal()) {
-            return true;
-        }
-
-        if ($class->isAbstract()) {
-            return true;
-        }
-
-        return $this->classAnalyzer->isAnonymousClass($class);
+        return null;
     }
 }
