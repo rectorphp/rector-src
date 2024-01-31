@@ -18,8 +18,7 @@ final readonly class ComposerCompatibilityFilter
      */
     public function filter(iterable $rectors): array
     {
-        $this->contextSwitcher->loadTargetDependencies();
-        $this->contextSwitcher->setComposerToTargetDependencies();
+        $loaded = false;
         $analyzer = new StandardComposerAnalyzer();
 
         $activeRectors = [];
@@ -29,11 +28,19 @@ final readonly class ComposerCompatibilityFilter
                 $rector->meetsComposerRequirements($analyzer)) ||
                 ! $rector instanceof RequiredComposerCompatibilityInterface
             ) {
+                if (! $loaded) {
+                    $this->contextSwitcher->loadTargetDependencies();
+                    $this->contextSwitcher->setComposerToTargetDependencies();
+                    $loaded = true;
+                }
+
                 $activeRectors[] = $rector;
             }
         }
 
-        $this->contextSwitcher->reset();
+        if ($loaded) {
+            $this->contextSwitcher->reset();
+        }
 
         return $activeRectors;
     }
