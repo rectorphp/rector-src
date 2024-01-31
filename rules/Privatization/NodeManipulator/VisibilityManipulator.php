@@ -54,6 +54,9 @@ final class VisibilityManipulator
         $node->flags -= Class_::MODIFIER_ABSTRACT;
     }
 
+    /**
+     * @api
+     */
     public function makeFinal(Class_ | ClassMethod | ClassConst $node): void
     {
         $this->addVisibilityFlag($node, Visibility::FINAL);
