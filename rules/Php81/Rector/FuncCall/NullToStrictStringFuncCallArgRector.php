@@ -21,6 +21,7 @@ use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
+use PHPStan\Type\UnionType;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -185,7 +186,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType && ! $type instanceof NullType) {
+        if (! $type instanceof MixedType && ! $type instanceof NullType && ! $type instanceof UnionType) {
             return null;
         }
 
