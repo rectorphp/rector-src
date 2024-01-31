@@ -10,7 +10,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\Type;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
