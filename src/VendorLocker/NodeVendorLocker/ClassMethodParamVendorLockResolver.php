@@ -6,7 +6,6 @@ namespace Rector\VendorLocker\NodeVendorLocker;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\FileSystem\FilePathHelper;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
@@ -15,7 +14,6 @@ final readonly class ClassMethodParamVendorLockResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private FamilyRelationsAnalyzer $familyRelationsAnalyzer,
         private ReflectionResolver $reflectionResolver,
         private FilePathHelper $filePathHelper
     ) {
@@ -34,9 +32,6 @@ final readonly class ClassMethodParamVendorLockResolver
 
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
-        if ($this->hasTraitMethodVendorLock($classReflection, $methodName)) {
-            return true;
-        }
 
         // has interface vendor lock? → better skip it, as PHPStan has access only to just analyzed classes
         if ($this->hasParentInterfaceMethod($classReflection, $methodName)) {
@@ -44,22 +39,6 @@ final readonly class ClassMethodParamVendorLockResolver
         }
 
         return $this->hasClassMethodLockMatchingFileName($classReflection, $methodName, '/vendor/');
-    }
-
-    private function hasTraitMethodVendorLock(ClassReflection $classReflection, string $methodName): bool
-    {
-        $relatedReflectionClasses = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-
-        foreach ($relatedReflectionClasses as $relatedReflectionClass) {
-            foreach ($relatedReflectionClass->getTraits() as $traitReflectionClass) {
-                /** @var ClassReflection $traitReflectionClass */
-                if ($traitReflectionClass->hasMethod($methodName)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
