@@ -126,7 +126,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
     private function normalizePathsToRelativeWithLine(string $errorMessage): string
     {
-        $regex = '#' . preg_quote((string) getcwd(), '#') . '/#';
+        $regex = '#' . preg_quote(getcwd(), '#') . '/#';
         $errorMessage = Strings::replace($errorMessage, $regex);
         return Strings::replace($errorMessage, self::ON_LINE_REGEX);
     }
