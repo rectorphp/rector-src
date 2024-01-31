@@ -37,10 +37,10 @@ final class AddMethodCallBasedStrictParamTypeRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change private classMethod param type to strict type, based on passed strict types',
+            'Change private method param type to strict type, based on passed strict types',
             [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     public function run(int $value)
@@ -53,8 +53,8 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 final class SomeClass
 {
     public function run(int $value)
@@ -67,9 +67,10 @@ final class SomeClass
     }
 }
 CODE_SAMPLE
-            ),
-        
-        ]);
+                ),
+
+            ]
+        );
     }
 
     /**
