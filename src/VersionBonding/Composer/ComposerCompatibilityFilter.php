@@ -28,7 +28,7 @@ final readonly class ComposerCompatibilityFilter
                 $rector->meetsComposerRequirements($analyzer)) ||
                 ! $rector instanceof RequiredComposerCompatibilityInterface
             ) {
-                if (! $loaded) {
+                if ($rector instanceof RequiredComposerCompatibilityInterface && ! $loaded) {
                     $this->contextSwitcher->loadTargetDependencies();
                     $this->contextSwitcher->setComposerToTargetDependencies();
                     $loaded = true;
