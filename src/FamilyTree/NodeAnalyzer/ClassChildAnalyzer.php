@@ -9,38 +9,9 @@ use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\Php\PhpMethodReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
-use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 
 final readonly class ClassChildAnalyzer
 {
-    public function __construct(
-        private FamilyRelationsAnalyzer $familyRelationsAnalyzer
-    ) {
-    }
-
-    public function hasChildClassMethod(ClassReflection $classReflection, string $methodName): bool
-    {
-        $childrenClassReflections = $this->familyRelationsAnalyzer->getChildrenOfClassReflection($classReflection);
-
-        foreach ($childrenClassReflections as $childClassReflection) {
-            if (! $childClassReflection->hasNativeMethod($methodName)) {
-                continue;
-            }
-
-            $constructorReflectionMethod = $childClassReflection->getNativeMethod($methodName);
-            if (! $constructorReflectionMethod instanceof PhpMethodReflection) {
-                continue;
-            }
-
-            $methodDeclaringClassReflection = $constructorReflectionMethod->getDeclaringClass();
-            if ($methodDeclaringClassReflection->getName() === $childClassReflection->getName()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function hasParentClassMethod(ClassReflection $classReflection, string $methodName): bool
     {
         return $this->resolveParentClassMethods($classReflection, $methodName) !== [];

@@ -7,7 +7,6 @@ namespace Rector\NodeManipulator;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
-use Rector\FamilyTree\NodeAnalyzer\ClassChildAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final readonly class ClassManipulator
@@ -15,7 +14,6 @@ final readonly class ClassManipulator
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
         private ReflectionProvider $reflectionProvider,
-        private ClassChildAnalyzer $classChildAnalyzer
     ) {
     }
 
@@ -29,10 +27,6 @@ final readonly class ClassManipulator
         $ancestorClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
         foreach ($ancestorClassReflections as $ancestorClassReflection) {
             if (! $ancestorClassReflection->hasMethod($oldMethod)) {
-                continue;
-            }
-
-            if ($this->classChildAnalyzer->hasChildClassMethod($ancestorClassReflection, $newMethod)) {
                 continue;
             }
 

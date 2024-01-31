@@ -483,3 +483,5 @@ parameters:
             paths:
                  - src/PhpParser/Node/Value/ValueResolver.php
                  - src/Configuration/RectorConfigBuilder.php
+
+        - '#Call to deprecated method getChildrenOfClassReflection\(\) of class Rector\\FamilyTree\\Reflection\\FamilyRelationsAnalyze#'
