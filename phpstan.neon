@@ -55,7 +55,6 @@ parameters:
                 - src/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
                 - src/PhpParser/Printer/BetterStandardPrinter.php #41
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                - rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php
                 - src/CustomRules/SimpleNodeDumper.php
 
         -

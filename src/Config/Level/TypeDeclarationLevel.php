@@ -93,8 +93,6 @@ final class TypeDeclarationLevel
         AddParamTypeFromPropertyTypeRector::class,
         MergeDateTimePropertyTypeDeclarationRector::class,
         PropertyTypeFromStrictSetterGetterRector::class,
-        StrictArrayParamDimFetchRector::class,
-        StrictStringParamConcatRector::class,
         ParamTypeByMethodCallTypeRector::class,
         TypedPropertyFromAssignsRector::class,
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
