@@ -10,41 +10,13 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\Util\Reflection\PrivatesAccessor;
 
 final readonly class FamilyRelationsAnalyzer
 {
     public function __construct(
         private ReflectionProvider $reflectionProvider,
-        private PrivatesAccessor $privatesAccessor,
         private NodeNameResolver $nodeNameResolver,
     ) {
-    }
-
-    /**
-     * @return ClassReflection[]
-     * @deprecated as not reliable
-     */
-    public function getChildrenOfClassReflection(ClassReflection $desiredClassReflection): array
-    {
-        if ($desiredClassReflection->isFinalByKeyword()) {
-            return [];
-        }
-
-        /** @var ClassReflection[] $classReflections */
-        $classReflections = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
-
-        $childrenClassReflections = [];
-
-        foreach ($classReflections as $classReflection) {
-            if (! $classReflection->isSubclassOf($desiredClassReflection->getName())) {
-                continue;
-            }
-
-            $childrenClassReflections[] = $classReflection;
-        }
-
-        return $childrenClassReflections;
     }
 
     /**
