@@ -28,8 +28,6 @@ final class BootstrapFilesIncluder
 
         Assert::allString($bootstrapFiles);
 
-        $isLoadPHPUnitPhar = false;
-
         /** @var string[] $bootstrapFiles */
         foreach ($bootstrapFiles as $bootstrapFile) {
             if (! is_file($bootstrapFile)) {
