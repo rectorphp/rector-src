@@ -19,7 +19,7 @@ final class ProjectComposerJsonPhpVersionResolverTest extends AbstractLazyTestCa
     }
 
     /**
-     * @return Iterator<array<string|int>>
+     * @return Iterator<array<string|int|null>>
      */
     public static function provideData(): Iterator
     {
