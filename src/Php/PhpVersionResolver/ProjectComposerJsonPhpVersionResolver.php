@@ -15,13 +15,13 @@ use Rector\Util\PhpVersionFactory;
 final class ProjectComposerJsonPhpVersionResolver
 {
     /**
-     * @var array<string, int>
+     * @var array<string, int|null>
      */
     private static array $cachedPhpVersions = [];
 
     public static function resolve(string $composerJson): ?int
     {
-        if (isset(self::$cachedPhpVersions[$composerJson])) {
+        if (array_key_exists($composerJson, self::$cachedPhpVersions)) {
             return self::$cachedPhpVersions[$composerJson];
         }
 
@@ -37,7 +37,7 @@ final class ProjectComposerJsonPhpVersionResolver
 
         $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;
         if ($requirePhpVersion === null) {
-            return null;
+            return self::$cachedPhpVersions[$composerJson] = null;
         }
 
         self::$cachedPhpVersions[$composerJson] = self::createIntVersionFromComposerVersion($requirePhpVersion);
