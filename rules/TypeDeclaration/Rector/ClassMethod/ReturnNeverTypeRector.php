@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -135,7 +136,7 @@ CODE_SAMPLE
 
         return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
-            [Yield_::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
+            [Yield_::class, YieldFrom::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
         );
     }
 
