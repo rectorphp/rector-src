@@ -138,7 +138,14 @@ CODE_SAMPLE
             return;
         }
 
-        if (! $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getMethodCallPosition()] instanceof Arg) {
+        $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getMethodCallPosition()];
+
+        if (! $arg instanceof Arg) {
+            return;
+        }
+
+        // for now named parameters is an edge case to avoid
+        if ($arg->name !== null) {
             return;
         }
 
