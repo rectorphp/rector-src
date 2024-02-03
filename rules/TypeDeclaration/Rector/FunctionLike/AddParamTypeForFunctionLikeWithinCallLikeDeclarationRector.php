@@ -134,19 +134,37 @@ CODE_SAMPLE
         CallLike $callLike,
         AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
     ): void {
-        if (! isset($callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getMethodCallPosition()])) {
-            return;
-        }
+        if (is_int($addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition())) {
+            if ($callLike->getArgs() === []) {
+                return;
+            }
 
-        $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getMethodCallPosition()];
+            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition()] ?? null;
 
-        if (! $arg instanceof Arg) {
-            return;
-        }
+            if (! $arg instanceof Arg) {
+                return;
+            }
 
-        // for now named parameters is an edge case to avoid
-        if ($arg->name !== null) {
-            return;
+            // int positions shouldn't have names
+            if ($arg->name !== null) {
+                return;
+            }
+        } else {
+            $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
+                $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+            ): bool {
+                if ($arg->name === null) {
+                    return false;
+                }
+
+                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition();
+            });
+
+            if ($args === []) {
+                return;
+            }
+
+            $arg = array_values($args)[0];
         }
 
         $functionLike = $arg->value;

@@ -14,13 +14,13 @@ use Rector\Validation\RectorAssert;
 final readonly class AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration
 {
     /**
-     * @param int<0, max> $callLikePosition
+     * @param int<0, max>|string $callLikePosition
      * @param int<0, max> $functionLikePosition
      */
     public function __construct(
         private string $className,
         private string $methodName,
-        private int $callLikePosition,
+        private int|string $callLikePosition,
         private int $functionLikePosition,
         private Type $paramType
     ) {
@@ -37,11 +37,17 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration
         return $this->methodName;
     }
 
-    public function getMethodCallPosition(): int
+    /**
+     * @return int<0, max>|string
+     */
+    public function getCallLikePosition(): int|string
     {
         return $this->callLikePosition;
     }
 
+    /**
+     * @return int<0, max>
+     */
     public function getFunctionLikePosition(): int
     {
         return $this->functionLikePosition;

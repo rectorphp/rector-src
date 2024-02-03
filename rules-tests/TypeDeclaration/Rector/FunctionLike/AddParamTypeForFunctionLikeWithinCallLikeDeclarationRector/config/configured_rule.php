@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use PHPStan\Type\StringType;
 use Rector\Config\RectorConfig;
-use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\Source\ClassForNamedParameters;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration;
 use Rector\ValueObject\PhpVersionFeature;
@@ -20,9 +19,9 @@ return static function (RectorConfig $rectorConfig): void {
                 new StringType()
             ),
             new AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration(
-                ClassForNamedParameters::class,
+                'SomeNamespace\SomeClassForNamed',
                 'someCall',
-                0,
+                'callback',
                 0,
                 new StringType()
             ),

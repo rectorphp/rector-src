@@ -4,6 +4,6 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFuncti
 
 use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\Source\ClassForNamedParameters;
 
-ClassForNamedParameters::someCall(anotherCallback: fn ($var) => $var, callback: fn($var) => $var);
+SomeClass::someCall(anotherCallback: fn ($var) => $var, callback: fn($var) => $var);
 
 ?>
