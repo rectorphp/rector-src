@@ -1,4 +1,4 @@
-# 355 Rules Overview
+# 356 Rules Overview
 
 <br>
 
@@ -56,7 +56,7 @@
 
 - [Transform](#transform) (22)
 
-- [TypeDeclaration](#typedeclaration) (40)
+- [TypeDeclaration](#typedeclaration) (41)
 
 - [Visibility](#visibility) (3)
 
@@ -6320,6 +6320,21 @@ Add param types where needed
      {
      }
  }
+```
+
+<br>
+
+### AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector
+
+Add param types where needed
+
+:wrench: **configure it!**
+
+- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector.php)
+
+```diff
+-(new SomeClass)->process(function ($parameter) {});
++(new SomeClass)->process(function (string $parameter) {});
 ```
 
 <br>
