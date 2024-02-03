@@ -149,7 +149,7 @@ CODE_SAMPLE
             return;
         }
 
-        $functionLike = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getMethodCallPosition()]->value;
+        $functionLike = $arg->value;
         if (! $functionLike instanceof FunctionLike) {
             return;
         }
