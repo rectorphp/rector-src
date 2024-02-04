@@ -70,6 +70,7 @@ CODE_SAMPLE
             if (! $param->type instanceof FullyQualified) {
                 continue;
             }
+
             if ($param->type->toString() !== 'Rector\Config\RectorConfig') {
                 continue;
             }
