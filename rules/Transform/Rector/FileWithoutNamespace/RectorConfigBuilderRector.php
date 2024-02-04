@@ -117,9 +117,7 @@ CODE_SAMPLE
 
             // more config here
 
-            if ($hasChanged) {
-                return $node;
-            }
+            return $node;
         }
 
         return null;
