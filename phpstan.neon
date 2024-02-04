@@ -92,6 +92,7 @@ parameters:
                 - rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php
                 - rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php
                 - src/Configuration/RectorConfigBuilder.php
+                - rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php
 
         # is nested expr
         -

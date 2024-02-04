@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector\RectorConfigBuilderTest
+ * @see \Rector\Tests\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector\RectorConfigBuilderRectorTest
  */
 final class RectorConfigBuilderRector extends AbstractRector
 {
@@ -102,8 +102,12 @@ CODE_SAMPLE
                     return null;
                 }
 
+                if ($rectorConfigStmt->expr->isFirstClassCallable()) {
+                    return null;
+                }
+
                 if ($this->isName($rectorConfigStmt->expr->name, 'rule')) {
-                    $rules->items[] = new ArrayItem($rectorConfigStmt->expr->args[0]->value);
+                    $rules->items[] = new ArrayItem($rectorConfigStmt->expr->getArgs()[0]->value);
                 } else {
                     // implementing method by method
                     return null;
