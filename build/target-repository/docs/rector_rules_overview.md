@@ -1,4 +1,4 @@
-# 356 Rules Overview
+# 357 Rules Overview
 
 <br>
 
@@ -54,7 +54,7 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (22)
+- [Transform](#transform) (23)
 
 - [TypeDeclaration](#typedeclaration) (41)
 
@@ -6085,6 +6085,21 @@ Replaces properties assign calls be defined methods.
 
 <br>
 
+### RectorConfigBuilderRector
+
+Change RectorConfig to RectorConfigBuilder
+
+- class: [`Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector`](../rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php)
+
+```diff
+-return static function (RectorConfig $rectorConfig): void {
+-    $rectorConfig->rule(SomeRector::class);
+-};
++return RectorConfig::configure()->rules([SomeRector::class]);
+```
+
+<br>
+
 ### ReplaceParentCallByPropertyCallRector
 
 Changes method calls in child of specific types to defined property method call
@@ -6324,13 +6339,13 @@ Add param types where needed
 
 <br>
 
-### AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector
+### AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector
 
 Add param types where needed
 
 :wrench: **configure it!**
 
-- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector.php)
 
 ```diff
 -(new SomeClass)->process(function ($parameter) {});

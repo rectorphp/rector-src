@@ -11,7 +11,7 @@ use Rector\Validation\RectorAssert;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRectorTest
  */
-final readonly class AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
 {
     /**
      * @param int<0, max>|string $callLikePosition

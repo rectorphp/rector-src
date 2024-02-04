@@ -20,19 +20,19 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration;
+use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration;
 use Rector\ValueObject\PhpVersionFeature;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector\AddParamTypeDeclarationRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRectorTest
  */
-final class AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration[]
+     * @var AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration[]
      */
     private array $addParamTypeForFunctionLikeParamDeclarations = [];
 
@@ -58,7 +58,7 @@ CODE_SAMPLE
 CODE_SAMPLE
                 ,
                 [
-                    new AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration(
+                    new AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration(
                         'SomeClass',
                         'process',
                         0,
@@ -125,21 +125,21 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration::class);
+        Assert::allIsAOf($configuration, AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration::class);
 
         $this->addParamTypeForFunctionLikeParamDeclarations = $configuration;
     }
 
     private function processFunctionLike(
         CallLike $callLike,
-        AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     ): void {
-        if (is_int($addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition())) {
+        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition())) {
             if ($callLike->getArgs() === []) {
                 return;
             }
 
-            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition()] ?? null;
+            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition()] ?? null;
 
             if (! $arg instanceof Arg) {
                 return;
@@ -151,13 +151,13 @@ CODE_SAMPLE
             }
         } else {
             $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-                $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+                $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
             ): bool {
                 if ($arg->name === null) {
                     return false;
                 }
 
-                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getCallLikePosition();
+                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition();
             });
 
             if ($args === []) {
@@ -172,40 +172,40 @@ CODE_SAMPLE
             return;
         }
 
-        if (! isset($functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getFunctionLikePosition()])) {
+        if (! isset($functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()])) {
             return;
         }
 
         $this->refactorParameter(
-            $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getFunctionLikePosition()],
-            $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+            $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()],
+            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
         );
     }
 
     private function refactorParameter(
         Param $param,
-        AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     ): void {
         // already set → no change
         if ($param->type !== null) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
             if ($this->typeComparator->areTypesEqual(
                 $currentParamType,
-                $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getParamType()
+                $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType()
             )) {
                 return;
             }
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getParamType(),
+            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType(),
             TypeKind::PARAM
         );
 
         $this->hasChanged = true;
 
         // remove it
-        if ($addParamTypeForFunctionLikeWithinCallLikeParamDeclaration->getParamType() instanceof MixedType) {
+        if ($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType() instanceof MixedType) {
             if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
                 $param->type = $paramTypeNode;
                 return;

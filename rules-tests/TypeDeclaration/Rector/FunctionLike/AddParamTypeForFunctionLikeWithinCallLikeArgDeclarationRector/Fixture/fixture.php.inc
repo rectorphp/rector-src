@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector\Fixture;
 
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;
@@ -26,7 +26,7 @@ SomeClassForNamed::someCall('a', 'b', callback: fn ($var) => $var);
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector\Fixture;
 
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;
