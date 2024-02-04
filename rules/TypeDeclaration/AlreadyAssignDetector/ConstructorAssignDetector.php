@@ -21,6 +21,7 @@ use PHPStan\Type\ObjectType;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\TypeDeclaration\Matcher\PropertyAssignMatcher;
 use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Rector\ValueObject\MethodName;
@@ -38,6 +39,7 @@ final readonly class ConstructorAssignDetector
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private AutowiredClassMethodOrPropertyAnalyzer $autowiredClassMethodOrPropertyAnalyzer,
         private PropertyFetchAnalyzer $propertyFetchAnalyzer,
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -192,7 +194,8 @@ final readonly class ConstructorAssignDetector
     private function isPropertyUsedInAssign(Assign $assign, string $propertyName): bool
     {
         $nodeFinder = new NodeFinder();
-        return (bool) $nodeFinder->findFirst($assign->expr, static function (Node $node) use ($propertyName): ?bool {
+        $var = $assign->var;
+        return (bool) $nodeFinder->findFirst($assign->expr, function (Node $node) use ($propertyName, $var): ?bool {
             if (! $node instanceof PropertyFetch) {
                 return null;
             }
@@ -201,7 +204,11 @@ final readonly class ConstructorAssignDetector
                 return null;
             }
 
-            return $node->name->toString() === $propertyName;
+            if ($node->name->toString() !== $propertyName) {
+                return null;
+            }
+
+            return $this->nodeComparator->areNodesEqual($node, $var);
         });
     }
 }
