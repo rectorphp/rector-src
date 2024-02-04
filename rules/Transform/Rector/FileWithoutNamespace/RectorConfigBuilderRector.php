@@ -55,6 +55,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        $hasChanged = false;
         foreach ($node->stmts as $stmt) {
             if (! $stmt instanceof Return_) {
                 continue;
@@ -109,7 +110,16 @@ CODE_SAMPLE
                 }
             }
 
-            $stmt->expr = new MethodCall($newExpr, 'withRules', [$rules]);
+            if ($rules->items !== []) {
+                $stmt->expr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
+                $hasChanged = true;
+            }
+
+            // more config here
+
+            if ($hasChanged) {
+                return $node;
+            }
         }
 
         return null;
