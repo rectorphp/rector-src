@@ -38,7 +38,10 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class, YieldFrom::class])) {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $functionLike,
+            [Yield_::class, YieldFrom::class]
+        )) {
             return false;
         }
 

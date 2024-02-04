@@ -38,7 +38,10 @@ final readonly class StrictReturnNewAnalyzer
             return null;
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class, YieldFrom::class])) {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $functionLike,
+            [Yield_::class, YieldFrom::class]
+        )) {
             return null;
         }
 
