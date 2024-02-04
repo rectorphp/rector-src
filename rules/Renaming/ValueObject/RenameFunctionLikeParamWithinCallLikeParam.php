@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Renaming\ValueObject;
 
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
 
 /**

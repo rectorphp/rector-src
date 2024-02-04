@@ -10,21 +10,14 @@ use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\NodeTraverser;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\StringType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
-use Rector\Php\PhpVersionProvider;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameFunctionLikeParamWithinCallLikeParam;
-use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeParamDeclaration;
-use Rector\ValueObject\PhpVersionFeature;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
@@ -41,10 +34,6 @@ final class RenameFunctionLikeParamWithinCallLikeParamRector extends AbstractRec
 
     private bool $hasChanged = false;
 
-    public function __construct(
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add param types where needed', [
@@ -57,15 +46,7 @@ CODE_SAMPLE
 (new SomeClass)->process(function ($parameter) {});
 CODE_SAMPLE
                 ,
-                [
-                    new RenameFunctionLikeParamWithinCallLikeParam(
-                        'SomeClass',
-                        'process',
-                        0,
-                        0,
-                        'parameter'
-                    ),
-                ]
+                [new RenameFunctionLikeParamWithinCallLikeParam('SomeClass', 'process', 0, 0, 'parameter')]
             ),
         ]);
     }
@@ -135,36 +116,13 @@ CODE_SAMPLE
         RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
     ): void {
         if (is_int($renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition())) {
-            if ($callLike->getArgs() === []) {
-                return;
-            }
-
-            $arg = $callLike->args[$renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition()] ?? null;
-
-            if (! $arg instanceof Arg) {
-                return;
-            }
-
-            // int positions shouldn't have names
-            if ($arg->name !== null) {
-                return;
-            }
+            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeParam);
         } else {
-            $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-                $renameFunctionLikeParamWithinCallLikeParam
-            ): bool {
-                if ($arg->name === null) {
-                    return false;
-                }
+            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeParam);
+        }
 
-                return $arg->name->name === $renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition();
-            });
-
-            if ($args === []) {
-                return;
-            }
-
-            $arg = array_values($args)[0];
+        if (! $arg instanceof Arg) {
+            return;
         }
 
         $functionLike = $arg->value;
@@ -191,10 +149,22 @@ CODE_SAMPLE
         FunctionLike $functionLike,
         RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
     ): void {
+        if (! $param->var instanceof Variable) {
+            return;
+        }
+
+        if (! is_string($param->var->name)) {
+            return;
+        }
+
         $oldName = $param->var->name;
 
         // skip if the name is in use within the context of the function like
-        if ($this->isVariableNameUsedInFunctionLike($functionLike, $oldName, $renameFunctionLikeParamWithinCallLikeParam->getNewParamName())) {
+        if ($this->isVariableNameUsedInFunctionLike(
+            $functionLike,
+            $oldName,
+            $renameFunctionLikeParamWithinCallLikeParam->getNewParamName()
+        )) {
             return;
         }
 
@@ -205,11 +175,11 @@ CODE_SAMPLE
             $oldName,
             $renameFunctionLikeParamWithinCallLikeParam
         ): ?Node {
-            if (!$node instanceof Node\Expr\Variable) {
+            if (! $node instanceof Variable) {
                 return null;
             }
 
-            if (!$this->isName($node, $oldName)) {
+            if (! $this->isName($node, $oldName)) {
                 return null;
             }
 
@@ -221,8 +191,11 @@ CODE_SAMPLE
         $this->hasChanged = true;
     }
 
-    private function isVariableNameUsedInFunctionLike(FunctionLike $functionLike, string $oldName, string $newName)
-    {
+    private function isVariableNameUsedInFunctionLike(
+        FunctionLike $functionLike,
+        string $oldName,
+        string $newName
+    ): bool {
         $isUsed = false;
         $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
             $functionLike,
@@ -231,15 +204,14 @@ CODE_SAMPLE
             &$isUsed
         ): ?int {
             if ($node instanceof FunctionLike && $node !== $functionLike) {
-                if ($node instanceof Closure && $node->uses !== []) {
-                    if ($this->checkClosureUses($node, $oldName)) {
-                        $isUsed = true;
-                    }
+                if ($node instanceof Closure && $node->uses !== [] && $this->isClosureUsingParam($node, $oldName)) {
+                    $isUsed = true;
                 }
+
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
             }
 
-            if (!$node instanceof Node\Expr\Variable) {
+            if (! $node instanceof Variable) {
                 return null;
             }
 
@@ -253,13 +225,57 @@ CODE_SAMPLE
         return $isUsed;
     }
 
-    private function checkClosureUses(Closure $node, string $oldName): bool
+    private function isClosureUsingParam(Closure $node, string $oldName): bool
     {
         foreach ($node->uses as $use) {
             if ($this->isName($use->var, $oldName)) {
                 return true;
             }
         }
+
         return false;
+    }
+
+    private function processPositionalArg(
+        CallLike $callLike,
+        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+    ): ?Arg {
+        if ($callLike->getArgs() === []) {
+            return null;
+        }
+
+        $arg = $callLike->args[$renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition()] ?? null;
+
+        if (! $arg instanceof Arg) {
+            return null;
+        }
+
+        // int positions shouldn't have names
+        if ($arg->name !== null) {
+            return null;
+        }
+
+        return $arg;
+    }
+
+    private function processNamedArg(
+        CallLike $callLike,
+        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+    ): ?Arg {
+        $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
+            $renameFunctionLikeParamWithinCallLikeParam
+        ): bool {
+            if ($arg->name === null) {
+                return false;
+            }
+
+            return $arg->name->name === $renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition();
+        });
+
+        if ($args === []) {
+            return null;
+        }
+
+        return array_values($args)[0];
     }
 }
