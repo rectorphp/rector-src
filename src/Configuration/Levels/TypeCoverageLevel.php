@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Configuration;
+namespace Rector\Configuration\Levels;
 
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;

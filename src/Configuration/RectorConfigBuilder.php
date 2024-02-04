@@ -6,6 +6,9 @@ namespace Rector\Configuration;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\RectorConfig;
+use Rector\Configuration\Levels\DeadCodeLevel;
+use Rector\Configuration\Levels\LevelRulesResolver;
+use Rector\Configuration\Levels\TypeCoverageLevel;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
@@ -20,7 +23,6 @@ use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
-use Webmozart\Assert\Assert;
 
 /**
  * @api
@@ -585,28 +587,33 @@ final class RectorConfigBuilder
     }
 
     /**
+     * @experimental since 0.19.7 Raise your dead-code coverage from the safest rules
+     * to more affecting ones, one level at a time
+     */
+    public function withDeadCodeLevel(int $level): self
+    {
+        $levelRules = LevelRulesResolver::resolve(
+            $level,
+            DeadCodeLevel::RULE_LIST,
+            'RectorConfig::withDeadCodeLevel()'
+        );
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    /**
      * @experimental since 0.19.7 Raise your type coverage from the safest type rules
      * to more affecting ones, one level at a time
-     *
-     * Lowest level is 0
-     *
-     * @param positive-int $level
      */
     public function withTypeCoverageLevel(int $level): self
     {
-        $rulesCount = count(TypeCoverageLevel::RULE_LIST);
-        Assert::range(
+        $levelRules = LevelRulesResolver::resolve(
             $level,
-            0,
-            $rulesCount - 1,
-            'Level %s it not available. Pick level from %2$s and %3$s in "RectorConfig::withTypeCoverageLevel()" method.'
+            TypeCoverageLevel::RULE_LIST,
+            'RectorConfig::withTypeCoverageLevel()'
         );
-
-        $levelRules = [];
-
-        for ($i = 0; $i <= $level; ++$i) {
-            $levelRules[] = TypeCoverageLevel::RULE_LIST[$i];
-        }
 
         $this->rules = array_merge($this->rules, $levelRules);
 
