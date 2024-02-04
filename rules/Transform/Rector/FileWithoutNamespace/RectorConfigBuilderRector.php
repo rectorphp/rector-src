@@ -114,9 +114,9 @@ CODE_SAMPLE
                 $stmt->expr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
                 $hasChanged = true;
             }
+        }
 
-            // more config here
-
+        if ($hasChanged) {
             return $node;
         }
 
