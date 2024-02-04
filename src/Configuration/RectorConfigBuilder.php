@@ -20,6 +20,7 @@ use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
+use Webmozart\Assert\Assert;
 
 /**
  * @api
@@ -580,6 +581,35 @@ final class RectorConfigBuilder
     public function withSymfonyContainerPhp(string $symfonyContainerPhpFile): self
     {
         $this->symfonyContainerPhpFile = $symfonyContainerPhpFile;
+        return $this;
+    }
+
+    /**
+     * @experimental since 0.19.7 Raise your type coverage from the safest type rules
+     * to more affecting ones, one level at a time
+     *
+     * Lowest level is 0
+     *
+     * @param positive-int $level
+     */
+    public function withTypeCoverageLevel(int $level): self
+    {
+        $rulesCount = count(TypeCoverageLevel::RULE_LIST);
+        Assert::range(
+            $level,
+            0,
+            $rulesCount - 1,
+            'Level %s it not available. Pick level from %2$s and %3$s in "RectorConfig::withTypeCoverageLevel()" method.'
+        );
+
+        $levelRules = [];
+
+        for ($i = 0; $i <= $level; ++$i) {
+            $levelRules[] = TypeCoverageLevel::RULE_LIST[$i];
+        }
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
         return $this;
     }
 }
