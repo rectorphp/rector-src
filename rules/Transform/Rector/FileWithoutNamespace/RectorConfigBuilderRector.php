@@ -8,14 +8,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\ObjectType;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\PhpParser\Node\NodeFactory;
-use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,10 +23,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RectorConfigBuilderRector extends AbstractRector
 {
-    public function __construct(private readonly ValueResolver $valueResolver)
-    {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change RectorConfig to RectorConfigBuilder', [
@@ -73,7 +67,10 @@ CODE_SAMPLE
             }
 
             $param = $stmt->expr->params[0];
-            if (! $param->type instanceof FullyQualified || $param->type->toString() !== 'Rector\Config\RectorConfig') {
+            if (! $param->type instanceof FullyQualified) {
+                continue;
+            }
+            if ($param->type->toString() !== 'Rector\Config\RectorConfig') {
                 continue;
             }
 
@@ -97,7 +94,7 @@ CODE_SAMPLE
                 }
 
                 // another method call? skip
-                if (! $this->isObjectType($rectorConfigStmt->expr->var, new \PHPStan\Type\ObjectType('Rector\Config\RectorConfig'))) {
+                if (! $this->isObjectType($rectorConfigStmt->expr->var, new ObjectType('Rector\Config\RectorConfig'))) {
                     return null;
                 }
 
