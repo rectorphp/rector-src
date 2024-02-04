@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\FileWithoutNamespace;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -82,7 +85,7 @@ CODE_SAMPLE
 
             $newExpr = new StaticCall(new FullyQualified('Rector\Config\RectorConfig'), 'configure');
 
-            $rules = [];
+            $rules = new Array_();
             foreach ($stmts as $rectorConfigStmt) {
                 // complex stmts should be skipped, eg: with if else
                 if (! $rectorConfigStmt instanceof Expression) {
@@ -100,12 +103,15 @@ CODE_SAMPLE
                 }
 
                 if ($this->isName($rectorConfigStmt->expr->name, 'rule')) {
-                    $rules[] = $rectorConfigStmt->expr->args[0]->value;
+                    $rules->items[] = new ArrayItem($rectorConfigStmt->expr->args[0]->value);
+                } else {
+                    // implementing method by method
+                    return null;
                 }
             }
 
             if ($rules !== []) {
-                $stmt->expr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', $rules);
+                $stmt->expr = new MethodCall($newExpr, 'withRules', [$rules]);
             }
         }
 
