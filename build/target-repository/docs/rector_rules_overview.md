@@ -1,4 +1,4 @@
-# 355 Rules Overview
+# 357 Rules Overview
 
 <br>
 
@@ -50,11 +50,11 @@
 
 - [Removing](#removing) (5)
 
-- [Renaming](#renaming) (9)
+- [Renaming](#renaming) (10)
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (22)
+- [Transform](#transform) (23)
 
 - [TypeDeclaration](#typedeclaration) (40)
 
@@ -5577,6 +5577,21 @@ Replace constant by new ones
 
 <br>
 
+### RenameFunctionLikeParamWithinCallLikeParamRector
+
+Add param types where needed
+
+:wrench: **configure it!**
+
+- class: [`Rector\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeParamRector`](../rules/Renaming/Rector/FunctionLike/RenameFunctionLikeParamWithinCallLikeParamRector.php)
+
+```diff
+-(new SomeClass)->process(function ($param) {});
++(new SomeClass)->process(function ($parameter) {});
+```
+
+<br>
+
 ### RenameFunctionRector
 
 Turns defined function call new one.
@@ -6081,6 +6096,21 @@ Replaces properties assign calls be defined methods.
 
 -$bare = $object->bareProperty;
 +$bare = $object->getConfig('someArg');
+```
+
+<br>
+
+### RectorConfigBuilderRector
+
+Change RectorConfig to RectorConfigBuilder
+
+- class: [`Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector`](../rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php)
+
+```diff
+-return static function (RectorConfig $rectorConfig): void {
+-    $rectorConfig->rule(SomeRector::class);
+-};
++return RectorConfig::configure()->rules([SomeRector::class]);
 ```
 
 <br>
