@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Transform\Rector\FileWithoutNamespace;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Closure;
@@ -110,9 +109,7 @@ CODE_SAMPLE
                 }
             }
 
-            if ($rules !== []) {
-                $stmt->expr = new MethodCall($newExpr, 'withRules', [$rules]);
-            }
+            $stmt->expr = new MethodCall($newExpr, 'withRules', [$rules]);
         }
 
         return null;
