@@ -121,7 +121,7 @@ final class PHPStanNodeScopeResolver
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
             if ($node instanceof FileWithoutNamespace) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->processNodes($node->stmts, $filePath, $mutatingScope);
+                $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
 
                 return;
             }
