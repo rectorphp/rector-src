@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeParamRector\Fixture;
+namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector\Fixture;
 
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;
@@ -33,7 +33,7 @@ SomeClass::someCall(function ($qry) {
 -----
 <?php
 
-namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeParamRector\Fixture;
+namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector\Fixture;
 
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;

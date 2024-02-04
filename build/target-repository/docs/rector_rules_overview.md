@@ -5577,13 +5577,13 @@ Replace constant by new ones
 
 <br>
 
-### RenameFunctionLikeParamWithinCallLikeParamRector
+### RenameFunctionLikeParamWithinCallLikeArgRector
 
 Add param types where needed
 
 :wrench: **configure it!**
 
-- class: [`Rector\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeParamRector`](../rules/Renaming/Rector/FunctionLike/RenameFunctionLikeParamWithinCallLikeParamRector.php)
+- class: [`Rector\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector`](../rules/Renaming/Rector/FunctionLike/RenameFunctionLikeParamWithinCallLikeArgRector.php)
 
 ```diff
 -(new SomeClass)->process(function ($param) {});

@@ -17,18 +17,18 @@ use PhpParser\Node\Param;
 use PhpParser\NodeTraverser;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
-use Rector\Renaming\ValueObject\RenameFunctionLikeParamWithinCallLikeParam;
+use Rector\Renaming\ValueObject\RenameFunctionLikeParamWithinCallLikeArg;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeParamRector\RenameFunctionLikeParamWithinCallLikeParamRectorTest
+ * @see \Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector\RenameFunctionLikeParamWithinCallLikeArgRectorTest
  */
-final class RenameFunctionLikeParamWithinCallLikeParamRector extends AbstractRector implements ConfigurableRectorInterface
+final class RenameFunctionLikeParamWithinCallLikeArgRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var RenameFunctionLikeParamWithinCallLikeParam[]
+     * @var RenameFunctionLikeParamWithinCallLikeArg[]
      */
     private array $renameFunctionLikeParamWithinCallLikeParams = [];
 
@@ -46,7 +46,7 @@ CODE_SAMPLE
 (new SomeClass)->process(function ($parameter) {});
 CODE_SAMPLE
                 ,
-                [new RenameFunctionLikeParamWithinCallLikeParam('SomeClass', 'process', 0, 0, 'parameter')]
+                [new RenameFunctionLikeParamWithinCallLikeArg('SomeClass', 'process', 0, 0, 'parameter')]
             ),
         ]);
     }
@@ -106,19 +106,19 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, RenameFunctionLikeParamWithinCallLikeParam::class);
+        Assert::allIsAOf($configuration, RenameFunctionLikeParamWithinCallLikeArg::class);
 
         $this->renameFunctionLikeParamWithinCallLikeParams = $configuration;
     }
 
     private function processFunctionLike(
         CallLike $callLike,
-        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
     ): void {
-        if (is_int($renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition())) {
-            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeParam);
+        if (is_int($renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition())) {
+            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
         } else {
-            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeParam);
+            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
         }
 
         if (! $arg instanceof Arg) {
@@ -130,14 +130,14 @@ CODE_SAMPLE
             return;
         }
 
-        if (! isset($functionLike->params[$renameFunctionLikeParamWithinCallLikeParam->getFunctionLikePosition()])) {
+        if (! isset($functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()])) {
             return;
         }
 
         $this->refactorParameter(
-            $functionLike->params[$renameFunctionLikeParamWithinCallLikeParam->getFunctionLikePosition()],
+            $functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()],
             $functionLike,
-            $renameFunctionLikeParamWithinCallLikeParam
+            $renameFunctionLikeParamWithinCallLikeArg
         );
     }
 
@@ -147,7 +147,7 @@ CODE_SAMPLE
     private function refactorParameter(
         Param $param,
         FunctionLike $functionLike,
-        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
     ): void {
         if (! $param->var instanceof Variable) {
             return;
@@ -163,17 +163,17 @@ CODE_SAMPLE
         if ($this->isVariableNameUsedInFunctionLike(
             $functionLike,
             $oldName,
-            $renameFunctionLikeParamWithinCallLikeParam->getNewParamName()
+            $renameFunctionLikeParamWithinCallLikeArg->getNewParamName()
         )) {
             return;
         }
 
-        $param->var->name = $renameFunctionLikeParamWithinCallLikeParam->getNewParamName();
+        $param->var->name = $renameFunctionLikeParamWithinCallLikeArg->getNewParamName();
 
         // refactor the FunctionLike usage of the variable
         $this->traverseNodesWithCallable($functionLike, function (Node $node) use (
             $oldName,
-            $renameFunctionLikeParamWithinCallLikeParam
+            $renameFunctionLikeParamWithinCallLikeArg
         ): ?Node {
             if (! $node instanceof Variable) {
                 return null;
@@ -183,7 +183,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $node->name = $renameFunctionLikeParamWithinCallLikeParam->getNewParamName();
+            $node->name = $renameFunctionLikeParamWithinCallLikeArg->getNewParamName();
 
             return $node;
         });
@@ -238,13 +238,13 @@ CODE_SAMPLE
 
     private function processPositionalArg(
         CallLike $callLike,
-        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
     ): ?Arg {
         if ($callLike->getArgs() === []) {
             return null;
         }
 
-        $arg = $callLike->args[$renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition()] ?? null;
+        $arg = $callLike->args[$renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition()] ?? null;
 
         if (! $arg instanceof Arg) {
             return null;
@@ -260,16 +260,16 @@ CODE_SAMPLE
 
     private function processNamedArg(
         CallLike $callLike,
-        RenameFunctionLikeParamWithinCallLikeParam $renameFunctionLikeParamWithinCallLikeParam
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
     ): ?Arg {
         $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-            $renameFunctionLikeParamWithinCallLikeParam
+            $renameFunctionLikeParamWithinCallLikeArg
         ): bool {
             if ($arg->name === null) {
                 return false;
             }
 
-            return $arg->name->name === $renameFunctionLikeParamWithinCallLikeParam->getCallLikePosition();
+            return $arg->name->name === $renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition();
         });
 
         if ($args === []) {

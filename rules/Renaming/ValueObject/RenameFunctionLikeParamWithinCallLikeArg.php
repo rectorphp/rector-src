@@ -7,7 +7,7 @@ namespace Rector\Renaming\ValueObject;
 use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
-final readonly class RenameFunctionLikeParamWithinCallLikeParam
+final readonly class RenameFunctionLikeParamWithinCallLikeArg
 {
     /**
      * @param int<0, max>|string $callLikePosition
