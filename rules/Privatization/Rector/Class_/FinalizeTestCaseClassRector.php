@@ -7,6 +7,7 @@ namespace Rector\Privatization\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -77,6 +78,10 @@ CODE_SAMPLE
         $classReflection = $this->reflectionProvider->getClass($className);
         if (! $classReflection->isSubclassOf('PHPUnit\Framework\TestCase')) {
             return null;
+        }
+
+        if ($node->attrGroups !== []) {
+            $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
         $this->visibilityManipulator->makeFinal($node);
