@@ -28,6 +28,13 @@ final class ProjectComposerJsonPhpVersionResolver
         $composerJsonContents = FileSystem::read($composerJson);
         $projectComposerJson = Json::decode($composerJsonContents, Json::FORCE_ARRAY);
 
+        // give this one a priority, as more generic one
+        $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;
+        if ($requirePhpVersion !== null) {
+            self::$cachedPhpVersions[$composerJson] = self::createIntVersionFromComposerVersion($requirePhpVersion);
+            return self::$cachedPhpVersions[$composerJson];
+        }
+
         // see https://getcomposer.org/doc/06-config.md#platform
         $platformPhp = $projectComposerJson['config']['platform']['php'] ?? null;
         if ($platformPhp !== null) {
@@ -35,14 +42,7 @@ final class ProjectComposerJsonPhpVersionResolver
             return self::$cachedPhpVersions[$composerJson];
         }
 
-        $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;
-        if ($requirePhpVersion === null) {
-            return self::$cachedPhpVersions[$composerJson] = null;
-        }
-
-        self::$cachedPhpVersions[$composerJson] = self::createIntVersionFromComposerVersion($requirePhpVersion);
-
-        return self::$cachedPhpVersions[$composerJson];
+        return null;
     }
 
     private static function createIntVersionFromComposerVersion(string $projectPhpVersion): int
