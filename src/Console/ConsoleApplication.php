@@ -42,7 +42,7 @@ final class ConsoleApplication extends Application
     public function doRun(InputInterface $input, OutputInterface $output): int
     {
         $isXdebugAllowed = $input->hasParameterOption('--xdebug');
-        if (!$isXdebugAllowed) {
+        if (! $isXdebugAllowed) {
             $xdebugHandler = new XdebugHandler('rector');
             $xdebugHandler->setPersistent();
             $xdebugHandler->check();

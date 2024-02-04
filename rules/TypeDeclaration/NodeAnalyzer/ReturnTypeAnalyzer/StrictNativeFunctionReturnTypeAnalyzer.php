@@ -33,7 +33,10 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
             return null;
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class, YieldFrom::class])) {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $functionLike,
+            [Yield_::class, YieldFrom::class]
+        )) {
             return null;
         }
 

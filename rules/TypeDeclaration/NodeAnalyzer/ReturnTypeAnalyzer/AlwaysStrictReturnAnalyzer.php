@@ -32,7 +32,10 @@ final readonly class AlwaysStrictReturnAnalyzer
             return [];
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($functionLike, [Yield_::class, YieldFrom::class])) {
+        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+            $functionLike,
+            [Yield_::class, YieldFrom::class]
+        )) {
             return [];
         }
 
