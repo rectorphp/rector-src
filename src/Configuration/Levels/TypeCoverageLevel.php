@@ -29,6 +29,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
+use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
@@ -56,7 +57,8 @@ final class TypeCoverageLevel
         // php 7.0
         // start with closure first, as safest
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
-        // @todo continue with functions
+        AddFunctionVoidReturnTypeWhereNoReturnRector::class,
+
         AddVoidReturnTypeWhereNoReturnRector::class,
 
         // php 7.4
