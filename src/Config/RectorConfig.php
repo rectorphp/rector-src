@@ -48,6 +48,7 @@ final class RectorConfig extends Container
      */
     public function paths(array $paths): void
     {
+        Assert::isNonEmptyList($paths, 'paths must not be empty');
         Assert::allString($paths);
 
         // ensure paths exist
