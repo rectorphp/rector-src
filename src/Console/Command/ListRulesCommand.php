@@ -34,6 +34,8 @@ final class ListRulesCommand extends Command
         $this->setName('list-rules');
         $this->setDescription('Show loaded Rectors');
 
+        $this->setAliases(['show-rules']);
+
         $this->addOption(
             Option::OUTPUT_FORMAT,
             null,

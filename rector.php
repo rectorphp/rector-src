@@ -22,6 +22,8 @@ return RectorConfig::configure()
         earlyReturn: true,
         naming: true
     )
+    // @experimental since 0.19.7 for more smooth Rector integration to new project
+    ->withTypeCoverageLevel(10)
     ->withPhpSets()
     ->withRules([DeclareStrictTypesRector::class])
     ->withPaths([
