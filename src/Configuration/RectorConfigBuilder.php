@@ -124,7 +124,11 @@ final class RectorConfigBuilder
         $uniqueSets = array_unique($this->sets);
 
         $rectorConfig->sets($uniqueSets);
-        $rectorConfig->paths($this->paths);
+
+        if ($this->paths !== []) {
+            $rectorConfig->paths($this->paths);
+        }
+
         $rectorConfig->skip($this->skip);
         $rectorConfig->rules($this->rules);
 
