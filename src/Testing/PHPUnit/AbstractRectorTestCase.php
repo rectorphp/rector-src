@@ -82,7 +82,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
                 $resetable->reset();
             }
 
-            $this->forgetRectorsRulesAndCollectors();
+            $this->forgetRectorsRules();
             $rectorConfig->resetRuleConfigurations();
 
             // this has to be always empty, so we can add new rules with their configuration
@@ -169,7 +169,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         );
     }
 
-    protected function forgetRectorsRulesAndCollectors(): void
+    private function forgetRectorsRules(): void
     {
         $rectorConfig = self::getContainer();
 

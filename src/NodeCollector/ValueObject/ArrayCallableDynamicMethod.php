@@ -7,9 +7,6 @@ namespace Rector\NodeCollector\ValueObject;
 use PhpParser\Node\Expr;
 use Rector\Validation\RectorAssert;
 
-/**
- * @api
- */
 final readonly class ArrayCallableDynamicMethod
 {
     public function __construct(
