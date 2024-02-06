@@ -645,6 +645,12 @@ final class PhpVersionFeature
     public const SENSITIVE_PARAMETER_ATTRIBUTE = PhpVersion::PHP_82;
 
     /**
+     * @see https://wiki.php.net/rfc/deprecate_dynamic_properties
+     * @var int
+     */
+    public const ALLOW_DYNAMIC_PROPERTIES_ATTRIBUTE = PhpVersion::PHP_82;
+
+    /**
      * @see https://wiki.php.net/rfc/marking_overriden_methods
      * @var int
      */
