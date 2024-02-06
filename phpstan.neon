@@ -485,4 +485,24 @@ parameters:
                  - src/PhpParser/Node/Value/ValueResolver.php
                  - src/Configuration/RectorConfigBuilder.php
 
-        - '#Call to deprecated method getChildrenOfClassReflection\(\) of class Rector\\FamilyTree\\Reflection\\FamilyRelationsAnalyze#'
+        # binary compare false positive
+        -
+             message: '#Only booleans are allowed in an if condition, int<0, \d+> given#'
+             path: src/CustomRules/SimpleNodeDumper.php
+
+        # dynamic printer
+        -
+             message: '#Use explicit names over dynamic ones#'
+             path: src/CustomRules/SimpleNodeDumper.php
+        -
+             message: '#Variable property access on PhpParser\\Node#'
+             path: src/CustomRules/SimpleNodeDumper.php
+
+        -
+            message: '#Cognitive complexity for "Rector\\CustomRules\\SimpleNodeDumper\:\:dump\(\)" is 36, keep it under 11#'
+            path: src/CustomRules/SimpleNodeDumper.php
+
+        # way to invoke repeated quesitons in symfony
+        -
+            message: '#While loop condition is always true#'
+            path: src/Console/Command/DetectNodeCommand.php
