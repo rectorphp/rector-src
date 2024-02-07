@@ -50,6 +50,7 @@ use Rector\Config\RectorConfig;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Console\Command\CustomRuleCommand;
+use Rector\Console\Command\DetectNodeCommand;
 use Rector\Console\Command\ListRulesCommand;
 use Rector\Console\Command\ProcessCommand;
 use Rector\Console\Command\SetupCICommand;
@@ -399,6 +400,7 @@ final class LazyContainerFactory
         $rectorConfig->singleton(SetupCICommand::class);
         $rectorConfig->singleton(ListRulesCommand::class);
         $rectorConfig->singleton(CustomRuleCommand::class);
+        $rectorConfig->singleton(DetectNodeCommand::class);
 
         $rectorConfig->when(ListRulesCommand::class)
             ->needs('$rectors')
@@ -409,8 +411,6 @@ final class LazyContainerFactory
             $rectorConfig->singleton(MissingInSetCommand::class);
             $rectorConfig->singleton(OutsideAnySetCommand::class);
         }
-
-        $rectorConfig->alias(TypeParser::class, BetterTypeParser::class);
 
         $rectorConfig->singleton(FileProcessor::class);
         $rectorConfig->singleton(PostFileProcessor::class);
@@ -541,6 +541,13 @@ final class LazyContainerFactory
             BasePhpDocNodeVisitorInterface::class
         );
 
+        // PHP 8.0 attributes
+        $this->registerTagged(
+            $rectorConfig,
+            self::ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES,
+            AnnotationToAttributeMapperInterface::class
+        );
+
         $this->registerTagged($rectorConfig, self::TYPE_MAPPER_CLASSES, TypeMapperInterface::class);
         $this->registerTagged($rectorConfig, self::PHPDOC_TYPE_MAPPER_CLASSES, PhpDocTypeMapperInterface::class);
         $this->registerTagged($rectorConfig, self::NODE_NAME_RESOLVER_CLASSES, NodeNameResolverInterface::class);
@@ -563,12 +570,6 @@ final class LazyContainerFactory
             }
         );
 
-        $this->registerTagged(
-            $rectorConfig,
-            self::ANNOTATION_TO_ATTRIBUTE_MAPPER_CLASSES,
-            AnnotationToAttributeMapperInterface::class
-        );
-
         $rectorConfig->when(AnnotationToAttributeMapper::class)
             ->needs('$annotationToAttributeMappers')
             ->giveTagged(AnnotationToAttributeMapperInterface::class);
@@ -577,7 +578,7 @@ final class LazyContainerFactory
             ->needs('$outputFormatters')
             ->giveTagged(OutputFormatterInterface::class);
 
-        // #[Required]-like setter
+        // required-like setter
         $rectorConfig->afterResolving(
             ArrayAnnotationToAttributeMapper::class,
             static function (
@@ -637,11 +638,6 @@ final class LazyContainerFactory
                 $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }
         );
-
-        $rectorConfig->singleton(Parser::class, static function (Container $container) {
-            $phpstanServiceFactory = $container->make(PHPStanServicesFactory::class);
-            return $phpstanServiceFactory->createPHPStanParser();
-        });
 
         $rectorConfig->afterResolving(
             CurlyListNodeAnnotationToAttributeMapper::class,
