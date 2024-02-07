@@ -43,7 +43,7 @@ final class VendorMissAnalyseGuard
 
         foreach ($filePaths as $filePath) {
             $normalizedPath = PathNormalizer::normalize(realpath($filePath));
-            if (str_starts_with(substr($normalizedPath, strlen($cwd)), '/vendor')) {
+            if (str_starts_with(substr($normalizedPath, strlen($cwd)), '/vendor/')) {
                 return true;
             }
         }
