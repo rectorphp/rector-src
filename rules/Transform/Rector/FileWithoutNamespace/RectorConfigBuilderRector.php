@@ -87,6 +87,7 @@ CODE_SAMPLE
             $newExpr = new StaticCall(new FullyQualified('Rector\Config\RectorConfig'), 'configure');
 
             $rules = new Array_();
+            $paths = new Array_();
             foreach ($stmts as $rectorConfigStmt) {
                 // complex stmts should be skipped, eg: with if else
                 if (! $rectorConfigStmt instanceof Expression) {
@@ -112,15 +113,24 @@ CODE_SAMPLE
                 } elseif ($this->isName($rectorConfigStmt->expr->name, 'rules')) {
                     Assert::isAOf($rectorConfigStmt->expr->getArgs()[0]->value, Array_::class);
                     $rules->items = array_merge($rules->items, $rectorConfigStmt->expr->getArgs()[0]->value->items);
-                } else {
-                    // implementing method by method
-                    return null;
+                } elseif ($this->isName($rectorConfigStmt->expr->name, 'paths')) {
+                    Assert::isAOf($rectorConfigStmt->expr->getArgs()[0]->value, Array_::class);
+                    $paths = $rectorConfigStmt->expr->getArgs()[0]->value;
                 }
             }
 
-            if ($rules->items !== []) {
-                $stmt->expr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
+            if ($paths->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withPaths', [$paths]);
                 $hasChanged = true;
+            }
+
+            if ($rules->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
+                $hasChanged = true;
+            }
+
+            if ($hasChanged) {
+                $stmt->expr = $newExpr;
             }
         }
 
