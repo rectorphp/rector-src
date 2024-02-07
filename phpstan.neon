@@ -56,6 +56,7 @@ parameters:
                 - src/PhpParser/Printer/BetterStandardPrinter.php #41
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php
+                - src/CustomRules/SimpleNodeDumper.php
 
         -
             message: '#Cognitive complexity for "(.*?)" is (.*?), keep it under 11#'
@@ -64,17 +65,16 @@ parameters:
                 - src/PhpParser/Node/Value/ValueResolver.php
                 - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
                 - rules/Php80/NodeResolver/SwitchExprsResolver.php
-                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
                 - src/NodeTypeResolver/NodeTypeResolver.php
                 - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
                 - src/Parallel/Application/ParallelFileProcessor.php
                 # rector rules
                 - rules/*/Rector/*Rector.php
                 - utils/Rector/MoveAbstractRectorToChildrenRector.php
-                - rules/TypeDeclaration/Rector/*
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
                 - src/Configuration/RectorConfigBuilder.php
+                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
 
         # is nested expr
         -
@@ -116,8 +116,6 @@ parameters:
         # known types
         - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
 
-        - '#Method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseChildAndStoreItsPositions\(\) should return PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode\|PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode but returns PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode#'
-
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
 
@@ -149,40 +147,11 @@ parameters:
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: src/Parallel/Application/ParallelFileProcessor.php
 
-        # strict rules
-        - '#Dynamic call to static method PHPUnit\\Framework\\Assert\:\:(.*?)\(\)#'
-
-        # specific generics
-        - '#Parameter \#1 \$node (.*?) of method Rector\\(.*?)Rector\:\:(refactor|refactorWithScope)\(\) should be contravariant with parameter \$node \(PhpParser\\Node\) of method Rector\\Contract\\Rector#'
-
         # generics
         - '#Parameter \#1 \$stmts of class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
 
-        # strict - resolve later
-        - '#Foreach overwrites \$(.*?) with its value variable#'
-
-        # stricter child type on purpose
-        - '#Parameter \#1 \$nodes \(array<PhpParser\\Node\\Stmt\>\) of method Rector\\PostRector\\Rector\\(.*?)\:\:beforeTraverse\(\) should be contravariant with parameter \$nodes \(array<PhpParser\\Node\>\) of method PhpParser\\NodeVisitor\:\:beforeTraverse\(\)#'
-
-        # stricter child type on purpose
-        - '#Parameter \#1 \$tokenIterator \(Rector\\BetterPhpDocParser\\ValueObject\\Parser\\BetterTokenIterator\) of method Rector\\BetterPhpDocParser\\PhpDocParser\\BetterPhpDocParser\:\:parseTagValue\(\) should be contravariant with parameter \$tokens \(PHPStan\\PhpDocParser\\Parser\\TokenIterator\) of method PHPStan\\PhpDocParser\\Parser\\PhpDocParser\:\:parseTagValue\(\)#'
-        - '#Parameter \#1 \$nodes \(array<PhpParser\\Node\\Stmt\>\) of method Rector\\PostRector\\Rector\\(.*?)\:\:beforeTraverse\(\) should be contravariant with parameter \$nodes \(array<PhpParser\\Node\>\) of method PhpParser\\NodeVisitorAbstract\:\:beforeTraverse\(\)#'
-
-        # on purpose, allows empty tokens
-        - '#Rector\\BetterPhpDocParser\\ValueObject\\Parser\\BetterTokenIterator\:\:__construct\(\) does not call parent constructor from PHPStan\\PhpDocParser\\Parser\\TokenIterator#'
-
-        # confused generics
-        - '#Return type \(array<class\-string<PhpParser\\Node\>\>\) of method Rector\\NodeTypeResolver\\NodeTypeResolver\\(.*?)TypeResolver\:\:getNodeClasses\(\) should be covariant with return type \(array<class\-string<PhpParser\\Node\\(.*?)\>\>\) of method Rector\\NodeTypeResolver\\Contract\\NodeTypeResolverInterface<PhpParser\\Node\\(.*?)\>\:\:getNodeClasses\(\)#'
-
-        # skipped on purpose, as ctor overrie
-        - '#Rector\\StaticTypeMapper\\ValueObject\\Type\\SimpleStaticType\:\:__construct\(\) does not call parent constructor from PHPStan\\Type\\StaticType#'
-
         # return bool on change
         - '#Method "(change|remove)(.*?)" returns bool type, so the name should start with is/has/was#'
-
-        -
-            message: '#Casting to (float|string|int) something that.{1}s already (.*?)#'
-            path: src/NodeTypeResolver/NodeTypeResolver/ScalarTypeResolver.php
 
         -
             message: '#Use value object over return of values#'
@@ -276,17 +245,7 @@ parameters:
                 - tests/Skipper/Skipper/SkipperTest.php
                 - src/Console/Command/CustomRuleCommand.php
 
-        # validation
-        - '#Call to static method Webmozart\\Assert\\Assert\:\:(.*?) always evaluate to true#'
-
         # phpdoc node traversing
-        -
-            message: "#Implicit array creation is not allowed \\- variable \\$doNodes might not exist#"
-            path: "src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
-
-        -
-            message: '#Variable property access on TNode of PHPStan\\PhpDocParser\\Ast\\Node#'
-            path: "src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
         -
             message: '#Use explicit names over dynamic ones#'
             path: "src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
@@ -294,10 +253,6 @@ parameters:
         -
             message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: src/PhpDocParser/PhpParser/SmartPhpParserFactory.php
-
-        -
-            message: '#Only booleans are allowed in a negated boolean, string\|false given#'
-            path: src/Testing/Fixture/FixtureFileUpdater.php
 
         # known existing class
         -
@@ -311,10 +266,6 @@ parameters:
         -
             message: '#Function "(.*?)\(\)" cannot be used/left in the code#'
             path: src/Util/Reflection/PrivatesAccessor.php
-
-        -
-            message: '#Offset \(int\|string\) on array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
-            path: src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
         -
             message: '#Method Rector\\Util\\ArrayParametersMerger\:\:mergeLeftToRightWithCallable\(\) has parameter \$mergeCallback with no signature specified for callable#'
@@ -364,8 +315,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
             path: src/functions/node_helper.php
 
-        - '#Call to method PHPUnit\\Framework\\Assert\:\:assert(.*?) will always evaluate to (true|false)#'
-
         - '#Doing instanceof PHPStan\\Type\\.* is error\-prone and deprecated(\. Use Type\:\:.*\(\) (or .* )?instead)?#'
         - '#Fetching class constant class of deprecated class Rector\\Php81\\Rector\\ClassConst\\FinalizePublicClassConstantRector#'
         - '#Fetching class constant class of deprecated class Rector\\Privatization\\Rector\\Class_\\FinalizeClassesWithoutChildrenRector#'
@@ -385,8 +334,6 @@ parameters:
 
         - '#Parameter \#3 \$assign of method Rector\\CodeQuality\\Rector\\FunctionLike\\SimplifyUselessVariableRector\:\:processSimplifyUselessVariable\(\) expects PhpParser\\Node\\Expr\\Assign\|PhpParser\\Node\\Expr\\AssignOp, PhpParser\\Node\\Expr given#'
 
-        - '#Return type (.*?) should be covariant with return type \(1\|2\|3\|4\|array<PhpParser\\Node>\|PhpParser\\Node\|null\) of method Rector\\Contract\\Rector(.*?)\:\:(.*?)#'
-
         # false positive
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
@@ -396,11 +343,6 @@ parameters:
         -
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: src/VersionBonding/PhpVersionedFilter.php
-
-        -
-            message: '#Only booleans are allowed in an if condition, mixed given#'
-            paths:
-                - src/NodeManipulator/PropertyManipulator.php
 
         # submethods that handle smaller change
         - '#Method "refactor(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
@@ -467,26 +409,14 @@ parameters:
                  - src/PhpParser/Node/Value/ValueResolver.php
                  - src/Configuration/RectorConfigBuilder.php
 
-        # binary compare false positive
-        -
-             message: '#Only booleans are allowed in an if condition, int<0, \d+> given#'
-             path: src/CustomRules/SimpleNodeDumper.php
-
         # dynamic printer
         -
              message: '#Use explicit names over dynamic ones#'
-             path: src/CustomRules/SimpleNodeDumper.php
-        -
-             message: '#Variable property access on PhpParser\\Node#'
              path: src/CustomRules/SimpleNodeDumper.php
 
         # complex logic, to keep on single place for easy adjustments
         -
             message: '#Cognitive complexity for "Rector\\CustomRules\\SimpleNodeDumper(.*?)" is \d+, keep it under 11#'
-            path: src/CustomRules/SimpleNodeDumper.php
-
-        -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
             path: src/CustomRules/SimpleNodeDumper.php
 
         # way to invoke repeated quesitons in symfony
@@ -498,3 +428,7 @@ parameters:
         -
             message: '#Access to an undefined property PhpParser\\Node\\Scalar\:\:\$value#'
             path: src/CustomRules/SimpleNodeDumper.php
+
+        -
+            message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
+            path: src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
