@@ -46,7 +46,6 @@
         "phpstan/extension-installer": "^1.3.1",
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "phpstan/phpstan-phpunit": "^1.3.11",
-        "phpstan/phpstan-strict-rules": "^1.5",
         "phpstan/phpstan-webmozart-assert": "^1.2.2",
         "phpunit/phpunit": "^10.5",
         "rector/rector-generator": "^0.7.10",
