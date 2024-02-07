@@ -193,9 +193,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType &&
-            ! $type instanceof NullType &&
-            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type))) {
+        if ($this->shouldSkipType($type)) {
             return null;
         }
 
@@ -215,6 +213,13 @@ CODE_SAMPLE
         $funcCall->args = $args;
 
         return $funcCall;
+    }
+
+    private function shouldSkipType(Type $type): bool
+    {
+        return ! $type instanceof MixedType &&
+            ! $type instanceof NullType &&
+            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type));
     }
 
     private function shouldSkipTrait(Expr $expr, Type $type, bool $isTrait): bool
