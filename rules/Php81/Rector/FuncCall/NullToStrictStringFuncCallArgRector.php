@@ -188,9 +188,14 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $type instanceof MixedType && ! $type instanceof NullType && ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable(
-            $type
-        ))) {
+        $nativeType = $this->nodeTypeResolver->getNativeType($argValue);
+        if ($nativeType->isString()->yes()) {
+            return null;
+        }
+
+        if (! $type instanceof MixedType &&
+            ! $type instanceof NullType &&
+            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type))) {
             return null;
         }
 
