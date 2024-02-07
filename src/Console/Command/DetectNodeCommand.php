@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
-use Throwable;
 use Nette\Utils\Strings;
 use Rector\CustomRules\SimpleNodeDumper;
 use Rector\PhpParser\Parser\SimplePhpParser;
@@ -14,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 final class DetectNodeCommand extends Command
 {
@@ -64,10 +64,18 @@ final class DetectNodeCommand extends Command
     private function addConsoleColors(string $contents): string
     {
         // decorate class names
-        $colorContents = Strings::replace($contents, self::CLASS_NAME_REGEX, static fn(array $match): string => '<fg=green>' . $match['class_name'] . '</>(');
+        $colorContents = Strings::replace(
+            $contents,
+            self::CLASS_NAME_REGEX,
+            static fn (array $match): string => '<fg=green>' . $match['class_name'] . '</>('
+        );
 
         // decorate keys
-        return Strings::replace($colorContents, self::PROPERTY_KEY_REGEX, static fn(array $match): string => '<fg=yellow>' . $match['key'] . '</>:');
+        return Strings::replace(
+            $colorContents,
+            self::PROPERTY_KEY_REGEX,
+            static fn (array $match): string => '<fg=yellow>' . $match['key'] . '</>:'
+        );
     }
 
     private function askQuestionAndDumpNode(): void

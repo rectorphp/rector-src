@@ -116,10 +116,12 @@ CODE_SAMPLE
                     $rules->items = array_merge($rules->items, $rectorConfigStmt->expr->getArgs()[0]->value->items);
                 } elseif ($this->isName($rectorConfigStmt->expr->name, 'paths')) {
                     Assert::isAOf($rectorConfigStmt->expr->getArgs()[0]->value, Array_::class);
-                    $paths = $rectorConfigStmt->expr->getArgs()[0]->value;
+                    $paths = $rectorConfigStmt->expr->getArgs()[0]
+->value;
                 } elseif ($this->isName($rectorConfigStmt->expr->name, 'skip')) {
                     Assert::isAOf($rectorConfigStmt->expr->getArgs()[0]->value, Array_::class);
-                    $skips = $rectorConfigStmt->expr->getArgs()[0]->value;
+                    $skips = $rectorConfigStmt->expr->getArgs()[0]
+->value;
                 } else {
                     // implementing method by method
                     return null;

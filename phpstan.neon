@@ -69,30 +69,12 @@ parameters:
                 - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
                 - src/Parallel/Application/ParallelFileProcessor.php
                 # rector rules
-                - rules/CodeQuality/Rector/If_/SimplifyIfNullableReturnRector.php
-                - rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php
-                - rules/CodeQuality/Rector/Isset_/IssetOnPropertyObjectToPropertyExistsRector.php
+                - rules/*/Rector/*Rector.php
                 - utils/Rector/MoveAbstractRectorToChildrenRector.php
                 - rules/TypeDeclaration/Rector/*
-                - rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php
-                - rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php
-                - rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php
-                - rules/Php83/Rector/ClassConst/AddTypeToConstRector.php
-                - rules/EarlyReturn/Rector/Return_/PreparedValueToEarlyReturnRector.php
-                - rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchExprVariableRector.php
-                - rules/DeadCode/Rector/StaticCall/RemoveParentCallWithoutParentRector.php
-                - rules/DeadCode/Rector/If_/RemoveTypedPropertyDeadInstanceOfRector.php
-                - rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php
                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                 - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
-                - rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php
-                - rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php
-                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-                - rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php
-                - rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php
-                - rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php
                 - src/Configuration/RectorConfigBuilder.php
-                - rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php
 
         # is nested expr
         -

@@ -119,9 +119,31 @@ final class RectorConfigBuilder
 
     private ?string $symfonyContainerPhpFile = null;
 
+    /**
+     * To make sure type declarations set and level are not duplicated,
+     * as both contain same rules
+     */
+    private bool $isTypeCoverageLevelUsed = false;
+
+    private bool $isDeadCodeLevelUsed = false;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $uniqueSets = array_unique($this->sets);
+
+        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
+                PHP_EOL
+            ));
+        }
+
+        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables dead code set.%sRemove "->withDeadCodeLevel()" as it only duplicates it, or remove dead code set.',
+                PHP_EOL
+            ));
+        }
 
         $rectorConfig->sets($uniqueSets);
 
@@ -596,6 +618,8 @@ final class RectorConfigBuilder
      */
     public function withDeadCodeLevel(int $level): self
     {
+        $this->isDeadCodeLevelUsed = true;
+
         $levelRules = LevelRulesResolver::resolve(
             $level,
             DeadCodeLevel::RULE_LIST,
@@ -613,6 +637,8 @@ final class RectorConfigBuilder
      */
     public function withTypeCoverageLevel(int $level): self
     {
+        $this->isTypeCoverageLevelUsed = true;
+
         $levelRules = LevelRulesResolver::resolve(
             $level,
             TypeCoverageLevel::RULE_LIST,
