@@ -14,18 +14,6 @@ class SkipWithMagicGet
     ) {
     }
 
-    public static function reconstruct(array $data): static
-    {
-        return new static(
-            $data['id'],
-            $data['name'],
-            $data['email'],
-            $data['country'],
-            $data['created_at'],
-            $data['updated_at'],
-        );
-    }
-
     public function __get(string $name)
     {
         if (! property_exists($this, $name)) {
