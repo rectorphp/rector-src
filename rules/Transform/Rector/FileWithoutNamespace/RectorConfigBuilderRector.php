@@ -116,6 +116,9 @@ CODE_SAMPLE
                 } elseif ($this->isName($rectorConfigStmt->expr->name, 'paths')) {
                     Assert::isAOf($rectorConfigStmt->expr->getArgs()[0]->value, Array_::class);
                     $paths = $rectorConfigStmt->expr->getArgs()[0]->value;
+                } else {
+                    // implementing method by method
+                    return null;
                 }
             }
 
