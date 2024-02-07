@@ -71,8 +71,8 @@ final class SimpleNodeDumper
      */
     private static function isStringList(array $items): bool
     {
-        foreach ($items as $value) {
-            if (! is_string($value)) {
+        foreach ($items as $item) {
+            if (! is_string($item)) {
                 return false;
             }
         }
@@ -83,25 +83,31 @@ final class SimpleNodeDumper
     private static function dumpFlags(mixed $flags): string
     {
         $strs = [];
-        if ($flags & Class_::MODIFIER_PUBLIC) {
+        if (($flags & Class_::MODIFIER_PUBLIC) !== 0) {
             $strs[] = 'MODIFIER_PUBLIC';
         }
-        if ($flags & Class_::MODIFIER_PROTECTED) {
+
+        if (($flags & Class_::MODIFIER_PROTECTED) !== 0) {
             $strs[] = 'MODIFIER_PROTECTED';
         }
-        if ($flags & Class_::MODIFIER_PRIVATE) {
+
+        if (($flags & Class_::MODIFIER_PRIVATE) !== 0) {
             $strs[] = 'MODIFIER_PRIVATE';
         }
-        if ($flags & Class_::MODIFIER_ABSTRACT) {
+
+        if (($flags & Class_::MODIFIER_ABSTRACT) !== 0) {
             $strs[] = 'MODIFIER_ABSTRACT';
         }
-        if ($flags & Class_::MODIFIER_STATIC) {
+
+        if (($flags & Class_::MODIFIER_STATIC) !== 0) {
             $strs[] = 'MODIFIER_STATIC';
         }
-        if ($flags & Class_::MODIFIER_FINAL) {
+
+        if (($flags & Class_::MODIFIER_FINAL) !== 0) {
             $strs[] = 'MODIFIER_FINAL';
         }
-        if ($flags & Class_::MODIFIER_READONLY) {
+
+        if (($flags & Class_::MODIFIER_READONLY) !== 0) {
             $strs[] = 'MODIFIER_READONLY';
         }
 
@@ -146,7 +152,7 @@ final class SimpleNodeDumper
 
     private static function dumpSingleNode(Node $node): string
     {
-        $result = get_class($node);
+        $result = $node::class;
 
         // print simple nodes on same line, to make output more readable
         if ($node instanceof Variable && is_string($node->name)) {
