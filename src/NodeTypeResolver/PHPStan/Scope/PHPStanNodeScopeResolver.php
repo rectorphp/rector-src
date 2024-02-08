@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use Throwable;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -121,7 +122,7 @@ final class PHPStanNodeScopeResolver
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
             if ($node instanceof FileWithoutNamespace) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->nodeScopeResolver->processNodes($node->stmts, $mutatingScope, $nodeCallback);
+                $this->processNodes($node->stmts,$filePath, $mutatingScope);
 
                 return;
             }
@@ -178,7 +179,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Trait_) {
-                $this->processTrait($node, $mutatingScope, $nodeCallback);
+                $this->processTrait($node, $mutatingScope, $filePath);
                 return;
             }
 
@@ -197,7 +198,13 @@ final class PHPStanNodeScopeResolver
             }
         };
 
-        $this->nodeScopeResolver->processNodes($stmts, $scope, $nodeCallback);
+        try {
+            $this->nodeScopeResolver->processNodes($stmts, $scope, $nodeCallback);
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() !== 'Internal error.') {
+                throw $throwable;
+            }
+        }
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
@@ -382,10 +389,7 @@ final class PHPStanNodeScopeResolver
         return $classLike->name->toString();
     }
 
-    /**
-     * @param callable(Node $trait, MutatingScope $scope): void $nodeCallback
-     */
-    private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, callable $nodeCallback): void
+    private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, string $filePath): void
     {
         $traitName = $this->resolveClassName($trait);
 
@@ -403,7 +407,7 @@ final class PHPStanNodeScopeResolver
         $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
 
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
-        $this->nodeScopeResolver->processNodes($trait->stmts, $traitScope, $nodeCallback);
+        $this->processNodes($trait->stmts, $filePath, $traitScope);
         $this->decorateTraitAttrGroups($trait, $traitScope);
     }
 }
