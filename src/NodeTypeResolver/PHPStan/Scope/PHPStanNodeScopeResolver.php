@@ -119,10 +119,10 @@ final class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use ($filePath): void {
             if ($node instanceof FileWithoutNamespace) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->processNodes($node->stmts,$filePath, $mutatingScope);
+                $this->processNodes($node->stmts, $filePath, $mutatingScope);
 
                 return;
             }
