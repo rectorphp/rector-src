@@ -119,10 +119,10 @@ final class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use ($filePath): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
             if ($node instanceof FileWithoutNamespace) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->processNodes($node->stmts, $filePath, $mutatingScope);
+                $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
 
                 return;
             }
@@ -179,7 +179,7 @@ final class PHPStanNodeScopeResolver
             }
 
             if ($node instanceof Trait_) {
-                $this->processTrait($node, $mutatingScope, $filePath);
+                $this->processTrait($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -198,13 +198,7 @@ final class PHPStanNodeScopeResolver
             }
         };
 
-        try {
-            $this->nodeScopeResolver->processNodes($stmts, $scope, $nodeCallback);
-        } catch (Throwable $throwable) {
-            if ($throwable->getMessage() !== 'Internal error.') {
-                throw $throwable;
-            }
-        }
+        $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
 
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
@@ -212,6 +206,20 @@ final class PHPStanNodeScopeResolver
         $nodeTraverser->traverse($stmts);
 
         return $stmts;
+    }
+
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function nodeScopeResolverProcessNodes(array $stmts, MutatingScope $mutatingScope, callable $nodeCallback): void
+    {
+        try {
+            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() !== 'Internal error.') {
+                throw $throwable;
+            }
+        }
     }
 
     public function hasUnreachableStatementNode(): bool
@@ -389,7 +397,10 @@ final class PHPStanNodeScopeResolver
         return $classLike->name->toString();
     }
 
-    private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, string $filePath): void
+    /**
+     * @param callable(Node $trait, MutatingScope $scope): void $nodeCallback
+     */
+    private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         $traitName = $this->resolveClassName($trait);
 
@@ -407,7 +418,7 @@ final class PHPStanNodeScopeResolver
         $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
 
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
-        $this->processNodes($trait->stmts, $filePath, $traitScope);
+        $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
         $this->decorateTraitAttrGroups($trait, $traitScope);
     }
 }
