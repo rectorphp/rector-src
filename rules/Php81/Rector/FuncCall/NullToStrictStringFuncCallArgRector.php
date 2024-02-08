@@ -219,7 +219,7 @@ CODE_SAMPLE
     {
         return ! $type instanceof MixedType &&
             ! $type instanceof NullType &&
-            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type));
+            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type, true));
     }
 
     private function shouldSkipTrait(Expr $expr, Type $type, bool $isTrait): bool
