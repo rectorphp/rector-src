@@ -8,6 +8,7 @@ use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
+use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
@@ -127,6 +128,11 @@ final class RectorConfigBuilder
 
     private bool $isDeadCodeLevelUsed = false;
 
+    /**
+     * @var RegisteredService[]
+     */
+    private array $registerServices = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $uniqueSets = array_unique($this->sets);
@@ -149,6 +155,19 @@ final class RectorConfigBuilder
 
         if ($this->paths !== []) {
             $rectorConfig->paths($this->paths);
+        }
+
+        // must be in upper part, as these services might be used by rule registered bellow
+        foreach ($this->registerServices as $registerService) {
+            $rectorConfig->singleton($registerService->getClassName());
+
+            if ($registerService->getAlias()) {
+                $rectorConfig->alias($registerService->getClassName(), $registerService->getAlias());
+            }
+
+            if ($registerService->getTag()) {
+                $rectorConfig->tag($registerService->getClassName(), $registerService->getTag());
+            }
         }
 
         $rectorConfig->skip($this->skip);
@@ -646,6 +665,13 @@ final class RectorConfigBuilder
         );
 
         $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    public function registerService(string $className, ?string $alias = null, ?string $tag = null): self
+    {
+        $this->registerServices[] = new RegisteredService($className, $alias, $tag);
 
         return $this;
     }
