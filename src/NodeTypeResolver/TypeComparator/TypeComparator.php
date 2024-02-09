@@ -87,10 +87,6 @@ final readonly class TypeComparator
             $node
         );
 
-        // normalize bool union types
-        $phpParserNodeType = $this->normalizeConstantBooleanType($phpParserNodeType);
-        $phpStanDocType = $this->normalizeConstantBooleanType($phpStanDocType);
-
         // is scalar replace by another - remove it?
         $areDifferentScalarTypes = $this->scalarTypeComparator->areDifferentScalarTypes(
             $phpParserNodeType,
@@ -246,17 +242,6 @@ final readonly class TypeComparator
         $secondArrayType = $this->normalizeSingleUnionType($secondType->getItemType());
 
         return $this->areTypesEqual($firstArrayType, $secondArrayType);
-    }
-
-    private function normalizeConstantBooleanType(Type $type): Type
-    {
-        return TypeTraverser::map($type, static function (Type $type, callable $callable): Type {
-            if ($type instanceof ConstantBooleanType) {
-                return new BooleanType();
-            }
-
-            return $callable($type);
-        });
     }
 
     private function isTypeSelfAndDocParamTypeStatic(
