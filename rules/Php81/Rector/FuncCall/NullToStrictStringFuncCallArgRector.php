@@ -28,7 +28,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php81\Enum\NameNullToStrictNullFunctionMap;
 use Rector\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -45,8 +44,7 @@ final class NullToStrictStringFuncCallArgRector extends AbstractRector implement
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ArgsAnalyzer $argsAnalyzer,
         private readonly PropertyFetchAnalyzer $propertyFetchAnalyzer,
-        private readonly ValueResolver $valueResolver,
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
