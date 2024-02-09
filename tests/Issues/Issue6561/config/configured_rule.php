@@ -6,7 +6,6 @@ use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\Config\RectorConfig;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(ExplicitBoolCompareRector::class);
-    $rectorConfig->rule(CountArrayToEmptyArrayComparisonRector::class);
-};
+return RectorConfig::configure()->withRules(
+    [ExplicitBoolCompareRector::class, CountArrayToEmptyArrayComparisonRector::class]
+);

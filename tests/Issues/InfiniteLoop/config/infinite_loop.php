@@ -6,7 +6,4 @@ use Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector;
 use Rector\Config\RectorConfig;
 use Rector\Tests\Issues\InfiniteLoop\Rector\MethodCall\InfinityLoopRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(InfinityLoopRector::class);
-    $rectorConfig->rule(SimplifyDeMorganBinaryRector::class);
-};
+return RectorConfig::configure()->withRules([InfinityLoopRector::class, SimplifyDeMorganBinaryRector::class]);

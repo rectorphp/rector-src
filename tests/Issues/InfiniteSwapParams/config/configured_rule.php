@@ -6,6 +6,6 @@ use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([RemoveUnusedVariableInCatchRector::class, OptionalParametersAfterRequiredRector::class]);
-};
+return RectorConfig::configure()->withRules(
+    [RemoveUnusedVariableInCatchRector::class, OptionalParametersAfterRequiredRector::class]
+);

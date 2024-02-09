@@ -7,10 +7,6 @@ use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\Config\RectorConfig;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ChangeAndIfToEarlyReturnRector::class,
-        CompleteDynamicPropertiesRector::class,
-        SimplifyDeMorganBinaryRector::class,
-    ]);
-};
+return RectorConfig::configure()->withRules(
+    [ChangeAndIfToEarlyReturnRector::class, CompleteDynamicPropertiesRector::class, SimplifyDeMorganBinaryRector::class]
+);
