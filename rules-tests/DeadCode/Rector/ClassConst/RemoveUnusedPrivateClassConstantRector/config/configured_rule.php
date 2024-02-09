@@ -5,6 +5,4 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(RemoveUnusedPrivateClassConstantRector::class);
-};
+return RectorConfig::configure()->withRules([RemoveUnusedPrivateClassConstantRector::class]);

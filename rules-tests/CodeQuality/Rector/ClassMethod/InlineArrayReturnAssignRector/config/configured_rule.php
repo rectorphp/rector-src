@@ -5,6 +5,4 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\Config\RectorConfig;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(InlineArrayReturnAssignRector::class);
-};
+return RectorConfig::configure()->withRules([InlineArrayReturnAssignRector::class]);

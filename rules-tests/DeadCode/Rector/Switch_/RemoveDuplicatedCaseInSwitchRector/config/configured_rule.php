@@ -5,6 +5,4 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(RemoveDuplicatedCaseInSwitchRector::class);
-};
+return RectorConfig::configure()->withRules([RemoveDuplicatedCaseInSwitchRector::class]);
