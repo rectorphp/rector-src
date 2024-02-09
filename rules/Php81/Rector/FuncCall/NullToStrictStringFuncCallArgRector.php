@@ -215,11 +215,32 @@ CODE_SAMPLE
         return $funcCall;
     }
 
+    private function isValidUnionType(Type $type): bool
+    {
+        if (! $type instanceof UnionType) {
+            return false;
+        }
+
+        foreach ($type->getTypes() as $childType) {
+            if ($childType->isString()->yes()) {
+                continue;
+            }
+
+            if ($childType->isNull()->yes()) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private function shouldSkipType(Type $type): bool
     {
         return ! $type instanceof MixedType &&
             ! $type instanceof NullType &&
-            ! ($type instanceof UnionType && $this->unionTypeAnalyzer->isNullable($type, true));
+            ! $this->isValidUnionType($type);
     }
 
     private function shouldSkipTrait(Expr $expr, Type $type, bool $isTrait): bool
