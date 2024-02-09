@@ -9,7 +9,9 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\IntegerType;
@@ -18,6 +20,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -83,6 +86,14 @@ final readonly class TypeComparator
             $phpStanDocTypeNode,
             $node
         );
+
+        if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype($phpStanDocType, $phpParserNodeType)) {
+            return false;
+        }
+
+        // normalize bool union types
+        $phpParserNodeType = $this->normalizeConstantBooleanType($phpParserNodeType);
+        $phpStanDocType = $this->normalizeConstantBooleanType($phpStanDocType);
 
         // is scalar replace by another - remove it?
         $areDifferentScalarTypes = $this->scalarTypeComparator->areDifferentScalarTypes(
@@ -239,6 +250,17 @@ final readonly class TypeComparator
         $secondArrayType = $this->normalizeSingleUnionType($secondType->getItemType());
 
         return $this->areTypesEqual($firstArrayType, $secondArrayType);
+    }
+
+    private function normalizeConstantBooleanType(Type $type): Type
+    {
+        return TypeTraverser::map($type, static function (Type $type, callable $callable): Type {
+            if ($type instanceof ConstantBooleanType) {
+                return new BooleanType();
+            }
+
+            return $callable($type);
+        });
     }
 
     private function isTypeSelfAndDocParamTypeStatic(
