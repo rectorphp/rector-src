@@ -6,4 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 
-return RectorConfig::configure()->withRules([RemoveUnusedPrivateMethodRector::class, RemoveAlwaysElseRector::class]);
+return RectorConfig::configure()
+    ->withRules([RemoveUnusedPrivateMethodRector::class, RemoveAlwaysElseRector::class]);

@@ -6,4 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector;
 use Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector;
 
-return RectorConfig::configure()->withRules([ChangeAndIfToEarlyReturnRector::class, RemoveAlwaysElseRector::class]);
+return RectorConfig::configure()
+    ->withRules([ChangeAndIfToEarlyReturnRector::class, RemoveAlwaysElseRector::class]);

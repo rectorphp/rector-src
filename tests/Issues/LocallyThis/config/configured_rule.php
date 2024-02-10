@@ -6,6 +6,7 @@ use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRe
 use Rector\Config\RectorConfig;
 use Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector;
 
-return RectorConfig::configure()->withRules(
-    [LocallyCalledStaticMethodToNonStaticRector::class, ThisCallOnStaticMethodToStaticCallRector::class]
-);
+return RectorConfig::configure()
+    ->withRules(
+        [LocallyCalledStaticMethodToNonStaticRector::class, ThisCallOnStaticMethodToStaticCallRector::class]
+    );

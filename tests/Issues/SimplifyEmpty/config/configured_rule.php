@@ -7,6 +7,7 @@ use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
 use Rector\Config\RectorConfig;
 use Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector;
 
-return RectorConfig::configure()->withRules(
-    [SimplifyIfReturnBoolRector::class, SimplifyDeMorganBinaryRector::class, DisallowedEmptyRuleFixerRector::class]
-);
+return RectorConfig::configure()
+    ->withRules(
+        [SimplifyIfReturnBoolRector::class, SimplifyDeMorganBinaryRector::class, DisallowedEmptyRuleFixerRector::class]
+    );

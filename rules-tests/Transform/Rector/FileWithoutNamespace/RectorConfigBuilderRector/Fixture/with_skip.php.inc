@@ -23,6 +23,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 
 return \Rector\Config\RectorConfig::configure()->withSkip([
     __DIR__ . '/src/migrations',
-])->withRules([ReturnUnionTypeRector::class]);
+])
+->withRules([ReturnUnionTypeRector::class]);
 
 ?>

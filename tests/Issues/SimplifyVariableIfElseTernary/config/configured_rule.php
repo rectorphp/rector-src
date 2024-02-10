@@ -7,6 +7,11 @@ use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\Config\RectorConfig;
 
-return RectorConfig::configure()->withRules(
-    [SimplifyIfElseToTernaryRector::class, SimplifyUselessVariableRector::class, CompleteDynamicPropertiesRector::class]
-);
+return RectorConfig::configure()
+    ->withRules(
+        [
+            SimplifyIfElseToTernaryRector::class,
+            SimplifyUselessVariableRector::class,
+            CompleteDynamicPropertiesRector::class,
+        ]
+    );

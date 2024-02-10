@@ -7,6 +7,11 @@ use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\Config\RectorConfig;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
-return RectorConfig::configure()->withRules(
-    [SimplifyIfReturnBoolRector::class, NewlineAfterStatementRector::class, StringClassNameToClassConstantRector::class]
-);
+return RectorConfig::configure()
+    ->withRules(
+        [
+            SimplifyIfReturnBoolRector::class,
+            NewlineAfterStatementRector::class,
+            StringClassNameToClassConstantRector::class,
+        ]
+    );

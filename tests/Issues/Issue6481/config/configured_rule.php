@@ -6,4 +6,5 @@ use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector;
 
-return RectorConfig::configure()->withRules([EncapsedStringsToSprintfRector::class, RemoveDeadInstanceOfRector::class]);
+return RectorConfig::configure()
+    ->withRules([EncapsedStringsToSprintfRector::class, RemoveDeadInstanceOfRector::class]);
