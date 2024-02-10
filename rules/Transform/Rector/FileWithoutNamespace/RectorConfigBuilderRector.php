@@ -19,6 +19,7 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector\RectorConfigBuilderRectorTest
@@ -113,9 +114,11 @@ CODE_SAMPLE
                 $name = $this->getName($rectorConfigStmt->expr->name);
 
                 if ($name === 'rule') {
+                    Assert($rules instanceof Array_);
                     $rules->items[] = new ArrayItem($rectorConfigStmt->expr->getArgs()[0]->value);
                 } elseif (($name === 'rules')) {
                     if ($value instanceof Array_) {
+                        Assert($rules instanceof Array_);
                         $rules->items = array_merge($rules->items, $value->items);
                     } else {
                         $rules = $value;
