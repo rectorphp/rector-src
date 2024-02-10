@@ -39,11 +39,11 @@ final class VendorMissAnalyseGuard
      */
     private function containsVendorPath(array $filePaths): bool
     {
-        $cwd = PathNormalizer::normalize(getcwd());
+        $cwdLength = strlen(PathNormalizer::normalize(getcwd()));
 
         foreach ($filePaths as $filePath) {
             $normalizedPath = PathNormalizer::normalize(realpath($filePath));
-            if (str_starts_with(substr($normalizedPath, strlen($cwd)), '/vendor/')) {
+            if (str_starts_with(substr($normalizedPath, $cwdLength), '/vendor/')) {
                 return true;
             }
         }
