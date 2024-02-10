@@ -122,7 +122,7 @@ CODE_SAMPLE
                     }
                 } elseif ($name === 'paths') {
                     $paths = $value;
-                } elseif (($name === 'skip')) {
+                } elseif ($name === 'skip') {
                     $skips = $value;
                 } else {
                     // implementing method by method
