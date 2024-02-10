@@ -114,11 +114,11 @@ CODE_SAMPLE
                 $name = $this->getName($rectorConfigStmt->expr->name);
 
                 if ($name === 'rule') {
-                    Assert($rules instanceof Array_);
+                    Assert::isAOf($rules, Array_::class);
                     $rules->items[] = new ArrayItem($rectorConfigStmt->expr->getArgs()[0]->value);
                 } elseif (($name === 'rules')) {
                     if ($value instanceof Array_) {
-                        Assert($rules instanceof Array_);
+                        Assert::isAOf($rules, Array_::class);
                         $rules->items = array_merge($rules->items, $value->items);
                     } else {
                         $rules = $value;
