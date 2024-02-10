@@ -26,7 +26,6 @@ use Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
-return \Rector\Config\RectorConfig::configure()
-->withRules([ReturnUnionTypeRector::class, RectorConfigBuilderRector::class, TypedPropertyFromAssignsRector::class]);
+return \Rector\Config\RectorConfig::configure()->withRules([ReturnUnionTypeRector::class, RectorConfigBuilderRector::class, TypedPropertyFromAssignsRector::class]);
 
 ?>

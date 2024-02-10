@@ -23,7 +23,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 
 return \Rector\Config\RectorConfig::configure()->withPaths([
     __DIR__ . '/src',
-])
-->withRules([ReturnUnionTypeRector::class]);
+])->withRules([ReturnUnionTypeRector::class]);
 
 ?>
