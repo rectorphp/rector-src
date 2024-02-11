@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class RectorRun
+class CopyIntegerRangeType
 {
     /** @var positive-int */
     public int $count;
@@ -19,7 +19,7 @@ class RectorRun
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\Fixture;
 
-class RectorRun
+class CopyIntegerRangeType
 {
     public function __construct(
         /** @var positive-int */
