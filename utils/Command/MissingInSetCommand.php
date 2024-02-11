@@ -9,8 +9,6 @@ use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
@@ -41,9 +39,6 @@ final class MissingInSetCommand extends Command
         // personal preference, enable on purpose
         ArraySpreadInsteadOfArrayMergeRector::class,
         FinalizeTestCaseClassRector::class,
-        FinalizeClassesWithoutChildrenRector::class,
-        // deprecated
-        FinalizePublicClassConstantRector::class,
     ];
 
     public function __construct(
