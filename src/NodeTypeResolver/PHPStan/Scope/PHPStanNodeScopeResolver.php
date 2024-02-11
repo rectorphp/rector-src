@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
-use Throwable;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -62,6 +61,7 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
 use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -208,21 +208,6 @@ final class PHPStanNodeScopeResolver
         return $stmts;
     }
 
-    /**
-     * @param Stmt[] $stmts
-     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
-     */
-    private function nodeScopeResolverProcessNodes(array $stmts, MutatingScope $mutatingScope, callable $nodeCallback): void
-    {
-        try {
-            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-        } catch (Throwable $throwable) {
-            if ($throwable->getMessage() !== 'Internal error.') {
-                throw $throwable;
-            }
-        }
-    }
-
     public function hasUnreachableStatementNode(): bool
     {
         return $this->hasUnreachableStatementNode;
@@ -231,6 +216,24 @@ final class PHPStanNodeScopeResolver
     public function resetHasUnreachableStatementNode(): void
     {
         $this->hasUnreachableStatementNode = false;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function nodeScopeResolverProcessNodes(
+        array $stmts,
+        MutatingScope $mutatingScope,
+        callable $nodeCallback
+    ): void {
+        try {
+            $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() !== 'Internal error.') {
+                throw $throwable;
+            }
+        }
     }
 
     private function processCallike(CallLike $callLike, MutatingScope $mutatingScope): void
