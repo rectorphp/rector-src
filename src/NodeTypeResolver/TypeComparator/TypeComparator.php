@@ -87,7 +87,10 @@ final readonly class TypeComparator
             $node
         );
 
-        if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype($phpStanDocType, $phpParserNodeType)) {
+        if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype(
+            $phpStanDocType,
+            $phpParserNodeType
+        )) {
             return false;
         }
 
