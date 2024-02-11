@@ -315,10 +315,6 @@ parameters:
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
             path: src/functions/node_helper.php
 
-        - '#Doing instanceof PHPStan\\Type\\.* is error\-prone and deprecated(\. Use Type\:\:.*\(\) (or .* )?instead)?#'
-        - '#Fetching class constant class of deprecated class Rector\\Php81\\Rector\\ClassConst\\FinalizePublicClassConstantRector#'
-        - '#Fetching class constant class of deprecated class Rector\\Privatization\\Rector\\Class_\\FinalizeClassesWithoutChildrenRector#'
-
         # phpstan 1.10.0
         - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
 
