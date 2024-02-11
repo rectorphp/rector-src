@@ -15,6 +15,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadVarTagValueNodeAnalyzer;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\DoctrineTypeAnalyzer;
 
 final readonly class VarTagRemover
@@ -25,6 +26,7 @@ final readonly class VarTagRemover
         private DeadVarTagValueNodeAnalyzer $deadVarTagValueNodeAnalyzer,
         private PhpDocTypeChanger $phpDocTypeChanger,
         private DocBlockUpdater $docBlockUpdater,
+        private TypeComparator $typeComparator,
     ) {
     }
 
@@ -78,7 +80,18 @@ final readonly class VarTagRemover
             return;
         }
 
+        // keep subtypes like positive-int
+        if ($this->shouldKeepSubtypes($type, $phpDocInfo->getVarType())) {
+            return;
+        }
+
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
+    }
+
+    private function shouldKeepSubtypes(Type $type, Type $varType): bool
+    {
+        return ! $this->typeComparator->areTypesEqual($type, $varType)
+            && $this->typeComparator->isSubtype($varType, $type);
     }
 }
