@@ -9,5 +9,5 @@ namespace Rector\Contract\DependencyInjection;
  */
 interface RelatedConfigInterface
 {
-    public function getConfigFile(): string;
+    public static function getConfigFile(): string;
 }

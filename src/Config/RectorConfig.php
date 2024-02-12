@@ -212,6 +212,21 @@ final class RectorConfig extends Container
 
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+
+        // for cache invalidation in case of change
+        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+
+        if (is_a($rectorClass, RelatedConfigInterface::class, true)) {
+            $configFile = $rectorClass::getConfigFile();
+
+            Assert::file($configFile, sprintf(
+                'The config path "%s" in "%s::getConfigFile()" could not be found',
+                $configFile,
+                $rectorClass
+            ));
+
+            $this->import($configFile);
+        }
     }
 
     /**
@@ -252,19 +267,6 @@ final class RectorConfig extends Container
 
         foreach ($rectorClasses as $rectorClass) {
             $this->rule($rectorClass);
-
-            if (is_a($rectorClass, RelatedConfigInterface::class, true)) {
-                /** @var RelatedConfigInterface $rector */
-                $rector = $this->make($rectorClass);
-
-                Assert::file($rector->getConfigFile(), sprintf(
-                    'The config path "%s" in "%s::getConfigFile()" could not be found',
-                    $rector->getConfigFile(),
-                    $rector::class
-                ));
-
-                $this->import($rector->getConfigFile());
-            }
         }
     }
 
