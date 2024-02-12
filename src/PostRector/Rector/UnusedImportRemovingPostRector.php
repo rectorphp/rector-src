@@ -11,7 +11,6 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -124,7 +123,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return null;
             }
 
-            $docs = array_filter($comments, fn (Comment $subNode): bool => $subNode instanceof Doc);
+            $docs = array_filter($comments, static fn(Comment $comment): bool => $comment instanceof Doc);
             if ($docs === []) {
                 return null;
             }
