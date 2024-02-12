@@ -213,9 +213,6 @@ final class RectorConfig extends Container
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
 
-        // for cache invalidation in case of change
-        SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
-
         if (is_a($rectorClass, RelatedConfigInterface::class, true)) {
             $configFile = $rectorClass::getConfigFile();
 
