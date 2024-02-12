@@ -185,8 +185,7 @@ final class RectorConfig extends Container
             $configuration
         );
 
-        $this->singleton($rectorClass);
-        $this->tag($rectorClass, RectorInterface::class);
+        $this->rule($rectorClass);
 
         $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
             $rectorClass
