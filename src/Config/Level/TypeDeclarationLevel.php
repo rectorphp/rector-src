@@ -6,6 +6,7 @@ namespace Rector\Config\Level;
 
 use Rector\Contract\Rector\RectorInterface;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector;
 use Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector;
@@ -55,6 +56,7 @@ final class TypeDeclarationLevel
         // start with closure first, as safest
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,
+        AddTestsVoidReturnTypeWhereNoReturnRector::class,
 
         AddVoidReturnTypeWhereNoReturnRector::class,
 
