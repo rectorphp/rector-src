@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\PostRector\Rector;
 
 use Nette\Utils\Strings;
+use PhpParser\Comment;
+use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -116,18 +118,32 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($namespace, function (Node $node) use (
             &$names
         ) {
-            if (! $node->hasAttribute(AttributeKey::COMMENTS)) {
+            $comments = $node->getComments();
+            if ($comments === []) {
                 return null;
             }
 
-            $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-            $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
+            $docs = array_filter($comments, static fn(Comment $comment): bool => $comment instanceof Doc);
+            if ($docs === []) {
+                return null;
+            }
 
-            $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
-            $names = [...$names, ...$constFetchNodeNames];
+            $totalDocs = count($docs);
+            foreach ($docs as $doc) {
+                $nodeToCheck = $totalDocs === 1 ? $node : clone $node;
+                if ($totalDocs > 1) {
+                    $nodeToCheck->setDocComment($doc);
+                }
 
-            $genericTagClassNames = $phpDocInfo->getGenericTagClassNames();
-            $names = [...$names, ...$genericTagClassNames];
+                $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($nodeToCheck);
+                $names = [...$names, ...$phpDocInfo->getAnnotationClassNames()];
+
+                $constFetchNodeNames = $phpDocInfo->getConstFetchNodeClassNames();
+                $names = [...$names, ...$constFetchNodeNames];
+
+                $genericTagClassNames = $phpDocInfo->getGenericTagClassNames();
+                $names = [...$names, ...$genericTagClassNames];
+            }
         });
 
         return $names;
