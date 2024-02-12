@@ -18,6 +18,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig
         ->ruleWithConfiguration(AnnotationToAttributeRector::class, [
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\Embeddable'),
+
             new AnnotationToAttribute(PastAnnotation::class, FutureAttribute::class),
             new AnnotationToAttribute(NestedPastAnnotation::class, NestedFutureAttribute::class),
 
