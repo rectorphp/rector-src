@@ -20,5 +20,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute(Length::class),
         new AnnotationToAttribute(NotNumber::class),
         new AnnotationToAttribute(GenericAnnotation::class),
+
+        // PHP 8.1 doctrine annotations
+        new AnnotationToAttribute(\Doctrine\ORM\Mapping\Table::class),
+        new AnnotationToAttribute(\Doctrine\ORM\Mapping\UniqueConstraint::class),
     ]);
 };

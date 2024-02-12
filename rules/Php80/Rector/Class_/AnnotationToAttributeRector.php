@@ -134,7 +134,7 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUses();
 
-        // 1. bare tags without annotation class, e.g. "@inject"
+        // 1. bare tags without annotation class, e.g. "@require"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
         // 2. Doctrine annotation classes
@@ -233,6 +233,7 @@ CODE_SAMPLE
             }
 
             $doctrineTagValueNode = $phpDocChildNode->value;
+
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
                 continue;
@@ -242,6 +243,7 @@ CODE_SAMPLE
                 $doctrineTagValueNode,
                 $annotationToAttribute,
             );
+
             $doctrineTagValueNodes[] = $doctrineTagValueNode;
         }
 
