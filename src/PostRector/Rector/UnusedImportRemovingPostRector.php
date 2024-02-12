@@ -123,7 +123,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return null;
             }
 
-            $docs = array_filter($comments, static fn(Comment $comment): bool => $comment instanceof Doc);
+            $docs = array_filter($comments, static fn (Comment $comment): bool => $comment instanceof Doc);
             if ($docs === []) {
                 return null;
             }
