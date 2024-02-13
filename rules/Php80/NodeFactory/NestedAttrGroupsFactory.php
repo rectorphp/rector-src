@@ -8,11 +8,13 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpNestedAttributeGroupFactory;
+use Rector\PhpParser\Comparing\NodeComparator;
 
 final readonly class NestedAttrGroupsFactory
 {
     public function __construct(
-        private PhpNestedAttributeGroupFactory $phpNestedAttributeGroupFactory
+        private PhpNestedAttributeGroupFactory $phpNestedAttributeGroupFactory,
+        private NodeComparator $nodeComparator
     ) {
     }
 
@@ -33,11 +35,18 @@ final readonly class NestedAttrGroupsFactory
             // do not create alternative for the annotation, only unwrap
             if (! $nestedAnnotationToAttribute->shouldRemoveOriginal()) {
                 // add attributes
-                $attributeGroups[] = $this->phpNestedAttributeGroupFactory->create(
+                $attributeGroup = $this->phpNestedAttributeGroupFactory->create(
                     $doctrineAnnotationTagValueNode,
                     $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
                     $uses
                 );
+
+                $lastAttributeGroup = end($attributeGroups);
+                if ($lastAttributeGroup instanceof AttributeGroup && $this->nodeComparator->areNodesEqual($lastAttributeGroup, $attributeGroup)) {
+                    continue;
+                }
+
+                $attributeGroups[] = $attributeGroup;
             }
 
             $nestedAttributeGroups = $this->phpNestedAttributeGroupFactory->createNested(
@@ -45,7 +54,7 @@ final readonly class NestedAttrGroupsFactory
                 $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
             );
 
-            $attributeGroups = array_unique([...$attributeGroups, ...$nestedAttributeGroups], SORT_REGULAR);
+            $attributeGroups = [...$attributeGroups, ...$nestedAttributeGroups];
         }
 
         return $attributeGroups;
