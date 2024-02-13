@@ -212,6 +212,7 @@ final readonly class PhpNestedAttributeGroupFactory
 
             foreach ($nestedArrayItemNode->value->getValues() as $arrayItemNode) {
                 $nestedDoctrineAnnotationTagValueNode = $arrayItemNode->value;
+
                 if (! $nestedDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
                     throw new ShouldNotHappenException();
                 }
