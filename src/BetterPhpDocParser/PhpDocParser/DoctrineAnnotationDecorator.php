@@ -485,6 +485,10 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             return $annotationContent;
         }
 
+        if ($trimmedNestedAnnotationOpen === '') {
+            return $annotationContent;
+        }
+
         return '("' . trim($trimmedNestedAnnotationOpen, '"\'') . '")';
     }
 }
