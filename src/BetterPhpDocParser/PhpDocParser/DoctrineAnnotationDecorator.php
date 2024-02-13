@@ -44,6 +44,12 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
      */
     private const NESTED_ANNOTATION_END_REGEX = '#(\s+)?\}\)(\s+)?#';
 
+    /**
+     * @see https://regex101.com/r/8rWY4r/1
+     * @var string
+     */
+    private const NEWLINE_ANNOTATION_FQCN_REGEX = '#\r?\n@\\\\#';
+
     public function __construct(
         private ClassAnnotationMatcher $classAnnotationMatcher,
         private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser,
@@ -166,10 +172,10 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             return;
         }
 
-        $texts = explode("\n@\\", $phpDocTextNode->text);
+        $texts = Strings::split($phpDocTextNode->text, self::NEWLINE_ANNOTATION_FQCN_REGEX);
         $otherText = $texts[0];
 
-        if (! str_starts_with($otherText, '@\\') && trim($otherText) !== '') {
+        if (! str_starts_with((string) $otherText, '@\\') && trim((string) $otherText) !== '') {
             $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
 
@@ -263,7 +269,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             Assert::isAOf($phpDocNode->children[$key], PhpDocTagNode::class);
 
-            $texts = explode("\n@\\", $phpDocChildNode->value->value);
+            $texts = Strings::split($phpDocChildNode->value->value, self::NEWLINE_ANNOTATION_FQCN_REGEX);
             $phpDocNode->children[$key]->value = new GenericTagValueNode($texts[0]);
             $phpDocNode->children[$key]->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
