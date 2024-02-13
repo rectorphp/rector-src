@@ -48,6 +48,6 @@ final readonly class NestedAttrGroupsFactory
             $attributeGroups = [...$attributeGroups, ...$nestedAttributeGroups];
         }
 
-        return $attributeGroups;
+        return array_unique($attributeGroups, SORT_REGULAR);
     }
 }
