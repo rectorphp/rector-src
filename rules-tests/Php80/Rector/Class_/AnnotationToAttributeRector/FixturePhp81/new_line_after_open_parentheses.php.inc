@@ -9,7 +9,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePh
  *      }
  * )
  */
-final class UniqueConstraints
+final class AfterOpenParentheses
 {
 }
 
@@ -21,7 +21,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\FixturePh
 
 #[\Doctrine\ORM\Mapping\Table]
 #[\Doctrine\ORM\Mapping\UniqueConstraint(name: 'some_key')]
-final class UniqueConstraints
+final class AfterOpenParentheses
 {
 }
 
