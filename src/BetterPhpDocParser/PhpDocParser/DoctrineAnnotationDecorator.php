@@ -454,8 +454,11 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             $formerStartEnd = $phpDocTextNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
-            if (isset($nestedAnnotationOpen[1]) && ! str_ends_with($nestedAnnotationOpen[1], '{')) {
-                $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"\'') . '")';
+            if (isset($nestedAnnotationOpen[1])) {
+                $trimmedNestedAnnotationOpen = trim($nestedAnnotationOpen[1]);
+                if (! str_ends_with($trimmedNestedAnnotationOpen, '{')) {
+                    $annotationContent = '("' . trim($trimmedNestedAnnotationOpen, '"\'') . '")';
+                }
             }
 
             $spacelessPhpDocTagNodes[] = $this->createDoctrineSpacelessPhpDocTagNode(
