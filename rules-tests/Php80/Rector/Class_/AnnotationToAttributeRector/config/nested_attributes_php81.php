@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\AnnotationToAttributeRector;
@@ -20,5 +22,9 @@ return static function (RectorConfig $rectorConfig): void {
         new AnnotationToAttribute(Length::class),
         new AnnotationToAttribute(NotNumber::class),
         new AnnotationToAttribute(GenericAnnotation::class),
+
+        // PHP 8.1 doctrine annotations
+        new AnnotationToAttribute(Table::class),
+        new AnnotationToAttribute(UniqueConstraint::class),
     ]);
 };
