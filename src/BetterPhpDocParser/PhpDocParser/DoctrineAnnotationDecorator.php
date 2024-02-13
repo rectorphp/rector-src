@@ -454,7 +454,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             $formerStartEnd = $phpDocTextNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
-            if (isset($nestedAnnotationOpen[1])) {
+            if (isset($nestedAnnotationOpen[1]) && ! str_contains($nestedAnnotationOpen[1], '{')) {
                 $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"\'') . '")';
             }
 
