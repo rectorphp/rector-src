@@ -75,6 +75,7 @@ parameters:
                 - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
                 - src/Configuration/RectorConfigBuilder.php
                 - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
+                - src/PhpAttribute/NodeFactory/PhpNestedAttributeGroupFactory.php
 
         # is nested expr
         -

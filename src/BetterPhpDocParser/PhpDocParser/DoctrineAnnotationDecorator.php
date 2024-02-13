@@ -36,7 +36,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
      * @see https://regex101.com/r/bGp2V0/2
      * @var string
      */
-    private const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,|\r?\n|$)#';
+    public const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,|\r?\n|$)#';
 
     /**
      * @see https://regex101.com/r/xWaLOz/1

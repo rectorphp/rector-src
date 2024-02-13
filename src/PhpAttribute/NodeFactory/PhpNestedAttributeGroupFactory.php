@@ -11,10 +11,16 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\TokenIteratorFactory;
+use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
+use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNode;
+use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
@@ -22,6 +28,7 @@ use Rector\Php80\ValueObject\NestedAnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
 use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
+use Webmozart\Assert\Assert;
 
 final readonly class PhpNestedAttributeGroupFactory
 {
@@ -30,7 +37,9 @@ final readonly class PhpNestedAttributeGroupFactory
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
         private ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
-        private AttributeArrayNameInliner $attributeArrayNameInliner
+        private AttributeArrayNameInliner $attributeArrayNameInliner,
+        private TokenIteratorFactory $tokenIteratorFactory,
+        private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser
     ) {
     }
 
@@ -212,8 +221,34 @@ final readonly class PhpNestedAttributeGroupFactory
 
             foreach ($nestedArrayItemNode->value->getValues() as $arrayItemNode) {
                 $nestedDoctrineAnnotationTagValueNode = $arrayItemNode->value;
+
                 if (! $nestedDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
-                    throw new ShouldNotHappenException();
+                    Assert::string($nestedDoctrineAnnotationTagValueNode);
+
+                    $match = Strings::match($nestedDoctrineAnnotationTagValueNode, DoctrineAnnotationDecorator::LONG_ANNOTATION_REGEX);
+
+                    if (! isset($match['class_name'])) {
+                        throw new ShouldNotHappenException();
+                    }
+
+                    $identifierTypeNode = new IdentifierTypeNode($match['class_name']);
+                    $identifierTypeNode->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $match['class_name']);
+
+                    $annotationContent = $match['annotation_content'] ?? '';
+                    $nestedTokenIterator = $this->tokenIteratorFactory->create($annotationContent);
+
+                    // mimics doctrine behavior just in phpdoc-parser syntax :)
+                    // https://github.com/doctrine/annotations/blob/c66f06b7c83e9a2a7523351a9d5a4b55f885e574/lib/Doctrine/Common/Annotations/DocParser.php#L742
+                    $values = $this->staticDoctrineAnnotationParser->resolveAnnotationMethodCall(
+                        $nestedTokenIterator,
+                        new Nop()
+                    );
+
+                    $nestedDoctrineAnnotationTagValueNode = new DoctrineAnnotationTagValueNode(
+                        $identifierTypeNode,
+                        $match['annotation_content'] ?? '',
+                        $values
+                    );
                 }
 
                 $attributeArgs = $this->createAttributeArgs(
