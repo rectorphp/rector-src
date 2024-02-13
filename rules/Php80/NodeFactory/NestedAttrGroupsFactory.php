@@ -45,7 +45,7 @@ final readonly class NestedAttrGroupsFactory
                 $nestedDoctrineTagAndAnnotationToAttribute->getNestedAnnotationToAttribute(),
             );
 
-            $attributeGroups = array_unique([...$attributeGroups, ...$nestedAttributeGroups], SORT_REGULAR);
+            $attributeGroups = [...$attributeGroups, ...$nestedAttributeGroups];
         }
 
         return $attributeGroups;
