@@ -227,6 +227,10 @@ final readonly class PhpNestedAttributeGroupFactory
 
                     $match = Strings::match($nestedDoctrineAnnotationTagValueNode, DoctrineAnnotationDecorator::LONG_ANNOTATION_REGEX);
 
+                    if (! isset($match['class_name'])) {
+                        throw new ShouldNotHappenException();
+                    }
+
                     $identifierTypeNode = new IdentifierTypeNode($match['class_name']);
                     $identifierTypeNode->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $match['class_name']);
 
