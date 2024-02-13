@@ -189,10 +189,16 @@ CODE_SAMPLE
     private function matchAnnotationToAttribute(
         DoctrineAnnotationTagValueNode $doctrineAnnotationTagValueNode
     ): NestedAnnotationToAttribute|null {
+        $doctrineResolvedClass = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
+            PhpDocAttributeKey::RESOLVED_CLASS
+        );
+
         foreach ($this->nestedAnnotationsToAttributes as $nestedAnnotationToAttribute) {
-            $doctrineResolvedClass = $doctrineAnnotationTagValueNode->identifierTypeNode->getAttribute(
-                PhpDocAttributeKey::RESOLVED_CLASS
-            );
+            foreach ($nestedAnnotationToAttribute->getAnnotationPropertiesToAttributeClasses() as $annotationClass) {
+                if ($annotationClass->getAttributeClass() === $doctrineResolvedClass) {
+                    return $nestedAnnotationToAttribute;
+                }
+            }
 
             if ($doctrineResolvedClass !== $nestedAnnotationToAttribute->getTag()) {
                 continue;
