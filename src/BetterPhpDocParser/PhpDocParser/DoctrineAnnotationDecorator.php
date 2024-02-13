@@ -175,7 +175,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         $texts = Strings::split($phpDocTextNode->text, self::NEWLINE_ANNOTATION_FQCN_REGEX);
         $otherText = $texts[0];
 
-        if (! str_starts_with($otherText, '@\\') && trim($otherText) !== '') {
+        if (! str_starts_with((string) $otherText, '@\\') && trim((string) $otherText) !== '') {
             $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
 
