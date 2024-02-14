@@ -14,8 +14,6 @@ use Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Source\GenericS
 use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->phpVersion(PhpVersionFeature::ATTRIBUTES);
-
     $rectorConfig
         ->ruleWithConfiguration(AnnotationToAttributeRector::class, [
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Embeddable'),
@@ -27,21 +25,17 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute(GenericAnnotation::class),
             new AnnotationToAttribute(GenericSingleImplicitAnnotation::class),
 
-            new AnnotationToAttribute('inject', 'Nette\DI\Attributes\Inject'),
             new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
 
             // doctrine
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity'),
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\ManyToMany'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repository']),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
 
             // validation
-            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\All'),
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
 
             // JMS + Symfony
-            new AnnotationToAttribute('JMS\Serializer\Annotation\AccessType'),
             new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),
 
             // test for alias used
