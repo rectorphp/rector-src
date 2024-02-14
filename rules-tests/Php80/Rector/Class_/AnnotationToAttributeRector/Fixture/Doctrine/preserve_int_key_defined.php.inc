@@ -5,6 +5,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\D
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @\Doctrine\ORM\Mapping\Embeddable
  * @ORM\DiscriminatorMap({ 1 = "CostDetailEntity" })
  */
 class PreserveIntKeyDefined
@@ -19,6 +20,7 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\D
 
 use Doctrine\ORM\Mapping as ORM;
 
+#[\Doctrine\ORM\Mapping\Embeddable]
 #[ORM\DiscriminatorMap([1 => 'CostDetailEntity'])]
 class PreserveIntKeyDefined
 {

@@ -9,6 +9,7 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -19,7 +20,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AttributeArrayNameInliner;
-use Rector\PhpAttribute\NodeAnalyzer\ExprParameterReflectionTypeCorrector;
 
 /**
  * @see \Rector\Tests\PhpAttribute\Printer\PhpAttributeGroupFactoryTest
@@ -103,11 +103,7 @@ final readonly class PhpAttributeGroupFactory
 
         $this->mapClassReferences($mappedItems, $classReferencedFields);
 
-        if ($mappedItems instanceof Array_) {
-            $values = $mappedItems->items;
-        } else {
-            $values = $mappedItems;
-        }
+        $values = $mappedItems instanceof Array_ ? $mappedItems->items : $mappedItems;
 
         // the key here should contain the named argument
         return $this->namedArgsFactory->createFromValues($values);
@@ -121,8 +117,9 @@ final readonly class PhpAttributeGroupFactory
         if (! $expr instanceof Array_) {
             return;
         }
+
         foreach ($expr->items as $arrayItem) {
-            if (! $arrayItem instanceof Expr\ArrayItem) {
+            if (! $arrayItem instanceof ArrayItem) {
                 continue;
             }
 
