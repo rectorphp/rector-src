@@ -3,9 +3,9 @@
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
 
 /**
- * @\Doctrine\ORM\Mapping\Entity(repositoryClass="App\Some\Class")
+ * @\Doctrine\ORM\Mapping\Embeddable
  */
-class DoctrineEntity
+class PreserveIntKeyDefined
 {
 }
 
@@ -15,8 +15,8 @@ class DoctrineEntity
 
 namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\Doctrine;
 
-#[\Doctrine\ORM\Mapping\Entity(repositoryClass: \App\Some\Class::class)]
-class DoctrineEntity
+#[\Doctrine\ORM\Mapping\Embeddable]
+class PreserveIntKeyDefined
 {
 }
 
