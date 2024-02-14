@@ -6,18 +6,25 @@ namespace Rector\Php80\ValueObject;
 
 use Rector\Php80\Contract\ValueObject\AnnotationToAttributeInterface;
 use Rector\Validation\RectorAssert;
+use Webmozart\Assert\Assert;
 
 final readonly class AnnotationToAttribute implements AnnotationToAttributeInterface
 {
+    /**
+     * @param string[] $classReferenceFields
+     */
     public function __construct(
         private string $tag,
-        private ?string $attributeClass = null
+        private ?string $attributeClass = null,
+        private array $classReferenceFields = []
     ) {
         RectorAssert::className($tag);
 
         if (is_string($attributeClass)) {
             RectorAssert::className($attributeClass);
         }
+
+        Assert::allString($classReferenceFields);
     }
 
     public function getTag(): string
@@ -32,5 +39,13 @@ final readonly class AnnotationToAttribute implements AnnotationToAttributeInter
         }
 
         return $this->attributeClass;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getClassReferenceFields(): array
+    {
+        return $this->classReferenceFields;
     }
 }
