@@ -225,7 +225,10 @@ final readonly class PhpNestedAttributeGroupFactory
                 if (! $nestedDoctrineAnnotationTagValueNode instanceof DoctrineAnnotationTagValueNode) {
                     Assert::string($nestedDoctrineAnnotationTagValueNode);
 
-                    $match = Strings::match($nestedDoctrineAnnotationTagValueNode, DoctrineAnnotationDecorator::LONG_ANNOTATION_REGEX);
+                    $match = Strings::match(
+                        $nestedDoctrineAnnotationTagValueNode,
+                        DoctrineAnnotationDecorator::LONG_ANNOTATION_REGEX
+                    );
 
                     if (! isset($match['class_name'])) {
                         throw new ShouldNotHappenException();
