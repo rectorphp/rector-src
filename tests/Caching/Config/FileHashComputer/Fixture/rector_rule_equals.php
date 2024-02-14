@@ -7,9 +7,6 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
-
-        // only spaced/comment added, no need to clear cache
-        DeclareStrictTypesRector::class
-
+        DeclareStrictTypesRector::class,
     ]);
 };
