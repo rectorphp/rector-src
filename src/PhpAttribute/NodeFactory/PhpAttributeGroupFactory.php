@@ -8,7 +8,10 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
@@ -27,7 +30,6 @@ final readonly class PhpAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
         private AttributeArrayNameInliner $attributeArrayNameInliner
     ) {
     }
@@ -67,7 +69,11 @@ final readonly class PhpAttributeGroupFactory
         array $uses
     ): AttributeGroup {
         $values = $doctrineAnnotationTagValueNode->getValuesWithSilentKey();
-        $args = $this->createArgsFromItems($values, $annotationToAttribute->getAttributeClass());
+        $args = $this->createArgsFromItems(
+            $values,
+            $annotationToAttribute->getAttributeClass(),
+            $annotationToAttribute->getClassReferenceFields()
+        );
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
@@ -88,19 +94,55 @@ final readonly class PhpAttributeGroupFactory
      * @api tests
      *
      * @param ArrayItemNode[]|mixed[] $items
+     * @param string[] $classReferencedFields
      * @return Arg[]
      */
-    public function createArgsFromItems(array $items, string $attributeClass): array
+    public function createArgsFromItems(array $items, string $attributeClass, array $classReferencedFields = []): array
     {
-        /** @var Expr[]|Expr\Array_ $mappedItems */
         $mappedItems = $this->annotationToAttributeMapper->map($items);
 
-        $mappedItems = $this->exprParameterReflectionTypeCorrector->correctItemsByAttributeClass(
-            $mappedItems,
-            $attributeClass
-        );
+        $this->mapClassReferences($mappedItems, $classReferencedFields);
+
+        if ($mappedItems instanceof Array_) {
+            $values = $mappedItems->items;
+        } else {
+            $values = $mappedItems;
+        }
 
         // the key here should contain the named argument
-        return $this->namedArgsFactory->createFromValues($mappedItems);
+        return $this->namedArgsFactory->createFromValues($values);
+    }
+
+    /**
+     * @param string[] $classReferencedFields
+     */
+    private function mapClassReferences(Expr|string $expr, array $classReferencedFields): void
+    {
+        if (! $expr instanceof Array_) {
+            return;
+        }
+        foreach ($expr->items as $arrayItem) {
+            if (! $arrayItem instanceof Expr\ArrayItem) {
+                continue;
+            }
+
+            if (! $arrayItem->key instanceof String_) {
+                continue;
+            }
+
+            if (! in_array($arrayItem->key->value, $classReferencedFields)) {
+                continue;
+            }
+
+            if ($arrayItem->value instanceof ClassConstFetch) {
+                continue;
+            }
+
+            if (! $arrayItem->value instanceof String_) {
+                continue;
+            }
+
+            $arrayItem->value = new ClassConstFetch(new FullyQualified($arrayItem->value->value), 'class');
+        }
     }
 }

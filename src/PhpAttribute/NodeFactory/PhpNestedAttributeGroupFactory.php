@@ -8,7 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Attribute;
 use PhpParser\Node\AttributeGroup;
-use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Nop;
@@ -36,7 +36,6 @@ final readonly class PhpNestedAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private ExprParameterReflectionTypeCorrector $exprParameterReflectionTypeCorrector,
         private AttributeArrayNameInliner $attributeArrayNameInliner,
         private TokenIteratorFactory $tokenIteratorFactory,
         private StaticDoctrineAnnotationParser $staticDoctrineAnnotationParser
@@ -55,7 +54,7 @@ final readonly class PhpNestedAttributeGroupFactory
 
         $values = $this->removeItems($values, $nestedAnnotationToAttribute);
 
-        $args = $this->createArgsFromItems($values, $nestedAnnotationToAttribute);
+        $args = $this->createArgsFromItems($values);
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
@@ -122,10 +121,7 @@ final readonly class PhpNestedAttributeGroupFactory
         DoctrineAnnotationTagValueNode $nestedDoctrineAnnotationTagValueNode,
         NestedAnnotationToAttribute $nestedAnnotationToAttribute
     ): array {
-        $args = $this->createArgsFromItems(
-            $nestedDoctrineAnnotationTagValueNode->getValues(),
-            $nestedAnnotationToAttribute
-        );
+        $args = $this->createArgsFromItems($nestedDoctrineAnnotationTagValueNode->getValues());
 
         return $this->attributeArrayNameInliner->inlineArrayToArgs($args);
     }
@@ -134,19 +130,17 @@ final readonly class PhpNestedAttributeGroupFactory
      * @param ArrayItemNode[] $arrayItemNodes
      * @return Arg[]
      */
-    private function createArgsFromItems(
-        array $arrayItemNodes,
-        NestedAnnotationToAttribute $nestedAnnotationToAttribute
-    ): array {
-        /** @var Expr[]|Expr\Array_ $arrayItemNodes */
+    private function createArgsFromItems(array $arrayItemNodes): array
+    {
         $arrayItemNodes = $this->annotationToAttributeMapper->map($arrayItemNodes);
 
-        $arrayItemNodes = $this->exprParameterReflectionTypeCorrector->correctItemsByAttributeClass(
-            $arrayItemNodes,
-            $nestedAnnotationToAttribute->getTag()
-        );
+        if ($arrayItemNodes instanceof Array_) {
+            $values = $arrayItemNodes->items;
+        } else {
+            $values = $arrayItemNodes;
+        }
 
-        return $this->namedArgsFactory->createFromValues($arrayItemNodes);
+        return $this->namedArgsFactory->createFromValues($values);
     }
 
     /**

@@ -15,6 +15,9 @@ use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\NodeFactory;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 
+/**
+ * @api
+ */
 final readonly class ExprParameterReflectionTypeCorrector
 {
     public function __construct(

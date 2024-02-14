@@ -27,7 +27,7 @@ return static function (RectorConfig $rectorConfig): void {
             new AnnotationToAttribute('Symfony\Component\Routing\Annotation\Route'),
 
             // doctrine
-            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repository']),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repositoryClass']),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
 
             // validation

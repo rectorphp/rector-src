@@ -30,9 +30,9 @@ final readonly class AnnotationToAttributeMapper
     }
 
     /**
-     * @return Expr|DocTagNodeState::REMOVE_ARRAY
+     * @return mixed|DocTagNodeState::REMOVE_ARRAY
      */
-    public function map(mixed $value): Expr|string
+    public function map(mixed $value): mixed
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {
             if ($annotationToAttributeMapper->isCandidate($value)) {
