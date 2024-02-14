@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Caching\Config;
 
 use Rector\Application\VersionResolver;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 
 /**
@@ -17,7 +16,7 @@ final class FileHashComputer
     {
         $this->ensureIsPhp($filePath);
 
-        return sha1($filePath . VersionResolver::PACKAGE_VERSION);
+        return sha1_file($filePath) . VersionResolver::PACKAGE_VERSION;
     }
 
     private function ensureIsPhp(string $filePath): void
