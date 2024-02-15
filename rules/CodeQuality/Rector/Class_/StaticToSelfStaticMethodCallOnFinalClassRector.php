@@ -7,6 +7,7 @@ namespace Rector\CodeQuality\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Enum\ObjectReference;
@@ -104,7 +105,8 @@ CODE_SAMPLE
             }
 
             $hasChanged = true;
-            return $this->nodeFactory->createSelfMethod($methodName);
+            $subNode->class = new Name('self');
+            return $subNode;
         });
 
         if ($hasChanged) {

@@ -264,13 +264,6 @@ final readonly class NodeFactory
         return new ClassConstFetch($name, $constantName);
     }
 
-    public function createSelfMethod(string $methodName): StaticCall
-    {
-        $name = new Name(ObjectReference::SELF);
-
-        return new StaticCall($name, $methodName);
-    }
-
     /**
      * @param Param[] $params
      * @return Arg[]
