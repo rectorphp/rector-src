@@ -92,14 +92,14 @@ CODE_SAMPLE
 
             $methodName = $this->getName($subNode->name);
 
-            $classMethod = $node->getMethod($methodName);
+            $targetClassMethod = $node->getMethod($methodName);
             // skip call non-existing method from current class to ensure transformation is safe
-            if (! $classMethod instanceof ClassMethod) {
+            if (! $targetClassMethod instanceof ClassMethod) {
                 return null;
             }
 
             // avoid overlapped change
-            if (! $classMethod->isStatic()) {
+            if (! $targetClassMethod->isStatic()) {
                 return null;
             }
 
