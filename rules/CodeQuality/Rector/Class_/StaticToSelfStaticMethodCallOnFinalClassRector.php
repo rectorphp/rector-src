@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Enum\ObjectReference;
@@ -84,13 +85,12 @@ CODE_SAMPLE
                 return null;
             }
 
-            $methodName = $this->getName($subNode->name);
-
             // skip dynamic method
-            if ($methodName === null) {
+            if (! $subNode->name instanceof Identifier) {
                 return null;
             }
 
+            $methodName = $this->getName($subNode->name);
             // skip call non-existing method from current class to ensure transformation is safe
             if (! $node->getMethod($methodName) instanceof ClassMethod) {
                 return null;
