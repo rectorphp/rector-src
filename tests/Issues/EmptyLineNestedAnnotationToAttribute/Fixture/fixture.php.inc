@@ -38,7 +38,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'representation_started_at', columns: ['representation', 'started_at'])]
 #[ORM\Index(name: 'channel_started_at_status_representation_sequence', columns: ['channel', 'started_at', 'status', 'representation', 'sequence'])]
 #[ORM\UniqueConstraint(name: 'unique_channel_representation_started_at', columns: ['channel', 'representation', 'started_at'])]
-#[ORM\Entity(repositoryClass: 'App\Repository\SegmentRepository')]
+#[ORM\Entity(repositoryClass: \App\Repository\SegmentRepository::class)]
 class Segment
 {
 }
