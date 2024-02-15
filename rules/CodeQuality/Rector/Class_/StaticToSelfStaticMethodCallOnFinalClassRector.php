@@ -82,7 +82,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->isName($subNode->class, ObjectReference::STATIC)) {
+            if (! $subNode->class instanceof Name || ! $this->isName($subNode->class, ObjectReference::STATIC)) {
                 return null;
             }
 
