@@ -90,9 +90,9 @@ CODE_SAMPLE
                 return null;
             }
 
-            $methodName = $this->getName($subNode->name);
-
+            $methodName = (string) $this->getName($subNode->name);
             $targetClassMethod = $node->getMethod($methodName);
+
             // skip call non-existing method from current class to ensure transformation is safe
             if (! $targetClassMethod instanceof ClassMethod) {
                 return null;
