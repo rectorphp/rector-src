@@ -6,10 +6,11 @@ final class CallStatically
 {
     public function execute()
     {
-        static::run();
+        $a = 1;
+        static::run($a);
     }
 
-    private static function run()
+    private static function run($a)
     {
     }
 }
@@ -24,10 +25,11 @@ final class CallStatically
 {
     public function execute()
     {
-        self::run();
+        $a = 1;
+        self::run($a);
     }
 
-    private static function run()
+    private static function run($a)
     {
     }
 }
