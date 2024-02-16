@@ -110,7 +110,7 @@
         ],
         "check-cs": "vendor/bin/ecs check --ansi",
         "fix-cs": "vendor/bin/ecs check --fix --ansi",
-        "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify",
+        "phpstan": "vendor/bin/phpstan analyse --ansi --error-format symplify --memory-limit=512M",
         "docs": [
             "vendor/bin/rule-doc-generator generate rules --output-file build/rector_rules_overview.md --ansi --categorize 3 --skip-type 'Rector\\Core\\Rector\\AbstractCollectorRector'",
             "mv build/rector_rules_overview.md build/target-repository/docs/rector_rules_overview.md"
