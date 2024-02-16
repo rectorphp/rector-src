@@ -24,6 +24,7 @@ use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
+use Webmozart\Assert\Assert;
 
 /**
  * @api
@@ -273,6 +274,10 @@ final class RectorConfigBuilder
 
     public function withSkipPath(string $skipPath): self
     {
+        if (!str_contains($skipPath, '*')) {
+            Assert::fileExists($skipPath);
+        }
+
         return $this->withSkip([$skipPath]);
     }
 
