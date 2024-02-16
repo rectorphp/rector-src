@@ -266,7 +266,7 @@ final class RectorConfigBuilder
      */
     public function withSkip(array $skip): self
     {
-        $this->skip = $skip;
+        $this->skip = array_merge($this->skip, $skip);
 
         return $this;
     }
@@ -480,7 +480,7 @@ final class RectorConfigBuilder
      */
     public function withRules(array $rules): self
     {
-        $this->rules = $rules;
+        $this->rules = array_merge($this->rules, $rules);
 
         return $this;
     }
