@@ -101,6 +101,10 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Rector\Php80\AttributeDecorator\DoctrineCoverterterAttributeDecorator;
+use Rector\Php80\AttributeDecorator\SensioParamConverterAttributeDecorator;
+use Rector\Php80\Contract\ConverterAttributeDecoratorInterface;
+use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
 use Rector\PhpAttribute\AnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayAnnotationToAttributeMapper;
 use Rector\PhpAttribute\AnnotationToAttributeMapper\ArrayItemNodeAnnotationToAttributeMapper;
@@ -366,6 +370,14 @@ final class LazyContainerFactory
     private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class];
 
     /**
+     * @var array<class-string<ConverterAttributeDecoratorInterface>>
+     */
+    private const CONVERTER_ATTRIBUTE_DECORATOR_CLASSES = [
+        SensioParamConverterAttributeDecorator::class,
+        DoctrineCoverterterAttributeDecorator::class,
+    ];
+
+    /**
      * @api used as next rectorConfig factory
      */
     public function create(): RectorConfig
@@ -505,6 +517,12 @@ final class LazyContainerFactory
             ->giveTagged(SkipVoterInterface::class);
 
         $this->registerTagged($rectorConfig, self::SKIP_VOTER_CLASSES, SkipVoterInterface::class);
+
+        $rectorConfig->when(AttributeGroupNamedArgumentManipulator::class)
+            ->needs('$converterAttributeDecorators')
+            ->giveTagged(ConverterAttributeDecoratorInterface::class);
+
+        $this->registerTagged($rectorConfig, self::CONVERTER_ATTRIBUTE_DECORATOR_CLASSES, ConverterAttributeDecoratorInterface::class);
 
         $rectorConfig->afterResolving(
             AbstractRector::class,
