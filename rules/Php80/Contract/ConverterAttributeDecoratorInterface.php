@@ -9,5 +9,6 @@ use PhpParser\Node\Attribute;
 interface ConverterAttributeDecoratorInterface
 {
     public function getAttributeName(): string;
+
     public function decorate(Attribute $attribute): void;
 }

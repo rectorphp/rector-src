@@ -21,10 +21,12 @@ final class DoctrineCoverterterAttributeDecorator implements ConverterAttributeD
     public function decorate(Attribute $attribute): void
     {
         foreach ($attribute->args as $arg) {
-            if (! $arg->name instanceof Identifier || $arg->name->toString() !== 'nullable') {
+            if (! $arg->name instanceof Identifier) {
                 continue;
             }
-
+            if ($arg->name->toString() !== 'nullable') {
+                continue;
+            }
             $value = $arg->value;
             if (! $value instanceof String_) {
                 continue;
