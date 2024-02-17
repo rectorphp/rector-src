@@ -29,6 +29,7 @@ return static function (RectorConfig $rectorConfig): void {
             // doctrine
             new AnnotationToAttribute('Doctrine\ORM\Mapping\Entity', null, ['repositoryClass']),
             new AnnotationToAttribute('Doctrine\ORM\Mapping\DiscriminatorMap'),
+            new AnnotationToAttribute('Doctrine\ORM\Mapping\Column'),
 
             // validation
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
