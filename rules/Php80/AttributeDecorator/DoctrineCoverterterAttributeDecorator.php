@@ -24,9 +24,11 @@ final class DoctrineCoverterterAttributeDecorator implements ConverterAttributeD
             if (! $arg->name instanceof Identifier) {
                 continue;
             }
+
             if ($arg->name->toString() !== 'nullable') {
                 continue;
             }
+
             $value = $arg->value;
             if (! $value instanceof String_) {
                 continue;
