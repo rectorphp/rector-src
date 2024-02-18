@@ -21,7 +21,6 @@ parameters:
         - config
         - src
         - rules
-        # tests
         - tests
         - rules-tests
         - utils
@@ -315,9 +314,6 @@ parameters:
         -
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
             path: src/functions/node_helper.php
-
-        # phpstan 1.10.0
-        - '#Parameter 3 should use "PHPStan\\Reflection\\ParameterReflectionWithPhpDocs" type as the only type passed to this method#'
 
         # false positive on enums
         - '#Method Rector\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
