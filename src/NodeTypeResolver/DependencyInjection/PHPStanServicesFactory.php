@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\DependencyInjection;
 
+use Throwable;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
@@ -15,7 +16,6 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -42,14 +42,8 @@ final readonly class PHPStanServicesFactory
                 $additionalConfigFiles,
                 []
             );
-        } catch (\Throwable $throwable) {
-            if (in_array(
-                $throwable->getMessage(),
-                [
-                    'File \'phar://phpstan.phar/conf/bleedingEdge.neon\' is missing or is not readable.'
-                ],
-                true
-            )) {
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
                 $messageError = <<<MESSAGE_ERROR
 
 {$throwable->getMessage()}, use full path bleedingEdge.neon config, eg:
