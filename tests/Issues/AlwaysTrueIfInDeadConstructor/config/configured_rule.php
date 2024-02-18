@@ -6,6 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector;
 use Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([RemoveAlwaysTrueIfConditionRector::class, RemoveEmptyClassMethodRector::class]);
-};
+return RectorConfig::configure()
+    ->withRules([RemoveAlwaysTrueIfConditionRector::class, RemoveEmptyClassMethodRector::class]);

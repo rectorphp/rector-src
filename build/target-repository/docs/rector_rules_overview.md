@@ -1,4 +1,4 @@
-# 357 Rules Overview
+# 361 Rules Overview
 
 <br>
 
@@ -6,7 +6,7 @@
 
 - [Arguments](#arguments) (4)
 
-- [CodeQuality](#codequality) (73)
+- [CodeQuality](#codequality) (74)
 
 - [CodingStyle](#codingstyle) (28)
 
@@ -56,7 +56,7 @@
 
 - [Transform](#transform) (23)
 
-- [TypeDeclaration](#typedeclaration) (41)
+- [TypeDeclaration](#typedeclaration) (44)
 
 - [Visibility](#visibility) (3)
 
@@ -1346,6 +1346,30 @@ Change switch with only 1 check to if
          }
 
          return $result;
+     }
+ }
+```
+
+<br>
+
+### StaticToSelfStaticMethodCallOnFinalClassRector
+
+Change `static::methodCall()` to `self::methodCall()` on final class
+
+- class: [`Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector`](../rules/CodeQuality/Rector/Class_/StaticToSelfStaticMethodCallOnFinalClassRector.php)
+
+```diff
+ final class SomeClass
+ {
+     public function d()
+     {
+-        echo static::run();
++        echo self::run();
+     }
+
+     private static function run()
+     {
+         echo 'test';
      }
  }
 ```
@@ -6268,6 +6292,34 @@ Add known return type to arrow function
 
 <br>
 
+### AddClosureVoidReturnTypeWhereNoReturnRector
+
+Add closure return type void if there is no return
+
+- class: [`Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Closure/AddClosureVoidReturnTypeWhereNoReturnRector.php)
+
+```diff
+-function () {
++function (): void {
+ }
+```
+
+<br>
+
+### AddFunctionVoidReturnTypeWhereNoReturnRector
+
+Add function return type void if there is no return
+
+- class: [`Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Function_/AddFunctionVoidReturnTypeWhereNoReturnRector.php)
+
+```diff
+-function restore() {
++function restore(): void {
+ }
+```
+
+<br>
+
 ### AddMethodCallBasedStrictParamTypeRector
 
 Change private method param type to strict type, based on passed strict types
@@ -6475,6 +6527,26 @@ Changes defined return typehint of method and class.
  {
 -    public function getData()
 +    public function getData(): array
+     {
+     }
+ }
+```
+
+<br>
+
+### AddTestsVoidReturnTypeWhereNoReturnRector
+
+Add void to PHPUnit test methods
+
+- class: [`Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Class_/AddTestsVoidReturnTypeWhereNoReturnRector.php)
+
+```diff
+ use PHPUnit\Framework\TestCase;
+
+ class SomeClass extends TestCase
+ {
+-    public function testSomething()
++    public function testSomething(): void
      {
      }
  }

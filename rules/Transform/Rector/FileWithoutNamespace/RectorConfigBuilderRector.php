@@ -19,6 +19,7 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector\RectorConfigBuilderRectorTest
@@ -86,6 +87,11 @@ CODE_SAMPLE
             $newExpr = new StaticCall(new FullyQualified('Rector\Config\RectorConfig'), 'configure');
 
             $rules = new Array_();
+            $paths = new Array_();
+            $skips = new Array_();
+            $autoloadPaths = new Array_();
+            $bootstrapFiles = new Array_();
+
             foreach ($stmts as $rectorConfigStmt) {
                 // complex stmts should be skipped, eg: with if else
                 if (! $rectorConfigStmt instanceof Expression) {
@@ -106,17 +112,63 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if ($this->isName($rectorConfigStmt->expr->name, 'rule')) {
-                    $rules->items[] = new ArrayItem($rectorConfigStmt->expr->getArgs()[0]->value);
+                $args = $rectorConfigStmt->expr->getArgs();
+                $value = $args[0]->value;
+                $name = $this->getName($rectorConfigStmt->expr->name);
+
+                if ($name === 'rule') {
+                    Assert::isAOf($rules, Array_::class);
+                    $rules->items[] = new ArrayItem($value);
+                } elseif (($name === 'rules')) {
+                    if ($value instanceof Array_) {
+                        Assert::isAOf($rules, Array_::class);
+                        $rules->items = array_merge($rules->items, $value->items);
+                    } else {
+                        $rules = $value;
+                    }
+                } elseif ($name === 'paths') {
+                    $paths = $value;
+                } elseif ($name === 'skip') {
+                    $skips = $value;
+                } elseif ($name === 'autoloadPaths') {
+                    Assert::isAOf($value, Array_::class);
+                    $autoloadPaths = $value;
+                } elseif ($name === 'bootstrapFiles') {
+                    Assert::isAOf($value, Array_::class);
+                    $bootstrapFiles = $value;
                 } else {
                     // implementing method by method
                     return null;
                 }
             }
 
-            if ($rules->items !== []) {
-                $stmt->expr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
+            if (! $paths instanceof Array_ || $paths->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withPaths', [$paths]);
                 $hasChanged = true;
+            }
+
+            if (! $skips instanceof Array_ || $skips->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withSkip', [$skips]);
+                $hasChanged = true;
+            }
+
+            if (! $rules instanceof Array_ || $rules->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withRules', [$rules]);
+                $hasChanged = true;
+            }
+
+            if ($autoloadPaths->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withAutoloadPaths', [$autoloadPaths]);
+                $hasChanged = true;
+            }
+
+            if ($bootstrapFiles->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withBootstrapFiles', [$bootstrapFiles]);
+                $hasChanged = true;
+            }
+
+            if ($hasChanged) {
+                $stmt->expr = $newExpr;
             }
         }
 

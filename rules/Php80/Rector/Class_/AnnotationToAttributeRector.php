@@ -24,6 +24,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
@@ -33,7 +34,6 @@ use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Rector\AbstractRector;
-use Rector\RectorGenerator\Exception\ConfigurationException;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -124,7 +124,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         if ($this->annotationsToAttributes === []) {
-            throw new ConfigurationException(sprintf('The "%s" rule requires configuration.', self::class));
+            throw new InvalidConfigurationException(sprintf('The "%s" rule requires configuration.', self::class));
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
@@ -134,7 +134,7 @@ CODE_SAMPLE
 
         $uses = $this->useImportsResolver->resolveBareUses();
 
-        // 1. bare tags without annotation class, e.g. "@inject"
+        // 1. bare tags without annotation class, e.g. "@require"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
         // 2. Doctrine annotation classes
@@ -233,6 +233,7 @@ CODE_SAMPLE
             }
 
             $doctrineTagValueNode = $phpDocChildNode->value;
+
             $annotationToAttribute = $this->matchAnnotationToAttribute($doctrineTagValueNode);
             if (! $annotationToAttribute instanceof AnnotationToAttribute) {
                 continue;
@@ -242,6 +243,7 @@ CODE_SAMPLE
                 $doctrineTagValueNode,
                 $annotationToAttribute,
             );
+
             $doctrineTagValueNodes[] = $doctrineTagValueNode;
         }
 

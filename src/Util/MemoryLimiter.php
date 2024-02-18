@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Util;
 
 use Nette\Utils\Strings;
-use Rector\RectorGenerator\Exception\ConfigurationException;
+use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\ValueObject\Configuration;
 
 /**
@@ -32,7 +32,7 @@ final class MemoryLimiter
 
         if ($memorySetResult === false) {
             $errorMessage = sprintf('Memory limit "%s" cannot be set.', $memoryLimit);
-            throw new ConfigurationException($errorMessage);
+            throw new InvalidConfigurationException($errorMessage);
         }
     }
 
@@ -44,6 +44,6 @@ final class MemoryLimiter
         }
 
         $errorMessage = sprintf('Invalid memory limit format "%s".', $memoryLimit);
-        throw new ConfigurationException($errorMessage);
+        throw new InvalidConfigurationException($errorMessage);
     }
 }

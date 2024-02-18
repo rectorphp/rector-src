@@ -5,6 +5,5 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
 use Rector\Config\RectorConfig;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(InlineIfToExplicitIfRector::class);
-};
+return RectorConfig::configure()
+    ->withRules([InlineIfToExplicitIfRector::class]);

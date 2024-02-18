@@ -5,6 +5,5 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(RemoveUselessVarTagRector::class);
-};
+return RectorConfig::configure()
+    ->withRules([RemoveUselessVarTagRector::class]);

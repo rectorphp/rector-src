@@ -35,7 +35,8 @@ final readonly class ConfigInitializer
         }
 
         $response = $this->symfonyStyle->ask('No "rector.php" config found. Should we generate it for you?', 'yes');
-        if ($response !== 'yes') {
+        // be tolerant about input
+        if (! in_array($response, ['yes', 'YES', 'y', 'Y'], true)) {
             // okay, nothing we can do
             return;
         }

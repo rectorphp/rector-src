@@ -146,6 +146,11 @@ CODE_SAMPLE
             return true;
         }
 
+        $magicGetMethod = $class->getMethod(MethodName::__GET);
+        if ($magicGetMethod instanceof ClassMethod) {
+            return true;
+        }
+
         foreach ($class->stmts as $stmt) {
             if ($stmt instanceof TraitUse) {
                 return true;

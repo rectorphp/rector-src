@@ -129,7 +129,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if (! $this->isName($node->class, 'self')) {
+            if (! $this->isNames($node->class, ['self', 'static'])) {
                 return null;
             }
 
@@ -170,7 +170,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->isName($node->class, 'self')) {
+                if (! $this->isNames($node->class, ['self', 'static'])) {
                     return null;
                 }
 
