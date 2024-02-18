@@ -31,6 +31,19 @@ final readonly class PHPStanServicesFactory
 {
     private Container $container;
 
+    /**
+     * @var string
+     */
+    private const INVALID_BLEEDING_EDGE_PATH_MESSAGE = <<<MESSAGE_ERROR
+'%s, use full path bleedingEdge.neon config, eg:
+
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+
+in your included phpstan configuration.
+
+MESSAGE_ERROR;
+
     public function __construct()
     {
         $containerFactory = new ContainerFactory(getcwd());
@@ -44,19 +57,9 @@ final readonly class PHPStanServicesFactory
             );
         } catch (Throwable $throwable) {
             if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
-                $messageError = <<<MESSAGE_ERROR
-
-{$throwable->getMessage()}, use full path bleedingEdge.neon config, eg:
-
-includes:
-    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
-
-in your included phpstan configuration.
-
-MESSAGE_ERROR;
 
                 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
-                $symfonyStyle->error($messageError);
+                $symfonyStyle->error(sprintf(self::INVALID_BLEEDING_EDGE_PATH_MESSAGE, $throwable->getMessage()));
 
                 exit(-1);
             }
