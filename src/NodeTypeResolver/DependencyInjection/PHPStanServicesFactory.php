@@ -15,7 +15,11 @@ use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 /**
@@ -32,11 +36,39 @@ final readonly class PHPStanServicesFactory
         $containerFactory = new ContainerFactory(getcwd());
         $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
 
-        $this->container = $containerFactory->create(
-            SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
-            $additionalConfigFiles,
-            []
-        );
+        try {
+            $this->container = $containerFactory->create(
+                SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+                $additionalConfigFiles,
+                []
+            );
+        } catch (\Throwable $throwable) {
+            if (in_array(
+                $throwable->getMessage(),
+                [
+                    'File \'phar://phpstan.phar/conf/bleedingEdge.neon\' is missing or is not readable.'
+                ],
+                true
+            )) {
+                $messageError = <<<MESSAGE_ERROR
+
+{$throwable->getMessage()}, use full path bleedingEdge.neon config, eg:
+
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+
+in your included phpstan configuration.
+
+MESSAGE_ERROR;
+
+                $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+                $symfonyStyle->error($messageError);
+
+                exit(-1);
+            }
+
+            throw $throwable;
+        }
     }
 
     /**
