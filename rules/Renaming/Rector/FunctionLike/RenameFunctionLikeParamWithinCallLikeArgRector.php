@@ -241,6 +241,10 @@ CODE_SAMPLE
         CallLike $callLike,
         RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
     ): ?Arg {
+        if ($callLike->isFirstClassCallable()) {
+            return null;
+        }
+
         if ($callLike->getArgs() === []) {
             return null;
         }
