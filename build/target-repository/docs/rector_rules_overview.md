@@ -5603,7 +5603,7 @@ Replace constant by new ones
 
 ### RenameFunctionLikeParamWithinCallLikeArgRector
 
-Add param types where needed
+Rename param within closures and arrow functions based on use with specified method calls
 
 :wrench: **configure it!**
 

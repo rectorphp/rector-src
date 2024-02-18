@@ -36,7 +36,7 @@ final class RenameFunctionLikeParamWithinCallLikeArgRector extends AbstractRecto
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add param types where needed', [
+        return new RuleDefinition('Rename param within closures and arrow functions based on use with specified method calls', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 (new SomeClass)->process(function ($param) {});
