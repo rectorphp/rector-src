@@ -38,7 +38,9 @@ final class DoctrineCoverterterAttributeDecorator implements ConverterAttributeD
                 continue;
             }
 
-            $arg->value = $value->value === 'true' ? new ConstFetch(new Name('true')) : new ConstFetch(new Name('false'));
+            $arg->value = $value->value === 'true' ? new ConstFetch(new Name('true')) : new ConstFetch(new Name(
+                'false'
+            ));
             break;
         }
     }

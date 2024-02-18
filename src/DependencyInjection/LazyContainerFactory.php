@@ -522,7 +522,11 @@ final class LazyContainerFactory
             ->needs('$converterAttributeDecorators')
             ->giveTagged(ConverterAttributeDecoratorInterface::class);
 
-        $this->registerTagged($rectorConfig, self::CONVERTER_ATTRIBUTE_DECORATOR_CLASSES, ConverterAttributeDecoratorInterface::class);
+        $this->registerTagged(
+            $rectorConfig,
+            self::CONVERTER_ATTRIBUTE_DECORATOR_CLASSES,
+            ConverterAttributeDecoratorInterface::class
+        );
 
         $rectorConfig->afterResolving(
             AbstractRector::class,

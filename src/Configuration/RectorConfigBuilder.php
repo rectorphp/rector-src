@@ -274,7 +274,7 @@ final class RectorConfigBuilder
 
     public function withSkipPath(string $skipPath): self
     {
-        if (!str_contains($skipPath, '*')) {
+        if (! str_contains($skipPath, '*')) {
             Assert::fileExists($skipPath);
         }
 
