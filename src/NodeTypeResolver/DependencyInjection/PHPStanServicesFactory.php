@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\DependencyInjection;
 
+use Throwable;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
@@ -16,6 +17,9 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Webmozart\Assert\Assert;
 
 /**
@@ -27,16 +31,41 @@ final readonly class PHPStanServicesFactory
 {
     private Container $container;
 
+    /**
+     * @var string
+     */
+    private const INVALID_BLEEDING_EDGE_PATH_MESSAGE = <<<MESSAGE_ERROR
+'%s, use full path bleedingEdge.neon config, eg:
+
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+
+in your included phpstan configuration.
+
+MESSAGE_ERROR;
+
     public function __construct()
     {
         $containerFactory = new ContainerFactory(getcwd());
         $additionalConfigFiles = $this->resolveAdditionalConfigFiles();
 
-        $this->container = $containerFactory->create(
-            SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
-            $additionalConfigFiles,
-            []
-        );
+        try {
+            $this->container = $containerFactory->create(
+                SimpleParameterProvider::provideStringParameter(Option::CONTAINER_CACHE_DIRECTORY),
+                $additionalConfigFiles,
+                []
+            );
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
+
+                $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
+                $symfonyStyle->error(sprintf(self::INVALID_BLEEDING_EDGE_PATH_MESSAGE, $throwable->getMessage()));
+
+                exit(-1);
+            }
+
+            throw $throwable;
+        }
     }
 
     /**
