@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -149,7 +150,11 @@ CODE_SAMPLE
             return true;
         }
 
-        return $classReflection->hasMethod('__get');
+        if ($classReflection->hasMethod('__get')) {
+            return true;
+        }
+
+        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass($class->extends->toString());
     }
 
     /**
