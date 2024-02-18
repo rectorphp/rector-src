@@ -207,6 +207,7 @@ CODE_SAMPLE
             if ($node instanceof FunctionLike && $node !== $functionLike) {
                 if ($node instanceof Closure && $node->uses !== [] && $this->isClosureUsingParam($node, $oldName)) {
                     $isUsed = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
                 return NodeTraverser::DONT_TRAVERSE_CHILDREN;
@@ -218,6 +219,7 @@ CODE_SAMPLE
 
             if ($this->isName($node, $newName)) {
                 $isUsed = true;
+                return NodeTraverser::STOP_TRAVERSAL;
             }
 
             return null;
