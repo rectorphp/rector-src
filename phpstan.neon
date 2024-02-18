@@ -21,6 +21,7 @@ parameters:
         - config
         - src
         - rules
+        # tests
         - tests
         - rules-tests
         - utils
