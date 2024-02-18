@@ -6,22 +6,13 @@ namespace Rector\Transform\ValueObject;
 
 use Rector\Validation\RectorAssert;
 
-final class ConstFetchToClassConstFetch
+final readonly class ConstFetchToClassConstFetch
 {
-    private string $oldConstName;
-
-    private string $newClassName;
-
-    private string $newConstName;
-
-    public function __construct(string $oldConstName, string $newClassName, string $newConstName)
+    public function __construct(private string $oldConstName, private string $newClassName, private string $newConstName)
     {
-        $this->oldConstName = $oldConstName;
-        $this->newClassName = $newClassName;
-        $this->newConstName = $newConstName;
-        RectorAssert::constantName($oldConstName);
-        RectorAssert::className($newClassName);
-        RectorAssert::constantName($newConstName);
+        RectorAssert::constantName($this->oldConstName);
+        RectorAssert::className($this->newClassName);
+        RectorAssert::constantName($this->newConstName);
     }
 
     public function getOldConstName(): string
