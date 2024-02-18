@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Config\Level\DeadCodeLevel;
+use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
+use Rector\Config\RegisteredService;
+use Rector\Configuration\Levels\LevelRulesResolver;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
@@ -20,6 +24,7 @@ use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
 use Symfony\Component\Finder\Finder;
+use Webmozart\Assert\Assert;
 
 /**
  * @api
@@ -116,12 +121,56 @@ final class RectorConfigBuilder
 
     private ?string $symfonyContainerPhpFile = null;
 
+    /**
+     * To make sure type declarations set and level are not duplicated,
+     * as both contain same rules
+     */
+    private bool $isTypeCoverageLevelUsed = false;
+
+    private bool $isDeadCodeLevelUsed = false;
+
+    /**
+     * @var RegisteredService[]
+     */
+    private array $registerServices = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $uniqueSets = array_unique($this->sets);
 
+        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
+                PHP_EOL
+            ));
+        }
+
+        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config already enables dead code set.%sRemove "->withDeadCodeLevel()" as it only duplicates it, or remove dead code set.',
+                PHP_EOL
+            ));
+        }
+
         $rectorConfig->sets($uniqueSets);
-        $rectorConfig->paths($this->paths);
+
+        if ($this->paths !== []) {
+            $rectorConfig->paths($this->paths);
+        }
+
+        // must be in upper part, as these services might be used by rule registered bellow
+        foreach ($this->registerServices as $registerService) {
+            $rectorConfig->singleton($registerService->getClassName());
+
+            if ($registerService->getAlias()) {
+                $rectorConfig->alias($registerService->getClassName(), $registerService->getAlias());
+            }
+
+            if ($registerService->getTag()) {
+                $rectorConfig->tag($registerService->getClassName(), $registerService->getTag());
+            }
+        }
+
         $rectorConfig->skip($this->skip);
         $rectorConfig->rules($this->rules);
 
@@ -218,9 +267,18 @@ final class RectorConfigBuilder
      */
     public function withSkip(array $skip): self
     {
-        $this->skip = $skip;
+        $this->skip = array_merge($this->skip, $skip);
 
         return $this;
+    }
+
+    public function withSkipPath(string $skipPath): self
+    {
+        if (! str_contains($skipPath, '*')) {
+            Assert::fileExists($skipPath);
+        }
+
+        return $this->withSkip([$skipPath]);
     }
 
     /**
@@ -432,7 +490,7 @@ final class RectorConfigBuilder
      */
     public function withRules(array $rules): self
     {
-        $this->rules = $rules;
+        $this->rules = array_merge($this->rules, $rules);
 
         return $this;
     }
@@ -580,6 +638,51 @@ final class RectorConfigBuilder
     public function withSymfonyContainerPhp(string $symfonyContainerPhpFile): self
     {
         $this->symfonyContainerPhpFile = $symfonyContainerPhpFile;
+        return $this;
+    }
+
+    /**
+     * @experimental since 0.19.7 Raise your dead-code coverage from the safest rules
+     * to more affecting ones, one level at a time
+     */
+    public function withDeadCodeLevel(int $level): self
+    {
+        $this->isDeadCodeLevelUsed = true;
+
+        $levelRules = LevelRulesResolver::resolve(
+            $level,
+            DeadCodeLevel::RULES,
+            'RectorConfig::withDeadCodeLevel()'
+        );
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    /**
+     * @experimental since 0.19.7 Raise your type coverage from the safest type rules
+     * to more affecting ones, one level at a time
+     */
+    public function withTypeCoverageLevel(int $level): self
+    {
+        $this->isTypeCoverageLevelUsed = true;
+
+        $levelRules = LevelRulesResolver::resolve(
+            $level,
+            TypeDeclarationLevel::RULES,
+            'RectorConfig::withTypeCoverageLevel()'
+        );
+
+        $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    public function registerService(string $className, ?string $alias = null, ?string $tag = null): self
+    {
+        $this->registerServices[] = new RegisteredService($className, $alias, $tag);
+
         return $this;
     }
 }

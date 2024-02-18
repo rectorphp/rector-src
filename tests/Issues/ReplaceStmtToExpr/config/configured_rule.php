@@ -7,10 +7,11 @@ use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\Config\RectorConfig;
 use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ExplicitBoolCompareRector::class,
-        FlipTypeControlToUseExclusiveTypeRector::class,
-        ReturnBinaryOrToEarlyReturnRector::class,
-    ]);
-};
+return RectorConfig::configure()
+    ->withRules(
+        [
+            ExplicitBoolCompareRector::class,
+            FlipTypeControlToUseExclusiveTypeRector::class,
+            ReturnBinaryOrToEarlyReturnRector::class,
+        ]
+    );

@@ -87,6 +87,13 @@ final readonly class TypeComparator
             $node
         );
 
+        if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype(
+            $phpStanDocType,
+            $phpParserNodeType
+        )) {
+            return false;
+        }
+
         // normalize bool union types
         $phpParserNodeType = $this->normalizeConstantBooleanType($phpParserNodeType);
         $phpStanDocType = $this->normalizeConstantBooleanType($phpStanDocType);

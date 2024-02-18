@@ -78,5 +78,8 @@ final class ArrayTypeMapperTest extends AbstractLazyTestCase
 
         $arrayType = new ArrayType(new StringType(), new IntegerType());
         yield [$arrayType, 'array<string, int>'];
+
+        $arrayType = new ArrayType(new StringType(), $stringAndIntegerUnionType);
+        yield [$arrayType, 'array<string, string|int>'];
     }
 }

@@ -71,7 +71,12 @@ final class ArrayTypeMapper implements TypeMapperInterface
         // then e.g. "int" instead of explicit number, and nice arrays
         $itemType = $type->getItemType();
 
-        if ($itemType instanceof UnionType && ! $type instanceof ConstantArrayType) {
+        $isGenericArray = $this->isGenericArrayCandidate($type);
+
+        if ($itemType instanceof UnionType
+            && ! $type instanceof ConstantArrayType
+            && ! $isGenericArray
+        ) {
             return $this->createArrayTypeNodeFromUnionType($itemType);
         }
 
@@ -79,7 +84,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
             return $this->createGenericArrayType($type, true);
         }
 
-        if ($this->isGenericArrayCandidate($type)) {
+        if ($isGenericArray) {
             return $this->createGenericArrayType($type, true);
         }
 

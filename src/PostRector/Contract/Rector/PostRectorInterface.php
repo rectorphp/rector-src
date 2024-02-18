@@ -6,6 +6,9 @@ namespace Rector\PostRector\Contract\Rector;
 
 use PhpParser\NodeVisitor;
 
+/**
+ * @internal
+ */
 interface PostRectorInterface extends NodeVisitor
 {
 }

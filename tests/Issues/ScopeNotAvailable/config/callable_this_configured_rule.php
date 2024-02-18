@@ -6,7 +6,5 @@ use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\Config\RectorConfig;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(CallableThisArrayToAnonymousFunctionRector::class);
-    $rectorConfig->rule(CountArrayToEmptyArrayComparisonRector::class);
-};
+return RectorConfig::configure()
+    ->withRules([CallableThisArrayToAnonymousFunctionRector::class, CountArrayToEmptyArrayComparisonRector::class]);

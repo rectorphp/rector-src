@@ -9,6 +9,7 @@ use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\RectorConfigBuilder;
+use Rector\Contract\DependencyInjection\RelatedConfigInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
@@ -184,8 +185,7 @@ final class RectorConfig extends Container
             $configuration
         );
 
-        $this->singleton($rectorClass);
-        $this->tag($rectorClass, RectorInterface::class);
+        $this->rule($rectorClass);
 
         $this->afterResolving($rectorClass, function (ConfigurableRectorInterface $configurableRector) use (
             $rectorClass
@@ -211,6 +211,18 @@ final class RectorConfig extends Container
 
         // for cache invalidation in case of change
         SimpleParameterProvider::addParameter(Option::REGISTERED_RECTOR_RULES, $rectorClass);
+
+        if (is_a($rectorClass, RelatedConfigInterface::class, true)) {
+            $configFile = $rectorClass::getConfigFile();
+
+            Assert::file($configFile, sprintf(
+                'The config path "%s" in "%s::getConfigFile()" could not be found',
+                $configFile,
+                $rectorClass
+            ));
+
+            $this->import($configFile);
+        }
     }
 
     /**

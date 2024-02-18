@@ -27,22 +27,28 @@ use Webmozart\Assert\Assert;
 final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorInterface
 {
     /**
+     * @see https://regex101.com/r/bGp2V0/2
+     * @var string
+     */
+    public const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,|\r?\n|$)#';
+
+    /**
      * Special short annotations, that are resolved as FQN by Doctrine annotation parser
      * @var string[]
      */
     private const ALLOWED_SHORT_ANNOTATIONS = ['Target'];
 
     /**
-     * @see https://regex101.com/r/95kIw4/2
-     * @var string
-     */
-    private const LONG_ANNOTATION_REGEX = '#@\\\\(?<class_name>.*?)(?<annotation_content>\(.*?\)|,)#';
-
-    /**
      * @see https://regex101.com/r/xWaLOz/1
      * @var string
      */
     private const NESTED_ANNOTATION_END_REGEX = '#(\s+)?\}\)(\s+)?#';
+
+    /**
+     * @see https://regex101.com/r/8rWY4r/1
+     * @var string
+     */
+    private const NEWLINE_ANNOTATION_FQCN_REGEX = '#\r?\n@\\\\#';
 
     public function __construct(
         private ClassAnnotationMatcher $classAnnotationMatcher,
@@ -166,16 +172,18 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             return;
         }
 
-        $texts = explode("\n@\\", $phpDocTextNode->text);
+        $texts = Strings::split($phpDocTextNode->text, self::NEWLINE_ANNOTATION_FQCN_REGEX);
         $otherText = $texts[0];
 
-        if (! str_starts_with($otherText, '@\\') && trim($otherText) !== '') {
+        if (! str_starts_with((string) $otherText, '@\\') && trim((string) $otherText) !== '') {
             $phpDocNode->children[$key] = new PhpDocTextNode($otherText);
             array_splice($phpDocNode->children, $key + 1, 0, $spacelessPhpDocTagNodes);
-        } else {
-            unset($phpDocNode->children[$key]);
-            array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
+
+            return;
         }
+
+        unset($phpDocNode->children[$key]);
+        array_splice($phpDocNode->children, $key, 0, $spacelessPhpDocTagNodes);
     }
 
     private function transformGenericTagValueNodesToDoctrineAnnotationTagValueNodes(
@@ -261,7 +269,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
 
             Assert::isAOf($phpDocNode->children[$key], PhpDocTagNode::class);
 
-            $texts = explode("\n@\\", $phpDocChildNode->value->value);
+            $texts = Strings::split($phpDocChildNode->value->value, self::NEWLINE_ANNOTATION_FQCN_REGEX);
             $phpDocNode->children[$key]->value = new GenericTagValueNode($texts[0]);
             $phpDocNode->children[$key]->value->setAttribute(PhpDocAttributeKey::START_AND_END, $startAndEnd);
 
@@ -437,6 +445,7 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         Node $currentPhpNode
     ): array {
         $matches = Strings::matchAll($phpDocTextNode->text, self::LONG_ANNOTATION_REGEX);
+
         $spacelessPhpDocTagNodes = [];
         foreach ($matches as $match) {
             $fullyQualifiedAnnotationClass = $match['class_name'] ?? null;
@@ -447,15 +456,14 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
             $nestedAnnotationOpen = explode('(', (string) $fullyQualifiedAnnotationClass);
             $fullyQualifiedAnnotationClass = $nestedAnnotationOpen[0];
 
-            $annotationContent = $match['annotation_content'] ?? null;
-
             $tagName = '@\\' . $fullyQualifiedAnnotationClass;
 
             $formerStartEnd = $phpDocTextNode->getAttribute(PhpDocAttributeKey::START_AND_END);
 
-            if (isset($nestedAnnotationOpen[1])) {
-                $annotationContent = '("' . trim($nestedAnnotationOpen[1], '"\'') . '")';
-            }
+            $annotationContent = $this->resolveAnnotationContent(
+                $match['annotation_content'] ?? '',
+                $nestedAnnotationOpen
+            );
 
             $spacelessPhpDocTagNodes[] = $this->createDoctrineSpacelessPhpDocTagNode(
                 $annotationContent,
@@ -467,5 +475,26 @@ final readonly class DoctrineAnnotationDecorator implements PhpDocNodeDecoratorI
         }
 
         return $spacelessPhpDocTagNodes;
+    }
+
+    /**
+     * @param string[]|null[] $nestedAnnotationOpen
+     */
+    private function resolveAnnotationContent(string $annotationContent, array $nestedAnnotationOpen): string
+    {
+        if (! isset($nestedAnnotationOpen[1])) {
+            return $annotationContent;
+        }
+
+        $trimmedNestedAnnotationOpen = trim($nestedAnnotationOpen[1]);
+        if (str_ends_with($trimmedNestedAnnotationOpen, '{')) {
+            return $annotationContent;
+        }
+
+        if ($trimmedNestedAnnotationOpen === '') {
+            return $annotationContent;
+        }
+
+        return '("' . trim($trimmedNestedAnnotationOpen, '"\'') . '")';
     }
 }

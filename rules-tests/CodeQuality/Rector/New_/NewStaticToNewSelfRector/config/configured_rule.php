@@ -5,6 +5,5 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector;
 use Rector\Config\RectorConfig;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rule(NewStaticToNewSelfRector::class);
-};
+return RectorConfig::configure()
+    ->withRules([NewStaticToNewSelfRector::class]);
