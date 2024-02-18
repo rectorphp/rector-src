@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Transform\Rector\ConstFetch;
 
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
@@ -31,20 +35,22 @@ final class ConstFetchToClassConstFetchRector extends AbstractRector implements 
 
     public function getNodeTypes(): array
     {
-        return [Node\Expr\ConstFetch::class];
+        return [ConstFetch::class];
     }
 
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?ClassConstFetch
     {
         foreach ($this->constFetchToClassConsts as $constFetchToClassConst) {
             if (! $this->isName($node, $constFetchToClassConst->getOldConstName())) {
                 continue;
             }
+
             return $this->nodeFactory->createClassConstFetch(
                 $constFetchToClassConst->getNewClassName(),
                 $constFetchToClassConst->getNewConstName()
             );
         }
+
         return null;
     }
 
