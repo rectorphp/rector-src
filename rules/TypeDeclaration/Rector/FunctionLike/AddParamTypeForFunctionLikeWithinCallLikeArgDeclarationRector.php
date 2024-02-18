@@ -135,6 +135,10 @@ CODE_SAMPLE
         CallLike $callLike,
         AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     ): void {
+        if ($callLike->isFirstClassCallable()) {
+            return;
+        }
+
         if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition())) {
             if ($callLike->getArgs() === []) {
                 return;
