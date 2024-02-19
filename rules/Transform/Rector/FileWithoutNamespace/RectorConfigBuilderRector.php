@@ -91,6 +91,7 @@ CODE_SAMPLE
             $skips = new Array_();
             $autoloadPaths = new Array_();
             $bootstrapFiles = new Array_();
+            $sets = new Array_();
 
             foreach ($stmts as $rectorConfigStmt) {
                 // complex stmts should be skipped, eg: with if else
@@ -139,6 +140,9 @@ CODE_SAMPLE
                 } elseif ($name === 'ruleWithConfiguration') {
                     $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withConfiguredRule', [$value, $args[1]->value]);
                     $hasChanged = true;
+                } elseif ($name === 'sets') {
+                    Assert::isAOf($value, Array_::class);
+                    $sets->items = array_merge($sets->items, $value->items);
                 } else {
                     // implementing method by method
                     return null;
@@ -167,6 +171,11 @@ CODE_SAMPLE
 
             if ($bootstrapFiles->items !== []) {
                 $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withBootstrapFiles', [$bootstrapFiles]);
+                $hasChanged = true;
+            }
+
+            if ($sets->items !== []) {
+                $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withSets', [$sets]);
                 $hasChanged = true;
             }
 
