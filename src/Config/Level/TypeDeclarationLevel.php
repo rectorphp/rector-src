@@ -58,21 +58,24 @@ final class TypeDeclarationLevel
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,
         AddTestsVoidReturnTypeWhereNoReturnRector::class,
 
+        AddArrowFunctionReturnTypeRector::class,
+        ReturnTypeFromStrictConstantReturnRector::class,
+        ReturnTypeFromStrictNewArrayRector::class,
+        ReturnTypeFromStrictBoolReturnExprRector::class,
+        NumericReturnTypeFromStrictScalarReturnsRector::class,
+        BoolReturnTypeFromStrictScalarReturnsRector::class,
+        ReturnTypeFromStrictTernaryRector::class,
+        ReturnTypeFromStrictScalarReturnExprRector::class,
+        ReturnTypeFromReturnDirectArrayRector::class,
+        ReturnTypeFromReturnNewRector::class,
+
         AddVoidReturnTypeWhereNoReturnRector::class,
 
         // php 7.4
-        AddArrowFunctionReturnTypeRector::class,
-        ReturnTypeFromStrictNewArrayRector::class,
-        ReturnTypeFromStrictConstantReturnRector::class,
-        NumericReturnTypeFromStrictScalarReturnsRector::class,
-        ReturnTypeFromStrictScalarReturnExprRector::class,
-        ReturnTypeFromStrictBoolReturnExprRector::class,
-        ReturnTypeFromStrictTernaryRector::class,
         EmptyOnNullableObjectToInstanceOfRector::class,
 
         // php 7.4
         TypedPropertyFromStrictConstructorRector::class,
-        ReturnTypeFromReturnDirectArrayRector::class,
         ReturnTypeFromStrictTypedPropertyRector::class,
         AddParamTypeSplFixedArrayRector::class,
         AddReturnTypeDeclarationFromYieldsRector::class,
@@ -80,8 +83,6 @@ final class TypeDeclarationLevel
 
         // php 7.4
         TypedPropertyFromStrictSetUpRector::class,
-        ReturnTypeFromReturnNewRector::class,
-        BoolReturnTypeFromStrictScalarReturnsRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictTypedCallRector::class,
 
