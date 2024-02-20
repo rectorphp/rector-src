@@ -114,8 +114,16 @@ CODE_SAMPLE
                 }
 
                 $args = $rectorConfigStmt->expr->getArgs();
-                $value = $args[0]->value ?? null;
                 $name = $this->getName($rectorConfigStmt->expr->name);
+
+                if ($name === 'disableParallel') {
+                    $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withoutParallel');
+                    $hasChanged = true;
+
+                    continue;
+                }
+
+                $value = $args[0]->value;
 
                 if ($name === 'rule') {
                     Assert::isAOf($rules, Array_::class);
@@ -139,9 +147,6 @@ CODE_SAMPLE
                     $bootstrapFiles = $value;
                 } elseif ($name === 'ruleWithConfiguration') {
                     $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withConfiguredRule', [$value, $args[1]->value]);
-                    $hasChanged = true;
-                } elseif ($name === 'disableParallel') {
-                    $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withoutParallel');
                     $hasChanged = true;
                 } elseif ($name === 'sets') {
                     Assert::isAOf($value, Array_::class);
