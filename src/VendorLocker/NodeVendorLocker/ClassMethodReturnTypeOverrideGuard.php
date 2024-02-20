@@ -32,7 +32,7 @@ final readonly class ClassMethodReturnTypeOverrideGuard
             return true;
         }
 
-        // early allow add return type on private method
+        // except magic check on above, early allow add return type on private method
         if ($classMethod->isPrivate()) {
             return false;
         }
