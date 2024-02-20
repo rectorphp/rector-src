@@ -10,5 +10,6 @@ return static function (RectorConfig $rectorConfig): void {
         ->ruleWithConfiguration(RenameFunctionRector::class, [
             'view' => 'Laravel\Templating\render',
             'sprintf' => 'Safe\sprintf',
+            'abc2' => 'abc',
         ]);
 };
