@@ -28,6 +28,11 @@ final readonly class ParentClassMethodTypeOverrideGuard
 
     public function hasParentClassMethod(ClassMethod|MethodReflection $classMethod): bool
     {
+        // early got false on private method
+        if ($classMethod->isPrivate()) {
+            return false;
+        }
+
         try {
             $parentClassMethod = $this->resolveParentClassMethod($classMethod);
 
