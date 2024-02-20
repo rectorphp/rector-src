@@ -114,8 +114,16 @@ CODE_SAMPLE
                 }
 
                 $args = $rectorConfigStmt->expr->getArgs();
-                $value = $args[0]->value;
                 $name = $this->getName($rectorConfigStmt->expr->name);
+
+                if ($name === 'disableParallel') {
+                    $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withoutParallel');
+                    $hasChanged = true;
+
+                    continue;
+                }
+
+                $value = $args[0]->value;
 
                 if ($name === 'rule') {
                     Assert::isAOf($rules, Array_::class);
