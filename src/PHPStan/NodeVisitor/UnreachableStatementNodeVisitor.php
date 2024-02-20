@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Exit_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Declare_;
@@ -45,6 +46,12 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
         foreach ($node->stmts as $stmt) {
             if ($stmt instanceof Expression && $stmt->expr instanceof Exit_) {
                 $isPassedUnreachableStmt = true;
+
+                if ($stmt->expr->expr instanceof Expr && ! $stmt->expr->expr->getAttribute(AttributeKey::SCOPE) instanceof MutatingScope) {
+                    $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    $this->phpStanNodeScopeResolver->processNodes([$stmt], $this->filePath, $mutatingScope);
+                }
+
                 continue;
             }
 
