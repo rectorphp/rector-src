@@ -119,6 +119,10 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
+        if ($classMethod->isPrivate()) {
+            return true;
+        }
+
         // edge case in nette framework
         /** @var string $methodName */
         $methodName = $this->getName($classMethod->name);
