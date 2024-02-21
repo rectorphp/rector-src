@@ -98,7 +98,7 @@ final readonly class ReturnStrictTypeAnalyzer
             return null;
         }
 
-        $parametersAcceptor = $methodReflection->getVariants()[0];
+        $parametersAcceptor =  \PHPStan\Reflection\ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
         if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
             // native return type is needed, as docblock can be false
             $returnType = $parametersAcceptor->getNativeReturnType();
