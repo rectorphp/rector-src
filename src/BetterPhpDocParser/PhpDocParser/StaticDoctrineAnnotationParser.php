@@ -24,9 +24,9 @@ final readonly class StaticDoctrineAnnotationParser
 {
     /**
      * @var string
-     * @see https://regex101.com/r/qduj2O/1
+     * @see https://regex101.com/r/aU2knc/1
      */
-    private const NEWLINES_REGEX = "#\n\r|\n#";
+    private const NEWLINES_REGEX = "#\r?\n#";
 
     /**
      * @var string
