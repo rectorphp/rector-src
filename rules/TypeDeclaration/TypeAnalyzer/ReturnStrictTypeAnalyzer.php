@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -98,12 +99,12 @@ final readonly class ReturnStrictTypeAnalyzer
             return null;
         }
 
-        $parametersAcceptor =  \PHPStan\Reflection\ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
-        if ($parametersAcceptor instanceof FunctionVariantWithPhpDocs) {
+        $parametersAcceptorWithPhpDocs =  ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        if ($parametersAcceptorWithPhpDocs instanceof FunctionVariantWithPhpDocs) {
             // native return type is needed, as docblock can be false
-            $returnType = $parametersAcceptor->getNativeReturnType();
+            $returnType = $parametersAcceptorWithPhpDocs->getNativeReturnType();
         } else {
-            $returnType = $parametersAcceptor->getReturnType();
+            $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
         }
 
         if ($returnType instanceof MixedType) {
