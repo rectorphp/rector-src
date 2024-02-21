@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -21,6 +22,18 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
  */
 final readonly class StaticDoctrineAnnotationParser
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/aU2knc/1
+     */
+    private const NEWLINES_REGEX = "#\r?\n#";
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/Pthg5d/1
+     */
+    private const END_OF_VALUE_CHARACTERS_REGEX = '/^[)} \r\n"\']+$/i';
+
     public function __construct(
         private PlainValueParser $plainValueParser,
         private ArrayParser $arrayParser
@@ -78,6 +91,24 @@ final readonly class StaticDoctrineAnnotationParser
             // plain token value
             $key => $value,
         ];
+    }
+
+    public function getCommentFromRestOfAnnotation(
+        BetterTokenIterator $tokenIterator,
+        string $annotationContent
+    ): string {
+        // we skip all the remaining tokens from the end of the declaration of values
+        while (
+            preg_match(self::END_OF_VALUE_CHARACTERS_REGEX, $tokenIterator->currentTokenValue())
+        ) {
+            $tokenIterator->next();
+        }
+
+        // the remaining of the annotation content is the comment
+        $comment = substr($annotationContent, $tokenIterator->currentTokenOffset());
+        // we only keep the first line as this will be added as a line comment at the end of the attribute
+        $commentLines = Strings::split($comment, self::NEWLINES_REGEX);
+        return $commentLines[0];
     }
 
     /**

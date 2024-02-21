@@ -7,6 +7,7 @@ namespace Rector\BetterPhpDocParser\PhpDoc;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\AbstractValuesAwareNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Stringable;
 
 final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode implements Stringable
@@ -18,11 +19,16 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
         public IdentifierTypeNode $identifierTypeNode,
         ?string $originalContent = null,
         array $values = [],
-        ?string $silentKey = null
+        ?string $silentKey = null,
+        ?string $comment = null
     ) {
         $this->hasChanged = true;
 
         parent::__construct($values, $originalContent, $silentKey);
+
+        if (! in_array($comment, ['', null], true)) {
+            $this->setAttribute(AttributeKey::ATTRIBUTE_COMMENT, $comment);
+        }
     }
 
     public function __toString(): string

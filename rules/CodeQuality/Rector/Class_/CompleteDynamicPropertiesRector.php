@@ -154,7 +154,9 @@ CODE_SAMPLE
             return true;
         }
 
-        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass($class->extends->toString());
+        return $class->extends instanceof FullyQualified && ! $this->reflectionProvider->hasClass(
+            $class->extends->toString()
+        );
     }
 
     /**

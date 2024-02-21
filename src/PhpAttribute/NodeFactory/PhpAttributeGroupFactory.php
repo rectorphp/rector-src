@@ -87,7 +87,12 @@ final readonly class PhpAttributeGroupFactory
         $attributeName->setAttribute(AttributeKey::PHP_ATTRIBUTE_NAME, $annotationToAttribute->getAttributeClass());
 
         $attribute = new Attribute($attributeName, $args);
-        return new AttributeGroup([$attribute]);
+        $attributeGroup = new AttributeGroup([$attribute]);
+        $comment = $doctrineAnnotationTagValueNode->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
+        if ($comment) {
+            $attributeGroup->setAttribute(AttributeKey::ATTRIBUTE_COMMENT, $comment);
+        }
+        return $attributeGroup;
     }
 
     /**

@@ -139,6 +139,16 @@ final class BetterStandardPrinter extends Standard
             : $content;
     }
 
+    protected function pAttributeGroup(Node\AttributeGroup $node): string
+    {
+        $ret = parent::pAttributeGroup($node);
+        $comment = $node->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
+        if (! in_array($comment, ['', null], true)) {
+            $ret .= ' // ' . $comment;
+        }
+        return $ret;
+    }
+
     protected function pExpr_ArrowFunction(ArrowFunction $arrowFunction): string
     {
         if (! $arrowFunction->hasAttribute(AttributeKey::COMMENT_CLOSURE_RETURN_MIRRORED)) {
