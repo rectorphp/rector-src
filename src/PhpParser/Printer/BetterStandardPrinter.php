@@ -141,7 +141,7 @@ final class BetterStandardPrinter extends Standard
 
     protected function pAttributeGroup(Node\AttributeGroup $node): string
     {
-        $ret = '#[' . $this->pCommaSeparated($node->attrs) . ']';
+        $ret = parent::pAttributeGroup($node);
         $comment = $node->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
         if ($comment) {
             $ret .= ' // ' . $comment;
