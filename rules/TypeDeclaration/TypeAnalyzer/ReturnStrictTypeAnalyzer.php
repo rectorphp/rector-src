@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeAnalyzer;
 
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -27,6 +26,8 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
+use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -99,7 +100,16 @@ final readonly class ReturnStrictTypeAnalyzer
             return null;
         }
 
-        $parametersAcceptorWithPhpDocs =  ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
+        $scope = $call->getAttribute(AttributeKey::SCOPE);
+        if (! $scope instanceof Scope) {
+            return null;
+        }
+
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelectorVariantsWrapper::select(
+            $methodReflection,
+            $call,
+            $scope
+        );
         if ($parametersAcceptorWithPhpDocs instanceof FunctionVariantWithPhpDocs) {
             // native return type is needed, as docblock can be false
             $returnType = $parametersAcceptorWithPhpDocs->getNativeReturnType();
