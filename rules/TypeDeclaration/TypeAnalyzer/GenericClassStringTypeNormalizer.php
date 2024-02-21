@@ -109,13 +109,13 @@ final readonly class GenericClassStringTypeNormalizer
                 return $type;
             }
 
-            if (! $itemType instanceof ClassStringType) {
-                return $type;
-            }
-
             if ($itemType instanceof ArrayType) {
                 $arrayType = new ArrayType(new MixedType(), new MixedType());
                 return new ArrayType($keyType, $arrayType);
+            }
+
+            if (! $itemType instanceof ClassStringType) {
+                return $type;
             }
         }
 
