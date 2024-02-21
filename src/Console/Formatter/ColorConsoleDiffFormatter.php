@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Console\Formatter;
 
 use Nette\Utils\Strings;
+use Rector\Util\NewLineSplitter;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
 /**
@@ -33,12 +34,6 @@ final readonly class ColorConsoleDiffFormatter
      */
     private const AT_START_REGEX = '#^(@.*)#';
 
-    /**
-     * @var string
-     * @see https://regex101.com/r/qduj2O/1
-     */
-    private const NEWLINES_REGEX = "#\n\r|\n#";
-
     private string $template;
 
     public function __construct()
@@ -59,7 +54,7 @@ final readonly class ColorConsoleDiffFormatter
     {
         $escapedDiff = OutputFormatter::escape(rtrim($diff));
 
-        $escapedDiffLines = Strings::split($escapedDiff, self::NEWLINES_REGEX);
+        $escapedDiffLines = NewLineSplitter::split($escapedDiff);
 
         // remove description of added + remove; obvious on diffs
         foreach ($escapedDiffLines as $key => $escapedDiffLine) {
