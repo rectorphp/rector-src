@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprNode;
 use PHPStan\PhpDocParser\Lexer\Lexer;
@@ -21,6 +22,12 @@ use Rector\BetterPhpDocParser\ValueObject\PhpDoc\DoctrineAnnotation\CurlyListNod
  */
 final readonly class StaticDoctrineAnnotationParser
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/qduj2O/1
+     */
+    private const NEWLINES_REGEX = "#\n\r|\n#";
+
     /**
      * @var string
      * @see https://regex101.com/r/Pthg5d/1
@@ -100,7 +107,7 @@ final readonly class StaticDoctrineAnnotationParser
         // the remaining of the annotation content is the comment
         $comment = substr($annotationContent, $tokenIterator->currentTokenOffset());
         // we only keep the first line as this will be added as a line comment at the end of the attribute
-        $commentLines = explode("\n", $comment);
+        $commentLines = Strings::split($comment, self::NEWLINES_REGEX);
         return $commentLines[0];
     }
 
