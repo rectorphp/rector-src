@@ -143,7 +143,7 @@ final class BetterStandardPrinter extends Standard
     {
         $ret = parent::pAttributeGroup($node);
         $comment = $node->getAttribute(AttributeKey::ATTRIBUTE_COMMENT);
-        if ($comment) {
+        if (! in_array($comment, ['', null], true)) {
             $ret .= ' // ' . $comment;
         }
         return $ret;
