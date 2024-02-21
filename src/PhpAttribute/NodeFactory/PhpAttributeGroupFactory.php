@@ -92,6 +92,7 @@ final readonly class PhpAttributeGroupFactory
         if ($comment) {
             $attributeGroup->setAttribute(AttributeKey::ATTRIBUTE_COMMENT, $comment);
         }
+
         return $attributeGroup;
     }
 
