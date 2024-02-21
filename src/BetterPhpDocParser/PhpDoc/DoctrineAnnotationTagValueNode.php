@@ -26,7 +26,7 @@ final class DoctrineAnnotationTagValueNode extends AbstractValuesAwareNode imple
 
         parent::__construct($values, $originalContent, $silentKey);
 
-        if ($comment) {
+        if (! in_array($comment, ['', null], true)) {
             $this->setAttribute(AttributeKey::ATTRIBUTE_COMMENT, $comment);
         }
     }

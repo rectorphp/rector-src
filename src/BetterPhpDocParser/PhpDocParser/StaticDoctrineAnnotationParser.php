@@ -32,7 +32,7 @@ final readonly class StaticDoctrineAnnotationParser
      * @var string
      * @see https://regex101.com/r/Pthg5d/1
      */
-    private const END_OF_VALUE_CHARACTERS_REGEX = '/^[)} \n"\']+$/i';
+    private const END_OF_VALUE_CHARACTERS_REGEX = '/^[)} \r\n"\']+$/i';
 
     public function __construct(
         private PlainValueParser $plainValueParser,
