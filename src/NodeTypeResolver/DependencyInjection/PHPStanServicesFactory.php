@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\DependencyInjection;
 
-use Throwable;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
@@ -20,6 +19,7 @@ use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\Dy
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -29,8 +29,6 @@ use Webmozart\Assert\Assert;
  */
 final readonly class PHPStanServicesFactory
 {
-    private Container $container;
-
     /**
      * @var string
      */
@@ -43,6 +41,8 @@ includes:
 in your included phpstan configuration.
 
 MESSAGE_ERROR;
+
+    private Container $container;
 
     public function __construct()
     {
@@ -57,7 +57,6 @@ MESSAGE_ERROR;
             );
         } catch (Throwable $throwable) {
             if ($throwable->getMessage() === "File 'phar://phpstan.phar/conf/bleedingEdge.neon' is missing or is not readable.") {
-
                 $symfonyStyle = new SymfonyStyle(new ArrayInput([]), new ConsoleOutput());
                 $symfonyStyle->error(sprintf(self::INVALID_BLEEDING_EDGE_PATH_MESSAGE, $throwable->getMessage()));
 

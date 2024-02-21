@@ -188,11 +188,7 @@ CODE_SAMPLE
 
                 if ($name === 'fileExtensions') {
                     Assert::isAOf($value, Array_::class);
-                    $newExpr = $this->nodeFactory->createMethodCall(
-                        $newExpr,
-                        'withFileExtensions',
-                        [$value]
-                    );
+                    $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withFileExtensions', [$value]);
                     $hasChanged = true;
 
                     continue;

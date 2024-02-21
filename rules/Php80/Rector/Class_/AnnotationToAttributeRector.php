@@ -76,7 +76,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SymfonyRoute
 {
     /**
-     * @Route("/path", name="action")
+     * @Route("/path", name="action") api route
      */
     public function action()
     {
@@ -89,7 +89,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SymfonyRoute
 {
-    #[Route(path: '/path', name: 'action')]
+    #[Route(path: '/path', name: 'action')] // api route
     public function action()
     {
     }
