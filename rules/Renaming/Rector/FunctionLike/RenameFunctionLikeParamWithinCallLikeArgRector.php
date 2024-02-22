@@ -180,11 +180,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! isset($functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()])) {
-            return null;
-        }
-
-        return $functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()];
+        return $functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()] ?? null;
     }
 
     private function findArgFromMethodCall(
