@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\BetterPhpDocParser\PhpDocParser;
 
-use Nette\Utils\Strings;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use PhpParser\Node as PhpNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Node;
@@ -36,7 +36,7 @@ final readonly class ArrayItemClassNameDecorator implements PhpDocNodeDecoratorI
         $this->phpDocNodeTraverser->traverseWithCallable($phpDocNode, '', function (Node $node) use (
             $phpNode
         ): Node|null {
-            if (! $node instanceof \Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode) {
+            if (! $node instanceof ArrayItemNode) {
                 return null;
             }
 
