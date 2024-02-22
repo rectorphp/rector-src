@@ -6,7 +6,6 @@ namespace Rector\BetterPhpDocParser\PhpDocParser;
 
 use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use PhpParser\Node as PhpNode;
-use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
@@ -49,19 +48,16 @@ final readonly class ArrayItemClassNameDecorator implements PhpDocNodeDecoratorI
                 return null;
             }
 
-            $firstName = $splitScopeResolution[0];
-            $constFetchNode = new ConstFetchNode($firstName, $firstName);
-
-            $className = $this->resolveFullyQualifiedClass($constFetchNode, $phpNode);
+            $className = $this->resolveFullyQualifiedClass($splitScopeResolution[0], $phpNode);
             $node->setAttribute(PhpDocAttributeKey::RESOLVED_CLASS, $className);
 
             return $node;
         });
     }
 
-    private function resolveFullyQualifiedClass(ConstFetchNode $constFetchNode, PhpNode $phpNode): string
+    private function resolveFullyQualifiedClass(string $className, PhpNode $phpNode): string
     {
         $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($phpNode);
-        return $nameScope->resolveStringName($constFetchNode->className);
+        return $nameScope->resolveStringName($className);
     }
 }
