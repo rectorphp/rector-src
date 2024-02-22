@@ -24,6 +24,7 @@ use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\Annotation\AnnotationNaming;
+use Rector\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocNodeFinder\PhpDocNodeByTypeFinder;
@@ -450,6 +451,34 @@ final class PhpDocInfo
             }
 
             $classNames[] = $node->constExpr->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
+            return $node;
+        });
+
+        return $classNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getArrayItemNodeClassNames(): array
+    {
+        $phpDocNodeTraverser = new PhpDocNodeTraverser();
+
+        $classNames = [];
+
+        $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use (
+            &$classNames,
+        ): ?ArrayItemNode {
+            if (! $node instanceof ArrayItemNode) {
+                return null;
+            }
+
+            $resolvedClass = $node->getAttribute(PhpDocAttributeKey::RESOLVED_CLASS);
+            if ($resolvedClass === null) {
+                return null;
+            }
+
+            $classNames[] = $resolvedClass;
             return $node;
         });
 
