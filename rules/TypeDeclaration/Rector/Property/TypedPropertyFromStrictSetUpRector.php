@@ -7,6 +7,11 @@ namespace Rector\TypeDeclaration\Rector\Property;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\ValueObject\Type\FullyQualifiedIdentifierTypeNode;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -24,7 +29,9 @@ final class TypedPropertyFromStrictSetUpRector extends AbstractRector implements
 {
     public function __construct(
         private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -107,6 +114,20 @@ CODE_SAMPLE
             );
             if (! $propertyTypeNode instanceof Node) {
                 continue;
+            }
+
+            if ($propertyType instanceof \PHPStan\Type\ObjectType && $propertyType->getClassName() === 'PHPUnit\Framework\MockObject\MockObject') {
+                $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
+                $varTag = $phpDocInfo->getVarTagValueNode();
+                $varType = $phpDocInfo->getVarType();
+
+                if ($varTag instanceof VarTagValueNode && $varType instanceof \PHPStan\Type\ObjectType && $varType->getClassName() !== 'PHPUnit\Framework\MockObject\MockObject') {
+                    $varTag->type = new IntersectionTypeNode([
+                        new FullyQualifiedIdentifierTypeNode($propertyType->getClassName()),
+                        new FullyQualifiedIdentifierTypeNode($varType->getClassName())
+                    ]);
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+                }
             }
 
             $property->type = $propertyTypeNode;
