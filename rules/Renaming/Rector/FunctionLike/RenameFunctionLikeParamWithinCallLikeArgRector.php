@@ -188,12 +188,10 @@ CODE_SAMPLE
         CallLike $callLike
     ): ?Arg {
         if (is_int($renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition())) {
-            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
-        } else {
-            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
+            return $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
         }
 
-        return $arg;
+        return $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
     }
 
     private function processPositionalArg(

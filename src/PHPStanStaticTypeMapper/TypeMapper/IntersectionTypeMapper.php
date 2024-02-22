@@ -48,7 +48,7 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
             '',
             static function (AstNode $astNode): ?IdentifierTypeNode {
                 if ($astNode instanceof IdentifierTypeNode) {
-                    $astNode->name = '\\' . $astNode->name;
+                    $astNode->name = '\\' . ltrim($astNode->name, '\\');
                     return $astNode;
                 }
 
