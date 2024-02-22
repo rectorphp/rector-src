@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\Property;
 
+use PHPStan\Type\ObjectType;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -116,12 +117,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($propertyType instanceof \PHPStan\Type\ObjectType && $propertyType->getClassName() === 'PHPUnit\Framework\MockObject\MockObject') {
+            if ($propertyType instanceof ObjectType && $propertyType->getClassName() === 'PHPUnit\Framework\MockObject\MockObject') {
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
                 $varTag = $phpDocInfo->getVarTagValueNode();
                 $varType = $phpDocInfo->getVarType();
 
-                if ($varTag instanceof VarTagValueNode && $varType instanceof \PHPStan\Type\ObjectType && $varType->getClassName() !== 'PHPUnit\Framework\MockObject\MockObject') {
+                if ($varTag instanceof VarTagValueNode && $varType instanceof ObjectType && $varType->getClassName() !== 'PHPUnit\Framework\MockObject\MockObject') {
                     $varTag->type = new IntersectionTypeNode([
                         new FullyQualifiedIdentifierTypeNode($propertyType->getClassName()),
                         new FullyQualifiedIdentifierTypeNode($varType->getClassName())
