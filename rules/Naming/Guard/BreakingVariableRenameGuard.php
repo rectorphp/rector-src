@@ -49,7 +49,7 @@ final readonly class BreakingVariableRenameGuard
     public function shouldSkipVariable(
         string $currentName,
         string $expectedName,
-        ClassMethod | Function_ | Closure $functionLike,
+        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
         Variable $variable
     ): bool {
         // is the suffix? → also accepted
@@ -62,7 +62,10 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->overridenExistingNamesResolver->hasNameInClassMethodForNew($currentName, $functionLike)) {
+        if (! $functionLike instanceof ArrowFunction && $this->overridenExistingNamesResolver->hasNameInClassMethodForNew(
+            $currentName,
+            $functionLike
+        )) {
             return true;
         }
 
@@ -74,7 +77,7 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        return $this->isUsedInClosureUsesName($expectedName, $functionLike);
+        return $functionLike instanceof Closure && $this->isUsedInClosureUsesName($expectedName, $functionLike);
     }
 
     public function shouldSkipParam(
@@ -148,9 +151,23 @@ final readonly class BreakingVariableRenameGuard
         return $trinaryLogic->maybe();
     }
 
-    private function hasConflictVariable(ClassMethod | Function_ | Closure $functionLike, string $newName): bool
-    {
-        return $this->betterNodeFinder->hasInstanceOfName((array) $functionLike->stmts, Variable::class, $newName);
+    private function hasConflictVariable(
+        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
+        string $newName
+    ): bool {
+        if ($functionLike instanceof ArrowFunction) {
+            return $this->betterNodeFinder->hasInstanceOfName(
+                [$functionLike->expr, ...$functionLike->params],
+                Variable::class,
+                $newName
+            );
+        }
+
+        return $this->betterNodeFinder->hasInstanceOfName(
+            [...(array) $functionLike->stmts, ...$functionLike->params],
+            Variable::class,
+            $newName
+        );
     }
 
     private function isUsedInClosureUsesName(
