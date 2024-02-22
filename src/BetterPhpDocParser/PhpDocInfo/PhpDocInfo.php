@@ -457,6 +457,9 @@ final class PhpDocInfo
         return $classNames;
     }
 
+    /**
+     * @return string[]
+     */
     public function getArrayItemNodeClassNames(): array
     {
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
