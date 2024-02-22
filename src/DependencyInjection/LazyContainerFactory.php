@@ -33,7 +33,6 @@ use Rector\BetterPhpDocParser\PhpDocParser\BetterPhpDocParser;
 use Rector\BetterPhpDocParser\PhpDocParser\BetterTypeParser;
 use Rector\BetterPhpDocParser\PhpDocParser\ConstExprClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\DoctrineAnnotationDecorator;
-use Rector\BetterPhpDocParser\PhpDocParser\GenericClassNameDecorator;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\ArrayParser;
 use Rector\BetterPhpDocParser\PhpDocParser\StaticDoctrineAnnotationParser\PlainValueParser;
