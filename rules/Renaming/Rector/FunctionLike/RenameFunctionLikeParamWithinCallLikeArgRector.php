@@ -15,13 +15,11 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
-use PhpParser\NodeTraverser;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Naming\Guard\BreakingVariableRenameGuard;
 use Rector\Naming\ParamRenamer\ParamRenamer;
 use Rector\Naming\ValueObject\ParamRename;
 use Rector\Naming\ValueObjectFactory\ParamRenameFactory;
-use Rector\Naming\VariableRenamer;
 use Rector\Rector\AbstractRector;
 use Rector\Renaming\ValueObject\RenameFunctionLikeParamWithinCallLikeArg;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -39,15 +37,17 @@ final class RenameFunctionLikeParamWithinCallLikeArgRector extends AbstractRecto
     private array $renameFunctionLikeParamWithinCallLikeArgs = [];
 
     public function __construct(
-        private BreakingVariableRenameGuard $breakingVariableRenameGuard,
-        private ParamRenamer $paramRenamer,
-        private ParamRenameFactory $paramRenameFactory,
+        private readonly BreakingVariableRenameGuard $breakingVariableRenameGuard,
+        private readonly ParamRenamer $paramRenamer,
+        private readonly ParamRenameFactory $paramRenameFactory,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Rename param within closures and arrow functions based on use with specified method calls', [
+        return new RuleDefinition(
+            'Rename param within closures and arrow functions based on use with specified method calls',
+            [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 (new SomeClass)->process(function ($param) {});
@@ -59,6 +59,7 @@ CODE_SAMPLE
                 ,
                 [new RenameFunctionLikeParamWithinCallLikeArg('SomeClass', 'process', 0, 0, 'parameter')]
             ),
+        
         ]);
     }
 
@@ -85,12 +86,7 @@ CODE_SAMPLE
             $type = match (true) {
                 $node instanceof MethodCall => $node->var,
                 $node instanceof StaticCall => $node->class,
-                default => null,
             };
-
-            if ($type === null) {
-                continue;
-            }
 
             if (! $this->isObjectType($type, $renameFunctionLikeParamWithinCallLikeArg->getObjectType())) {
                 continue;
@@ -109,20 +105,33 @@ CODE_SAMPLE
             }
 
             $arg = $this->findArgFromMethodCall($renameFunctionLikeParamWithinCallLikeArg, $node);
+            $functionLike = $arg?->value;
 
-            if (! $arg instanceof Arg && ! $arg->value instanceof FunctionLike) {
+            if (! $arg instanceof Arg) {
+                continue;
+            }
+
+            if (! $functionLike instanceof FunctionLike) {
                 continue;
             }
 
             $param = $this->findParameterFromArg($arg, $renameFunctionLikeParamWithinCallLikeArg);
 
+            if (! $param instanceof Param) {
+                continue;
+            }
+
+            if (! $param->var instanceof Variable) {
+                continue;
+            }
+
             if (
-                ($arg->value instanceof Closure || $arg->value instanceOf ArrowFunction) &&
+                ($functionLike instanceof Closure || $functionLike instanceof ArrowFunction) &&
                 (
                     $this->breakingVariableRenameGuard->shouldSkipVariable(
-                        $this->nodeNameResolver->getName($param->var),
+                        (string) $this->nodeNameResolver->getName($param->var),
                         $renameFunctionLikeParamWithinCallLikeArg->getNewParamName(),
-                        $arg->value,
+                        $functionLike,
                         $param->var
                     )
                 )
@@ -131,12 +140,12 @@ CODE_SAMPLE
             }
 
             $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName(
-                $arg->value,
+                $functionLike,
                 $param,
                 $renameFunctionLikeParamWithinCallLikeArg->getNewParamName()
             );
 
-            if (!$paramRename instanceof ParamRename) {
+            if (! $paramRename instanceof ParamRename) {
                 continue;
             }
 
@@ -162,29 +171,33 @@ CODE_SAMPLE
         $this->renameFunctionLikeParamWithinCallLikeArgs = $configuration;
     }
 
-    private function findArgFromMethodCall(RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg, CallLike $callLike): ?Arg
-    {
-        if (is_int($renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition())) {
-            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
-        } else {
-            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
-        }
-        return $arg;
-    }
-
-    public function findParameterFromArg(Arg $arg, RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg): ?Param
-    {
+    public function findParameterFromArg(
+        Arg $arg,
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
+    ): ?Param {
         $functionLike = $arg->value;
         if (! $functionLike instanceof FunctionLike) {
             return null;
         }
 
-        if (!isset($functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()])) {
+        if (! isset($functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()])) {
             return null;
         }
 
-        /** @var Param $parameter */
         return $functionLike->params[$renameFunctionLikeParamWithinCallLikeArg->getFunctionLikePosition()];
+    }
+
+    private function findArgFromMethodCall(
+        RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg,
+        CallLike $callLike
+    ): ?Arg {
+        if (is_int($renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition())) {
+            $arg = $this->processPositionalArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
+        } else {
+            $arg = $this->processNamedArg($callLike, $renameFunctionLikeParamWithinCallLikeArg);
+        }
+
+        return $arg;
     }
 
     private function processPositionalArg(

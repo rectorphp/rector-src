@@ -62,7 +62,10 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if (! $functionLike instanceof ArrowFunction && $this->overridenExistingNamesResolver->hasNameInClassMethodForNew($currentName, $functionLike)) {
+        if (! $functionLike instanceof ArrowFunction && $this->overridenExistingNamesResolver->hasNameInClassMethodForNew(
+            $currentName,
+            $functionLike
+        )) {
             return true;
         }
 
@@ -148,8 +151,10 @@ final readonly class BreakingVariableRenameGuard
         return $trinaryLogic->maybe();
     }
 
-    private function hasConflictVariable(ClassMethod | Function_ | Closure | ArrowFunction $functionLike, string $newName): bool
-    {
+    private function hasConflictVariable(
+        ClassMethod | Function_ | Closure | ArrowFunction $functionLike,
+        string $newName
+    ): bool {
         if ($functionLike instanceof ArrowFunction) {
             return $this->betterNodeFinder->hasInstanceOfName(
                 [$functionLike->expr, ...$functionLike->params],
