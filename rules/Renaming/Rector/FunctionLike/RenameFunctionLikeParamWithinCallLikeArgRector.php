@@ -6,6 +6,7 @@ namespace Rector\Renaming\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
@@ -36,8 +37,6 @@ final class RenameFunctionLikeParamWithinCallLikeArgRector extends AbstractRecto
      * @var RenameFunctionLikeParamWithinCallLikeArg[]
      */
     private array $renameFunctionLikeParamWithinCallLikeArgs = [];
-
-    private bool $hasChanged = false;
 
     public function __construct(
         private BreakingVariableRenameGuard $breakingVariableRenameGuard,
@@ -115,11 +114,25 @@ CODE_SAMPLE
                 continue;
             }
 
-            $parameter = $this->findParameterFromArg($arg, $renameFunctionLikeParamWithinCallLikeArg);
+            $param = $this->findParameterFromArg($arg, $renameFunctionLikeParamWithinCallLikeArg);
+
+            if (
+                ($arg->value instanceof Closure || $arg->value instanceOf ArrowFunction) &&
+                (
+                    $this->breakingVariableRenameGuard->shouldSkipVariable(
+                        $this->nodeNameResolver->getName($param->var),
+                        $renameFunctionLikeParamWithinCallLikeArg->getNewParamName(),
+                        $arg->value,
+                        $param->var
+                    )
+                )
+            ) {
+                continue;
+            }
 
             $paramRename = $this->paramRenameFactory->createFromResolvedExpectedName(
                 $arg->value,
-                $parameter,
+                $param,
                 $renameFunctionLikeParamWithinCallLikeArg->getNewParamName()
             );
 
@@ -149,11 +162,6 @@ CODE_SAMPLE
         $this->renameFunctionLikeParamWithinCallLikeArgs = $configuration;
     }
 
-    /**
-     * @param RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
-     * @param CallLike $callLike
-     * @return Arg|null
-     */
     private function findArgFromMethodCall(RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg, CallLike $callLike): ?Arg
     {
         if (is_int($renameFunctionLikeParamWithinCallLikeArg->getCallLikePosition())) {
@@ -164,11 +172,6 @@ CODE_SAMPLE
         return $arg;
     }
 
-    /**
-     * @param Arg $arg
-     * @param RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg
-     * @return
-     */
     public function findParameterFromArg(Arg $arg, RenameFunctionLikeParamWithinCallLikeArg $renameFunctionLikeParamWithinCallLikeArg): ?Param
     {
         $functionLike = $arg->value;

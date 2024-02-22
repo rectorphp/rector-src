@@ -5,29 +5,25 @@ namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithi
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;
 
-SomeClass::someCall(function ($qry) {
-    return $qry;
-});
+function fixture()
+{
+    SomeClass::someCall(function ($qryOne) {
+        return $qryOne;
+    });
 
-$var = new SomeClass();
-$var->someCall(function ($qry) {
-    return $qry;
-});
+    $varOne = new SomeClass();
+    $varOne->someCall(function ($qryTwo) {
+        return $qryTwo;
+    });
 
-(new SomeClass())->someCall(function ($qry) {
-    return $qry;
-});
+    (new SomeClass())->someCall(function ($qryThree) {
+        return $qryThree;
+    });
 
-$var->someCall(fn ($qry) => $qry);
+    $varOne->someCall(fn($qryFour) => $qryFour);
 
-SomeClassForNamed::someCall('a', 'b', callback: fn ($var) => $var);
-
-SomeClass::someCall(function ($qry) {
-    echo $qry;
-    return function ($query) {
-        return $query;
-    };
-});
+    SomeClassForNamed::someCall('a', 'b', callback: fn($varTwo) => $varTwo);
+}
 
 ?>
 -----
@@ -38,28 +34,24 @@ namespace Rector\Tests\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithi
 use SomeNamespace\SomeClass;
 use SomeNamespace\SomeClassForNamed;
 
-SomeClass::someCall(function ($query) {
-    return $query;
-});
-
-$var = new SomeClass();
-$var->someCall(function ($query) {
-    return $query;
-});
-
-(new SomeClass())->someCall(function ($query) {
-    return $query;
-});
-
-$var->someCall(fn ($query) => $query);
-
-SomeClassForNamed::someCall('a', 'b', callback: fn ($query) => $query);
-
-SomeClass::someCall(function ($query) {
-    echo $query;
-    return function ($query) {
+function fixture()
+{
+    SomeClass::someCall(function ($query) {
         return $query;
-    };
-});
+    });
+
+    $varOne = new SomeClass();
+    $varOne->someCall(function ($query) {
+        return $query;
+    });
+
+    (new SomeClass())->someCall(function ($query) {
+        return $query;
+    });
+
+    $varOne->someCall(fn($query) => $query);
+
+    SomeClassForNamed::someCall('a', 'b', callback: fn($query) => $query);
+}
 
 ?>
