@@ -245,7 +245,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->nodeTypeResolver->getNativeType($assign->var)->isArray()->yes()) {
+        $type = $this->nodeTypeResolver->getNativeType($assign->var);
+        if ($type->isArray()->yes()) {
+            return null;
+        }
+
+        if ($type instanceof \PHPStan\Type\UnionType) {
             return null;
         }
 
