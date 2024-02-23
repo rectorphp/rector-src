@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php71\Rector\Assign;
 
+use PHPStan\Type\UnionType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -250,7 +251,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($type instanceof \PHPStan\Type\UnionType) {
+        if ($type instanceof UnionType) {
             return null;
         }
 
