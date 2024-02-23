@@ -18,6 +18,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Rector\AbstractRector;
@@ -238,6 +239,10 @@ CODE_SAMPLE
         Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
     ): ?Assign {
         if (! $this->isEmptyString($assign->expr)) {
+            return null;
+        }
+
+        if ($this->nodeTypeResolver->getNativeType($assign->var)->isArray()->yes()) {
             return null;
         }
 
