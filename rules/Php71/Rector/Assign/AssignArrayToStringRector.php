@@ -237,11 +237,15 @@ CODE_SAMPLE
         Assign $assign,
         Namespace_|FileWithoutNamespace|ClassMethod|Function_|Closure $node
     ): ?Assign {
+        if (! $assign->var instanceof Variable) {
+            return null;
+        }
+
         if (! $this->isEmptyString($assign->expr)) {
             return null;
         }
 
-        if (! $assign->var instanceof Variable) {
+        if ($this->nodeTypeResolver->getNativeType($assign->var)->isArray()->yes()) {
             return null;
         }
 
