@@ -71,6 +71,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (str_ends_with($className, 'TestCase')) {
+            return null;
+        }
+
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
