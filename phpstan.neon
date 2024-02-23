@@ -426,3 +426,8 @@ parameters:
         -
             message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
+
+        # false positive
+        -
+            message: '#Parameters should use "array" types as the only types passed to this method#'
+            path: src/Util/PrintNodes.php

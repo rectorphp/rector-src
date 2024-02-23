@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+use Illuminate\Container\Container;
+use Rector\Console\Style\SymfonyStyleFactory;
+use Rector\Util\PrintNodes;
 
 use PhpParser\Node;
 use PhpParser\PrettyPrinter\Standard;
@@ -27,10 +30,10 @@ if (! function_exists('dump_node')) {
     /**
      * @param Node|Node[] $node
      */
-    function dump_node(Node|array $node)
+    function dump_node(Node|array $node): void
     {
-        $styler = \Illuminate\Container\Container::getInstance()
-            ->make(\Rector\Console\Style\SymfonyStyleFactory::class)
+        $styler = Container::getInstance()
+            ->make(SymfonyStyleFactory::class)
             ->create();
 
         // we turn up the verbosity so it's visible in tests overriding the
@@ -39,6 +42,6 @@ if (! function_exists('dump_node')) {
 
         $styler->newLine();
 
-        (new \Rector\Util\PrintNodes($styler))->outputNodes($node);
+        (new PrintNodes($styler))->outputNodes($node);
     }
 }
