@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php71\Rector\Assign;
 
+use PHPStan\Type\UnionType;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
@@ -245,7 +246,12 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->nodeTypeResolver->getNativeType($assign->var)->isArray()->yes()) {
+        $type = $this->nodeTypeResolver->getNativeType($assign->var);
+        if ($type->isArray()->yes()) {
+            return null;
+        }
+
+        if ($type instanceof UnionType) {
             return null;
         }
 
