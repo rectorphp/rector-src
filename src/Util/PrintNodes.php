@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Util;
 
 use Nette\Utils\Strings;
@@ -25,7 +27,10 @@ class PrintNodes
     {
     }
 
-    public function outputNodes(Node|array $nodes)
+    /**
+     * @param Node|Node[] $nodes
+     */
+    public function outputNodes(Node|array $nodes): void
     {
         $dumpedNodesContents = SimpleNodeDumper::dump($nodes);
 

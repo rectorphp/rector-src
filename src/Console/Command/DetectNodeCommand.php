@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
-use Nette\Utils\Strings;
-use Rector\CustomRules\SimpleNodeDumper;
 use Rector\PhpParser\Parser\SimplePhpParser;
 use Rector\Util\PrintNodes;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +19,7 @@ final class DetectNodeCommand extends Command
     public function __construct(
         private readonly SimplePhpParser $simplePhpParser,
         private readonly PrintNodes $printNodes,
+        private readonly SymfonyStyle $symfonyStyle
     ) {
         parent::__construct();
     }
