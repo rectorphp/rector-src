@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
-use PhpParser\Node\AttributeGroup;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
+use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
