@@ -191,6 +191,6 @@ CODE_SAMPLE
 
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
-        return ! $class->isFinal() && ! $classConst->isPrivate() && !$classConst->isFinal();
+        return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
     }
 }

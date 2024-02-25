@@ -48,19 +48,20 @@ final class RenameFunctionLikeParamWithinCallLikeArgRector extends AbstractRecto
         return new RuleDefinition(
             'Rename param within closures and arrow functions based on use with specified method calls',
             [
-            new ConfiguredCodeSample(
-                <<<'CODE_SAMPLE'
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
 (new SomeClass)->process(function ($param) {});
 CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 (new SomeClass)->process(function ($parameter) {});
 CODE_SAMPLE
-                ,
-                [new RenameFunctionLikeParamWithinCallLikeArg('SomeClass', 'process', 0, 0, 'parameter')]
-            ),
-        
-        ]);
+                    ,
+                    [new RenameFunctionLikeParamWithinCallLikeArg('SomeClass', 'process', 0, 0, 'parameter')]
+                ),
+
+            ]
+        );
     }
 
     /**
