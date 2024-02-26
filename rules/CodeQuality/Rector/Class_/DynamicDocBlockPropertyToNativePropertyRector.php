@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
@@ -16,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\CodeQuality\NodeFactory\TypedPropertyFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\MethodName;
@@ -36,6 +39,7 @@ final class DynamicDocBlockPropertyToNativePropertyRector extends AbstractRector
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly TypedPropertyFactory $typedPropertyFactory,
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
+        private readonly ValueResolver $valueResolver,
     ) {
     }
 
@@ -85,7 +89,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->attributeFinder->findAttributeByClass($node, 'AllowDynamicProperties')) {
+        if (! $this->attributeFinder->findAttributeByClass($node, 'AllowDynamicProperties') instanceof Attribute) {
             return null;
         }
 
@@ -154,9 +158,13 @@ CODE_SAMPLE
                     continue;
                 }
 
+                $defaultValue = $existingProperty->props[0]->default;
+                $isNullable = $defaultValue instanceof Expr && $this->valueResolver->isNull($defaultValue);
+
                 $existingProperty->type = $this->typedPropertyFactory->createPropertyTypeNode(
                     $propertyTagValueNode,
-                    $class
+                    $class,
+                    $isNullable,
                 );
 
                 continue;
