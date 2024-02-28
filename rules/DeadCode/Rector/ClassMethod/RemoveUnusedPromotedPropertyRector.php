@@ -95,6 +95,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($constructClassMethod->params === []) {
+            return null;
+        }
+
         if ($this->shouldSkipClass($node)) {
             return null;
         }
