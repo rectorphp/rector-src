@@ -50,7 +50,12 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if (! $node instanceof Expr || $node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2) {
+        if (! $node instanceof Expr) {
+            return null;
+        }
+
+        if ($node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
+            && $node->getAttribute(AttributeKey::IS_ARG_VALUE) !== true) {
             return null;
         }
 
