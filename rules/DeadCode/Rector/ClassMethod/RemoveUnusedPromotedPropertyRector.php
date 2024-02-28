@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Scalar\MagicConst\Method;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\TraitUse;
@@ -15,6 +16,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\Reflection\ReflectionResolver;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\ValueObject\Visibility;
@@ -32,6 +34,7 @@ final class RemoveUnusedPromotedPropertyRector extends AbstractScopeAwareRector 
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -154,6 +157,16 @@ CODE_SAMPLE
         foreach ($class->stmts as $stmt) {
             if ($stmt instanceof TraitUse) {
                 return true;
+            }
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($class);
+        if ($classReflection instanceof \PHPStan\Reflection\ClassReflection) {
+            $interfaces = $classReflection->getInterfaces();
+            foreach ($interfaces as $interface) {
+                if ($interface->hasNativeMethod(MethodName::CONSTRUCT)) {
+                    return true;
+                }
             }
         }
 
