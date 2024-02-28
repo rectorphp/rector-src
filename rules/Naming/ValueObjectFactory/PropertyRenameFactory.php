@@ -8,7 +8,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
 use Rector\Naming\ValueObject\PropertyRename;
 use Rector\NodeNameResolver\NodeNameResolver;
-use Rector\Validation\RectorAssert;
 use Webmozart\Assert\InvalidArgumentException;
 
 final readonly class PropertyRenameFactory
