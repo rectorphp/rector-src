@@ -27,18 +27,17 @@ final readonly class PropertyRenameFactory
         $className = (string) $this->nodeNameResolver->getName($classLike);
 
         try {
-            RectorAssert::propertyName($expectedName);
+            return new PropertyRename(
+                $property,
+                $expectedName,
+                $currentName,
+                $classLike,
+                $className,
+                $property->props[0]
+            );
         } catch (InvalidArgumentException) {
-            return null;
         }
 
-        return new PropertyRename(
-            $property,
-            $expectedName,
-            $currentName,
-            $classLike,
-            $className,
-            $property->props[0]
-        );
+        return null;
     }
 }
