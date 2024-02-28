@@ -6,11 +6,11 @@ namespace Rector\DeadCode\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Scalar\MagicConst\Method;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ClassReflection;
 use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
@@ -161,7 +161,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($class);
-        if ($classReflection instanceof \PHPStan\Reflection\ClassReflection) {
+        if ($classReflection instanceof ClassReflection) {
             $interfaces = $classReflection->getInterfaces();
             foreach ($interfaces as $interface) {
                 if ($interface->hasNativeMethod(MethodName::CONSTRUCT)) {
