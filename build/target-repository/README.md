@@ -51,11 +51,11 @@ return RectorConfig::configure()
     ->withRules([
         TypedPropertyFromStrictConstructorRector::class
     ])
-    // here we can define, what sets of rules will be applied
-    // tip: use "SetList" class to autocomplete sets with your IDE
-    ->withPreparedSets([
-        SetList::CODE_QUALITY
-    ]);
+    // here we can define, what prepared sets of rules will be applied
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true
+    );
 ```
 
 Then dry run Rector:
