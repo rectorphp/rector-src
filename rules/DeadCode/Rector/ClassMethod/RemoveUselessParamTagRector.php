@@ -19,7 +19,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveUselessParamTagRector extends AbstractRector
 {
-    private $unusedProperty;
     public function __construct(
         private readonly ParamTagRemover $paramTagRemover,
         private readonly PhpDocInfoFactory $phpDocInfoFactory
