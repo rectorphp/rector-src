@@ -43,7 +43,6 @@ And modify it:
 
 ```php
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\SetList;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 
 return RectorConfig::configure()
