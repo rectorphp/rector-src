@@ -53,7 +53,7 @@ return RectorConfig::configure()
     ])
     // here we can define, what sets of rules will be applied
     // tip: use "SetList" class to autocomplete sets with your IDE
-    ->withSets([
+    ->withPreparedSets([
         SetList::CODE_QUALITY
     ]);
 ```
