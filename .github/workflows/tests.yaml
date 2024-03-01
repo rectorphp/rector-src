@@ -35,6 +35,6 @@ jobs:
                     # and check against first class callable strlen(...)
                     ini-values: zend.assertions=1
 
-            -   uses: "ramsey/composer-install@v2"
+            -   uses: "ramsey/composer-install@v3"
 
             -   run: vendor/bin/phpunit --colors
