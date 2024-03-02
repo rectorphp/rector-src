@@ -189,11 +189,7 @@ CODE_SAMPLE
         $needle = $args[1]->value;
         $thirdArgValue = $args[2]->value;
 
-        if (isset($args[4])) {
-            $isCaseInsensitiveValue = $this->valueResolver->getValue($args[4]->value);
-        } else {
-            $isCaseInsensitiveValue = null;
-        }
+        $isCaseInsensitiveValue = isset($args[4]) ? $this->valueResolver->getValue($args[4]->value) : null;
 
         // is case insensitive → not valid replacement
         if ($isCaseInsensitiveValue === true) {
