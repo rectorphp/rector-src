@@ -168,6 +168,7 @@ CODE_SAMPLE
     private function refactorSubstrCompare(BinaryOp $binaryOp): FuncCall | BooleanNot | null
     {
         $funcCallAndExpr = $this->binaryOpAnalyzer->matchFuncCallAndOtherExpr($binaryOp, 'substr_compare');
+
         if (! $funcCallAndExpr instanceof FuncCallAndExpr) {
             return null;
         }
@@ -179,16 +180,25 @@ CODE_SAMPLE
 
         $substrCompareFuncCall = $funcCallAndExpr->getFuncCall();
 
-        if (count($substrCompareFuncCall->getArgs()) < 2) {
+        $args = $substrCompareFuncCall->getArgs();
+        if (count($args) < 2) {
             return null;
         }
 
-        $haystack = $substrCompareFuncCall->getArgs()[0]
-->value;
-        $needle = $substrCompareFuncCall->getArgs()[1]
-->value;
-        $thirdArgValue = $substrCompareFuncCall->getArgs()[2]
-->value;
+        $haystack = $args[0]->value;
+        $needle = $args[1]->value;
+        $thirdArgValue = $args[2]->value;
+
+        if (isset($args[4])) {
+            $isCaseInsensitiveValue = $this->valueResolver->getValue($args[4]->value);
+        } else {
+            $isCaseInsensitiveValue = null;
+        }
+
+        // is case insensitive → not valid replacement
+        if ($isCaseInsensitiveValue === true) {
+            return null;
+        }
 
         if (
             ! $this->isUnaryMinusStrlenFuncCallArgValue($thirdArgValue, $needle) &&
