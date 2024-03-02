@@ -7,7 +7,4 @@ use Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector;
 use Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector;
 
 return RectorConfig::configure()
-    ->withRules([
-        RemoveDeadStmtRector::class,
-        RemoveUnusedVariableAssignRector::class
-    ]);
+    ->withRules([RemoveDeadStmtRector::class, RemoveUnusedVariableAssignRector::class]);
