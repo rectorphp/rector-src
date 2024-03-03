@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector\Fixture;
 
-class NestedArrays
+class DestructuringArrays
 {
     public function go()
     {
@@ -28,7 +28,7 @@ class NestedArrays
 
 namespace Rector\Tests\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector\Fixture;
 
-class NestedArrays
+class DestructuringArrays
 {
     public function go()
     {
