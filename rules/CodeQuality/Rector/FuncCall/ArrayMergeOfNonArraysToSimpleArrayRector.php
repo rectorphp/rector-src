@@ -93,7 +93,9 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $array->items[] = new ArrayItem($nestedArrayItemItem->value, $nestedArrayItemItem->key);
+                $array->items[] = $nestedArrayItemItem->unpack
+                    ? $nestedArrayItemItem
+                    : new ArrayItem($nestedArrayItemItem->value, $nestedArrayItemItem->key);
                 $isAssigned = true;
             }
         }
