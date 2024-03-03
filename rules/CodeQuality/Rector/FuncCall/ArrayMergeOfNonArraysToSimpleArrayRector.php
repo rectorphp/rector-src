@@ -93,14 +93,14 @@ CODE_SAMPLE
                     continue;
                 }
 
+                $isAssigned = true;
+
                 if ($nestedArrayItemItem->unpack) {
                     $array->items[] = $nestedArrayItemItem;
-                    $isAssigned = true;
                     continue;
                 }
 
                 $array->items[] = new ArrayItem($nestedArrayItemItem->value, $nestedArrayItemItem->key);
-                $isAssigned = true;
             }
         }
 
