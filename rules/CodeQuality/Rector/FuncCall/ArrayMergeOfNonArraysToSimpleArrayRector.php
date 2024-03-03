@@ -95,6 +95,7 @@ CODE_SAMPLE
 
                 if ($nestedArrayItemItem->unpack) {
                     $array->items[] = $nestedArrayItemItem;
+                    $isAssigned = true;
                     continue;
                 }
 
