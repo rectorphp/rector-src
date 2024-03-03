@@ -44,7 +44,7 @@ final readonly class VariableDimFetchAssignResolver
             $assign = $stmtExpr;
 
             $keyExpr = $this->matchKeyOnArrayDimFetchOfVariable($assign, $variable);
-            if ($keyExpr instanceof ArrayDimFetch) {
+            if ($assign->var instanceof ArrayDimFetch && $assign->var->var instanceof ArrayDimFetch) {
                 return [];
             }
 
@@ -67,7 +67,7 @@ final readonly class VariableDimFetchAssignResolver
         }
 
         $arrayDimFetch = $assign->var;
-        if ($arrayDimFetch->var instanceof Variable && ! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $variable)) {
+        if (! $this->nodeComparator->areNodesEqual($arrayDimFetch->var, $variable)) {
             return null;
         }
 
@@ -78,10 +78,6 @@ final readonly class VariableDimFetchAssignResolver
 
         if ($isFoundInExpr) {
             return null;
-        }
-
-        if ($arrayDimFetch->var instanceof ArrayDimFetch) {
-            return $arrayDimFetch->var;
         }
 
         return $arrayDimFetch->dim;
