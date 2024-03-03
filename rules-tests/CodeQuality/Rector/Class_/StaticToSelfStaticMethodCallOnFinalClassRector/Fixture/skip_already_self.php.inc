@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector\Fixture;
 
-final class CallStatically
+final class SkipAlreadySelf
 {
     public function execute()
     {
