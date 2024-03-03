@@ -194,6 +194,13 @@ CODE_SAMPLE
                     continue;
                 }
 
+                if ($name === 'phpVersion') {
+                    $newExpr = $this->nodeFactory->createMethodCall($newExpr, 'withPhpVersion', [$value]);
+                    $hasChanged = true;
+
+                    continue;
+                }
+
                 // implementing method by method
                 return null;
             }
