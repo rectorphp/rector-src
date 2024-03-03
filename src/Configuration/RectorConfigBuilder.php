@@ -70,10 +70,7 @@ final class RectorConfigBuilder
 
     private ?string $containerCacheDirectory = null;
 
-    /**
-     * Enabled by default
-     */
-    private bool $parallel = true;
+    private ?bool $parallel = null;
 
     private int $parallelTimeoutSeconds = 120;
 
@@ -233,14 +230,16 @@ final class RectorConfigBuilder
             $rectorConfig->phpVersion($this->phpVersion);
         }
 
-        if ($this->parallel) {
-            $rectorConfig->parallel(
-                processTimeout: $this->parallelTimeoutSeconds,
-                maxNumberOfProcess: $this->parallelMaxNumberOfProcess,
-                jobSize: $this->parallelJobSize
-            );
-        } else {
-            $rectorConfig->disableParallel();
+        if ($this->parallel !== null) {
+            if ($this->parallel) {
+                $rectorConfig->parallel(
+                    processTimeout: $this->parallelTimeoutSeconds,
+                    maxNumberOfProcess: $this->parallelMaxNumberOfProcess,
+                    jobSize: $this->parallelJobSize
+                );
+            } else {
+                $rectorConfig->disableParallel();
+            }
         }
 
         if ($this->symfonyContainerXmlFile !== null) {
