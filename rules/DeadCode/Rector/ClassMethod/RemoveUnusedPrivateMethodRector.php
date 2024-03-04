@@ -124,7 +124,7 @@ CODE_SAMPLE
             return true;
         }
 
-        // unreliable to detect trait, interface doesn't make sense
+        // unreliable to detect trait, interface, anonymous class: doesn't make sense
         if ($classReflection->isTrait()) {
             return true;
         }
@@ -137,7 +137,6 @@ CODE_SAMPLE
             return true;
         }
 
-        // skips interfaces by default too
         if (! $classMethod->isPrivate()) {
             return true;
         }
