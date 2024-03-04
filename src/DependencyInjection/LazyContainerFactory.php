@@ -102,7 +102,7 @@ use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StaticVariableNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\NodeVisitor\StmtKeyNodeVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use Rector\Php80\AttributeDecorator\DoctrineCoverterterAttributeDecorator;
+use Rector\Php80\AttributeDecorator\DoctrineConverterAttributeDecorator;
 use Rector\Php80\AttributeDecorator\SensioParamConverterAttributeDecorator;
 use Rector\Php80\Contract\ConverterAttributeDecoratorInterface;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
@@ -376,7 +376,7 @@ final class LazyContainerFactory
      */
     private const CONVERTER_ATTRIBUTE_DECORATOR_CLASSES = [
         SensioParamConverterAttributeDecorator::class,
-        DoctrineCoverterterAttributeDecorator::class,
+        DoctrineConverterAttributeDecorator::class,
     ];
 
     /**
