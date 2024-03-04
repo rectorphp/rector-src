@@ -49,8 +49,7 @@ use Rector\DeadCode\Rector\Ternary\TernaryToBooleanOrFalseToBooleanAndRector;
 use Rector\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector;
 
 /**
- * Key 0 = level 0
- * Key 50 = level 50
+ * Use the index to find which rules are applied for each withDeadCodeLevel() level
  *
  * Start at 0, go slowly higher, one level per PR, and improve your rule coverage
  *
@@ -69,57 +68,57 @@ final class DeadCodeLevel
      */
     public const RULES = [
         // easy picks
-        RemoveUnusedForeachKeyRector::class,
-        RemoveDuplicatedArrayKeyRector::class,
-        RecastingRemovalRector::class,
-        RemoveAndTrueRector::class,
-        SimplifyMirrorAssignRector::class,
-        RemoveDeadContinueRector::class,
-        RemoveUnusedNonEmptyArrayBeforeForeachRector::class,
-        RemoveNullPropertyInitializationRector::class,
-        RemoveUselessReturnExprInConstructRector::class,
+        0 => RemoveUnusedForeachKeyRector::class,
+        1 => RemoveDuplicatedArrayKeyRector::class,
+        2 => RecastingRemovalRector::class,
+        3 => RemoveAndTrueRector::class,
+        4 => SimplifyMirrorAssignRector::class,
+        5 => RemoveDeadContinueRector::class,
+        6 => RemoveUnusedNonEmptyArrayBeforeForeachRector::class,
+        7 => RemoveNullPropertyInitializationRector::class,
+        8 => RemoveUselessReturnExprInConstructRector::class,
 
-        RemoveTypedPropertyDeadInstanceOfRector::class,
-        TernaryToBooleanOrFalseToBooleanAndRector::class,
-        RemoveDoubleAssignRector::class,
-        RemoveConcatAutocastRector::class,
-        SimplifyIfElseWithSameContentRector::class,
-        SimplifyUselessVariableRector::class,
-        RemoveDeadZeroAndOneOperationRector::class,
+        9 => RemoveTypedPropertyDeadInstanceOfRector::class,
+        10 => TernaryToBooleanOrFalseToBooleanAndRector::class,
+        11 => RemoveDoubleAssignRector::class,
+        12 => RemoveConcatAutocastRector::class,
+        13 => SimplifyIfElseWithSameContentRector::class,
+        14 => SimplifyUselessVariableRector::class,
+        15 => RemoveDeadZeroAndOneOperationRector::class,
 
         // docblock
-        RemoveUselessParamTagRector::class,
-        RemoveUselessReturnTagRector::class,
-        RemoveNonExistingVarAnnotationRector::class,
-        RemoveUselessVarTagRector::class,
-        RemovePhpVersionIdCheckRector::class,
+        16 => RemoveUselessParamTagRector::class,
+        17 => RemoveUselessReturnTagRector::class,
+        18 => RemoveNonExistingVarAnnotationRector::class,
+        19 => RemoveUselessVarTagRector::class,
+        20 => RemovePhpVersionIdCheckRector::class,
 
-        RemoveAlwaysTrueIfConditionRector::class,
-        ReduceAlwaysFalseIfOrRector::class,
-        RemoveUnusedPrivateClassConstantRector::class,
-        RemoveUnusedPrivatePropertyRector::class,
+        21 => RemoveAlwaysTrueIfConditionRector::class,
+        22 => ReduceAlwaysFalseIfOrRector::class,
+        23 => RemoveUnusedPrivateClassConstantRector::class,
+        24 => RemoveUnusedPrivatePropertyRector::class,
 
-        RemoveDuplicatedCaseInSwitchRector::class,
-        RemoveDeadInstanceOfRector::class,
+        25 => RemoveDuplicatedCaseInSwitchRector::class,
+        26 => RemoveDeadInstanceOfRector::class,
 
-        RemoveDeadTryCatchRector::class,
-        RemoveDeadIfForeachForRector::class,
-        RemoveDeadStmtRector::class,
-        UnwrapFutureCompatibleIfPhpVersionRector::class,
-        RemoveParentCallWithoutParentRector::class,
-        RemoveDeadConditionAboveReturnRector::class,
-        RemoveDeadLoopRector::class,
+        27 => RemoveDeadTryCatchRector::class,
+        28 => RemoveDeadIfForeachForRector::class,
+        29 => RemoveDeadStmtRector::class,
+        30 => UnwrapFutureCompatibleIfPhpVersionRector::class,
+        31 => RemoveParentCallWithoutParentRector::class,
+        32 => RemoveDeadConditionAboveReturnRector::class,
+        33 => RemoveDeadLoopRector::class,
 
         // removing methods could be risky if there is some magic loading them
-        RemoveUnusedPromotedPropertyRector::class,
-        RemoveUnusedPrivateMethodParameterRector::class,
-        RemoveUnusedPrivateMethodRector::class,
-        RemoveUnreachableStatementRector::class,
-        RemoveUnusedVariableAssignRector::class,
+        34 => RemoveUnusedPromotedPropertyRector::class,
+        35 => RemoveUnusedPrivateMethodParameterRector::class,
+        36 => RemoveUnusedPrivateMethodRector::class,
+        37 => RemoveUnreachableStatementRector::class,
+        38 => RemoveUnusedVariableAssignRector::class,
 
         // this could break framework magic autowiring in some cases
-        RemoveUnusedConstructorParamRector::class,
-        RemoveEmptyClassMethodRector::class,
-        RemoveDeadReturnRector::class,
+        39 => RemoveUnusedConstructorParamRector::class,
+        40 => RemoveEmptyClassMethodRector::class,
+        41 => RemoveDeadReturnRector::class,
     ];
 }
