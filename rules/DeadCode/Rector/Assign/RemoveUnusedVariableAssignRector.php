@@ -84,11 +84,7 @@ CODE_SAMPLE
         }
 
         // we cannot be sure here
-        if ($this->containsCompactFuncCall($node)) {
-            return null;
-        }
-
-        if ($this->containsFileIncludes($node)) {
+        if ($this->shouldSkip($stmts)) {
             return null;
         }
 
@@ -173,22 +169,22 @@ CODE_SAMPLE
         return false;
     }
 
-    private function containsCompactFuncCall(ClassMethod|Function_ $functionLike): bool
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function shouldSkip(array $stmts): bool
     {
-        $compactFuncCall = $this->betterNodeFinder->findFirst($functionLike, function (Node $node): bool {
+        return (bool) $this->betterNodeFinder->findFirst($stmts, function (Node $node): bool {
+            if ($node instanceof Include_) {
+                return true;
+            }
+
             if (! $node instanceof FuncCall) {
                 return false;
             }
 
             return $this->isName($node, 'compact');
         });
-
-        return $compactFuncCall instanceof FuncCall;
-    }
-
-    private function containsFileIncludes(ClassMethod|Function_ $functionLike): bool
-    {
-        return (bool) $this->betterNodeFinder->findInstancesOf($functionLike, [Include_::class]);
     }
 
     /**
