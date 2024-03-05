@@ -21,6 +21,10 @@ final readonly class ClassMethodReturnVendorLockResolver
 
     public function isVendorLocked(ClassMethod $classMethod): bool
     {
+        if ($classMethod->isPrivate()) {
+            return false;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return false;
