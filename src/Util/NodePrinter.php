@@ -9,7 +9,7 @@ use PhpParser\Node;
 use Rector\CustomRules\SimpleNodeDumper;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class PrintNodes
+final readonly class NodePrinter
 {
     /**
      * @var string
@@ -23,14 +23,15 @@ class PrintNodes
      */
     private const PROPERTY_KEY_REGEX = '#(?<key>[\w\d]+)\:#';
 
-    public function __construct(private readonly SymfonyStyle $symfonyStyle)
-    {
+    public function __construct(
+        private SymfonyStyle $symfonyStyle
+    ) {
     }
 
     /**
      * @param Node|Node[] $nodes
      */
-    public function outputNodes(Node|array $nodes): void
+    public function printNodes(Node|array $nodes): void
     {
         $dumpedNodesContents = SimpleNodeDumper::dump($nodes);
 
@@ -40,7 +41,6 @@ class PrintNodes
 
         $this->symfonyStyle->newLine();
     }
-
 
     private function addConsoleColors(string $contents): string
     {

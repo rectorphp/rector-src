@@ -430,4 +430,4 @@ parameters:
         # false positive
         -
             message: '#Parameters should use "array" types as the only types passed to this method#'
-            path: src/Util/PrintNodes.php
+            path: src/Util/NodePrinter.php

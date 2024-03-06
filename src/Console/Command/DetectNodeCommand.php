@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Console\Command;
 
 use Rector\PhpParser\Parser\SimplePhpParser;
-use Rector\Util\PrintNodes;
+use Rector\Util\NodePrinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,7 +18,7 @@ final class DetectNodeCommand extends Command
 {
     public function __construct(
         private readonly SimplePhpParser $simplePhpParser,
-        private readonly PrintNodes $printNodes,
+        private readonly NodePrinter $nodePrinter,
         private readonly SymfonyStyle $symfonyStyle
     ) {
         parent::__construct();
@@ -61,6 +61,6 @@ final class DetectNodeCommand extends Command
             return;
         }
 
-        $this->printNodes->outputNodes($nodes);
+        $this->nodePrinter->printNodes($nodes);
     }
 }
