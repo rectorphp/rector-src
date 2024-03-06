@@ -13,11 +13,14 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ExtendsTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -30,6 +33,7 @@ final class ChildDoctrineRepositoryClassTypeRector extends AbstractRector
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly NodeFinder $nodeFinder,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -110,6 +114,13 @@ CODE_SAMPLE
             if ($this->containsMethodCallNamed($classMethod, 'findBy')) {
                 $classMethod->returnType = new Identifier('array');
                 // add docblock with type
+
+                $classMethodPhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+                $arrayTypeNode = new ArrayTypeNode(new IdentifierTypeNode($entityClassName));
+                $classMethodPhpDocInfo->addTagValueNode(new ReturnTagValueNode($arrayTypeNode, ''));
+
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             }
 
             $hasChanged = true;
