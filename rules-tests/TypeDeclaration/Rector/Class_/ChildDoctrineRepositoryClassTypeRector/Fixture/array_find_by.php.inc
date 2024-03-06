@@ -8,12 +8,12 @@ use Rector\Tests\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeR
 /**
  * @extends EntityRepository<SomeObject>
  */
-final class ProductRepository extends EntityRepository
+final class ArrayFindBy extends EntityRepository
 {
     public function findSome($userId)
     {
-        return $this->findOneBy([
-                'userId' => $userId,
+        return $this->findBy([
+            'userId' => $userId,
         ]);
     }
 }
@@ -30,12 +30,15 @@ use Rector\Tests\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeR
 /**
  * @extends EntityRepository<SomeObject>
  */
-final class ProductRepository extends EntityRepository
+final class ArrayFindBy extends EntityRepository
 {
-    public function findSome($userId): ?SomeObject
+    /**
+     * @return SomeObject[]
+     */
+    public function findSome($userId): array
     {
-        return $this->findOneBy([
-                'userId' => $userId,
+        return $this->findBy([
+            'userId' => $userId,
         ]);
     }
 }

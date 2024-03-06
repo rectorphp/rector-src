@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\TypeDeclaration\Rector\Class_\Tests\Rector\ChildDoctrineRepositoryClassTypeRector\Source;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeRector\Source;
 
 class SomeObject
 {

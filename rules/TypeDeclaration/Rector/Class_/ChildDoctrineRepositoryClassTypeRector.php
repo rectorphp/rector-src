@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -105,6 +107,11 @@ CODE_SAMPLE
                 $classMethod->returnType = $this->createNullableType($entityClassName);
             }
 
+            if ($this->containsMethodCallNamed($classMethod, 'findBy')) {
+                $classMethod->returnType = new Identifier('array');
+                // add docblock with type
+            }
+
             $hasChanged = true;
             // try to figure out the return type
         }
@@ -152,21 +159,19 @@ CODE_SAMPLE
             return null;
         }
 
-        $entityClassName = $entityGenericType->name;
-
-        return $entityClassName;
+        return $entityGenericType->name;
     }
 
     private function containsMethodCallNamed(ClassMethod $classMethod, string $desiredMethodName): bool
     {
-        return (bool) $this->nodeFinder->findFirst((array) $classMethod->stmts, function (\PhpParser\Node $node) use (
+        return (bool) $this->nodeFinder->findFirst((array) $classMethod->stmts, static function (Node $node) use (
             $desiredMethodName
         ): bool {
-            if (! $node instanceof Node\Expr\MethodCall) {
+            if (! $node instanceof MethodCall) {
                 return false;
             }
 
-            if (! $node->name instanceof Node\Identifier) {
+            if (! $node->name instanceof Identifier) {
                 return false;
             }
 
@@ -185,11 +190,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($classMethod->returnType instanceof \PhpParser\Node) {
-            return true;
-        }
-
-        return false;
+        return $classMethod->returnType instanceof Node;
     }
 
     private function createNullableType(string $entityClassName): NullableType

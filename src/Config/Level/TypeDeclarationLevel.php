@@ -7,6 +7,7 @@ namespace Rector\Config\Level;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeRector;
 use Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector;
 use Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector;
 use Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector;
@@ -85,6 +86,7 @@ final class TypeDeclarationLevel
         TypedPropertyFromStrictSetUpRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictTypedCallRector::class,
+        ChildDoctrineRepositoryClassTypeRector::class,
 
         // param
         AddMethodCallBasedStrictParamTypeRector::class,
