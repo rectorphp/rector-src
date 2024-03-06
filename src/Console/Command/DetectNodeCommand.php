@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
-use Nette\Utils\Strings;
-use Rector\CustomRules\SimpleNodeDumper;
 use Rector\PhpParser\Parser\SimplePhpParser;
+use Rector\Util\NodePrinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,21 +16,10 @@ use Throwable;
 
 final class DetectNodeCommand extends Command
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/Fe8n73/1
-     */
-    private const CLASS_NAME_REGEX = '#(?<class_name>PhpParser(.*?))\(#ms';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/uQFuvL/1
-     */
-    private const PROPERTY_KEY_REGEX = '#(?<key>[\w\d]+)\:#';
-
     public function __construct(
-        private readonly SymfonyStyle $symfonyStyle,
         private readonly SimplePhpParser $simplePhpParser,
+        private readonly NodePrinter $nodePrinter,
+        private readonly SymfonyStyle $symfonyStyle
     ) {
         parent::__construct();
     }
@@ -61,23 +49,6 @@ final class DetectNodeCommand extends Command
         return self::SUCCESS;
     }
 
-    private function addConsoleColors(string $contents): string
-    {
-        // decorate class names
-        $colorContents = Strings::replace(
-            $contents,
-            self::CLASS_NAME_REGEX,
-            static fn (array $match): string => '<fg=green>' . $match['class_name'] . '</>('
-        );
-
-        // decorate keys
-        return Strings::replace(
-            $colorContents,
-            self::PROPERTY_KEY_REGEX,
-            static fn (array $match): string => '<fg=yellow>' . $match['key'] . '</>:'
-        );
-    }
-
     private function askQuestionAndDumpNode(): void
     {
         $question = new Question('Write short PHP code snippet');
@@ -90,12 +61,6 @@ final class DetectNodeCommand extends Command
             return;
         }
 
-        $dumpedNodesContents = SimpleNodeDumper::dump($nodes);
-
-        // colorize
-        $colorContents = $this->addConsoleColors($dumpedNodesContents);
-        $this->symfonyStyle->writeln($colorContents);
-
-        $this->symfonyStyle->newLine();
+        $this->nodePrinter->printNodes($nodes);
     }
 }
