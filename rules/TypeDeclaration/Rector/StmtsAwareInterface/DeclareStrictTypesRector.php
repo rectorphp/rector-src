@@ -89,7 +89,7 @@ CODE_SAMPLE
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         // avoid infinite loop
-        if ($this->nodeComparator->areNodesEqual($nodes[0], $strictTypesDeclare)) {
+        if ($this->nodeComparator->areNodesEqual($nodes[0] ?? null, $strictTypesDeclare)) {
             return null;
         }
 
