@@ -77,6 +77,11 @@ CODE_SAMPLE
         }
 
         $rightStaticType = $this->nodeTypeResolver->getNativeType($node->right);
+
+        if ($leftStaticType->isString()->yes() && $rightStaticType->isString()->yes()) {
+            return $this->processIdenticalOrNotIdentical($node);
+        }
+
         if ($rightStaticType instanceof MixedType) {
             return null;
         }
@@ -86,6 +91,11 @@ CODE_SAMPLE
             return null;
         }
 
+        return $this->processIdenticalOrNotIdentical($node);
+    }
+
+    private function processIdenticalOrNotIdentical(Equal|NotEqual $node): Identical|NotIdentical
+    {
         if ($node instanceof Equal) {
             return new Identical($node->left, $node->right);
         }
