@@ -85,13 +85,13 @@ CODE_SAMPLE
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
 
-        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
-        $this->file->addRectorClassWithLine($rectorWithLineChange);
-
         // avoid infinite loop
         if ($this->nodeComparator->areNodesEqual($nodes[0] ?? null, $strictTypesDeclare)) {
             return null;
         }
+
+        $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
+        $this->file->addRectorClassWithLine($rectorWithLineChange);
 
         if ($rootStmt instanceof FileWithoutNamespace) {
             /** @var Stmt[] $nodes */
