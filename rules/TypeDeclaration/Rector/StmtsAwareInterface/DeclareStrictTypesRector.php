@@ -64,11 +64,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        $rootStmt = $newStmts[0] ?? null;
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($rootStmt->stmts);
+            $currentStmt = $rootStmt->stmts[0] ?? null;
 
             if (! $currentStmt instanceof Stmt) {
                 return null;
@@ -84,11 +84,6 @@ CODE_SAMPLE
 
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
-
-        // avoid infinite loop
-        if ($this->nodeComparator->areNodesEqual($nodes[0] ?? null, $strictTypesDeclare)) {
-            return null;
-        }
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
