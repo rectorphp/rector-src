@@ -64,10 +64,12 @@ CODE_SAMPLE
             return null;
         }
 
+        // use 0 index to avoid infinite loop
         $rootStmt = $newStmts[0] ?? null;
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
+            // use 0 index to avoid infinite loop
             $currentStmt = $rootStmt->stmts[0] ?? null;
 
             if (! $currentStmt instanceof Stmt) {
@@ -76,6 +78,10 @@ CODE_SAMPLE
 
             $nodes = $rootStmt->stmts;
             $stmt = $currentStmt;
+        }
+
+        if (! $stmt instanceof Stmt) {
+            return null;
         }
 
         if ($this->shouldSkip($stmt)) {
@@ -114,7 +120,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(?Stmt $stmt): bool
+    private function shouldSkip(Stmt $stmt): bool
     {
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
