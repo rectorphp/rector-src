@@ -88,6 +88,11 @@ CODE_SAMPLE
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
+        // avoid infinite loop
+        if ($this->nodeComparator->areNodesEqual($nodes[0], $strictTypesDeclare)) {
+            return null;
+        }
+
         if ($rootStmt instanceof FileWithoutNamespace) {
             /** @var Stmt[] $nodes */
             $rootStmt->stmts = [$strictTypesDeclare, new Nop(), ...$nodes];
