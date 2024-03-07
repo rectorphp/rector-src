@@ -64,11 +64,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        // use 0 index to avoid infinite loop
+        $rootStmt = $newStmts[0] ?? null;
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($rootStmt->stmts);
+            // use 0 index to avoid infinite loop
+            $currentStmt = $rootStmt->stmts[0] ?? null;
 
             if (! $currentStmt instanceof Stmt) {
                 return null;
@@ -76,6 +78,10 @@ CODE_SAMPLE
 
             $nodes = $rootStmt->stmts;
             $stmt = $currentStmt;
+        }
+
+        if (! $stmt instanceof Stmt) {
+            return null;
         }
 
         if ($this->shouldSkip($stmt)) {
