@@ -114,7 +114,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function shouldSkip(Stmt $stmt): bool
+    private function shouldSkip(?Stmt $stmt): bool
     {
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
