@@ -23,5 +23,3 @@ function foo()
 }
 
 echo foo();
-
-?>
