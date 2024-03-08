@@ -24,6 +24,7 @@ use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
+use Nette\Utils\Strings;
 
 final readonly class FileProcessor
 {
@@ -148,10 +149,15 @@ final readonly class FileProcessor
              * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
              * On very first content level
              */
-            $originalFileContent = $file->getOriginalFileContent();
-            $ltrimOriginalFileContent = preg_replace(self::OPEN_TAG_SPACED_REGEX, '<?php', ltrim($originalFileContent));
-            $ltrimNewContent = preg_replace(self::OPEN_TAG_SPACED_REGEX, '<?php', ltrim($newContent));
+            $ltrimOriginalFileContent = ltrim($file->getOriginalFileContent());
+            $ltrimNewContent = ltrim($newContent);
+            if ($ltrimOriginalFileContent === $ltrimNewContent) {
+                return;
+            }
 
+            // handle space before <?php
+            $ltrimNewContent = Strings::replace($ltrimNewContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $ltrimOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($ltrimOriginalFileContent === $ltrimNewContent) {
                 return;
             }
