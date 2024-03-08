@@ -64,13 +64,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // use 0 index to avoid infinite loop
-        $rootStmt = $newStmts[0] ?? null;
+        $rootStmt = current($newStmts);
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
-            // use 0 index to avoid infinite loop
-            $currentStmt = $rootStmt->stmts[0] ?? null;
+            $currentStmt = current($rootStmt->stmts);
 
             if (! $currentStmt instanceof Stmt) {
                 return null;
