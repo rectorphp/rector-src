@@ -150,13 +150,12 @@ final readonly class FileProcessor
              * On very first content level
              */
             $ltrimOriginalFileContent = ltrim($file->getOriginalFileContent());
-            $ltrimNewContent = ltrim($newContent);
-            if ($ltrimOriginalFileContent === $ltrimNewContent) {
+            if ($ltrimOriginalFileContent === $newContent) {
                 return;
             }
 
             // handle space before <?php
-            $ltrimNewContent = Strings::replace($ltrimNewContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             $ltrimOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
             if ($ltrimOriginalFileContent === $ltrimNewContent) {
                 return;
