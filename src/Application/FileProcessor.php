@@ -31,7 +31,7 @@ final readonly class FileProcessor
      * @var string
      * @see https://regex101.com/r/llm7XZ/1
      */
-    private const OPEN_TAG_SPACED_REGEX = '/^[ \t]+<\?php/m';
+    private const OPEN_TAG_SPACED_REGEX = '#^[ \t]+<\?php#m';
 
     public function __construct(
         private FormatPerservingPrinter $formatPerservingPrinter,
