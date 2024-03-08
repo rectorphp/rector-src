@@ -27,6 +27,12 @@ use Throwable;
 
 final readonly class FileProcessor
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/llm7XZ/1
+     */
+    private const OPEN_TAG_SPACED_REGEX = '/^[ \t]+<\?php/m';
+
     public function __construct(
         private FormatPerservingPrinter $formatPerservingPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -143,9 +149,10 @@ final readonly class FileProcessor
              * On very first content level
              */
             $originalFileContent = $file->getOriginalFileContent();
-            $ltrimOriginalFileContent = ltrim($originalFileContent);
+            $ltrimOriginalFileContent = preg_replace(self::OPEN_TAG_SPACED_REGEX, '<?php', ltrim($originalFileContent));
+            $ltrimNewContent = preg_replace(self::OPEN_TAG_SPACED_REGEX, '<?php', ltrim($newContent));
 
-            if ($ltrimOriginalFileContent === $newContent) {
+            if ($ltrimOriginalFileContent === $ltrimNewContent) {
                 return;
             }
         }
