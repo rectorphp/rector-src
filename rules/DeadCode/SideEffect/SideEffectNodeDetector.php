@@ -69,6 +69,7 @@ final readonly class SideEffectNodeDetector
             if ($this->detect($expr->left, $scope)) {
                 return true;
             }
+
             return $this->detect($expr->right, $scope);
         }
 
