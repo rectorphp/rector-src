@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\SideEffect;
 
-use PHPStan\Type\ConstantType;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -13,8 +12,6 @@ use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp;
-use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -26,7 +23,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final readonly class SideEffectNodeDetector
 {
@@ -41,7 +37,6 @@ final readonly class SideEffectNodeDetector
     ];
 
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
         private PureFunctionDetector $pureFunctionDetector
     ) {
     }
@@ -66,20 +61,15 @@ final readonly class SideEffectNodeDetector
             return ! $variable instanceof Variable;
         }
 
-        if ($expr instanceof Array_) {
-            foreach ($expr->items as $item) {
-                if (! $item instanceof ArrayItem) {
-                    continue;
-                }
-
-                if ($this->detect($item->value, $scope)) {
-                    return true;
-                }
-            }
+        if ($expr instanceof Array_ && $this->isDetectedInArray($expr, $scope)) {
+            return true;
         }
 
         if ($expr instanceof BinaryOp) {
-            return $this->detect($expr->left, $scope) || $this->detect($expr->right, $scope);
+            if ($this->detect($expr->left, $scope)) {
+                return true;
+            }
+            return $this->detect($expr->right, $scope);
         }
 
         return false;
@@ -106,6 +96,21 @@ final readonly class SideEffectNodeDetector
 
         if ($node instanceof FuncCall) {
             return ! $this->pureFunctionDetector->detect($node, $scope);
+        }
+
+        return false;
+    }
+
+    private function isDetectedInArray(Array_ $array, Scope $scope): bool
+    {
+        foreach ($array->items as $item) {
+            if (! $item instanceof ArrayItem) {
+                continue;
+            }
+
+            if ($this->detect($item->value, $scope)) {
+                return true;
+            }
         }
 
         return false;
