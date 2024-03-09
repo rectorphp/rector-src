@@ -114,7 +114,7 @@ final readonly class PureFunctionDetector
         'json_encode', 'json_decode', 'json_last_error',
 
         // array
-        'array_pop', 'array_push', 'array_shift', 'array_splice', 'next', 'prev',
+        'array_pop', 'array_push', 'array_shift', 'array_splice', 'next', 'prev', 'sort', 'ksort',
 
         // stream
         'stream_filter_append',
