@@ -9,29 +9,19 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\NullsafeMethodCall;
-use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\Encapsed;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\ConstantType;
 use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final readonly class SideEffectNodeDetector
 {
-    /**
-     * @var array<class-string<Expr>>
-     */
-    private const SIDE_EFFECT_NODE_TYPES = [Encapsed::class, New_::class, Concat::class, PropertyFetch::class];
-
     /**
      * @var array<class-string<Expr>>
      */
@@ -43,7 +33,6 @@ final readonly class SideEffectNodeDetector
     ];
 
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
         private PureFunctionDetector $pureFunctionDetector
     ) {
     }
@@ -54,19 +43,8 @@ final readonly class SideEffectNodeDetector
             return true;
         }
 
-        foreach (self::SIDE_EFFECT_NODE_TYPES as $sideEffectNodeType) {
-            if ($expr instanceof $sideEffectNodeType) {
-                return false;
-            }
-        }
-
-        $exprStaticType = $this->nodeTypeResolver->getType($expr);
-        if ($exprStaticType instanceof ConstantType) {
-            return false;
-        }
-
-        if ($expr instanceof FuncCall) {
-            return ! $this->pureFunctionDetector->detect($expr, $scope);
+        if ($this->detectCallExpr($expr, $scope)) {
+            return true;
         }
 
         if ($expr instanceof Variable || $expr instanceof ArrayDimFetch) {
@@ -75,7 +53,7 @@ final readonly class SideEffectNodeDetector
             return ! $variable instanceof Variable;
         }
 
-        return true;
+        return false;
     }
 
     public function detectCallExpr(Node $node, Scope $scope): bool
