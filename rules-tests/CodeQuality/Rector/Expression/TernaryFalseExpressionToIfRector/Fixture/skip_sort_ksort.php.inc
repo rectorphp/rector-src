@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector\Fixture;
 
-class ArrayHelper
+class SkipSortKsort
 {
     public static function mksort(array &$array): void
     {
@@ -19,13 +19,3 @@ class ArrayHelper
         }
     }
 }
-?>
------
-<?php
-
-namespace Rector\Tests\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector\Fixture;
-
-// what is expected code?
-// should remain the same? delete part below ----- (included)
-
-?>
