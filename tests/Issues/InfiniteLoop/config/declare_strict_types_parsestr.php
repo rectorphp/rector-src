@@ -7,7 +7,4 @@ use Rector\Php72\Rector\FuncCall\ParseStrWithResultArgumentRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return RectorConfig::configure()
-    ->withRules([
-        DeclareStrictTypesRector::class,
-        ParseStrWithResultArgumentRector::class,
-    ]);
+    ->withRules([DeclareStrictTypesRector::class, ParseStrWithResultArgumentRector::class]);
