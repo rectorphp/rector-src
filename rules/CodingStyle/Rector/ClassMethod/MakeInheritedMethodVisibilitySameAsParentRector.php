@@ -90,13 +90,13 @@ CODE_SAMPLE
         }
 
         $parentClassReflections = $classReflection->getParents();
-        $interfaces = $classReflection->getInterfaces();
 
         if ($parentClassReflections === []) {
             return null;
         }
 
         $hasChanged = false;
+        $interfaces = $classReflection->getInterfaces();
 
         foreach ($node->getMethods() as $classMethod) {
             if ($classMethod->isMagic()) {
