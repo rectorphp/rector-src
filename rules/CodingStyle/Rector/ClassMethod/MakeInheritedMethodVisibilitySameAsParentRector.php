@@ -90,6 +90,7 @@ CODE_SAMPLE
         }
 
         $parentClassReflections = $classReflection->getParents();
+        $interfaces = $classReflection->getInterfaces();
 
         if ($parentClassReflections === []) {
             return null;
@@ -117,6 +118,12 @@ CODE_SAMPLE
                 $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
                 if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
                     continue;
+                }
+
+                foreach ($interfaces as $interface) {
+                    if ($interface->hasNativeMethod($methodName)) {
+                        continue 2;
+                    }
                 }
 
                 $this->changeClassMethodVisibilityBasedOnReflectionMethod($classMethod, $parentReflectionMethod);
