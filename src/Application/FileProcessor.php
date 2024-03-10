@@ -24,9 +24,16 @@ use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
+use Nette\Utils\Strings;
 
 final readonly class FileProcessor
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/llm7XZ/1
+     */
+    private const OPEN_TAG_SPACED_REGEX = '#^[ \t]+<\?php#m';
+
     public function __construct(
         private FormatPerservingPrinter $formatPerservingPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
@@ -142,10 +149,15 @@ final readonly class FileProcessor
              * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
              * On very first content level
              */
-            $originalFileContent = $file->getOriginalFileContent();
-            $ltrimOriginalFileContent = ltrim($originalFileContent);
-
+            $ltrimOriginalFileContent = ltrim($file->getOriginalFileContent());
             if ($ltrimOriginalFileContent === $newContent) {
+                return;
+            }
+
+            // handle space before <?php
+            $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $ltrimOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            if ($ltrimOriginalFileContent === $ltrimNewContent) {
                 return;
             }
         }
