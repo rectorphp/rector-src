@@ -106,6 +106,12 @@ CODE_SAMPLE
             /** @var string $methodName */
             $methodName = $this->getName($classMethod->name);
 
+            foreach ($interfaces as $interface) {
+                if ($interface->hasNativeMethod($methodName)) {
+                    continue 2;
+                }
+            }
+
             foreach ($parentClassReflections as $parentClassReflection) {
                 $nativeClassReflection = $parentClassReflection->getNativeReflection();
 
@@ -118,12 +124,6 @@ CODE_SAMPLE
                 $parentReflectionMethod = $nativeClassReflection->getMethod($methodName);
                 if ($this->isClassMethodCompatibleWithParentReflectionMethod($classMethod, $parentReflectionMethod)) {
                     continue;
-                }
-
-                foreach ($interfaces as $interface) {
-                    if ($interface->hasNativeMethod($methodName)) {
-                        continue 2;
-                    }
                 }
 
                 $this->changeClassMethodVisibilityBasedOnReflectionMethod($classMethod, $parentReflectionMethod);
