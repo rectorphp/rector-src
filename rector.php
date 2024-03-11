@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
@@ -47,11 +46,6 @@ return RectorConfig::configure()
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
-
-        // avoid simplifying itself
-        SimplifyRegexPatternRector::class => [
-            __DIR__ . '/rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php',
-        ],
 
         // race condition with stmts aware patch and PHPStan type
         AddMethodCallBasedStrictParamTypeRector::class => [
