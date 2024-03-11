@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots;
+namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDotsRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

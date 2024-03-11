@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\Fixture;
+namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDotsRector\Fixture;
 
 use FilesystemIterator;
 
@@ -16,7 +16,7 @@ final class AppendConstantToMultipleFlags
 -----
 <?php
 
-namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\Fixture;
+namespace Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDotsRector\Fixture;
 
 use FilesystemIterator;
 
