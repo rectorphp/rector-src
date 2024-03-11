@@ -37,6 +37,10 @@ final readonly class IfAndAnalyzer
             return false;
         }
 
+        if ($if->stmts === []) {
+            return false;
+        }
+
         $ifExprs = $this->betterNodeFinder->findInstanceOf($if->stmts, Expr::class);
         return (bool) $this->betterNodeFinder->findFirst(
             $return->expr,
