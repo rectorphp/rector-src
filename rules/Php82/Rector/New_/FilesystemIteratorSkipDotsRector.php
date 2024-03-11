@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -26,7 +27,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassConstFetchNameResolver $classConstFetchNameResolver
+        private readonly ClassConstFetchNameResolver $classConstFetchNameResolver,
+        private readonly ValueResolver $valueResolver
     ) {
     }
 
@@ -108,6 +110,13 @@ final class FilesystemIteratorSkipDotsRector extends AbstractRector implements M
             return true;
         }
 
-        return $this->classConstFetchNameResolver->resolve($expr, null) === 'FilesystemIterator::SKIP_DOTS';
+        return in_array(
+            $this->classConstFetchNameResolver->resolve($expr, null),
+            [
+                'RecursiveDirectoryIterator::SKIP_DOTS',
+                'FilesystemIterator::SKIP_DOTS'
+            ],
+            true
+        );
     }
 }
