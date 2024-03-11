@@ -37,10 +37,10 @@ final readonly class IfAndAnalyzer
             return false;
         }
 
-        $ifExprs = $this->betterNodeFinder->findInstanceOf($if->stmts, Expr::class);
+        $returnExpr = $return->expr;
         return (bool) $this->betterNodeFinder->findFirst(
-            $return->expr,
-            fn (Node $node): bool => $this->nodeComparator->isNodeEqual($node, $ifExprs)
+            $if->stmts,
+            fn (Node $node): bool => $node instanceof Expr && $this->nodeComparator->areNodesEqual($node, $returnExpr)
         );
     }
 }
