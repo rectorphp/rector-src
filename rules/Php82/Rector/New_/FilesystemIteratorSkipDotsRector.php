@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDots\FilesystemIteratorSkipDotsRectorTest
+ * @see \Rector\Tests\Php82\Rector\New_\FilesystemIteratorSkipDotsRector\FilesystemIteratorSkipDotsRectorTest
  */
 final class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
