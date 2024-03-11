@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php82\Rector\New_;
 
-use FilesystemIterator;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -13,7 +12,6 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
-use Rector\NodeNameResolver\NodeNameResolver\ClassConstFetchNameResolver;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -27,7 +25,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class FilesystemIteratorSkipDotsRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassConstFetchNameResolver $classConstFetchNameResolver,
         private readonly ValueResolver $valueResolver
     ) {
     }
