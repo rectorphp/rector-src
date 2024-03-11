@@ -125,9 +125,7 @@ CODE_SAMPLE
                 $node->stmts[$key] = $return;
 
                 // cleanup next return
-                if ($nextStmt instanceof Return_) {
-                    unset($node->stmts[$key + 1]);
-                }
+                unset($node->stmts[$key + 1]);
 
                 $hasChanged = true;
             }
