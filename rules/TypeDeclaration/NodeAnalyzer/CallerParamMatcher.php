@@ -21,6 +21,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -48,6 +49,11 @@ final readonly class CallerParamMatcher
         }
 
         if (! $param->default instanceof Expr && ! $callParam->default instanceof Expr) {
+            // skip as mixed is not helpful and possibly requires more precise change elsewhere
+            if ($this->isCallParamMixed($callParam)) {
+                return null;
+            }
+
             return $callParam->type;
         }
 
@@ -161,5 +167,15 @@ final readonly class CallerParamMatcher
         }
 
         return null;
+    }
+
+    private function isCallParamMixed(Param $param): bool
+    {
+        if (! $param->type instanceof Node) {
+            return false;
+        }
+
+        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        return $callParamType instanceof MixedType;
     }
 }

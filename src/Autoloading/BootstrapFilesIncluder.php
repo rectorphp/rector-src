@@ -47,10 +47,8 @@ final class BootstrapFilesIncluder
             return;
         }
 
-        $dir = new RecursiveDirectoryIterator(
-            $stubsRectorDirectory,
-            RecursiveDirectoryIterator::SKIP_DOTS
-        );
+        $dir = new RecursiveDirectoryIterator($stubsRectorDirectory, RecursiveDirectoryIterator::SKIP_DOTS);
+
         /** @var SplFileInfo[] $stubs */
         $stubs = new RecursiveIteratorIterator($dir);
 

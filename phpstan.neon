@@ -431,3 +431,4 @@ parameters:
         -
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: src/Util/NodePrinter.php
+        - '#Cognitive complexity for "Rector\\TypeDeclaration\\NodeAnalyzer\\CallerParamMatcher\:\:matchCallParamType\(\)" is 12, keep it under 11#'
