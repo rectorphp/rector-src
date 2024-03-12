@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Application;
 
+use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
@@ -24,7 +25,6 @@ use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
-use Nette\Utils\Strings;
 
 final readonly class FileProcessor
 {
@@ -156,7 +156,11 @@ final readonly class FileProcessor
 
             // handle space before <?php
             $ltrimNewContent = Strings::replace($newContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
-            $ltrimOriginalFileContent = Strings::replace($ltrimOriginalFileContent, self::OPEN_TAG_SPACED_REGEX, '<?php');
+            $ltrimOriginalFileContent = Strings::replace(
+                $ltrimOriginalFileContent,
+                self::OPEN_TAG_SPACED_REGEX,
+                '<?php'
+            );
             if ($ltrimOriginalFileContent === $ltrimNewContent) {
                 return;
             }
