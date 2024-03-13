@@ -163,7 +163,7 @@ final class CustomRuleCommand extends Command
                 $directory = $directoryNode->textContent;
                 if ($directory === 'utils/rector/tests') {
                     $this->symfonyStyle->success(
-                        "The rector test suite already exists in " . $phpunitFilePath . ". No changes were made.\n You can run the rector tests by running: phpunit --testsuite rector"
+                        'The rector test suite already exists in ' . $phpunitFilePath . ". No changes were made.\n You can run the rector tests by running: phpunit --testsuite rector"
                     );
 
                     return Command::SUCCESS;
@@ -186,7 +186,7 @@ final class CustomRuleCommand extends Command
         FileSystem::write($phpunitFilePath, $phpunitXML);
 
         $this->symfonyStyle->success(
-            "We also update " . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
+            'We also update ' . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
         );
 
         return Command::SUCCESS;
@@ -199,9 +199,15 @@ final class CustomRuleCommand extends Command
     {
         $xpath = new \DOMXPath($domDocument);
         $testSuiteNodes = $xpath->query('testsuites/testsuite');
+        if ($testSuiteNodes === false) {
+            return;
+        }
 
         if ($testSuiteNodes->length === 0) {
             $testSuiteNodes = $xpath->query('testsuite');
+            if ($testSuiteNodes === false) {
+                return;
+            }
         }
 
         if ($testSuiteNodes->length === 1) {
