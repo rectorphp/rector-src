@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use RuntimeException;
 use Rector\PhpParser\Parser\SimplePhpParser;
 use Rector\Util\NodePrinter;
 use Symfony\Component\Console\Command\Command;
@@ -38,29 +39,39 @@ final class DetectNodeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ((bool) $input->getOption('loop')) {
-            while (true) {
-                $this->askQuestionAndDumpNode();
-            }
-        }
-
-        $this->askQuestionAndDumpNode();
+        $this->askQuestionAndDumpNode((bool) $input->getOption('loop'));
 
         return self::SUCCESS;
     }
 
-    private function askQuestionAndDumpNode(): void
+
+    private function askQuestionAndDumpNode(bool $loop): void
     {
-        $question = new Question('Write short PHP code snippet');
-        $phpContents = $this->symfonyStyle->askQuestion($question);
+        $question = new Question('Write short PHP code snippet', '!q');
+        $question->setMultiline(true);
+        $question->setValidator(static function ($answer) use ($loop) : string {
+            if ($loop && trim($answer) === '') {
+                throw new RuntimeException('Invalid input; please provide valid PHP code or type "!q" to quit');
+            }
+            return $answer;
+        });
 
-        try {
-            $nodes = $this->simplePhpParser->parseString($phpContents);
-        } catch (Throwable) {
-            $this->symfonyStyle->warning('Provide valid PHP code');
-            return;
-        }
+        do {
+            $phpContents = $this->symfonyStyle->askQuestion($question);
 
-        $this->nodePrinter->printNodes($nodes);
+            if (str_starts_with((string) $phpContents, '!q')) {
+                $this->symfonyStyle->success('Goodbye');
+                return;
+            }
+
+            try {
+                $nodes = $this->simplePhpParser->parseString($phpContents);
+            } catch (Throwable) {
+                $this->symfonyStyle->warning('Invalid input; please provide valid PHP code');
+                continue;
+            }
+
+            $this->nodePrinter->printNodes($nodes);
+        } while ($loop);
     }
 }
