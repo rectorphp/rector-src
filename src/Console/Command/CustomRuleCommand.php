@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Console\Command;
 
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
+use Generator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use Rector\Exception\ShouldNotHappenException;
@@ -131,6 +135,14 @@ final class CustomRuleCommand extends Command
             }
         }
 
+        // 3. update phpunit.xml(.dist) to include rector test suite
+        $this->setupRectorTestSuite($currentDirectory);
+
+        return Command::SUCCESS;
+    }
+
+    private function setupRectorTestSuite(string $currentDirectory): void
+    {
         $phpunitXmlExists = file_exists($currentDirectory . '/phpunit.xml');
         $phpunitXmlDistExists = file_exists($currentDirectory . '/phpunit.xml.dist');
 
@@ -138,73 +150,97 @@ final class CustomRuleCommand extends Command
             $this->symfonyStyle->warning(
                 'No phpunit.xml or phpunit.xml.dist found. Rector could not add the rector test suite to it'
             );
-            return Command::SUCCESS;
+
+            return;
         }
 
         $phpunitFile = $phpunitXmlExists ? 'phpunit.xml' : 'phpunit.xml.dist';
+
         $phpunitFilePath = $currentDirectory . '/' . $phpunitFile;
 
-        $domDocument = new \DOMDocument('1.0');
+        $domDocument = new DOMDocument('1.0');
         $domDocument->preserveWhiteSpace = false;
         $domDocument->formatOutput = true;
         $domDocument->loadXML(FileSystem::read($phpunitFilePath));
 
-        foreach ($this->getTestSuiteElements($domDocument) as $element) {
-            foreach ($element->getElementsByTagName('directory') as $directoryNode) {
-                if (! $directoryNode instanceof \DOMElement) {
-                    continue;
-                }
+        if ($this->hasRectorTestSuite($domDocument)) {
+            $this->symfonyStyle->success(
+                'The rector test suite already exists in ' . $phpunitFilePath . ". No changes were made.\n You can run the rector tests by running: phpunit --testsuite rector"
+            );
 
-                $name = $element->getAttribute('name');
-                if ($name !== 'rector') {
-                    continue;
-                }
-
-                $directory = $directoryNode->textContent;
-                if ($directory === 'utils/rector/tests') {
-                    $this->symfonyStyle->success(
-                        'The rector test suite already exists in ' . $phpunitFilePath . ". No changes were made.\n You can run the rector tests by running: phpunit --testsuite rector"
-                    );
-
-                    return Command::SUCCESS;
-                }
-            }
+            return;
         }
 
-        $rectorTestSuite = $domDocument->createElement('testsuite');
-        $rectorTestSuite->setAttribute('name', 'rector');
-
-        $rectorTestSuiteDirectory = $domDocument->createElement('directory', 'utils/rector/tests');
-        $rectorTestSuite->appendChild($rectorTestSuiteDirectory);
-
-        $domDocument->getElementsByTagName('testsuites')
-            ->item(0)
-            ->appendChild($rectorTestSuite);
-
-        $phpunitXML = $domDocument->saveXML();
+        $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $phpunitFilePath);
 
         FileSystem::write($phpunitFilePath, $phpunitXML);
 
         $this->symfonyStyle->success(
             'We also update ' . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
         );
+    }
 
-        return Command::SUCCESS;
+    private function hasRectorTestSuite(DOMDocument $domDocument): bool
+    {
+        foreach ($this->getTestSuiteElements($domDocument) as $testSuiteElement) {
+            foreach ($testSuiteElement->getElementsByTagName('directory') as $directoryNode) {
+                if (! $directoryNode instanceof DOMElement) {
+                    continue;
+                }
+
+                $name = $testSuiteElement->getAttribute('name');
+                if ($name !== 'rector') {
+                    continue;
+                }
+
+                $directory = $directoryNode->textContent;
+                if ($directory === 'utils/rector/tests') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function updatePHPUnitXMLFile(DOMDocument $domDocument, string $phpunitFilePath): string
+    {
+        $domElement = $domDocument->createElement('testsuite');
+        $domElement->setAttribute('name', 'rector');
+
+        $rectorTestSuiteDirectory = $domDocument->createElement('directory', 'utils/rector/tests');
+        $domElement->appendChild($rectorTestSuiteDirectory);
+
+        $testsuitesElement = $domDocument->getElementsByTagName('testsuites')
+            ->item(0);
+
+        if (! $testsuitesElement instanceof DOMElement) {
+            throw new ShouldNotHappenException('No testsuites element found in ' . $phpunitFilePath);
+        }
+
+        $testsuitesElement->appendChild($domElement);
+
+        $phpunitXML = $domDocument->saveXML();
+        if ($phpunitXML === false) {
+            throw new ShouldNotHappenException('Could not save XML');
+        }
+
+        return $phpunitXML;
     }
 
     /**
-     * @return \Generator<\DOMElement>
+     * @return Generator<DOMElement>
      */
-    private function getTestSuiteElements(\DOMDocument $domDocument): \Generator
+    private function getTestSuiteElements(DOMDocument $domDocument): Generator
     {
-        $xpath = new \DOMXPath($domDocument);
-        $testSuiteNodes = $xpath->query('testsuites/testsuite');
+        $domxPath = new DOMXPath($domDocument);
+        $testSuiteNodes = $domxPath->query('testsuites/testsuite');
         if ($testSuiteNodes === false) {
             return;
         }
 
         if ($testSuiteNodes->length === 0) {
-            $testSuiteNodes = $xpath->query('testsuite');
+            $testSuiteNodes = $domxPath->query('testsuite');
             if ($testSuiteNodes === false) {
                 return;
             }
@@ -213,7 +249,7 @@ final class CustomRuleCommand extends Command
         if ($testSuiteNodes->length === 1) {
             $element = $testSuiteNodes->item(0);
 
-            if ($element instanceof \DOMElement) {
+            if ($element instanceof DOMElement) {
                 yield $element;
             }
 
@@ -221,7 +257,7 @@ final class CustomRuleCommand extends Command
         }
 
         foreach ($testSuiteNodes as $testSuiteNode) {
-            if (! $testSuiteNode instanceof \DOMElement) {
+            if (! $testSuiteNode instanceof DOMElement) {
                 continue;
             }
 
