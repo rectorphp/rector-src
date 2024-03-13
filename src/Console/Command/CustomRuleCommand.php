@@ -37,6 +37,11 @@ final class CustomRuleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $currentDirectory = getcwd();
+        if ($currentDirectory === false) {
+            throw new ShouldNotHappenException('Cannot resolve current directory');
+        }
+
         // ask for rule name
         $rectorName = $this->symfonyStyle->ask(
             'What is the name of the rule class (e.g. "LegacyCallToDbalMethodCall")?',
@@ -95,7 +100,7 @@ final class CustomRuleCommand extends Command
             $newContent = $this->replaceNameVariable($rectorName, $fileInfo->getContents());
             $newFilePath = $this->replaceNameVariable($rectorName, $fileInfo->getRelativePathname());
 
-            FileSystem::write(getcwd() . '/' . $newFilePath, $newContent, null);
+            FileSystem::write($currentDirectory . '/' . $newFilePath, $newContent, null);
 
             $generatedFilePaths[] = $newFilePath;
         }
@@ -107,7 +112,7 @@ final class CustomRuleCommand extends Command
         );
 
         // 2. update autoload-dev in composer.json
-        $composerJsonFilePath = getcwd() . '/composer.json';
+        $composerJsonFilePath = $currentDirectory . '/composer.json';
         if (file_exists($composerJsonFilePath)) {
             $hasChanged = false;
             $composerJson = JsonFileSystem::readFilePath($composerJsonFilePath);
@@ -126,7 +131,96 @@ final class CustomRuleCommand extends Command
             }
         }
 
+        $phpunitXmlExists = file_exists($currentDirectory . '/phpunit.xml');
+        $phpunitXmlDistExists = file_exists($currentDirectory . '/phpunit.xml.dist');
+
+        if (! $phpunitXmlExists && ! $phpunitXmlDistExists) {
+            $this->symfonyStyle->warning(
+                'No phpunit.xml or phpunit.xml.dist found. Rector could not add the rector test suite to it'
+            );
+            return Command::SUCCESS;
+        }
+
+        $phpunitFile = $phpunitXmlExists ? 'phpunit.xml' : 'phpunit.xml.dist';
+        $phpunitFilePath = $currentDirectory . '/' . $phpunitFile;
+
+        $domDocument = new \DOMDocument('1.0');
+        $domDocument->preserveWhiteSpace = false;
+        $domDocument->formatOutput = true;
+        $domDocument->loadXML(FileSystem::read($phpunitFilePath));
+
+        foreach ($this->getTestSuiteElements($domDocument) as $element) {
+            foreach ($element->getElementsByTagName('directory') as $directoryNode) {
+                if (! $directoryNode instanceof \DOMElement) {
+                    continue;
+                }
+
+                $name = $element->getAttribute('name');
+                if ($name !== 'rector') {
+                    continue;
+                }
+
+                $directory = $directoryNode->textContent;
+                if ($directory === 'utils/rector/tests') {
+                    $this->symfonyStyle->success(
+                        "The rector test suite already exists in " . $phpunitFilePath . ". No changes were made.\n You can run the rector tests by running: phpunit --testsuite rector"
+                    );
+
+                    return Command::SUCCESS;
+                }
+            }
+        }
+
+        $rectorTestSuite = $domDocument->createElement('testsuite');
+        $rectorTestSuite->setAttribute('name', 'rector');
+
+        $rectorTestSuiteDirectory = $domDocument->createElement('directory', 'utils/rector/tests');
+        $rectorTestSuite->appendChild($rectorTestSuiteDirectory);
+
+        $domDocument->getElementsByTagName('testsuites')
+            ->item(0)
+            ->appendChild($rectorTestSuite);
+
+        $phpunitXML = $domDocument->saveXML();
+
+        FileSystem::write($phpunitFilePath, $phpunitXML);
+
+        $this->symfonyStyle->success(
+            "We also update " . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
+        );
+
         return Command::SUCCESS;
+    }
+
+    /**
+     * @return \Generator<\DOMElement>
+     */
+    private function getTestSuiteElements(\DOMDocument $domDocument): \Generator
+    {
+        $xpath = new \DOMXPath($domDocument);
+        $testSuiteNodes = $xpath->query('testsuites/testsuite');
+
+        if ($testSuiteNodes->length === 0) {
+            $testSuiteNodes = $xpath->query('testsuite');
+        }
+
+        if ($testSuiteNodes->length === 1) {
+            $element = $testSuiteNodes->item(0);
+
+            if ($element instanceof \DOMElement) {
+                yield $element;
+            }
+
+            return;
+        }
+
+        foreach ($testSuiteNodes as $testSuiteNode) {
+            if (! $testSuiteNode instanceof \DOMElement) {
+                continue;
+            }
+
+            yield $testSuiteNode;
+        }
     }
 
     private function replaceNameVariable(string $rectorName, string $contents): string
