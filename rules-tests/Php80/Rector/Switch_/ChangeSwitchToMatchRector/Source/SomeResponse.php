@@ -9,4 +9,9 @@ final class SomeResponse
     public function __construct($content, $statusCode)
     {
     }
+
+    public static function build($a, $b): self
+    {
+        return new self($a, $b);
+    }
 }
