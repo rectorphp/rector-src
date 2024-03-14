@@ -69,7 +69,7 @@ CODE_SAMPLE
         $rightStaticType = $this->nodeTypeResolver->getNativeType($node->right);
 
         // objects can be different by content
-        if ($leftStaticType instanceof ObjectType && $rightStaticType instanceof ObjectType) {
+        if ($leftStaticType instanceof ObjectType || $rightStaticType instanceof ObjectType) {
             return null;
         }
 
