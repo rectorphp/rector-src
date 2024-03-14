@@ -33,7 +33,6 @@ use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
 use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
-use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
 use Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector;
 use Rector\CodeQuality\Rector\FuncCall\SetTypeToCastRector;
@@ -42,7 +41,6 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
-use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
@@ -142,7 +140,6 @@ return static function (RectorConfig $rectorConfig): void {
         SimplifyBoolIdenticalTrueRector::class,
         SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
-        StrvalToTypeCastRector::class,
         FloatvalToTypeCastRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         AndAssignsToSeparateLinesRector::class,
@@ -154,7 +151,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveSoleValueSprintfRector::class,
         ShortenElseIfRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
-        IntvalToTypeCastRector::class,
         BoolvalToTypeCastRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
         AbsolutizeRequireAndIncludePathRector::class,

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
+use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
+use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
@@ -34,6 +36,8 @@ final class MissingInSetCommand extends Command
         // optional
         BinaryOpNullableToInstanceofRector::class,
         WhileNullableToInstanceofRector::class,
+        IntvalToTypeCastRector::class,
+        StrvalToTypeCastRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector
