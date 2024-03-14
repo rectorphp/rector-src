@@ -27,11 +27,9 @@ use Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector;
 use Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector;
 use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector;
-use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector;
 use Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector;
 use Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector;
-use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector;
 use Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector;
 use Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector;
@@ -140,7 +138,6 @@ return static function (RectorConfig $rectorConfig): void {
         SimplifyBoolIdenticalTrueRector::class,
         SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
-        FloatvalToTypeCastRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         AndAssignsToSeparateLinesRector::class,
         CompactToVariablesRector::class,
@@ -151,7 +148,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveSoleValueSprintfRector::class,
         ShortenElseIfRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
-        BoolvalToTypeCastRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
         AbsolutizeRequireAndIncludePathRector::class,
         ChangeArrayPushToArrayAssignRector::class,
