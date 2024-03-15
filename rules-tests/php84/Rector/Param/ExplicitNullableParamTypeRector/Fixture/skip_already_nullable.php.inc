@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php83\Rector\FuncCall\CombineHostPortLdapUriRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\Fixture;
 
 class SkipAlreadyNullable
 {

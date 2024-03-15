@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\php84\Rector\Param\ExplicitNullableParamTypeRector;
+namespace Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

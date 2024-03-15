@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\php84\Rector\Param\ExplicitNullableParamTypeRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\Fixture;
 
 class WithParamTypeNullDefault
 {
@@ -13,7 +13,7 @@ class WithParamTypeNullDefault
 -----
 <?php
 
-namespace Rector\Tests\php84\Rector\Param\ExplicitNullableParamTypeRector\Fixture;
+namespace Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\Fixture;
 
 class WithParamTypeNullDefault
 {
