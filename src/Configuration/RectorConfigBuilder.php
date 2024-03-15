@@ -374,6 +374,7 @@ final class RectorConfigBuilder
         bool $php55 = false,
         bool $php54 = false,
         bool $php53 = false,
+        bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         $pickedArguments = array_filter(func_get_args());
         if (count($pickedArguments) > 1) {
@@ -429,6 +430,8 @@ final class RectorConfigBuilder
             $this->sets[] = LevelSetList::UP_TO_PHP_82;
         } elseif ($php83) {
             $this->sets[] = LevelSetList::UP_TO_PHP_83;
+        } elseif ($php84) {
+            $this->sets[] = LevelSetList::UP_TO_PHP_84;
         }
 
         return $this;
