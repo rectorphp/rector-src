@@ -18,6 +18,9 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\Php84\Rector\Param\ExplicitNullableParamTypeRector\ExplicitNullableParamTypeRectorTest
+ */
 final class ExplicitNullableParamTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
