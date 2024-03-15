@@ -41,11 +41,6 @@ final class CustomRuleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $currentDirectory = getcwd();
-        if ($currentDirectory === false) {
-            throw new ShouldNotHappenException('Cannot resolve current directory');
-        }
-
         // ask for rule name
         $rectorName = $this->symfonyStyle->ask(
             'What is the name of the rule class (e.g. "LegacyCallToDbalMethodCall")?',
@@ -94,6 +89,8 @@ final class CustomRuleCommand extends Command
                 ),
             ]);
         }
+
+        $currentDirectory = getcwd();
 
         $generatedFilePaths = [];
 
