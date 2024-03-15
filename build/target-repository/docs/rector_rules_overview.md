@@ -1,4 +1,4 @@
-# 364 Rules Overview
+# 365 Rules Overview
 
 <br>
 
@@ -54,7 +54,7 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (24)
+- [Transform](#transform) (25)
 
 - [TypeDeclaration](#typedeclaration) (45)
 
@@ -5848,6 +5848,21 @@ Add interface by used trait
  {
      use SomeTrait;
  }
+```
+
+<br>
+
+### ArrayDimFetchToMethodCallRector
+
+Change array dim fetch to method call
+
+:wrench: **configure it!**
+
+- class: [`Rector\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector`](../rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php)
+
+```diff
+-$app['someService'];
++$app->make('someService');
 ```
 
 <br>
