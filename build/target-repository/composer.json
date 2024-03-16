@@ -24,6 +24,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "suggest": {
-        "ext-dom": "Used to manupulate phpunit.xml via `custom-rule` command"
+        "ext-dom": "To manipulate phpunit.xml via the custom-rule command"
     }
 }
