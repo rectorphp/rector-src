@@ -7,7 +7,6 @@ namespace Rector\Php84\Rector\Param;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Param;
-use PHPStan\Type\NullType;
 use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -64,13 +63,7 @@ CODE_SAMPLE
         }
 
         $nodeType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node->type);
-        if ($nodeType instanceof NullType) {
-            return null;
-        }
-
-        $removedNullNodeType = TypeCombinator::removeNull($nodeType);
-
-        if (! $nodeType->equals($removedNullNodeType)) {
+        if (TypeCombinator::containsNull($nodeType)) {
             return null;
         }
 
