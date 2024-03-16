@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Rector\Transform\ValueObject;
 
+use PHPStan\Type\ObjectType;
+
 class ArrayDimFetchToMethodCall
 {
     public function __construct(
-        private readonly string $class,
+        private readonly ObjectType $objectType,
         private readonly string $method
     ) {
     }
 
-    public function getClass(): string
+    public function getObjectType(): ObjectType
     {
-        return $this->class;
+        return $this->objectType;
     }
 
     public function getMethod(): string
