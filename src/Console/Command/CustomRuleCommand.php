@@ -178,7 +178,7 @@ final class CustomRuleCommand extends Command
 
         $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $phpunitFilePath);
 
-        FileSystem::write($phpunitFilePath, $phpunitXML);
+FileSystem::write($phpunitFilePath, $phpunitXML, null);
 
         $this->symfonyStyle->success(
             'We also update ' . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
