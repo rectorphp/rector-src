@@ -39,7 +39,7 @@ CODE_SAMPLE
 $app->make('someService');
 CODE_SAMPLE
                 ,
-                [new ArrayDimFetchToMethodCall('SomeClass', 'make')]
+                [new ArrayDimFetchToMethodCall(new ObjectType('SomeClass'), 'make')]
             ),
         ]);
     }
@@ -63,7 +63,7 @@ CODE_SAMPLE
         }
 
         foreach ($this->arrayDimFetchToMethodCalls as $arrayDimFetchToMethodCall) {
-            if (! $this->isObjectType($node->var, new ObjectType($arrayDimFetchToMethodCall->getClass()))) {
+            if (! $this->isObjectType($node->var, $arrayDimFetchToMethodCall->getObjectType())) {
                 continue;
             }
 
