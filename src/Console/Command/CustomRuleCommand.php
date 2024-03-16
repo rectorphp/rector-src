@@ -176,9 +176,20 @@ final class CustomRuleCommand extends Command
             return;
         }
 
-        $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $phpunitFilePath);
+        $testsuitesElement = $domDocument->getElementsByTagName('testsuites')
+            ->item(0);
 
-FileSystem::write($phpunitFilePath, $phpunitXML, null);
+        if (! $testsuitesElement instanceof DOMElement) {
+            $this->symfonyStyle->warning(
+                'No <testsuites> element found in ' . $phpunitFilePath . '. Rector could not add the rector test suite to it'
+            );
+
+            return;
+        }
+
+        $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $testsuitesElement, $phpunitFilePath);
+
+        FileSystem::write($phpunitFilePath, $phpunitXML, null);
 
         $this->symfonyStyle->success(
             'We also update ' . $phpunitFilePath . ", to add a rector test suite.\n You can run the rector tests by running: phpunit --testsuite rector"
@@ -208,20 +219,16 @@ FileSystem::write($phpunitFilePath, $phpunitXML, null);
         return false;
     }
 
-    private function updatePHPUnitXMLFile(DOMDocument $domDocument, string $phpunitFilePath): string
-    {
+    private function updatePHPUnitXMLFile(
+        DOMDocument $domDocument,
+        DOMElement $testsuitesElement,
+        string $phpunitFilePath
+    ): string {
         $domElement = $domDocument->createElement('testsuite');
         $domElement->setAttribute('name', 'rector');
 
         $rectorTestSuiteDirectory = $domDocument->createElement('directory', 'utils/rector/tests');
         $domElement->appendChild($rectorTestSuiteDirectory);
-
-        $testsuitesElement = $domDocument->getElementsByTagName('testsuites')
-            ->item(0);
-
-        if (! $testsuitesElement instanceof DOMElement) {
-            throw new ShouldNotHappenException('No testsuites element found in ' . $phpunitFilePath);
-        }
 
         $testsuitesElement->appendChild($domElement);
 
