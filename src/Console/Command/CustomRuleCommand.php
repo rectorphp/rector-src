@@ -140,6 +140,14 @@ final class CustomRuleCommand extends Command
 
     private function setupRectorTestSuite(string $currentDirectory): void
     {
+        if (! extension_loaded('dom')) {
+            $this->symfonyStyle->warning(
+                'The "dom" extension is not loaded. Rector could not add the rector test suite to phpunit.xml'
+            );
+
+            return;
+        }
+
         $phpunitXmlExists = file_exists($currentDirectory . '/phpunit.xml');
         $phpunitXmlDistExists = file_exists($currentDirectory . '/phpunit.xml.dist');
 
