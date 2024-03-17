@@ -251,6 +251,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($type instanceof ErrorType) {
+            return true;
+        }
+
         if ($type->isExplicitMixed()) {
             return false;
         }
