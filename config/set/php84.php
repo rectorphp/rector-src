@@ -6,7 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        ExplicitNullableParamTypeRector::class,
-    ]);
+    $rectorConfig->rules([ExplicitNullableParamTypeRector::class]);
 };
