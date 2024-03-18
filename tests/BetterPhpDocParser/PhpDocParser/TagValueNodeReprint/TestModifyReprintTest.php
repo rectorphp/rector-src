@@ -73,13 +73,15 @@ final class TestModifyReprintTest extends AbstractLazyTestCase
         $fixtureFilePath = FixtureTempFileDumper::dump($fileContents);
         $nodes = $this->testingParser->parseFileToDecoratedNodes($fixtureFilePath);
 
-        FileSystem::delete($fixtureFilePath);
-
         $node = $this->betterNodeFinder->findFirstInstanceOf($nodes, $nodeType);
         if (! $node instanceof Node) {
             throw new ShouldNotHappenException($fileContents);
         }
 
-        return $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        FileSystem::delete($fixtureFilePath);
+
+        return $phpDocInfo;
     }
 }

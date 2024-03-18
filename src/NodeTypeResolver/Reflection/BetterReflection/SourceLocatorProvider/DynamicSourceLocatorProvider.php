@@ -77,6 +77,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
+
         $reflector = new DefaultReflector($this->aggregateSourceLocator);
         foreach ($sourceLocators as $sourceLocator) {
             // trigger get class on locate identifier
