@@ -69,17 +69,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
         if ($node instanceof FullyQualified) {
             $result = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
         } else {
-            $phpAttributeName = $node->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
-            if (is_string($phpAttributeName)) {
-                $result = $this->classRenamer->renameNode(
-                    new FullyQualified($phpAttributeName, $node->getAttributes()),
-                    $oldToNewClasses,
-                    $scope
-                );
-                if ($result instanceof FullyQualified) {
-                    $result->setAttribute(AttributeKey::ORIGINAL_NAME, $node);
-                }
-            }
+            $result = $this->resolveResultWithPhpAttributeName($node, $oldToNewClasses, $scope);
         }
 
         if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
@@ -104,5 +94,30 @@ final class ClassRenamingPostRector extends AbstractPostRector
     {
         $this->renamedNameCollector->reset();
         return $nodes;
+    }
+
+    /**
+     * @param array<string, string> $oldToNewClasses
+     */
+    private function resolveResultWithPhpAttributeName(
+        Name $name,
+        array $oldToNewClasses,
+        ?Scope $scope
+    ): ?FullyQualified {
+        $phpAttributeName = $name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
+        if (is_string($phpAttributeName)) {
+            $result = $this->classRenamer->renameNode(
+                new FullyQualified($phpAttributeName, $name->getAttributes()),
+                $oldToNewClasses,
+                $scope
+            );
+            if ($result instanceof FullyQualified) {
+                $result->setAttribute(AttributeKey::ORIGINAL_NAME, $name);
+            }
+
+            return $result;
+        }
+
+        return null;
     }
 }
