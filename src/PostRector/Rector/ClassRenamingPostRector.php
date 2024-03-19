@@ -76,6 +76,9 @@ final class ClassRenamingPostRector extends AbstractPostRector
                     $oldToNewClasses,
                     $scope
                 );
+                if ($result instanceof FullyQualified) {
+                    $result->setAttribute(AttributeKey::ORIGINAL_NAME, $node);
+                }
             }
         }
 
