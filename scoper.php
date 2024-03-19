@@ -113,10 +113,10 @@ return [
                 'return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit, 0, $flags]);',
                 <<<'CODE_REPLACE'
 if (PHP_VERSION_ID < 70400) {
-    return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit]);
+    return self::pcre('preg_replace_callback', [$pattern, $replacement, $subject, $limit]);
 }
 
-return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit, 0, $flags]);
+return self::pcre('preg_replace_callback', [$pattern, $replacement, $subject, $limit, 0, $flags]);
 CODE_REPLACE,
                 $content
             );
