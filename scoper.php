@@ -102,5 +102,24 @@ return [
 
             return Unprefixer::unprefixQuoted($content, $prefix);
         },
+
+        static function (string $filePath, string $prefix, string $content): string {
+            if (! \str_ends_with($filePath, 'vendor/nette/utils/src/Utils/Strings.php')) {
+                return $content;
+            }
+
+            # see https://github.com/rectorphp/rector/issues/8564
+            return str_replace(
+                'return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit, 0, $flags]);',
+                <<<'CODE_REPLACE'
+if (PHP_VERSION_ID < 70400) {
+    return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit]);
+}
+
+return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit, 0, $flags]);
+CODE_REPLACE,
+                $content
+            );
+        },
     ],
 ];
