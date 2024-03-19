@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+// prevent re-declare class/interface errors, because of a already loaded php-parser package
+if (interface_exists('\PhpParser\Node')) {
+    return;
+}
+
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/Node.php';
 require_once __DIR__ . '/src/Contract/PhpParser/Node/StmtsAwareInterface.php';
 require_once __DIR__ . '/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php';
