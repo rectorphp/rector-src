@@ -108,6 +108,7 @@ return [
                 return $content;
             }
 
+            # see https://github.com/rectorphp/rector/issues/8564
             return str_replace(
                 'return self::pcre(\'preg_replace_callback\', [$pattern, $replacement, $subject, $limit, 0, $flags]);',
                 <<<'CODE_REPLACE'
