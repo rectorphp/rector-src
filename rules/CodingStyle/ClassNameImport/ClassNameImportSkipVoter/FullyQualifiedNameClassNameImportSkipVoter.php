@@ -44,7 +44,7 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
         $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
         $originalNameToAttribute = null;
         if ($originalName instanceof Name && ! $originalName instanceof FullyQualified && $originalName->hasAttribute(AttributeKey::PHP_ATTRIBUTE_NAME)) {
-            $originalNameToAttribute = $originalName->toString();
+            $originalNameToAttribute = $originalName->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
         }
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
@@ -62,7 +62,7 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
             }
 
             if (! in_array($fullyQualifiedName, $removedUses, true)) {
-                return $originalNameToAttribute == null || in_array($originalNameToAttribute, $removedUses, true);
+                return $originalNameToAttribute == null || ! in_array($originalNameToAttribute, $removedUses, true);
             }
 
             return false;
