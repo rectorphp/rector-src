@@ -148,8 +148,6 @@ final class ShortNameResolver
      */
     private function resolveFromStmtsDocBlocks(array $stmts): array
     {
-        $classReflection = $this->resolveClassReflection($stmts);
-
         $shortNames = [];
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable($stmts, function (Node $node) use (
             &$shortNames
@@ -185,7 +183,7 @@ final class ShortNameResolver
             return null;
         });
 
-        return $this->fqnizeShortNames($shortNames, $classReflection, $stmts);
+        return $this->fqnizeShortNames($shortNames, $stmts);
     }
 
     /**
@@ -211,20 +209,14 @@ final class ShortNameResolver
      * @param Stmt[] $stmts
      * @return array<string, string>
      */
-    private function fqnizeShortNames(array $shortNames, ?ClassReflection $classReflection, array $stmts): array
+    private function fqnizeShortNames(array $shortNames, array $stmts): array
     {
         $shortNamesToFullyQualifiedNames = [];
-
-        $nativeReflectionClass = $classReflection instanceof ClassReflection && ! $classReflection->isAnonymous()
-            ? $classReflection->getNativeReflection()
-            : null;
 
         foreach ($shortNames as $shortName) {
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
-            if ($nativeReflectionClass instanceof ReflectionClass) {
-                $fullyQualifiedName = Reflection::expandClassName($shortName, $nativeReflectionClass);
-            } elseif (is_string($stmtsMatchedName)) {
+            if (is_string($stmtsMatchedName)) {
                 $fullyQualifiedName = $stmtsMatchedName;
             } else {
                 $fullyQualifiedName = $shortName;
