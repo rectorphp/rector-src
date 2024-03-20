@@ -56,7 +56,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
 
         if ($node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
             && $node->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
-            && ! ($node instanceof Expr\MethodCall && $node->var instanceof Expr\MethodCall)
+            && ! ($node instanceof Expr\MethodCall && $node->var instanceof Expr\CallLike))
             return null;
         }
 
