@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PHPStan\NodeVisitor;
 
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
@@ -56,7 +58,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
 
         if ($node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
             && $node->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
-            && ! ($node instanceof Expr\MethodCall && $node->var instanceof Expr\CallLike)) {
+            && ! ($node instanceof MethodCall && $node->var instanceof CallLike)) {
             return null;
         }
 
