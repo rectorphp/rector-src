@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\PHPStan\NodeVisitor;
 
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -56,9 +56,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if ($node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
-            && $node->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
-            && ! ($node instanceof MethodCall && $node->var instanceof CallLike)) {
+        if ($this->shouldSkipExpr($node)) {
             return null;
         }
 
@@ -81,5 +79,12 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
         }
 
         return null;
+    }
+
+    private function shouldSkipExpr(Expr $expr): bool
+    {
+        return $expr->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
+            && $expr->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
+            && ! ($expr instanceof MethodCall && $expr->var instanceof CallLike);
     }
 }
