@@ -76,6 +76,8 @@ CODE_SAMPLE
             return null;
         }
 
+        die;
+
         if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
             return $this->refactorStmtAndInstanceof($node, $node->cond->expr);
         }
