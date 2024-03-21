@@ -96,7 +96,7 @@ CODE_SAMPLE
             fn (Node $node): bool => $node instanceof Variable && $this->exprAnalyzer->isNonTypedFromParam($node)
         );
 
-        if ($hasNonTypedFromParam) {
+        if ($hasNonTypedFromParam instanceof Node) {
             return null;
         }
 
