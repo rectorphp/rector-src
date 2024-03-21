@@ -165,8 +165,12 @@ CODE_SAMPLE
         }
 
         $entityGenericType = $genericTypeNode->genericTypes[0];
-
         if (! $entityGenericType instanceof IdentifierTypeNode) {
+            return null;
+        }
+
+        // skip if value is used in generics
+        if (in_array($entityGenericType->name, $classPhpDocInfo->getTemplateNames(), true)) {
             return null;
         }
 

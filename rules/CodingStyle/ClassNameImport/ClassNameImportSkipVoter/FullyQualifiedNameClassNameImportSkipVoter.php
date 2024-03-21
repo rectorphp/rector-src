@@ -43,7 +43,9 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
 
         $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
         $originalNameToAttribute = null;
-        if ($originalName instanceof Name && ! $originalName instanceof FullyQualified && $originalName->hasAttribute(AttributeKey::PHP_ATTRIBUTE_NAME)) {
+        if ($originalName instanceof Name && ! $originalName instanceof FullyQualified && $originalName->hasAttribute(
+            AttributeKey::PHP_ATTRIBUTE_NAME
+        )) {
             $originalNameToAttribute = $originalName->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
         }
 
