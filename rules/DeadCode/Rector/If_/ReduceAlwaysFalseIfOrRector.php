@@ -23,8 +23,7 @@ final class ReduceAlwaysFalseIfOrRector extends AbstractRector
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ExprAnalyzer $exprAnalyzer
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
