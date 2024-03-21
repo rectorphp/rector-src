@@ -97,7 +97,7 @@ CODE_SAMPLE
      */
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
     {
-        if (! $this->isInstanceofTheSameType($instanceof)) {
+        if ($this->isInstanceofTheSameType($instanceof) !== true) {
             return null;
         }
 
@@ -151,10 +151,12 @@ CODE_SAMPLE
         $classType = $this->nodeTypeResolver->getType($instanceof->class);
         $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
 
-        $isSameStaticTypeOrSubtype = $classType->equals($exprType) || $classType->isSuperTypeOf($exprType)
-            ->yes();
+        if ($classType->equals($exprType)) {
+            return true;
+        }
 
-        return $isSameStaticTypeOrSubtype;
+        return $classType->isSuperTypeOf($exprType)
+            ->yes();
     }
 
     private function refactorIfWithBooleanAnd(If_ $if): null|If_
@@ -169,7 +171,7 @@ CODE_SAMPLE
         }
 
         $instanceof = $booleanAnd->left;
-        if (! $this->isInstanceofTheSameType($instanceof)) {
+        if ($this->isInstanceofTheSameType($instanceof) !== true) {
             return null;
         }
 
