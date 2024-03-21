@@ -182,7 +182,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($leftType->getValue() !== true) {
+        if (!$leftType->getValue()) {
             return null;
         }
 
