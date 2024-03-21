@@ -6,10 +6,8 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
-use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -19,6 +17,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
+use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
@@ -34,7 +33,8 @@ final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SafeLeftTypeBooleanAndOrAnalyzer $safeLeftTypeBooleanAndOrAnalyzer
     ) {
     }
 
@@ -180,20 +180,16 @@ CODE_SAMPLE
 
         $booleanAnd = $if->cond;
 
-        $hasArrayDimFetchOrIsset = (bool) $this->betterNodeFinder->findFirst(
-            $booleanAnd->left,
-            static fn (Node $node): bool => $node instanceof ArrayDimFetch || $node instanceof Isset_
-        );
-        if ($hasArrayDimFetchOrIsset) {
-            return null;
-        }
-
         $leftType = $this->getType($booleanAnd->left);
         if (! $leftType instanceof ConstantBooleanType) {
             return null;
         }
 
         if (! $leftType->getValue()) {
+            return null;
+        }
+
+        if (! $this->safeLeftTypeBooleanAndOrAnalyzer->isSafe($booleanAnd)) {
             return null;
         }
 
