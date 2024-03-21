@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\Isset_;
@@ -180,6 +181,11 @@ CODE_SAMPLE
         $booleanAnd = $if->cond;
 
         if ($booleanAnd->left instanceof Isset_) {
+            return null;
+        }
+
+        $hasArrayDimFetch = (bool) $this->betterNodeFinder->findFirst($booleanAnd->left, fn (Node $node): bool => $node instanceof ArrayDimFetch);
+        if ($hasArrayDimFetch) {
             return null;
         }
 
