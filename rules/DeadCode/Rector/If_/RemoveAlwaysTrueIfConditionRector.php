@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\Isset_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
@@ -177,6 +178,11 @@ CODE_SAMPLE
         }
 
         $booleanAnd = $if->cond;
+
+        if ($booleanAnd->left instanceof Isset_) {
+            return null;
+        }
+
         $leftType = $this->getType($booleanAnd->left);
         if (! $leftType instanceof ConstantBooleanType) {
             return null;
