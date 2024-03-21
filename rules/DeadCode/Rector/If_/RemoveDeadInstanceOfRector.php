@@ -7,6 +7,7 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
@@ -68,9 +69,9 @@ CODE_SAMPLE
 
     /**
      * @param If_ $node
-     * @return Stmt[]|null|int
+     * @return Stmt[]|null|int|If_
      */
-    public function refactor(Node $node): array|null|int
+    public function refactor(Node $node): array|null|int|If_
     {
         if (! $this->ifManipulator->isIfWithoutElseAndElseIfs($node)) {
             return null;
@@ -78,6 +79,10 @@ CODE_SAMPLE
 
         if ($node->cond instanceof BooleanNot && $node->cond->expr instanceof Instanceof_) {
             return $this->refactorStmtAndInstanceof($node, $node->cond->expr);
+        }
+
+        if ($node->cond instanceof BooleanAnd) {
+            return $this->refactorIfWithBooleanAnd($node);
         }
 
         if ($node->cond instanceof Instanceof_) {
@@ -92,22 +97,7 @@ CODE_SAMPLE
      */
     private function refactorStmtAndInstanceof(If_ $if, Instanceof_ $instanceof): null|array|int
     {
-        if (! $instanceof->class instanceof Name) {
-            return null;
-        }
-
-        // handle in another rule
-        if ($this->isPropertyFetch($instanceof->expr) || $instanceof->expr instanceof CallLike) {
-            return null;
-        }
-
-        $classType = $this->nodeTypeResolver->getType($instanceof->class);
-        $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
-
-        $isSameStaticTypeOrSubtype = $classType->equals($exprType) || $classType->isSuperTypeOf($exprType)
-            ->yes();
-
-        if (! $isSameStaticTypeOrSubtype) {
+        if ($this->isInstanceofTheSameType($instanceof) !== true) {
             return null;
         }
 
@@ -145,5 +135,47 @@ CODE_SAMPLE
         }
 
         return $expr instanceof StaticPropertyFetch;
+    }
+
+    private function isInstanceofTheSameType(Instanceof_ $instanceof): ?bool
+    {
+        if (! $instanceof->class instanceof Name) {
+            return null;
+        }
+
+        // handled in another rule
+        if ($this->isPropertyFetch($instanceof->expr) || $instanceof->expr instanceof CallLike) {
+            return null;
+        }
+
+        $classType = $this->nodeTypeResolver->getType($instanceof->class);
+        $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
+
+        if ($classType->equals($exprType)) {
+            return true;
+        }
+
+        return $classType->isSuperTypeOf($exprType)
+            ->yes();
+    }
+
+    private function refactorIfWithBooleanAnd(If_ $if): null|If_
+    {
+        if (! $if->cond instanceof BooleanAnd) {
+            return null;
+        }
+
+        $booleanAnd = $if->cond;
+        if (! $booleanAnd->left instanceof Instanceof_) {
+            return null;
+        }
+
+        $instanceof = $booleanAnd->left;
+        if ($this->isInstanceofTheSameType($instanceof) !== true) {
+            return null;
+        }
+
+        $if->cond = $booleanAnd->right;
+        return $if;
     }
 }
