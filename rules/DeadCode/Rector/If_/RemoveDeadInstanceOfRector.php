@@ -149,7 +149,7 @@ CODE_SAMPLE
         }
 
         $classType = $this->nodeTypeResolver->getType($instanceof->class);
-        $exprType = $this->nodeTypeResolver->getType($instanceof->expr);
+        $exprType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
 
         if ($classType->equals($exprType)) {
             return true;
