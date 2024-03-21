@@ -13,6 +13,7 @@ use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector;
 use Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector;
+use Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector;
 use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
@@ -147,6 +148,7 @@ return static function (RectorConfig $rectorConfig): void {
         ThrowWithPreviousExceptionRector::class,
         RemoveSoleValueSprintfRector::class,
         ShortenElseIfRector::class,
+        ExplicitReturnNullRector::class,
         ArrayMergeOfNonArraysToSimpleArrayRector::class,
         ArrayKeyExistsTernaryThenValueToCoalescingRector::class,
         AbsolutizeRequireAndIncludePathRector::class,

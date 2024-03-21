@@ -129,6 +129,7 @@ CODE_SAMPLE
                 return false;
             }
         }
+
         return $returns !== [];
     }
 }
