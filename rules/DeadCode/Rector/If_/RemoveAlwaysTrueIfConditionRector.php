@@ -180,7 +180,10 @@ CODE_SAMPLE
 
         $booleanAnd = $if->cond;
 
-        $hasArrayDimFetchOrIsset = (bool) $this->betterNodeFinder->findFirst($booleanAnd->left, fn (Node $node): bool => $node instanceof ArrayDimFetch || $node instanceof Isset_);
+        $hasArrayDimFetchOrIsset = (bool) $this->betterNodeFinder->findFirst(
+            $booleanAnd->left,
+            static fn (Node $node): bool => $node instanceof ArrayDimFetch || $node instanceof Isset_
+        );
         if ($hasArrayDimFetchOrIsset) {
             return null;
         }
