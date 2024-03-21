@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveDeadInstanceOfRector\Fixture;
 
 use PhpParser\Node;
 
-final class IncludeAnd
+final class SkipIncludeAndFromDocblock
 {
     /**
      * @param Node $var
