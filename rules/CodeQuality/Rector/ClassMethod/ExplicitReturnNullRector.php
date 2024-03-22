@@ -10,6 +10,8 @@ use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Else_;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -101,12 +103,30 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function hasRootLevelReturn(ClassMethod $classMethod): bool
+    private function hasRootLevelReturn(ClassMethod|If_|Else_ $node): bool
     {
-        foreach ((array) $classMethod->stmts as $stmt) {
+        foreach ((array) $node->stmts as $stmt) {
             if ($stmt instanceof Return_) {
                 return true;
             }
+
+            if (! $stmt instanceof If_) {
+                continue;
+            }
+
+            if (! $this->hasRootLevelReturn($stmt)) {
+                continue;
+            }
+
+            if (! $stmt->else instanceof Else_) {
+                continue;
+            }
+
+            if (! $this->hasRootLevelReturn($stmt->else)) {
+                continue;
+            }
+
+            return true;
         }
 
         return false;
