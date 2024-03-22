@@ -172,13 +172,8 @@ final readonly class SilentVoidResolver
         $casesWithReturnCount = 0;
 
         foreach ($switch->cases as $case) {
-            foreach ($case->stmts as $caseStmt) {
-                if (! $this->isStopped($caseStmt)) {
-                    continue;
-                }
-
+            if ($this->hasStmtsAlwaysReturnOrExit($case->stmts)) {
                 ++$casesWithReturnCount;
-                continue 2;
             }
         }
 
