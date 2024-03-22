@@ -102,12 +102,12 @@ CODE_SAMPLE
             return null;
         }
 
-        // it has at least some return value in it
-        if (! $this->hasReturnsWithValues($node)) {
+        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
             return null;
         }
 
-        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+        // it has at least some return value in it
+        if (! $this->hasReturnsWithValues($node)) {
             return null;
         }
 
