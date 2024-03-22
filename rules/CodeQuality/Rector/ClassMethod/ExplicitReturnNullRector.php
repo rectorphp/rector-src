@@ -139,6 +139,10 @@ CODE_SAMPLE
         }
 
         $type = $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($newTypes);
+        if (! $type instanceof UnionType) {
+            return;
+        }
+
         $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $type);
     }
 
