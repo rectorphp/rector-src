@@ -144,10 +144,10 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        $casesWithReturnCount = $this->resolveReturnCount($switch);
+        $casesWithStoppedCount = $this->resolveStoppedCount($switch);
 
         // has same amount of returns as switches
-        return count($switch->cases) === $casesWithReturnCount;
+        return count($switch->cases) === $casesWithStoppedCount;
     }
 
     private function isTryCatchAlwaysReturn(TryCatch $tryCatch): bool
@@ -167,18 +167,18 @@ final readonly class SilentVoidResolver
         ));
     }
 
-    private function resolveReturnCount(Switch_ $switch): int
+    private function resolveStoppedCount(Switch_ $switch): int
     {
         $casesWithReturnCount = 0;
 
         foreach ($switch->cases as $case) {
             foreach ($case->stmts as $caseStmt) {
-                if (! $caseStmt instanceof Return_) {
+                if (! $this->isStopped($caseStmt)) {
                     continue;
                 }
 
                 ++$casesWithReturnCount;
-                break;
+                continue 2;
             }
         }
 
