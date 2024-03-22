@@ -12,6 +12,12 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
+use PHPStan\Type\NullType;
+use PHPStan\Type\UnionType;
+use PHPStan\Type\VoidType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -25,7 +31,10 @@ final class ExplicitReturnNullRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly SilentVoidResolver $silentVoidResolver
+        private readonly SilentVoidResolver $silentVoidResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly TypeFactory $typeFactory,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger
     ) {
     }
 
@@ -38,6 +47,9 @@ final class ExplicitReturnNullRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
+    /**
+     * @return string|void
+     */
     public function run(int $number)
     {
         if ($number > 50) {
@@ -51,6 +63,9 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
+    /**
+     * @return string|null
+     */
     public function run(int $number)
     {
         if ($number > 50) {
@@ -100,7 +115,35 @@ CODE_SAMPLE
 
         $node->stmts[] = new Return_(new ConstFetch(new Name('null')));
 
+        $this->transformDocUnionVoidToUnionNull($node);
+
         return $node;
+    }
+
+    private function transformDocUnionVoidToUnionNull(ClassMethod $classMethod): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+
+        $returnType = $phpDocInfo->getReturnType();
+        if (! $returnType instanceof UnionType) {
+            return;
+        }
+
+        $newTypes = [];
+        foreach ($returnType->getTypes() as $type) {
+            if ($type instanceof VoidType) {
+                $type = new NullType();
+            }
+
+            $newTypes[] = $type;
+        }
+
+        $type = $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($newTypes);
+        if (! $type instanceof UnionType) {
+            return;
+        }
+
+        $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $type);
     }
 
     private function containsYieldOrThrow(ClassMethod $classMethod): bool
