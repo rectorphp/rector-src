@@ -81,11 +81,11 @@ final readonly class SilentVoidResolver
             }
 
             // has switch with always return
-            if ($stmt instanceof Switch_ && $this->isSwitchWithAlwaysReturn($stmt)) {
+            if ($stmt instanceof Switch_ && $this->isSwitchWithAlwaysReturnOrExit($stmt)) {
                 return true;
             }
 
-            if ($stmt instanceof TryCatch && $this->isTryCatchAlwaysReturn($stmt)) {
+            if ($stmt instanceof TryCatch && $this->isTryCatchAlwaysReturnOrExit($stmt)) {
                 return true;
             }
 
@@ -122,10 +122,14 @@ final readonly class SilentVoidResolver
 
     private function isStopped(Stmt|Expr $stmt): bool
     {
-        return $stmt instanceof Throw_ || $stmt instanceof Exit_ || $stmt instanceof Return_;
+        return $stmt instanceof Throw_
+            || $stmt instanceof Exit_
+            || $stmt instanceof Return_
+            || $stmt instanceof Yield_
+            || $stmt instanceof YieldFrom;
     }
 
-    private function isSwitchWithAlwaysReturn(Switch_ $switch): bool
+    private function isSwitchWithAlwaysReturnOrExit(Switch_ $switch): bool
     {
         $hasDefault = false;
 
@@ -140,13 +144,13 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        $casesWithReturnCount = $this->resolveReturnCount($switch);
+        $casesWithReturnOrExitCount = $this->resolveReturnOrExitCount($switch);
 
-        // has same amount of returns as switches
-        return count($switch->cases) === $casesWithReturnCount;
+        // has same amount of first return or exit nodes as switches
+        return count($switch->cases) === $casesWithReturnOrExitCount;
     }
 
-    private function isTryCatchAlwaysReturn(TryCatch $tryCatch): bool
+    private function isTryCatchAlwaysReturnOrExit(TryCatch $tryCatch): bool
     {
         if (! $this->hasStmtsAlwaysReturnOrExit($tryCatch->stmts)) {
             return false;
@@ -163,18 +167,13 @@ final readonly class SilentVoidResolver
         ));
     }
 
-    private function resolveReturnCount(Switch_ $switch): int
+    private function resolveReturnOrExitCount(Switch_ $switch): int
     {
         $casesWithReturnCount = 0;
 
         foreach ($switch->cases as $case) {
-            foreach ($case->stmts as $caseStmt) {
-                if (! $caseStmt instanceof Return_) {
-                    continue;
-                }
-
+            if ($this->hasStmtsAlwaysReturnOrExit($case->stmts)) {
                 ++$casesWithReturnCount;
-                break;
             }
         }
 
