@@ -81,11 +81,11 @@ final readonly class SilentVoidResolver
             }
 
             // has switch with always return
-            if ($stmt instanceof Switch_ && $this->isSwitchWithAlwaysReturn($stmt)) {
+            if ($stmt instanceof Switch_ && $this->isSwitchWithAlwaysReturnOrExit($stmt)) {
                 return true;
             }
 
-            if ($stmt instanceof TryCatch && $this->isTryCatchAlwaysReturn($stmt)) {
+            if ($stmt instanceof TryCatch && $this->isTryCatchAlwaysReturnOrExit($stmt)) {
                 return true;
             }
 
@@ -129,7 +129,7 @@ final readonly class SilentVoidResolver
             || $stmt instanceof YieldFrom;
     }
 
-    private function isSwitchWithAlwaysReturn(Switch_ $switch): bool
+    private function isSwitchWithAlwaysReturnOrExit(Switch_ $switch): bool
     {
         $hasDefault = false;
 
@@ -144,13 +144,13 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        $casesWithStoppedCount = $this->resolveStoppedCount($switch);
+        $casesWithReturnOrExitCount = $this->resolveReturnOrExitCount($switch);
 
         // has same amount of first stopped nodes as switches
-        return count($switch->cases) === $casesWithStoppedCount;
+        return count($switch->cases) === $casesWithReturnOrExitCount;
     }
 
-    private function isTryCatchAlwaysReturn(TryCatch $tryCatch): bool
+    private function isTryCatchAlwaysReturnOrExit(TryCatch $tryCatch): bool
     {
         if (! $this->hasStmtsAlwaysReturnOrExit($tryCatch->stmts)) {
             return false;
@@ -167,7 +167,7 @@ final readonly class SilentVoidResolver
         ));
     }
 
-    private function resolveStoppedCount(Switch_ $switch): int
+    private function resolveReturnOrExitCount(Switch_ $switch): int
     {
         $casesWithReturnCount = 0;
 
