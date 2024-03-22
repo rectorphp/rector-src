@@ -130,12 +130,18 @@ CODE_SAMPLE
         }
 
         $newTypes = [];
+        $hasChanged = false;
         foreach ($returnType->getTypes() as $type) {
             if ($type instanceof VoidType) {
                 $type = new NullType();
+                $hasChanged = true;
             }
 
             $newTypes[] = $type;
+        }
+
+        if (! $hasChanged) {
+            return;
         }
 
         $type = $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($newTypes);
