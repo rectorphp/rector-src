@@ -122,7 +122,7 @@ final readonly class SilentVoidResolver
 
     private function isStopped(Stmt|Expr $stmt): bool
     {
-        return $stmt instanceof Throw_ || $stmt instanceof Exit_ || $stmt instanceof Return_;
+        return $stmt instanceof Throw_ || $stmt instanceof Exit_ || $stmt instanceof Return_ || $stmt instanceof Yield_ || $stmt instanceof YieldFrom;
     }
 
     private function isSwitchWithAlwaysReturn(Switch_ $switch): bool

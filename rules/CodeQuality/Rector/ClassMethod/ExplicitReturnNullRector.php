@@ -105,10 +105,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->containsYieldOrThrow($node)) {
-            return null;
-        }
-
         // it has at least some return value in it
         if (! $this->hasReturnsWithValues($node)) {
             return null;
@@ -155,14 +151,6 @@ CODE_SAMPLE
         }
 
         $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $type);
-    }
-
-    private function containsYieldOrThrow(ClassMethod $classMethod): bool
-    {
-        return (bool) $this->betterNodeFinder->findInstancesOf(
-            $classMethod,
-            [Yield_::class, Throw_::class, Node\Expr\Throw_::class, YieldFrom::class]
-        );
     }
 
     private function hasReturnsWithValues(ClassMethod $classMethod): bool
