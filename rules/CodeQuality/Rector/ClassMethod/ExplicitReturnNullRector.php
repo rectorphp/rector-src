@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -24,6 +25,7 @@ final class ExplicitReturnNullRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SilentVoidResolver $silentVoidResolver
     ) {
     }
 
@@ -83,10 +85,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasRootLevelReturn($node)) {
-            return null;
-        }
-
         if ($this->containsYieldOrThrow($node)) {
             return null;
         }
@@ -96,20 +94,13 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+            return null;
+        }
+
         $node->stmts[] = new Return_(new ConstFetch(new Name('null')));
 
         return $node;
-    }
-
-    private function hasRootLevelReturn(ClassMethod $classMethod): bool
-    {
-        foreach ((array) $classMethod->stmts as $stmt) {
-            if ($stmt instanceof Return_) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function containsYieldOrThrow(ClassMethod $classMethod): bool

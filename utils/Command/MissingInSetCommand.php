@@ -12,6 +12,8 @@ use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
+use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionRector;
+use Rector\Doctrine\CodeQuality\Rector\Property\TypedPropertyFromDoctrineCollectionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
@@ -52,6 +54,10 @@ final class MissingInSetCommand extends Command
         FinalizeClassesWithoutChildrenRector::class,
         // deprecated
         FinalizePublicClassConstantRector::class,
+
+        // deprecated
+        InitializeDefaultEntityCollectionRector::class,
+        TypedPropertyFromDoctrineCollectionRector::class,
     ];
 
     public function __construct(
