@@ -10,12 +10,11 @@ use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Else_;
-use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -26,6 +25,7 @@ final class ExplicitReturnNullRector extends AbstractRector
 {
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly SilentVoidResolver $silentVoidResolver
     ) {
     }
 
@@ -85,10 +85,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->hasRootLevelReturn($node)) {
-            return null;
-        }
-
         if ($this->containsYieldOrThrow($node)) {
             return null;
         }
@@ -98,38 +94,13 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+            return null;
+        }
+
         $node->stmts[] = new Return_(new ConstFetch(new Name('null')));
 
         return $node;
-    }
-
-    private function hasRootLevelReturn(ClassMethod|If_|Else_ $node): bool
-    {
-        foreach ((array) $node->stmts as $stmt) {
-            if ($stmt instanceof Return_) {
-                return true;
-            }
-
-            if (! $stmt instanceof If_) {
-                continue;
-            }
-
-            if (! $this->hasRootLevelReturn($stmt)) {
-                continue;
-            }
-
-            if (! $stmt->else instanceof Else_) {
-                continue;
-            }
-
-            if (! $this->hasRootLevelReturn($stmt->else)) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private function containsYieldOrThrow(ClassMethod $classMethod): bool

@@ -12,9 +12,13 @@ use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
@@ -58,11 +62,12 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        if ($this->hasStmtsAlwaysReturn((array) $functionLike->getStmts())) {
+        $stmts = (array) $functionLike->getStmts();
+        if ($this->hasStmtsAlwaysReturn($stmts)) {
             return false;
         }
 
-        foreach ((array) $functionLike->getStmts() as $stmt) {
+        foreach ($stmts as $stmt) {
             // has switch with always return
             if ($stmt instanceof Switch_ && $this->isSwitchWithAlwaysReturn($stmt)) {
                 return false;
@@ -76,6 +81,24 @@ final readonly class SilentVoidResolver
             if ($stmt instanceof Throw_) {
                 return false;
             }
+
+            if (! $stmt instanceof If_) {
+                continue;
+            }
+
+            if (! $stmt->else instanceof Else_) {
+                continue;
+            }
+
+            if (! $this->hasStmtsAlwaysReturn($stmt->stmts)) {
+                continue;
+            }
+
+            if (! $this->hasStmtsAlwaysReturn($stmt->else->stmts)) {
+                continue;
+            }
+
+            return false;
         }
 
         return true;
@@ -93,6 +116,20 @@ final readonly class SilentVoidResolver
 
             // is 1st level return
             if ($stmt instanceof Return_) {
+                return true;
+            }
+
+            if ($stmt instanceof Catch_ && $this->hasStmtsAlwaysReturn($stmt->stmts)) {
+                return true;
+            }
+
+            if ($stmt instanceof TryCatch && $this->hasStmtsAlwaysReturn($stmt->stmts) && $this->hasStmtsAlwaysReturn(
+                $stmt->catches
+            )) {
+                if ($stmt->finally instanceof Finally_ && ! $this->hasStmtsAlwaysReturn($stmt->finally->stmts)) {
+                    continue;
+                }
+
                 return true;
             }
         }
