@@ -76,7 +76,7 @@ final readonly class SilentVoidResolver
                 $stmt = $stmt->expr;
             }
 
-            if ($this->isStopped($stmt)) {
+            if (! $this->isVoidStmt($stmt)) {
                 return true;
             }
 
@@ -120,9 +120,13 @@ final readonly class SilentVoidResolver
         return $this->hasStmtsAlwaysReturnOrExit($stmt->else->stmts);
     }
 
-    private function isStopped(Stmt|Expr $stmt): bool
+    private function isVoidStmt(Stmt|Expr $stmt): bool
     {
-        return $stmt instanceof Throw_ || $stmt instanceof Exit_ || $stmt instanceof Return_ || $stmt instanceof Yield_ || $stmt instanceof YieldFrom;
+        return ! ($stmt instanceof Throw_
+            || $stmt instanceof Exit_
+            || ($stmt instanceof Return_ && $stmt->expr instanceof Expr)
+            || $stmt instanceof Yield_
+            || $stmt instanceof YieldFrom);
     }
 
     private function isSwitchWithAlwaysReturn(Switch_ $switch): bool
