@@ -47,6 +47,9 @@ final class ExplicitReturnNullRector extends AbstractRector
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
+    /**
+     * @return string|void
+     */
     public function run(int $number)
     {
         if ($number > 50) {
@@ -60,6 +63,9 @@ CODE_SAMPLE
                     <<<'CODE_SAMPLE'
 class SomeClass
 {
+    /**
+     * @return string|null
+     */
     public function run(int $number)
     {
         if ($number > 50) {
