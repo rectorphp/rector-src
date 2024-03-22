@@ -89,7 +89,7 @@ final readonly class SilentVoidResolver
                 return true;
             }
 
-            if ($this->isIfElseReturn($stmt)) {
+            if ($this->isIfReturn($stmt)) {
                 return true;
             }
         }
@@ -97,10 +97,16 @@ final readonly class SilentVoidResolver
         return false;
     }
 
-    private function isIfElseReturn(Stmt|Expr $stmt): bool
+    private function isIfReturn(Stmt|Expr $stmt): bool
     {
         if (! $stmt instanceof If_) {
             return false;
+        }
+
+        foreach ($stmt->elseifs as $elseIf) {
+            if (! $this->hasStmtsAlwaysReturnOrExit($elseIf->stmts)) {
+                return false;
+            }
         }
 
         if (! $stmt->else instanceof Else_) {
