@@ -146,7 +146,7 @@ final readonly class SilentVoidResolver
 
         $casesWithStoppedCount = $this->resolveStoppedCount($switch);
 
-        // has same amount of returns as switches
+        // has same amount of first stopped nodes as switches
         return count($switch->cases) === $casesWithStoppedCount;
     }
 
