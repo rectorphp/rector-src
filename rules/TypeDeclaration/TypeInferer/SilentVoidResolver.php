@@ -146,7 +146,7 @@ final readonly class SilentVoidResolver
 
         $casesWithReturnOrExitCount = $this->resolveReturnOrExitCount($switch);
 
-        // has same amount of first stopped nodes as switches
+        // has same amount of first return or exit nodes as switches
         return count($switch->cases) === $casesWithReturnOrExitCount;
     }
 
