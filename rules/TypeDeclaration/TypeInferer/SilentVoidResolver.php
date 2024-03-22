@@ -169,6 +169,7 @@ final readonly class SilentVoidResolver
                 return false;
             }
         }
+
         return ! ($tryCatch->finally instanceof Finally_ && ! $this->hasStmtsAlwaysReturn($tryCatch->finally->stmts));
     }
 
