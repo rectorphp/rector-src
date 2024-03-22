@@ -110,6 +110,7 @@ final readonly class SilentVoidResolver
         if (! $this->hasStmtsAlwaysReturnOrExit($stmt->stmts)) {
             return false;
         }
+
         return $this->hasStmtsAlwaysReturnOrExit($stmt->else->stmts);
     }
 
