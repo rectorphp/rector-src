@@ -165,10 +165,11 @@ final readonly class SilentVoidResolver
         }
 
         foreach ($tryCatch->catches as $catch) {
-            return $this->hasStmtsAlwaysReturn($catch->stmts);
+            if (! $this->hasStmtsAlwaysReturn($catch->stmts)) {
+                return false;
+            }
         }
-
-        return true;
+        return ! ($tryCatch->finally instanceof Finally_ && ! $this->hasStmtsAlwaysReturn($tryCatch->finally->stmts));
     }
 
     private function resolveReturnCount(Switch_ $switch): int
