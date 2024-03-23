@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -17,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -32,7 +34,8 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TypeFactory $typeFactory,
-        private readonly PhpDocTypeChanger $phpDocTypeChanger
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
 
@@ -102,12 +105,28 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        if (! $returnType instanceof UnionType) {
             return null;
         }
 
-        // it has at least some return value in it
-        if (! $this->hasReturnsWithValues($node)) {
+        $hasChanged = false;
+        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$hasChanged) {
+            if ($node instanceof Return_ && ! $node->expr instanceof Expr) {
+                $hasChanged = true;
+                $node->expr = new ConstFetch(new Name('null'));
+                return $node;
+            }
+
+            return null;
+        });
+
+        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+            if ($hasChanged) {
+                $this->transformDocUnionVoidToUnionNull($node);
+                return $node;
+            }
+
             return null;
         }
 
