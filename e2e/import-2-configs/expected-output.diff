@@ -1,0 +1,20 @@
+1 file with changes
+===================
+
+1) src/OldToNewClassConstFetch.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-OldClass1::NOTICE;
+-OldClass2::NOTICE;
++\NewClass1::NOTICE;
++\NewClass2::NOTICE;
+    ----------- end diff -----------
+
+Applied rules:
+ * RenameClassConstFetchRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector
