@@ -114,7 +114,7 @@ final class ShortNameResolver
             }
 
             // already short
-            if (\str_contains((string) $originalName->toString(), '\\')) {
+            if (\str_contains($originalName->toString(), '\\')) {
                 return null;
             }
 
