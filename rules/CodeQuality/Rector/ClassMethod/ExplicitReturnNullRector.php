@@ -115,6 +115,7 @@ CODE_SAMPLE
                 $node->expr = new ConstFetch(new Name('null'));
                 return $node;
             }
+
             return null;
         });
 
