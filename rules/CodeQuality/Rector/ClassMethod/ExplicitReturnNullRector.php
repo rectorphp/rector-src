@@ -113,7 +113,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable((array) $node->stmts, static function (Node $node) use (&$hasChanged) : ?Return_ {
+        $this->traverseNodesWithCallable((array) $node->stmts, static function (Node $node) use (&$hasChanged) : int|null|Return_ {
             if ($node instanceof Class_ || $node instanceof Function_ || $node instanceof Closure) {
                 return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
             }
