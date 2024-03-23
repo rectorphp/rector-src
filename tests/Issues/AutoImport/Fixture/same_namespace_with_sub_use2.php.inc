@@ -5,9 +5,9 @@ namespace App\Database;
 use Config\Database;
 
 /**
- * @param Forge $forge
+ * @param \App\Database\Forge $forge
  */
-function same_namespace_with_sub_use(\App\Database\Forge $forge)
+function same_namespace_with_sub_use2(\App\Database\Forge $forge)
 {
 
 }
@@ -23,7 +23,7 @@ use Config\Database;
 /**
  * @param Forge $forge
  */
-function same_namespace_with_sub_use(Forge $forge)
+function same_namespace_with_sub_use2(Forge $forge)
 {
 
 }
