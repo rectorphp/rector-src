@@ -108,7 +108,6 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        dump($returnType);
         if (! $returnType instanceof UnionType) {
             return null;
         }
