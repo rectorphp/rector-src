@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
 
@@ -24,8 +23,7 @@ use Rector\ValueObject\Application\File;
 final readonly class FullyQualifiedNameClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private ShortNameResolver $shortNameResolver,
-        private RenamedClassesDataCollector $renamedClassesDataCollector
+        private ShortNameResolver $shortNameResolver
     ) {
     }
 
@@ -36,7 +34,6 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
         $shortNamesToFullyQualifiedNames = $this->shortNameResolver->resolveFromFile($file);
         $fullyQualifiedObjectTypeShortName = $fullyQualifiedObjectType->getShortName();
         $className = $fullyQualifiedObjectType->getClassName();
-        $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
@@ -48,11 +45,7 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
             }
 
             $fullyQualifiedName = ltrim($fullyQualifiedName, '\\');
-            if ($className === $fullyQualifiedName) {
-                return false;
-            }
-
-            return ! in_array($fullyQualifiedName, $removedUses, true);
+            return $className !== $fullyQualifiedName;
         }
 
         return false;
