@@ -143,7 +143,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function transformDocUnionVoidToUnionNull(ClassMethod $classMethod): void
+    private function transformDocUnionVoidToUnionNull(ClassMethod|Function_ $classMethod): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
 

@@ -32,6 +32,7 @@ class OnFunction
             if ($number > 50) {
                 return 'yes';
             }
+            return null;
         }
 
         return test($number);
