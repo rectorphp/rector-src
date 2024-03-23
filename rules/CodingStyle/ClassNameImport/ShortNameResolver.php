@@ -113,7 +113,7 @@ final class ShortNameResolver
                 return null;
             }
 
-            // already short
+            // sub namespace
             if (\str_contains($originalName->toString(), '\\')) {
                 return null;
             }
