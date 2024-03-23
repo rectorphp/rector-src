@@ -8,7 +8,7 @@ final class DoWhileMaybeReturned2
     {
 		do {
     		if (rand(0,1)) {
-                continue;
+                break;
     		}
 
 		    return 2;
@@ -28,7 +28,7 @@ final class DoWhileMaybeReturned2
     {
 		do {
     		if (rand(0,1)) {
-                continue;
+                break;
     		}
 
 		    return 2;
