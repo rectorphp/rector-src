@@ -143,9 +143,9 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function transformDocUnionVoidToUnionNull(ClassMethod|Function_ $classMethod): void
+    private function transformDocUnionVoidToUnionNull(ClassMethod|Function_ $node): void
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $returnType = $phpDocInfo->getReturnType();
         if (! $returnType instanceof UnionType) {
@@ -172,6 +172,6 @@ CODE_SAMPLE
             return;
         }
 
-        $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $type);
+        $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $type);
     }
 }
