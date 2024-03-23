@@ -4,6 +4,9 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector\F
 
 final class ReturnNoValueAndReturnValue
 {
+    /**
+     * @return int|void
+     */
     public function run(int $number)
     {
         if ($number > 50) {
@@ -24,6 +27,9 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector\F
 
 final class ReturnNoValueAndReturnValue
 {
+    /**
+     * @return int|null
+     */
     public function run(int $number)
     {
         if ($number > 50) {
