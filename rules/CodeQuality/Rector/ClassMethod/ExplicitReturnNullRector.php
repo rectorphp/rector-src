@@ -90,11 +90,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -103,7 +103,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isName($node, MethodName::CONSTRUCT)) {
+        if ($node instanceof ClassMethod && $this->isName($node, MethodName::CONSTRUCT)) {
             return null;
         }
 
