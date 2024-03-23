@@ -193,9 +193,11 @@ final class ShortNameResolver
         foreach ($shortNames as $shortName) {
             $stmtsMatchedName = $this->useImportNameMatcher->matchNameWithStmts($shortName, $stmts);
 
-            $fullyQualifiedName = is_string($stmtsMatchedName) ? $stmtsMatchedName : $shortName;
+            if ($stmtsMatchedName == null) {
+                continue;
+            }
 
-            $shortNamesToFullyQualifiedNames[$shortName] = $fullyQualifiedName;
+            $shortNamesToFullyQualifiedNames[$shortName] = $stmtsMatchedName;
         }
 
         return $shortNamesToFullyQualifiedNames;

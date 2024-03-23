@@ -6,12 +6,9 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use Rector\CodingStyle\ClassNameImport\ShortNameResolver;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
 use Rector\Configuration\RenamedClassesDataCollector;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
 
@@ -41,14 +38,6 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
         $className = $fullyQualifiedObjectType->getClassName();
         $removedUses = $this->renamedClassesDataCollector->getOldClasses();
 
-        $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
-        $originalNameToAttribute = null;
-        if ($originalName instanceof Name && ! $originalName instanceof FullyQualified && $originalName->hasAttribute(
-            AttributeKey::PHP_ATTRIBUTE_NAME
-        )) {
-            $originalNameToAttribute = $originalName->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
-        }
-
         foreach ($shortNamesToFullyQualifiedNames as $shortName => $fullyQualifiedName) {
             if ($fullyQualifiedObjectTypeShortName !== $shortName) {
                 $shortName = $this->cleanShortName($shortName);
@@ -63,11 +52,7 @@ final readonly class FullyQualifiedNameClassNameImportSkipVoter implements Class
                 return false;
             }
 
-            if (! in_array($fullyQualifiedName, $removedUses, true)) {
-                return $originalNameToAttribute == null || ! in_array($originalNameToAttribute, $removedUses, true);
-            }
-
-            return false;
+            return ! in_array($fullyQualifiedName, $removedUses, true);
         }
 
         return false;
