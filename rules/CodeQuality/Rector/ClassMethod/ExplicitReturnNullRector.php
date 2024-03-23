@@ -16,7 +16,6 @@ use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -30,7 +29,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ExplicitReturnNullRector extends AbstractRector
 {
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TypeFactory $typeFactory,
@@ -111,13 +109,12 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $this->traverseNodesWithCallable($node->stmts, function (Node $node) use (&$hasChanged) {
+        $this->traverseNodesWithCallable($node->stmts, static function (Node $node) use (&$hasChanged) : ?Return_ {
             if ($node instanceof Return_ && ! $node->expr instanceof Expr) {
                 $hasChanged = true;
                 $node->expr = new ConstFetch(new Name('null'));
                 return $node;
             }
-
             return null;
         });
 
@@ -167,18 +164,5 @@ CODE_SAMPLE
         }
 
         $this->phpDocTypeChanger->changeReturnType($classMethod, $phpDocInfo, $type);
-    }
-
-    private function hasReturnsWithValues(ClassMethod $classMethod): bool
-    {
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($classMethod, Return_::class);
-        foreach ($returns as $return) {
-            if (! $return->expr instanceof Node) {
-                return false;
-            }
-        }
-
-        return $returns !== [];
     }
 }
