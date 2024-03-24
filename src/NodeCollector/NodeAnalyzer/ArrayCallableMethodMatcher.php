@@ -168,7 +168,7 @@ final readonly class ArrayCallableMethodMatcher
             return new ObjectType($classConstantReference, null, $classReflection);
         }
 
-        if (is_string($classMethodName) && $classReflection->hasMethod($classMethodName)) {
+        if (is_string($classMethodName) && $classReflection->hasNativeMethod($classMethodName)) {
             return new ObjectType($classConstantReference, null, $classReflection);
         }
 
