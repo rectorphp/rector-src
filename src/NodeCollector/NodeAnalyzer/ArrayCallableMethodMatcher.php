@@ -43,8 +43,11 @@ final readonly class ArrayCallableMethodMatcher
      * @see https://github.com/rectorphp/rector-src/pull/908
      * @see https://github.com/rectorphp/rector-src/pull/909
      */
-    public function match(Array_ $array, Scope $scope): null | ArrayCallableDynamicMethod | ArrayCallable
-    {
+    public function match(
+        Array_ $array,
+        Scope $scope,
+        ?string $classMethodName = null
+    ): null | ArrayCallableDynamicMethod | ArrayCallable {
         if (count($array->items) !== 2) {
             return null;
         }
@@ -59,7 +62,7 @@ final readonly class ArrayCallableMethodMatcher
         // $this, self, static, FQN
         $firstItemValue = $items[0]->value;
 
-        $callerType = $this->resolveCallerType($firstItemValue, $scope);
+        $callerType = $this->resolveCallerType($firstItemValue, $scope, $classMethodName);
         if (! $callerType instanceof TypeWithClassName) {
             return null;
         }
@@ -133,8 +136,11 @@ final readonly class ArrayCallableMethodMatcher
         return in_array($fromFuncCallName, $functionNames, true);
     }
 
-    private function resolveClassConstFetchType(ClassConstFetch $classConstFetch, Scope $scope): MixedType | ObjectType
-    {
+    private function resolveClassConstFetchType(
+        ClassConstFetch $classConstFetch,
+        Scope $scope,
+        ?string $classMethodName
+    ): MixedType | ObjectType {
         $classConstantReference = $this->valueResolver->getValue($classConstFetch);
 
         if ($classConstantReference === ObjectReference::STATIC) {
@@ -162,6 +168,10 @@ final readonly class ArrayCallableMethodMatcher
             return new ObjectType($classConstantReference, null, $classReflection);
         }
 
+        if (is_string($classMethodName) && $classReflection->hasMethod($classMethodName)) {
+            return new ObjectType($classConstantReference, null, $classReflection);
+        }
+
         $extendedMethodReflection = $classReflection->getMethod(MethodName::CONSTRUCT, $scope);
         $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
             $extendedMethodReflection->getVariants()
@@ -176,11 +186,11 @@ final readonly class ArrayCallableMethodMatcher
         return new ObjectType($classConstantReference, null, $classReflection);
     }
 
-    private function resolveCallerType(Expr $expr, Scope $scope): Type
+    private function resolveCallerType(Expr $expr, Scope $scope, ?string $classMethodName): Type
     {
         if ($expr instanceof ClassConstFetch) {
             // static ::class reference?
-            $callerType = $this->resolveClassConstFetchType($expr, $scope);
+            $callerType = $this->resolveClassConstFetchType($expr, $scope, $classMethodName);
         } else {
             $callerType = $this->nodeTypeResolver->getType($expr);
         }
