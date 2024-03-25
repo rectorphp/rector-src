@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class WithReturn
 {
-    public function run($value)
+    public function run(int $value)
     {
         switch ($value) {
             case 1:
@@ -26,7 +26,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class WithReturn
 {
-    public function run($value)
+    public function run(int $value)
     {
         return match ($value) {
             1 => 1000,

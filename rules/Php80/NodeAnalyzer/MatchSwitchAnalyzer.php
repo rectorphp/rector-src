@@ -15,10 +15,13 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Php80\Enum\MatchKind;
 use Rector\Php80\ValueObject\CondAndExpr;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
+use PHPStan\Analyser\Scope;
+use PHPStan\Type\MixedType;
 
 final readonly class MatchSwitchAnalyzer
 {
@@ -26,6 +29,7 @@ final readonly class MatchSwitchAnalyzer
         private SwitchAnalyzer $switchAnalyzer,
         private NodeNameResolver $nodeNameResolver,
         private NodeComparator $nodeComparator,
+        private NodeTypeResolver $nodeTypeResolver,
         private BetterStandardPrinter $betterStandardPrinter
     ) {
     }
@@ -50,6 +54,10 @@ final readonly class MatchSwitchAnalyzer
     public function shouldSkipSwitch(Switch_ $switch, array $condAndExprs, ?Stmt $nextStmt): bool
     {
         if ($condAndExprs === []) {
+            return true;
+        }
+
+        if ($this->nodeTypeResolver->getNativeType($switch->cond) instanceof MixedType) {
             return true;
         }
 

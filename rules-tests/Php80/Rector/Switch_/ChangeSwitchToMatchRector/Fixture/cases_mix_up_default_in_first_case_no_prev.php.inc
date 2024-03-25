@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CasesMixUpDefaultInFirstCaseNoPrev
 {
-    public function run($value)
+    public function run(string $value)
     {
         switch ($value) {
             default:
@@ -25,7 +25,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CasesMixUpDefaultInFirstCaseNoPrev
 {
-    public function run($value)
+    public function run(string $value)
     {
         $string = match ($value) {
             'other' => 'bar',

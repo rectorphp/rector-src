@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class SwitchWithImplicitException
 {
-    public function run($value)
+    public function run(int $value)
     {
         switch ($value) {
             case 100:
@@ -23,7 +23,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class SwitchWithImplicitException
 {
-    public function run($value)
+    public function run(int $value)
     {
         return match ($value) {
             100 => 1000,

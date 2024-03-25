@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CasesMixUpDefaultInMiddleCase
 {
-    public function run($value)
+    public function run(string $value)
     {
         switch ($value) {
             case 'a':
@@ -29,7 +29,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CasesMixUpDefaultInMiddleCase
 {
-    public function run($value)
+    public function run(string $value)
     {
         $string = match ($value) {
             'a' => 'A',

@@ -6,7 +6,7 @@ class AssignToProperty
 {
     private $assignedExpr;
 
-    public function run($value)
+    public function run(int $value)
     {
         switch ($value) {
             case 1:
@@ -30,7 +30,7 @@ class AssignToProperty
 {
     private $assignedExpr;
 
-    public function run($value)
+    public function run(int $value)
     {
         $this->assignedExpr = match ($value) {
             1 => 1000,

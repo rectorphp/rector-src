@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class DoubleDefault
 {
-    public function run($input)
+    public function run(int $input)
     {
         $value = null;
 
@@ -28,7 +28,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class DoubleDefault
 {
-    public function run($input)
+    public function run(int $input)
     {
         $value = null;
 

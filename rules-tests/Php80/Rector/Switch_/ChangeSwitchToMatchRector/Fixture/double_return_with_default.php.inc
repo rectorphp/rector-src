@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class DoubleReturnWithDefault
 {
-    public static function toStorageValue($input): string
+    public static function toStorageValue(int $input): string
     {
         switch ($input) {
             case 100:
@@ -25,7 +25,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 final class DoubleReturnWithDefault
 {
-    public static function toStorageValue($input): string
+    public static function toStorageValue(int $input): string
     {
         return match ($input) {
             100 => 'yes',

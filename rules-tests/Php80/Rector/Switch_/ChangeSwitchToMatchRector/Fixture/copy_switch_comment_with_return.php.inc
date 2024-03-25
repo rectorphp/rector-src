@@ -4,7 +4,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CopySwitchCommentWithReturn
 {
-    public function run($value)
+    public function run(int $value)
     {
         // some comment here
         switch ($value) {
@@ -27,7 +27,7 @@ namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
 class CopySwitchCommentWithReturn
 {
-    public function run($value)
+    public function run(int $value)
     {
         // some comment here
         return match ($value) {
