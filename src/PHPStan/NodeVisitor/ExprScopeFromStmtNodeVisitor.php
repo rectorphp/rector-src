@@ -54,8 +54,7 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
             return null;
         }
 
-        if ($node->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
-            && $node->getAttribute(AttributeKey::IS_ARG_VALUE) !== true) {
+        if ($this->shouldSkipExpr($node)) {
             return null;
         }
 
@@ -78,5 +77,12 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
         }
 
         return null;
+    }
+
+    private function shouldSkipExpr(Expr $expr): bool
+    {
+        return $expr->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
+            && $expr->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
+            && $expr->getAttribute(AttributeKey::IS_PARAM_VAR) === true;
     }
 }

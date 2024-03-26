@@ -187,7 +187,7 @@ final class CustomRuleCommand extends Command
             return;
         }
 
-        $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $testsuitesElement, $phpunitFilePath);
+        $phpunitXML = $this->updatePHPUnitXMLFile($domDocument, $testsuitesElement);
 
         FileSystem::write($phpunitFilePath, $phpunitXML, null);
 
@@ -219,11 +219,8 @@ final class CustomRuleCommand extends Command
         return false;
     }
 
-    private function updatePHPUnitXMLFile(
-        DOMDocument $domDocument,
-        DOMElement $testsuitesElement,
-        string $phpunitFilePath
-    ): string {
+    private function updatePHPUnitXMLFile(DOMDocument $domDocument, DOMElement $testsuitesElement): string
+    {
         $domElement = $domDocument->createElement('testsuite');
         $domElement->setAttribute('name', 'rector');
 
