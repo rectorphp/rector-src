@@ -6,6 +6,7 @@ namespace Rector\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassLike;
@@ -82,7 +83,6 @@ final class ExprScopeFromStmtNodeVisitor extends NodeVisitorAbstract
     private function shouldSkipExpr(Expr $expr): bool
     {
         return $expr->getAttribute(AttributeKey::EXPRESSION_DEPTH) < 2
-            && $expr->getAttribute(AttributeKey::IS_ARG_VALUE) !== true
-            && $expr->getAttribute(AttributeKey::IS_PARAM_VAR) === true;
+            && ! $expr instanceof CallLike;
     }
 }
