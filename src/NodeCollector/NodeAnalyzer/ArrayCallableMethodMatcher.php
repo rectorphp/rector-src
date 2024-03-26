@@ -8,6 +8,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Scalar\MagicConst\Class_;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
@@ -136,15 +137,15 @@ final readonly class ArrayCallableMethodMatcher
         return in_array($fromFuncCallName, $functionNames, true);
     }
 
-    private function resolveClassConstFetchType(
-        ClassConstFetch $classConstFetch,
+    private function resolveClassContextType(
+        ClassConstFetch|Class_ $classContext,
         Scope $scope,
         ?string $classMethodName
     ): MixedType | ObjectType {
-        $classConstantReference = $this->valueResolver->getValue($classConstFetch);
+        $classConstantReference = $this->valueResolver->getValue($classContext);
 
-        if ($classConstantReference === ObjectReference::STATIC) {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($classConstFetch);
+        if ($this->isRequiredClassReflectionResolution($classConstantReference)) {
+            $classReflection = $this->reflectionResolver->resolveClassReflection($classContext);
             if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
                 return new MixedType();
             }
@@ -188,9 +189,9 @@ final readonly class ArrayCallableMethodMatcher
 
     private function resolveCallerType(Expr $expr, Scope $scope, ?string $classMethodName): Type
     {
-        if ($expr instanceof ClassConstFetch) {
-            // static ::class reference?
-            $callerType = $this->resolveClassConstFetchType($expr, $scope, $classMethodName);
+        if ($expr instanceof ClassConstFetch || $expr instanceof Class_) {
+            // class context means self|static ::class or __CLASS__
+            $callerType = $this->resolveClassContextType($expr, $scope, $classMethodName);
         } else {
             $callerType = $this->nodeTypeResolver->getType($expr);
         }
@@ -200,5 +201,17 @@ final readonly class ArrayCallableMethodMatcher
         }
 
         return $callerType;
+    }
+
+    private function isRequiredClassReflectionResolution(string $classConstantReference): bool
+    {
+        if ($classConstantReference === ObjectReference::STATIC) {
+            return true;
+        }
+        $magicConstantClassName = (new Class_())->getName();
+        if ($classConstantReference === $magicConstantClassName) {
+            return true;
+        }
+        return false;
     }
 }
