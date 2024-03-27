@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider;
 
+use PHPStan\BetterReflection\Identifier\IdentifierType;
+use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
@@ -75,6 +78,21 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
+
+        $reflector = new DefaultReflector($this->aggregateSourceLocator);
+        foreach ($sourceLocators as $sourceLocator) {
+            // trigger collect "classes" on get class on locate identifier
+            // which call Reflector->reflectClass()
+            try {
+                $sourceLocator->locateIdentifiersByType($reflector, new class() extends IdentifierType {
+                    public function isClass(): bool
+                    {
+                        return true;
+                    }
+                });
+            } catch (CouldNotReadFileException) {
+            }
+        }
 
         return $this->aggregateSourceLocator;
     }
