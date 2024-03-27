@@ -44,11 +44,6 @@ final readonly class ParamTagRemover
                 return null;
             }
 
-            // skip union types
-            if ($docNode->value->type instanceof UnionTypeNode) {
-                return null;
-            }
-
             if (! $this->deadParamTagValueNodeAnalyzer->isDead($docNode->value, $functionLike)) {
                 return null;
             }
