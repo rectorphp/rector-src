@@ -208,9 +208,6 @@ final readonly class ArrayCallableMethodMatcher
         if ($classConstantReference === ObjectReference::STATIC) {
             return true;
         }
-        if ($classConstantReference === '__CLASS__') {
-            return true;
-        }
-        return false;
+        return $classConstantReference === '__CLASS__';
     }
 }
