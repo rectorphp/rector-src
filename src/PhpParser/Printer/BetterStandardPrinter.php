@@ -7,11 +7,14 @@ namespace Rector\PhpParser\Printer;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Param;
@@ -166,10 +169,7 @@ final class BetterStandardPrinter extends Standard
             return parent::pExpr_ArrowFunction($arrowFunction);
         }
 
-        $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
-
-        $indent = str_repeat($this->getIndentCharacter(), $this->indentLevel) .
-            str_repeat($this->getIndentCharacter(), $indentSize);
+        $indent = $this->resolveIndentSpaces();
 
         $text = "\n" . $indent;
         foreach ($comments as $key => $comment) {
@@ -457,6 +457,35 @@ final class BetterStandardPrinter extends Standard
         }
 
         return parent::pScalar_LNumber($lNumber);
+    }
+
+    private function resolveIndentSpaces(): string
+    {
+        $indentSize = SimpleParameterProvider::provideIntParameter(Option::INDENT_SIZE);
+
+        return str_repeat($this->getIndentCharacter(), $this->indentLevel) .
+            str_repeat($this->getIndentCharacter(), $indentSize);
+    }
+
+    protected function pExpr_MethodCall(Expr\MethodCall $node): string
+    {
+        if ($node->var instanceof CallLike) {
+            foreach ($node->args as $key => $arg) {
+                if (! $arg instanceof Arg) {
+                    continue;
+                }
+
+                if ($arg->value instanceof Array_) {
+                    $node->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                }
+            }
+
+            return $this->pDereferenceLhs($node->var) . "\n" . $this->resolveIndentSpaces() . "->" . $this->pObjectProperty($node->name)
+            . '(' . $this->pMaybeMultiline($node->args) . ')';
+        }
+
+        return $this->pDereferenceLhs($node->var) . '->' . $this->pObjectProperty($node->name)
+             . '(' . $this->pMaybeMultiline($node->args) . ')';
     }
 
     /**
