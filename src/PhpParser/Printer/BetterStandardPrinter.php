@@ -475,9 +475,7 @@ final class BetterStandardPrinter extends Standard
                     continue;
                 }
 
-                if ($arg->value instanceof Array_) {
-                    $methodCall->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                }
+                $methodCall->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
             return $this->pDereferenceLhs($methodCall->var) . "\n" . $this->resolveIndentSpaces() . "->" . $this->pObjectProperty($methodCall->name)
