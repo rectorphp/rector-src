@@ -126,6 +126,8 @@ final class RectorConfigBuilder
 
     private bool $isDeadCodeLevelUsed = false;
 
+    private bool $isFluentNewLine = false;
+
     /**
      * @var RegisteredService[]
      */
@@ -255,6 +257,10 @@ final class RectorConfigBuilder
 
         if ($this->symfonyContainerPhpFile !== null) {
             $rectorConfig->symfonyContainerPhp($this->symfonyContainerPhpFile);
+        }
+
+        if ($this->isFluentNewLine) {
+            $rectorConfig->newLineOnFluentCall();
         }
     }
 
@@ -685,6 +691,12 @@ final class RectorConfigBuilder
 
         $this->rules = array_merge($this->rules, $levelRules);
 
+        return $this;
+    }
+
+    public function withFluentCallNewLine(): self
+    {
+        $this->isFluentNewLine = true;
         return $this;
     }
 
