@@ -467,25 +467,25 @@ final class BetterStandardPrinter extends Standard
             str_repeat($this->getIndentCharacter(), $indentSize);
     }
 
-    protected function pExpr_MethodCall(Expr\MethodCall $node): string
+    protected function pExpr_MethodCall(MethodCall $methodCall): string
     {
-        if ($node->var instanceof CallLike) {
-            foreach ($node->args as $key => $arg) {
+        if ($methodCall->var instanceof CallLike) {
+            foreach ($methodCall->args as $key => $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
                 }
 
                 if ($arg->value instanceof Array_) {
-                    $node->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                    $methodCall->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
                 }
             }
 
-            return $this->pDereferenceLhs($node->var) . "\n" . $this->resolveIndentSpaces() . "->" . $this->pObjectProperty($node->name)
-            . '(' . $this->pMaybeMultiline($node->args) . ')';
+            return $this->pDereferenceLhs($methodCall->var) . "\n" . $this->resolveIndentSpaces() . "->" . $this->pObjectProperty($methodCall->name)
+            . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
         }
 
-        return $this->pDereferenceLhs($node->var) . '->' . $this->pObjectProperty($node->name)
-             . '(' . $this->pMaybeMultiline($node->args) . ')';
+        return $this->pDereferenceLhs($methodCall->var) . '->' . $this->pObjectProperty($methodCall->name)
+             . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
     }
 
     /**
