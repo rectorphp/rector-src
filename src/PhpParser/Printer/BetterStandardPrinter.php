@@ -486,8 +486,7 @@ final class BetterStandardPrinter extends Standard
             . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
         }
 
-        return $this->pDereferenceLhs($methodCall->var) . '->' . $this->pObjectProperty($methodCall->name)
-             . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
+        return parent::pExpr_MethodCall($methodCall);
     }
 
     /**
