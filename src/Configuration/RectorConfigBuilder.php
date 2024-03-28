@@ -137,14 +137,14 @@ final class RectorConfigBuilder
     {
         $uniqueSets = array_unique($this->sets);
 
-        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed) {
+        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
                 PHP_EOL
             ));
         }
 
-        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed) {
+        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables dead code set.%sRemove "->withDeadCodeLevel()" as it only duplicates it, or remove dead code set.',
                 PHP_EOL

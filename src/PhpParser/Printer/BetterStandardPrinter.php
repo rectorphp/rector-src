@@ -469,6 +469,10 @@ final class BetterStandardPrinter extends Standard
 
     protected function pExpr_MethodCall(MethodCall $methodCall): string
     {
+        if ((bool) SimpleParameterProvider::provideBoolParameter(Option::NEW_LINE_ON_FLUENT_CALL) === false) {
+            return parent::pExpr_MethodCall($methodCall);
+        }
+
         if ($methodCall->var instanceof CallLike) {
             foreach ($methodCall->args as $key => $arg) {
                 if (! $arg instanceof Arg) {
