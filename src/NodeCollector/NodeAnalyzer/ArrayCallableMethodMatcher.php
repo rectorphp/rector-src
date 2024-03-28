@@ -208,8 +208,7 @@ final readonly class ArrayCallableMethodMatcher
         if ($classConstantReference === ObjectReference::STATIC) {
             return true;
         }
-        $magicConstantClassName = (new Class_())->getName();
-        if ($classConstantReference === $magicConstantClassName) {
+        if ($classConstantReference === '__CLASS__') {
             return true;
         }
         return false;
