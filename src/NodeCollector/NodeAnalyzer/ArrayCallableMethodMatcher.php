@@ -144,7 +144,7 @@ final readonly class ArrayCallableMethodMatcher
     ): MixedType | ObjectType {
         $classConstantReference = $this->valueResolver->getValue($classContext);
 
-        if ($this->isRequiredClassReflectionResolution($classConstantReference)) {
+        if (is_string($classConstantReference) && $this->isRequiredClassReflectionResolution($classConstantReference)) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($classContext);
             if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
                 return new MixedType();
