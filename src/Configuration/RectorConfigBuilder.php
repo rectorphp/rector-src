@@ -259,7 +259,7 @@ final class RectorConfigBuilder
             $rectorConfig->symfonyContainerPhp($this->symfonyContainerPhpFile);
         }
 
-        if ($this->isFluentNewLine) {
+        if ($this->isFluentNewLine === true) {
             $rectorConfig->newLineOnFluentCall();
         }
     }
