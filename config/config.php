@@ -38,4 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
     foreach ($extensionConfigResolver->provide() as $extensionConfigFile) {
         $rectorConfig->import($extensionConfigFile);
     }
+
+    $rectorConfig->newLineOnFluentCall(false);
 };
