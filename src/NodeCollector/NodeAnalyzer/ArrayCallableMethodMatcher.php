@@ -144,6 +144,11 @@ final readonly class ArrayCallableMethodMatcher
     ): MixedType | ObjectType {
         $classConstantReference = $this->valueResolver->getValue($classContext);
 
+        // non-class value
+        if (! is_string($classConstantReference)) {
+            return new MixedType();
+        }
+
         if ($this->isRequiredClassReflectionResolution($classConstantReference)) {
             $classReflection = $this->reflectionResolver->resolveClassReflection($classContext);
             if (! $classReflection instanceof ClassReflection || ! $classReflection->isClass()) {
@@ -151,11 +156,6 @@ final readonly class ArrayCallableMethodMatcher
             }
 
             $classConstantReference = $classReflection->getName();
-        }
-
-        // non-class value
-        if (! is_string($classConstantReference)) {
-            return new MixedType();
         }
 
         if (! $this->reflectionProvider->hasClass($classConstantReference)) {
@@ -208,9 +208,7 @@ final readonly class ArrayCallableMethodMatcher
         if ($classConstantReference === ObjectReference::STATIC) {
             return true;
         }
-        if ($classConstantReference === '__CLASS__') {
-            return true;
-        }
-        return false;
+
+        return $classConstantReference === '__CLASS__';
     }
 }
