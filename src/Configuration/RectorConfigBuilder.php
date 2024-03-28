@@ -122,9 +122,11 @@ final class RectorConfigBuilder
      * To make sure type declarations set and level are not duplicated,
      * as both contain same rules
      */
-    private bool $isTypeCoverageLevelUsed = false;
+    private ?bool $isTypeCoverageLevelUsed = null;
 
-    private bool $isDeadCodeLevelUsed = false;
+    private ?bool $isDeadCodeLevelUsed = null;
+
+    private ?bool $isFluentNewLine = null;
 
     /**
      * @var RegisteredService[]
@@ -135,14 +137,14 @@ final class RectorConfigBuilder
     {
         $uniqueSets = array_unique($this->sets);
 
-        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed) {
+        if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables type declarations set.%sRemove "->withTypeCoverageLevel()" as it only duplicates it, or remove type declaration set.',
                 PHP_EOL
             ));
         }
 
-        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed) {
+        if (in_array(SetList::DEAD_CODE, $uniqueSets, true) && $this->isDeadCodeLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
                 'Your config already enables dead code set.%sRemove "->withDeadCodeLevel()" as it only duplicates it, or remove dead code set.',
                 PHP_EOL
@@ -255,6 +257,10 @@ final class RectorConfigBuilder
 
         if ($this->symfonyContainerPhpFile !== null) {
             $rectorConfig->symfonyContainerPhp($this->symfonyContainerPhpFile);
+        }
+
+        if ($this->isFluentNewLine !== null) {
+            $rectorConfig->newLineOnFluentCall($this->isFluentNewLine);
         }
     }
 
@@ -685,6 +691,12 @@ final class RectorConfigBuilder
 
         $this->rules = array_merge($this->rules, $levelRules);
 
+        return $this;
+    }
+
+    public function withFluentCallNewLine(bool $isFluentNewLine = true): self
+    {
+        $this->isFluentNewLine = $isFluentNewLine;
         return $this;
     }
 

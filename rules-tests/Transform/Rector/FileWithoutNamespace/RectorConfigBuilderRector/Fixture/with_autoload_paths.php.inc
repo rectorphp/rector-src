@@ -18,8 +18,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 
-return \Rector\Config\RectorConfig::configure()->withAutoloadPaths([
-    __DIR__  . '/../autoload.php',
-]);
+return \Rector\Config\RectorConfig::configure()
+    ->withAutoloadPaths([__DIR__  . '/../autoload.php']);
 
 ?>

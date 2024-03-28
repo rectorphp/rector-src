@@ -21,6 +21,7 @@ use Rector\Config\RectorConfig;
 use Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
-return \Rector\Config\RectorConfig::configure()->withRules([RectorConfigBuilderRector::class, TypedPropertyFromAssignsRector::class]);
+return \Rector\Config\RectorConfig::configure()
+    ->withRules([RectorConfigBuilderRector::class, TypedPropertyFromAssignsRector::class]);
 
 ?>

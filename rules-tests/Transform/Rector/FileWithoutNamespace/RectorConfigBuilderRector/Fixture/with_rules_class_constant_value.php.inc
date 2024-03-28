@@ -36,6 +36,7 @@ class SomeClass
     ];
 }
 
-return \Rector\Config\RectorConfig::configure()->withRules(SomeClass::RULES);
+return \Rector\Config\RectorConfig::configure()
+    ->withRules(SomeClass::RULES);
 
 ?>

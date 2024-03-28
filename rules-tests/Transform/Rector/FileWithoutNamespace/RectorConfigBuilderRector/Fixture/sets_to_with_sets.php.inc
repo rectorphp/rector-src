@@ -18,6 +18,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Set\ValueObject\SetList;
 
-return \Rector\Config\RectorConfig::configure()->withSets([SetList::DEAD_CODE]);
+return \Rector\Config\RectorConfig::configure()
+    ->withSets([SetList::DEAD_CODE]);
 
 ?>

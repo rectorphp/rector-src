@@ -21,8 +21,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\FuncCall\RenameFunctionRector;
 
-return \Rector\Config\RectorConfig::configure()->withConfiguredRule(RenameFunctionRector::class, [
-    'is_real' => 'is_float',
-]);
+return \Rector\Config\RectorConfig::configure()
+    ->withConfiguredRule(RenameFunctionRector::class, ['is_real' => 'is_float']);
 
 ?>
