@@ -474,12 +474,12 @@ final class BetterStandardPrinter extends Standard
         }
 
         if ($methodCall->var instanceof CallLike) {
-            foreach ($methodCall->args as $key => $arg) {
+            foreach ($methodCall->args as $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
                 }
 
-                $methodCall->args[$key]->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+                $arg->value->setAttribute(AttributeKey::ORIGINAL_NODE, null);
             }
 
             return $this->pDereferenceLhs($methodCall->var) . "\n" . $this->resolveIndentSpaces() . "->" . $this->pObjectProperty($methodCall->name)
