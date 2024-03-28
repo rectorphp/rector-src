@@ -122,11 +122,11 @@ final class RectorConfigBuilder
      * To make sure type declarations set and level are not duplicated,
      * as both contain same rules
      */
-    private bool $isTypeCoverageLevelUsed = false;
+    private ?bool $isTypeCoverageLevelUsed = null;
 
-    private bool $isDeadCodeLevelUsed = false;
+    private ?bool $isDeadCodeLevelUsed = null;
 
-    private bool $isFluentNewLine = false;
+    private ?bool $isFluentNewLine = null;
 
     /**
      * @var RegisteredService[]
