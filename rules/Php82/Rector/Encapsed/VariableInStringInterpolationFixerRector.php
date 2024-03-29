@@ -66,9 +66,8 @@ CODE_SAMPLE
             }
 
             $startTokenPos = $part->getStartTokenPos();
-            $endTokenPos = $part->getEndTokenPos();
 
-            if (! isset($oldTokens[$startTokenPos], $oldTokens[$endTokenPos]) ) {
+            if (! isset($oldTokens[$startTokenPos]) ) {
                 continue;
             }
 
