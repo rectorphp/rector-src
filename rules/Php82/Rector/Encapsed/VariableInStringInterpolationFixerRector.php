@@ -7,7 +7,6 @@ namespace Rector\Php82\Rector\Encapsed;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -51,15 +50,9 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $kind = $node->getAttribute(AttributeKey::KIND);
-
-        // variable in single quoted is escaped, print as is
-        if ($kind !== String_::KIND_DOUBLE_QUOTED) {
-            return null;
-        }
-
         $oldTokens = $this->file->getOldTokens();
         $hasChanged = false;
+
         foreach ($node->parts as $part) {
             if (! $part instanceof Variable) {
                 continue;
