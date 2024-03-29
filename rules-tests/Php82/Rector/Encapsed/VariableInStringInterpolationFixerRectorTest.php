@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector;
+namespace Rector\Tests\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\Fixture;
+namespace Rector\Tests\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector\Fixture;
 
 $c = "football";
 function foo()
@@ -17,7 +17,7 @@ echo "I like playing ${foo()}";
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\Fixture;
+namespace Rector\Tests\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector\Fixture;
 
 $c = "football";
 function foo()

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php82\Rector\String_;
+namespace Rector\Php82\Rector\Encapsed;
 
 use PhpParser\Node;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
@@ -16,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/deprecate_dollar_brace_string_interpolation
  *
- * @see \Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\VariableInStringInterpolationFixerRectorTest
+ * @see \Rector\Tests\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector\VariableInStringInterpolationFixerRectorTest
  */
 final class VariableInStringInterpolationFixerRector extends AbstractRector implements MinPhpVersionInterface
 {
@@ -41,11 +42,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [String_::class];
+        return [Encapsed::class];
     }
 
     /**
-     * @param String_ $node
+     * @param Encapsed $node
      */
     public function refactor(Node $node): ?Node
     {
