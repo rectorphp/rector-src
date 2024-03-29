@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\Php82\Rector\String_\VariableInStringInterpolationRector;
+use Rector\Php82\Rector\String_\VariableInStringInterpolationFixerRector;
 use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpVersion(PhpVersionFeature::DEPRECATE_VARIABLE_IN_STRING_INTERPOLATION);
 
-    $rectorConfig->rule(VariableInStringInterpolationRector::class);
+    $rectorConfig->rule(VariableInStringInterpolationFixerRector::class);
 };

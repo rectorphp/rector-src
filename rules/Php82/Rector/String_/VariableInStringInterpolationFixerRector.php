@@ -16,9 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/deprecate_dollar_brace_string_interpolation
  *
- * @see \Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationRector\VariableInStringInterpolationRectorTest
+ * @see \Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\VariableInStringInterpolationFixerRectorTest
  */
-final class VariableInStringInterpolationRector extends AbstractRector implements MinPhpVersionInterface
+final class VariableInStringInterpolationFixerRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {

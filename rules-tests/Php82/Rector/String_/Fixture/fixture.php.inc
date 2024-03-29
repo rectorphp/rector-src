@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationRector\Fixture;
+namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\Fixture;
 
 $v = "whatever";
 echo "${v}";
@@ -13,7 +13,7 @@ echo "${v}";
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationRector\Fixture;
+namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector\Fixture;
 
 $v = "whatever";
 echo "{$v}";

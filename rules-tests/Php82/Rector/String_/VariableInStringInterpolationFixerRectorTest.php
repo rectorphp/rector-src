@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationRector;
+namespace Rector\Tests\Php82\Rector\String_\VariableInStringInterpolationFixerRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class VariableInStringInterpolationRectorTest extends AbstractRectorTestCase
+final class VariableInStringInterpolationFixerRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
