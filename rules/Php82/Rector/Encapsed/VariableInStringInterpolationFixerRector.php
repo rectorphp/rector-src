@@ -26,12 +26,14 @@ final class VariableInStringInterpolationFixerRector extends AbstractRector impl
         return new RuleDefinition('Replace deprecated "${var}" to "{$var}"', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-echo "${var}";
+$c = "football";
+echo "I like playing ${c}";
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-echo "{$var}";
+$c = "football";
+echo "I like playing {$c}";
 CODE_SAMPLE
             ),
         ]);

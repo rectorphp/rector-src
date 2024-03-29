@@ -5330,8 +5330,9 @@ Replace deprecated "${var}" to "{$var}"
 - class: [`Rector\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector`](../rules/Php82/Rector/Encapsed/VariableInStringInterpolationFixerRector.php)
 
 ```diff
--echo "${var}";
-+echo "{$var}";
+ $c = "football";
+-echo "I like playing ${c}";
++echo "I like playing {$c}";
 ```
 
 <br>
