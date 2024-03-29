@@ -645,6 +645,12 @@ final class PhpVersionFeature
     public const SENSITIVE_PARAMETER_ATTRIBUTE = PhpVersion::PHP_82;
 
     /**
+     * @see https://wiki.php.net/rfc/deprecate_dollar_brace_string_interpolation
+     * @var int
+     */
+    public const DEPRECATE_VARIABLE_IN_STRING_INTERPOLATION = PhpVersion::PHP_82;
+
+    /**
      * @see https://wiki.php.net/rfc/marking_overriden_methods
      * @var int
      */
