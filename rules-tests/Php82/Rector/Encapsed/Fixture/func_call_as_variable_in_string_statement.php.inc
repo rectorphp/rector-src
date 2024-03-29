@@ -24,7 +24,6 @@ function foo()
 {
    return "c";
 }
-
-echo "I like playing " . $${! ${''} = foo()};
+echo "I like playing {${foo()}}";
 
 ?>

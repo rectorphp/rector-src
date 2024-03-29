@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php82\Rector\Encapsed;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -55,6 +56,32 @@ CODE_SAMPLE
         // variable in single quoted is escaped, print as is
         if ($kind !== String_::KIND_DOUBLE_QUOTED) {
             return null;
+        }
+
+        $oldTokens = $this->file->getOldTokens();
+        $hasChanged = false;
+        foreach ($node->parts as $part) {
+            if (! $part instanceof Variable) {
+                continue;
+            }
+
+            $startTokenPos = $part->getStartTokenPos();
+            $endTokenPos = $part->getEndTokenPos();
+
+            if (! isset($oldTokens[$startTokenPos], $oldTokens[$endTokenPos]) ) {
+                continue;
+            }
+
+            if (! is_array($oldTokens[$startTokenPos])) {
+                continue;
+            }
+
+            if ($oldTokens[$startTokenPos][1] !== '${') {
+                continue;
+            }
+
+            $part->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $hasChanged = true;
         }
 
         // check another conditions ;)
