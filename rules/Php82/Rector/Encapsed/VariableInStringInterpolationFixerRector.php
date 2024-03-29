@@ -32,7 +32,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-echo "${var}";
+echo "{$var}";
 CODE_SAMPLE
             ),
         ]);
