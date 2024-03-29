@@ -83,7 +83,10 @@ CODE_SAMPLE
             $hasChanged = true;
         }
 
-        // check another conditions ;)
+        if (! $hasChanged) {
+            return null;
+        }
+
         return $node;
     }
 
