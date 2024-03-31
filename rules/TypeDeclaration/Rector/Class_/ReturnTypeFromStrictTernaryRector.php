@@ -88,7 +88,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findInstanceOf($node->stmts, Return_::class);
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
         if (count($returns) !== 1) {
             return null;
         }
