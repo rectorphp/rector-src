@@ -476,9 +476,7 @@ final class BetterStandardPrinter extends Standard
 
             return $this->pDereferenceLhs(
                 $methodCall->var
-            ) . "\n" . $this->resolveIndentSpaces() . '->' . $this->pObjectProperty(
-                $methodCall->name
-            )
+            ) . "\n" . $this->resolveIndentSpaces() . '->' . $this->pObjectProperty($methodCall->name)
             . '(' . $this->pMaybeMultiline($methodCall->args) . ')';
         }
 

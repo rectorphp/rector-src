@@ -1143,6 +1143,27 @@ Simplify `empty()` functions calls on empty arrays
 
 <br>
 
+### ReplaceUnnecessaryEmptyCallsWithNativeExpressionsRector
+
+Replaces or removes `empty()` functions calls with native expressions when possible
+
+- class: [`Rector\CodeQuality\Rector\Empty_\ReplaceUnnecessaryEmptyCallsWithNativeExpressionsRector`](../rules/CodeQuality/Rector/Empty_/ReplaceUnnecessaryEmptyCallsWithNativeExpressionsRector.php)
+
+```diff
+function run(array $foos, array $bars): bool
+{
+-    if (!empty($foos)) {
++    if ($foos) {
+      return $foos;
+    }
+
+-    return !empty($bars);
++    return (bool) $bars;
+}
+```
+
+<br>
+
 ### SimplifyForeachToCoalescingRector
 
 Changes foreach that returns set value to ??

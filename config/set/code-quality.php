@@ -18,6 +18,7 @@ use Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector;
 use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
 use Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector;
 use Rector\CodeQuality\Rector\Concat\JoinStringConcatRector;
+use Rector\CodeQuality\Rector\Empty_\ReplaceUnnecessaryEmptyCallsWithNativeExpressionsRector;
 use Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector;
 use Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector;
 use Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector;
@@ -179,6 +180,7 @@ return static function (RectorConfig $rectorConfig): void {
         TernaryEmptyArrayArrayDimFetchToCoalesceRector::class,
         OptionalParametersAfterRequiredRector::class,
         SimplifyEmptyCheckOnEmptyArrayRector::class,
+        ReplaceUnnecessaryEmptyCallsWithNativeExpressionsRector::class,
         SwitchTrueToIfRector::class,
         CleanupUnneededNullsafeOperatorRector::class,
         DisallowedEmptyRuleFixerRector::class,
