@@ -150,7 +150,7 @@ CODE_SAMPLE
                 return [];
             }
 
-            $propertyTypes[] = $phpPropertyReflection->getNativeType();
+            $propertyTypes[] = $this->nodeTypeResolver->getNativeType($return->expr);
         }
 
         return $propertyTypes;
