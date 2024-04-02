@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeAnalyzer\ParamAnalyzer;
@@ -184,11 +185,12 @@ CODE_SAMPLE
     private function removeReadOnlyDoc(Property|Param $node): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        if (! $phpDocInfo->hasByName('readonly')) {
+
+        $readonlyDoc = $phpDocInfo->getByName('readonly');
+        if (! $readonlyDoc instanceof PhpDocTagNode) {
             return;
         }
 
-        $readonlyDoc = $phpDocInfo->getByName('readonly');
         if (! $readonlyDoc->value instanceof GenericTagValueNode) {
             return;
         }
