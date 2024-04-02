@@ -233,6 +233,9 @@ CODE_SAMPLE
         }
 
         $this->visibilityManipulator->makeReadonly($param);
+
+        $this->removeReadOnlyDoc($param);
+
         return $param;
     }
 
