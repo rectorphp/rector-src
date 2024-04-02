@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\DeadCode\Rector\Property\RemoveUselessReadOnlyDocRector;
+namespace Rector\Tests\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class RemoveUselessReadOnlyDocRectorTest extends AbstractRectorTestCase
+final class RemoveUselessReadOnlyTagRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

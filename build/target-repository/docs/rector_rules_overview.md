@@ -2886,11 +2886,11 @@ Remove `@param` docblock with same type as parameter type
 
 <br>
 
-### RemoveUselessReadOnlyDocRector
+### RemoveUselessReadOnlyTagRector
 
 Remove useless `@readonly` doc on native readonly type
 
-- class: [`Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyDocRector`](../rules/DeadCode/Rector/Property/RemoveUselessReadOnlyDocRector.php)
+- class: [`Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector`](../rules/DeadCode/Rector/Property/RemoveUselessReadOnlyTagRector.php)
 
 ```diff
  final class SomeClass

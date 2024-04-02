@@ -18,9 +18,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\DeadCode\Rector\Property\RemoveUselessReadOnlyDocRector\RemoveUselessReadOnlyDocRectorTest
+ * @see \Rector\Tests\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector\RemoveUselessReadOnlyTagRectorTest
  */
-final class RemoveUselessReadOnlyDocRector extends AbstractRector
+final class RemoveUselessReadOnlyTagRector extends AbstractRector
 {
     public function __construct(
         private readonly VisibilityManipulator $visibilityManipulator,
