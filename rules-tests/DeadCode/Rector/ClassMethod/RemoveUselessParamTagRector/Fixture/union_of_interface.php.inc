@@ -7,10 +7,8 @@ namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\F
 use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Source\SomeInterface;
 use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Source\SomeClass;
 
-class SkipUnionOfInterface {
+class UnionOfInterface {
     /**
-     * Some comment
-     *
      * @param SomeClass|SomeInterface $someInterface
      */
     public function run(SomeInterface $someInterface)
@@ -20,3 +18,25 @@ class SkipUnionOfInterface {
         }
 	}
 }
+
+?>
+-----
+<?php
+
+declare(strict_types = 1);
+
+namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Fixture;
+
+use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Source\SomeInterface;
+use Rector\Tests\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector\Source\SomeClass;
+
+class UnionOfInterface {
+    public function run(SomeInterface $someInterface)
+    {
+        if (method_exists($someInterface, 'run')) {
+            $someInterface->run();
+        }
+	}
+}
+
+?>
