@@ -39,6 +39,7 @@ use Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
+use Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector;
 use Rector\DeadCode\Rector\Return_\RemoveDeadConditionAboveReturnRector;
@@ -90,6 +91,7 @@ final class DeadCodeLevel
         // docblock
         RemoveUselessParamTagRector::class,
         RemoveUselessReturnTagRector::class,
+        RemoveUselessReadOnlyTagRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessVarTagRector::class,
         RemovePhpVersionIdCheckRector::class,
