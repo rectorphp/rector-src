@@ -16,6 +16,10 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
+use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\NodeManipulator\PropertyFetchAssignManipulator;
 use Rector\NodeManipulator\PropertyManipulator;
@@ -42,7 +46,9 @@ final class ReadOnlyPropertyRector extends AbstractScopeAwareRector implements M
         private readonly PropertyFetchAssignManipulator $propertyFetchAssignManipulator,
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly VisibilityManipulator $visibilityManipulator,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -171,7 +177,30 @@ CODE_SAMPLE
             $property->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         }
 
+        $this->removeReadOnlyDoc($property);
+
         return $property;
+    }
+
+    private function removeReadOnlyDoc(Property|Param $node): void
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+
+        $readonlyDoc = $phpDocInfo->getByName('readonly');
+        if (! $readonlyDoc instanceof PhpDocTagNode) {
+            return;
+        }
+
+        if (! $readonlyDoc->value instanceof GenericTagValueNode) {
+            return;
+        }
+
+        if ($readonlyDoc->value->value !== '') {
+            return;
+        }
+
+        $phpDocInfo->removeByName('readonly');
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
     }
 
     private function refactorParam(Class_ $class, ClassMethod $classMethod, Param $param, Scope $scope): Param | null
@@ -206,6 +235,9 @@ CODE_SAMPLE
         }
 
         $this->visibilityManipulator->makeReadonly($param);
+
+        $this->removeReadOnlyDoc($param);
+
         return $param;
     }
 
