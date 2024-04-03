@@ -23,7 +23,7 @@ namespace Rector\Tests\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector
 class MultipleTypes
 {
     /**
-     * @var int|string|bool
+     * @var bool|int|string
      */
     public $value;
     public function set()

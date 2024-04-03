@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeTypeResolver\PHPStan;
 
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\BooleanType;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
@@ -14,7 +13,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeTraverser;
 use PHPStan\Type\TypeWithClassName;
-use PHPStan\Type\UnionType;
 use PHPStan\Type\VerbosityLevel;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
@@ -49,10 +47,6 @@ final class TypeHasher
             return $type::class;
         }
 
-        if ($type instanceof UnionType) {
-            return $this->createUnionTypeHash($type);
-        }
-
         $type = $this->normalizeObjectType($type);
 
         // normalize iterable
@@ -82,30 +76,6 @@ final class TypeHasher
         }
 
         return $typeWithClassName->getClassName();
-    }
-
-    private function createUnionTypeHash(UnionType $unionType): string
-    {
-        $booleanType = new BooleanType();
-        if ($booleanType->isSuperTypeOf($unionType)->yes()) {
-            return $booleanType->describe(VerbosityLevel::precise());
-        }
-
-        $normalizedUnionType = clone $unionType;
-
-        // change alias to non-alias
-        TypeTraverser::map(
-            $normalizedUnionType,
-            static function (Type $type, callable $callable): Type {
-                if (! $type instanceof AliasedObjectType && ! $type instanceof ShortenedObjectType) {
-                    return $callable($type);
-                }
-
-                return new FullyQualifiedObjectType($type->getFullyQualifiedName());
-            }
-        );
-
-        return $normalizedUnionType->describe(VerbosityLevel::precise());
     }
 
     private function normalizeObjectType(Type $type): Type
