@@ -184,12 +184,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // promoted property?
-        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $param, $scope)) {
+        if ($this->visibilityManipulator->isReadonly($param)) {
             return null;
         }
 
-        if ($this->visibilityManipulator->isReadonly($param)) {
+        if ($this->propertyManipulator->isPropertyChangeableExceptConstructor($class, $param, $scope)) {
             return null;
         }
 
