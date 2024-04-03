@@ -83,10 +83,6 @@ final readonly class TypeComparator
         TypeNode $phpStanDocTypeNode,
         Node $node
     ): bool {
-        if ($phpStanDocTypeNode instanceof UnionTypeNode && $phpParserNode instanceof FullyQualified) {
-            return false;
-        }
-
         $phpParserNodeType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($phpParserNode);
         $phpStanDocType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $phpStanDocTypeNode,
