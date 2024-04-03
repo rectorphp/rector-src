@@ -194,8 +194,9 @@ CODE_SAMPLE
                 return true;
             }
 
+            $startTokenPos = $propertyFetch->getStartTokenPos();
             foreach ($this->callsEndTokens as $callEndToken) {
-                if ($propertyFetch->getStartTokenPos() > $callEndToken) {
+                if ($startTokenPos > $callEndToken) {
                     return true;
                 }
             }
