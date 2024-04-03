@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -30,6 +32,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
+    /**
+     * @var int[]
+     */
+    private array $callsEndTokens = [];
+
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
@@ -69,6 +76,25 @@ final class SomeClass
 CODE_SAMPLE
             ),
         ]);
+    }
+
+    public function beforeTraverse(array $nodes): ?array
+    {
+        $this->callsEndTokens = [];
+
+        $calls = $this->betterNodeFinder->find(
+            $nodes,
+            static fn (Node $node): bool => $node instanceof MethodCall || $node instanceof StaticCall
+        );
+
+        foreach ($calls as $call) {
+            $tokenEnd = $call->getEndTokenPos();
+            if ($tokenEnd > 0) {
+                $this->callsEndTokens[] = $tokenEnd;
+            }
+        }
+
+        return parent::beforeTraverse($nodes);
     }
 
     /**
@@ -166,6 +192,12 @@ CODE_SAMPLE
             $nativeProperty = $classReflection->getNativeProperty($propertyName);
             if (! $nativeProperty->hasNativeType()) {
                 return true;
+            }
+
+            foreach ($this->callsEndTokens as $callsEndToken) {
+                if ($propertyFetch->getStartTokenPos() > $callsEndToken) {
+                    return true;
+                }
             }
         }
 
