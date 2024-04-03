@@ -6,13 +6,13 @@ function argumentRemover()
 {
     $yaml = [];
 
-    Yaml::parse($yaml, Yaml::REMOVED_CONSTANT);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
-    Yaml::parse($yaml, Yaml::REMOVED_CONSTANT);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
     Yaml::parse($yaml, Yaml::KEPT_CONSTANT);
 
-    Yaml::parse($yaml, Yaml::REMOVED_CONSTANT);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
     Yaml::parse($yaml, 55);
     Yaml::parse($yaml, 56);

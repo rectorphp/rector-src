@@ -17,7 +17,7 @@ return static function (RectorConfig $rectorConfig): void {
                 Yaml::class,
                 'parse',
                 1,
-                [Yaml::REMOVED_CONSTANT, 'hey', 55, 5.5]
+                ['Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS', 'hey', 55, 5.5]
             ),
             new ArgumentRemover(RemoveInTheMiddle::class, 'run', 1, [
                 'name' => 'second',
