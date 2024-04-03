@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\TypeComparator;
 
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
@@ -81,6 +83,10 @@ final readonly class TypeComparator
         TypeNode $phpStanDocTypeNode,
         Node $node
     ): bool {
+        if ($phpStanDocTypeNode instanceof UnionTypeNode && $phpParserNode instanceof FullyQualified) {
+            return false;
+        }
+
         $phpParserNodeType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($phpParserNode);
         $phpStanDocType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $phpStanDocTypeNode,
