@@ -64,7 +64,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if ($node->isReadonly()) {
+        if ($this->isReadonlyClass($node)) {
             return null;
         }
 
@@ -108,7 +108,7 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isReadonly($property)) {
+        if ($this->isReadonlyProperty($property)) {
             return true;
         }
 
@@ -121,7 +121,7 @@ CODE_SAMPLE
         return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
     }
 
-    private function isReadonly(Property $property): bool
+    private function isReadonlyProperty(Property $property): bool
     {
         // native readonly
         if ($property->isReadonly()) {
@@ -131,6 +131,19 @@ CODE_SAMPLE
         // @readonly annotation
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($property);
         $tags = $phpDocInfo->getTagsByName('@readonly');
+        return $tags !== [];
+    }
+
+    private function isReadonlyClass(Class_ $class): bool
+    {
+        // native readonly
+        if ($class->isReadonly()) {
+            return true;
+        }
+
+        // @immutable annotation
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
+        $tags = $phpDocInfo->getTagsByName('@immutable');
         return $tags !== [];
     }
 }
