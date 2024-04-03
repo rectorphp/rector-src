@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -104,7 +105,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipPropertyFetch($node->cond)) {
+        if ($this->shouldSkipExpr($node->cond)) {
             return null;
         }
 
@@ -138,15 +139,12 @@ CODE_SAMPLE
         return false;
     }
 
-    private function shouldSkipPropertyFetch(Expr $expr): bool
+    private function shouldSkipExpr(Expr $expr): bool
     {
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstancesOf(
+        return (bool) $this->betterNodeFinder->findInstancesOf(
             $expr,
-            [PropertyFetch::class, StaticPropertyFetch::class]
+            [PropertyFetch::class, StaticPropertyFetch::class, ArrayDimFetch::class]
         );
-
-        return $propertyFetches !== [];
     }
 
     private function refactorIfWithBooleanAnd(If_ $if): ?If_
