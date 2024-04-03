@@ -167,7 +167,7 @@ final readonly class SilentVoidResolver
 
         $casesWithReturnOrExitCount = $this->resolveReturnOrExitCount($switch);
 
-        $cases = array_filter($switch->cases, fn (Case_ $case): bool => $case->stmts !== []);
+        $cases = array_filter($switch->cases, static fn(Case_ $case): bool => $case->stmts !== []);
 
         // has same amount of first return or exit nodes as switches
         return count($cases) === $casesWithReturnOrExitCount;
