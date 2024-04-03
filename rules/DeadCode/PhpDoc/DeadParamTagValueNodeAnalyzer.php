@@ -70,10 +70,15 @@ final readonly class DeadParamTagValueNodeAnalyzer
             return true;
         }
 
-        if ($this->mixedArrayTypeNodeAnalyzer->hasMixedArrayType($paramTagValueNode->type)) {
+        return $this->isAllowedBracketAwareUnion($paramTagValueNode->type);
+    }
+
+    private function isAllowedBracketAwareUnion(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
+    {
+        if ($this->mixedArrayTypeNodeAnalyzer->hasMixedArrayType($bracketsAwareUnionTypeNode)) {
             return false;
         }
 
-        return ! $this->genericTypeNodeAnalyzer->hasGenericType($paramTagValueNode->type);
+        return ! $this->genericTypeNodeAnalyzer->hasGenericType($bracketsAwareUnionTypeNode);
     }
 }
