@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
+use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -26,6 +27,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
         private MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
         private ParamAnalyzer $paramAnalyzer,
         private PhpDocTypeChanger $phpDocTypeChanger,
+        private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard
     ) {
     }
 
@@ -61,7 +63,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
         }
 
         if (! $paramTagValueNode->type instanceof BracketsAwareUnionTypeNode) {
-            return true;
+            return $this->standaloneTypeRemovalGuard->isLegal($paramTagValueNode->type, $param->type);
         }
 
         return $this->isAllowedBracketAwareUnion($paramTagValueNode->type);
