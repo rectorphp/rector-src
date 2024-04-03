@@ -6,6 +6,7 @@ namespace Rector\DeadCode\Rector\If_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -15,13 +16,11 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,7 +30,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveAlwaysTrueIfConditionRector extends AbstractRector
 {
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly ExprAnalyzer $exprAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly SafeLeftTypeBooleanAndOrAnalyzer $safeLeftTypeBooleanAndOrAnalyzer
@@ -107,7 +105,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipPropertyFetch($node->cond)) {
+        if ($this->shouldSkipExpr($node->cond)) {
             return null;
         }
 
@@ -141,35 +139,12 @@ CODE_SAMPLE
         return false;
     }
 
-    private function shouldSkipPropertyFetch(Expr $expr): bool
+    private function shouldSkipExpr(Expr $expr): bool
     {
-        /** @var PropertyFetch[]|StaticPropertyFetch[] $propertyFetches */
-        $propertyFetches = $this->betterNodeFinder->findInstancesOf(
+        return (bool) $this->betterNodeFinder->findInstancesOf(
             $expr,
-            [PropertyFetch::class, StaticPropertyFetch::class]
+            [PropertyFetch::class, StaticPropertyFetch::class, ArrayDimFetch::class]
         );
-
-        foreach ($propertyFetches as $propertyFetch) {
-            $classReflection = $this->reflectionResolver->resolveClassReflectionSourceObject($propertyFetch);
-
-            if (! $classReflection instanceof ClassReflection) {
-                // cannot get parent Trait_ from Property Fetch
-                return true;
-            }
-
-            $propertyName = (string) $this->nodeNameResolver->getName($propertyFetch);
-
-            if (! $classReflection->hasNativeProperty($propertyName)) {
-                continue;
-            }
-
-            $nativeProperty = $classReflection->getNativeProperty($propertyName);
-            if (! $nativeProperty->hasNativeType()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function refactorIfWithBooleanAnd(If_ $if): ?If_
