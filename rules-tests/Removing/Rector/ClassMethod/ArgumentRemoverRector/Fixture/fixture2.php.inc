@@ -1,49 +1,49 @@
 <?php
 
-use Symfony\Component\Yaml\Yaml;
+use Rector\Tests\Removing\Rector\ClassMethod\ArgumentRemoverRector\Source\Yaml;
 
 function argumentRemover()
 {
     $yaml = [];
 
-    Symfony\Component\Yaml\Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
-    Symfony\Component\Yaml\Yaml::parse($yaml, Yaml::PARSE_KEYS_AS_STRINGS);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
-    Symfony\Component\Yaml\Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_CONSTANT);
+    Yaml::parse($yaml, Yaml::KEPT_CONSTANT);
 
-    Yaml::parse($yaml, Yaml::PARSE_KEYS_AS_STRINGS);
+    Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_KEYS_AS_STRINGS);
 
-    Symfony\Component\Yaml\Yaml::parse($yaml, 55);
-    Symfony\Component\Yaml\Yaml::parse($yaml, 56);
-    Symfony\Component\Yaml\Yaml::parse($yaml, 'hey');
-    Symfony\Component\Yaml\Yaml::parse($yaml, 'hi');
-    Symfony\Component\Yaml\Yaml::parse($yaml, 5.5);
+    Yaml::parse($yaml, 55);
+    Yaml::parse($yaml, 56);
+    Yaml::parse($yaml, 'hey');
+    Yaml::parse($yaml, 'hi');
+    Yaml::parse($yaml, 5.5);
 }
 
 ?>
 -----
 <?php
 
-use Symfony\Component\Yaml\Yaml;
+use Rector\Tests\Removing\Rector\ClassMethod\ArgumentRemoverRector\Source\Yaml;
 
 function argumentRemover()
 {
     $yaml = [];
 
-    Symfony\Component\Yaml\Yaml::parse($yaml);
-
-    Symfony\Component\Yaml\Yaml::parse($yaml);
-
-    Symfony\Component\Yaml\Yaml::parse($yaml, Symfony\Component\Yaml\Yaml::PARSE_CONSTANT);
+    Yaml::parse($yaml);
 
     Yaml::parse($yaml);
 
-    Symfony\Component\Yaml\Yaml::parse($yaml);
-    Symfony\Component\Yaml\Yaml::parse($yaml, 56);
-    Symfony\Component\Yaml\Yaml::parse($yaml);
-    Symfony\Component\Yaml\Yaml::parse($yaml, 'hi');
-    Symfony\Component\Yaml\Yaml::parse($yaml);
+    Yaml::parse($yaml, Yaml::KEPT_CONSTANT);
+
+    Yaml::parse($yaml);
+
+    Yaml::parse($yaml);
+    Yaml::parse($yaml, 56);
+    Yaml::parse($yaml);
+    Yaml::parse($yaml, 'hi');
+    Yaml::parse($yaml);
 }
 
 ?>
