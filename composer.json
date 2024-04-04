@@ -51,7 +51,6 @@
         "rector/release-notes-generator": "dev-main",
         "shipmonk/composer-dependency-analyser": "^1.4",
         "spatie/enum": "^3.13",
-        "symfony/yaml": "^6.4",
         "symplify/easy-ci": "^11.3",
         "symplify/easy-coding-standard": "^12.1",
         "symplify/phpstan-extensions": "^11.4",
