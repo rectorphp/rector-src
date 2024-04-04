@@ -68,6 +68,10 @@ jobs:
                             composer create-project icanhazstring/composer-unused
                             composer-unused/bin/composer-unused --ansi --output-format=default
 
+                    -
+                        name: 'Detect composer dependency issues'
+                        run: vendor/bin/composer-dependency-analyser
+
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
