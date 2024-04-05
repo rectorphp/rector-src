@@ -9,14 +9,11 @@ final class SkipNeverReturn
         if (rand(0,1)) {
             return 5;
         }
-        
+
         $this->neverReturns();
     }
 
-    /**
-      * @return never
-      */
-    private function neverReturns($value)
+    private function neverReturns($value): never
     {
         exit();
     }
