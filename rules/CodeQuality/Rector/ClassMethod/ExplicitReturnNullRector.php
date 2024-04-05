@@ -21,6 +21,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\ValueObject\MethodName;
@@ -37,6 +38,7 @@ final class ExplicitReturnNullRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
         private readonly ReturnTypeInferer $returnTypeInferer
     ) {
     }
@@ -129,7 +131,9 @@ CODE_SAMPLE
             return null;
         });
 
-        if (! $this->silentVoidResolver->hasSilentVoid($node)) {
+        if (! $this->silentVoidResolver->hasSilentVoid($node)
+            || $this->neverFuncCallAnalyzer->hasNeverFuncCall($node)
+        ) {
             if ($hasChanged) {
                 $this->transformDocUnionVoidToUnionNull($node);
                 return $node;
