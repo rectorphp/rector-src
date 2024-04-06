@@ -170,7 +170,7 @@ parameters:
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
 
-        # Scope vs MutatingScope interchangable false positive
+        # Scope vs MutatingScope interchangeable false positive
         - '#Parameter \#3 \$nodeCallback of method PHPStan\\Analyser\\NodeScopeResolver\:\:processNodes\(\) expects callable\(PhpParser\\Node, PHPStan\\Analyser\\Scope\)\: void, (callable|Closure)\(PhpParser\\Node, PHPStan\\Analyser\\MutatingScope\)\: void given#'
 
         # internal reflection
@@ -413,7 +413,7 @@ parameters:
             message: '#Cognitive complexity for "Rector\\CustomRules\\SimpleNodeDumper(.*?)" is \d+, keep it under 11#'
             path: src/CustomRules/SimpleNodeDumper.php
 
-        # way to invoke repeated quesitons in symfony
+        # way to invoke repeated questions in symfony
         -
             message: '#While loop condition is always true#'
             path: src/Console/Command/DetectNodeCommand.php

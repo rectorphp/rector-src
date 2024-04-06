@@ -8,7 +8,7 @@ composer.lock
 # since PHPUnit 10
 .phpunit.cache
 
-# often customized locally - example on Github is just fine
+# often customized locally - example on GitHub is just fine
 rector-recipe.php
 
 # testing
