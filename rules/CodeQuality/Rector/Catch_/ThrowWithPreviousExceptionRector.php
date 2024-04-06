@@ -116,7 +116,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function refactorThrow(Throw_ $throw, Variable $catchedThrowableVariable): ?int
+    private function refactorThrow(Throw_ $throw, Variable $caughtThrowableVariable): ?int
     {
         if (! $throw->expr instanceof New_) {
             return null;
@@ -143,22 +143,22 @@ CODE_SAMPLE
 
         if (! isset($new->getArgs()[0])) {
             // get previous message
-            $getMessageMethodCall = new MethodCall($catchedThrowableVariable, 'getMessage');
+            $getMessageMethodCall = new MethodCall($caughtThrowableVariable, 'getMessage');
             $new->args[0] = new Arg($getMessageMethodCall);
         }
 
         if (! isset($new->getArgs()[1])) {
             // get previous code
-            $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
+            $new->args[1] = new Arg(new MethodCall($caughtThrowableVariable, 'getCode'));
         }
 
         /** @var Arg $arg1 */
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
+            $new->args[1] = new Arg(new MethodCall($caughtThrowableVariable, 'getCode'));
             $new->args[$exceptionArgumentPosition] = $arg1;
         } else {
-            $new->args[$exceptionArgumentPosition] = new Arg($catchedThrowableVariable);
+            $new->args[$exceptionArgumentPosition] = new Arg($caughtThrowableVariable);
         }
 
         // null the node, to fix broken format preserving printers, see https://github.com/rectorphp/rector/issues/5576

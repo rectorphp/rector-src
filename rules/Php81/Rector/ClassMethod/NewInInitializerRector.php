@@ -32,7 +32,7 @@ final class NewInInitializerRector extends AbstractRector implements MinPhpVersi
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassChildAnalyzer $classChildAnalyzer,
-        private readonly CoalesePropertyAssignMatcher $coalesePropertyAssignMatcher,
+        private readonly CoalescePropertyAssignMatcher $coalescePropertyAssignMatcher,
     ) {
     }
 
@@ -104,7 +104,7 @@ CODE_SAMPLE
             foreach ($params as $param) {
                 $paramName = $this->getName($param);
 
-                $coalesce = $this->coalesePropertyAssignMatcher->matchCoalesceAssignsToLocalPropertyNamed(
+                $coalesce = $this->coalescePropertyAssignMatcher->matchCoalesceAssignsToLocalPropertyNamed(
                     $stmt,
                     $paramName
                 );

@@ -119,7 +119,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // remove current Stmt if will be overriden in next stmt
+            // remove current Stmt if will be overridden in next stmt
             unset($node->stmts[$key]);
             $hasChanged = true;
         }

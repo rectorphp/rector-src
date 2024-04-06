@@ -114,7 +114,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // workaroudn, as Rector now only hooks to specific nodes, not arrays
+        // workaround, as Rector now only hooks to specific nodes, not arrays
         return null;
     }
 

@@ -128,7 +128,7 @@ final readonly class ReturnTypeInferer
                 $functionLike,
                 static function (Node $subNode): bool {
                     if (! $subNode instanceof Return_) {
-                        // yield return is handled on speicific rule: AddReturnTypeDeclarationFromYieldsRector
+                        // yield return is handled on specific rule: AddReturnTypeDeclarationFromYieldsRector
                         return $subNode instanceof Yield_;
                     }
 

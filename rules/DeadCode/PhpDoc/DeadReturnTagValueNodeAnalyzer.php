@@ -98,7 +98,7 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             return true;
         }
 
-        if (! $this->hasUsefullPhpdocType($returnTagValueNode, $node)) {
+        if (! $this->hasUsefulPhpdocType($returnTagValueNode, $node)) {
             return true;
         }
 
@@ -135,7 +135,7 @@ final readonly class DeadReturnTagValueNodeAnalyzer
     /**
      * exact different between @return and node return type
      */
-    private function hasUsefullPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
+    private function hasUsefulPhpdocType(ReturnTagValueNode $returnTagValueNode, mixed $returnType): bool
     {
         if ($returnTagValueNode->type instanceof IdentifierTypeNode && $returnTagValueNode->type->name === 'mixed') {
             return false;

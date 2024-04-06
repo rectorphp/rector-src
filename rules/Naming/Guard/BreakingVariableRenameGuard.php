@@ -40,7 +40,7 @@ final readonly class BreakingVariableRenameGuard
         private BetterNodeFinder $betterNodeFinder,
         private ConflictingNameResolver $conflictingNameResolver,
         private NodeTypeResolver $nodeTypeResolver,
-        private OverridenExistingNamesResolver $overridenExistingNamesResolver,
+        private OverriddenExistingNamesResolver $overriddenExistingNamesResolver,
         private TypeUnwrapper $typeUnwrapper,
         private NodeNameResolver $nodeNameResolver
     ) {
@@ -62,7 +62,7 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if (! $functionLike instanceof ArrowFunction && $this->overridenExistingNamesResolver->hasNameInClassMethodForNew(
+        if (! $functionLike instanceof ArrowFunction && $this->overriddenExistingNamesResolver->hasNameInClassMethodForNew(
             $currentName,
             $functionLike
         )) {
@@ -101,7 +101,7 @@ final readonly class BreakingVariableRenameGuard
             return true;
         }
 
-        if ($this->overridenExistingNamesResolver->hasNameInFunctionLikeForParam($expectedName, $classMethod)) {
+        if ($this->overriddenExistingNamesResolver->hasNameInFunctionLikeForParam($expectedName, $classMethod)) {
             return true;
         }
 

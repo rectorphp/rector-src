@@ -105,7 +105,7 @@ CODE_SAMPLE
 
         $this->hasChanged = false;
 
-        // warning, classes that implements __toString() will return Stringable interface even if they don't implemen it
+        // warning, classes that implements __toString() will return Stringable interface even if they don't implement it
         // reflection cannot be used for real detection
         $classLikeAncestorNames = $this->familyRelationsAnalyzer->getClassLikeAncestorNames($node);
         $isAncestorHasStringable = in_array(self::STRINGABLE, $classLikeAncestorNames, true);

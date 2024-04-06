@@ -37,7 +37,7 @@ final readonly class GenericClassStringTypeNormalizer
 
             $value = $type->getValue();
 
-            // skip string that look like classe
+            // skip string that looks like a class
             if ($value === 'error') {
                 return $callback($type);
             }

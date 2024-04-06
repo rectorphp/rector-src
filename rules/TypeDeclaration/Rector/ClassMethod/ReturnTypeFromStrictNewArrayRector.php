@@ -196,7 +196,7 @@ CODE_SAMPLE
         ClassMethod|Function_|Closure $functionLike,
         Variable $variable
     ): bool {
-        // is variable overriden?
+        // is variable overridden?
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Assign::class);
         foreach ($assigns as $assign) {

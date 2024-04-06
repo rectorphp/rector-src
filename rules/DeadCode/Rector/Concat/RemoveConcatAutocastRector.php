@@ -24,7 +24,7 @@ final class RemoveConcatAutocastRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeConcatingClass
+class SomeConcatenatingClass
 {
     public function run($value)
     {
@@ -34,7 +34,7 @@ class SomeConcatingClass
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeConcatingClass
+class SomeConcatenatingClass
 {
     public function run($value)
     {

@@ -155,7 +155,7 @@ CODE_SAMPLE
 
         $isInsideStaticClassMethod = false;
 
-        // check if called stati call somewhere in class, but only in static methods
+        // check if called static call somewhere in class, but only in static methods
         foreach ($class->getMethods() as $checkedClassMethod) {
             // not a problem
             if (! $checkedClassMethod->isStatic()) {

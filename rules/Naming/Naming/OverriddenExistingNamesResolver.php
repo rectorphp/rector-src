@@ -14,12 +14,12 @@ use Rector\Naming\PhpArray\ArrayFilter;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-final class OverridenExistingNamesResolver
+final class OverriddenExistingNamesResolver
 {
     /**
      * @var array<int, array<int, string>>
      */
-    private array $overridenExistingVariableNamesByClassMethod = [];
+    private array $overriddenExistingVariableNamesByClassMethod = [];
 
     public function __construct(
         private readonly ArrayFilter $arrayFilter,
@@ -32,8 +32,8 @@ final class OverridenExistingNamesResolver
         string $variableName,
         ClassMethod | Function_ | Closure $functionLike
     ): bool {
-        $overridenVariableNames = $this->resolveOveriddenNamesForNew($functionLike);
-        return in_array($variableName, $overridenVariableNames, true);
+        $overriddenVariableNames = $this->resolveOverriddenNamesForNew($functionLike);
+        return in_array($variableName, $overriddenVariableNames, true);
     }
 
     public function hasNameInFunctionLikeForParam(
@@ -63,12 +63,12 @@ final class OverridenExistingNamesResolver
     /**
      * @return string[]
      */
-    private function resolveOveriddenNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
+    private function resolveOverriddenNamesForNew(ClassMethod | Function_ | Closure $functionLike): array
     {
         $classMethodId = spl_object_id($functionLike);
 
-        if (isset($this->overridenExistingVariableNamesByClassMethod[$classMethodId])) {
-            return $this->overridenExistingVariableNamesByClassMethod[$classMethodId];
+        if (isset($this->overriddenExistingVariableNamesByClassMethod[$classMethodId])) {
+            return $this->overriddenExistingVariableNamesByClassMethod[$classMethodId];
         }
 
         $currentlyUsedNames = [];
@@ -88,9 +88,9 @@ final class OverridenExistingNamesResolver
         }
 
         $currentlyUsedNames = array_values($currentlyUsedNames);
-        $currentlyUsedNames = $this->arrayFilter->filterWithAtLeastTwoOccurences($currentlyUsedNames);
+        $currentlyUsedNames = $this->arrayFilter->filterWithAtLeastTwoOccurrences($currentlyUsedNames);
 
-        $this->overridenExistingVariableNamesByClassMethod[$classMethodId] = $currentlyUsedNames;
+        $this->overriddenExistingVariableNamesByClassMethod[$classMethodId] = $currentlyUsedNames;
 
         return $currentlyUsedNames;
     }
