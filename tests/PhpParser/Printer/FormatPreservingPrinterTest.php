@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Tests\PhpParser\Printer;
 
 use Nette\Utils\FileSystem;
-use Rector\PhpParser\Printer\FormatPerservingPrinter;
+use Rector\PhpParser\Printer\FormatPreservingPrinter;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class FormatPreservingPrinterTest extends AbstractLazyTestCase

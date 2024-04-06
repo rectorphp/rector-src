@@ -15,7 +15,7 @@ use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\PhpParser\Parser\RectorParser;
-use Rector\PhpParser\Printer\FormatPerservingPrinter;
+use Rector\PhpParser\Printer\FormatPreservingPrinter;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\ValueObject\Application\File;
