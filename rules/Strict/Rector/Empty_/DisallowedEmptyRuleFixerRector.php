@@ -15,7 +15,7 @@ use PhpParser\Node\Expr\Isset_;
 use PHPStan\Analyser\Scope;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\ExprAnalyzer;
-use Rector\Strict\NodeAnalyzer\UnitializedPropertyAnalyzer;
+use Rector\Strict\NodeAnalyzer\UninitializedPropertyAnalyzer;
 use Rector\Strict\NodeFactory\ExactCompareFactory;
 use Rector\Strict\Rector\AbstractFalsyScalarRuleFixerRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
