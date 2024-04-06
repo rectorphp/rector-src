@@ -4,10 +4,10 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 
 final class SkipUsed
 {
-    public function run(Node $nd)
+    public function run(Node $node)
     {
-        $this->betterNodeFinder->find($nd->stmts, function (Node $node) use ($nd) {
-              return $nd !== $node;
+        $this->betterNodeFinder->find($node->stmts, function (Node $_node) use ($node) {
+              return $node !== $_node;
         });
     }
 }

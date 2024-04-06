@@ -2,18 +2,18 @@
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class MayUnitializedStaticPropertyNoDefaultValue
+final class MayUninitializedPropertyNoDefaultValue
 {
-    public static array $items;
+    public array $items;
 
     public function isEmpty()
     {
-        return empty(self::$items);
+        return empty($this->items);
     }
 
     public function isNotEmpty()
     {
-        return ! empty(self::$items);
+        return ! empty($this->items);
     }
 }
 
@@ -23,18 +23,18 @@ final class MayUnitializedStaticPropertyNoDefaultValue
 
 namespace Rector\Tests\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector\Fixture;
 
-final class MayUnitializedStaticPropertyNoDefaultValue
+final class MayUninitializedPropertyNoDefaultValue
 {
-    public static array $items;
+    public array $items;
 
     public function isEmpty()
     {
-        return !isset(self::$items) || self::$items === [];
+        return !isset($this->items) || $this->items === [];
     }
 
     public function isNotEmpty()
     {
-        return isset(self::$items) && self::$items !== [];
+        return isset($this->items) && $this->items !== [];
     }
 }
 

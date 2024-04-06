@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php80\Rector\Switch_\ChangeSwitchToMatchRector\Fixture;
 
-final class SkipArrayAssignAdnDimFetch
+final class SkipArrayAssignAndDimFetch
 {
     private $firstCollection;
 

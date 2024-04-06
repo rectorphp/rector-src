@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector\Fixture;
 
-class DiffrentIndirectDuplicated
+class DifferentIndirectDuplicated
 {
     public function run($name)
     {
@@ -27,7 +27,7 @@ class DiffrentIndirectDuplicated
 
 namespace Rector\Tests\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector\Fixture;
 
-class DiffrentIndirectDuplicated
+class DifferentIndirectDuplicated
 {
     public function run($name)
     {

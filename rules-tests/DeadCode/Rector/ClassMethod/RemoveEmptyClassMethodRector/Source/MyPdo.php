@@ -8,6 +8,6 @@ class MyPdo
 {
     public function __construct()
     {
-        db_connnect();
+        db_connect();
     }
 }

@@ -8,7 +8,7 @@ function process() {
     $firstKey = key($items);
 
     reset($items);
-    $firstKey = key($differntItems);
+    $firstKey = key($differentItems);
 }
 
 ?>
@@ -22,7 +22,7 @@ function process() {
     $firstKey = array_key_first($items);
 
     reset($items);
-    $firstKey = key($differntItems);
+    $firstKey = key($differentItems);
 }
 
 ?>
