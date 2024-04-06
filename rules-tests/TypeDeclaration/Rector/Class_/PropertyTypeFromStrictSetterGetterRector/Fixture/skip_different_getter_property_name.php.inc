@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector\Fixture;
 
-final class SkipDifferenceGetterPropertyName
+final class SkipDifferentGetterPropertyName
 {
     private $name = 'John';
 

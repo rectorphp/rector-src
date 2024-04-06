@@ -3,7 +3,7 @@
 namespace Rector\Tests\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector\Fixture;
 
 /**
- * Invocable class can be used for stub in test
+ * Invokable class can be used for stub in test
  */
 class SkipInvoke
 {

@@ -4,7 +4,7 @@ namespace Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Fixture;
 
 use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeMultiArg;
 
-class ByPass2andArgValue
+class ByPass2ndArgValue
 {
     public function run()
     {
@@ -21,7 +21,7 @@ namespace Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Fixture;
 
 use Rector\Tests\Arguments\Rector\ClassMethod\ArgumentAdderRector\Source\SomeMultiArg;
 
-class ByPass2andArgValue
+class ByPass2ndArgValue
 {
     public function run()
     {
