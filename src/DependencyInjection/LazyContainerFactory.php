@@ -60,7 +60,7 @@ use Rector\Console\ConsoleApplication;
 use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\Style\RectorStyle;
 use Rector\Console\Style\SymfonyStyleFactory;
-use Rector\Contract\DependencyInjection\ResetableInterface;
+use Rector\Contract\DependencyInjection\ResettableInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\NodeDecorator\CreatedByRuleDecorator;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
