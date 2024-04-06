@@ -15,7 +15,7 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 /**
  * @api phpstan external
  */
-final class DynamicSourceLocatorProvider implements ResetableInterface
+final class DynamicSourceLocatorProvider implements ResettableInterface
 {
     /**
      * @var string[]

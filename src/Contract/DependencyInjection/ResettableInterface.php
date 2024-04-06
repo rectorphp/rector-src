@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Contract\DependencyInjection;
 
-interface ResetableInterface
+interface ResettableInterface
 {
     public function reset(): void;
 }

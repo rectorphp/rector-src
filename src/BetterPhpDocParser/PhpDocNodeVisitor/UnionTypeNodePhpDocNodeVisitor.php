@@ -34,7 +34,7 @@ final class UnionTypeNodePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor imp
             return null;
         }
 
-        $startAndEnd = $this->resolveStardAndEnd($node);
+        $startAndEnd = $this->resolveStartAndEnd($node);
         if (! $startAndEnd instanceof StartAndEnd) {
             return null;
         }
@@ -61,7 +61,7 @@ final class UnionTypeNodePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor imp
         return $betterTokenProvider->isTokenTypeOnPosition(Lexer::TOKEN_CLOSE_PARENTHESES, $startAndEnd->getEnd());
     }
 
-    private function resolveStardAndEnd(UnionTypeNode $unionTypeNode): ?StartAndEnd
+    private function resolveStartAndEnd(UnionTypeNode $unionTypeNode): ?StartAndEnd
     {
         $starAndEnd = $unionTypeNode->getAttribute(PhpDocAttributeKey::START_AND_END);
         if ($starAndEnd instanceof StartAndEnd) {

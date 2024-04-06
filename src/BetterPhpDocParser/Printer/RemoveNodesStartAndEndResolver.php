@@ -42,7 +42,7 @@ final class RemoveNodesStartAndEndResolver
                     break;
                 }
 
-                // do not colide
+                // do not collide
                 if ($lastEndPosition < $seekPosition) {
                     break;
                 }

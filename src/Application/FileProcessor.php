@@ -35,7 +35,7 @@ final readonly class FileProcessor
     private const OPEN_TAG_SPACED_REGEX = '#^[ \t]+<\?php#m';
 
     public function __construct(
-        private FormatPerservingPrinter $formatPerservingPrinter,
+        private FormatPreservingPrinter $formatPreservingPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
         private SymfonyStyle $symfonyStyle,
         private FileDiffFactory $fileDiffFactory,
@@ -90,7 +90,7 @@ final readonly class FileProcessor
 
         // 5. add as cacheable if not changed at all
         if (! $fileHasChanged) {
-            $this->changedFilesDetector->addCachableFile($filePath);
+            $this->changedFilesDetector->addCacheableFile($filePath);
         }
 
         if ($configuration->shouldShowDiffs() && $rectorWithLineChanges !== null) {
@@ -135,7 +135,7 @@ final readonly class FileProcessor
     private function printFile(File $file, Configuration $configuration, string $filePath): void
     {
         // only save to string first, no need to print to file when not needed
-        $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
+        $newContent = $this->formatPreservingPrinter->printParsedStmstAndTokensToString($file);
 
         /**
          * When no diff applied, the PostRector may still change the content, that's why printing still needed
@@ -176,7 +176,7 @@ final readonly class FileProcessor
             return;
         }
 
-        $this->formatPerservingPrinter->dumpFile($filePath, $newContent);
+        $this->formatPreservingPrinter->dumpFile($filePath, $newContent);
     }
 
     private function parseFileNodes(File $file): void

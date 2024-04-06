@@ -467,8 +467,8 @@ final class LazyContainerFactory
         );
 
         // resetables
-        $rectorConfig->tag(DynamicSourceLocatorProvider::class, ResetableInterface::class);
-        $rectorConfig->tag(RenamedClassesDataCollector::class, ResetableInterface::class);
+        $rectorConfig->tag(DynamicSourceLocatorProvider::class, ResettableInterface::class);
+        $rectorConfig->tag(RenamedClassesDataCollector::class, ResettableInterface::class);
 
         // caching
         $rectorConfig->singleton(Cache::class, static function (Container $container): Cache {

@@ -11,7 +11,7 @@ use Rector\ValueObject\Application\File;
 /**
  * @see \Rector\Tests\PhpParser\Printer\FormatPerservingPrinterTest
  */
-final readonly class FormatPerservingPrinter
+final readonly class FormatPreservingPrinter
 {
     public function __construct(
         private BetterStandardPrinter $betterStandardPrinter,

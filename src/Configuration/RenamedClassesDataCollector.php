@@ -7,7 +7,7 @@ namespace Rector\Configuration;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 
-final class RenamedClassesDataCollector implements ResetableInterface
+final class RenamedClassesDataCollector implements ResettableInterface
 {
     /**
      * @var array<string, string>
