@@ -167,7 +167,7 @@ include/require to absolute path. This Rector might introduce backwards incompat
 
 ### AndAssignsToSeparateLinesRector
 
-Split 2 assigns and to separate line
+Split 2 and assigns to separate line
 
 - class: [`Rector\CodeQuality\Rector\LogicalAnd\AndAssignsToSeparateLinesRector`](../rules/CodeQuality/Rector/LogicalAnd/AndAssignsToSeparateLinesRector.php)
 
