@@ -31,7 +31,7 @@ final class FileCacheStorageTest extends AbstractLazyTestCase
         $this->fileCacheStorage->save('aaK1STfY', 'TEST', 'file cached');
         $file1 = __DIR__ . '/Source/0e/76/0e76658526655756207688271159624026011393.php';
 
-        $this->fileCacheStorage->save('aaO8zKZF', 'TEST', 'file cached with the same two first caracters');
+        $this->fileCacheStorage->save('aaO8zKZF', 'TEST', 'file cached with the same two first characters');
         $file2 = __DIR__ . '/Source/0e/89/0e89257456677279068558073954252716165668.php';
 
         $this->fileCacheStorage->clean('aaK1STfY');

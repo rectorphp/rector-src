@@ -15,13 +15,13 @@ final class RectorAssertTest extends TestCase
 {
     #[DataProvider('provideDataValidClassNames')]
     #[DoesNotPerformAssertions]
-    public function testValidClasNames(string $className): void
+    public function testValidClassNames(string $className): void
     {
         RectorAssert::className($className);
     }
 
     #[DataProvider('provideDataInvalidClassNames')]
-    public function testInvalidClasNames(string $className): void
+    public function testInvalidClassNames(string $className): void
     {
         $this->expectException(InvalidArgumentException::class);
         RectorAssert::className($className);
@@ -65,7 +65,7 @@ final class RectorAssertTest extends TestCase
         yield ['Namespace\\so3me_f6n'];
     }
 
-    #[DataProvider('provideDataValidMehtodNames')]
+    #[DataProvider('provideDataValidMethodNames')]
     #[DoesNotPerformAssertions]
     public function testValidMethodName(string $methodName): void
     {
@@ -75,7 +75,7 @@ final class RectorAssertTest extends TestCase
     /**
      * @return Iterator<string[]>
      */
-    public static function provideDataValidMehtodNames(): Iterator
+    public static function provideDataValidMethodNames(): Iterator
     {
         yield ['some_method'];
         yield ['__method_magic'];

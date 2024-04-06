@@ -8,18 +8,18 @@ use Nette\Utils\FileSystem;
 use Rector\PhpParser\Printer\FormatPerservingPrinter;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class FormatPerservingPrinterTest extends AbstractLazyTestCase
+final class FormatPreservingPrinterTest extends AbstractLazyTestCase
 {
     /**
      * @var int
      */
     private const EXPECTED_FILEMOD = 0755;
 
-    private FormatPerservingPrinter $formatPerservingPrinter;
+    private FormatPreservingPrinter $formatPreservingPrinter;
 
     protected function setUp(): void
     {
-        $this->formatPerservingPrinter = $this->make(FormatPerservingPrinter::class);
+        $this->formatPreservingPrinter = $this->make(FormatPreservingPrinter::class);
     }
 
     protected function tearDown(): void
@@ -40,7 +40,7 @@ final class FormatPerservingPrinterTest extends AbstractLazyTestCase
 
         $filePath = __DIR__ . '/Fixture/file.php';
 
-        $printedFile = $this->formatPerservingPrinter->printToFile($filePath, [], [], []);
+        $printedFile = $this->formatPreservingPrinter->printToFile($filePath, [], [], []);
         $this->assertStringEqualsFile(__DIR__ . '/Fixture/file.php', $printedFile);
 
         $this->assertSame(self::EXPECTED_FILEMOD, fileperms(__DIR__ . '/Fixture/file.php') & 0777);

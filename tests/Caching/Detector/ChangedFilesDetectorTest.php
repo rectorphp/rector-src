@@ -26,7 +26,7 @@ final class ChangedFilesDetectorTest extends AbstractLazyTestCase
         $filePath = __DIR__ . '/Source/file.php';
 
         $this->assertTrue($this->changedFilesDetector->hasFileChanged($filePath));
-        $this->changedFilesDetector->addCachableFile($filePath);
+        $this->changedFilesDetector->addCacheableFile($filePath);
         $this->changedFilesDetector->cacheFile($filePath);
 
         $this->assertFalse($this->changedFilesDetector->hasFileChanged($filePath));
