@@ -184,9 +184,13 @@ final readonly class SilentVoidResolver
         }
 
         foreach ($tryCatch->catches as $catch) {
-            if (! $this->hasStmtsAlwaysReturnOrExit($catch->stmts) && ! $hasReturnOrExitInFinally) {
-                return false;
+            if ($this->hasStmtsAlwaysReturnOrExit($catch->stmts)) {
+                continue;
             }
+            if ($hasReturnOrExitInFinally) {
+                continue;
+            }
+            return false;
         }
 
         return true;
