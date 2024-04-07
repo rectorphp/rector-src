@@ -25,6 +25,9 @@ final readonly class AutowiredClassMethodOrPropertyAnalyzer
             return true;
         }
 
-        return $this->phpAttributeAnalyzer->hasPhpAttributes($node, ['Symfony\Contracts\Service\Attribute\Required', 'Nette\DI\Attributes\Inject']);
+        return $this->phpAttributeAnalyzer->hasPhpAttributes(
+            $node,
+            ['Symfony\Contracts\Service\Attribute\Required', 'Nette\DI\Attributes\Inject']
+        );
     }
 }
