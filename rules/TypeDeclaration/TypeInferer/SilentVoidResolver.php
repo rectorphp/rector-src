@@ -187,9 +187,11 @@ final readonly class SilentVoidResolver
             if ($this->hasStmtsAlwaysReturnOrExit($catch->stmts)) {
                 continue;
             }
+
             if ($hasReturnOrExitInFinally) {
                 continue;
             }
+
             return false;
         }
 
