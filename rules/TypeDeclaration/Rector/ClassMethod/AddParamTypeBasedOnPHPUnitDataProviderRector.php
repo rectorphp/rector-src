@@ -161,7 +161,10 @@ CODE_SAMPLE
         }
 
         /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($dataProviderClassMethod, Return_::class);
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
+            $dataProviderClassMethod,
+            Return_::class
+        );
         if ($returns !== []) {
             return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
         }
