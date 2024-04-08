@@ -79,6 +79,10 @@ final readonly class SilentVoidResolver
     private function hasStmtsAlwaysReturnOrExit(array $stmts): bool
     {
         foreach ($stmts as $stmt) {
+            if ($this->neverFuncCallAnalyzer->isWithNeverTypeExpr($stmt)) {
+                return true;
+            }
+
             if ($stmt instanceof Expression) {
                 $stmt = $stmt->expr;
             }
@@ -105,7 +109,7 @@ final readonly class SilentVoidResolver
             }
         }
 
-        return $this->neverFuncCallAnalyzer->hasNeverFuncCall($stmts);
+        return false;
     }
 
     private function isDoWithAlwaysReturnOrExit(Do_ $do): bool

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer;
 
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -20,31 +19,28 @@ final readonly class NeverFuncCallAnalyzer
     ) {
     }
 
-    /**
-     * @param ClassMethod|Closure|Function_|Stmt[] $functionLike
-     */
-    public function hasNeverFuncCall(ClassMethod | Closure | Function_ | array $functionLike): bool
+    public function isWithNeverTypeExpr(Stmt $stmt): bool
     {
-        $hasNeverType = false;
-        $stmts = $functionLike instanceof FunctionLike
-            ? (array) $functionLike->stmts
-            : $functionLike;
+        if ($stmt instanceof Expression) {
+            $stmt = $stmt->expr;
+        }
 
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Expression) {
-                $stmt = $stmt->expr;
-            }
+        if ($stmt instanceof Stmt) {
+            return false;
+        }
 
-            if ($stmt instanceof Stmt) {
-                continue;
-            }
+        $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
+        return $stmtType instanceof NeverType;
+    }
 
-            $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
-            if ($stmtType instanceof NeverType) {
-                $hasNeverType = true;
+    public function hasNeverFuncCall(ClassMethod | Closure | Function_ | Stmt $functionLike): bool
+    {
+        foreach ((array) $functionLike->stmts as $stmt) {
+            if ($this->isWithNeverTypeExpr($stmt)) {
+                return true;
             }
         }
 
-        return $hasNeverType;
+        return false;
     }
 }
