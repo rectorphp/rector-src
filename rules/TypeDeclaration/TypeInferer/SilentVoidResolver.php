@@ -151,7 +151,7 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        return ! $this->isFoundLoopControl($stmt);;
+        return $stmt instanceof Do_ && ! $this->isFoundLoopControl($stmt);;
     }
 
     private function isIfReturn(Stmt|Expr $stmt): bool
