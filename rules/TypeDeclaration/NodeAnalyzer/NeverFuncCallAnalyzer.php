@@ -19,6 +19,17 @@ final readonly class NeverFuncCallAnalyzer
     ) {
     }
 
+    public function hasNeverFuncCall(ClassMethod | Closure | Function_ | Stmt $functionLike): bool
+    {
+        foreach ((array) $functionLike->stmts as $stmt) {
+            if ($this->isWithNeverTypeExpr($stmt)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isWithNeverTypeExpr(Stmt $stmt): bool
     {
         if ($stmt instanceof Expression) {
@@ -31,16 +42,5 @@ final readonly class NeverFuncCallAnalyzer
 
         $stmtType = $this->nodeTypeResolver->getNativeType($stmt);
         return $stmtType instanceof NeverType;
-    }
-
-    public function hasNeverFuncCall(ClassMethod | Closure | Function_ | Stmt $functionLike): bool
-    {
-        foreach ((array) $functionLike->stmts as $stmt) {
-            if ($this->isWithNeverTypeExpr($stmt)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
