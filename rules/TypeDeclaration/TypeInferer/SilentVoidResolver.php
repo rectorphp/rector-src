@@ -83,10 +83,6 @@ final readonly class SilentVoidResolver
                 return true;
             }
 
-            if ($stmt instanceof Expression) {
-                $stmt = $stmt->expr;
-            }
-
             if ($this->isStopped($stmt)) {
                 return true;
             }
@@ -147,8 +143,12 @@ final readonly class SilentVoidResolver
         return $this->hasStmtsAlwaysReturnOrExit($stmt->else->stmts);
     }
 
-    private function isStopped(Stmt|Expr $stmt): bool
+    private function isStopped(Stmt $stmt): bool
     {
+        if ($stmt instanceof Expression) {
+            $stmt = $stmt->expr;
+        }
+
         return $stmt instanceof Throw_
             || $stmt instanceof Exit_
             || ($stmt instanceof Return_ && $stmt->expr instanceof Expr)
