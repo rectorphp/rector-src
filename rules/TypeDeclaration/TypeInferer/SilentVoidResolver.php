@@ -31,12 +31,14 @@ use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
+use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
 
 final readonly class SilentVoidResolver
 {
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private ReflectionResolver $reflectionResolver,
+        private NeverFuncCallAnalyzer $neverFuncCallAnalyzer
     ) {
     }
 
@@ -103,7 +105,7 @@ final readonly class SilentVoidResolver
             }
         }
 
-        return false;
+        return $this->neverFuncCallAnalyzer->hasNeverFuncCall($stmts);
     }
 
     private function isDoWithAlwaysReturnOrExit(Do_ $do): bool
