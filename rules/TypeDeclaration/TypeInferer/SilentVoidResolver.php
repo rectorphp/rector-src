@@ -28,8 +28,10 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\Node\Stmt\While_;
 use PHPStan\Reflection\ClassReflection;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
 
@@ -38,7 +40,8 @@ final readonly class SilentVoidResolver
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private ReflectionResolver $reflectionResolver,
-        private NeverFuncCallAnalyzer $neverFuncCallAnalyzer
+        private NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
+        private ValueResolver $valueResolver
     ) {
     }
 
@@ -100,7 +103,7 @@ final readonly class SilentVoidResolver
                 return true;
             }
 
-            if ($stmt instanceof Do_ && $this->isDoWithAlwaysReturnOrExit($stmt)) {
+            if (($stmt instanceof Do_ || $stmt instanceof While_) && $this->isDoOrWhileWithAlwaysReturnOrExit($stmt)) {
                 return true;
             }
         }
@@ -108,14 +111,21 @@ final readonly class SilentVoidResolver
         return false;
     }
 
-    private function isDoWithAlwaysReturnOrExit(Do_ $do): bool
+    private function isDoOrWhileWithAlwaysReturnOrExit(Do_|While_ $node): bool
     {
-        if (! $this->hasStmtsAlwaysReturnOrExit($do->stmts)) {
+        if ($node instanceof While_ && $this->valueResolver->isTrue($node->cond)) {
+            return ! (bool) $this->betterNodeFinder->findFirst(
+                $node->stmts,
+                static fn (Node $node): bool => $node instanceof Break_ || $node instanceof Continue_ || $node instanceof Goto_
+            );
+        }
+
+        if (! $this->hasStmtsAlwaysReturnOrExit($node->stmts)) {
             return false;
         }
 
         return ! (bool) $this->betterNodeFinder->findFirst(
-            $do->stmts,
+            $node->stmts,
             static fn (Node $node): bool => $node instanceof Break_ || $node instanceof Continue_ || $node instanceof Goto_
         );
     }
