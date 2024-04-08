@@ -31,8 +31,11 @@ final readonly class DeadParamTagValueNodeAnalyzer
     ) {
     }
 
-    public function isDead(ParamTagValueNode $paramTagValueNode, FunctionLike $functionLike): bool
-    {
+    public function isDead(
+        ParamTagValueNode $paramTagValueNode,
+        FunctionLike $functionLike,
+        bool $descriptionKeepsAlive = true
+    ): bool {
         $param = $this->paramAnalyzer->getParamByName($paramTagValueNode->parameterName, $functionLike);
         if (! $param instanceof Param) {
             return false;
@@ -42,7 +45,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
             return false;
         }
 
-        if ($paramTagValueNode->description !== '') {
+        if ($paramTagValueNode->description !== '' && $descriptionKeepsAlive) {
             return false;
         }
 

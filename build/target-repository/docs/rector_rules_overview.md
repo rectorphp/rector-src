@@ -1,4 +1,4 @@
-# 370 Rules Overview
+# 371 Rules Overview
 
 <br>
 
@@ -10,7 +10,7 @@
 
 - [CodingStyle](#codingstyle) (28)
 
-- [DeadCode](#deadcode) (44)
+- [DeadCode](#deadcode) (45)
 
 - [EarlyReturn](#earlyreturn) (9)
 
@@ -2954,6 +2954,29 @@ Remove `@return` docblock with same type as defined in PHP
 -     * @return stdClass
 -     */
      public function foo(): stdClass
+     {
+     }
+ }
+```
+
+<br>
+
+### RemoveUselessTypeInParamTagRector
+
+Remove the type of the `@param` docblock if the parameter type is defined in the function signature
+
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessTypeInParamTagRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessTypeInParamTagRector.php)
+
+```diff
+ class SomeClass
+ {
+     /**
+-     * @param string $a
+-     * @param string $b description
++     * @param $a
++     * @param $b description
+      */
+     public function foo(string $a, string $b)
      {
      }
  }
