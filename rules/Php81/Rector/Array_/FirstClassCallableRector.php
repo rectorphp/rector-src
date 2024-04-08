@@ -11,7 +11,10 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\VariadicPlaceholder;
+use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -78,14 +81,18 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Array_::class];
+        return [Property::class, ClassConst::class, Array_::class];
     }
 
     /**
-     * @param Array_ $node
+     * @param Property|ClassConst|Array_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): null|StaticCall|MethodCall
+    public function refactorWithScope(Node $node, Scope $scope): int|null|StaticCall|MethodCall
     {
+        if ($node instanceof Property || $node instanceof ClassConst) {
+            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+        }
+
         $arrayCallable = $this->arrayCallableMethodMatcher->match($node, $scope);
         if (! $arrayCallable instanceof ArrayCallable) {
             return null;
