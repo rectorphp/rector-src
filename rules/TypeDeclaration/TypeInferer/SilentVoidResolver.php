@@ -119,7 +119,7 @@ final readonly class SilentVoidResolver
 
     private function isDoOrWhileWithAlwaysReturnOrExit(Do_|While_ $node): bool
     {
-        if ($node instanceof While_ && $this->valueResolver->isTrue($node->cond)) {
+        if ($this->valueResolver->isTrue($node->cond)) {
             return ! (bool) $this->betterNodeFinder->findFirst(
                 $node->stmts,
                 static fn (Node $node): bool => $node instanceof Break_ || $node instanceof Continue_ || $node instanceof Goto_
