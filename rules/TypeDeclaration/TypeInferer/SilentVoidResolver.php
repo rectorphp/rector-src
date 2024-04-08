@@ -102,12 +102,15 @@ final readonly class SilentVoidResolver
             if ($this->isIfReturn($stmt)) {
                 return true;
             }
+
             if (!$stmt instanceof Do_ && !$stmt instanceof While_) {
                 continue;
             }
+
             if (!$this->isDoOrWhileWithAlwaysReturnOrExit($stmt)) {
                 continue;
             }
+
             return true;
         }
 
