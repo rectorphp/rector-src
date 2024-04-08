@@ -15,6 +15,7 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Continue_;
 use PhpParser\Node\Stmt\Do_;
@@ -29,7 +30,9 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
+use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Reflection\ReflectionResolver;
@@ -41,7 +44,8 @@ final readonly class SilentVoidResolver
         private BetterNodeFinder $betterNodeFinder,
         private ReflectionResolver $reflectionResolver,
         private NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
-        private ValueResolver $valueResolver
+        private ValueResolver $valueResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -103,10 +107,6 @@ final readonly class SilentVoidResolver
                 return true;
             }
 
-            if (!$stmt instanceof Do_ && !$stmt instanceof While_) {
-                continue;
-            }
-
             if (!$this->isDoOrWhileWithAlwaysReturnOrExit($stmt)) {
                 continue;
             }
@@ -117,23 +117,41 @@ final readonly class SilentVoidResolver
         return false;
     }
 
-    private function isDoOrWhileWithAlwaysReturnOrExit(Do_|While_ $node): bool
+    private function isFoundLoopControl(Do_|While_ $node): bool
     {
-        if ($this->valueResolver->isTrue($node->cond)) {
-            return ! (bool) $this->betterNodeFinder->findFirst(
-                $node->stmts,
-                static fn (Node $node): bool => $node instanceof Break_ || $node instanceof Continue_ || $node instanceof Goto_
-            );
-        }
+        $isFoundLoopControl = false;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $node->stmts,
+            static function (Node $subNode) use (&$isFoundLoopControl) {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-        if (! $this->hasStmtsAlwaysReturnOrExit($node->stmts)) {
+                if ($subNode instanceof Break_ || $subNode instanceof Continue_ || $subNode instanceof Goto_) {
+                    $isFoundLoopControl = true;
+                    return NodeTraverser::STOP_TRAVERSAL;
+                }
+            }
+        );
+
+        return $isFoundLoopControl;
+    }
+
+    private function isDoOrWhileWithAlwaysReturnOrExit(Stmt $stmt): bool
+    {
+        if (! $stmt instanceof Do_ && ! $stmt instanceof While_) {
             return false;
         }
 
-        return ! (bool) $this->betterNodeFinder->findFirst(
-            $node->stmts,
-            static fn (Node $node): bool => $node instanceof Break_ || $node instanceof Continue_ || $node instanceof Goto_
-        );
+        if ($this->valueResolver->isTrue($stmt->cond)) {
+            return ! $this->isFoundLoopControl($stmt);
+        }
+
+        if (! $this->hasStmtsAlwaysReturnOrExit($stmt->stmts)) {
+            return false;
+        }
+
+        return ! $this->isFoundLoopControl($stmt);;
     }
 
     private function isIfReturn(Stmt|Expr $stmt): bool
