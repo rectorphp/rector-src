@@ -39,7 +39,7 @@ final class PolyfillPackagesProvider
         }
 
         $composerContents = FileSystem::read($projectComposerJson);
-        $composerJson = Json::decode($composerContents, true);
+        $composerJson = Json::decode($composerContents, forceArrays: true);
 
         $this->cachedPolyfillPackages = $this->filterPolyfillPackages($composerJson['require'] ?? []);
 
