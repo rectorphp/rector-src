@@ -16,7 +16,7 @@ final class JsonFileSystem
     {
         $fileContents = FileSystem::read($filePath);
 
-        return Json::decode($fileContents, Json::FORCE_ARRAY);
+        return Json::decode($fileContents, true);
     }
 
     /**
@@ -24,7 +24,7 @@ final class JsonFileSystem
      */
     public static function writeFile(string $filePath, array $data): void
     {
-        $json = Json::encode($data, Json::PRETTY);
+        $json = Json::encode($data, true);
         FileSystem::write($filePath, $json, null);
     }
 }

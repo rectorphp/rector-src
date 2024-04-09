@@ -11,10 +11,10 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $composerJsonFileContents = FileSystem::read(__DIR__ . '/../composer.json');
 
-$composerJson = Json::decode($composerJsonFileContents, Json::FORCE_ARRAY);
+$composerJson = Json::decode($composerJsonFileContents, true);
 $composerJson['replace']['phpstan/phpstan'] = $composerJson['require']['phpstan/phpstan'];
 
-$modifiedComposerJsonFileContents = Json::encode($composerJson, Json::PRETTY);
+$modifiedComposerJsonFileContents = Json::encode($composerJson, true);
 FileSystem::write(__DIR__ . '/../composer.json', $modifiedComposerJsonFileContents, null);
 
 echo 'Done!' . PHP_EOL;
