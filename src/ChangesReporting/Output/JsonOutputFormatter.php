@@ -63,7 +63,7 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
             $errorsJson['errors'] = $errorsData;
         }
 
-        $json = Json::encode($errorsJson, Json::PRETTY);
+        $json = Json::encode($errorsJson, pretty: true);
         echo $json . PHP_EOL;
     }
 

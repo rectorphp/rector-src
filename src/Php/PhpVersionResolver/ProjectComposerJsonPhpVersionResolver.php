@@ -26,7 +26,7 @@ final class ProjectComposerJsonPhpVersionResolver
         }
 
         $composerJsonContents = FileSystem::read($composerJson);
-        $projectComposerJson = Json::decode($composerJsonContents, Json::FORCE_ARRAY);
+        $projectComposerJson = Json::decode($composerJsonContents, forceArrays: true);
 
         // give this one a priority, as more generic one
         $requirePhpVersion = $projectComposerJson['require']['php'] ?? null;

@@ -58,7 +58,7 @@ final class ListRulesCommand extends Command
                 'skipped-rectors' => $skippedClasses,
             ];
 
-            echo Json::encode($data, Json::PRETTY) . PHP_EOL;
+            echo Json::encode($data, pretty: true) . PHP_EOL;
             return Command::SUCCESS;
         }
 
