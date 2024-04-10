@@ -352,6 +352,7 @@ final class NodeTypeResolver
     ): Type {
         $nativeVariableType = $scope->getNativeType($arrayDimFetch->var);
         if ($nativeVariableType instanceof MixedType || ($nativeVariableType instanceof ArrayType && $nativeVariableType->getItemType() instanceof MixedType)) {
+            die('die;');
             return $originalNativeType;
         }
 
@@ -367,12 +368,12 @@ final class NodeTypeResolver
         }
 
         $optionalKeys = $variableType->getOptionalKeys();
-        foreach ($variableType->getKeyTypes() as $key => $type) {
-            if (! $type instanceof ConstantStringType) {
+        foreach ($variableType->getKeyTypes() as $key => $keyType) {
+            if (! $keyType instanceof ConstantStringType) {
                 continue;
             }
 
-            if ($type->getValue() !== $arrayDimFetch->dim->value) {
+            if ($keyType->getValue() !== $arrayDimFetch->dim->value) {
                 continue;
             }
 
