@@ -367,12 +367,12 @@ final class NodeTypeResolver
         }
 
         $optionalKeys = $variableType->getOptionalKeys();
-        foreach ($variableType->getKeyTypes() as $key => $type) {
-            if (! $type instanceof ConstantStringType) {
+        foreach ($variableType->getKeyTypes() as $key => $keyType) {
+            if (! $keyType instanceof ConstantStringType) {
                 continue;
             }
 
-            if ($type->getValue() !== $arrayDimFetch->dim->value) {
+            if ($keyType->getValue() !== $arrayDimFetch->dim->value) {
                 continue;
             }
 
