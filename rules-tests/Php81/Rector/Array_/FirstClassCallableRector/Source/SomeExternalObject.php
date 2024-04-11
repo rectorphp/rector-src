@@ -16,4 +16,9 @@ final class SomeExternalObject
     private static function sleepPrivateStatic()
     {
     }
+
+    public function __invoke(bool $param)
+    {
+        return $param === true;
+    }
 }

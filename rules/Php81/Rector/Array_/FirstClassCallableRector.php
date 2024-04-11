@@ -131,11 +131,7 @@ CODE_SAMPLE
         Scope $scope
     ): bool {
         $classReflection = $scope->getClassReflection();
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        if ($classReflection->getName() === $fullyQualifiedObjectType->getClassName()) {
+        if ($classReflection instanceof ClassReflection && $classReflection->getName() === $fullyQualifiedObjectType->getClassName()) {
             return false;
         }
 
