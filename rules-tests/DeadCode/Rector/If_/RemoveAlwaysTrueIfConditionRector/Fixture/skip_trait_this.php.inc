@@ -4,7 +4,7 @@ namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fix
 
 use DateTimeInterface;
 
-trait demoTrait
+trait SkipTraitThis
 {
     public function getIssue(): void
     {
