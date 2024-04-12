@@ -50,10 +50,7 @@ final readonly class SafeLeftTypeBooleanAndOrAnalyzer
         // skip trait this
         $classReflection = $this->reflectionResolver->resolveClassReflection($booleanAnd);
         if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
-            return ! (bool) $this->betterNodeFinder->findFirst(
-                $booleanAnd->left,
-                static fn(Node $node): bool => $node instanceof Instanceof_
-            );
+            return ! $booleanAnd->left instanceof Instanceof_;
         }
 
         return true;
