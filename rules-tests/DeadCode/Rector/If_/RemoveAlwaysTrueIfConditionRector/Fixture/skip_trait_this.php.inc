@@ -1,0 +1,17 @@
+<?php
+
+namespace Rector\Tests\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector\Fixture;
+
+use DateTimeInterface;
+
+trait demoTrait
+{
+    public function getIssue(): void
+    {
+        foreach (['value_1', 'value_2'] as $value) {
+            if ($this instanceof DateTimeInterface && $this->getExample() === false) {
+                $this->setExample('demo');
+            }
+        }
+    }
+}
