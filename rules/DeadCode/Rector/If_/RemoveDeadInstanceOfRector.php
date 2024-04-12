@@ -21,6 +21,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\Type\MixedType;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\Rector\AbstractRector;
+use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -31,6 +32,7 @@ final class RemoveDeadInstanceOfRector extends AbstractRector
 {
     public function __construct(
         private readonly IfManipulator $ifManipulator,
+        private readonly ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -145,6 +147,11 @@ CODE_SAMPLE
 
         // handled in another rule
         if ($this->isPropertyFetch($instanceof->expr) || $instanceof->expr instanceof CallLike) {
+            return null;
+        }
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($instanceof);
+        if ($classReflection !== null && $classReflection->isTrait()) {
             return null;
         }
 
