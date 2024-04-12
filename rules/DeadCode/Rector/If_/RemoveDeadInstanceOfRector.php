@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\Rector\If_;
 
+use PHPStan\Reflection\ClassReflection;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
@@ -151,7 +152,7 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionResolver->resolveClassReflection($instanceof);
-        if ($classReflection !== null && $classReflection->isTrait()) {
+        if ($classReflection instanceof ClassReflection && $classReflection->isTrait()) {
             return null;
         }
 
