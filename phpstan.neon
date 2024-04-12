@@ -3,6 +3,11 @@ includes:
     - vendor/symplify/phpstan-rules/config/rector-rules.neon
 
 parameters:
+    unused_public:
+        methods: true
+        properties: true
+        constants: true
+
     level: 8
 
     reportUnmatchedIgnoredErrors: false
