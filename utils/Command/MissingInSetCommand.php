@@ -16,6 +16,7 @@ use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionR
 use Rector\Doctrine\CodeQuality\Rector\Property\TypedPropertyFromDoctrineCollectionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\AddCoversClassAttributeRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
@@ -58,6 +59,9 @@ final class MissingInSetCommand extends Command
         // deprecated
         InitializeDefaultEntityCollectionRector::class,
         TypedPropertyFromDoctrineCollectionRector::class,
+
+        // by guessing class detection
+        AddCoversClassAttributeRector::class,
     ];
 
     public function __construct(
