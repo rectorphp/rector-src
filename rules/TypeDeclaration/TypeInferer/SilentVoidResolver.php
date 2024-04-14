@@ -107,7 +107,7 @@ final readonly class SilentVoidResolver
                 return true;
             }
 
-            if (!$this->isDoOrWhileWithAlwaysReturnOrExit($stmt)) {
+            if (! $this->isDoOrWhileWithAlwaysReturnOrExit($stmt)) {
                 continue;
             }
 
@@ -151,7 +151,7 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        return $stmt instanceof Do_ && ! $this->isFoundLoopControl($stmt);;
+        return $stmt instanceof Do_ && ! $this->isFoundLoopControl($stmt);
     }
 
     private function isIfReturn(Stmt|Expr $stmt): bool
