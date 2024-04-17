@@ -25,7 +25,7 @@ class CallFunction
     public function run()
     {
         $result = preg_replace_callback(
-            '/\{([<>])([a-zA-Z0-9_]*)(\?{0,1})([a-zA-Z0-9_]*)\}(.*)\{\1\/\2\}/isU',
+            "/\\{([<>])([a-zA-Z0-9_]*)(\\?{0,1})([a-zA-Z0-9_]*)\\}(.*)\\{\\1\\/\\2\\}/isU",
             function ($matches) {
                 return CallFunction($matches[1], $matches[2], $matches[3], $matches[4], $matches[5]);
             },

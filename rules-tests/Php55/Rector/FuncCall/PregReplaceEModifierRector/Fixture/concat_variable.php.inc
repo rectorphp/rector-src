@@ -24,7 +24,7 @@ class ConcatVariable
     {
         $test = 'become : ';
         $string  ='string';
-        echo preg_replace_callback('#([a-z]*)#', function ($matches) use ($test) {
+        echo preg_replace_callback("#([a-z]*)#", function ($matches) use ($test) {
             return $test . strtoupper($matches[1]);
         }, $string);
     }

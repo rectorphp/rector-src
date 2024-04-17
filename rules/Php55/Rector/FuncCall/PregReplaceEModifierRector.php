@@ -6,6 +6,7 @@ namespace Rector\Php55\Rector\FuncCall;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -96,14 +97,13 @@ CODE_SAMPLE
         $firstArgumentValue = $firstArgument->value;
 
         $patternWithoutEExpr = $this->regexMatcher->resolvePatternExpressionWithoutEIfFound($firstArgumentValue);
-        if ($patternWithoutEExpr === null) {
+        if (! $patternWithoutEExpr instanceof Expr) {
             return null;
         }
 
-        /** @var Arg $secondArgument */
-        $secondArgument = $node->args[1];
-        $secondArgumentValue = $secondArgument->value;
-        $anonymousFunction = $this->anonymousFunctionFactory->createAnonymousFunctionFromExpr($secondArgumentValue);
+        $secondArgument = $node->getArgs()[1];
+
+        $anonymousFunction = $this->createAnonymousFunction($secondArgument);
         if (! $anonymousFunction instanceof Closure) {
             return null;
         }
@@ -113,5 +113,10 @@ CODE_SAMPLE
         $secondArgument->value = $anonymousFunction;
 
         return $node;
+    }
+
+    private function createAnonymousFunction(Arg $arg): ?Closure
+    {
+        return $this->anonymousFunctionFactory->createAnonymousFunctionFromExpr($arg->value);
     }
 }
