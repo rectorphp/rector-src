@@ -636,6 +636,19 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->afterResolving(
+            TypeMapperInterface::class,
+            static function (TypeMapperInterface $typeMapper, Container $container): void {
+                if (! method_exists($typeMapper, 'autowire')) {
+                    return;
+                }
+
+                $typeMapper->autowire(
+                    $container->make(PHPStanStaticTypeMapper::class),
+                );
+            }
+        );
+
+        $rectorConfig->afterResolving(
             ArrayTypeMapper::class,
             static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
                 $arrayTypeMapper->autowire($container->make(PHPStanStaticTypeMapper::class));
