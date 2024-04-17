@@ -7,6 +7,7 @@ namespace Rector\Php81\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Cast\String_ as CastString_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -204,6 +205,10 @@ CODE_SAMPLE
         }
 
         if ($this->shouldSkipTrait($argValue, $type, $isTrait)) {
+            return null;
+        }
+
+        if ($type instanceof MixedType && $args[$position]->value instanceof ArrayDimFetch) {
             return null;
         }
 
