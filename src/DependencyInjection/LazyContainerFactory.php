@@ -502,10 +502,7 @@ final class LazyContainerFactory
 
         $rectorConfig->afterResolving(
             ConditionalTypeMapper::class,
-            static function (
-                ConditionalTypeMapper $conditionalTypeMapper,
-                Container $container
-            ): void {
+            static function (ConditionalTypeMapper $conditionalTypeMapper, Container $container): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
                 $conditionalTypeMapper->autowire($phpStanStaticTypeMapper);
             }

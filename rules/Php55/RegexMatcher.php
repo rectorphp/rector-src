@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Scalar\String_;
-use Rector\PhpParser\Node\Value\ValueResolver;
 
 final readonly class RegexMatcher
 {
@@ -30,19 +29,10 @@ final readonly class RegexMatcher
      */
     private const ALL_MODIFIERS_VALUES = ['i', 'm', 's', 'x', 'e', 'A', 'D', 'S', 'U', 'X', 'J', 'u'];
 
-    public function __construct(
-        private ValueResolver $valueResolver
-    ) {
-    }
-
     public function resolvePatternExpressionWithoutEIfFound(Expr $expr): Concat|String_|null
     {
         if ($expr instanceof String_) {
-            $pattern = $this->valueResolver->getValue($expr);
-
-            if (! is_string($pattern)) {
-                return null;
-            }
+            $pattern = $expr->value;
 
             $delimiter = $pattern[0];
             $delimiter = match ($delimiter) {
@@ -59,8 +49,9 @@ final readonly class RegexMatcher
                 return null;
             }
 
-            $patternWithoutE = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
-            return new String_($patternWithoutE);
+            $expr->value = $this->createPatternWithoutE($pattern, $delimiter, $modifiers);
+
+            return $expr;
         }
 
         if ($expr instanceof Concat) {
@@ -88,7 +79,6 @@ final readonly class RegexMatcher
     private function createPatternWithoutE(string $pattern, string $delimiter, string $modifiers): string
     {
         $modifiersWithoutE = str_replace('e', '', $modifiers);
-
         return Strings::before($pattern, $delimiter, -1) . $delimiter . $modifiersWithoutE;
     }
 
