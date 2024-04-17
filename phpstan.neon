@@ -309,8 +309,10 @@ parameters:
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
 
         -
-            message: '#Function "function_exists\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
+            message: '#Function "(function|method)_exists\(\)" cannot be used/left in the code#'
+            paths:
+                - src/functions/node_helper.php
+                - src/DependencyInjection/LazyContainerFactory.php
 
         -
             message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
