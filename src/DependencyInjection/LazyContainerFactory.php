@@ -483,6 +483,13 @@ final class LazyContainerFactory
             ->giveTagged(PhpDocNodeDecoratorInterface::class);
 
         $rectorConfig->afterResolving(
+            ArrayTypeMapper::class,
+            static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
+                $arrayTypeMapper->autowire($container->make(PHPStanStaticTypeMapper::class));
+            }
+        );
+
+        $rectorConfig->afterResolving(
             ConditionalTypeForParameterMapper::class,
             static function (
                 ConditionalTypeForParameterMapper $conditionalTypeForParameterMapper,
@@ -490,6 +497,28 @@ final class LazyContainerFactory
             ): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
                 $conditionalTypeForParameterMapper->autowire($phpStanStaticTypeMapper);
+            }
+        );
+
+        $rectorConfig->afterResolving(
+            ConditionalTypeMapper::class,
+            static function (
+                ConditionalTypeMapper $conditionalTypeMapper,
+                Container $container
+            ): void {
+                $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
+                $conditionalTypeMapper->autowire($phpStanStaticTypeMapper);
+            }
+        );
+
+        $rectorConfig->afterResolving(
+            \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
+            static function (
+                \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
+                Container $container
+            ): void {
+                $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
+                $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }
         );
 
@@ -636,43 +665,12 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->afterResolving(
-            TypeMapperInterface::class,
-            static function (TypeMapperInterface $typeMapper, Container $container): void {
-                if (! method_exists($typeMapper, 'autowire')) {
-                    return;
-                }
-
-                $typeMapper->autowire(
-                    $container->make(PHPStanStaticTypeMapper::class),
-                );
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            ArrayTypeMapper::class,
-            static function (ArrayTypeMapper $arrayTypeMapper, Container $container): void {
-                $arrayTypeMapper->autowire($container->make(PHPStanStaticTypeMapper::class));
-            }
-        );
-
-        $rectorConfig->afterResolving(
             PlainValueParser::class,
             static function (PlainValueParser $plainValueParser, Container $container): void {
                 $plainValueParser->autowire(
                     $container->make(StaticDoctrineAnnotationParser::class),
                     $container->make(ArrayParser::class),
                 );
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
-            static function (
-                \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
-                Container $container
-            ): void {
-                $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
-                $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }
         );
 
