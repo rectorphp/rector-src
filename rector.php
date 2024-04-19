@@ -43,6 +43,7 @@ return RectorConfig::configure()
         '*/Source/*',
         '*/Source*',
         '*/Expected/*',
+        __DIR__ . '/rules/Privatization/foo*bar.php',
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
@@ -54,3 +55,4 @@ return RectorConfig::configure()
 
         RemovePhpVersionIdCheckRector::class => [__DIR__ . '/src/Util/FileHasher.php'],
     ]);
+

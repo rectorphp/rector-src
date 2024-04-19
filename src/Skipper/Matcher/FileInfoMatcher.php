@@ -61,6 +61,10 @@ final readonly class FileInfoMatcher
             return true;
         }
 
+        if (str_contains($ignoredPath, '*')) {
+//            return false;
+        }
+
         return $this->realpathMatcher->match($ignoredPath, $filePath);
     }
 }
