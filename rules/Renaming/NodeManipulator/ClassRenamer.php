@@ -114,7 +114,7 @@ final class ClassRenamer
             return $classReflection->isInterface();
         }
 
-        return false;
+        return $fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true;
     }
 
     /**

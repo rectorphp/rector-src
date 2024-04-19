@@ -44,5 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
 
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
             'NotExistsClass' => 'NewClass',
+
+            foo::class => Bar\Foo::class,
         ]);
 };
