@@ -99,7 +99,7 @@ CODE_SAMPLE
             return $this->refactorNew($node, $scope);
         }
 
-        return $this->refactorMethodCall($node, $scope);
+        return $this->refactorMethodCallOrFuncCall($node, $scope);
     }
 
     private function refactorClassMethodOrFunction(
@@ -163,7 +163,7 @@ CODE_SAMPLE
         return $new;
     }
 
-    private function refactorMethodCall(
+    private function refactorMethodCallOrFuncCall(
         MethodCall|StaticCall|FuncCall $node,
         Scope $scope
     ): MethodCall|StaticCall|FuncCall|null {
