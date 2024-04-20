@@ -15,15 +15,8 @@ final readonly class VendorLocationDetector
     ) {
     }
 
-    public function detectMethodReflection(MethodReflection|FunctionReflection $reflection): bool
+    private function detect(?string $fileName = null): bool
     {
-        if ($reflection instanceof MethodReflection) {
-            $declaringClassReflection = $reflection->getDeclaringClass();
-            $fileName = $declaringClassReflection->getFileName();
-        } else {
-            $fileName = $reflection->getFileName();
-        }
-
         // probably internal
         if ($fileName === null) {
             return false;
@@ -31,5 +24,20 @@ final readonly class VendorLocationDetector
 
         $normalizedFileName = $this->filePathHelper->normalizePathAndSchema($fileName);
         return str_contains($normalizedFileName, '/vendor/');
+    }
+
+    public function detectMethodReflection(MethodReflection $reflection): bool
+    {
+        $declaringClassReflection = $reflection->getDeclaringClass();
+        $fileName = $declaringClassReflection->getFileName();
+
+        return $this->detect($fileName);
+    }
+
+    public function detectFunctionReflection(FunctionReflection $reflection): bool
+    {
+        $fileName = $reflection->getFileName();
+
+        return $this->detect($fileName);
     }
 }

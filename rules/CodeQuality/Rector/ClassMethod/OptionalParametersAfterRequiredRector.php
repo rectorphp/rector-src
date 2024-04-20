@@ -199,7 +199,11 @@ CODE_SAMPLE
         New_|MethodCall|ClassMethod|Function_|StaticCall|FuncCall $node,
         Scope $scope
     ): ?array {
-        if ($this->vendorLocationDetector->detectMethodReflection($reflection)) {
+        if ($reflection instanceof MethodReflection && $this->vendorLocationDetector->detectMethodReflection($reflection)) {
+            return null;
+        }
+
+        if ($reflection instanceof FunctionReflection && $this->vendorLocationDetector->detectFunctionReflection($reflection)) {
             return null;
         }
 
