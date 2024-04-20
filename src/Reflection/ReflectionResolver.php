@@ -16,6 +16,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionReflection;
@@ -178,6 +179,11 @@ final readonly class ReflectionResolver
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
         return $this->resolveMethodReflection($className, $methodName, $scope);
+    }
+
+    public function resolveFunctionReflectionFromFunction(Function_ $function, Scope $scope): ?FunctionReflection
+    {
+        return $this->reflectionProvider->getFunction(new Name($this->nodeNameResolver->getName($function)), $scope);
     }
 
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection

@@ -6,6 +6,7 @@ namespace Rector\CodingStyle\Reflection;
 
 use PHPStan\Reflection\MethodReflection;
 use Rector\FileSystem\FilePathHelper;
+use PHPStan\Reflection\FunctionReflection;
 
 final readonly class VendorLocationDetector
 {
@@ -14,10 +15,14 @@ final readonly class VendorLocationDetector
     ) {
     }
 
-    public function detectMethodReflection(MethodReflection $methodReflection): bool
+    public function detectMethodReflection(MethodReflection|FunctionReflection $reflection): bool
     {
-        $declaringClassReflection = $methodReflection->getDeclaringClass();
-        $fileName = $declaringClassReflection->getFileName();
+        if ($reflection instanceof MethodReflection) {
+            $declaringClassReflection = $reflection->getDeclaringClass();
+            $fileName = $declaringClassReflection->getFileName();
+        } else {
+            $fileName = $reflection->getFileName();
+        }
 
         // probably internal
         if ($fileName === null) {
