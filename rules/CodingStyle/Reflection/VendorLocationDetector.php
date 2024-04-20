@@ -15,17 +15,17 @@ final readonly class VendorLocationDetector
     ) {
     }
 
-    public function detectMethodReflection(MethodReflection $reflection): bool
+    public function detectMethodReflection(MethodReflection $methodReflection): bool
     {
-        $declaringClassReflection = $reflection->getDeclaringClass();
+        $declaringClassReflection = $methodReflection->getDeclaringClass();
         $fileName = $declaringClassReflection->getFileName();
 
         return $this->detect($fileName);
     }
 
-    public function detectFunctionReflection(FunctionReflection $reflection): bool
+    public function detectFunctionReflection(FunctionReflection $functionReflection): bool
     {
-        $fileName = $reflection->getFileName();
+        $fileName = $functionReflection->getFileName();
 
         return $this->detect($fileName);
     }
