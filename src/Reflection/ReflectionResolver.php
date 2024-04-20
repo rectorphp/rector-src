@@ -183,7 +183,17 @@ final readonly class ReflectionResolver
 
     public function resolveFunctionReflectionFromFunction(Function_ $function, Scope $scope): ?FunctionReflection
     {
-        return $this->reflectionProvider->getFunction(new Name($this->nodeNameResolver->getName($function)), $scope);
+        $name = $this->nodeNameResolver->getName($function);
+        if ($name === null) {
+            return null;
+        }
+
+        $functionName = new Name($name);
+        if ($this->reflectionProvider->hasFunction($functionName, $scope)) {
+            return $this->reflectionProvider->getFunction($functionName, $scope);
+        }
+
+        return null;
     }
 
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection
