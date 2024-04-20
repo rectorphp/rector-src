@@ -114,7 +114,7 @@ final class ClassRenamer
             return $classReflection->isInterface();
         }
 
-        return $fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true;
+        return false;
     }
 
     /**
@@ -122,6 +122,10 @@ final class ClassRenamer
      */
     private function refactorName(FullyQualified $fullyQualified, array $oldToNewClasses): ?FullyQualified
     {
+        if ($fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true) {
+            return null;
+        }
+
         $stringName = $fullyQualified->toString();
         $newName = $oldToNewClasses[$stringName] ?? null;
 
