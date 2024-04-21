@@ -7,6 +7,7 @@ namespace Rector\NodeNameResolver;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -75,6 +76,10 @@ final class NodeNameResolver
             return false;
         }
 
+        if ($node instanceof NullsafeMethodCall) {
+            return false;
+        }
+
         if ($node instanceof StaticCall) {
             return false;
         }
@@ -101,6 +106,10 @@ final class NodeNameResolver
         }
 
         if ($node instanceof MethodCall) {
+            return false;
+        }
+
+        if ($node instanceof NullsafeMethodCall) {
             return false;
         }
 
@@ -143,7 +152,7 @@ final class NodeNameResolver
             return $namespacedName;
         }
 
-        if (($node instanceof MethodCall || $node instanceof StaticCall) && $this->isCallOrIdentifier($node->name)) {
+        if (($node instanceof MethodCall || $node instanceof StaticCall || $node instanceof NullsafeMethodCall) && $this->isCallOrIdentifier($node->name)) {
             return null;
         }
 
