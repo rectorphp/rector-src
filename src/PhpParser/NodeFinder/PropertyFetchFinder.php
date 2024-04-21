@@ -71,7 +71,7 @@ final readonly class PropertyFetchFinder
     }
 
     /**
-     * @return PropertyFetch[]|StaticPropertyFetch[]
+     * @return PropertyFetch[]|StaticPropertyFetch[]|NullsafePropertyFetch[]
      */
     public function findLocalPropertyFetchesByName(Class_ $class, string $paramName): array
     {
