@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\NodeAnalyzer;
 
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -50,7 +51,7 @@ final readonly class CallCollectionAnalyzer
         return false;
     }
 
-    private function isSelfStatic(MethodCall|StaticCall $call): bool
+    private function isSelfStatic(MethodCall|StaticCall|NullsafeMethodCall $call): bool
     {
         return $call instanceof StaticCall && $call->class instanceof Name && in_array(
             $call->class->toString(),
@@ -59,7 +60,7 @@ final readonly class CallCollectionAnalyzer
         );
     }
 
-    private function shouldSkip(StaticCall|MethodCall $call, string $classMethodName): bool
+    private function shouldSkip(StaticCall|MethodCall|NullsafeMethodCall $call, string $classMethodName): bool
     {
         if (! $call->name instanceof Identifier) {
             return true;
