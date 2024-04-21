@@ -23,7 +23,7 @@ final readonly class CallCollectionAnalyzer
     }
 
     /**
-     * @param StaticCall[]|MethodCall[] $calls
+     * @param StaticCall[]|MethodCall[]|NullsafeMethodCall[] $calls
      */
     public function isExists(array $calls, string $classMethodName, string $className): bool
     {
