@@ -22,7 +22,7 @@ final readonly class PropertyWriteonlyAnalyzer
     public function hasClassDynamicPropertyNames(Class_ $class): bool
     {
         return (bool) $this->betterNodeFinder->findFirst($class, static function (Node $node): bool {
-            if (! $node instanceof PropertyFetch) {
+            if (! $node instanceof PropertyFetch && !$node instanceof Expr\NullsafePropertyFetch) {
                 return false;
             }
 
