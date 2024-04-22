@@ -14,6 +14,7 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLo
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @api phpstan external
@@ -32,10 +33,17 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
+    private ReflectionProvider $reflectionProvider;
+
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
         private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
     ) {
+    }
+
+    public function autowire(ReflectionProvider $reflectionProvider)
+    {
+        $this->reflectionProvider = $reflectionProvider;
     }
 
     public function setFilePath(string $filePath): void
@@ -90,6 +98,18 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
                         return true;
                     }
                 });
+
+                $reflections = $sourceLocator->locateIdentifiersByType($reflector, new class() extends IdentifierType {
+                    public function isClass(): bool
+                    {
+                        return true;
+                    }
+                });
+
+                foreach ($reflections as $reflection) {
+                    // make 'classes' collection
+                    $this->reflectionProvider->getClass($reflection->getName());
+                }
             } catch (CouldNotReadFileException) {
             }
         }

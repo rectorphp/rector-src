@@ -7,6 +7,7 @@ namespace Rector\StaticReflection;
 use Rector\FileSystem\FileAndDirectoryFilter;
 use Rector\FileSystem\FilesystemTweaker;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @see https://phpstan.org/blog/zero-config-analysis-with-static-reflection
@@ -17,8 +18,10 @@ final readonly class DynamicSourceLocatorDecorator
     public function __construct(
         private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
-        private FilesystemTweaker $filesystemTweaker
+        private FilesystemTweaker $filesystemTweaker,
+        ReflectionProvider $reflectionProvider
     ) {
+        $this->dynamicSourceLocatorProvider->autowire($reflectionProvider);
     }
 
     /**
