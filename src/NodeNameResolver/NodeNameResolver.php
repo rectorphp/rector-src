@@ -137,7 +137,10 @@ final class NodeNameResolver
             return $namespacedName;
         }
 
-        if (($node instanceof CallLike) && $this->isCallOrIdentifier($node->name)) {
+        if (
+            ($node instanceof MethodCall || $node instanceof StaticCall || $node instanceof NullsafeMethodCall)
+            && $this->isCallOrIdentifier($node->name)
+        ) {
             return null;
         }
 
