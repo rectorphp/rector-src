@@ -240,6 +240,7 @@ final class NodeNameResolver
     private function isSingleName(Node $node, string $desiredName): bool
     {
         if ($node instanceof CallLike) {
+            // method call cannot have a name, only the variable or method name
             return false;
         }
 
