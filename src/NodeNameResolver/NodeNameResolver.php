@@ -7,6 +7,7 @@ namespace Rector\NodeNameResolver;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -94,7 +95,7 @@ final class NodeNameResolver
             return false;
         }
 
-        if ($node instanceof CallLike) {
+        if ($node instanceof CallLike && !$node instanceof FuncCall) {
             return false;
         }
 
@@ -235,7 +236,7 @@ final class NodeNameResolver
 
     private function isSingleName(Node $node, string $desiredName): bool
     {
-        if ($node instanceof CallLike && !$node instanceof Expr\FuncCall) {
+        if ($node instanceof CallLike && !$node instanceof FuncCall) {
             // method call cannot have a name, only the variable or method name
             return false;
         }
