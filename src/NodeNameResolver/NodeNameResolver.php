@@ -73,10 +73,6 @@ final class NodeNameResolver
      */
     public function isName(Node | array $node, string $name): bool
     {
-        if ($node instanceof CallLike) {
-            return false;
-        }
-
         $nodes = is_array($node) ? $node : [$node];
 
         foreach ($nodes as $node) {
@@ -239,7 +235,7 @@ final class NodeNameResolver
 
     private function isSingleName(Node $node, string $desiredName): bool
     {
-        if ($node instanceof CallLike) {
+        if ($node instanceof CallLike && !$node instanceof Expr\FuncCall) {
             // method call cannot have a name, only the variable or method name
             return false;
         }
