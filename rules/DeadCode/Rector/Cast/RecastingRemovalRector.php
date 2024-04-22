@@ -96,7 +96,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $nodeType = $this->getType($node->expr);
+        $nodeType = $this->nodeTypeResolver->getNativeType($node->expr);
         if ($nodeType instanceof MixedType) {
             return null;
         }
