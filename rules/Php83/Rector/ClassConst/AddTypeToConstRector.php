@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -20,7 +21,10 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\PhpParser\Node\Value\ValueResolver;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -33,6 +37,7 @@ final class AddTypeToConstRector extends AbstractRector implements MinPhpVersion
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -160,12 +165,13 @@ CODE_SAMPLE
             return new Identifier('float');
         }
 
-        if ($expr instanceof ConstFetch && $expr->name->toLowerString() !== 'null') {
-            return new Identifier('bool');
-        }
+        if ($expr instanceof ConstFetch) {
+            if ($expr->name->toLowerString() === 'null') {
+                return new Identifier('null');
+            }
 
-        if ($expr instanceof ConstFetch && $expr->name->toLowerString() === 'null') {
-            return new Identifier('null');
+            $type = $this->nodeTypeResolver->getNativeType($expr);
+            return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
         }
 
         if ($expr instanceof Array_) {
