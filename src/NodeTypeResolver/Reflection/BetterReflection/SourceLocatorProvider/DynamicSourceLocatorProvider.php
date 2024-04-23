@@ -130,6 +130,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         // use AggregateSourceLocator from property fetch, otherwise, it will cause infinite loop
+        // checked at https://github.com/samsonasik/ci4-album/pull/16
         $reflector = new DefaultReflector($this->aggregateSourceLocator);
 
         foreach ($sourceLocators as $sourceLocator) {
