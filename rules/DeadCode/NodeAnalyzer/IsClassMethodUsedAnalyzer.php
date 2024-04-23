@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\NodeAnalyzer;
 
+use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
@@ -95,7 +96,7 @@ final readonly class IsClassMethodUsedAnalyzer
         $className = (string) $this->nodeNameResolver->getName($class);
 
         /** @var Node\Expr\NullsafeMethodCall[] $methodCalls */
-        $methodCalls = $this->betterNodeFinder->findInstanceOf($class, Node\Expr\NullsafeMethodCall::class);
+        $methodCalls = $this->betterNodeFinder->findInstanceOf($class, NullsafeMethodCall::class);
         return $this->callCollectionAnalyzer->isExists($methodCalls, $classMethodName, $className);
     }
 
