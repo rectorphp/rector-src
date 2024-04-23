@@ -119,10 +119,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        if (! $this->aggregateSourceLocator instanceof AggregateSourceLocator) {
-            return;
-        }
-
         // in PHPUnit Rector fixture, parent and child for test needs in same file
         // no need to collect classes
         if ($isPHPUnitRun) {
