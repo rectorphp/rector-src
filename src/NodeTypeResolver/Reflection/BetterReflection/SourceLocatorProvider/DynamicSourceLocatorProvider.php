@@ -90,7 +90,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
 
-        $this->collectClasses($sourceLocators, $isPHPUnitRun);
+        $this->collectClasses($aggregateSourceLocator, $sourceLocators, $isPHPUnitRun);
 
         return $aggregateSourceLocator;
     }
@@ -113,7 +113,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
-    private function collectClasses(array $sourceLocators, bool $isPHPUnitRun): void
+    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators, bool $isPHPUnitRun): void
     {
         if ($sourceLocators === []) {
             return;
@@ -129,9 +129,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        // use AggregateSourceLocator from property fetch, otherwise, it will cause infinite loop
-        // checked at https://github.com/samsonasik/ci4-album/pull/16
-        $reflector = new DefaultReflector($this->aggregateSourceLocator);
+        $reflector = new DefaultReflector($aggregateSourceLocator);
 
         foreach ($sourceLocators as $sourceLocator) {
             // trigger collect "classes" on get class on locate identifier
