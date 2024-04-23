@@ -119,7 +119,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        // no need to collect classes on single file, will auto called
+        // no need to collect classes on single file, will auto collected
         if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
             return;
         }
