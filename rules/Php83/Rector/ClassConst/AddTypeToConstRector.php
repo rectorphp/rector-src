@@ -169,7 +169,13 @@ CODE_SAMPLE
             }
 
             $type = $this->nodeTypeResolver->getNativeType($expr);
-            return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
+            $nodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
+
+            if (! $nodeType instanceof Identifier) {
+                return null;
+            }
+
+            return $nodeType;
         }
 
         if ($expr instanceof Array_) {
