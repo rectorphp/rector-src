@@ -11,6 +11,7 @@ use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
 use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
+use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use PHPStan\Reflection\ReflectionProvider;
@@ -110,7 +111,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     }
 
     /**
-     * @param OptimizedSingleFileSourceLocator[]|\PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator[] $sourceLocators
+     * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
     private function collectClassesInDirectory(array $sourceLocators): void
     {

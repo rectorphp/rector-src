@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\StaticReflection;
 
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\FileSystem\FileAndDirectoryFilter;
 use Rector\FileSystem\FilesystemTweaker;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
-use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @see https://phpstan.org/blog/zero-config-analysis-with-static-reflection

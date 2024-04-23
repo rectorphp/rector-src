@@ -24,7 +24,7 @@ final readonly class FamilyRelationsAnalyzer
     /**
      * @return ClassReflection[]
      */
-    public function getChildrenOfClassReflection(ClassReflection $desiredClassReflection) : array
+    public function getChildrenOfClassReflection(ClassReflection $desiredClassReflection): array
     {
         if ($desiredClassReflection->isFinalByKeyword()) {
             return [];
@@ -35,7 +35,7 @@ final readonly class FamilyRelationsAnalyzer
         $childrenClassReflections = [];
 
         foreach ($classReflections as $classReflection) {
-            if (!$classReflection->isSubclassOf($desiredClassReflection->getName())) {
+            if (! $classReflection->isSubclassOf($desiredClassReflection->getName())) {
                 continue;
             }
 
