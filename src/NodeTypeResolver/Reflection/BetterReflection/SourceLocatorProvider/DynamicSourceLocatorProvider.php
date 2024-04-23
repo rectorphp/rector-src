@@ -127,8 +127,10 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $reflector = new DefaultReflector($this->aggregateSourceLocator);
 
         foreach ($sourceLocators as $sourceLocator) {
-            // trigger collect "classes" on get class on locate identifier in directory
+            // trigger collect "classes" on get class on locate identifier
             try {
+                // in PHPUnit Rector fixture, parent and child for test needs in same file
+                // no need to collect classes
                 if ($sourceLocator instanceof OptimizedSingleFileSourceLocator && $isPHPUnitRun) {
                     continue;
                 }
