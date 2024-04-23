@@ -90,7 +90,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
 
-        $this->collectClassesInDirectory($sourceLocators);
+        $this->collectClasses($sourceLocators, $isPHPUnitRun);
 
         return $aggregateSourceLocator;
     }
@@ -113,7 +113,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
-    private function collectClassesInDirectory(array $sourceLocators): void
+    private function collectClasses(array $sourceLocators, bool $isPHPUnitRun): void
     {
         if ($sourceLocators === []) {
             return;
@@ -129,7 +129,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         foreach ($sourceLocators as $sourceLocator) {
             // trigger collect "classes" on get class on locate identifier in directory
             try {
-                if ($sourceLocator instanceof OptimizedSingleFileSourceLocator) {
+                if ($sourceLocator instanceof OptimizedSingleFileSourceLocator && $isPHPUnitRun) {
                     continue;
                 }
 
