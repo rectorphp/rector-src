@@ -90,7 +90,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
 
-        $this->collectClasses($aggregateSourceLocator, $sourceLocators, $isPHPUnitRun);
+        $this->collectClasses($aggregateSourceLocator, $sourceLocators);
 
         return $aggregateSourceLocator;
     }
@@ -113,15 +113,14 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
-    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators, bool $isPHPUnitRun): void
+    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators): void
     {
         if ($sourceLocators === []) {
             return;
         }
 
-        // in PHPUnit Rector fixture, parent and child for test needs in same file
-        // no need to collect classes
-        if ($isPHPUnitRun) {
+        // no need to collect classes on single file, will auto called
+        if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
             return;
         }
 
