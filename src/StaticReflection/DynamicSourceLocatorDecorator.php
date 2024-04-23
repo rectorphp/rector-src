@@ -21,7 +21,7 @@ final readonly class DynamicSourceLocatorDecorator
         private FilesystemTweaker $filesystemTweaker,
         ReflectionProvider $reflectionProvider
     ) {
-        $this->dynamicSourceLocatorProvider->autowire($reflectionProvider);
+        $this->dynamicSourceLocatorProvider->setReflectionProvider($reflectionProvider);
     }
 
     /**

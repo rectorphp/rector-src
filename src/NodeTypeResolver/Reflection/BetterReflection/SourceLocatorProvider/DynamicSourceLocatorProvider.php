@@ -8,13 +8,14 @@ use PHPStan\BetterReflection\Identifier\IdentifierType;
 use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
+use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
-use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @api phpstan external
@@ -41,7 +42,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(ReflectionProvider $reflectionProvider)
+    public function setReflectionProvider(ReflectionProvider $reflectionProvider): void
     {
         $this->reflectionProvider = $reflectionProvider;
     }
@@ -77,6 +78,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         $sourceLocators = [];
+
         foreach ($this->filePaths as $file) {
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
         }
@@ -85,31 +87,11 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             $sourceLocators[] = $this->optimizedDirectorySourceLocatorFactory->createByDirectory($directory);
         }
 
-        $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
+        $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
 
-        if (! $isPHPUnitRun) {
-            $reflector = new DefaultReflector($this->aggregateSourceLocator);
-            foreach ($sourceLocators as $sourceLocator) {
-                // trigger collect "classes" on get class on locate identifier
-                // which call Reflector->reflectClass()
-                try {
-                    $reflections = $sourceLocator->locateIdentifiersByType($reflector, new class() extends IdentifierType {
-                        public function isClass(): bool
-                        {
-                            return true;
-                        }
-                    });
+        $this->collectClassesInDirectory($sourceLocators);
 
-                    foreach ($reflections as $reflection) {
-                        // make 'classes' collection
-                        $this->reflectionProvider->getClass($reflection->getName());
-                    }
-                } catch (CouldNotReadFileException) {
-                }
-            }
-        }
-
-        return $this->aggregateSourceLocator;
+        return $aggregateSourceLocator;
     }
 
     public function isPathsEmpty(): bool
@@ -125,5 +107,50 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $this->filePaths = [];
         $this->directories = [];
         $this->aggregateSourceLocator = null;
+    }
+
+    /**
+     * @param OptimizedSingleFileSourceLocator[]|\PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator[] $sourceLocators
+     */
+    private function collectClassesInDirectory(array $sourceLocators): void
+    {
+        if ($sourceLocators === []) {
+            return;
+        }
+
+        if (! $this->aggregateSourceLocator instanceof AggregateSourceLocator) {
+            return;
+        }
+
+        // use AggregateSourceLocator from property fetch, otherwise, it will cause infinite loop
+        $reflector = new DefaultReflector($this->aggregateSourceLocator);
+
+        foreach ($sourceLocators as $sourceLocator) {
+            // trigger collect "classes" on get class on locate identifier in directory
+            try {
+                if ($sourceLocator instanceof OptimizedSingleFileSourceLocator) {
+                    continue;
+                }
+
+                $reflections = $sourceLocator->locateIdentifiersByType(
+                    $reflector,
+                    new class() extends IdentifierType {
+                        public function isClass(): bool
+                        {
+                            return true;
+                        }
+                    }
+                );
+
+                foreach ($reflections as $reflection) {
+                    // make 'classes' collection
+                    try {
+                        $this->reflectionProvider->getClass($reflection->getName());
+                    } catch (ClassNotFoundException) {
+                    }
+                }
+            } catch (CouldNotReadFileException) {
+            }
+        }
     }
 }
