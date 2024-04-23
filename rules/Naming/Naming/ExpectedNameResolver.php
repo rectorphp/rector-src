@@ -89,6 +89,10 @@ final readonly class ExpectedNameResolver
         $className = $this->nodeNameResolver->getName($new->class);
         $fullyQualifiedObjectType = new FullyQualifiedObjectType($className);
 
+        if ($fullyQualifiedObjectType->isInstanceOf(\DateTimeInterface::class)->yes()) {
+            return null;
+        }
+
         $expectedName = $this->propertyNaming->getExpectedNameFromType($fullyQualifiedObjectType);
         if (! $expectedName instanceof ExpectedName) {
             return null;
