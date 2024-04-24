@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\StaticReflection;
 
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\FileSystem\FileAndDirectoryFilter;
 use Rector\FileSystem\FilesystemTweaker;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
@@ -18,10 +17,8 @@ final readonly class DynamicSourceLocatorDecorator
     public function __construct(
         private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
-        private FilesystemTweaker $filesystemTweaker,
-        ReflectionProvider $reflectionProvider
+        private FilesystemTweaker $filesystemTweaker
     ) {
-        $this->dynamicSourceLocatorProvider->setReflectionProvider($reflectionProvider);
     }
 
     /**

@@ -35,7 +35,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
-    private ?ReflectionProvider $reflectionProvider = null;
+    private ReflectionProvider $reflectionProvider;
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
@@ -121,10 +121,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         // no need to collect classes on single file, will auto collected
         if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
-            return;
-        }
-
-        if (! $this->reflectionProvider instanceof ReflectionProvider) {
             return;
         }
 
