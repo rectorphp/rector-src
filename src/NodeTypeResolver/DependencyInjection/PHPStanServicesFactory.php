@@ -139,10 +139,7 @@ MESSAGE_ERROR;
      */
     public function createDynamicSourceLocatorProvider(): DynamicSourceLocatorProvider
     {
-        $dynamicSourceLocatorProvider = $this->container->getByType(DynamicSourceLocatorProvider::class);
-        $dynamicSourceLocatorProvider->setReflectionProvider($this->container->getByType(ReflectionProvider::class));
-
-        return $dynamicSourceLocatorProvider;
+        return $this->container->getByType(DynamicSourceLocatorProvider::class);
     }
 
     /**

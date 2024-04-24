@@ -43,7 +43,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function setReflectionProvider(ReflectionProvider $reflectionProvider): void
+    public function autowire(ReflectionProvider $reflectionProvider): void
     {
         $this->reflectionProvider = $reflectionProvider;
     }
