@@ -7,12 +7,11 @@ namespace Rector\Php72\Rector\Assign;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\List_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeManipulator\AssignManipulator;
+use Rector\Php72\ValueObject\ListAndEach;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -74,31 +73,32 @@ CODE_SAMPLE
             return null;
         }
 
-        $assign = $node->expr;
-        if ($this->shouldSkipAssign($assign)) {
+        $listAndEach = $this->assignManipulator->matchListAndEach($node->expr);
+        if (! $listAndEach instanceof ListAndEach) {
             return null;
         }
 
-        /** @var List_ $listNode */
-        $listNode = $assign->var;
+        if ($this->shouldSkipAssign($listAndEach)) {
+            return null;
+        }
 
-        /** @var FuncCall $eachFuncCall */
-        $eachFuncCall = $assign->expr;
+        $list = $listAndEach->getList();
+        $eachFuncCall = $listAndEach->getEachFuncCall();
 
         // only key: list($key, ) = each($values);
-        if ($listNode->items[0] instanceof ArrayItem && ! $listNode->items[1] instanceof ArrayItem) {
+        if ($list->items[0] instanceof ArrayItem && ! $list->items[1] instanceof ArrayItem) {
             $keyFuncCall = $this->nodeFactory->createFuncCall('key', $eachFuncCall->args);
-            $keyFuncCallAssign = new Assign($listNode->items[0]->value, $keyFuncCall);
+            $keyFuncCallAssign = new Assign($list->items[0]->value, $keyFuncCall);
 
             return new Expression($keyFuncCallAssign);
         }
 
         // only value: list(, $value) = each($values);
-        if ($listNode->items[1] instanceof ArrayItem && ! $listNode->items[0] instanceof ArrayItem) {
+        if ($list->items[1] instanceof ArrayItem && ! $list->items[0] instanceof ArrayItem) {
             $nextFuncCall = $this->nodeFactory->createFuncCall('next', $eachFuncCall->args);
             $currentFuncCall = $this->nodeFactory->createFuncCall('current', $eachFuncCall->args);
 
-            $secondArrayItem = $listNode->items[1];
+            $secondArrayItem = $list->items[1];
             $currentAssign = new Assign($secondArrayItem->value, $currentFuncCall);
 
             return [new Expression($currentAssign), new Expression($nextFuncCall)];
@@ -107,7 +107,7 @@ CODE_SAMPLE
         // both: list($key, $value) = each($values);
         $currentFuncCall = $this->nodeFactory->createFuncCall('current', $eachFuncCall->args);
 
-        $secondArrayItem = $listNode->items[1];
+        $secondArrayItem = $list->items[1];
         if (! $secondArrayItem instanceof ArrayItem) {
             throw new ShouldNotHappenException();
         }
@@ -117,7 +117,7 @@ CODE_SAMPLE
         $nextFuncCall = $this->nodeFactory->createFuncCall('next', $eachFuncCall->args);
         $keyFuncCall = $this->nodeFactory->createFuncCall('key', $eachFuncCall->args);
 
-        $firstArrayItem = $listNode->items[0];
+        $firstArrayItem = $list->items[0];
         if (! $firstArrayItem instanceof ArrayItem) {
             throw new ShouldNotHappenException();
         }
@@ -127,24 +127,18 @@ CODE_SAMPLE
         return [new Expression($keyAssign), new Expression($currentAssign), new Expression($nextFuncCall)];
     }
 
-    private function shouldSkipAssign(Assign $assign): bool
+    private function shouldSkipAssign(ListAndEach $listAndEach): bool
     {
-        if (! $this->assignManipulator->isListToEachAssign($assign)) {
-            return true;
-        }
-
-        /** @var List_ $listNode */
-        $listNode = $assign->var;
-
-        if (count($listNode->items) !== 2) {
+        $list = $listAndEach->getList();
+        if (count($list->items) !== 2) {
             return true;
         }
 
         // empty list → cannot handle
-        if ($listNode->items[0] instanceof ArrayItem) {
+        if ($list->items[0] instanceof ArrayItem) {
             return false;
         }
 
-        return ! $listNode->items[1] instanceof ArrayItem;
+        return ! $list->items[1] instanceof ArrayItem;
     }
 }
