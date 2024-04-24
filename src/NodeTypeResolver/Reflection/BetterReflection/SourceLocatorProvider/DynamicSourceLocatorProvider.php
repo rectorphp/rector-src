@@ -125,18 +125,14 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         $reflector = new DefaultReflector($aggregateSourceLocator);
+        $identifierClass = new IdentifierType(IdentifierType::IDENTIFIER_CLASS);
 
         foreach ($sourceLocators as $sourceLocator) {
             // trigger collect "classes" on get class on locate identifier
             try {
                 $reflections = $sourceLocator->locateIdentifiersByType(
                     $reflector,
-                    new class() extends IdentifierType {
-                        public function isClass(): bool
-                        {
-                            return true;
-                        }
-                    }
+                    $identifierClass
                 );
 
                 foreach ($reflections as $reflection) {
