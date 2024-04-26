@@ -179,7 +179,10 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     private function locateCachedClassNames(array $classNamesCache): void
     {
         foreach ($classNamesCache as $classNameCache) {
-            $this->reflectionProvider->getClass($classNameCache);
+            try {
+                $this->reflectionProvider->getClass($classNameCache);
+            } catch (ClassNotFoundException) {
+            }
         }
     }
 }
