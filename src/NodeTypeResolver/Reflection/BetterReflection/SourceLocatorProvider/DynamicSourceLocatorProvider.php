@@ -19,6 +19,7 @@ use Rector\Caching\Cache;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Rector\Util\FileHasher;
 
 /**
  * @api phpstan external
@@ -46,16 +47,19 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private Cache $cache;
 
+    private FileHasher $fileHasher;
+
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
         private readonly OptimizedDirectorySourceLocatorFactory $optimizedDirectorySourceLocatorFactory
     ) {
     }
 
-    public function autowire(ReflectionProvider $reflectionProvider, Cache $cache): void
+    public function autowire(ReflectionProvider $reflectionProvider, Cache $cache, FileHasher $fileHasher): void
     {
         $this->reflectionProvider = $reflectionProvider;
         $this->cache = $cache;
+        $this->fileHasher = $fileHasher;
     }
 
     public function setFilePath(string $filePath): void
@@ -90,17 +94,20 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         $sourceLocators = [];
 
+        $paths = [];
         foreach ($this->filePaths as $file) {
             $sourceLocators[] = new OptimizedSingleFileSourceLocator($this->fileNodesFetcher, $file);
+            $paths[] = realpath($file);
         }
 
         foreach ($this->directories as $directory) {
             $sourceLocators[] = $this->optimizedDirectorySourceLocatorFactory->createByDirectory($directory);
+            $paths[] = realpath($directory);
         }
 
         $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
 
-        $this->collectClasses($aggregateSourceLocator, $sourceLocators);
+        $this->collectClasses($aggregateSourceLocator, $sourceLocators, $paths);
 
         return $aggregateSourceLocator;
     }
@@ -122,8 +129,9 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
+     * @param string[] $paths
      */
-    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators): void
+    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators, array $paths): void
     {
         if ($sourceLocators === []) {
             return;
@@ -134,7 +142,9 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        $classNamesCache = $this->cache->load(self::CLASSNAMES_CACHE, CacheKey::CLASSNAMES_HASH_KEY);
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_'. $this->fileHasher->hash(serialize($paths));
+        $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
+
         if (is_array($classNamesCache)) {
             $this->locateCachedClassNames($classNamesCache);
             return;
@@ -160,7 +170,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             }
         }
 
-        $this->cache->save(self::CLASSNAMES_CACHE, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
+        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
     }
 
     /**
