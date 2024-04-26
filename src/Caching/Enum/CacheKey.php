@@ -22,5 +22,5 @@ final class CacheKey
     /**
      * @var string
      */
-    public const PATHS_HASH_KEY = 'paths_hash';
+    public const CLASSNAMES_HASH_KEY = 'classnames_hash';
 }

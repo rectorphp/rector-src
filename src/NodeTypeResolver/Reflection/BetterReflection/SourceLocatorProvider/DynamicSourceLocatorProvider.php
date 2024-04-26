@@ -26,6 +26,11 @@ use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 final class DynamicSourceLocatorProvider implements ResetableInterface
 {
     /**
+     * @var string
+     */
+    private const CLASSNAMES_CACHE = 'classname_cache';
+
+    /**
      * @var string[]
      */
     private array $filePaths = [];
@@ -38,12 +43,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
     private ReflectionProvider $reflectionProvider;
-    private Cache $cache;
 
-    /**
-     * @var string
-     */
-    private const CLASSNAMES_CACHE = 'classname_cache';
+    private Cache $cache;
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
@@ -51,10 +52,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(
-        ReflectionProvider $reflectionProvider,
-        Cache $cache,
-    ): void
+    public function autowire(ReflectionProvider $reflectionProvider, Cache $cache): void
     {
         $this->reflectionProvider = $reflectionProvider;
         $this->cache = $cache;
@@ -136,12 +134,9 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        $classNamesCache = $this->cache->load(self::CLASSNAMES_CACHE, CacheKey::PATHS_HASH_KEY);
-        if ($classNamesCache !== []) {
-            foreach ($classNamesCache as $classNameCache) {
-                $this->reflectionProvider->getClass($classNameCache);
-            }
-
+        $classNamesCache = $this->cache->load(self::CLASSNAMES_CACHE, CacheKey::CLASSNAMES_HASH_KEY);
+        if (is_array($classNamesCache)) {
+            $this->locateCachedClassNames($classNamesCache);
             return;
         }
 
@@ -165,6 +160,16 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             }
         }
 
-        $this->cache->save(self::CLASSNAMES_CACHE, CacheKey::PATHS_HASH_KEY, $classNames);
+        $this->cache->save(self::CLASSNAMES_CACHE, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
+    }
+
+    /**
+     * @param class-string[] $classNamesCache
+     */
+    private function locateCachedClassNames(array $classNamesCache): void
+    {
+        foreach ($classNamesCache as $classNameCache) {
+            $this->reflectionProvider->getClass($classNameCache);
+        }
     }
 }
