@@ -15,6 +15,8 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourc
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Caching\Cache;
+use Rector\Caching\Enum\CacheKey;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 
@@ -36,6 +38,12 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
     private ReflectionProvider $reflectionProvider;
+    private Cache $cache;
+
+    /**
+     * @var string
+     */
+    private const CLASSNAMES_CACHE = 'classname_cache';
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
@@ -43,9 +51,13 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(ReflectionProvider $reflectionProvider): void
+    public function autowire(
+        ReflectionProvider $reflectionProvider,
+        Cache $cache,
+    ): void
     {
         $this->reflectionProvider = $reflectionProvider;
+        $this->cache = $cache;
     }
 
     public function setFilePath(string $filePath): void
@@ -124,9 +136,19 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
+        $classNamesCache = $this->cache->load(self::CLASSNAMES_CACHE, CacheKey::PATHS_HASH_KEY);
+        if ($classNamesCache !== []) {
+            foreach ($classNamesCache as $classNameCache) {
+                $this->reflectionProvider->getClass($classNameCache);
+            }
+
+            return;
+        }
+
         $reflector = new DefaultReflector($aggregateSourceLocator);
         $identifierClass = new IdentifierType(IdentifierType::IDENTIFIER_CLASS);
 
+        $classNames = [];
         foreach ($sourceLocators as $sourceLocator) {
             // trigger collect "classes" on get class on locate identifier
             try {
@@ -135,12 +157,14 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
                 foreach ($reflections as $reflection) {
                     // make 'classes' collection
                     try {
-                        $this->reflectionProvider->getClass($reflection->getName());
+                        $classNames[] = $this->reflectionProvider->getClass($reflection->getName());
                     } catch (ClassNotFoundException) {
                     }
                 }
             } catch (CouldNotReadFileException) {
             }
         }
+
+        $this->cache->save(self::CLASSNAMES_CACHE, CacheKey::PATHS_HASH_KEY, $classNames);
     }
 }

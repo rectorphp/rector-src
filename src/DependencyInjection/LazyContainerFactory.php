@@ -469,7 +469,10 @@ final class LazyContainerFactory
         $rectorConfig->afterResolving(
             DynamicSourceLocatorProvider::class,
             static function (DynamicSourceLocatorProvider $dynamicSourceLocatorProvider, Container $container): void {
-                $dynamicSourceLocatorProvider->autowire($container->make(ReflectionProvider::class));
+                $dynamicSourceLocatorProvider->autowire(
+                    $container->make(ReflectionProvider::class),
+                    $container->make(Cache::class)
+                );
             }
         );
 
