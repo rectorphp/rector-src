@@ -131,8 +131,11 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      * @param string[] $paths
      */
-    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators, array $paths): void
-    {
+    private function collectClasses(
+        AggregateSourceLocator $aggregateSourceLocator,
+        array $sourceLocators,
+        array $paths
+    ): void {
         if ($sourceLocators === []) {
             return;
         }
@@ -142,10 +145,11 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        $key = CacheKey::CLASSNAMES_HASH_KEY . '_'. $this->fileHasher->hash(serialize($paths));
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->fileHasher->hash(serialize($paths));
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
-        if (is_array($classNamesCache)) {
+        if (is_string($classNamesCache)) {
+            $classNamesCache = unserialize($classNamesCache);
             $this->locateCachedClassNames($classNamesCache);
             return;
         }
@@ -160,17 +164,22 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
                 $reflections = $sourceLocator->locateIdentifiersByType($reflector, $identifierClass);
 
                 foreach ($reflections as $reflection) {
+                    $className = $reflection->getName();
+
                     // make 'classes' collection
                     try {
-                        $classNames[] = $this->reflectionProvider->getClass($reflection->getName());
+                        $this->reflectionProvider->getClass($className);
                     } catch (ClassNotFoundException) {
+                        continue;
                     }
+
+                    $classNames[] = $className;
                 }
             } catch (CouldNotReadFileException) {
             }
         }
 
-        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
+        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, serialize($classNames));
     }
 
     /**
