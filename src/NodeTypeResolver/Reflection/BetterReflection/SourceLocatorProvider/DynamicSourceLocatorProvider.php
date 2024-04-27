@@ -124,6 +124,19 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
+     */
+    private function shouldSkipCollectClasses(array $sourceLocators): bool
+    {
+        if ($sourceLocators === []) {
+            return true;
+        }
+
+        // no need to collect classes on single file, will auto collected
+        return count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator;
+    }
+
+    /**
+     * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      * @param string[] $paths
      */
     private function collectClasses(
@@ -131,12 +144,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         array $sourceLocators,
         array $paths
     ): void {
-        if ($sourceLocators === []) {
-            return;
-        }
-
-        // no need to collect classes on single file, will auto collected
-        if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
+        if ($this->shouldSkipCollectClasses($sourceLocators)) {
             return;
         }
 
@@ -145,8 +153,10 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
         if (is_string($classNamesCache)) {
             $classNamesCache = unserialize($classNamesCache);
-            $this->locateCachedClassNames($classNamesCache);
-            return;
+            if (is_array($classNamesCache)) {
+                $this->locateCachedClassNames($classNamesCache);
+                return;
+            }
         }
 
         $reflector = new DefaultReflector($aggregateSourceLocator);
