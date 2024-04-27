@@ -9,7 +9,7 @@ jobs:
             fail-fast: false
             matrix:
                 paths:
-                    - src tests rules-tests packages
+                    - src tests rules-tests
                     - rules
                     - config utils
 
