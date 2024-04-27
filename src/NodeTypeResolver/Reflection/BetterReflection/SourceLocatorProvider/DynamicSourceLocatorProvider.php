@@ -148,11 +148,11 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->fileHasher->hash(serialize($paths));
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->fileHasher->hash(json_encode($paths));
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
         if (is_string($classNamesCache)) {
-            $classNamesCache = unserialize($classNamesCache);
+            $classNamesCache = json_decode($classNamesCache);
             if (is_array($classNamesCache)) {
                 $this->locateCachedClassNames($classNamesCache);
                 return;
@@ -184,7 +184,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             }
         }
 
-        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, serialize($classNames));
+        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, json_encode($classNames));
     }
 
     /**
