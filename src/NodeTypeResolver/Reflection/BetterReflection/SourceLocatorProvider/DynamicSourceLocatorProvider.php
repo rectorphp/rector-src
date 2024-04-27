@@ -27,11 +27,6 @@ use Rector\Util\FileHasher;
 final class DynamicSourceLocatorProvider implements ResetableInterface
 {
     /**
-     * @var string
-     */
-    private const CLASSNAMES_CACHE = 'classname_cache';
-
-    /**
      * @var string[]
      */
     private array $filePaths = [];
