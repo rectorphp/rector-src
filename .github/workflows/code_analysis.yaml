@@ -40,7 +40,7 @@ jobs:
                     -
                         name: 'Active Classes'
                         run: |
-                            vendor/bin/class-leak check bin config src rules \
+                            vendor/bin/class-leak check bin config src rules utils \
                                 --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\BasePhpDocNodeVisitorInterface" \
                                 --skip-type="Rector\\BetterPhpDocParser\\Contract\\PhpDocParser\\PhpDocNodeDecoratorInterface" \
