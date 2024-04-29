@@ -57,7 +57,7 @@
         "symplify/phpstan-rules": "^12.4.5",
         "symplify/rule-doc-generator": "^12.1.10",
         "symplify/vendor-patches": "^11.2",
-        "tomasvotruba/class-leak": "^0.2.11",
+        "tomasvotruba/class-leak": "^0.2.13",
         "tomasvotruba/cognitive-complexity": "^0.2",
         "tomasvotruba/unused-public": "^0.3",
         "tracy/tracy": "^2.9"
