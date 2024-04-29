@@ -75,6 +75,6 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_IMPLICIT_NULLABLE_PARAM_TYPE;
+        return PhpVersionFeature::NULLABLE_TYPE;
     }
 }
