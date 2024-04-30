@@ -32,7 +32,7 @@ final class IncreaseDeclareStrictTypesRector extends AbstractRector implements C
     private int $changedItemCount = 0;
 
     public function __construct(
-        private DeclareStrictTypeFinder $declareStrictTypeFinder
+        private readonly DeclareStrictTypeFinder $declareStrictTypeFinder
     ) {
     }
 
