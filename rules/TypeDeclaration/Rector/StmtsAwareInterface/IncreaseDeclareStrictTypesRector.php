@@ -7,23 +7,30 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\DeclareStrictTypeFinder;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector\DeclareStrictTypesRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector\IncreaseDeclareStrictTypesRectorTest
  */
-final class DeclareStrictTypesRector extends AbstractRector
+final class IncreaseDeclareStrictTypesRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    private const LIMIT = 'limit';
+
+    private int $limit = 10;
+
+    private int $changedItemCount = 0;
+
     public function __construct(
         private readonly DeclareStrictTypeFinder $declareStrictTypeFinder
     ) {
@@ -31,24 +38,30 @@ final class DeclareStrictTypesRector extends AbstractRector
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add declare(strict_types=1) if missing', [
-            new CodeSample(
-                <<<'CODE_SAMPLE'
+        return new RuleDefinition(
+            'Add declare strict types to a limited amount of classes at a time, to try out in the wild and increase level gradually',
+            [
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
 function someFunction()
 {
 }
 CODE_SAMPLE
-
-                ,
-                <<<'CODE_SAMPLE'
+                    ,
+                    <<<'CODE_SAMPLE'
 declare(strict_types=1);
 
 function someFunction()
 {
 }
 CODE_SAMPLE
-            ),
-        ]);
+                    ,
+                    [
+                        self::LIMIT => 10,
+                    ],
+                ),
+            ]
+        );
     }
 
     /**
@@ -59,50 +72,36 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        $filePath = $this->file->getFilePath();
-        if ($this->skipper->shouldSkipElementAndFilePath(self::class, $filePath)) {
-            return null;
-        }
-
         $newStmts = $this->file->getNewStmts();
-
         if ($newStmts === []) {
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        $rootStmt = \current($newStmts);
         $stmt = $rootStmt;
 
+        // skip classes without namespace for safety reasons
         if ($rootStmt instanceof FileWithoutNamespace) {
-            $currentStmt = current($rootStmt->stmts);
-
-            if (! $currentStmt instanceof Stmt) {
-                return null;
-            }
-
-            $nodes = $rootStmt->stmts;
-            $stmt = $currentStmt;
+            return null;
         }
 
-        // when first stmt is Declare_, verify if there is strict_types definition already,
-        // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($stmt)) {
             return null;
         }
 
-        $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
-        $strictTypesDeclare = new Declare_([$declareDeclare]);
+        // keep change withing a limit
+        if ($this->changedItemCount >= $this->limit) {
+            return null;
+        }
+
+        ++$this->changedItemCount;
+
+        $strictTypesDeclare = $this->creteStrictTypesDeclare();
 
         $rectorWithLineChange = new RectorWithLineChange(self::class, $stmt->getLine());
         $this->file->addRectorClassWithLine($rectorWithLineChange);
 
-        if ($rootStmt instanceof FileWithoutNamespace) {
-            /** @var Stmt[] $nodes */
-            $rootStmt->stmts = [$strictTypesDeclare, new Nop(), ...$nodes];
-            return [$rootStmt];
-        }
-
-        return [$strictTypesDeclare, new Nop(), ...$nodes];
+        return \array_merge([$strictTypesDeclare, new Nop()], $nodes);
     }
 
     /**
@@ -118,7 +117,19 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        // workaroudn, as Rector now only hooks to specific nodes, not arrays
+        // workaround, as Rector now only hooks to specific nodes, not arrays
         return null;
+    }
+
+    public function configure(array $configuration): void
+    {
+        Assert::keyExists($configuration, self::LIMIT);
+        $this->limit = (int) $configuration[self::LIMIT];
+    }
+
+    private function creteStrictTypesDeclare(): Declare_
+    {
+        $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
+        return new Declare_([$declareDeclare]);
     }
 }

@@ -21,6 +21,7 @@ use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
 use Rector\Utils\Finder\RectorClassFinder;
@@ -45,6 +46,7 @@ final class MissingInSetCommand extends Command
         StrvalToTypeCastRector::class,
         BoolvalToTypeCastRector::class,
         FloatvalToTypeCastRector::class,
+        IncreaseDeclareStrictTypesRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector
