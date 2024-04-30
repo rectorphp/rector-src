@@ -142,9 +142,7 @@ final readonly class FileProcessor
          * On printing, the space may be wiped, these below check compare with original file content used to verify
          * that no change actually needed
          */
-        if (! $file->getFileDiff() instanceof FileDiff && current(
-            $file->getNewStmts()
-        ) instanceof FileWithoutNamespace) {
+        if (! $file->getFileDiff() instanceof FileDiff) {
             /**
              * Handle new line or space before <?php or InlineHTML node wiped on print format preserving
              * On very first content level
