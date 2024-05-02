@@ -11,7 +11,6 @@ function tautologyTernary()
     $value = ($typeHint !== $fullyQualifiedTypeHint) ? $fullyQualifiedTypeHint : $typeHint;
 
     $value = ($typeHint === $fullyQualifiedTypeHint) ? $fullyQualifiedTypeHint : $typeHint;
-
     $value = ($typeHint === $fullyQualifiedTypeHint) ? $typeHint : $fullyQualifiedTypeHint;
 }
 
@@ -29,9 +28,8 @@ function tautologyTernary()
     $value = $fullyQualifiedTypeHint;
     $value = $fullyQualifiedTypeHint;
 
-    $value = $fullyQualifiedTypeHint;
-
     $value = $typeHint;
+    $value = $fullyQualifiedTypeHint;
 }
 
 ?>
