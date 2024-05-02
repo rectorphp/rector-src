@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector\Fixture;
 
-final class DemoFile
+final class IdenticalCompareLeft
 {
     public function run(string $param)
     {
@@ -21,7 +21,7 @@ final class DemoFile
 
 namespace Rector\Tests\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector\Fixture;
 
-final class DemoFile
+final class IdenticalCompareLeft
 {
     public function run(string $param)
     {
