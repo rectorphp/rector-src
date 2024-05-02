@@ -10,6 +10,12 @@ final class IdenticalCompareLeft
 		    echo 'asd' . $foo . 'def';
     }
 
+    public function run2(string $param)
+    {
+        $foo = '' === $this->bar($param) ? '' : $this->bar($param);
+		    echo 'asd' . $foo . 'def';
+    }
+
     private function bar(string $value)
     {
         return trim($value);
@@ -25,6 +31,12 @@ namespace Rector\Tests\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector
 final class IdenticalCompareLeft
 {
     public function run(string $param)
+    {
+        $foo = $this->bar($param);
+		    echo 'asd' . $foo . 'def';
+    }
+
+    public function run2(string $param)
     {
         $foo = $this->bar($param);
 		    echo 'asd' . $foo . 'def';
