@@ -74,7 +74,7 @@ final class SimplifyStrposLowerRector extends AbstractRector
             return null;
         }
 
-        if (Strings::match($secondArg->value->value, self::UPPERCASE_REGEX)) {
+        if (Strings::match($secondArg->value->value, self::UPPERCASE_REGEX) !== null && Strings::match($secondArg->value->value, self::UPPERCASE_REGEX) !== []) {
             return null;
         }
 
