@@ -15,6 +15,7 @@ final class IdenticalCompareLeft
         return trim($value);
     }
 }
+
 ?>
 -----
 <?php
