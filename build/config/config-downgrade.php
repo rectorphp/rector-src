@@ -28,14 +28,8 @@ final class DowngradeRectorConfig
         // Individual classes that can be excluded because
         // they are not used by Rector, and they use classes
         // loaded with "require-dev" so it'd throw an error
-
-        // use relative paths, so files are excluded on nested directory too
-        'vendor/symfony/cache/*',
         // only for composer patches on composer install - not needed in final package
         'vendor/cweagans/*',
-        // Rector doesn't use it, so we simply skip downgrading this class
-        'vendor/symfony/contracts/Cache/*',
-
         'vendor/rector/rector-generator/templates',
     ];
 }
