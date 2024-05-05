@@ -95,7 +95,7 @@ final class NodeNameResolver
             return false;
         }
 
-        if ($node instanceof CallLike && !$node instanceof FuncCall) {
+        if ($node instanceof CallLike && ! $node instanceof FuncCall) {
             return false;
         }
 
@@ -236,7 +236,7 @@ final class NodeNameResolver
 
     private function isSingleName(Node $node, string $desiredName): bool
     {
-        if ($node instanceof CallLike && !$node instanceof FuncCall) {
+        if ($node instanceof CallLike && ! $node instanceof FuncCall) {
             // method call cannot have a name, only the variable or method name
             return false;
         }
