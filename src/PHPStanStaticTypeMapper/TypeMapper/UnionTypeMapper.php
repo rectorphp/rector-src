@@ -297,6 +297,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     /**
      * @param TypeKind::* $typeKind
+     * @return Name|FullyQualified|ComplexType|Identifier|null
      */
     private function matchPhpParserUnionType(
         UnionType $unionType,
@@ -330,7 +331,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         $countPhpParserUnionedTypes = count($phpParserUnionedTypes);
         if ($countPhpParserUnionedTypes === 1) {
-            return current($phpParserUnionedTypes);
+            return $phpParserUnionedTypes[0];
         }
 
         if ($countPhpParserUnionedTypes === 0) {
