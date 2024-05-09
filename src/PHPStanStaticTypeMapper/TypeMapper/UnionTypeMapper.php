@@ -15,7 +15,6 @@ use PhpParser\Node\UnionType as PhpParserUnionType;
 use PhpParser\NodeAbstract;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -303,10 +302,6 @@ final class UnionTypeMapper implements TypeMapperInterface
              */
             $phpParserNode = $this->resolveAllowedStandaloneTypeInUnionType($unionedType, $typeKind);
             if ($phpParserNode === null) {
-                return null;
-            }
-
-            if ($phpParserNode instanceof PHPParserNodeIntersectionType && $unionedType instanceof IntersectionType) {
                 return null;
             }
 
