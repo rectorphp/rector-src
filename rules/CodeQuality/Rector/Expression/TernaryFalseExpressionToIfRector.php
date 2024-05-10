@@ -11,7 +11,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PHPStan\Analyser\Scope;
-use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Rector\AbstractScopeAwareRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -23,7 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class TernaryFalseExpressionToIfRector extends AbstractScopeAwareRector
 {
     public function __construct(
-        private readonly SideEffectNodeDetector $sideEffectNodeDetector,
         private readonly ExprAnalyzer $exprAnalyzer
     ) {
     }
