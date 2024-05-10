@@ -57,7 +57,7 @@ final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
     }
 
     private function createClassReferenceType(
-        Node $node,
+        Name $node,
         string $reference
     ): MixedType | StaticType | SelfStaticType | ObjectWithoutClassType {
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
