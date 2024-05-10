@@ -356,7 +356,6 @@ final class LazyContainerFactory
      * @var array<class-string<PhpParserNodeMapperInterface>>
      */
     private const PHP_PARSER_NODE_MAPPER_CLASSES = [
-        ExprNodeMapper::class,
         FullyQualifiedNodeMapper::class,
         IdentifierNodeMapper::class,
         IntersectionTypeNodeMapper::class,
@@ -364,6 +363,7 @@ final class LazyContainerFactory
         NullableTypeNodeMapper::class,
         StringNodeMapper::class,
         UnionTypeNodeMapper::class,
+        ExprNodeMapper::class,
     ];
 
     /**
