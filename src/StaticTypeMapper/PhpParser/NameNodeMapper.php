@@ -6,7 +6,6 @@ namespace Rector\StaticTypeMapper\PhpParser;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectWithoutClassType;
@@ -25,8 +24,7 @@ use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
 final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
 {
     public function __construct(
-        private ReflectionResolver $reflectionResolver,
-        private FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -40,13 +38,6 @@ final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
      */
     public function mapToPHPStan(Node $node): Type
     {
-        // ensure loop of PhpParserNodeMapperInterface[] based on file system not overlapped
-        // with FullyQualifiedNodeMapper that need cover FullyQualified early
-        // when Name instance of FullyQualified
-        if ($node instanceof FullyQualified) {
-            return $this->fullyQualifiedNodeMapper->mapToPHPStan($node);
-        }
-
         $name = $node->toString();
 
         if ($node->isSpecialClassName()) {
