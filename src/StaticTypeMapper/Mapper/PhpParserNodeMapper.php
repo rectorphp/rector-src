@@ -33,15 +33,7 @@ final readonly class PhpParserNodeMapper
                 continue;
             }
 
-            // do not let Expr collect all the types
-            // note: can be solve later with priorities on mapper interface, making this last
-            if ($phpParserNodeMapper->getNodeType() !== Expr::class) {
-                return $phpParserNodeMapper->mapToPHPStan($nameOrExpr);
-            }
-
-            if (! $nameOrExpr instanceof String_) {
-                return $phpParserNodeMapper->mapToPHPStan($nameOrExpr);
-            }
+            return $phpParserNodeMapper->mapToPHPStan($nameOrExpr);
         }
 
         throw new NotImplementedYetException($nameOrExpr::class);
