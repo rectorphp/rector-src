@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\Mapper;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Type;
 use Rector\Exception\NotImplementedYetException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
