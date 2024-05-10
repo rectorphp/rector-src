@@ -18,13 +18,15 @@ use PHPStan\Type\UnionType;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
+use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 
 final readonly class CallTypesResolver
 {
     public function __construct(
         private NodeTypeResolver $nodeTypeResolver,
         private TypeFactory $typeFactory,
-        private ReflectionProvider $reflectionProvider
+        private ReflectionProvider $reflectionProvider,
+        private TypeComparator $typeComparator
     ) {
     }
 
@@ -72,6 +74,11 @@ final readonly class CallTypesResolver
         // fix false positive generic type on string
         if (! $this->reflectionProvider->hasClass($argValueType->getClassName())) {
             return new MixedType();
+        }
+
+        $type = $this->nodeTypeResolver->getType($arg->value);
+        if (! $type->equals($argValueType) && $this->typeComparator->isSubtype($type, $argValueType)) {
+            return $type;
         }
 
         return $argValueType;
