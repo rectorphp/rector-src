@@ -32,10 +32,17 @@ final class DateTimeInstanceToCarbonRector extends AbstractRector
     private const DAY_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(day|days)#';
 
     /**
+     * @var string
+     * @see https://regex101.com/r/6VUUQF/1
+     */
+    private const MONTH_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(month|months)#';
+
+    /**
      * @var array<self::*_REGEX, string>
      */
     private const REGEX_TO_METHOD_NAME_MAP = [
         self::DAY_COUNT_REGEX => 'addDays',
+        self::MONTH_COUNT_REGEX => 'addMonths',
     ];
 
     public function getRuleDefinition(): RuleDefinition
@@ -81,39 +88,44 @@ CODE_SAMPLE
             $firstArg = $node->getArgs()[0];
 
             if ($firstArg->value instanceof String_) {
-                $dateTimeValue = $firstArg->value->value;
-                if ($dateTimeValue === 'now') {
-                    return new StaticCall($carbonFullyQualified, new Identifier('now'));
-                }
-
-                if ($dateTimeValue === 'today') {
-                    return new StaticCall($carbonFullyQualified, new Identifier('today'));
-                }
-
-                $hasToday = Strings::match($dateTimeValue, '#today#');
-                if ($hasToday !== null) {
-                    $todayStaticCall = new StaticCall($carbonFullyQualified, new Identifier('today'));
-
-                    foreach (self::REGEX_TO_METHOD_NAME_MAP as $regex => $methodName) {
-                        $match = Strings::match($dateTimeValue, $regex);
-                        if ($match === null) {
-                            continue;
-                        }
-
-                        $countLNumber = new LNumber((int) $match['count']);
-
-                        $todayStaticCall = new MethodCall(
-                            $todayStaticCall,
-                            new Identifier($methodName),
-                            [new Arg($countLNumber)]
-                        );
-                    }
-
-                    return $todayStaticCall;
-                }
+                return $this->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
             }
         }
 
         return null;
+    }
+
+    private function createFromDateTimeString(
+        FullyQualified $carbonFullyQualified,
+        String_ $string
+    ): MethodCall|StaticCall {
+        $dateTimeValue = $string->value;
+        if ($dateTimeValue === 'now') {
+            return new StaticCall($carbonFullyQualified, new Identifier('now'));
+        }
+
+        if ($dateTimeValue === 'today') {
+            return new StaticCall($carbonFullyQualified, new Identifier('today'));
+        }
+
+        $hasToday = Strings::match($dateTimeValue, '#today#');
+        if ($hasToday !== null) {
+            $carbonCall = new StaticCall($carbonFullyQualified, new Identifier('today'));
+        } else {
+            $carbonCall = new StaticCall($carbonFullyQualified, new Identifier('now'));
+        }
+
+        foreach (self::REGEX_TO_METHOD_NAME_MAP as $regex => $methodName) {
+            $match = Strings::match($dateTimeValue, $regex);
+            if ($match === null) {
+                continue;
+            }
+
+            $countLNumber = new LNumber((int) $match['count']);
+
+            $carbonCall = new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
+        }
+
+        return $carbonCall;
     }
 }
