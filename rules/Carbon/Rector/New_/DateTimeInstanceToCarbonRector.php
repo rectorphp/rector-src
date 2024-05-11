@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\Carbon\Rector\New_;
 
+use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -20,6 +25,19 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class DateTimeInstanceToCarbonRector extends AbstractRector
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/9vGt8r/1
+     */
+    private const DAY_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(day|days)#';
+
+    /**
+     * @var array<self::*_REGEX, string>
+     */
+    private const REGEX_TO_METHOD_NAME_MAP = [
+        self::DAY_COUNT_REGEX => 'addDays',
+    ];
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Convert new DateTime() to Carbon::*()', [
@@ -62,13 +80,36 @@ CODE_SAMPLE
         if (count($node->getArgs()) === 1) {
             $firstArg = $node->getArgs()[0];
 
-            if ($firstArg->value instanceof Node\Scalar\String_) {
-                if ($firstArg->value->value === 'now') {
+            if ($firstArg->value instanceof String_) {
+                $dateTimeValue = $firstArg->value->value;
+                if ($dateTimeValue === 'now') {
                     return new StaticCall($carbonFullyQualified, new Identifier('now'));
                 }
 
-                if ($firstArg->value->value === 'today') {
+                if ($dateTimeValue === 'today') {
                     return new StaticCall($carbonFullyQualified, new Identifier('today'));
+                }
+
+                $hasToday = Strings::match($dateTimeValue, '#today#');
+                if ($hasToday !== null) {
+                    $todayStaticCall = new StaticCall($carbonFullyQualified, new Identifier('today'));
+
+                    foreach (self::REGEX_TO_METHOD_NAME_MAP as $regex => $methodName) {
+                        $match = Strings::match($dateTimeValue, $regex);
+                        if ($match === null) {
+                            continue;
+                        }
+
+                        $countLNumber = new LNumber((int) $match['count']);
+
+                        $todayStaticCall = new MethodCall(
+                            $todayStaticCall,
+                            new Identifier($methodName),
+                            [new Arg($countLNumber)]
+                        );
+                    }
+
+                    return $todayStaticCall;
                 }
             }
         }

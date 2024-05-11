@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\Carbon\Rector\FuncCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -68,13 +70,13 @@ CODE_SAMPLE
         }
 
         $firstArg = $node->getArgs()[0];
-        if (! $firstArg->value instanceof Node\Scalar\String_) {
+        if (! $firstArg->value instanceof String_) {
             return null;
         }
 
         // create now and format()
         $nowStaticCall = new StaticCall(new FullyQualified('Carbon\Carbon'), 'now');
 
-        return new MethodCall($nowStaticCall, 'format', [new Node\Arg($firstArg->value)]);
+        return new MethodCall($nowStaticCall, 'format', [new Arg($firstArg->value)]);
     }
 }

@@ -7,6 +7,10 @@ final class DateTimeTodayWith5Days
     public function run()
     {
         $date = new \DateTime('today + 5 day');
+
+        $middleDate = new \DateTime('today +7day');
+
+        $nextDate = new \DateTime('today +10 days');
     }
 }
 
@@ -21,6 +25,10 @@ final class DateTimeTodayWith5Days
     public function run()
     {
         $date = \Carbon\Carbon::today()->addDays(5);
+
+        $middleDate = \Carbon\Carbon::today()->addDays(7);
+
+        $nextDate = \Carbon\Carbon::today()->addDays(10);
     }
 }
 
