@@ -1,10 +1,12 @@
-# 371 Rules Overview
+# 373 Rules Overview
 
 <br>
 
 ## Categories
 
 - [Arguments](#arguments) (4)
+
+- [Carbon](#carbon) (2)
 
 - [CodeQuality](#codequality) (75)
 
@@ -138,6 +140,40 @@ Replaces defined map of arguments in defined methods and their calls.
  $someObject = new SomeClass;
 -$someObject->someMethod(SomeClass::OLD_CONSTANT);
 +$someObject->someMethod(false);
+```
+
+<br>
+
+## Carbon
+
+### DateFuncCallToCarbonRector
+
+Convert new `date()` to Carbon::*()
+
+- class: [`Rector\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/DateFuncCallToCarbonRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        $date = date('Y-m-d');
++        $date = \Carbon\Carbon::now()->format('Y-m-d')
+     }
+ }
+```
+
+<br>
+
+### DateTimeInstanceToCarbonRector
+
+Convert new `DateTime()` to Carbon::*()
+
+- class: [`Rector\Carbon\Rector\New_\DateTimeInstanceToCarbonRector`](../rules/Carbon/Rector/New_/DateTimeInstanceToCarbonRector.php)
+
+```diff
+-$date = new \DateTime('today');
++$date = \Carbon\Carbon::today();
 ```
 
 <br>

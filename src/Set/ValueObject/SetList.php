@@ -139,5 +139,5 @@ final class SetList implements SetListInterface
     /**
      * @var string
      */
-    public const CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php.php';
+    public const CARBON = __DIR__ . '/../../../config/set/datetime-to-carbon.php';
 }

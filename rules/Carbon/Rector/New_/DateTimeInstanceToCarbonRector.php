@@ -25,24 +25,12 @@ final class DateTimeInstanceToCarbonRector extends AbstractRector
         return new RuleDefinition('Convert new DateTime() to Carbon::*()', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        $date = new \DateTime('today');
-    }
-}
+$date = new \DateTime('today');
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        $date = \Carbon::today();
-    }
-}
+$date = \Carbon\Carbon::today();
 CODE_SAMPLE
             ),
         ]);
