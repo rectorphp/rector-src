@@ -22,7 +22,7 @@ final class DateFuncCallToCarbonRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert new date() to Carbon::*()', [
+        return new RuleDefinition('Convert date() function call to Carbon::*()', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass

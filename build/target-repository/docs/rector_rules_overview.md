@@ -1,4 +1,4 @@
-# 373 Rules Overview
+# 374 Rules Overview
 
 <br>
 
@@ -6,7 +6,7 @@
 
 - [Arguments](#arguments) (4)
 
-- [Carbon](#carbon) (2)
+- [Carbon](#carbon) (3)
 
 - [CodeQuality](#codequality) (75)
 
@@ -148,7 +148,7 @@ Replaces defined map of arguments in defined methods and their calls.
 
 ### DateFuncCallToCarbonRector
 
-Convert new `date()` to Carbon::*()
+Convert `date()` function call to Carbon::*()
 
 - class: [`Rector\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/DateFuncCallToCarbonRector.php)
 
@@ -174,6 +174,25 @@ Convert new `DateTime()` to Carbon::*()
 ```diff
 -$date = new \DateTime('today');
 +$date = \Carbon\Carbon::today();
+```
+
+<br>
+
+### DateTimeMethodCallToCarbonRector
+
+Convert new `DateTime()` with a method call to Carbon::*()
+
+- class: [`Rector\Carbon\Rector\MethodCall\DateTimeMethodCallToCarbonRector`](../rules/Carbon/Rector/MethodCall/DateTimeMethodCallToCarbonRector.php)
+
+```diff
+ class SomeClass
+ {
+     public function run()
+     {
+-        $date = (new \DateTime('today +20 day'))->format('Y-m-d');
++        $date = \Carbon\Carbon::today()->addDays(20)->format('Y-m-d')
+     }
+ }
 ```
 
 <br>
