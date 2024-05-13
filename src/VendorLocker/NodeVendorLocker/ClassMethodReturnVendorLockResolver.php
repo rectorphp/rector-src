@@ -47,6 +47,9 @@ final readonly class ClassMethodReturnVendorLockResolver
             if (! $nativeClassReflection->hasMethod($methodName)) {
                 continue;
             }
+            if (! $ancestorClassReflections->hasNativeMethod($methodName)) {
+                continue;
+            }
 
             $parentClassMethodReflection = $ancestorClassReflections->getNativeMethod($methodName);
             $parametersAcceptor = $parentClassMethodReflection->getVariants()[0];
