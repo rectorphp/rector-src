@@ -36,7 +36,7 @@ final class ProcessCommand extends Command
         private readonly OutputFormatterCollector $outputFormatterCollector,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly MemoryLimiter $memoryLimiter,
-        private readonly ConfigurationFactory $configurationFactory,
+        private readonly ConfigurationFactory $configurationFactory
     ) {
         parent::__construct();
     }
