@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector\Fixture;
 
-final class SkipPossibleReturnFalse
+final class SkipArrayByDocDifferentAssignReturned
 {
     /**
      * @param array $data
