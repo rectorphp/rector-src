@@ -29,8 +29,8 @@ return RectorConfig::configure()
         __DIR__ . '/rules',
         __DIR__ . '/rules-tests',
         __DIR__ . '/tests',
-        __DIR__ . '/utils',
         __DIR__ . '/config',
+        __DIR__ . '/utils',
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)

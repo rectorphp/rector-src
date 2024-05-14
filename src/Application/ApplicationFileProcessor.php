@@ -9,6 +9,7 @@ use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Provider\CurrentFileProvider;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -50,6 +51,7 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly VendorMissAnalyseGuard $vendorMissAnalyseGuard,
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider
     ) {
     }
 
@@ -70,6 +72,9 @@ final class ApplicationFileProcessor
         if ($filePaths === []) {
             return new ProcessResult([], []);
         }
+
+        // trigger cache class names collection
+        $this->dynamicSourceLocatorProvider->provide();
 
         $this->configureCustomErrorHandler();
 

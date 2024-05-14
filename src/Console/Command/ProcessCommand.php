@@ -6,7 +6,9 @@ namespace Rector\Console\Command;
 
 use Rector\Application\ApplicationFileProcessor;
 use Rector\Autoloading\AdditionalAutoloader;
+use Rector\Caching\Cache;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\Enum\CacheKey;
 use Rector\ChangesReporting\Output\JsonOutputFormatter;
 use Rector\Configuration\ConfigInitializer;
 use Rector\Configuration\ConfigurationFactory;
@@ -37,6 +39,7 @@ final class ProcessCommand extends Command
         private readonly SymfonyStyle $symfonyStyle,
         private readonly MemoryLimiter $memoryLimiter,
         private readonly ConfigurationFactory $configurationFactory,
+        private readonly Cache $cache
     ) {
         parent::__construct();
     }
@@ -71,6 +74,10 @@ final class ProcessCommand extends Command
         $this->additionalAutoloader->autoloadPaths();
 
         $paths = $configuration->getPaths();
+
+        // ensure clear classnames collection caches on repetitive call
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorDecorator->getCacheClassNameKey();
+        $this->cache->clean($key);
 
         // 1. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
