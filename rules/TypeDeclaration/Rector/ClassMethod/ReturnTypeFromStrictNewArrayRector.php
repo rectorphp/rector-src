@@ -104,8 +104,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $variable = $this->matchArrayAssignedVariable($stmts);
-        if (! $variable instanceof Variable) {
+        $variables = $this->matchArrayAssignedVariable($stmts);
+        if ($variables === []) {
             return null;
         }
 
@@ -120,7 +120,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isVariableOverriddenWithNonArray($node, $variable)) {
+        $variables = $this->matchVariableNotOverriddenByNonArray($node, $variables);
+        if ($variables === []) {
             return null;
         }
 
@@ -131,6 +132,10 @@ CODE_SAMPLE
 
         $onlyReturn = $returns[0];
         if (! $onlyReturn->expr instanceof Variable) {
+            return null;
+        }
+
+        if (! $this->nodeComparator->isNodeEqual($onlyReturn->expr, $variables)) {
             return null;
         }
 
@@ -192,10 +197,14 @@ CODE_SAMPLE
         $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $narrowArrayType);
     }
 
-    private function isVariableOverriddenWithNonArray(
+    /**
+     * @param Variable[] $variables
+     * @return Variable[]
+     */
+    private function matchVariableNotOverriddenByNonArray(
         ClassMethod|Function_|Closure $functionLike,
-        Variable $variable
-    ): bool {
+        array $variables
+    ): array {
         // is variable overriden?
         /** @var Assign[] $assigns */
         $assigns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Assign::class);
@@ -204,28 +213,32 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->nodeNameResolver->areNamesEqual($assign->var, $variable)) {
-                continue;
-            }
+            foreach ($variables as $key => $variable) {
+                if (! $this->nodeNameResolver->areNamesEqual($assign->var, $variable)) {
+                    continue;
+                }
 
-            if ($assign->expr instanceof Array_) {
-                continue;
-            }
+                if ($assign->expr instanceof Array_) {
+                    continue;
+                }
 
-            $nativeType = $this->nodeTypeResolver->getNativeType($assign->expr);
-            if (! $nativeType->isArray()->yes()) {
-                return true;
+                $nativeType = $this->nodeTypeResolver->getNativeType($assign->expr);
+                if (! $nativeType->isArray()->yes()) {
+                    unset($variables[$key]);
+                }
             }
         }
 
-        return false;
+        return $variables;
     }
 
     /**
      * @param Stmt[] $stmts
+     * @return Variable[]
      */
-    private function matchArrayAssignedVariable(array $stmts): Variable|null
+    private function matchArrayAssignedVariable(array $stmts): array
     {
+        $variables = [];
         foreach ($stmts as $stmt) {
             if (! $stmt instanceof Expression) {
                 continue;
@@ -242,11 +255,11 @@ CODE_SAMPLE
 
             $nativeType = $this->nodeTypeResolver->getNativeType($assign->expr);
             if ($nativeType->isArray()->yes()) {
-                return $assign->var;
+                $variables[] = $assign->var;
             }
         }
 
-        return null;
+        return $variables;
     }
 
     private function shouldAddReturnArrayDocType(ArrayType $arrayType): bool
