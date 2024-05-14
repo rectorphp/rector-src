@@ -113,7 +113,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($nativeType instanceof MixedType && TypeCombinator::containsNull($subtractedType)) {
+            if (TypeCombinator::containsNull($subtractedType)) {
                 $param->type = new NullableType(new Identifier('string'));
                 $hasChanged = true;
             }
