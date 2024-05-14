@@ -40,7 +40,7 @@ final readonly class DynamicSourceLocatorDecorator
     }
 
     /**
-     * @param class-string[]
+     * @param class-string[] $classNames
      */
     public function setClassNames(array $classNames): void
     {

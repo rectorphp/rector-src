@@ -43,7 +43,7 @@ final class Configuration
     }
 
     /**
-     * @param class-string[] $classNames
+     * @return class-string[]
      */
     public function getClassNames(): array
     {
