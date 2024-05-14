@@ -87,7 +87,10 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
      */
     public function getClassNames(): array
     {
-        Assert::isArray($this->classNames, 'provide() need to be called early');
+        if ($this->classNames === null) {
+            return [];
+        }
+
         return $this->classNames;
     }
 
