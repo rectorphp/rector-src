@@ -16,6 +16,7 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceL
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Webmozart\Assert\Assert;
 
 /**
  * @api phpstan external
@@ -35,6 +36,11 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
     private ReflectionProvider $reflectionProvider;
+
+    /**
+     * @var null|class-string[]
+     */
+    private ?array $classNames = null;
 
     public function __construct(
         private readonly FileNodesFetcher $fileNodesFetcher,
@@ -66,6 +72,23 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     public function addDirectories(array $directories): void
     {
         $this->directories = array_merge($this->directories, $directories);
+    }
+
+    /**
+     * @param class-string[] $classNames
+     */
+    public function setClassNames(array $classNames): void
+    {
+        $this->classNames = $classNames;
+    }
+
+    /**
+     * @return class-string[]
+     */
+    public function getClassNames(): array
+    {
+        Assert::isArray($this->classNames, 'provide() need to be called early');
+        return $this->classNames;
     }
 
     public function provide(): SourceLocator
@@ -123,17 +146,35 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
+        if ($this->classNames !== null) {
+            foreach ($this->classNames as $className) {
+                // make 'classes' collection
+                try {
+                    $this->reflectionProvider->getClass($className);
+                } catch (ClassNotFoundException) {
+                }
+            }
+
+            // avoid reflectAllClasses() again
+            return;
+        }
+
         $reflector = new DefaultReflector($aggregateSourceLocator);
+        $this->classNames = [];
 
         // trigger collect "classes" on get class on locate identifier
         try {
             $reflections = $reflector->reflectAllClasses();
             foreach ($reflections as $reflection) {
+                $className = $reflection->getName();
+
                 // make 'classes' collection
                 try {
-                    $this->reflectionProvider->getClass($reflection->getName());
+                    $this->reflectionProvider->getClass($className);
                 } catch (ClassNotFoundException) {
                 }
+
+                $this->classNames[] = $className;
             }
         } catch (CouldNotReadFileException) {
         }

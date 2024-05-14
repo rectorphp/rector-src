@@ -7,26 +7,47 @@ namespace Rector\ValueObject;
 use Rector\ChangesReporting\Output\ConsoleOutputFormatter;
 use Webmozart\Assert\Assert;
 
-final readonly class Configuration
+final class Configuration
 {
+    /**
+     * @var class-string[]
+     */
+    private array $classNames = [];
+
     /**
      * @param string[] $fileExtensions
      * @param string[] $paths
      */
     public function __construct(
-        private bool $isDryRun = false,
-        private bool $showProgressBar = true,
-        private bool $shouldClearCache = false,
-        private string $outputFormat = ConsoleOutputFormatter::NAME,
-        private array $fileExtensions = ['php'],
-        private array $paths = [],
-        private bool $showDiffs = true,
-        private string | null $parallelPort = null,
-        private string | null $parallelIdentifier = null,
-        private bool $isParallel = false,
-        private string|null $memoryLimit = null,
-        private bool $isDebug = false,
+        private readonly bool $isDryRun = false,
+        private readonly bool $showProgressBar = true,
+        private readonly bool $shouldClearCache = false,
+        private readonly string $outputFormat = ConsoleOutputFormatter::NAME,
+        private readonly array $fileExtensions = ['php'],
+        private readonly array $paths = [],
+        private readonly bool $showDiffs = true,
+        private readonly string | null $parallelPort = null,
+        private readonly string | null $parallelIdentifier = null,
+        private readonly bool $isParallel = false,
+        private readonly string|null $memoryLimit = null,
+        private readonly bool $isDebug = false,
     ) {
+    }
+
+    /**
+     * @param class-string[] $classNames
+     */
+    public function setClassNames(array $classNames): void
+    {
+        $this->classNames = $classNames;
+    }
+
+    /**
+     * @param class-string[] $classNames
+     */
+    public function getClassNames(): array
+    {
+        return $this->classNames;
     }
 
     public function isDryRun(): bool

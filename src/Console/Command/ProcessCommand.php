@@ -79,6 +79,9 @@ final class ProcessCommand extends Command
             return ExitCode::FAILURE;
         }
 
+        $classNames = $this->dynamicSourceLocatorDecorator->getClassNames();
+        $configuration->setClassNames($classNames);
+
         // MAIN PHASE
         // 2. run Rector
         $processResult = $this->applicationFileProcessor->run($configuration, $input);

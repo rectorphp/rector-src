@@ -98,6 +98,7 @@ final class WorkerCommand extends Command
         OutputInterface $output
     ): void {
         $this->dynamicSourceLocatorDecorator->addPaths($configuration->getPaths());
+        $this->dynamicSourceLocatorDecorator->setClassNames($configuration->getClassNames());
 
         if ($configuration->isDebug()) {
             $preFileCallback = static function (string $filePath) use ($output): void {

@@ -39,6 +39,23 @@ final readonly class DynamicSourceLocatorDecorator
         $this->dynamicSourceLocatorProvider->addDirectories($directories);
     }
 
+    /**
+     * @param class-string[]
+     */
+    public function setClassNames(array $classNames): void
+    {
+        $this->dynamicSourceLocatorProvider->setClassNames($classNames);
+    }
+
+    /**
+     * @return class-string[]
+     */
+    public function getClassNames(): array
+    {
+        $this->dynamicSourceLocatorProvider->provide();
+        return $this->dynamicSourceLocatorProvider->getClassNames();
+    }
+
     public function isPathsEmpty(): bool
     {
         return $this->dynamicSourceLocatorProvider->isPathsEmpty();
