@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Rector\Application;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
+use Rector\Caching\Cache;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\Enum\CacheKey;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
@@ -51,7 +53,8 @@ final class ApplicationFileProcessor
         private readonly FileProcessor $fileProcessor,
         private readonly ArrayParametersMerger $arrayParametersMerger,
         private readonly VendorMissAnalyseGuard $vendorMissAnalyseGuard,
-        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private readonly Cache $cache
     ) {
     }
 
@@ -72,6 +75,10 @@ final class ApplicationFileProcessor
         if ($filePaths === []) {
             return new ProcessResult([], []);
         }
+
+        // ensure clear classnames collection caches on repetitive call
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
+        $this->cache->clean($key);
 
         $this->configureCustomErrorHandler();
 
