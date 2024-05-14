@@ -93,7 +93,7 @@ CODE_SAMPLE
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
         $this->refactorParamTypes($node, $phpDocInfo);
-        $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node);
+        $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node, new MixedType());
         if ($this->hasChanged) {
             return $node;
         }
