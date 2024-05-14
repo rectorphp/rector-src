@@ -101,16 +101,22 @@ CODE_SAMPLE
             }
 
             $nativeType = $this->nodeTypeResolver->getNativeType($variableConcattedFromParam);
-
-            if ($nativeType instanceof MixedType && $nativeType->getSubtractedType() instanceof Type && TypeCombinator::containsNull(
-                $nativeType->getSubtractedType()
-            )) {
-                $param->type = new NullableType(new Identifier('string'));
-            } else {
-                $param->type = new Identifier('string');
+            if (! $nativeType instanceof MixedType) {
+                continue;
             }
 
-            $hasChanged = true;
+            $subtractedType = $nativeType->getSubtractedType();
+            if (! $subtractedType instanceof Type) {
+                $param->type = new Identifier('string');
+                $hasChanged = true;
+
+                continue;
+            }
+
+            if ($nativeType instanceof MixedType && TypeCombinator::containsNull($subtractedType)) {
+                $param->type = new NullableType(new Identifier('string'));
+                $hasChanged = true;
+            }
         }
 
         if ($hasChanged) {
