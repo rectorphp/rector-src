@@ -21,11 +21,6 @@ final readonly class DynamicSourceLocatorDecorator
     ) {
     }
 
-    public function getCacheClassNameKey(): string
-    {
-        return $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
-    }
-
     /**
      * @param string[] $paths
      */

@@ -176,6 +176,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             }
         }
 
+        dump('here');
+
         $reflector = new DefaultReflector($aggregateSourceLocator);
         $classNames = [];
 
