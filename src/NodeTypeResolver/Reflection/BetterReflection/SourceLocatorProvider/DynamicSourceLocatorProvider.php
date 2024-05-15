@@ -143,7 +143,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
             return;
         }
 
-        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->getCacheClassNameKey();
+        $key = $this->getCacheClassNameKey();
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
         if (is_string($classNamesCache)) {
