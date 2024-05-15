@@ -7,6 +7,7 @@ namespace Rector\FamilyTree\Reflection;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Cache;
@@ -25,32 +26,6 @@ final class FamilyRelationsAnalyzer
         private readonly Cache $cache,
         private bool $hasClassNamesCached = false
     ) {
-    }
-
-    private function loadClasses(): void
-    {
-        if ($this->hasClassNamesCached) {
-            return;
-        }
-
-        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
-        $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
-
-        if (is_string($classNamesCache)) {
-            $classNamesCache = json_decode($classNamesCache);
-            if (is_array($classNamesCache)) {
-                foreach ($classNamesCache as $classNameCache) {
-                    try {
-                        $this->reflectionProvider->getClass($classNameCache);
-                    } catch (ClassNotFoundException) {
-                    }
-                }
-
-                return;
-            }
-        }
-
-        $this->hasClassNamesCached = true;
     }
 
     /**
@@ -123,5 +98,31 @@ final class FamilyRelationsAnalyzer
 
         /** @var string[] $ancestorNames */
         return $ancestorNames;
+    }
+
+    private function loadClasses(): void
+    {
+        if ($this->hasClassNamesCached) {
+            return;
+        }
+
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
+        $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
+
+        if (is_string($classNamesCache)) {
+            $classNamesCache = json_decode($classNamesCache);
+            if (is_array($classNamesCache)) {
+                foreach ($classNamesCache as $classNameCache) {
+                    try {
+                        $this->reflectionProvider->getClass($classNameCache);
+                    } catch (ClassNotFoundException) {
+                    }
+                }
+
+                return;
+            }
+        }
+
+        $this->hasClassNamesCached = true;
     }
 }
