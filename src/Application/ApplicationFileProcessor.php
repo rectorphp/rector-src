@@ -77,7 +77,7 @@ final class ApplicationFileProcessor
         }
 
         // ensure clear classnames collection caches on repetitive call
-        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
+        $key = $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
         $this->cache->clean($key);
 
         $this->configureCustomErrorHandler();
