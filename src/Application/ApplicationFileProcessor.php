@@ -7,7 +7,6 @@ namespace Rector\Application;
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use Rector\Caching\Cache;
 use Rector\Caching\Detector\ChangedFilesDetector;
-use Rector\Caching\Enum\CacheKey;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Configuration\VendorMissAnalyseGuard;
