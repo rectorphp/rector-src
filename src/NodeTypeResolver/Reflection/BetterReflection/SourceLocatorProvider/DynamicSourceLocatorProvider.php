@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvi
 use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator;
@@ -49,11 +48,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(
-        ReflectionProvider $reflectionProvider,
-        Cache $cache,
-        FileHasher $fileHasher
-    ): void
+    public function autowire(ReflectionProvider $reflectionProvider, Cache $cache, FileHasher $fileHasher): void
     {
         $this->reflectionProvider = $reflectionProvider;
         $this->cache = $cache;

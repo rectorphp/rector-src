@@ -17,6 +17,7 @@ final readonly class ArrayTypeAnalyzer
     public function isArrayType(Expr $expr): bool
     {
         $nodeType = $this->nodeTypeResolver->getNativeType($expr);
-        return $nodeType->isArray()->yes();
+        return $nodeType->isArray()
+            ->yes();
     }
 }

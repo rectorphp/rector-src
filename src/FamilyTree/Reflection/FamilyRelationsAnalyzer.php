@@ -118,8 +118,6 @@ final class FamilyRelationsAnalyzer
                     } catch (ClassNotFoundException) {
                     }
                 }
-
-                return;
             }
         }
 
