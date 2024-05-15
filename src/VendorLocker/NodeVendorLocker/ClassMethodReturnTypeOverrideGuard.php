@@ -88,7 +88,7 @@ final readonly class ClassMethodReturnTypeOverrideGuard
     ): bool {
         $methodName = $classMethod->name->toString();
         foreach ($childrenClassReflections as $childClassReflection) {
-            if (!$childClassReflection->hasNativeMethod($methodName)) {
+            if (! $childClassReflection->hasNativeMethod($methodName)) {
                 continue;
             }
 

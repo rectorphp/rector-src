@@ -7,13 +7,11 @@ namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvi
 use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Cache;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Contract\DependencyInjection\ResetableInterface;
@@ -37,8 +35,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
-    private ReflectionProvider $reflectionProvider;
-
     private Cache $cache;
 
     private FileHasher $fileHasher;
@@ -49,13 +45,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(
-        ReflectionProvider $reflectionProvider,
-        Cache $cache,
-        FileHasher $fileHasher
-    ): void
+    public function autowire(Cache $cache, FileHasher $fileHasher): void
     {
-        $this->reflectionProvider = $reflectionProvider;
         $this->cache = $cache;
         $this->fileHasher = $fileHasher;
     }
@@ -139,19 +130,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     }
 
     /**
-     * @param class-string[] $classNamesCache
-     */
-    private function locateCachedClassNames(array $classNamesCache): void
-    {
-        foreach ($classNamesCache as $classNameCache) {
-            try {
-                $this->reflectionProvider->getClass($classNameCache);
-            } catch (ClassNotFoundException) {
-            }
-        }
-    }
-
-    /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
     private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators): void
@@ -169,11 +147,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
         if (is_string($classNamesCache)) {
-            $classNamesCache = json_decode($classNamesCache);
-            if (is_array($classNamesCache)) {
-                $this->locateCachedClassNames($classNamesCache);
-                return;
-            }
+            return;
         }
 
         $reflector = new DefaultReflector($aggregateSourceLocator);
@@ -183,16 +157,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         try {
             $reflections = $reflector->reflectAllClasses();
             foreach ($reflections as $reflection) {
-                $className = $reflection->getName();
-
-                // make 'classes' collection
-                try {
-                    $this->reflectionProvider->getClass($className);
-                } catch (ClassNotFoundException) {
-                    continue;
-                }
-
-                $classNames[] = $className;
+                $classNames[] = $reflection->getName();
             }
         } catch (CouldNotReadFileException) {
         }

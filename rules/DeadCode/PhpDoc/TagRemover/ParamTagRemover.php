@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc\TagRemover;
 
-use PHPStan\Type\Type;
 use PhpParser\Node\FunctionLike;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\Type\Type;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\PhpDoc\DeadParamTagValueNodeAnalyzer;
@@ -22,8 +22,11 @@ final readonly class ParamTagRemover
     ) {
     }
 
-    public function removeParamTagsIfUseless(PhpDocInfo $phpDocInfo, FunctionLike $functionLike, ?Type $type = null): bool
-    {
+    public function removeParamTagsIfUseless(
+        PhpDocInfo $phpDocInfo,
+        FunctionLike $functionLike,
+        ?Type $type = null
+    ): bool {
         $hasChanged = false;
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();

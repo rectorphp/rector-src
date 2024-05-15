@@ -7,17 +7,24 @@ namespace Rector\FamilyTree\Reflection;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Caching\Cache;
+use Rector\Caching\Enum\CacheKey;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Util\Reflection\PrivatesAccessor;
 
-final readonly class FamilyRelationsAnalyzer
+final class FamilyRelationsAnalyzer
 {
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
-        private NodeNameResolver $nodeNameResolver,
-        private PrivatesAccessor $privatesAccessor
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly NodeNameResolver $nodeNameResolver,
+        private readonly PrivatesAccessor $privatesAccessor,
+        private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private readonly Cache $cache,
+        private bool $hasClassNamesCachedOrLoadOneLocator = false
     ) {
     }
 
@@ -29,6 +36,8 @@ final readonly class FamilyRelationsAnalyzer
         if ($desiredClassReflection->isFinalByKeyword()) {
             return [];
         }
+
+        $this->loadClasses();
 
         /** @var ClassReflection[] $classReflections */
         $classReflections = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
@@ -89,5 +98,29 @@ final readonly class FamilyRelationsAnalyzer
 
         /** @var string[] $ancestorNames */
         return $ancestorNames;
+    }
+
+    private function loadClasses(): void
+    {
+        if ($this->hasClassNamesCachedOrLoadOneLocator) {
+            return;
+        }
+
+        $key = CacheKey::CLASSNAMES_HASH_KEY . '_' . $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
+        $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
+
+        if (is_string($classNamesCache)) {
+            $classNamesCache = json_decode($classNamesCache);
+            if (is_array($classNamesCache)) {
+                foreach ($classNamesCache as $classNameCache) {
+                    try {
+                        $this->reflectionProvider->getClass($classNameCache);
+                    } catch (ClassNotFoundException) {
+                    }
+                }
+            }
+        }
+
+        $this->hasClassNamesCachedOrLoadOneLocator = true;
     }
 }
