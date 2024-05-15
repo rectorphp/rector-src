@@ -471,7 +471,6 @@ final class LazyContainerFactory
             DynamicSourceLocatorProvider::class,
             static function (DynamicSourceLocatorProvider $dynamicSourceLocatorProvider, Container $container): void {
                 $dynamicSourceLocatorProvider->autowire(
-                    $container->make(Cache::class),
                     $container->make(FileHasher::class)
                 );
             }

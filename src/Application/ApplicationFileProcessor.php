@@ -106,9 +106,6 @@ final class ApplicationFileProcessor
             $preFileCallback = null;
         }
 
-        // trigger cache class names collection
-        $this->dynamicSourceLocatorProvider->provide();
-
         if ($configuration->isParallel()) {
             $processResult = $this->runParallel($filePaths, $configuration, $input, $postFileCallback);
         } else {

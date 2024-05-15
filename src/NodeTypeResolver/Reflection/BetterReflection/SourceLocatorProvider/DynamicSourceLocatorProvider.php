@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider;
 
-use PHPStan\BetterReflection\Reflector\DefaultReflector;
 use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\BetterReflection\SourceLocator\Type\SourceLocator;
-use PHPStan\File\CouldNotReadFileException;
 use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
-use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
-use Rector\Caching\Cache;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -35,8 +31,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
-    private Cache $cache;
-
     private FileHasher $fileHasher;
 
     public function __construct(
@@ -45,9 +39,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(Cache $cache, FileHasher $fileHasher): void
+    public function autowire(FileHasher $fileHasher): void
     {
-        $this->cache = $cache;
         $this->fileHasher = $fileHasher;
     }
 
@@ -88,6 +81,9 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $this->directories = array_merge($this->directories, $directories);
     }
 
+    /**
+     * @return AggregateSourceLocator
+     */
     public function provide(): SourceLocator
     {
         // do not cache for PHPUnit, as in test every fixture is different
@@ -108,9 +104,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         }
 
         $aggregateSourceLocator = $this->aggregateSourceLocator = new AggregateSourceLocator($sourceLocators);
-
-        $this->collectClasses($aggregateSourceLocator, $sourceLocators);
-
         return $aggregateSourceLocator;
     }
 
@@ -127,41 +120,5 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $this->filePaths = [];
         $this->directories = [];
         $this->aggregateSourceLocator = null;
-    }
-
-    /**
-     * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
-     */
-    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators): void
-    {
-        if ($sourceLocators === []) {
-            return;
-        }
-
-        // no need to collect classes on single file, will auto collected
-        if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
-            return;
-        }
-
-        $key = $this->getCacheClassNameKey();
-        $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
-
-        if (is_array($classNamesCache)) {
-            return;
-        }
-
-        $reflector = new DefaultReflector($aggregateSourceLocator);
-        $classNames = [];
-
-        // trigger collect "classes" on get class on locate identifier
-        try {
-            $reflections = $reflector->reflectAllClasses();
-            foreach ($reflections as $reflection) {
-                $classNames[] = $reflection->getName();
-            }
-        } catch (CouldNotReadFileException) {
-        }
-
-        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
     }
 }

@@ -7,7 +7,11 @@ namespace Rector\FamilyTree\Reflection;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
+use PHPStan\BetterReflection\Reflector\DefaultReflector;
+use PHPStan\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use PHPStan\Broker\ClassNotFoundException;
+use PHPStan\File\CouldNotReadFileException;
+use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Cache;
@@ -15,6 +19,7 @@ use Rector\Caching\Enum\CacheKey;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\Util\Reflection\PrivatesAccessor;
+use Webmozart\Assert\Assert;
 
 final class FamilyRelationsAnalyzer
 {
@@ -24,7 +29,7 @@ final class FamilyRelationsAnalyzer
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
         private readonly Cache $cache,
-        private bool $hasClassNamesCachedOrLoadOneLocator = false
+        private bool $hasCachedClassNames = false
     ) {
     }
 
@@ -37,7 +42,7 @@ final class FamilyRelationsAnalyzer
             return [];
         }
 
-        $this->loadClasses();
+        $this->collectClasses($this->dynamicSourceLocatorProvider->provide());
 
         /** @var ClassReflection[] $classReflections */
         $classReflections = $this->privatesAccessor->getPrivateProperty($this->reflectionProvider, 'classes');
@@ -100,24 +105,64 @@ final class FamilyRelationsAnalyzer
         return $ancestorNames;
     }
 
-    private function loadClasses(): void
+    private function collectClasses(AggregateSourceLocator $aggregateSourceLocator): void
     {
-        if ($this->hasClassNamesCachedOrLoadOneLocator) {
+        $sourceLocators = $this->privatesAccessor->getPrivateProperty($aggregateSourceLocator, 'sourceLocators');
+        if ($sourceLocators === []) {
+            return;
+        }
+
+        // no need to collect classes on single file, will auto collected
+        if (count($sourceLocators) === 1 && $sourceLocators[0] instanceof OptimizedSingleFileSourceLocator) {
+            return;
+        }
+
+        if ($this->hasCachedClassNames) {
             return;
         }
 
         $key = $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
-        if (is_array($classNamesCache)) {
-            foreach ($classNamesCache as $classNameCache) {
-                try {
-                    $this->reflectionProvider->getClass($classNameCache);
-                } catch (ClassNotFoundException) {
-                }
+        if ($classNamesCache === null) {
+            $this->initClassNamesCache($aggregateSourceLocator, $key);
+            return;
+        }
+
+        Assert::isArray($classNamesCache);
+
+        // trigger collect "classes" on cached class names collection
+        foreach ($classNamesCache as $classNameCache) {
+            try {
+                $this->reflectionProvider->getClass($classNameCache);
+            } catch (ClassNotFoundException) {
             }
         }
 
-        $this->hasClassNamesCachedOrLoadOneLocator = true;
+        $this->hasCachedClassNames = true;
+    }
+
+    private function initClassNamesCache(AggregateSourceLocator $aggregateSourceLocator, string $key): void
+    {
+        $defaultReflector = new DefaultReflector($aggregateSourceLocator);
+        $classNames = [];
+
+        // trigger collect "classes" on get class on locate identifier
+        try {
+            $reflections = $defaultReflector->reflectAllClasses();
+            foreach ($reflections as $reflection) {
+                try {
+                    $className = $reflection->getName();
+                    $this->reflectionProvider->getClass($className);
+                } catch (ClassNotFoundException) {
+                    continue;
+                }
+
+                $classNames[] = $className;
+            }
+        } catch (CouldNotReadFileException) {
+        }
+
+        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
     }
 }
