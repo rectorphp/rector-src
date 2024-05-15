@@ -139,19 +139,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     }
 
     /**
-     * @param class-string[] $classNamesCache
-     */
-    private function locateCachedClassNames(array $classNamesCache): void
-    {
-        foreach ($classNamesCache as $classNameCache) {
-            try {
-                $this->reflectionProvider->getClass($classNameCache);
-            } catch (ClassNotFoundException) {
-            }
-        }
-    }
-
-    /**
      * @param OptimizedSingleFileSourceLocator[]|NewOptimizedDirectorySourceLocator[] $sourceLocators
      */
     private function collectClasses(AggregateSourceLocator $aggregateSourceLocator, array $sourceLocators): void
@@ -169,11 +156,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
         if (is_string($classNamesCache)) {
-            $classNamesCache = json_decode($classNamesCache);
-            if (is_array($classNamesCache)) {
-                $this->locateCachedClassNames($classNamesCache);
-                return;
-            }
+            return;
         }
 
         $reflector = new DefaultReflector($aggregateSourceLocator);
@@ -183,16 +166,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         try {
             $reflections = $reflector->reflectAllClasses();
             foreach ($reflections as $reflection) {
-                $className = $reflection->getName();
-
-                // make 'classes' collection
-                try {
-                    $this->reflectionProvider->getClass($className);
-                } catch (ClassNotFoundException) {
-                    continue;
-                }
-
-                $classNames[] = $className;
+                $classNames[] = $reflection->getName();
             }
         } catch (CouldNotReadFileException) {
         }
