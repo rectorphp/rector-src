@@ -24,7 +24,7 @@ final class FamilyRelationsAnalyzer
         private readonly PrivatesAccessor $privatesAccessor,
         private readonly DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
         private readonly Cache $cache,
-        private bool $hasClassNamesCached = false
+        private bool $hasClassNamesCachedOrLoadOneLocator = false
     ) {
     }
 
@@ -102,7 +102,7 @@ final class FamilyRelationsAnalyzer
 
     private function loadClasses(): void
     {
-        if ($this->hasClassNamesCached) {
+        if ($this->hasClassNamesCachedOrLoadOneLocator) {
             return;
         }
 
@@ -121,6 +121,6 @@ final class FamilyRelationsAnalyzer
             }
         }
 
-        $this->hasClassNamesCached = true;
+        $this->hasClassNamesCachedOrLoadOneLocator = true;
     }
 }
