@@ -12,7 +12,6 @@ use PHPStan\Reflection\BetterReflection\SourceLocator\FileNodesFetcher;
 use PHPStan\Reflection\BetterReflection\SourceLocator\NewOptimizedDirectorySourceLocator;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedDirectorySourceLocatorFactory;
 use PHPStan\Reflection\BetterReflection\SourceLocator\OptimizedSingleFileSourceLocator;
-use PHPStan\Reflection\ReflectionProvider;
 use Rector\Caching\Cache;
 use Rector\Caching\Enum\CacheKey;
 use Rector\Contract\DependencyInjection\ResetableInterface;
@@ -36,8 +35,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
 
     private ?AggregateSourceLocator $aggregateSourceLocator = null;
 
-    private ReflectionProvider $reflectionProvider;
-
     private Cache $cache;
 
     private FileHasher $fileHasher;
@@ -48,9 +45,8 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
     ) {
     }
 
-    public function autowire(ReflectionProvider $reflectionProvider, Cache $cache, FileHasher $fileHasher): void
+    public function autowire(Cache $cache, FileHasher $fileHasher): void
     {
-        $this->reflectionProvider = $reflectionProvider;
         $this->cache = $cache;
         $this->fileHasher = $fileHasher;
     }
