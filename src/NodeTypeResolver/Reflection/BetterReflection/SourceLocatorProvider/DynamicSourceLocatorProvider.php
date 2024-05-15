@@ -146,7 +146,7 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         $key = $this->getCacheClassNameKey();
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
-        if (is_string($classNamesCache)) {
+        if (is_array($classNamesCache)) {
             return;
         }
 
@@ -162,6 +162,6 @@ final class DynamicSourceLocatorProvider implements ResetableInterface
         } catch (CouldNotReadFileException) {
         }
 
-        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, json_encode($classNames));
+        $this->cache->save($key, CacheKey::CLASSNAMES_HASH_KEY, $classNames);
     }
 }

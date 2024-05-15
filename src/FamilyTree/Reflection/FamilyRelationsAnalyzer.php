@@ -109,14 +109,11 @@ final class FamilyRelationsAnalyzer
         $key = $this->dynamicSourceLocatorProvider->getCacheClassNameKey();
         $classNamesCache = $this->cache->load($key, CacheKey::CLASSNAMES_HASH_KEY);
 
-        if (is_string($classNamesCache)) {
-            $classNamesCache = json_decode($classNamesCache);
-            if (is_array($classNamesCache)) {
-                foreach ($classNamesCache as $classNameCache) {
-                    try {
-                        $this->reflectionProvider->getClass($classNameCache);
-                    } catch (ClassNotFoundException) {
-                    }
+        if (is_array($classNamesCache)) {
+            foreach ($classNamesCache as $classNameCache) {
+                try {
+                    $this->reflectionProvider->getClass($classNameCache);
+                } catch (ClassNotFoundException) {
                 }
             }
         }
