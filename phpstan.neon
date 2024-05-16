@@ -32,7 +32,6 @@ parameters:
     scanFiles:
         - src/Contract/PhpParser/Node/StmtsAwareInterface.php
 
-    checkGenericClassInNonGenericObjectType: false
 
     excludePaths:
         - '*tests/*/Fixture/*'
@@ -46,6 +45,8 @@ parameters:
         - src/functions
 
     ignoreErrors:
+        -
+            identifier: missingType.generics
         -
             message: '#Class cognitive complexity is \d+, keep it under \d+#'
             paths:
