@@ -50,9 +50,9 @@ use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -228,7 +228,7 @@ final class PHPStanNodeScopeResolver
     ): void {
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-        } catch (\PHPStan\ShouldNotHappenException) {
+        } catch (ShouldNotHappenException) {
         }
     }
 
@@ -361,21 +361,23 @@ final class PHPStanNodeScopeResolver
         Class_ | Interface_ | Enum_ $classLike,
         MutatingScope $mutatingScope
     ): MutatingScope {
-        $className = $this->resolveClassName($classLike);
         $isAnonymous = $this->classAnalyzer->isAnonymousClass($classLike);
 
         // is anonymous class? - not possible to enter it since PHPStan 0.12.33, see https://github.com/phpstan/phpstan-src/commit/e87fb0ec26f9c8552bbeef26a868b1e5d8185e91
         if ($classLike instanceof Class_ && $isAnonymous) {
             $classReflection = $this->reflectionProvider->getAnonymousClassReflection($classLike, $mutatingScope);
-        } elseif (! $this->reflectionProvider->hasClass($className)) {
-            return $mutatingScope;
         } else {
+            $className = $this->resolveClassName($classLike);
+            if (! $this->reflectionProvider->hasClass($className)) {
+                return $mutatingScope;
+            }
+
             $classReflection = $this->reflectionProvider->getClass($className);
         }
 
         try {
             return $mutatingScope->enterClass($classReflection);
-        } catch (\PHPStan\ShouldNotHappenException) {
+        } catch (ShouldNotHappenException) {
         }
 
         $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
@@ -383,7 +385,7 @@ final class PHPStanNodeScopeResolver
 
         try {
             return $mutatingScope->enterClass($classReflection);
-        } catch (\PHPStan\ShouldNotHappenException) {
+        } catch (ShouldNotHappenException) {
         }
 
         return $mutatingScope;
@@ -396,7 +398,7 @@ final class PHPStanNodeScopeResolver
         }
 
         if (! $classLike->name instanceof Identifier) {
-            throw new ShouldNotHappenException();
+            return '';
         }
 
         return $classLike->name->toString();
@@ -408,6 +410,14 @@ final class PHPStanNodeScopeResolver
     private function processTrait(Trait_ $trait, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         $traitName = $this->resolveClassName($trait);
+
+        if (! $this->reflectionProvider->hasClass($traitName)) {
+            $trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            $this->nodeScopeResolverProcessNodes($trait->stmts, $mutatingScope, $nodeCallback);
+            $this->decorateTraitAttrGroups($trait, $mutatingScope);
+
+            return;
+        }
 
         $traitClassReflection = $this->reflectionProvider->getClass($traitName);
 
