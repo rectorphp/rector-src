@@ -61,7 +61,6 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
 use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
-use Throwable;
 use Webmozart\Assert\Assert;
 
 /**
@@ -78,11 +77,6 @@ final class PHPStanNodeScopeResolver
     private readonly NodeTraverser $nodeTraverser;
 
     private bool $hasUnreachableStatementNode = false;
-
-    /**
-     * @var string
-     */
-    private const PHPSTAN_INTERNAL_ERROR_MESSAGE = 'Internal error.';
 
     /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
@@ -234,10 +228,7 @@ final class PHPStanNodeScopeResolver
     ): void {
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
-        } catch (Throwable $throwable) {
-            if ($throwable->getMessage() !== self::PHPSTAN_INTERNAL_ERROR_MESSAGE) {
-                throw $throwable;
-            }
+        } catch (\PHPStan\ShouldNotHappenException) {
         }
     }
 
@@ -392,13 +383,10 @@ final class PHPStanNodeScopeResolver
 
         try {
             return $mutatingScope->enterClass($classReflection);
-        } catch (Throwable $throwable) {
-            if ($throwable->getMessage() !== self::PHPSTAN_INTERNAL_ERROR_MESSAGE) {
-                throw $throwable;
-            }
-
-            return $mutatingScope;
+        } catch (\PHPStan\ShouldNotHappenException) {
         }
+
+        return $mutatingScope;
     }
 
     private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string

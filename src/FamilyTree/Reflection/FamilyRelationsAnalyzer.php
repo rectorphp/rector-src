@@ -10,6 +10,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PHPStan\Broker\ClassNotFoundException;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\ShouldNotHappenException;
 use Rector\Caching\Cache;
 use Rector\Caching\Enum\CacheKey;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -113,7 +114,7 @@ final class FamilyRelationsAnalyzer
             foreach ($classNamesCache as $classNameCache) {
                 try {
                     $this->reflectionProvider->getClass($classNameCache);
-                } catch (ClassNotFoundException) {
+                } catch (ClassNotFoundException|ShouldNotHappenException) {
                 }
             }
         }
