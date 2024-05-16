@@ -387,7 +387,7 @@ final class PHPStanNodeScopeResolver
 
         try {
             return $mutatingScope->enterClass($classReflection);
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             if ($throwable->getMessage() !== 'Internal error.') {
                 throw $throwable;
             }
