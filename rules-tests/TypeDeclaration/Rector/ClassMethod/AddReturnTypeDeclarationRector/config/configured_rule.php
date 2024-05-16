@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
@@ -12,6 +14,8 @@ use Rector\StaticTypeMapper\ValueObject\Type\SimpleStaticType;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnOfStatic;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Fixture\ReturnTheMixed;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\DataTransformerInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\FileInterface;
+use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\FolderInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\FormTypeInterface;
 use Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector\Source\PHPUnitTestCase;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector;
@@ -31,5 +35,10 @@ return static function (RectorConfig $rectorConfig): void {
             ),
             new AddReturnTypeDeclaration(DataTransformerInterface::class, 'transform', new MixedType()),
             new AddReturnTypeDeclaration(FormTypeInterface::class, 'getParent', $nullableStringType),
+            new AddReturnTypeDeclaration(
+                FolderInterface::class,
+                'create',
+                TypeCombinator::addNull(new ObjectType(FileInterface::class)),
+            ),
         ]);
 };
