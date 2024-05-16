@@ -80,6 +80,11 @@ final class PHPStanNodeScopeResolver
     private bool $hasUnreachableStatementNode = false;
 
     /**
+     * @var string
+     */
+    private const PHPSTAN_INTERNAL_ERROR_MESSAGE = 'Internal error.';
+
+    /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
      */
     public function __construct(
@@ -230,7 +235,7 @@ final class PHPStanNodeScopeResolver
         try {
             $this->nodeScopeResolver->processNodes($stmts, $mutatingScope, $nodeCallback);
         } catch (Throwable $throwable) {
-            if ($throwable->getMessage() !== 'Internal error.') {
+            if ($throwable->getMessage() !== self::PHPSTAN_INTERNAL_ERROR_MESSAGE) {
                 throw $throwable;
             }
         }
@@ -385,7 +390,15 @@ final class PHPStanNodeScopeResolver
         $context = $this->privatesAccessor->getPrivateProperty($mutatingScope, 'context');
         $this->privatesAccessor->setPrivateProperty($context, 'classReflection', null);
 
-        return $mutatingScope->enterClass($classReflection);
+        try {
+            return $mutatingScope->enterClass($classReflection);
+        } catch (Throwable $throwable) {
+            if ($throwable->getMessage() !== self::PHPSTAN_INTERNAL_ERROR_MESSAGE) {
+                throw $throwable;
+            }
+
+            return $mutatingScope;
+        }
     }
 
     private function resolveClassName(Class_ | Interface_ | Trait_| Enum_ $classLike): string
