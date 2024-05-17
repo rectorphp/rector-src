@@ -10,7 +10,7 @@ final class SkipUnitializedProperty
 
     public function setId(AnotherObject $data): self
     {
-        if (!empty($this->data) && !$data->equals($this->id)) {
+        if (!empty($this->data) && !$data->equals($this->data)) {
             throw new \InvalidArgumentException('The ID is already set.');
         }
 
