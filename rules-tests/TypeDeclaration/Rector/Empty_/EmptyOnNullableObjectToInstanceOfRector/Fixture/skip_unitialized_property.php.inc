@@ -2,13 +2,15 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector\Fixture;
 
+use Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector\Source\AnotherObject;
+
 final class SkipUnitializedProperty
 {
-    private \stdClass $data;
+    private AnotherObject $data;
 
-    public function setId(\stdClass $data): self
+    public function setId(AnotherObject $data): self
     {
-        if (!empty($this->data) && !$data->data($this->id)) {
+        if (!empty($this->data) && !$data->equals($this->id)) {
             throw new \InvalidArgumentException('The ID is already set.');
         }
 
