@@ -6,15 +6,15 @@ use Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOf
 
 final class SkipUnitializedProperty
 {
-    private AnotherObject $data;
+    private AnotherObject $id;
 
-    public function setId(AnotherObject $data): self
+    public function setId(AnotherObject $id): self
     {
-        if (!empty($this->data) && !$data->equals($this->data)) {
+        if (!empty($this->id) && !$id->equals($this->id)) {
             throw new \InvalidArgumentException('The ID is already set.');
         }
 
-        $this->data = $data;
+        $this->id = $id;
 
         return $this;
     }
