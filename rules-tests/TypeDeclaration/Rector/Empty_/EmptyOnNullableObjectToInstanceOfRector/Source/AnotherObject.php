@@ -4,5 +4,8 @@ namespace Rector\Tests\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInst
 
 final class AnotherObject
 {
-
+    public function equals(AnotherObject $anotherObject)
+    {
+        return (bool) rand(0, 1);
+    }
 }
