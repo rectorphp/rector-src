@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\StringType;
@@ -23,6 +22,7 @@ use Rector\TypeDeclaration\ValueObject\AddReturnTypeDeclaration;
 
 return static function (RectorConfig $rectorConfig): void {
     $nullableStringType = new UnionType([new NullType(), new StringType()]);
+    $nullableObjectType = new UnionType([new NullType(), new ObjectType(FileInterface::class)]);
 
     $rectorConfig
         ->ruleWithConfiguration(AddReturnTypeDeclarationRector::class, [
@@ -38,7 +38,7 @@ return static function (RectorConfig $rectorConfig): void {
             new AddReturnTypeDeclaration(
                 FolderInterface::class,
                 'create',
-                TypeCombinator::addNull(new ObjectType(FileInterface::class)),
+                $nullableObjectType
             ),
         ]);
 };
