@@ -60,6 +60,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         // no arg? ::now()
         $carbonFullyQualified = new FullyQualified('Carbon\Carbon');
         if ($node->args === []) {
