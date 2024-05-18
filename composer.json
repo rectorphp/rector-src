@@ -25,7 +25,7 @@
         "phpstan/phpdoc-parser": "^1.25",
         "phpstan/phpstan": "^1.11",
         "react/event-loop": "^1.5",
-        "react/promise": "^2.10",
+        "react/promise": "^3.1",
         "react/socket": "^1.12",
         "rector/extension-installer": "^0.11.2",
         "rector/rector-doctrine": "dev-main",
