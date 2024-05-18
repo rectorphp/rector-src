@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
+use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
@@ -35,10 +35,6 @@ return static function (RectorConfig $rectorConfig): void {
             ),
             new AddReturnTypeDeclaration(DataTransformerInterface::class, 'transform', new MixedType()),
             new AddReturnTypeDeclaration(FormTypeInterface::class, 'getParent', $nullableStringType),
-            new AddReturnTypeDeclaration(
-                FolderInterface::class,
-                'create',
-                $nullableObjectType
-            ),
+            new AddReturnTypeDeclaration(FolderInterface::class, 'create', $nullableObjectType),
         ]);
 };
