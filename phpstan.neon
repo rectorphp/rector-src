@@ -92,7 +92,10 @@ parameters:
                 - src/StaticTypeMapper/ValueObject/Type/*Type.php
 
         # generics nullable bugs
-        - '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
+        -
+            message: '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
+            path: src/PhpParser/Node/BetterNodeFinder.php
+
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
 
         - '#Property Rector\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
@@ -120,6 +123,8 @@ parameters:
 
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
+
+        - '#Method Rector\\Arguments\\ArgumentDefaultValueReplacer\:\:processReplaces\(\) should return \(TCall of PhpParser\\Node\\Expr\\FuncCall\|PhpParser\\Node\\Expr\\MethodCall\|PhpParser\\Node\\Expr\\New_\|PhpParser\\Node\\Expr\\StaticCall\|PhpParser\\Node\\Stmt\\ClassMethod\)\|null but returns PhpParser\\Node\\Stmt\\ClassMethod\|null#'
 
         # native filesystem calls, required for performance reasons
         -
@@ -159,9 +164,6 @@ parameters:
                 - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
                 - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
                 - src/PhpParser/NodeTransformer.php
-
-        # impossible to validate json string is a class-string
-        - '#Parameter \#1 \$rectorClass of class Rector\\ChangesReporting\\ValueObject\\RectorWithLineChange constructor expects class\-string<Rector\\Contract\\Rector\\RectorInterface\>\|Rector\\Contract\\Rector\\RectorInterface, string given#'
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
