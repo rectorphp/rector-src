@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Carbon\Rector\New_;
 
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
@@ -67,7 +68,7 @@ CODE_SAMPLE
         return null;
     }
 
-    public function refactorWithClass(New_ $new, string $className): Node\Expr\MethodCall|StaticCall|null
+    public function refactorWithClass(New_ $new, string $className): MethodCall|StaticCall|null
     {
         if ($new->isFirstClassCallable()) {
             return null;
