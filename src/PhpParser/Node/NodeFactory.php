@@ -49,7 +49,6 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PostRector\ValueObject\PropertyMetadata;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\ValueObject\MethodName;
 
 /**
  * @see \Rector\Tests\PhpParser\Node\NodeFactoryTest
@@ -143,9 +142,6 @@ final readonly class NodeFactory
         return new Arg(BuilderHelpers::normalizeValue($argument));
     }
 
-    /**
-     * @param MethodName::* $name
-     */
     public function createPublicMethod(string $name): ClassMethod
     {
         $method = new Method($name);

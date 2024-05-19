@@ -210,9 +210,6 @@ parameters:
                 # regex
                 - rules/Php70/EregToPcreTransformer.php
 
-        # resolve later with configurable types
-        #- '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
-
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
@@ -303,10 +300,6 @@ parameters:
         # debug functions
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: tests/debug_functions.php
-
-        -
-            message: '#Do not name "d", shorter than 2 chars#'
             path: tests/debug_functions.php
 
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
