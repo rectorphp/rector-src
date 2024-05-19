@@ -391,6 +391,7 @@ final class LazyContainerFactory
 
         // init PHPStan Container early that needed on
         // PHPStan 1.11
+        // @see https://github.com/rectorphp/rector/issues/8641
         $rectorConfig->make(PHPStanServicesFactory::class);
 
         $rectorConfig->singleton(Application::class, static function (Container $container): Application {
