@@ -75,7 +75,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isName($new->class, 'DateTime')) {
+        if (! $this->isName($new->class, 'DateTime') && ! $this->isName($new->class, 'DateTimeImmutable')) {
             return null;
         }
 
@@ -93,7 +93,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $carbonFullyQualified = new FullyQualified('Carbon\Carbon');
+        if ($this->isName($new->class, 'DateTime')) {
+            $carbonFullyQualified = new FullyQualified('Carbon\Carbon');
+        } else {
+            $carbonFullyQualified = new FullyQualified('Carbon\CarbonImmutable');
+        }
 
         $carbonCall = $this->carbonCallFactory->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
 

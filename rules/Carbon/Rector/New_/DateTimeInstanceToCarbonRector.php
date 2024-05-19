@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Carbon\Rector\New_;
 
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
@@ -57,6 +57,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         if ($this->isName($node->class, 'DateTime')) {
             return $this->refactorWithClass($node, 'Carbon\\Carbon');
         }
@@ -70,10 +74,6 @@ CODE_SAMPLE
 
     public function refactorWithClass(New_ $new, string $className): MethodCall|StaticCall|null
     {
-        if ($new->isFirstClassCallable()) {
-            return null;
-        }
-
         // no arg? ::now()
         $carbonFullyQualified = new FullyQualified($className);
 
