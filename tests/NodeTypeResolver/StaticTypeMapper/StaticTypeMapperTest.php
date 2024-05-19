@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\StaticTypeMapper;
 
+use PHPStan\Type\Type;
 use Iterator;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -30,7 +31,7 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
     }
 
     /**
-     * @param class-string<\PHPStan\Type\Type> $expectedType
+     * @param class-string<Type> $expectedType
      */
     #[DataProvider('provideData')]
     public function testMapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, string $expectedType): void
