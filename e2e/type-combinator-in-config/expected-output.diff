@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/NullWithObjectType.php:3
+
+    ---------- begin diff ----------
+@@ @@
+
+ class NullWithObjectType implements FolderInterface
+ {
+-    public function create(string $fileName)
++    public function create(string $fileName): ?\App\FileInterface
+     {
+
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * AddReturnTypeDeclarationRector
+
+
+ [OK] 1 file would have changed (dry-run) by Rector

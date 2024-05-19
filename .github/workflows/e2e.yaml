@@ -35,6 +35,7 @@ jobs:
                     - 'e2e/invalid-paths'
                     - 'e2e/applied-polyfill-php80'
                     - 'e2e/skip-add-return-has-child'
+                    - 'e2e/phpstan-service-factory-init'
 
         name: End to end test - ${{ matrix.directory }}
 
