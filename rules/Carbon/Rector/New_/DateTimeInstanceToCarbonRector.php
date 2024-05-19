@@ -72,7 +72,7 @@ CODE_SAMPLE
         return null;
     }
 
-    public function refactorWithClass(New_ $new, string $className): MethodCall|StaticCall|null
+    private function refactorWithClass(New_ $new, string $className): MethodCall|StaticCall|null
     {
         // no arg? ::now()
         $carbonFullyQualified = new FullyQualified($className);
