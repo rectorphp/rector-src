@@ -121,8 +121,6 @@ parameters:
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
 
-        - '#Method "resolveObjectType\(\)" returns bool type, so the name should start with is/has/was#'
-
         # native filesystem calls, required for performance reasons
         -
             message: '#"@\\unlink\(\$tmpPath\)" is forbidden to use#'
@@ -151,9 +149,6 @@ parameters:
 
         # generics
         - '#Parameter \#1 \$stmts of class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
-
-        # return bool on change
-        - '#Method "(change|remove)(.*?)" returns bool type, so the name should start with is/has/was#'
 
         -
             message: '#Use value object over return of values#'
@@ -215,9 +210,6 @@ parameters:
                 # regex
                 - rules/Php70/EregToPcreTransformer.php
 
-        - '#Method "replaceTagByAnother\(\)" returns bool type, so the name should start with is/has/was#'
-        - '#Method "refactorPhpDoc\(\)" returns bool type, so the name should start with is/has/was#'
-
         # resolve later with configurable types
         - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
 
@@ -276,9 +268,6 @@ parameters:
         # fixture class
         - '#Class "Rector\\Tests\\Issues\\ScopeNotAvailable\\Variable\\ArrayItemForeachValueRector" is missing @see annotation with test case class reference#'
 
-        # returns bool for notifications
-        - '#Method "renamePropertyPromotion\(\)" returns bool type, so the name should start with is/has/was#'
-
         -
             message: '#Parameter \#1 \$phpVersion of method Rector\\Config\\RectorConfig\:\:phpVersion\(\) expects 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000, (.*?) given#'
             path: rules-tests
@@ -299,13 +288,6 @@ parameters:
         # class string
         - '#Parameter \#1 \$name of method PHPStan\\BetterReflection\\Reflection\\Adapter\\ReflectionClass\:\:getAttributes\(\) expects class\-string\|null, string given#'
 
-        -
-            message: '#Instead of protected element, use private element or contract method#'
-            paths:
-                - src/BetterPhpDocParser/ValueObject/PhpDoc/DoctrineAnnotation/AbstractValuesAwareNode.php
-                - rules/Strict/Rector/AbstractFalsyScalarRuleFixerRector.php
-                - src/Rector/AbstractRector.php
-
         # useless
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
 
@@ -320,10 +302,6 @@ parameters:
         # false positive on enums
         - '#Method Rector\\Console\\Command\\SetupCICommand\:\:resolveCurrentCI\(\) never returns (.*?) so it can be removed from the return type#'
 
-        -
-            message: '#Method "renameVariableInFunctionLike\(\)" returns bool type, so the name should start with is/has/was#'
-            path: rules/Naming/VariableRenamer.php
-
         # stmts aware/expression generics
         - '#PhpParser\\Node\\Stmt\\Expression is not generic#'
 
@@ -333,14 +311,6 @@ parameters:
         -
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
-
-        # false positive
-        -
-            message: '#Parameters should use "array" types as the only types passed to this method#'
-            path: src/VersionBonding/PhpVersionedFilter.php
-
-        # submethods that handle smaller change
-        - '#Method "refactor(.*?)\(\)" returns bool type, so the name should start with is/has/was#'
 
         # chicken/egg
         -
@@ -366,9 +336,6 @@ parameters:
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: src/Skipper/SkipCriteriaResolver/SkippedClassResolver.php
 
-        # remove in next step
-        - '#Method "(importNames|renamePhpDocType)\(\)" returns bool type, so the name should start with is/has/was#'
-
         # ignore until PHPParser returns more precise types
         -
             message: '#Parameter \#1 \$useType of callable callable\(0\|1\|2\|3, PhpParser\\Node\\Stmt\\UseUse, string\): void expects 0\|1\|2\|3, int given.#'
@@ -378,10 +345,6 @@ parameters:
 
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
-
-        -
-            path: rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php
-            message: "#Method \"process(ToClassConstFetch|Arg)\\(\\)\" returns bool type, so the name should start with is/has/was#"
 
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
