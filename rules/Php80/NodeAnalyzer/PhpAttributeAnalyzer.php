@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\Php81\Enum\AttributeName;
 use Rector\PhpAttribute\Enum\DocTagNodeState;
 
 final readonly class PhpAttributeAnalyzer
@@ -41,6 +42,9 @@ final readonly class PhpAttributeAnalyzer
         return false;
     }
 
+    /**
+     * @param AttributeName::* $attributeClass
+     */
     public function hasInheritedPhpAttribute(Class_ $class, string $attributeClass): bool
     {
         $className = (string) $this->nodeNameResolver->getName($class);

@@ -210,9 +210,6 @@ parameters:
                 # regex
                 - rules/Php70/EregToPcreTransformer.php
 
-        # resolve later with configurable types
-        - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
-
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
@@ -229,15 +226,6 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: src/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        -
-            message: '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
-            paths:
-                - bin/rector.php
-                - src/Bootstrap/RectorConfigsResolver.php
-                - tests/FileSystem/FilesFinder/FilesFinderTest.php
-                - tests/Skipper/Skipper/SkipperTest.php
-                - src/Console/Command/CustomRuleCommand.php
 
         # phpdoc node traversing
         -
@@ -277,10 +265,6 @@ parameters:
             paths:
                 - rules-tests/*/config/*
 
-        -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
-
-        - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
-
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
 
@@ -292,11 +276,7 @@ parameters:
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
 
         -
-            message: '#Function "function_exists\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        -
-            message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
+            message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
         # false positive on enums
@@ -320,10 +300,6 @@ parameters:
         # debug functions
         -
             message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
-            path: tests/debug_functions.php
-
-        -
-            message: '#Do not name "d", shorter than 2 chars#'
             path: tests/debug_functions.php
 
         # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()

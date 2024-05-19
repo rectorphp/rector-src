@@ -27,6 +27,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeNameResolver\Contract\NodeNameResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\ValueObject\MethodName;
 
 final class NodeNameResolver
 {
@@ -71,6 +72,7 @@ final class NodeNameResolver
 
     /**
      * @param Node|Node[] $node
+     * @param MethodName::*|string $name
      */
     public function isName(Node | array $node, string $name): bool
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Caching;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Caching\Enum\CacheKey;
 
 final readonly class Cache
 {
@@ -14,6 +15,7 @@ final readonly class Cache
     }
 
     /**
+     * @param CacheKey::* $variableKey
      * @return mixed|null
      */
     public function load(string $key, string $variableKey)
@@ -21,6 +23,9 @@ final readonly class Cache
         return $this->cacheStorage->load($key, $variableKey);
     }
 
+    /**
+     * @param CacheKey::* $variableKey
+     */
     public function save(string $key, string $variableKey, mixed $data): void
     {
         $this->cacheStorage->save($key, $variableKey, $data);

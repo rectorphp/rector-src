@@ -47,6 +47,7 @@ final class TagValueNodeReprintTest extends AbstractLazyTestCase
     {
         [$fileContents, $nodeClass, $tagValueNodeClasses] = FixtureSplitter::split($filePath);
 
+        /** @var class-string<Node> $nodeClass */
         $nodeClass = trim($nodeClass);
         $tagValueNodeClasses = $this->splitListByEOL($tagValueNodeClasses);
 
