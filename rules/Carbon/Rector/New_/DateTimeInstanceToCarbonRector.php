@@ -67,26 +67,21 @@ CODE_SAMPLE
         return null;
     }
 
-    /**
-     * @param New_ $node
-     * @param class-string<\Carbon\Carbon|\Carbon\CarbonImmutable> $className
-     */
-    public function refactorWithClass(Node $node, string $className) : ?Node
+    public function refactorWithClass(New_ $new, string $className): Node\Expr\MethodCall|StaticCall|null
     {
-        if ($node->isFirstClassCallable()) {
+        if ($new->isFirstClassCallable()) {
             return null;
         }
 
         // no arg? ::now()
-        $carbonFullyQualified = new FullyQualified('Carbon\\Carbon');
         $carbonFullyQualified = new FullyQualified($className);
 
-        if ($node->args === []) {
+        if ($new->args === []) {
             return new StaticCall($carbonFullyQualified, new Identifier('now'));
         }
 
-        if (count($node->getArgs()) === 1) {
-            $firstArg = $node->getArgs()[0];
+        if (count($new->getArgs()) === 1) {
+            $firstArg = $new->getArgs()[0];
 
             if ($firstArg->value instanceof String_) {
                 return $this->carbonCallFactory->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
