@@ -211,7 +211,7 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
 
         # resolve later with configurable types
-        - '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
+        #- '#On passing a constant, the method should have an enum type\. See https\://phpstan\.org/writing\-php\-code/phpdoc\-types\#literals\-and\-constants#'
 
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
@@ -229,15 +229,6 @@ parameters:
         -
             message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
             path: src/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        -
-            message: '#Relative file path ".+" is not allowed, use absolute one with __DIR__#'
-            paths:
-                - bin/rector.php
-                - src/Bootstrap/RectorConfigsResolver.php
-                - tests/FileSystem/FilesFinder/FilesFinderTest.php
-                - tests/Skipper/Skipper/SkipperTest.php
-                - src/Console/Command/CustomRuleCommand.php
 
         # phpdoc node traversing
         -
@@ -276,10 +267,6 @@ parameters:
             message: '#Class (.*?) not found#'
             paths:
                 - rules-tests/*/config/*
-
-#        -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
-
-#        - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
 
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
