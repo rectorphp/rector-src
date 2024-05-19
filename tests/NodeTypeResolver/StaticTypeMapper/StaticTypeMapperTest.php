@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\NodeTypeResolver\StaticTypeMapper;
 
-use PHPStan\Type\Type;
 use Iterator;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -17,6 +16,7 @@ use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;

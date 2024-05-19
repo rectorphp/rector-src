@@ -52,6 +52,7 @@ final class RectorWithLineChange implements SerializableInterface
      */
     public static function decode(array $json): self
     {
+        /** @var class-string<RectorInterface> $rectorClass */
         $rectorClass = $json[self::KEY_RECTOR_CLASS];
         Assert::string($rectorClass);
 

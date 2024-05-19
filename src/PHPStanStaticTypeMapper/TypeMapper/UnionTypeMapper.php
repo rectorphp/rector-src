@@ -155,8 +155,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     /**
      * @param TypeKind::* $typeKind
      */
-    private function mapNullabledType(Type $nullabledType, string $typeKind): ?Node
-    {
+    private function mapNullabledType(
+        Type $nullabledType,
+        string $typeKind
+    ): NullableType|ComplexType|PhpParserUnionType|null {
         // void cannot be nullable
         if ($nullabledType->isVoid()->yes()) {
             return null;
