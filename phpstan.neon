@@ -277,9 +277,9 @@ parameters:
             paths:
                 - rules-tests/*/config/*
 
-        -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
+#        -  '#Parameter \#1 \$expected of method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) expects class\-string<object>, string given#'
 
-        - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
+#        - '#Parameter \#3 \$nodeClass of method Rector\\Tests\\BetterPhpDocParser\\PhpDocParser\\TagValueNodeReprint\\TagValueNodeReprintTest\:\:doTestPrintedPhpDocInfo\(\) expects class\-string<PhpParser\\Node>, string given#'
 
         # trusted items
         - '#Parameter \#1 \$nodes of method PhpParser\\PrettyPrinterAbstract\:\:pCommaSeparatedMultiline\(\) expects array<PhpParser\\Node>, array<PhpParser\\Node\\Expr\\ArrayItem\|null> given#'
@@ -292,11 +292,7 @@ parameters:
         - '#Parameter \#1 \$suffix of method PHPUnit\\Framework\\Assert\:\:assertStringEndsWith\(\) expects non\-empty\-string, string given#'
 
         -
-            message: '#Function "function_exists\(\)" cannot be used/left in the code#'
-            path: src/functions/node_helper.php
-
-        -
-            message: '#Function "dump_node\(\)" cannot be used/left in the code\: #'
+            message: '#Function "(function_exists|dump_node)\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
         # false positive on enums

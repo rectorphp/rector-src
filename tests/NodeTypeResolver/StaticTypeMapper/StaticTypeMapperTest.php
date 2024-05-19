@@ -29,6 +29,9 @@ final class StaticTypeMapperTest extends AbstractLazyTestCase
         $this->staticTypeMapper = $this->make(StaticTypeMapper::class);
     }
 
+    /**
+     * @param class-string<\PHPStan\Type\Type> $expectedType
+     */
     #[DataProvider('provideData')]
     public function testMapPHPStanPhpDocTypeNodeToPHPStanType(TypeNode $typeNode, string $expectedType): void
     {
