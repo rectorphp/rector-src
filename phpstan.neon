@@ -312,11 +312,6 @@ parameters:
             message: '#Offset 0 does not exist on array<PhpParser\\Node\\Stmt>\|null#'
             path:  rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php
 
-        # false positive
-        -
-            message: '#Parameters should use "array" types as the only types passed to this method#'
-            path: src/VersionBonding/PhpVersionedFilter.php
-
         # chicken/egg
         -
             message: '#Function "(d|dd)\(\)" cannot be used/left in the code#'
