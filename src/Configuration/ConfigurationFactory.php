@@ -66,6 +66,11 @@ final readonly class ConfigurationFactory
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
         $isDebug = (bool) $input->getOption(Option::DEBUG);
 
+        // using debug disables parallel, so emitting exception is straightforward and easier to debug
+        if ($isDebug) {
+            $isParallel = false;
+        }
+
         $memoryLimit = $this->resolveMemoryLimit($input);
 
         return new Configuration(
