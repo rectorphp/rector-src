@@ -108,16 +108,12 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        if ($returnType instanceof UnionType) {
+        if ($returnType instanceof UnionType || $returnType->isVoid()->yes()) {
             return null;
         }
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof Identifier) {
-            return null;
-        }
-
-        if (! in_array($returnTypeNode->toString(), ['string', 'int', 'float', 'bool', 'array', 'object'], true)) {
+        if (! $returnTypeNode instanceof Node) {
             return null;
         }
 
