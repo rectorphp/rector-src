@@ -66,7 +66,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 
             if ($returnedExprType instanceof MixedType && ! $returnedExprType->isExplicitMixed() && $localReturnNode->expr instanceof CallLike) {
                 $scope = $localReturnNode->getAttribute(AttributeKey::SCOPE);
-                if ($scope instanceof Scope) {
+                if (! $scope instanceof Scope) {
                     $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
                     continue;
                 }
