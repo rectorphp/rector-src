@@ -6,17 +6,21 @@ namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\AstResolver;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
@@ -33,6 +37,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
         private TypeFactory $typeFactory,
         private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private ReflectionResolver $reflectionResolver,
+        private AstResolver $astResolver
     ) {
     }
 
@@ -58,6 +63,20 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
             $returnedExprType = $localReturnNode->expr instanceof Expr
                 ? $this->nodeTypeResolver->getNativeType($localReturnNode->expr)
                 : new VoidType();
+
+            if ($returnedExprType instanceof MixedType && ! $returnedExprType->isExplicitMixed() && $localReturnNode->expr instanceof CallLike) {
+                $scope = $localReturnNode->getAttribute(AttributeKey::SCOPE);
+                if ($scope instanceof Scope) {
+                    $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
+                    continue;
+                }
+
+                $targetCallike = $this->astResolver->resolveClassMethodOrFunctionFromCall(
+                    $localReturnNode->expr,
+                    $scope
+                );
+                $returnedExprType = $this->inferFunctionLike($targetCallike);
+            }
 
             $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
         }
