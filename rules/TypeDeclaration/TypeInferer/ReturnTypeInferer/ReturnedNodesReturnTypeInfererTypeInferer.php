@@ -6,7 +6,9 @@ namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
@@ -64,21 +66,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
                 ? $this->nodeTypeResolver->getNativeType($localReturnNode->expr)
                 : new VoidType();
 
-            if ($returnedExprType instanceof MixedType && ! $returnedExprType->isExplicitMixed() && $localReturnNode->expr instanceof CallLike) {
-                $scope = $localReturnNode->getAttribute(AttributeKey::SCOPE);
-                if (! $scope instanceof Scope) {
-                    $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
-                    continue;
-                }
-
-                $targetCallike = $this->astResolver->resolveClassMethodOrFunctionFromCall(
-                    $localReturnNode->expr,
-                    $scope
-                );
-                $returnedExprType = $this->inferFunctionLike($targetCallike);
-            }
-
-            $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
+            $types = $this->appendType($types, $returnedExprType, $localReturnNode);
         }
 
         if ($this->silentVoidResolver->hasSilentVoid($functionLike)) {
@@ -86,6 +74,43 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
         }
 
         return $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($types);
+    }
+
+    /**
+     * @param Type[] $types
+     * @return Type[]
+     */
+    private function appendType(array $types, Type $returnedExprType, Return_ $return): array
+    {
+        if ($returnedExprType instanceof MixedType && ! $returnedExprType->isExplicitMixed()
+        &&
+            (
+                $return->expr instanceof FuncCall
+                ||
+                $return->expr instanceof StaticCall
+                ||
+                $return->expr instanceof MethodCall
+            )
+
+        ) {
+            $scope = $return->getAttribute(AttributeKey::SCOPE);
+            if (! $scope instanceof Scope) {
+                $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
+                return $types;
+            }
+
+            $targetCallike = $this->astResolver->resolveClassMethodOrFunctionFromCall($return->expr, $scope);
+
+            if (! $targetCallike instanceof Node) {
+                $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
+                return $types;
+            }
+
+            $returnedExprType = $this->inferFunctionLike($targetCallike);
+        }
+
+        $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
+        return $types;
     }
 
     /**
