@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Rector\Carbon\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\String_;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -18,18 +17,18 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector\DateFuncCallToCarbonRectorTest
  */
-final class DateFuncCallToCarbonRector extends AbstractRector
+final class TimeFuncCallToCarbonRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Convert date() function call to Carbon::now()->format(*)', [
+        return new RuleDefinition('Convert time() function call to Carbon::now()->timestamp', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
     public function run()
     {
-        $date = date('Y-m-d');
+        $time = time();
     }
 }
 CODE_SAMPLE
@@ -40,7 +39,7 @@ class SomeClass
 {
     public function run()
     {
-        $date = \Carbon\Carbon::now()->format('Y-m-d');
+        $time = \Carbon\Carbon::now()->timestamp;
     }
 }
 CODE_SAMPLE
@@ -61,26 +60,27 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isName($node->name, 'date')) {
+        if (! $this->isName($node->name, 'time')) {
             return null;
         }
 
-        if ($node->isFirstClassCallable()) {
-            return null;
-        }
+        $firstClassCallable = $node->isFirstClassCallable();
 
-        if (count($node->getArgs()) !== 1) {
-            return null;
-        }
-
-        $firstArg = $node->getArgs()[0];
-        if (! $firstArg->value instanceof String_) {
+        if (!$firstClassCallable && count($node->getArgs()) !== 0) {
             return null;
         }
 
         // create now and format()
         $nowStaticCall = new StaticCall(new FullyQualified('Carbon\Carbon'), 'now');
+        $propertyFetch = new PropertyFetch($nowStaticCall, 'timestamp');
 
-        return new MethodCall($nowStaticCall, 'format', [new Arg($firstArg->value)]);
+        if ($firstClassCallable) {
+            return new ArrowFunction([
+                'static' => true,
+                'expr' => $propertyFetch,
+            ]);
+        }
+
+        return $propertyFetch;
     }
 }
