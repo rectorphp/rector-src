@@ -66,7 +66,7 @@ CODE_SAMPLE
 
         $firstClassCallable = $node->isFirstClassCallable();
 
-        if (!$firstClassCallable && count($node->getArgs()) !== 0) {
+        if (! $firstClassCallable && count($node->getArgs()) !== 0) {
             return null;
         }
 
