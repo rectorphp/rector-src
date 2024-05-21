@@ -54,12 +54,7 @@ final readonly class ParamTagRemover
             }
 
             $paramType = $phpDocInfo->getParamType($docNode->value->parameterName);
-            if ($type instanceof Type) {
-                if ($type->equals($paramType)) {
-                    $hasChanged = true;
-                    return PhpDocNodeTraverser::NODE_REMOVE;
-                }
-
+            if ($type instanceof Type && ! $type->equals($paramType)) {
                 return null;
             }
 
