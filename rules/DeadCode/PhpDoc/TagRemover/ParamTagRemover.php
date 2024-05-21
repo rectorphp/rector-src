@@ -49,15 +49,15 @@ final readonly class ParamTagRemover
                 return null;
             }
 
-            if (! $this->deadParamTagValueNodeAnalyzer->isDead($docNode->value, $functionLike)) {
-                return null;
-            }
-
             if ($type instanceof Type) {
                 $paramType = $phpDocInfo->getParamType($docNode->value->parameterName);
                 if (! $type->equals($paramType)) {
                     return null;
                 }
+            }
+
+            if (! $this->deadParamTagValueNodeAnalyzer->isDead($docNode->value, $functionLike)) {
+                return null;
             }
 
             $hasChanged = true;
