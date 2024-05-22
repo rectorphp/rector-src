@@ -32,11 +32,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
     public function enterNode(Node $node): ?Node
     {
-        if (! SimpleParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS)) {
+        if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
             return null;
         }
 
-        if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
+        if (! SimpleParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS)) {
             return null;
         }
 
