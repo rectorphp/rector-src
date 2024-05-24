@@ -6,6 +6,7 @@ namespace Rector\Utils\Finder;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Contract\Rector\RectorInterface;
@@ -31,6 +32,10 @@ final class SetRectorClassesResolver
 
         if (realpath($setFile) === realpath(SetList::TYPE_DECLARATION)) {
             return TypeDeclarationLevel::RULES;
+        }
+
+        if (realpath($setFile) === realpath(SetList::CODE_QUALITY)) {
+            return CodeQualityLevel::RULES;
         }
 
         $rectorClasses = [];
