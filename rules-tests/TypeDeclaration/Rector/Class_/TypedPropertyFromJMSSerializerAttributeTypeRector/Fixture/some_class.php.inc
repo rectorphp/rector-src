@@ -17,7 +17,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSeriali
 final class SomeClass
 {
     #[\JMS\Serializer\Annotation\Type('string')]
-    private ?string $name;
+    private ?string $name = null;
 }
 
 ?>

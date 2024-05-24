@@ -17,7 +17,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSeriali
 final class WithFormat
 {
     #[\JMS\Serializer\Annotation\Type("DateTime<'Y-m-d'>")]
-    private ?\DateTime $name;
+    private ?\DateTime $name = null;
 }
 
 ?>

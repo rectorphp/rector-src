@@ -6,7 +6,9 @@ namespace Rector\TypeDeclaration\Rector\Class_;
 
 use Nette\Utils\Strings;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
@@ -157,8 +159,17 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $type = new NullableType($propertyType);
+                if (! $property->props[0]->default instanceof Node) {
+                    $type = new NullableType($propertyType);
+                } else {
+                    $type = $propertyType;
+                }
+
                 $property->type = $type;
+                if (! $property->props[0]->default instanceof Node) {
+                    $property->props[0]->default = new ConstFetch(new Name('null'));
+                }
+
                 $hasChanged = true;
             }
         }
