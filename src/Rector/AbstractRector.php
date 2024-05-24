@@ -224,7 +224,7 @@ CODE_SAMPLE;
      *  ($node is Const_ ? string :
      *  ($node is Node\Const_ ? string :
      *  ($node is Name ? string :
-     *      (string | null))))))))))
+     *      string|null )))))))))
      */
     protected function getName(Node $node): ?string
     {
