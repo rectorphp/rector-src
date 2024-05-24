@@ -23,6 +23,7 @@ use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\Provider\CurrentFileProvider;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\Application\File;
 
 final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
@@ -63,6 +64,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
+
+        if ($staticType instanceof ShortenedObjectType) {
+            $staticType = new FullyQualifiedObjectType($staticType->getFullyQualifiedName());
+        }
+
         if (! $staticType instanceof FullyQualifiedObjectType) {
             return null;
         }
