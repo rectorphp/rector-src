@@ -215,7 +215,16 @@ CODE_SAMPLE;
      * Some nodes have always-known string name. This makes PHPStan smarter.
      * @see https://phpstan.org/writing-php-code/phpdoc-types#conditional-return-types
      *
-     * @return ($node is Node\Param ? string : ($node is ClassMethod ? string : ($node is Property ? string : ($node is PropertyProperty ? string : ($node is Trait_ ? string : ($node is Interface_ ? string : ($node is Const_ ? string : ($node is Node\Const_ ? string : ($node is Name ? string : (string | null))))))))))
+     * @return ($node is Node\Param ? string :
+     *  ($node is ClassMethod ? string :
+     *  ($node is Property ? string :
+     *  ($node is PropertyProperty ? string :
+     *  ($node is Trait_ ? string :
+     *  ($node is Interface_ ? string :
+     *  ($node is Const_ ? string :
+     *  ($node is Node\Const_ ? string :
+     *  ($node is Name ? string :
+     *  (string | null))))))))))
      */
     protected function getName(Node $node): ?string
     {
