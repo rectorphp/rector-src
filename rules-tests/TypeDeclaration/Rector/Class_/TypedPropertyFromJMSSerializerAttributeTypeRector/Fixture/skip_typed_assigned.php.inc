@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector\Fixture;
 
-final class SkipAssigned
+final class SkipTypedAssigned
 {
     #[\JMS\Serializer\Annotation\Type('string')]
     private $name;
