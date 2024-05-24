@@ -24,6 +24,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -47,7 +48,8 @@ final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRe
         private readonly ValueResolver $valueResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly ScalarStringToTypeMapper $scalarStringToTypeMapper,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -162,10 +164,18 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $type = new NullableType($propertyType);
+                $isInConstructorAssigned = $this->constructorAssignDetector->isPropertyAssigned($node, $this->getName($property));
+                if (! $isInConstructorAssigned) {
+                    $type = new NullableType($propertyType);
+                } else {
+                    $type = $propertyType;
+                }
 
                 $property->type = $type;
-                $property->props[0]->default = new ConstFetch(new Name('null'));
+
+                if (! $isInConstructorAssigned) {
+                    $property->props[0]->default = new ConstFetch(new Name('null'));
+                }
 
                 $hasChanged = true;
             }
