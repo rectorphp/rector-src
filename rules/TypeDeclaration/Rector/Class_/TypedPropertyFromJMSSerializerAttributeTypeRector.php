@@ -128,7 +128,7 @@ CODE_SAMPLE
             );
 
             // has assigned
-            if ($inferredType instanceof Type) {
+            if ($inferredType instanceof Type || $property->props[0]->default instanceof Node) {
                 continue;
             }
 
@@ -159,16 +159,10 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $property->props[0]->default instanceof Node) {
-                    $type = new NullableType($propertyType);
-                } else {
-                    $type = $propertyType;
-                }
+                $type = new NullableType($propertyType);
 
                 $property->type = $type;
-                if (! $property->props[0]->default instanceof Node) {
-                    $property->props[0]->default = new ConstFetch(new Name('null'));
-                }
+                $property->props[0]->default = new ConstFetch(new Name('null'));
 
                 $hasChanged = true;
             }
