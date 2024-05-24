@@ -126,7 +126,7 @@ CODE_SAMPLE
                 $classReflection,
                 $this->file
             );
-            // has assigned
+            // has assigned with type
             if ($inferredType instanceof Type) {
                 continue;
             }
