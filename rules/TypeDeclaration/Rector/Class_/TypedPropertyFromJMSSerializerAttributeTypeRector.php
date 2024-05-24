@@ -164,12 +164,11 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $isInConstructorAssigned = $this->constructorAssignDetector->isPropertyAssigned($node, $this->getName($property));
-                if (! $isInConstructorAssigned) {
-                    $type = new NullableType($propertyType);
-                } else {
-                    $type = $propertyType;
-                }
+                $isInConstructorAssigned = $this->constructorAssignDetector->isPropertyAssigned(
+                    $node,
+                    $this->getName($property)
+                );
+                $type = $isInConstructorAssigned ? $propertyType : new NullableType($propertyType);
 
                 $property->type = $type;
 
