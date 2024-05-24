@@ -126,9 +126,12 @@ CODE_SAMPLE
                 $classReflection,
                 $this->file
             );
-
             // has assigned
-            if ($inferredType instanceof Type || $property->props[0]->default instanceof Node) {
+            if ($inferredType instanceof Type) {
+                continue;
+            }
+
+            if ($property->props[0]->default instanceof Node) {
                 continue;
             }
 
