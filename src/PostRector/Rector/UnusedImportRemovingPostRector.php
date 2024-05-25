@@ -188,6 +188,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         }
 
         $alias = $this->resolveAliasName($useUse);
+        $lastName = $useUse->name->getLast();
 
         // match partial import
         foreach ($names as $name) {
@@ -200,6 +201,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             if (! is_string($alias)) {
+                if (str_starts_with($name, $lastName . '\\')) {
+                    return true;
+                }
+
                 continue;
             }
 
