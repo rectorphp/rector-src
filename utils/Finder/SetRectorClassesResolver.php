@@ -26,15 +26,17 @@ final class SetRectorClassesResolver
     public static function resolve(string $setFile): array
     {
         // special level cases
-        if (realpath($setFile) === realpath(SetList::DEAD_CODE)) {
+        $setFileRealPath = realpath($setFile);
+
+        if ($setFileRealPath === realpath(SetList::DEAD_CODE)) {
             return DeadCodeLevel::RULES;
         }
 
-        if (realpath($setFile) === realpath(SetList::TYPE_DECLARATION)) {
+        if ($setFileRealPath === realpath(SetList::TYPE_DECLARATION)) {
             return TypeDeclarationLevel::RULES;
         }
 
-        if (realpath($setFile) === realpath(SetList::CODE_QUALITY)) {
+        if ($setFileRealPath === realpath(SetList::CODE_QUALITY)) {
             return CodeQualityLevel::RULES;
         }
 

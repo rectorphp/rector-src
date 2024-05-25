@@ -112,7 +112,6 @@ final class CodeQualityLevel
         SimplifyFuncGetArgsCountRector::class,
         SimplifyInArrayValuesRector::class,
         SimplifyStrposLowerRector::class,
-        GetClassToInstanceOfRector::class,
         SimplifyArraySearchRector::class,
         SimplifyConditionsRector::class,
         SimplifyIfNotNullReturnRector::class,
@@ -181,8 +180,12 @@ final class CodeQualityLevel
         CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         StaticToSelfStaticMethodCallOnFinalClassRector::class,
+        GetClassToInstanceOfRector::class,
     ];
 
+    /**
+     * @var array<class-string, mixed[]>
+     */
     public const RULES_WITH_CONFIGURATION = [
         RenameFunctionRector::class => [
             'split' => 'explode',
