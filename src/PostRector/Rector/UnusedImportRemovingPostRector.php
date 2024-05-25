@@ -42,6 +42,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         $hasChanged = false;
 
+        $namespaceName = $node instanceof Namespace_ && $node->name instanceof Name
+            ? $node->name
+            : null;
+
         $names = $this->resolveUsedPhpAndDocNames($node);
 
         foreach ($node->stmts as $key => $namespaceStmt) {
@@ -57,7 +61,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-            if ($this->isUseImportUsed($useUse, $names)) {
+            if ($this->isUseImportUsed($useUse, $names, $namespaceName)) {
                 continue;
             }
 
@@ -174,7 +178,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @param string[]  $names
      */
-    private function isUseImportUsed(UseUse $useUse, array $names): bool
+    private function isUseImportUsed(UseUse $useUse, array $names, ?Name $namespaceName): bool
     {
         $comparedName = $useUse->name->toString();
         if (in_array($comparedName, $names, true)) {
@@ -189,6 +193,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         $alias = $this->resolveAliasName($useUse);
         $lastName = $useUse->name->getLast();
+        $namespaceName = $namespaceName instanceof Name ? $namespaceName->toString() : null;
 
         // match partial import
         foreach ($names as $name) {
@@ -201,11 +206,15 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             if (! is_string($alias)) {
-                if (str_starts_with($name, $lastName . '\\')) {
-                    return true;
+                if (! str_starts_with($name, $lastName . '\\')) {
+                    continue;
                 }
 
-                continue;
+                if ($namespaceName !== null && str_starts_with($name, $namespaceName . '\\')) {
+                    continue;
+                }
+
+                return true;
             }
 
             if ($alias === $name) {
