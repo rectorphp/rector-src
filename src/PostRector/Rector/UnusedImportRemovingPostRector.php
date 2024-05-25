@@ -213,7 +213,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return true;
             }
 
-            if (!str_starts_with($name, $namespaceName . '\\')) {
+            if (! str_starts_with($name, $namespaceName . '\\')) {
                 return true;
             }
         }
