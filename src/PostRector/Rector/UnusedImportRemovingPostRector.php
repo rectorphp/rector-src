@@ -197,36 +197,23 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         // match partial import
         foreach ($names as $name) {
-            if (str_ends_with($comparedName, '\\' . $name)) {
+            if ($this->isSubNamespace($name, $comparedName, $namespacedPrefix)) {
                 return true;
             }
 
-            if ($this->isSubNamespace($name, $namespacedPrefix)) {
+            if (is_string($alias) && $this->isUsedAlias($alias, $name)) {
                 return true;
             }
 
-            if (! is_string($alias)) {
-                if (! str_starts_with($name, $lastName . '\\')) {
-                    continue;
-                }
-
-                if ($namespaceName !== null && str_starts_with($name, $namespaceName . '\\')) {
-                    continue;
-                }
-
-                return true;
-            }
-
-            if ($alias === $name) {
-                return true;
-            }
-
-            if (! str_contains($name, '\\')) {
+            if (! str_starts_with($name, $lastName . '\\')) {
                 continue;
             }
 
-            $namePrefix = Strings::before($name, '\\', 1);
-            if ($alias === $namePrefix) {
+            if ($namespaceName === null) {
+                return true;
+            }
+
+            if (!str_starts_with($name, $namespaceName . '\\')) {
                 return true;
             }
         }
@@ -234,8 +221,26 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         return false;
     }
 
-    private function isSubNamespace(string $name, string $namespacedPrefix): bool
+    private function isUsedAlias(string $alias, string $name): bool
     {
+        if ($alias === $name) {
+            return true;
+        }
+
+        if (! str_contains($name, '\\')) {
+            return false;
+        }
+
+        $namePrefix = Strings::before($name, '\\', 1);
+        return $alias === $namePrefix;
+    }
+
+    private function isSubNamespace(string $name, string $comparedName, string $namespacedPrefix): bool
+    {
+        if (str_ends_with($comparedName, '\\' . $name)) {
+            return true;
+        }
+
         if (str_starts_with($name, $namespacedPrefix)) {
             $subNamespace = substr($name, strlen($namespacedPrefix));
             return ! str_contains($subNamespace, '\\');
