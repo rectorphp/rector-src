@@ -184,7 +184,7 @@ final class CodeQualityLevel
     ];
 
     /**
-     * @var array<class-string, mixed[]>
+     * @var array<class-string<RectorInterface>, mixed[]>
      */
     public const RULES_WITH_CONFIGURATION = [
         RenameFunctionRector::class => [
