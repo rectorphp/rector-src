@@ -42,6 +42,10 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
         $hasChanged = false;
 
+        $namespaceName = $node instanceof Namespace_ && $node->name instanceof Name
+            ? $node->name
+            : null;
+
         $names = $this->resolveUsedPhpAndDocNames($node);
 
         foreach ($node->stmts as $key => $namespaceStmt) {
@@ -57,7 +61,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-            if ($this->isUseImportUsed($useUse, $names)) {
+            if ($this->isUseImportUsed($useUse, $names, $namespaceName)) {
                 continue;
             }
 
@@ -174,7 +178,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     /**
      * @param string[]  $names
      */
-    private function isUseImportUsed(UseUse $useUse, array $names): bool
+    private function isUseImportUsed(UseUse $useUse, array $names, ?Name $namespaceName): bool
     {
         $comparedName = $useUse->name->toString();
         if (in_array($comparedName, $names, true)) {
@@ -188,31 +192,28 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         }
 
         $alias = $this->resolveAliasName($useUse);
+        $lastName = $useUse->name->getLast();
+        $namespaceName = $namespaceName instanceof Name ? $namespaceName->toString() : null;
 
         // match partial import
         foreach ($names as $name) {
-            if (str_ends_with($comparedName, '\\' . $name)) {
+            if ($this->isSubNamespace($name, $comparedName, $namespacedPrefix)) {
                 return true;
             }
 
-            if ($this->isSubNamespace($name, $namespacedPrefix)) {
+            if (is_string($alias) && $this->isUsedAlias($alias, $name)) {
                 return true;
             }
 
-            if (! is_string($alias)) {
+            if (! str_starts_with($name, $lastName . '\\')) {
                 continue;
             }
 
-            if ($alias === $name) {
+            if ($namespaceName === null) {
                 return true;
             }
 
-            if (! str_contains($name, '\\')) {
-                continue;
-            }
-
-            $namePrefix = Strings::before($name, '\\', 1);
-            if ($alias === $namePrefix) {
+            if (! str_starts_with($name, $namespaceName . '\\')) {
                 return true;
             }
         }
@@ -220,8 +221,26 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         return false;
     }
 
-    private function isSubNamespace(string $name, string $namespacedPrefix): bool
+    private function isUsedAlias(string $alias, string $name): bool
     {
+        if ($alias === $name) {
+            return true;
+        }
+
+        if (! str_contains($name, '\\')) {
+            return false;
+        }
+
+        $namePrefix = Strings::before($name, '\\', 1);
+        return $alias === $namePrefix;
+    }
+
+    private function isSubNamespace(string $name, string $comparedName, string $namespacedPrefix): bool
+    {
+        if (str_ends_with($comparedName, '\\' . $name)) {
+            return true;
+        }
+
         if (str_starts_with($name, $namespacedPrefix)) {
             $subNamespace = substr($name, strlen($namespacedPrefix));
             return ! str_contains($subNamespace, '\\');
