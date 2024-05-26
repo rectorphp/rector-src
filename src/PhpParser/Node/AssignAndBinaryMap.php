@@ -79,18 +79,20 @@ final class AssignAndBinaryMap
     ];
 
     /**
-     * @var array<class-string<BinaryOp>, class-string<BinaryOp>>
+     * @var array<class-string<BinaryOp>, class-string<AssignOp>>
      */
     private array $binaryOpToAssignClasses = [];
 
     public function __construct(
         private readonly NodeTypeResolver $nodeTypeResolver
     ) {
-        $this->binaryOpToAssignClasses = array_flip(self::ASSIGN_OP_TO_BINARY_OP_CLASSES);
+        /** @var array<class-string<BinaryOp>, class-string<AssignOp>> $binaryClassesToAssignOp */
+        $binaryClassesToAssignOp = array_flip(self::ASSIGN_OP_TO_BINARY_OP_CLASSES);
+        $this->binaryOpToAssignClasses = $binaryClassesToAssignOp;
     }
 
     /**
-     * @return class-string<BinaryOp>|null
+     * @return class-string<BinaryOp|AssignOp>|null
      */
     public function getAlternative(Node $node): ?string
     {

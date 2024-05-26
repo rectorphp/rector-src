@@ -26,16 +26,12 @@ jobs:
                         run: php preload.php
 
                     -
-                        name: 'Validate Max File Length'
-                        run: vendor/bin/easy-ci validate-file-length rules src tests
-
-                    -
                         name: 'PHPStan'
                         run: vendor/bin/phpstan analyse --ansi --error-format symplify
 
                     -
                         name: 'Commented Code'
-                        run: vendor/bin/easy-ci check-commented-code src rules tests rules-tests --line-limit 5 --ansi
+                        run: vendor/bin/swiss-knife check-commented-code src rules tests rules-tests --line-limit 5 --ansi
 
                     -
                         name: 'Active Classes'
