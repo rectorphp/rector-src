@@ -11,6 +11,7 @@ use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
@@ -19,7 +20,7 @@ final readonly class NameImporter
 {
     public function __construct(
         private ClassNameImportSkipper $classNameImportSkipper,
-        private StaticTypeMapper $staticTypeMapper,
+        private FullyQualifiedNodeMapper $fullyQualifiedNodeMapper,
         private UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
@@ -30,7 +31,7 @@ final readonly class NameImporter
             return null;
         }
 
-        $staticType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($fullyQualified);
+        $staticType = $this->fullyQualifiedNodeMapper->mapToPHPStan($fullyQualified);
         if (! $staticType instanceof FullyQualifiedObjectType) {
             return null;
         }
