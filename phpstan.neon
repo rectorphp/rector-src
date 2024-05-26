@@ -32,7 +32,6 @@ parameters:
     scanFiles:
         - src/Contract/PhpParser/Node/StmtsAwareInterface.php
 
-
     excludePaths:
         - '*tests/*/Fixture/*'
         - '*tests/*/Fixture*'
@@ -86,19 +85,12 @@ parameters:
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
-        -
-            message: '#There should be no empty class#'
-            paths:
-                - src/StaticTypeMapper/ValueObject/Type/*Type.php
-
         # generics nullable bugs
         -
             message: '#Method (.*?) should return (.*?)\|null but returns PhpParser\\Node\|null#'
             path: src/PhpParser/Node/BetterNodeFinder.php
 
         - '#Method (.*?) should return array<T of PhpParser\\Node\> but returns array<PhpParser\\Node\>#'
-
-        - '#Property Rector\\PhpParser\\Node\\AssignAndBinaryMap\:\:\$binaryOpToAssignClasses \(array<class\-string<PhpParser\\Node\\Expr\\BinaryOp\>, class\-string<PhpParser\\Node\\Expr\\BinaryOp\>\>\) does not accept array#'
 
         -
             message: '#Function "property_exists\(\)" cannot be used/left in the code#'
@@ -128,17 +120,10 @@ parameters:
 
         # native filesystem calls, required for performance reasons
         -
-            message: '#"@\\unlink\(\$tmpPath\)" is forbidden to use#'
+            message: '#@(.*?) is forbidden to use#'
             paths:
                 - src/Caching/ValueObject/Storage/FileCacheStorage.php
-        -
-            message: '#"@\\copy(.*?)" is forbidden to use#'
-            paths:
-                - src/Caching/ValueObject/Storage/FileCacheStorage.php
-        -
-            message: '#"@\\var_export\(new \\Rector\\Caching\\ValueObject\\CacheItem\(\$variableKey, \$data\), true\)" is forbidden to use#'
-            paths:
-                - src/Caching/ValueObject/Storage/FileCacheStorage.php
+
         -
             message: '#Parameter \#2 \$length of function str_split expects int<1, max\>, int given#'
             paths:
@@ -173,11 +158,6 @@ parameters:
 
         # internal reflection
         - '#Instead of "new ClassReflection\(\)" use ReflectionProvider service or "\(new PHPStan\\Reflection\\ClassReflection\(<desired_type>\)\)" for static reflection to work#'
-
-        # import container config
-        -
-            message: '#Use explicit names over dynamic ones#'
-            path: src/Testing/PHPUnit/AbstractTestCase.php
 
         - '#Callable callable\(PHPStan\\Type\\Type\)\: PHPStan\\Type\\Type invoked with 2 parameters, 1 required#'
 
@@ -215,24 +195,6 @@ parameters:
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
             path: bin/rector.php
-
-        # mixed type correction
-        -
-            message: '#New objects with "\$(first|second)KeyType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: src/NodeTypeResolver/TypeComparator/TypeComparator.php
-
-        -
-            message: '#New objects with "\$staticType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: src/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        -
-            message: '#New objects with "\$fullyQualifiedObjectType" name are overridden\. This can lead to unwanted bugs, please pick a different name to avoid it#'
-            path: src/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php
-
-        # phpdoc node traversing
-        -
-            message: '#Use explicit names over dynamic ones#'
-            path: "src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php"
 
         -
             message: '#Creating new PHPStan\\Parser\\(CachedParser|SimpleParser) is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
@@ -348,7 +310,10 @@ parameters:
         # dynamic printer
         -
              message: '#Use explicit names over dynamic ones#'
-             path: src/CustomRules/SimpleNodeDumper.php
+             paths:
+                 - src/CustomRules/SimpleNodeDumper.php
+                 - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
+                 - src/Testing/PHPUnit/AbstractTestCase.php
 
         # complex logic, to keep on single place for easy adjustments
         -
