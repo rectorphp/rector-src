@@ -31,11 +31,6 @@ final readonly class UsesClassNameImportSkipVoter implements ClassNameImportSkip
         $useImportTypes = $this->useNodesToAddCollector->getUseImportTypesByNode($file, $node);
 
         foreach ($useImportTypes as $useImportType) {
-            // if the class is renamed, the use import is no longer blocker
-            if ($this->renamedClassesDataCollector->hasOldClass($useImportType->getClassName())) {
-                continue;
-            }
-
             if (! $useImportType->equals($fullyQualifiedObjectType) && $useImportType->areShortNamesEqual(
                 $fullyQualifiedObjectType
             )) {
