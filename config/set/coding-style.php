@@ -18,7 +18,6 @@ use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
-use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
@@ -48,7 +47,6 @@ return static function (RectorConfig $rectorConfig): void {
         SymplifyQuoteEscapeRector::class,
         StringClassNameToClassConstantRector::class,
         CatchExceptionNameMatchingTypeRector::class,
-        UseIncrementAssignRector::class,
         SplitDoubleAssignRector::class,
         EncapsedStringsToSprintfRector::class,
         WrapEncapsedVariableInCurlyBracesRector::class,
