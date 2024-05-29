@@ -30,6 +30,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',
+        __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)
