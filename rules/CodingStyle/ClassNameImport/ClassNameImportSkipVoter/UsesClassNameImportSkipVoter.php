@@ -6,7 +6,6 @@ namespace Rector\CodingStyle\ClassNameImport\ClassNameImportSkipVoter;
 
 use PhpParser\Node;
 use Rector\CodingStyle\Contract\ClassNameImport\ClassNameImportSkipVoterInterface;
-use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
@@ -21,8 +20,7 @@ use Rector\ValueObject\Application\File;
 final readonly class UsesClassNameImportSkipVoter implements ClassNameImportSkipVoterInterface
 {
     public function __construct(
-        private UseNodesToAddCollector $useNodesToAddCollector,
-        private RenamedClassesDataCollector $renamedClassesDataCollector
+        private UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 
