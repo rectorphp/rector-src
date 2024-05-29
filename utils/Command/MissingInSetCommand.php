@@ -13,6 +13,7 @@ use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
+use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
@@ -54,6 +55,7 @@ final class MissingInSetCommand extends Command
         StaticClosureRector::class,
         StaticArrowFunctionRector::class,
         PostIncDecToPreIncDecRector::class,
+        UseIncrementAssignRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
