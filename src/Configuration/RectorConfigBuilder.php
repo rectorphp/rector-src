@@ -289,7 +289,7 @@ final class RectorConfigBuilder
      */
     public function withSkip(array $skip): self
     {
-        $this->skip = array_merge($this->skip, $skip);
+        $this->skip = [...$this->skip, ...$skip];
 
         return $this;
     }
@@ -326,7 +326,7 @@ final class RectorConfigBuilder
      */
     public function withSets(array $sets): self
     {
-        $this->sets = array_merge($this->sets, $sets);
+        $this->sets = [...$this->sets, ...$sets];
 
         return $this;
     }
@@ -520,7 +520,7 @@ final class RectorConfigBuilder
      */
     public function withRules(array $rules): self
     {
-        $this->rules = array_merge($this->rules, $rules);
+        $this->rules = [...$this->rules, ...$rules];
 
         return $this;
     }
@@ -685,7 +685,7 @@ final class RectorConfigBuilder
             'RectorConfig::withDeadCodeLevel()'
         );
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         return $this;
     }
@@ -704,7 +704,7 @@ final class RectorConfigBuilder
             'RectorConfig::withTypeCoverageLevel()'
         );
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         return $this;
     }
@@ -723,7 +723,7 @@ final class RectorConfigBuilder
             'RectorConfig::withCodeQualityLevel()'
         );
 
-        $this->rules = array_merge($this->rules, $levelRules);
+        $this->rules = [...$this->rules, ...$levelRules];
 
         foreach (CodeQualityLevel::RULES_WITH_CONFIGURATION as $rectorClass => $configuration) {
             $this->rulesWithConfigurations[$rectorClass][] = $configuration;
