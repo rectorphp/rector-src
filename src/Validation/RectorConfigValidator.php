@@ -35,8 +35,13 @@ final class RectorConfigValidator
         $skippedRectorRules = [];
 
         foreach ($skip as $key => $value) {
-            if (self::isRectorClassValue($key) && ! class_exists($key)) {
-                $nonExistingRules[] = $key;
+            if (self::isRectorClassValue($key)) {
+                if (class_exists($key)) {
+                    $skippedRectorRules[] = $key;
+                } else {
+                    $nonExistingRules[] = $key;
+                }
+
                 continue;
             }
 
