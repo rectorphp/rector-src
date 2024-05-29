@@ -126,11 +126,9 @@ final class ApplicationFileProcessor
         // trigger cache class names collection
         $this->dynamicSourceLocatorProvider->provide();
 
-        if ($configuration->isParallel()) {
-            $processResult = $this->runParallel($filePaths, $configuration, $input, $postFileCallback);
-        } else {
-            $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
-        }
+        $processResult = $configuration->isParallel()
+            ? $this->runParallel($filePaths, $configuration, $input, $postFileCallback)
+            : $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
 
         $processResult->addSystemErrors($this->systemErrors);
 
