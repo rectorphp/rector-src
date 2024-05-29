@@ -6,15 +6,6 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
-use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
-use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
-use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
-use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
-use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
-use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionRector;
@@ -23,11 +14,7 @@ use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddCoversClassAttributeRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
-use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
-use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
-use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
-use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
 use Rector\Utils\Finder\RectorClassFinder;
 use Rector\Utils\Finder\SetRectorClassesResolver;
@@ -45,25 +32,11 @@ final class MissingInSetCommand extends Command
         ConfigurableRectorInterface::class,
         DeclareStrictTypesRector::class,
         // optional
-        BinaryOpNullableToInstanceofRector::class,
-        WhileNullableToInstanceofRector::class,
-        IntvalToTypeCastRector::class,
-        StrvalToTypeCastRector::class,
-        BoolvalToTypeCastRector::class,
-        FloatvalToTypeCastRector::class,
-        IncreaseDeclareStrictTypesRector::class,
-        StaticClosureRector::class,
-        StaticArrowFunctionRector::class,
-        PostIncDecToPreIncDecRector::class,
-        UseIncrementAssignRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector
         RemoveNullTagValueNodeRector::class,
-        // personal preference, enable on purpose
-        ArraySpreadInsteadOfArrayMergeRector::class,
-        FinalizeTestCaseClassRector::class,
         FinalizeClassesWithoutChildrenRector::class,
         // deprecated
         FinalizePublicClassConstantRector::class,
