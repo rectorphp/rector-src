@@ -89,6 +89,13 @@ final class MissingInSetCommand extends Command
                 continue;
             }
 
+            // probably in rector-preset?
+            $classesInSetFile = SetRectorClassesResolver::resolve(__DIR__ . '/../../config/set/rector-preset.php');
+            $rectorClassesNotInSetConfig = array_diff($rectorClassesNotInSetConfig, $classesInSetFile);
+            if ($rectorClassesNotInSetConfig === []) {
+                continue;
+            }
+
             $hasError = true;
             $this->symfonyStyle->title('We could not find there rules in configs');
 
