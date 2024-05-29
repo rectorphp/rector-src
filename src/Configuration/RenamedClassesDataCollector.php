@@ -46,12 +46,11 @@ final class RenamedClassesDataCollector implements ResetableInterface
     {
         $className = $objectType->getClassName();
 
-        $renamedClassName = $this->oldToNewClasses[$className] ?? null;
-        if ($renamedClassName === null) {
+        if (! $this->hasOldClass($className)) {
             return null;
         }
 
-        return new ObjectType($renamedClassName);
+        return new ObjectType($this->oldToNewClasses[$className]);
     }
 
     /**
