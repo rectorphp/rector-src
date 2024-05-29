@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector;
@@ -10,7 +9,6 @@ use Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector;
 use Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector;
 use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
 use Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector;
@@ -60,8 +58,6 @@ return static function (RectorConfig $rectorConfig): void {
         MakeInheritedMethodVisibilitySameAsParentRector::class,
         CallUserFuncArrayToVariadicRector::class,
         VersionCompareFuncCallToConstantRector::class,
-        StaticArrowFunctionRector::class,
-        StaticClosureRector::class,
         CountArrayToEmptyArrayComparisonRector::class,
         CallUserFuncToMethodCallRector::class,
         FuncGetArgsToVariadicParamRector::class,
