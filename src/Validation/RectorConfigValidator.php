@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Validation;
 
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 
 final class RectorConfigValidator
@@ -30,6 +32,7 @@ final class RectorConfigValidator
     public static function ensureRectorRulesExist(array $skip): void
     {
         $nonExistingRules = [];
+        $existingRules = [];
 
         foreach ($skip as $key => $value) {
             if (self::isRectorClassValue($key) && ! class_exists($key)) {
@@ -42,11 +45,14 @@ final class RectorConfigValidator
             }
 
             if (class_exists($value)) {
+                $existingRules[] = $value;
                 continue;
             }
 
             $nonExistingRules[] = $value;
         }
+
+        SimpleParameterProvider::addParameter(Option::SKIPPED_RECTOR_RULES, $existingRules);
 
         if ($nonExistingRules === []) {
             return;

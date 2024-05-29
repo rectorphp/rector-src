@@ -70,6 +70,23 @@ final class ApplicationFileProcessor
             sleep(3);
         }
 
+        $registeredRules = SimpleParameterProvider::provideArrayParameter(Option::REGISTERED_RECTOR_RULES);
+        $skippedRules = SimpleParameterProvider::provideArrayParameter(Option::SKIPPED_RECTOR_RULES);
+
+        $neverRegisteredSkippedRules = array_unique(array_diff($skippedRules, $registeredRules));
+        if ($neverRegisteredSkippedRules !== []) {
+            $total = count($neverRegisteredSkippedRules);
+            $reportNeverRegisteredRules = implode(PHP_EOL, $neverRegisteredSkippedRules);
+            $this->symfonyStyle->warning(sprintf(
+                '[Note] The the following rule%s %s ignored, but its actually never registered. You can remove it from the skip([...]) or withSkip([...]) method%s',
+                $total > 1 ? 's' : '',
+                $total > 1 ? 'are' : 'is',
+                PHP_EOL . PHP_EOL . $reportNeverRegisteredRules
+            ));
+
+            sleep(3);
+        }
+
         // no files found
         if ($filePaths === []) {
             return new ProcessResult([], []);
