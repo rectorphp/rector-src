@@ -78,7 +78,7 @@ final class ApplicationFileProcessor
             $total = count($neverRegisteredSkippedRules);
             $reportNeverRegisteredRules = implode(PHP_EOL, $neverRegisteredSkippedRules);
             $this->symfonyStyle->warning(sprintf(
-                '[Note] The the following rule%s %s ignored, but its actually never registered. You can remove it from the skip([...]) or withSkip([...]) method%s',
+                '[Note] The the following rule%s %s ignored, but its actually never registered. You can remove it from the withSkip([...]) method%s',
                 $total > 1 ? 's' : '',
                 $total > 1 ? 'are' : 'is',
                 PHP_EOL . PHP_EOL . $reportNeverRegisteredRules
