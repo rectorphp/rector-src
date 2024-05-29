@@ -7,11 +7,6 @@ jobs:
     rector:
         strategy:
             fail-fast: false
-            matrix:
-                paths:
-                    - src tests rules-tests
-                    - rules
-                    - config utils
 
         runs-on: ubuntu-latest
         timeout-minutes: 8
@@ -36,7 +31,7 @@ jobs:
             -   run: composer install --no-progress --ansi
 
             ## First run Rector - here can't be --dry-run !!! it would stop the job with it and not commit anything in the future
-            -   run: bin/rector process ${{ matrix.paths }} --ansi
+            -   run: bin/rector process --ansi
 
             -
                 # commit only to core contributors who have repository access
