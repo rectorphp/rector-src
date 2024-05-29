@@ -32,7 +32,7 @@ final class RectorConfigValidator
     public static function ensureRectorRulesExist(array $skip): void
     {
         $nonExistingRules = [];
-        $existingRules = [];
+        $skippedRectorRules = [];
 
         foreach ($skip as $key => $value) {
             if (self::isRectorClassValue($key) && ! class_exists($key)) {
@@ -45,14 +45,14 @@ final class RectorConfigValidator
             }
 
             if (class_exists($value)) {
-                $existingRules[] = $value;
+                $skippedRectorRules[] = $value;
                 continue;
             }
 
             $nonExistingRules[] = $value;
         }
 
-        SimpleParameterProvider::addParameter(Option::SKIPPED_RECTOR_RULES, $existingRules);
+        SimpleParameterProvider::addParameter(Option::SKIPPED_RECTOR_RULES, $skippedRectorRules);
 
         if ($nonExistingRules === []) {
             return;
