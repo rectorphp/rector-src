@@ -5,9 +5,20 @@ declare(strict_types=1);
 namespace Rector\Removing\NodeManipulator;
 
 use PhpParser\Node\Stmt\ClassMethod;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\NodeNameResolver\NodeNameResolver;
 
-final class ComplexNodeRemover
+final readonly class ComplexNodeRemover
 {
+    public function __construct(
+        private PhpDocInfoFactory $phpDocInfoFactory,
+        private PhpDocTagRemover $phpDocTagRemover,
+        private NodeNameResolver $nodeNameResolver,
+    ) {
+    }
+
     /**
      * @param int[] $paramKeysToBeRemoved
      * @return int[]
@@ -17,6 +28,7 @@ final class ComplexNodeRemover
         $totalKeys = count($classMethod->params) - 1;
         $removedParamKeys = [];
 
+        $phpdocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($classMethod);
         foreach ($paramKeysToBeRemoved as $paramKeyToBeRemoved) {
             $startNextKey = $paramKeyToBeRemoved + 1;
             for ($nextKey = $startNextKey; $nextKey <= $totalKeys; ++$nextKey) {
@@ -33,7 +45,15 @@ final class ComplexNodeRemover
                 return [];
             }
 
+            $paramName = (string) $this->nodeNameResolver->getName($classMethod->params[$paramKeyToBeRemoved]);
+
             unset($classMethod->params[$paramKeyToBeRemoved]);
+
+            $paramTagValueByName = $phpdocInfo->getParamTagValueByName($paramName);
+            if ($paramTagValueByName instanceof ParamTagValueNode) {
+                $this->phpDocTagRemover->removeTagValueFromNode($phpdocInfo, $paramTagValueByName);
+            }
+
             $removedParamKeys[] = $paramKeyToBeRemoved;
         }
 

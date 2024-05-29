@@ -143,8 +143,7 @@ CODE_SAMPLE
 
         return $this->classManipulator->hasParentMethodOrInterface(
             $methodCallRename->getObjectType(),
-            $methodCallRename->getOldMethod(),
-            $methodCallRename->getNewMethod()
+            $methodCallRename->getOldMethod()
         );
     }
 
