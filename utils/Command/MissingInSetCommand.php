@@ -12,6 +12,7 @@ use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
+use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionRector;
@@ -51,6 +52,7 @@ final class MissingInSetCommand extends Command
         IncreaseDeclareStrictTypesRector::class,
         StaticClosureRector::class,
         StaticArrowFunctionRector::class,
+        PostIncDecToPreIncDecRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector

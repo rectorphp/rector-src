@@ -19,7 +19,6 @@ use Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector;
 use Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector;
 use Rector\CodingStyle\Rector\If_\NullableCompareToNullRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector;
 use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
 use Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector;
@@ -41,7 +40,6 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->rules([
         SeparateMultiUseImportsRector::class,
-        PostIncDecToPreIncDecRector::class,
         NewlineAfterStatementRector::class,
         RemoveFinalFromConstRector::class,
         NullableCompareToNullRector::class,
