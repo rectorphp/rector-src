@@ -63,8 +63,9 @@ CODE_SAMPLE
 
         trigger_error(
             sprintf(
-                'The "%s" rule was deprecated, as its functionality caused bugs. Without knowing the full dependency tree, its risky to change.',
-                self::class
+                'The "%s" rule was deprecated, as its functionality caused bugs. Without knowing the full dependency tree, its risky to change. Use "%s" instead',
+                self::class,
+                'https://github.com/rectorphp/swiss-knife#4-finalize-classes-without-children'
             )
         );
 
