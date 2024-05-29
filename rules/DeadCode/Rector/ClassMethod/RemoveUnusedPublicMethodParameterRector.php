@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
 use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
 use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
@@ -24,8 +23,7 @@ final class RemoveUnusedPublicMethodParameterRector extends AbstractRector
     public function __construct(
         private readonly VariadicFunctionLikeDetector $variadicFunctionLikeDetector,
         private readonly ClassMethodParamRemover $classMethodParamRemover,
-        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer
     ) {
     }
 
@@ -102,7 +100,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             $hasChanged = true;
         }
 

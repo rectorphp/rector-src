@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeNameResolver\NodeNameResolver;
 
 final readonly class ComplexNodeRemover
@@ -16,6 +17,7 @@ final readonly class ComplexNodeRemover
         private PhpDocInfoFactory $phpDocInfoFactory,
         private PhpDocTagRemover $phpDocTagRemover,
         private NodeNameResolver $nodeNameResolver,
+        private DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -52,6 +54,7 @@ final readonly class ComplexNodeRemover
             $paramTagValueByName = $phpdocInfo->getParamTagValueByName($paramName);
             if ($paramTagValueByName instanceof ParamTagValueNode) {
                 $this->phpDocTagRemover->removeTagValueFromNode($phpdocInfo, $paramTagValueByName);
+                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classMethod);
             }
 
             $removedParamKeys[] = $paramKeyToBeRemoved;

@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -25,8 +24,7 @@ final class RemoveUnusedConstructorParamRector extends AbstractRector
     public function __construct(
         private readonly ParamAnalyzer $paramAnalyzer,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly ClassMethodParamRemover $classMethodParamRemover,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly ClassMethodParamRemover $classMethodParamRemover
     ) {
     }
 
@@ -109,7 +107,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
     }
 }
