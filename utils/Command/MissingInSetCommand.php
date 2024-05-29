@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
+use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
@@ -53,6 +54,7 @@ final class MissingInSetCommand extends Command
         StaticClosureRector::class,
         StaticArrowFunctionRector::class,
         PostIncDecToPreIncDecRector::class,
+        CallableThisArrayToAnonymousFunctionRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector

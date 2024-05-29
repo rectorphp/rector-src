@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Config\Level;
 
-use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Assign\CombinedAssignRector;
 use Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector;
 use Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector;
@@ -131,7 +130,6 @@ final class CodeQualityLevel
         SimplifyBoolIdenticalTrueRector::class,
         SimplifyRegexPatternRector::class,
         BooleanNotIdenticalToNotIdenticalRector::class,
-        CallableThisArrayToAnonymousFunctionRector::class,
         AndAssignsToSeparateLinesRector::class,
         CompactToVariablesRector::class,
         CompleteDynamicPropertiesRector::class,
