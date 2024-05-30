@@ -99,8 +99,11 @@ CODE_SAMPLE
                 ? $this->nodeTypeResolver->getFullyQualifiedClassName($varType)
                 : null;
             if ($className === 'DateTimeInterface') {
-                $phpDocInfo->removeByType(VarTagValueNode::class);
-                $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+                $varTagvalueNode = $phpDocInfo->getVarTagValueNode();
+                if ($varTagvalueNode instanceof VarTagValueNode && $varTagvalueNode->description === '') {
+                    $phpDocInfo->removeByType(VarTagValueNode::class);
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+                }
 
                 $property->type = new FullyQualified('DateTimeInterface');
                 $hasChanged = true;
