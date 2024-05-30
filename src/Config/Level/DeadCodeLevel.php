@@ -17,6 +17,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
+use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
@@ -115,6 +116,7 @@ final class DeadCodeLevel
         // removing methods could be risky if there is some magic loading them
         RemoveUnusedPromotedPropertyRector::class,
         RemoveUnusedPrivateMethodParameterRector::class,
+        RemoveUnusedPublicMethodParameterRector::class,
         RemoveUnusedPrivateMethodRector::class,
         RemoveUnreachableStatementRector::class,
         RemoveUnusedVariableAssignRector::class,

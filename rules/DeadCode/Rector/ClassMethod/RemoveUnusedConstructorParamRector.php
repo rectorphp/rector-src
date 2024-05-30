@@ -8,10 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
+use Rector\DeadCode\NodeManipulator\ClassMethodParamRemover;
 use Rector\NodeAnalyzer\ParamAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
-use Rector\Removing\NodeManipulator\ComplexNodeRemover;
 use Rector\ValueObject\MethodName;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -23,8 +23,8 @@ final class RemoveUnusedConstructorParamRector extends AbstractRector
 {
     public function __construct(
         private readonly ParamAnalyzer $paramAnalyzer,
-        private readonly ComplexNodeRemover $complexNodeRemover,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly ClassMethodParamRemover $classMethodParamRemover
     ) {
     }
 
@@ -102,34 +102,11 @@ CODE_SAMPLE
             }
         }
 
-        $changedConstructorClassMethod = $this->processRemoveParams($constructorClassMethod);
+        $changedConstructorClassMethod = $this->classMethodParamRemover->processRemoveParams($constructorClassMethod);
         if (! $changedConstructorClassMethod instanceof ClassMethod) {
             return null;
         }
 
         return $node;
-    }
-
-    private function processRemoveParams(ClassMethod $classMethod): ?ClassMethod
-    {
-        $paramKeysToBeRemoved = [];
-        foreach ($classMethod->params as $key => $param) {
-            if ($this->paramAnalyzer->isParamUsedInClassMethod($classMethod, $param)) {
-                continue;
-            }
-
-            $paramKeysToBeRemoved[] = $key;
-        }
-
-        if ($paramKeysToBeRemoved === []) {
-            return null;
-        }
-
-        $removedParamKeys = $this->complexNodeRemover->processRemoveParamWithKeys($classMethod, $paramKeysToBeRemoved);
-        if ($removedParamKeys !== []) {
-            return $classMethod;
-        }
-
-        return null;
     }
 }

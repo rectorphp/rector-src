@@ -104,7 +104,7 @@ final class ApplicationFileProcessor
         $this->dynamicSourceLocatorProvider->provide();
 
         if ($configuration->isParallel()) {
-            $processResult = $this->runParallel($filePaths, $configuration, $input, $postFileCallback);
+            $processResult = $this->runParallel($filePaths, $input, $postFileCallback);
         } else {
             $processResult = $this->processFiles($filePaths, $configuration, $preFileCallback, $postFileCallback);
         }
@@ -272,7 +272,6 @@ final class ApplicationFileProcessor
      */
     private function runParallel(
         array $filePaths,
-        Configuration $configuration,
         InputInterface $input,
         callable $postFileCallback
     ): ProcessResult {
@@ -289,7 +288,7 @@ final class ApplicationFileProcessor
         }
 
         // mimics see https://github.com/phpstan/phpstan-src/commit/9124c66dcc55a222e21b1717ba5f60771f7dda92#diff-387b8f04e0db7a06678eb52ce0c0d0aff73e0d7d8fc5df834d0a5fbec198e5daR139
-        return $this->parallelFileProcessor->process($schedule, $mainScript, $postFileCallback, $input, $configuration);
+        return $this->parallelFileProcessor->process($schedule, $mainScript, $postFileCallback, $input);
     }
 
     /**

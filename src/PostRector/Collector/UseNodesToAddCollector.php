@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Collector;
 
-use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -63,7 +62,7 @@ final class UseNodesToAddCollector
     /**
      * @return AliasedObjectType[]|FullyQualifiedObjectType[]
      */
-    public function getUseImportTypesByNode(File $file, Node $node): array
+    public function getUseImportTypesByNode(File $file): array
     {
         $filePath = $file->getFilePath();
         $objectTypes = $this->useImportTypesInFilePath[$filePath] ?? [];
@@ -90,7 +89,7 @@ final class UseNodesToAddCollector
         FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
-        $useImports = $this->getUseImportTypesByNode($file, $fullyQualified);
+        $useImports = $this->getUseImportTypesByNode($file);
 
         foreach ($useImports as $useImport) {
             if ($useImport->equals($fullyQualifiedObjectType)) {
