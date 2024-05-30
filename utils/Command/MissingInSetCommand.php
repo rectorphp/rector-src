@@ -15,6 +15,7 @@ use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddCoversClassAttributeRector;
 use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
 use Rector\Utils\Finder\RectorClassFinder;
 use Rector\Utils\Finder\SetRectorClassesResolver;
@@ -31,6 +32,7 @@ final class MissingInSetCommand extends Command
     private const SKIPPED_RULES = [
         ConfigurableRectorInterface::class,
         // optional
+        IncreaseDeclareStrictTypesRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,
