@@ -17,5 +17,3 @@ namespace Rector\Tests\Issues\DoubleDeclare\Fixture;
 final class Fixture
 {
 }
-
-?>
