@@ -90,6 +90,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentNode = current($nodes);
+        if ($currentNode instanceof Declare_ && $this->declareStrictTypeFinder->hasDeclareStrictTypes($currentNode)) {
+            return null;
+        }
+
         $declareDeclare = new DeclareDeclare(new Identifier('strict_types'), new LNumber(1));
         $strictTypesDeclare = new Declare_([$declareDeclare]);
 

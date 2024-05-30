@@ -89,6 +89,11 @@ CODE_SAMPLE
             return null;
         }
 
+        $currentNode = current($nodes);
+        if ($currentNode instanceof Declare_ && $this->declareStrictTypeFinder->hasDeclareStrictTypes($currentNode)) {
+            return null;
+        }
+
         // keep change withing a limit
         if ($this->changedItemCount >= $this->limit) {
             return null;
