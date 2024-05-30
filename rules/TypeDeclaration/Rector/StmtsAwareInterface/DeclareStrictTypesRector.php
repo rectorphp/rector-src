@@ -52,8 +52,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node[] $nodes
-     * @return Node[]|null
+     * @param Stmt[] $nodes
+     * @return Stmt[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
@@ -64,13 +64,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $newStmts = $this->file->getNewStmts();
-
-        if ($newStmts === []) {
+        if ($nodes === []) {
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        $rootStmt = current($nodes);
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {

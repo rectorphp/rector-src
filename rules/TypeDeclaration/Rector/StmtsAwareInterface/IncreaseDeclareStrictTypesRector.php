@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\StmtsAwareInterface;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Nop;
@@ -65,19 +66,18 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node[] $nodes
-     * @return Node[]|null
+     * @param Stmt[] $nodes
+     * @return Stmt[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
         parent::beforeTraverse($nodes);
 
-        $newStmts = $this->file->getNewStmts();
-        if ($newStmts === []) {
+        if ($nodes === []) {
             return null;
         }
 
-        $rootStmt = \current($newStmts);
+        $rootStmt = \current($nodes);
         $stmt = $rootStmt;
 
         // skip classes without namespace for safety reasons
