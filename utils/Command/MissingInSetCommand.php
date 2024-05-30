@@ -6,6 +6,8 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
+use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
+use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
@@ -33,6 +35,8 @@ final class MissingInSetCommand extends Command
         ConfigurableRectorInterface::class,
         // optional
         IncreaseDeclareStrictTypesRector::class,
+        StaticClosureRector::class,
+        StaticArrowFunctionRector::class,
         CallableThisArrayToAnonymousFunctionRector::class,
         // changes behavior, should be applied on purpose regardless PHP 7.3 level
         JsonThrowOnErrorRector::class,

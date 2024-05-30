@@ -6,8 +6,6 @@ use Rector\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\FloatvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
@@ -25,8 +23,6 @@ return static function (RectorConfig $rectorConfig): void {
         StrvalToTypeCastRector::class,
         BoolvalToTypeCastRector::class,
         FloatvalToTypeCastRector::class,
-        StaticClosureRector::class,
-        StaticArrowFunctionRector::class,
         PostIncDecToPreIncDecRector::class,
         UseIncrementAssignRector::class,
         FinalizeTestCaseClassRector::class,
