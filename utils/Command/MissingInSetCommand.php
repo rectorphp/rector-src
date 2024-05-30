@@ -6,6 +6,7 @@ namespace Rector\Utils\Command;
 
 use Nette\Utils\Strings;
 use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
+use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionRector;
@@ -35,6 +36,8 @@ final class MissingInSetCommand extends Command
         JsonThrowOnErrorRector::class,
         // in confront with sub type safe belt detection on RemoveUseless*TagRector
         RemoveNullTagValueNodeRector::class,
+        // personal preference, enable on purpose
+        ArraySpreadInsteadOfArrayMergeRector::class,
         FinalizeClassesWithoutChildrenRector::class,
         // deprecated
         FinalizePublicClassConstantRector::class,

@@ -8,7 +8,6 @@ use Rector\CodeQuality\Rector\FuncCall\IntvalToTypeCastRector;
 use Rector\CodeQuality\Rector\FuncCall\StrvalToTypeCastRector;
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
-use Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector;
 use Rector\CodingStyle\Rector\Plus\UseIncrementAssignRector;
 use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
@@ -32,7 +31,6 @@ return static function (RectorConfig $rectorConfig): void {
         StaticArrowFunctionRector::class,
         PostIncDecToPreIncDecRector::class,
         UseIncrementAssignRector::class,
-        ArraySpreadInsteadOfArrayMergeRector::class,
         FinalizeTestCaseClassRector::class,
     ]);
 };
