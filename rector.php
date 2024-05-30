@@ -7,7 +7,6 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
-use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -19,10 +18,10 @@ return RectorConfig::configure()
         strictBooleans: true,
         instanceOf: true,
         earlyReturn: true,
-        naming: true
+        naming: true,
+        rectorPreset: true,
     )
     ->withPhpSets()
-    ->withRules([DeclareStrictTypesRector::class])
     ->withPaths([
         __DIR__ . '/bin',
         __DIR__ . '/src',
@@ -31,6 +30,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
         __DIR__ . '/utils',
         __DIR__ . '/config',
+        __DIR__ . '/build/build-preload.php',
     ])
     ->withRootFiles()
     ->withImportNames(removeUnusedImports: true)

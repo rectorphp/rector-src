@@ -471,6 +471,7 @@ final class RectorConfigBuilder
         bool $earlyReturn = false,
         bool $strictBooleans = false,
         bool $carbon = false,
+        bool $rectorPreset = false,
     ): self {
         if ($deadCode) {
             $this->sets[] = SetList::DEAD_CODE;
@@ -510,6 +511,10 @@ final class RectorConfigBuilder
 
         if ($carbon) {
             $this->sets[] = SetList::CARBON;
+        }
+
+        if ($rectorPreset) {
+            $this->sets[] = SetList::RECTOR_PRESET;
         }
 
         return $this;
