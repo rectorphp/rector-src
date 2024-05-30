@@ -14,7 +14,6 @@ use Rector\Config\RectorConfig;
 use Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector;
 use Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
-use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -26,7 +25,6 @@ return static function (RectorConfig $rectorConfig): void {
         StrvalToTypeCastRector::class,
         BoolvalToTypeCastRector::class,
         FloatvalToTypeCastRector::class,
-        IncreaseDeclareStrictTypesRector::class,
         StaticClosureRector::class,
         StaticArrowFunctionRector::class,
         PostIncDecToPreIncDecRector::class,
