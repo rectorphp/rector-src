@@ -64,13 +64,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $newStmts = $this->file->getNewStmts();
-
-        if ($newStmts === []) {
+        if ($nodes === []) {
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        $rootStmt = \current($nodes);
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {

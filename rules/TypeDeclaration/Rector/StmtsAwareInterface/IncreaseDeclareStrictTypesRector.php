@@ -72,12 +72,11 @@ CODE_SAMPLE
     {
         parent::beforeTraverse($nodes);
 
-        $newStmts = $this->file->getNewStmts();
-        if ($newStmts === []) {
+        if ($nodes === []) {
             return null;
         }
 
-        $rootStmt = \current($newStmts);
+        $rootStmt = \current($nodes);
         $stmt = $rootStmt;
 
         // skip classes without namespace for safety reasons
