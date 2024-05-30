@@ -89,6 +89,7 @@ CODE_SAMPLE
             return null;
         }
 
+        // just added nodes
         $currentNode = current($nodes);
         if ($currentNode instanceof Declare_ && $this->declareStrictTypeFinder->hasDeclareStrictTypes($currentNode)) {
             return null;
