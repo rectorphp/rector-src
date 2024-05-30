@@ -52,8 +52,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Node[] $nodes
-     * @return Node[]|null
+     * @param Stmt[] $nodes
+     * @return Stmt[]|null
      */
     public function beforeTraverse(array $nodes): ?array
     {
@@ -64,13 +64,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $newStmts = $this->file->getNewStmts();
-
-        if ($newStmts === []) {
+        if ($nodes === []) {
             return null;
         }
 
-        $rootStmt = current($newStmts);
+        $rootStmt = current($nodes);
         $stmt = $rootStmt;
 
         if ($rootStmt instanceof FileWithoutNamespace) {
@@ -87,12 +85,6 @@ CODE_SAMPLE
         // when first stmt is Declare_, verify if there is strict_types definition already,
         // as multiple declare is allowed, with declare(strict_types=1) only allowed on very first stmt
         if ($this->declareStrictTypeFinder->hasDeclareStrictTypes($stmt)) {
-            return null;
-        }
-
-        // just added nodes
-        $currentNode = current($nodes);
-        if ($currentNode instanceof Declare_ && $this->declareStrictTypeFinder->hasDeclareStrictTypes($currentNode)) {
             return null;
         }
 
