@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\PHPStan\Scope;
 
+use PHPStan\Node\VirtualNode;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -192,7 +193,7 @@ final class PHPStanNodeScopeResolver
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
-            } elseif (! $node instanceof \PHPStan\Node\VirtualNode) {
+            } elseif (! $node instanceof VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
         };
