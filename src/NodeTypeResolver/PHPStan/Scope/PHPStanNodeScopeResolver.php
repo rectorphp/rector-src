@@ -192,7 +192,7 @@ final class PHPStanNodeScopeResolver
             // special case for unreachable nodes
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
-            } else {
+            } elseif (! $node instanceof \PHPStan\Node\VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
         };
