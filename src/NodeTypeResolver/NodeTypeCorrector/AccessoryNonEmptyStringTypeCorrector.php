@@ -21,6 +21,8 @@ final class AccessoryNonEmptyStringTypeCorrector
             return $mainType;
         }
 
+        return new \PHPStan\Type\StringType();
+
         $clearIntersectionedTypes = [];
         foreach ($mainType->getTypes() as $intersectionedType) {
             if ($intersectionedType instanceof AccessoryNonEmptyStringType) {
