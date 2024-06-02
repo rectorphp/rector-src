@@ -19,7 +19,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
-use Rector\NodeTypeResolver\NodeTypeResolver;
 
 final readonly class SideEffectNodeDetector
 {
@@ -34,7 +33,6 @@ final readonly class SideEffectNodeDetector
     ];
 
     public function __construct(
-        private NodeTypeResolver $nodeTypeResolver,
         private PureFunctionDetector $pureFunctionDetector
     ) {
     }
