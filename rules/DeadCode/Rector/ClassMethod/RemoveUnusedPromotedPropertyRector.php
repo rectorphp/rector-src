@@ -10,7 +10,12 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\TraitUse;
 use PHPStan\Analyser\Scope;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Reflection\ClassReflection;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\DeadCode\NodeAnalyzer\PropertyWriteonlyAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\NodeFinder\PropertyFetchFinder;
@@ -34,7 +39,10 @@ final class RemoveUnusedPromotedPropertyRector extends AbstractScopeAwareRector 
         private readonly VisibilityManipulator $visibilityManipulator,
         private readonly PropertyWriteonlyAnalyzer $propertyWriteonlyAnalyzer,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly PhpDocTagRemover $phpDocTagRemover,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -104,6 +112,7 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($constructClassMethod);
 
         foreach ($constructClassMethod->params as $key => $param) {
             // only private local scope; removing public property might be dangerous
@@ -130,6 +139,14 @@ CODE_SAMPLE
             if ($variable instanceof Variable) {
                 $param->flags = 0;
                 continue;
+            }
+
+            if ($phpDocInfo instanceof PhpDocInfo) {
+                $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
+                if ($paramTagValueNode instanceof ParamTagValueNode) {
+                    $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $paramTagValueNode);
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($constructClassMethod);
+                }
             }
 
             // remove param
