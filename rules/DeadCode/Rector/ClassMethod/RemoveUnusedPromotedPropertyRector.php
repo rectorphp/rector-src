@@ -126,6 +126,8 @@ CODE_SAMPLE
             $variable = $this->betterNodeFinder->findVariableOfName((array) $constructClassMethod->stmts, $paramName);
             if ($variable instanceof Variable) {
                 $param->flags = 0;
+                $hasChanged = true;
+
                 continue;
             }
 
