@@ -5,15 +5,9 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\Class_;
-use Rector\NodeNameResolver\NodeNameResolver;
 
 final readonly class ClassLikeAnalyzer
 {
-    public function __construct(
-        private NodeNameResolver $nodeNameResolver
-    ) {
-    }
-
     /**
      * @return string[]
      */
@@ -22,7 +16,9 @@ final readonly class ClassLikeAnalyzer
         $propertyNames = [];
 
         foreach ($class->getProperties() as $property) {
-            $propertyNames[] = $this->nodeNameResolver->getName($property);
+            foreach ($property->props as $prop) {
+                $propertyNames[] = $prop->name->toString();
+            }
         }
 
         return $propertyNames;
