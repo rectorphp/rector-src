@@ -122,19 +122,18 @@ CODE_SAMPLE
                 continue;
             }
 
+            // always changed on below code
+            $hasChanged = true;
+
             // is variable used? only remove property, keep param
             $variable = $this->betterNodeFinder->findVariableOfName((array) $constructClassMethod->stmts, $paramName);
             if ($variable instanceof Variable) {
                 $param->flags = 0;
-                $hasChanged = true;
-
                 continue;
             }
 
             // remove param
             unset($constructClassMethod->params[$key]);
-
-            $hasChanged = true;
         }
 
         if ($hasChanged) {
