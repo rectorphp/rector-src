@@ -7,8 +7,5 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        DeclareStrictTypesRector::class,
-        IncreaseDeclareStrictTypesRector::class,
-    ]);
+    $rectorConfig->rules([DeclareStrictTypesRector::class, IncreaseDeclareStrictTypesRector::class]);
 };

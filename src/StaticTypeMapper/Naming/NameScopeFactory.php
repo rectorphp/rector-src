@@ -69,7 +69,7 @@ final class NameScopeFactory
         $templateTypeMap = $this->templateTemplateTypeMap($node);
         /** @var non-empty-string|null $namespace */
         $namespace = $nameScope->getNamespace();
-        
+
         return new NameScope(
             $namespace,
             $nameScope->getUses(),
