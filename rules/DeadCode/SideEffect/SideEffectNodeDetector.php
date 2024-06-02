@@ -19,6 +19,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
+use Rector\PhpParser\Node\BetterNodeFinder;
 
 final readonly class SideEffectNodeDetector
 {
@@ -33,7 +34,8 @@ final readonly class SideEffectNodeDetector
     ];
 
     public function __construct(
-        private PureFunctionDetector $pureFunctionDetector
+        private PureFunctionDetector $pureFunctionDetector,
+        private BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -43,7 +45,10 @@ final readonly class SideEffectNodeDetector
             return true;
         }
 
-        return $this->detectCallExpr($expr, $scope);
+        return (bool) $this->betterNodeFinder->findFirst(
+            $expr,
+            fn (Node $subNode): bool => $this->detectCallExpr($subNode, $scope)
+        );
     }
 
     public function detectCallExpr(Node $node, Scope $scope): bool
