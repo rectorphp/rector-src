@@ -90,7 +90,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
             '/**
  * @ORM\Table(name="doctrine_entity", uniqueConstraints={@ORM\UniqueConstraint(name="property")})
  */',
-            $classDocComment
+            str_replace("\r\n", "\n", $classDocComment)
         );
     }
 
