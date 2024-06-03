@@ -87,9 +87,9 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
         }
 
         $this->assertEquals(
-            '/**
+            str_replace("\r\n", "\n", '/**
  * @ORM\Table(name="doctrine_entity", uniqueConstraints={@ORM\UniqueConstraint(name="property")})
- */',
+ */'),
             str_replace("\r\n", "\n", $classDocComment)
         );
     }
