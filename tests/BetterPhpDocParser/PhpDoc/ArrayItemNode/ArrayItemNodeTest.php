@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Rector\Tests\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
-use PhpParser\Node;
+use PhpParser\Node\Stmt\Class_;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
-use Rector\ValueObject\Application\File;
 
-class ArrayItemNodeTest extends AbstractLazyTestCase
+final class ArrayItemNodeTest extends AbstractLazyTestCase
 {
     private DocBlockUpdater $docBlockUpdater;
 
@@ -39,7 +38,6 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
     {
         $filePath = __DIR__ . '/FixtureNested/DoctrineNestedClassAnnotation.php.inc';
         $fileContent = UtilsFileSystem::read($filePath);
-        $file = new File($filePath, $fileContent);
 
         $stmtsAndTokens = $this->rectorParser->parseFileContentToStmtsAndTokens($fileContent);
         $oldStmts = $stmtsAndTokens->getStmts();
@@ -48,13 +46,13 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
         $classStmt = null;
         $classDocComment = null;
 
-        foreach ($newStmts as $node) {
-            if ($node->stmts === null) {
+        foreach ($newStmts as $newStmt) {
+            if ($newStmt->stmts === null) {
                 continue;
             }
 
-            foreach ($node->stmts as $stmt) {
-                if (! $stmt instanceof Node\Stmt\Class_) {
+            foreach ($newStmt->stmts as $stmt) {
+                if (! $stmt instanceof Class_) {
                     continue;
                 }
 
@@ -82,9 +80,9 @@ class ArrayItemNodeTest extends AbstractLazyTestCase
         );
     }
 
-    private function printNodePhpDocInfoToString(Node $node): string
+    private function printNodePhpDocInfoToString(?Class_ $class): string
     {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
         return $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
     }
 }
