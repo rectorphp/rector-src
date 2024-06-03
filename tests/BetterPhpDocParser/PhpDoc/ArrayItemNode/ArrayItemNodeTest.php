@@ -90,7 +90,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
             str_replace("\r\n", "\n", '/**
  * @ORM\Table(name="doctrine_entity", uniqueConstraints={@ORM\UniqueConstraint(name="property")})
  */'),
-            str_replace("\r\n", "\n", $classDocComment)
+            str_replace("\r\n", "\n", (string) $classDocComment)
         );
     }
 
