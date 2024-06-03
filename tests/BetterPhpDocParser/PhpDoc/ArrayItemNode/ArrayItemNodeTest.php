@@ -6,9 +6,11 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDoc\ArrayItemNode;
 
 use Nette\Utils\FileSystem as UtilsFileSystem;
 use PhpParser\Node\Stmt\Class_;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\PhpParser\Parser\RectorParser;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
@@ -47,6 +49,10 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
         $classDocComment = null;
 
         foreach ($newStmts as $newStmt) {
+            if (! $newStmt instanceof StmtsAwareInterface) {
+                continue;
+            }
+
             if ($newStmt->stmts === null) {
                 continue;
             }
@@ -57,6 +63,10 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
                 }
 
                 $phpDocInfo = $this->phpDocInfoFactory->createFromNode($stmt);
+                if (! $phpDocInfo instanceof PhpDocInfo) {
+                    continue;
+                }
+
                 $phpDocNode = $phpDocInfo->getPhpDocNode();
 
                 foreach ($phpDocNode->children as $key => $phpDocChildNode) {
@@ -66,6 +76,10 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
 
                 $classStmt = $stmt;
                 break;
+            }
+
+            if (! $classStmt instanceof Class_) {
+                continue;
             }
 
             $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($classStmt);
@@ -80,7 +94,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
         );
     }
 
-    private function printNodePhpDocInfoToString(?Class_ $class): string
+    private function printNodePhpDocInfoToString(Class_ $class): string
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($class);
         return $this->phpDocInfoPrinter->printFormatPreserving($phpDocInfo);
