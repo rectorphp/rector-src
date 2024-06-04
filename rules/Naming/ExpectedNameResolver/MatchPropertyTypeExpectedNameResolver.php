@@ -52,8 +52,6 @@ final readonly class MatchPropertyTypeExpectedNameResolver
             return null;
         }
 
-        $propertyName = $this->nodeNameResolver->getName($property);
-
         // skip if already has suffix
         if (str_ends_with($propertyName, $expectedName->getName()) || str_ends_with(
             $propertyName,
