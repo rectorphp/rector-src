@@ -154,7 +154,7 @@ final readonly class UseImportsAdder
                     $stmts[$indexStmt]->getAttribute(AttributeKey::COMMENTS)
                 );
 
-                $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, null);
+                $stmts[$indexStmt]->setAttribute(AttributeKey::COMMENTS, []);
             }
         }
     }
