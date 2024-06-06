@@ -73,8 +73,8 @@ final readonly class MatchPropertyTypeExpectedNameResolver
 
         // fallback to docblock
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        $isVarTypeObjectType = $phpDocInfo instanceof PhpDocInfo && $phpDocInfo->getVarType() instanceof ObjectType;
-        if ($isVarTypeObjectType) {
+        $hasVarTag = $phpDocInfo instanceof PhpDocInfo && $phpDocInfo->getVarTagValueNode();
+        if ($hasVarTag) {
             return $this->propertyNaming->getExpectedNameFromType($phpDocInfo->getVarType());
         }
 
