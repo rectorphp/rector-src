@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -73,7 +74,7 @@ final readonly class MatchPropertyTypeExpectedNameResolver
 
         // fallback to docblock
         $phpDocInfo = $this->phpDocInfoFactory->createFromNode($property);
-        $hasVarTag = $phpDocInfo instanceof PhpDocInfo && $phpDocInfo->getVarTagValueNode();
+        $hasVarTag = $phpDocInfo instanceof PhpDocInfo && $phpDocInfo->getVarTagValueNode() instanceof VarTagValueNode;
         if ($hasVarTag) {
             return $this->propertyNaming->getExpectedNameFromType($phpDocInfo->getVarType());
         }
