@@ -25,6 +25,10 @@ final readonly class ClassMethodParamVendorLockResolver
             return true;
         }
 
+        if ($classMethod->isPrivate()) {
+            return false;
+        }
+
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return false;
