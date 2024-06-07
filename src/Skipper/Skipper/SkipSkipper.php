@@ -6,6 +6,7 @@ namespace Rector\Skipper\Skipper;
 
 use PhpParser\Comment;
 use Rector\Skipper\Matcher\FileInfoMatcher;
+use Rector\Util\NewLineSplitter;
 
 final readonly class SkipSkipper
 {
@@ -52,7 +53,7 @@ final readonly class SkipSkipper
         $currentRuleFullName = is_object($checker) ? $checker::class : $checker;
         $currentRuleName = basename(str_replace('\\', '/', $currentRuleFullName));
         foreach ($comments as $comment) {
-            $commentLines = explode("\n", $comment->getText());
+            $commentLines = NewLineSplitter::split($comment->getText());
             foreach ($commentLines as $commentLine) {
                 if (str_contains($commentLine, self::RECTOR_IGNORE_NEXT_LINE_TAG)) {
                     return true;
