@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Skipper\SkipVoter;
 
+use PhpParser\Node;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
@@ -27,7 +28,7 @@ final readonly class ClassSkipVoter implements SkipVoterInterface
         return $this->reflectionProvider->hasClass($element);
     }
 
-    public function shouldSkip(string | object $element, string $filePath): bool
+    public function shouldSkip(string | object $element, string $filePath, ?Node $node): bool
     {
         $skippedClasses = $this->skippedClassResolver->resolve();
         return $this->skipSkipper->doesMatchSkip($element, $filePath, $skippedClasses);

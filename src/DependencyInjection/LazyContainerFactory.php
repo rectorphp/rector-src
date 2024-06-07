@@ -162,6 +162,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\Skipper\Skipper;
 use Rector\Skipper\SkipVoter\ClassSkipVoter;
+use Rector\Skipper\SkipVoter\CommentSkipVoter;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
@@ -370,7 +371,7 @@ final class LazyContainerFactory
     /**
      * @var array<class-string<SkipVoterInterface>>
      */
-    private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class];
+    private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class, CommentSkipVoter::class];
 
     /**
      * @var array<class-string<ConverterAttributeDecoratorInterface>>
