@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Throw_;
-use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ClassModifierChecker;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -26,7 +25,6 @@ final class AddVoidReturnTypeWhereNoReturnRector extends AbstractRector implemen
     public function __construct(
         private readonly SilentVoidResolver $silentVoidResolver,
         private readonly ClassMethodReturnVendorLockResolver $classMethodReturnVendorLockResolver,
-        private readonly MagicClassMethodAnalyzer $magicClassMethodAnalyzer,
         private readonly ClassModifierChecker $classModifierChecker,
     ) {
     }
@@ -102,10 +100,6 @@ CODE_SAMPLE
 
     private function shouldSkipClassMethod(ClassMethod $classMethod): bool
     {
-        if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
-            return true;
-        }
-
         if ($classMethod->isAbstract()) {
             return true;
         }
