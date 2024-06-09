@@ -70,19 +70,19 @@ final readonly class ParentClassMethodTypeOverrideGuard
             return null;
         }
 
-        if ($classMethod instanceof ClassMethod) {
-            $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
-            if (! $classReflection instanceof ClassReflection) {
-                // we can't resolve the class, so we don't know.
-                throw new UnresolvableClassException();
-            }
+        $classReflection = $classMethod instanceof ClassMethod
+            ? $this->reflectionResolver->resolveClassReflection($classMethod)
+            : $classMethod->getDeclaringClass();
 
-            /** @var string $methodName */
-            $methodName = $this->nodeNameResolver->getName($classMethod);
-        } else {
-            $classReflection = $classMethod->getDeclaringClass();
-            $methodName = $classMethod->getName();
+        if (! $classReflection instanceof ClassReflection) {
+            // we can't resolve the class, so we don't know.
+            throw new UnresolvableClassException();
         }
+
+        /** @var string $methodName */
+        $methodName = $classMethod instanceof ClassMethod
+            ? $this->nodeNameResolver->getName($classMethod)
+            : $classMethod->getName();
 
         $currentClassReflection = $classReflection;
         while ($this->hasClassParent($currentClassReflection)) {
