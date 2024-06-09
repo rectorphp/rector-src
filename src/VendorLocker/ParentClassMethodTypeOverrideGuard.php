@@ -65,7 +65,7 @@ final readonly class ParentClassMethodTypeOverrideGuard
 
     private function resolveParentClassMethod(ClassMethod|MethodReflection $classMethod): ?MethodReflection
     {
-        // early got false on private method
+        // early got null on private method
         if ($classMethod->isPrivate()) {
             return null;
         }
