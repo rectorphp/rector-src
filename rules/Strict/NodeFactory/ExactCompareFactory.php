@@ -151,8 +151,12 @@ final readonly class ExactCompareFactory
     /**
      * @return array<Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null>
      */
-    private function collectCompareExprs(UnionType $unionType, Expr $expr, bool $treatAsNonEmpty, bool $identical = true): array
-    {
+    private function collectCompareExprs(
+        UnionType $unionType,
+        Expr $expr,
+        bool $treatAsNonEmpty,
+        bool $identical = true
+    ): array {
         $compareExprs = [];
         foreach ($unionType->getTypes() as $unionedType) {
             $compareExprs[] = $identical
