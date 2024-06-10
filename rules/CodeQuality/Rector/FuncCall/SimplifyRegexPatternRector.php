@@ -96,6 +96,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($complexPattern === $node->value) {
+                continue;
+            }
+
             $node->value = $simplifiedValue;
             return $node;
         }
