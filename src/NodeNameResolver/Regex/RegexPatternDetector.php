@@ -13,6 +13,16 @@ final class RegexPatternDetector
      */
     private const POSSIBLE_DELIMITERS = ['#', '~', '/'];
 
+    /**
+     * @var array<string, string>
+     */
+    private const START_AND_END_DELIMITERS = [
+        '(' => ')',
+        '{' => '}',
+        '[' => ']',
+        '<' => '>',
+    ];
+
     public function isRegexPattern(string $name): bool
     {
         if (strlen($name) <= 2) {
@@ -22,6 +32,12 @@ final class RegexPatternDetector
         $firstChar = $name[0];
         $lastChar = $name[strlen($name) - 1];
         if ($firstChar !== $lastChar) {
+            foreach (self::START_AND_END_DELIMITERS as $start => $end) {
+                if ($firstChar === $start && $lastChar === $end) {
+                    return true;
+                }
+            }
+
             return false;
         }
 
