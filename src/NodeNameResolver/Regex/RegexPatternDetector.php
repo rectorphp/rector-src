@@ -33,9 +33,13 @@ final class RegexPatternDetector
         $lastChar = $name[strlen($name) - 1];
         if ($firstChar !== $lastChar) {
             foreach (self::START_AND_END_DELIMITERS as $start => $end) {
-                if ($firstChar === $start && $lastChar === $end) {
-                    return true;
+                if ($firstChar !== $start) {
+                    continue;
                 }
+                if ($lastChar !== $end) {
+                    continue;
+                }
+                return true;
             }
 
             return false;
