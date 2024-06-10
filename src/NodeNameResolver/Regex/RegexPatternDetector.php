@@ -36,9 +36,11 @@ final class RegexPatternDetector
                 if ($firstChar !== $start) {
                     continue;
                 }
+
                 if ($lastChar !== $end) {
                     continue;
                 }
+
                 return true;
             }
 
