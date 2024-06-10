@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariantWithPhpDocs;
 use PHPStan\Type\MixedType;
+use Rector\NodeAnalyzer\MagicClassMethodAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Reflection\ReflectionResolver;
 
@@ -15,12 +16,17 @@ final readonly class ClassMethodReturnVendorLockResolver
 {
     public function __construct(
         private NodeNameResolver $nodeNameResolver,
-        private ReflectionResolver $reflectionResolver
+        private ReflectionResolver $reflectionResolver,
+        private MagicClassMethodAnalyzer $magicClassMethodAnalyzer
     ) {
     }
 
     public function isVendorLocked(ClassMethod $classMethod): bool
     {
+        if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
+            return true;
+        }
+
         if ($classMethod->isPrivate()) {
             return false;
         }
