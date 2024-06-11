@@ -24,7 +24,7 @@ final readonly class LocalMethodCallFinder
     }
 
     /**
-     * @return MethodCall[]
+     * @return MethodCall[]|StaticCall[]
      */
     public function match(Class_ $class, ClassMethod $classMethod): array
     {
@@ -35,7 +35,7 @@ final readonly class LocalMethodCallFinder
 
         $classMethodName = $this->nodeNameResolver->getName($classMethod);
 
-        /** @var MethodCall[] $matchingMethodCalls */
+        /** @var MethodCall[]|StaticCall[] $matchingMethodCalls */
         $matchingMethodCalls = $this->betterNodeFinder->find(
             $class->getMethods(),
             function (Node $subNode) use ($className, $classMethodName): bool {
