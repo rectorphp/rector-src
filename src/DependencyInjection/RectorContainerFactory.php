@@ -36,14 +36,14 @@ final class RectorContainerFactory
     private function createFromConfigs(array $configFiles): Container
     {
         $lazyContainerFactory = new LazyContainerFactory();
-        $container = $lazyContainerFactory->create();
+        $rectorConfig = $lazyContainerFactory->create();
 
         foreach ($configFiles as $configFile) {
-            $container->import($configFile);
+            $rectorConfig->import($configFile);
         }
 
-        $container->boot();
+        $rectorConfig->boot();
 
-        return $container;
+        return $rectorConfig;
     }
 }

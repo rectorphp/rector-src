@@ -126,9 +126,9 @@ CODE_SAMPLE
         }
 
         $upperCaseName = strtoupper($enumCaseName);
-        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $upperCaseName);
+        $classConstFetch = $this->nodeFactory->createClassConstFetch($className, $upperCaseName);
 
-        return new PropertyFetch($enumConstFetch, $property);
+        return new PropertyFetch($classConstFetch, $property);
     }
 
     private function refactorMethodCall(MethodCall $methodCall, string $methodName): null|PropertyFetch

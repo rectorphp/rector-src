@@ -298,8 +298,8 @@ final class ValueResolver
             return $classConstantReference;
         }
 
-        $constantReflection = $classReflection->getConstant($constant);
-        $valueExpr = $constantReflection->getValueExpr();
+        $classConstantReflection = $classReflection->getConstant($constant);
+        $valueExpr = $classConstantReflection->getValueExpr();
 
         if ($valueExpr instanceof ConstFetch) {
             return $this->resolveExprValueForConst($valueExpr);

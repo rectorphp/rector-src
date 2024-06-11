@@ -6,5 +6,8 @@ namespace Rector\Tests\Naming\Rector\Assign\RenameVariableToMatchMethodCallRetur
 
 final class FullName
 {
-
+    public function getName(): string
+    {
+        return 'full name';
+    }
 }

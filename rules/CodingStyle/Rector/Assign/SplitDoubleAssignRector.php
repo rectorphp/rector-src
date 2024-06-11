@@ -73,8 +73,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $lastAssignValue = $this->resolveLastAssignExpr($firstAssign);
-        $collectExpressions = $this->collectExpressions($firstAssign, $lastAssignValue);
+        $expr = $this->resolveLastAssignExpr($firstAssign);
+        $collectExpressions = $this->collectExpressions($firstAssign, $expr);
 
         if ($collectExpressions === []) {
             return null;

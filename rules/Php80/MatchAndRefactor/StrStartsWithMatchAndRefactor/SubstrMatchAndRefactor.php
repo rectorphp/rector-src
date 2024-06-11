@@ -112,8 +112,8 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             return false;
         }
 
-        $hardcodedStringNeedle = $strStartsWith->getNeedleExpr();
-        if (! $hardcodedStringNeedle instanceof String_) {
+        $expr = $strStartsWith->getNeedleExpr();
+        if (! $expr instanceof String_) {
             return false;
         }
 
@@ -127,6 +127,6 @@ final readonly class SubstrMatchAndRefactor implements StrStartWithMatchAndRefac
             return false;
         }
 
-        return $lNumberLength->value === strlen($hardcodedStringNeedle->value);
+        return $lNumberLength->value === strlen($expr->value);
     }
 }

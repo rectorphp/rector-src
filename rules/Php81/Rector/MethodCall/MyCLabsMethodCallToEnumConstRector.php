@@ -158,9 +158,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $enumConstFetch = $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
+        $classConstFetch = $this->nodeFactory->createClassConstFetch($className, $enumCaseName);
 
-        return new PropertyFetch($enumConstFetch, 'value');
+        return new PropertyFetch($classConstFetch, 'value');
     }
 
     private function refactorEqualsMethodCall(MethodCall $methodCall): ?Identical
