@@ -168,19 +168,19 @@ CODE_SAMPLE
             return false;
         }
 
-        $newValue = $this->nodeFactory->createClassConstFetch(
+        $classConstFetch = $this->nodeFactory->createClassConstFetch(
             $attributeKeyToClassConstFetch->getConstantClass(),
             $constName
         );
 
         if (
             $arg->value instanceof ClassConstFetch
-            && $this->getName($arg->value) === $this->getName($newValue)
+            && $this->getName($arg->value) === $this->getName($classConstFetch)
         ) {
             return false;
         }
 
-        $arg->value = $newValue;
+        $arg->value = $classConstFetch;
 
         return true;
     }
