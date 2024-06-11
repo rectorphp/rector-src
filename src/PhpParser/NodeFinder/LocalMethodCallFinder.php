@@ -6,6 +6,7 @@ namespace Rector\PhpParser\NodeFinder;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\TypeWithClassName;
@@ -38,7 +39,7 @@ final readonly class LocalMethodCallFinder
         $matchingMethodCalls = $this->betterNodeFinder->find(
             $class->getMethods(),
             function (Node $subNode) use ($className, $classMethodName): bool {
-                if (! $subNode instanceof MethodCall) {
+                if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall) {
                     return false;
                 }
 
@@ -46,7 +47,9 @@ final readonly class LocalMethodCallFinder
                     return false;
                 }
 
-                $callerType = $this->nodeTypeResolver->getType($subNode->var);
+                $callerType = $subNode instanceof MethodCall
+                    ? $this->nodeTypeResolver->getType($subNode->var)
+                    : $this->nodeTypeResolver->getType($subNode->class);
                 if (! $callerType instanceof TypeWithClassName) {
                     return false;
                 }
