@@ -15,6 +15,6 @@ final readonly class CommentSkipper
 
     public function shouldSkip(string | object $element, Node $node): bool
     {
-        return $this->skipSkipper->doesMatchComments($element, $node ? $node->getComments() : []);
+        return $this->skipSkipper->doesMatchComments($element, $node);
     }
 }

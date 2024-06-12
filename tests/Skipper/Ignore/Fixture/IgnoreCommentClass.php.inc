@@ -2,6 +2,10 @@
 
 namespace Rector\Tests\Skipper\Ignore\Fixture;
 
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
+
 final class IgnoreCommentClass
 {
     private int $myVariable;
@@ -58,7 +62,18 @@ final class IgnoreCommentClass
         return $this->myVariable;
     }
 
+    // @rector-ignore Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector
     public function getMyVariable9()
+    {
+        return $this->myVariable;
+    }
+
+    public function getMyVariable10(): int
+    {
+        return /* @rector-ignore Rector\DeadCode\Rector\Cast\RecastingRemovalRector */ (int) $this->myVariable;
+    }
+
+    public function getMyVariable11()
     {
         return $this->myVariable;
     }
@@ -109,6 +124,10 @@ final class IgnoreCommentClass
 
 namespace Rector\Tests\Skipper\Ignore\Fixture;
 
+use Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
+
 final class IgnoreCommentClass
 {
     private int $myVariable;
@@ -165,7 +184,18 @@ final class IgnoreCommentClass
         return $this->myVariable;
     }
 
-    public function getMyVariable9(): int
+    // @rector-ignore Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector
+    public function getMyVariable9()
+    {
+        return $this->myVariable;
+    }
+
+    public function getMyVariable10(): int
+    {
+        return /* @rector-ignore Rector\DeadCode\Rector\Cast\RecastingRemovalRector */ (int) $this->myVariable;
+    }
+
+    public function getMyVariable11(): int
     {
         return $this->myVariable;
     }
