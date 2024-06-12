@@ -13,8 +13,8 @@ final readonly class CommentSkipper
     ) {
     }
 
-    public function shouldSkip(string | object $element, Node $node): bool
+    public function shouldSkip(string $rectorClass, Node $node): bool
     {
-        return $this->skipSkipper->doesMatchComments($element, $node);
+        return $this->skipSkipper->doesMatchComments($rectorClass, $node);
     }
 }

@@ -44,20 +44,19 @@ final readonly class SkipSkipper
         return false;
     }
 
-    public function doesMatchComments(object | string $checker, Node $node): bool
+    public function doesMatchComments(string $rectorClass, Node $node): bool
     {
         $comments = $node->getComments();
         if ($comments === []) {
             return false;
         }
-        $currentRuleName = is_object($checker) ? $checker::class : $checker;
         foreach ($comments as $comment) {
             $commentLines = NewLineSplitter::split($comment->getText());
             foreach ($commentLines as $commentLine) {
                 if (str_contains($commentLine, self::RECTOR_IGNORE_NEXT_LINE_TAG)) {
                     return true;
                 }
-                if ($this->isCurrentRuleInExcludedRulesInCommentLine($currentRuleName, $commentLine, $node)) {
+                if ($this->isCurrentRuleInExcludedRulesInCommentLine($rectorClass, $commentLine, $node)) {
                     return true;
                 }
             }
