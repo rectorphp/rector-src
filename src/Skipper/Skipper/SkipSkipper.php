@@ -45,7 +45,7 @@ final readonly class SkipSkipper
     /**
      * @param list<Comment> $comments
      */
-    public function doesMatchComments(object | string $checker, string $filePath, array $comments): bool
+    public function doesMatchComments(object | string $checker, array $comments): bool
     {
         if ($comments === []) {
             return false;

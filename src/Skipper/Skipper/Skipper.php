@@ -22,7 +22,8 @@ final readonly class Skipper
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
         private array $skipVoters,
-        private PathSkipper $pathSkipper
+        private PathSkipper $pathSkipper,
+        private CommentSkipper $commentSkipper,
     ) {
         Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }
@@ -37,14 +38,14 @@ final readonly class Skipper
         return $this->pathSkipper->shouldSkip($filePath);
     }
 
-    public function shouldSkipElementAndFilePath(string | object $element, string $filePath, Node $node = null): bool
+    public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
     {
         foreach ($this->skipVoters as $skipVoter) {
             if (! $skipVoter->match($element)) {
                 continue;
             }
 
-            if (! $skipVoter->shouldSkip($element, $filePath, $node)) {
+            if (! $skipVoter->shouldSkip($element, $filePath)) {
                 continue;
             }
 
@@ -63,10 +64,13 @@ final readonly class Skipper
         string $rectorClass,
         Node $node
     ): bool {
-        if ($this->shouldSkipElementAndFilePath($element, $filePath, $node)) {
+        if ($this->shouldSkipElementAndFilePath($element, $filePath)) {
             return true;
         }
 
-        return $this->rectifiedAnalyzer->hasRectified($rectorClass, $node);
+        if ($this->rectifiedAnalyzer->hasRectified($rectorClass, $node)) {
+            return true;
+        }
+        return $this->commentSkipper->shouldSkip($rectorClass, $node);
     }
 }
