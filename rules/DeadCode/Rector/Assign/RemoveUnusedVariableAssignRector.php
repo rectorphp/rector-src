@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use Rector\DeadCode\SideEffect\SideEffectNodeDetector;
 use Rector\NodeAnalyzer\VariableAnalyzer;
+use Rector\NodeManipulator\StmtsManipulator;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -35,7 +36,8 @@ final class RemoveUnusedVariableAssignRector extends AbstractScopeAwareRector
         private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
         private readonly SideEffectNodeDetector $sideEffectNodeDetector,
         private readonly VariableAnalyzer $variableAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StmtsManipulator $stmtsManipulator
     ) {
     }
 
@@ -162,6 +164,10 @@ CODE_SAMPLE
 
             $foundVariable = $this->betterNodeFinder->findVariableOfName($stmt, $variableName);
             if ($foundVariable instanceof Variable) {
+                return true;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($functionLike, $key, $variableName)) {
                 return true;
             }
         }

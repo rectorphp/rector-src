@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -18,7 +20,8 @@ final readonly class StmtsManipulator
     public function __construct(
         private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private BetterNodeFinder $betterNodeFinder,
-        private NodeComparator $nodeComparator
+        private NodeComparator $nodeComparator,
+        private ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     ) {
     }
 
@@ -71,6 +74,14 @@ final readonly class StmtsManipulator
         }
 
         $stmts = array_slice($stmtsAware->stmts, $jumpToKey, null, true);
-        return (bool) $this->betterNodeFinder->findVariableOfName($stmts, $variableName);
+        if ((bool) $this->betterNodeFinder->findVariableOfName($stmts, $variableName)) {
+            return true;
+        }
+
+        $variable = new Variable($variableName);
+        return (bool) $this->betterNodeFinder->findFirst(
+            $stmts,
+            fn (Node $subNode): bool => $this->exprUsedInNodeAnalyzer->isUsed($subNode, $variable)
+        );
     }
 }
