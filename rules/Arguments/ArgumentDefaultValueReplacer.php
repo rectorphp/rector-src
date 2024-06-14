@@ -97,6 +97,10 @@ final readonly class ArgumentDefaultValueReplacer
         MethodCall | StaticCall | FuncCall | New_ $expr,
         ReplaceArgumentDefaultValueInterface $replaceArgumentDefaultValue
     ): ?Expr {
+        if ($expr->isFirstClassCallable()) {
+            return null;
+        }
+
         $position = $replaceArgumentDefaultValue->getPosition();
         $particularArg = $expr->getArgs()[$position] ?? null;
         if (! $particularArg instanceof Arg) {
