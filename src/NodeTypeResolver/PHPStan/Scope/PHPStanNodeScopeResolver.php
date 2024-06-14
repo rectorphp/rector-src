@@ -143,7 +143,7 @@ final class PHPStanNodeScopeResolver
 
             // init current Node set Attribute
             // not a VirtualNode, then set scope attribute
-            // do not return early, as its property will be check next
+            // do not return early, as its properties will be checked next
             if (! $node instanceof VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
