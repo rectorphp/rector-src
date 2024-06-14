@@ -82,9 +82,6 @@ final readonly class StmtsManipulator
             null,
             true
         );
-        if ((bool) $this->betterNodeFinder->findVariableOfName($stmts, $variableName)) {
-            return true;
-        }
 
         $variable = new Variable($variableName);
         return (bool) $this->betterNodeFinder->findFirst(
