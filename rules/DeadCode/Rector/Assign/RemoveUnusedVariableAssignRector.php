@@ -95,7 +95,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($assignedVariableNamesByStmtPosition as $stmtPosition => $variableName) {
-            if ($this->isVariableUsedInFollowingStmts($node, $stmtPosition, $variableName)) {
+            if ($this->isVariableUsedInFollowingStmts($stmts, $stmtPosition, $variableName)) {
                 continue;
             }
 
@@ -142,16 +142,15 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     private function isVariableUsedInFollowingStmts(
-        ClassMethod|Function_ $functionLike,
+        array $stmts,
         int $assignStmtPosition,
         string $variableName
     ): bool {
-        if ($functionLike->stmts === null) {
-            return false;
-        }
-
-        foreach ($functionLike->stmts as $key => $stmt) {
+        foreach ($stmts as $key => $stmt) {
             // do not look yet
             if ($key <= $assignStmtPosition) {
                 continue;
@@ -162,12 +161,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $foundVariable = $this->betterNodeFinder->findVariableOfName($stmt, $variableName);
-            if ($foundVariable instanceof Variable) {
-                return true;
-            }
-
-            if ($this->stmtsManipulator->isVariableUsedInNextStmt($functionLike, $key, $variableName)) {
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($stmts, $key, $variableName)) {
                 return true;
             }
         }
