@@ -63,7 +63,9 @@ final readonly class ClassChildAnalyzer
      */
     private function resolveParentClassMethods(ClassReflection $classReflection, string $methodName): array
     {
-        if ($classReflection->hasNativeMethod($methodName) && $classReflection->getNativeMethod($methodName)->isPrivate()) {
+        if ($classReflection->hasNativeMethod($methodName) && $classReflection->getNativeMethod(
+            $methodName
+        )->isPrivate()) {
             return [];
         }
 
