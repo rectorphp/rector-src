@@ -120,10 +120,37 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
-            if ($node instanceof FileWithoutNamespace) {
+            // the class reflection is resolved AFTER entering to class node
+            // so we need to get it from the first after this one
+            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
+                /** @var MutatingScope $mutatingScope */
+                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
+                return;
+            }
 
+            if ($node instanceof Trait_) {
+                $this->processTrait($node, $mutatingScope, $nodeCallback);
+                return;
+            }
+
+            // special case for unreachable nodes
+            // early check here as UnreachableStatementNode is special VirtualNode
+            // so node to be checked inside
+            if ($node instanceof UnreachableStatementNode) {
+                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+                return;
+            }
+
+            // init current Node set Attribute
+            // not a VirtualNode, then set scope attribute
+            // do not return early, as its properties will be checked next
+            if (! $node instanceof VirtualNode) {
+                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            }
+
+            if ($node instanceof FileWithoutNamespace) {
+                $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
                 return;
             }
 
@@ -134,67 +161,102 @@ final class PHPStanNodeScopeResolver
                 $node instanceof Cast
             ) && $node->expr instanceof Expr) {
                 $node->expr->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof Assign || $node instanceof AssignOp) {
+                return;
+            }
+
+            if ($node instanceof Assign || $node instanceof AssignOp) {
                 $this->processAssign($node, $mutatingScope);
-            } elseif ($node instanceof Ternary) {
+                return;
+            }
+
+            if ($node instanceof Ternary) {
                 $this->processTernary($node, $mutatingScope);
-            } elseif ($node instanceof BinaryOp) {
+                return;
+            }
+
+            if ($node instanceof BinaryOp) {
                 $this->processBinaryOp($node, $mutatingScope);
-            } elseif ($node instanceof Arg) {
+                return;
+            }
+
+            if ($node instanceof Arg) {
                 $node->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof Foreach_) {
+                return;
+            }
+
+            if ($node instanceof Foreach_) {
                 // decorate value as well
                 $node->valueVar->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 if ($node->valueVar instanceof Array_) {
                     $this->processArray($node->valueVar, $mutatingScope);
                 }
-            } elseif ($node instanceof Array_) {
-                $this->processArray($node, $mutatingScope);
-            } elseif ($node instanceof Property) {
-                $this->processProperty($node, $mutatingScope);
-            } elseif ($node instanceof Switch_) {
-                $this->processSwitch($node, $mutatingScope);
-            } elseif ($node instanceof TryCatch) {
-                $this->processTryCatch($node, $mutatingScope);
-            } elseif ($node instanceof Catch_) {
-                $this->processCatch($node, $filePath, $mutatingScope);
-            } elseif ($node instanceof ArrayItem) {
-                $this->processArrayItem($node, $mutatingScope);
-            } elseif ($node instanceof NullableType) {
-                $node->type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof UnionType || $node instanceof IntersectionType) {
-                foreach ($node->types as $type) {
-                    $type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                }
-            } elseif ($node instanceof StaticPropertyFetch || $node instanceof ClassConstFetch) {
-                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof PropertyFetch) {
-                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof ConstFetch) {
-                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            } elseif ($node instanceof CallLike) {
-                $this->processCallike($node, $mutatingScope);
-            }
 
-            if ($node instanceof Trait_) {
-                $this->processTrait($node, $mutatingScope, $nodeCallback);
                 return;
             }
 
-            // the class reflection is resolved AFTER entering to class node
-            // so we need to get it from the first after this one
-            if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
-                /** @var MutatingScope $mutatingScope */
-                $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
+            if ($node instanceof Array_) {
+                $this->processArray($node, $mutatingScope);
+                return;
             }
 
-            // special case for unreachable nodes
-            if ($node instanceof UnreachableStatementNode) {
-                $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
-            } elseif (! $node instanceof VirtualNode) {
-                $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+            if ($node instanceof Property) {
+                $this->processProperty($node, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof Switch_) {
+                $this->processSwitch($node, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof TryCatch) {
+                $this->processTryCatch($node, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof Catch_) {
+                $this->processCatch($node, $filePath, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof ArrayItem) {
+                $this->processArrayItem($node, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof NullableType) {
+                $node->type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof UnionType || $node instanceof IntersectionType) {
+                foreach ($node->types as $type) {
+                    $type->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                }
+
+                return;
+            }
+
+            if ($node instanceof StaticPropertyFetch || $node instanceof ClassConstFetch) {
+                $node->class->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof PropertyFetch) {
+                $node->var->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof ConstFetch) {
+                $node->name->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                return;
+            }
+
+            if ($node instanceof CallLike) {
+                $this->processCallike($node, $mutatingScope);
+                return;
             }
         };
 
