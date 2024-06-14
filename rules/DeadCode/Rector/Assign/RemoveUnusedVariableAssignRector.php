@@ -142,6 +142,9 @@ CODE_SAMPLE
         );
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     private function isVariableUsedInFollowingStmts(
         array $stmts,
         int $assignStmtPosition,
