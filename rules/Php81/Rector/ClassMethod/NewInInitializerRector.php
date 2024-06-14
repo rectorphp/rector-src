@@ -102,7 +102,8 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        // stmts variable defined to avoid unset overlap,
+        // stmts variable defined to avoid unset overlap when used via array_slice() on
+        // StmtsManipulator::isVariableUsedInNextStmt()
         // @see https://github.com/rectorphp/rector-src/pull/5968
         // @see https://3v4l.org/eojhk
         $stmts = (array) $constructClassMethod->stmts;
