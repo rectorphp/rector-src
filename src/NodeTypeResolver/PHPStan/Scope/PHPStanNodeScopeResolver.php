@@ -135,7 +135,8 @@ final class PHPStanNodeScopeResolver
             }
 
             // special case for unreachable nodes
-            // early check here as VirtualNode to be checked inside
+            // early check here as UnreachableStatementNode is special VirtualNode
+            // so node to be checked inside
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
                 return;
