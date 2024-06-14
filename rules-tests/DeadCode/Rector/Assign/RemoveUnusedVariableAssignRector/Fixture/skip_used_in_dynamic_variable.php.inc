@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\Fixture;
 
-class SkipUsedInIfCondReassignInElse
+class SkipUsedInDynamicVariable
 {
     public function run($length)
     {
