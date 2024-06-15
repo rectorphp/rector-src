@@ -11,6 +11,7 @@ use Rector\Php74\Rector\FuncCall\ArrayKeyExistsOnPropertyRector;
 use Rector\Php74\Rector\FuncCall\FilterVarToAddSlashesRector;
 use Rector\Php74\Rector\FuncCall\MbStrrposEncodingArgumentPositionRector;
 use Rector\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector;
+use Rector\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php74\Rector\StaticCall\ExportToReflectionFunctionRector;
 use Rector\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector;
@@ -37,5 +38,6 @@ return static function (RectorConfig $rectorConfig): void {
         CurlyToSquareBracketArrayStringRector::class,
         MoneyFormatToNumberFormatRector::class,
         ParenthesizeNestedTernaryRector::class,
+        RestoreIncludePathToIniRestoreRector::class,
     ]);
 };
