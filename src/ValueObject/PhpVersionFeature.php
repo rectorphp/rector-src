@@ -417,6 +417,11 @@ final class PhpVersionFeature
     /**
      * @var int
      */
+    public const DEPRECATE_RESTORE_INCLUDE_PATH = PhpVersion::PHP_74;
+
+    /**
+     * @var int
+     */
     public const UNION_TYPES = PhpVersion::PHP_80;
 
     /**
