@@ -90,7 +90,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($classConsts  as $classConst) {
-            $valueType = null;
+            $valueTypes = [];
 
             // If a type is set, skip
             if ($classConst->type !== null) {
@@ -106,10 +106,24 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $valueType = $this->findValueType($constNode->value);
+                $valueTypes[] = $this->findValueType($constNode->value);
             }
 
-            if (! ($valueType ?? null) instanceof Identifier) {
+            if ($valueTypes === []) {
+                continue;
+            }
+
+            if (count($valueTypes) > 1) {
+                $valueTypes = array_unique($valueTypes, SORT_REGULAR);
+            }
+
+            // once more verify after uniquate
+            if (count($valueTypes) > 1) {
+                continue;
+            }
+
+            $valueType = current($valueTypes);
+            if (! $valueType instanceof Identifier) {
                 continue;
             }
 

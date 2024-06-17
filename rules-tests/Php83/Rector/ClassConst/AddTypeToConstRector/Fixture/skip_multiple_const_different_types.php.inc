@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-final class SkipMultipleConst
+final class SkipMultipleConstDifferentTypes
 {
     public const TYPE = 'some_type', OTHER_TYPE = 1;
 }
