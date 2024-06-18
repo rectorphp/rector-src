@@ -22,7 +22,7 @@ final class HebrevcToNl2brHebrevRector extends AbstractRector implements MinPhpV
 {
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::DEPRECATE_RESTORE_INCLUDE_PATH;
+        return PhpVersionFeature::DEPRECATE_HEBREVC;
     }
 
     public function getRuleDefinition(): RuleDefinition
