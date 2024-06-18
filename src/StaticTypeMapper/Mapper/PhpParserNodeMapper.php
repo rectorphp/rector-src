@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\Mapper;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\Type;
 use Rector\Exception\NotImplementedYetException;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 
 final readonly class PhpParserNodeMapper
@@ -24,25 +21,14 @@ final readonly class PhpParserNodeMapper
 
     public function mapToPHPStanType(Node $node): Type
     {
-        $nameOrExpr = $this->expandedNamespacedName($node);
-
         foreach ($this->phpParserNodeMappers as $phpParserNodeMapper) {
-            if (! is_a($nameOrExpr, $phpParserNodeMapper->getNodeType())) {
+            if (! is_a($node, $phpParserNodeMapper->getNodeType())) {
                 continue;
             }
 
-            return $phpParserNodeMapper->mapToPHPStan($nameOrExpr);
+            return $phpParserNodeMapper->mapToPHPStan($node);
         }
 
-        throw new NotImplementedYetException($nameOrExpr::class);
-    }
-
-    private function expandedNamespacedName(Node $node): Node|FullyQualified
-    {
-        if ($node::class === Name::class && $node->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
-            return new FullyQualified($node->getAttribute(AttributeKey::NAMESPACED_NAME));
-        }
-
-        return $node;
+        throw new NotImplementedYetException($node::class);
     }
 }
