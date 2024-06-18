@@ -9,6 +9,7 @@ use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
 use Rector\Php74\Rector\Double\RealToFloatTypeCastRector;
 use Rector\Php74\Rector\FuncCall\ArrayKeyExistsOnPropertyRector;
 use Rector\Php74\Rector\FuncCall\FilterVarToAddSlashesRector;
+use Rector\Php74\Rector\FuncCall\HebrevcToNl2brHebrevRector;
 use Rector\Php74\Rector\FuncCall\MbStrrposEncodingArgumentPositionRector;
 use Rector\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector;
 use Rector\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector;
@@ -23,7 +24,6 @@ return static function (RectorConfig $rectorConfig): void {
             #the_real_type
             # https://wiki.php.net/rfc/deprecations_php_7_4
             'is_real' => 'is_float',
-            //'hebrevc' => ['nl2br', 'hebrev'],
         ]);
 
     $rectorConfig->rules([
@@ -39,5 +39,6 @@ return static function (RectorConfig $rectorConfig): void {
         MoneyFormatToNumberFormatRector::class,
         ParenthesizeNestedTernaryRector::class,
         RestoreIncludePathToIniRestoreRector::class,
+        HebrevcToNl2brHebrevRector::class,
     ]);
 };
