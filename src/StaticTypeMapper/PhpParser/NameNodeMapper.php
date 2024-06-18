@@ -60,9 +60,11 @@ final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
         if ($node::class !== Name::class) {
             return null;
         }
+
         if (!$node->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
             return null;
         }
+
         return new FullyQualified($node->getAttribute(AttributeKey::NAMESPACED_NAME));
     }
 
