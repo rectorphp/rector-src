@@ -6,14 +6,12 @@ namespace Rector\Naming\ValueObject;
 
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
-use PhpParser\Node\Param;
 
 final readonly class ParamRename
 {
     public function __construct(
         private string $currentName,
         private string $expectedName,
-        private Param $param,
         private Variable $variable,
         private FunctionLike $functionLike
     ) {
@@ -34,10 +32,10 @@ final readonly class ParamRename
         return $this->functionLike;
     }
 
-    public function getParam(): Param
-    {
-        return $this->param;
-    }
+//    public function getParam(): Param
+//    {
+//        return $this->param;
+//    }
 
     public function getVariable(): Variable
     {

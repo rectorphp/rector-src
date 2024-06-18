@@ -349,3 +349,11 @@ parameters:
                 - src/Testing/PHPUnit/AbstractRectorTestCase.php
                 # specific error report
                 - src/Rector/AbstractScopeAwareRector.php
+
+        -
+            message: '#Interface "(.*?)" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
+            paths:
+                # marker interface
+                - src/Contract/PhpParser/Node/StmtsAwareInterface.php
+                # designed for extension
+                - src/Skipper/Contract/SkipVoterInterface.php
