@@ -238,6 +238,9 @@ parameters:
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
+        # to be extended
+        - '#Interface "Rector\\Set\\Contract\\SetInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
+
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
 

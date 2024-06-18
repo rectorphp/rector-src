@@ -16,8 +16,11 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Exception\Configuration\InvalidConfigurationException;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Set\Contract\SetProviderInterface;
+use Rector\Set\SetCollector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\FOSRestSetList;
@@ -137,6 +140,16 @@ final class RectorConfigBuilder
      */
     private array $registerServices = [];
 
+    /**
+     * @var SetProviderInterface[]
+     */
+    private array $setProviders = [];
+
+    /**
+     * @var string[]
+     */
+    private array $dynamicSets = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         $uniqueSets = array_unique($this->sets);
@@ -168,6 +181,24 @@ final class RectorConfigBuilder
 
         if ($this->paths !== []) {
             $rectorConfig->paths($this->paths);
+        }
+
+        // @experimental 2024-06
+        if ($this->dynamicSets !== []) {
+            if ($this->setProviders === []) {
+                throw new ShouldNotHappenException(sprintf(
+                    'Register set providers first, as they are required for dynamic sets: "%s"',
+                    implode('", "', $this->dynamicSets)
+                ));
+            }
+
+            $setCollector = new SetCollector($this->setProviders);
+
+            foreach ($this->dynamicSets as $dynamicSet) {
+                $composerTriggeredSets = $setCollector->matchComposerTriggered($dynamicSet);
+                // @todo compoare installed package version and required version
+                // use vendor installed, as dependencies can be transitional
+            }
         }
 
         // must be in upper part, as these services might be used by rule registered bellow
@@ -474,6 +505,7 @@ final class RectorConfigBuilder
         return $this;
     }
 
+<<<<<<< HEAD
     // suitable for PHP 7.4 and lower, before named args
     public function withPhp53Sets(): self
     {
@@ -550,6 +582,18 @@ final class RectorConfigBuilder
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
+=======
+    /**
+     * @param SetProviderInterface[] $setProviders
+     */
+    public function withSetProviders(array $setProviders): self
+    {
+        $this->setProviders = array_merge($this->setProviders, $setProviders);
+
+        return $this;
+    }
+
+>>>>>>> 111da21ca6 (kick of set provider)
     public function withPreparedSets(
         bool $deadCode = false,
         bool $codeQuality = false,
@@ -611,9 +655,9 @@ final class RectorConfigBuilder
             $this->sets[] = SetList::RECTOR_PRESET;
         }
 
+        // @experimental 2024-06
         if ($twig) {
-            // resolve sets based on composer.json versions
-            // @todo
+            $this->dynamicSets[] = 'twig';
         }
 
         return $this;
