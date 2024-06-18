@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt;
 
 /**
+ * @api marker interface
  * @property Stmt[]|null $stmts
  */
 interface StmtsAwareInterface extends Node

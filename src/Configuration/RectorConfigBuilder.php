@@ -521,8 +521,7 @@ final class RectorConfigBuilder
 
         if ($twig) {
             // resolve sets based on composer.json versions
-            dump('wip');
-            die;
+            // @todo
         }
 
         return $this;

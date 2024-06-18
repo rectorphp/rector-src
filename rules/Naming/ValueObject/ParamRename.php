@@ -7,9 +7,8 @@ namespace Rector\Naming\ValueObject;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
-use Rector\Naming\Contract\RenameParamValueObjectInterface;
 
-final readonly class ParamRename implements RenameParamValueObjectInterface
+final readonly class ParamRename
 {
     public function __construct(
         private string $currentName,

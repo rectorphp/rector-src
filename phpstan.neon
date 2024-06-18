@@ -339,3 +339,13 @@ parameters:
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: src/Util/NodePrinter.php
         - '#Cognitive complexity for "Rector\\TypeDeclaration\\NodeAnalyzer\\CallerParamMatcher\:\:matchCallParamType\(\)" is 12, keep it under 11#'
+
+        -
+            message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
+            paths:
+                # caching and message of speicfic child Rector rules
+                - src/Rector/AbstractRector.php
+                # for cache
+                - src/Testing/PHPUnit/AbstractRectorTestCase.php
+                # specific error report
+                - src/Rector/AbstractScopeAwareRector.php
