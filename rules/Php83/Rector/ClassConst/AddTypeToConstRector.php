@@ -89,8 +89,13 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
+<<<<<<< HEAD
         foreach ($classConsts  as $classConst) {
             $valueTypes = [];
+=======
+        foreach ($classConsts as $classConst) {
+            $valueType = null;
+>>>>>>> 5f5cb6814d (bump deps)
 
             // If a type is set, skip
             if ($classConst->type !== null) {
