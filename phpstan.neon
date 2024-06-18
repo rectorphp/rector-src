@@ -164,11 +164,6 @@ parameters:
         # known value
         - '#Method Rector\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
 
-        # stubs-rector directory exists on target-repository
-        -
-            message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
-            path: src/Autoloading/BootstrapFilesIncluder.php # 54
-
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
             paths:
@@ -183,14 +178,6 @@ parameters:
         -
             message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: src/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php
-
-        -
-            message: '#Do not name "[a-z]", shorter than 2 chars#'
-            paths:
-                # override parent method named "p"
-                - src/PhpParser/Printer/BetterStandardPrinter.php
-                # regex
-                - rules/Php70/EregToPcreTransformer.php
 
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
