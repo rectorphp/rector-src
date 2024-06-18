@@ -472,6 +472,8 @@ final class RectorConfigBuilder
         bool $strictBooleans = false,
         bool $carbon = false,
         bool $rectorPreset = false,
+        // composer based
+        bool $twig = false,
     ): self {
         if ($deadCode) {
             $this->sets[] = SetList::DEAD_CODE;
@@ -515,6 +517,12 @@ final class RectorConfigBuilder
 
         if ($rectorPreset) {
             $this->sets[] = SetList::RECTOR_PRESET;
+        }
+
+        if ($twig) {
+            // resolve sets based on composer.json versions
+            dump('wip');
+            die;
         }
 
         return $this;
