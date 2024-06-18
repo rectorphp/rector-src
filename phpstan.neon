@@ -7,11 +7,6 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
 
-    # @see https://github.com/tomasVotruba/cognitive-complexity
-    cognitive_complexity:
-        class: 50
-        function: 11
-
     # requires exact closure types
     checkMissingCallableSignature: true
 
@@ -46,36 +41,6 @@ parameters:
     ignoreErrors:
         -
             identifier: missingType.generics
-        -
-            message: '#Class cognitive complexity is \d+, keep it under \d+#'
-            paths:
-                - rules/Php70/EregToPcreTransformer.php
-                - src/NodeTypeResolver/NodeTypeResolver.php
-                - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
-                - src/PHPStanStaticTypeMapper/TypeMapper/UnionTypeMapper.php
-                - src/PhpParser/Printer/BetterStandardPrinter.php #41
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                - rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php
-                - src/CustomRules/SimpleNodeDumper.php
-
-        -
-            message: '#Cognitive complexity for "(.*?)" is (.*?), keep it under 11#'
-            paths:
-                - rules/Php70/EregToPcreTransformer.php
-                - src/PhpParser/Node/Value/ValueResolver.php
-                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
-                - rules/Php80/NodeResolver/SwitchExprsResolver.php
-                - src/NodeTypeResolver/NodeTypeResolver.php
-                - src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
-                - src/Parallel/Application/ParallelFileProcessor.php
-                # rector rules
-                - rules/*/Rector/*Rector.php
-                - utils/Rector/MoveAbstractRectorToChildrenRector.php
-                - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
-                - src/NodeTypeResolver/PHPStan/Scope/PHPStanNodeScopeResolver.php
-                - src/Configuration/RectorConfigBuilder.php
-                - rules/TypeDeclaration/PHPStan/ObjectTypeSpecifier.php
-                - src/PhpAttribute/NodeFactory/PhpNestedAttributeGroupFactory.php
 
         # is nested expr
         -
@@ -164,11 +129,6 @@ parameters:
         # known value
         - '#Method Rector\\Php\\PhpVersionProvider\:\:provide\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
 
-        # stubs-rector directory exists on target-repository
-        -
-            message: '#The path "/\.\./\.\./stubs\-rector" was not found#'
-            path: src/Autoloading/BootstrapFilesIncluder.php # 54
-
         -
             message: '#Function "class_exists\(\)" cannot be used/left in the code#'
             paths:
@@ -183,14 +143,6 @@ parameters:
         -
             message: '#Creating new PHPStan\\Reflection\\BetterReflection\\SourceLocator\\Optimized(.*?)SourceLocator is not covered by backward compatibility promise\. The class might change in a minor PHPStan version#'
             path: src/NodeTypeResolver/Reflection/BetterReflection/SourceLocatorProvider/DynamicSourceLocatorProvider.php
-
-        -
-            message: '#Do not name "[a-z]", shorter than 2 chars#'
-            paths:
-                # override parent method named "p"
-                - src/PhpParser/Printer/BetterStandardPrinter.php
-                # regex
-                - rules/Php70/EregToPcreTransformer.php
 
         -
             message:  '#@\\ini_set\(.*\)" is forbidden to use#'
@@ -301,12 +253,6 @@ parameters:
         # closure detailed
         - '#Method Rector\\Config\\RectorConfig\:\:singleton\(\) has parameter \$concrete with no signature specified for Closure#'
 
-        -
-            message: '#Class cognitive complexity is \d+, keep it under 50#'
-            paths:
-                 - src/PhpParser/Node/Value/ValueResolver.php
-                 - src/Configuration/RectorConfigBuilder.php
-
         # dynamic printer
         -
              message: '#Use explicit names over dynamic ones#'
@@ -314,11 +260,6 @@ parameters:
                  - src/CustomRules/SimpleNodeDumper.php
                  - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                  - src/Testing/PHPUnit/AbstractTestCase.php
-
-        # complex logic, to keep on single place for easy adjustments
-        -
-            message: '#Cognitive complexity for "Rector\\CustomRules\\SimpleNodeDumper(.*?)" is \d+, keep it under 11#'
-            path: src/CustomRules/SimpleNodeDumper.php
 
         # way to invoke repeated quesitons in symfony
         -
@@ -338,4 +279,21 @@ parameters:
         -
             message: '#Parameters should use "array" types as the only types passed to this method#'
             path: src/Util/NodePrinter.php
-        - '#Cognitive complexity for "Rector\\TypeDeclaration\\NodeAnalyzer\\CallerParamMatcher\:\:matchCallParamType\(\)" is 12, keep it under 11#'
+
+        -
+            message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
+            paths:
+                # caching and message of speicfic child Rector rules
+                - src/Rector/AbstractRector.php
+                # for cache
+                - src/Testing/PHPUnit/AbstractRectorTestCase.php
+                # specific error report
+                - src/Rector/AbstractScopeAwareRector.php
+
+        -
+            message: '#Interface "(.*?)" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
+            paths:
+                # marker interface
+                - src/Contract/PhpParser/Node/StmtsAwareInterface.php
+                # designed for extension
+                - src/Skipper/Contract/SkipVoterInterface.php
