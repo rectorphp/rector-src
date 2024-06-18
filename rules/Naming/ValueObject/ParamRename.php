@@ -32,11 +32,6 @@ final readonly class ParamRename
         return $this->functionLike;
     }
 
-//    public function getParam(): Param
-//    {
-//        return $this->param;
-//    }
-
     public function getVariable(): Variable
     {
         return $this->variable;

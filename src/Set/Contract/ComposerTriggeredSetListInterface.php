@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\Set\Contract;
 
+/**
+ * @api to be implemented by framework packages
+ * @experimental 2024-06
+ */
 interface ComposerTriggeredSetListInterface extends SetListInterface
 {
     /**
