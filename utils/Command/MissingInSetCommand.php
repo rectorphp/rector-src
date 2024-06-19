@@ -14,9 +14,7 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector;
 use Rector\Doctrine\CodeQuality\Rector\Class_\InitializeDefaultEntityCollectionRector;
 use Rector\Doctrine\CodeQuality\Rector\Property\TypedPropertyFromDoctrineCollectionRector;
 use Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\AddCoversClassAttributeRector;
-use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector;
 use Rector\Utils\Enum\RectorDirectoryToSetFileMap;
 use Rector\Utils\Finder\RectorClassFinder;
@@ -44,9 +42,6 @@ final class MissingInSetCommand extends Command
         RemoveNullTagValueNodeRector::class,
         // personal preference, enable on purpose
         ArraySpreadInsteadOfArrayMergeRector::class,
-        FinalizeClassesWithoutChildrenRector::class,
-        // deprecated
-        FinalizePublicClassConstantRector::class,
 
         // deprecated
         InitializeDefaultEntityCollectionRector::class,
