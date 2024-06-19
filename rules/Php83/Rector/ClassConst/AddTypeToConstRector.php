@@ -20,19 +20,29 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\AddTypeToConstRectorTest
  */
-final class AddTypeToConstRector extends AbstractRector implements MinPhpVersionInterface
+final class AddTypeToConstRector extends AbstractRector implements ConfigurableRectorInterface, MinPhpVersionInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    final public const IGNORE_INHERITANCE = 'ignore_inheritance';
+
+    private bool $ignoreInheritance = false;
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly StaticTypeMapper $staticTypeMapper
@@ -42,7 +52,7 @@ final class AddTypeToConstRector extends AbstractRector implements MinPhpVersion
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add type to constants', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
@@ -57,6 +67,28 @@ final class SomeClass
 }
 CODE_SAMPLE
                 ,
+                [
+                    AddTypeToConstRector::IGNORE_INHERITANCE => false,
+                ]
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+class SomeClass extends SomeOtherClass
+{
+    public const TYPE = 'some_type';
+}
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+class SomeClass extends SomeOtherClass
+{
+    public const string TYPE = 'some_type';
+}
+CODE_SAMPLE
+                ,
+                [
+                    AddTypeToConstRector::IGNORE_INHERITANCE => true,
+                ]
             ),
         ]);
     }
@@ -76,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($node->isAbstract()) {
+        if (! $this->ignoreInheritance && $node->isAbstract()) {
             return null;
         }
 
@@ -103,7 +135,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($this->canBeInherited($classConst, $node)) {
+                if (! $this->ignoreInheritance && $this->canBeInherited($classConst, $node)) {
                     continue;
                 }
 
@@ -137,6 +169,16 @@ CODE_SAMPLE
         }
 
         return $node;
+    }
+
+    /**
+     * @param mixed[] $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $ignoreInheritance = $configuration[self::IGNORE_INHERITANCE] ?? (bool) current($configuration);
+        Assert::boolean($ignoreInheritance);
+        $this->ignoreInheritance = $ignoreInheritance;
     }
 
     public function provideMinPhpVersion(): int

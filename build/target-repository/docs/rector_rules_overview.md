@@ -5510,10 +5510,22 @@ Add override attribute to overridden methods
 
 Add type to constants
 
+:wrench: **configure it!**
+
 - class: [`Rector\Php83\Rector\ClassConst\AddTypeToConstRector`](../rules/Php83/Rector/ClassConst/AddTypeToConstRector.php)
 
 ```diff
  final class SomeClass
+ {
+-    public const TYPE = 'some_type';
++    public const string TYPE = 'some_type';
+ }
+```
+
+<br>
+
+```diff
+ class SomeClass extends SomeOtherClass
  {
 -    public const TYPE = 'some_type';
 +    public const string TYPE = 'some_type';

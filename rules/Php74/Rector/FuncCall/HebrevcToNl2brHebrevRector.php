@@ -65,11 +65,6 @@ CODE_SAMPLE
         }
 
         $node->name = new Name('hebrev');
-        return new FuncCall(
-            new Name('nl2br'),
-            [
-                new Arg($node)
-            ]
-        );
+        return new FuncCall(new Name('nl2br'), [new Arg($node)]);
     }
 }
