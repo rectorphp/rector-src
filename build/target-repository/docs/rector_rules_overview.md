@@ -1,4 +1,4 @@
-# 382 Rules Overview
+# 381 Rules Overview
 
 <br>
 
@@ -50,7 +50,7 @@
 
 - [Php84](#php84) (1)
 
-- [Privatization](#privatization) (5)
+- [Privatization](#privatization) (4)
 
 - [Removing](#removing) (5)
 
@@ -5551,25 +5551,6 @@ Make implicit nullable param to explicit
 <br>
 
 ## Privatization
-
-### FinalizeClassesWithoutChildrenRector
-
-Finalize every class that has no children
-
-- class: [`Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector`](../rules/Privatization/Rector/Class_/FinalizeClassesWithoutChildrenRector.php)
-
-```diff
--class FirstClass extends SecondClass
-+final class FirstClass extends SecondClass
- {
- }
-
- class SecondClass
- {
- }
-```
-
-<br>
 
 ### FinalizeTestCaseClassRector
 
