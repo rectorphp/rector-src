@@ -1,4 +1,4 @@
-# 381 Rules Overview
+# 380 Rules Overview
 
 <br>
 
@@ -42,7 +42,7 @@
 
 - [Php80](#php80) (16)
 
-- [Php81](#php81) (9)
+- [Php81](#php81) (8)
 
 - [Php82](#php82) (5)
 
@@ -5210,22 +5210,6 @@ Add `Stringable` interface to classes with `__toString()` method
 <br>
 
 ## Php81
-
-### FinalizePublicClassConstantRector
-
-Add final to constants that does not have children
-
-- class: [`Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector`](../rules/Php81/Rector/ClassConst/FinalizePublicClassConstantRector.php)
-
-```diff
- class SomeClass
- {
--    public const NAME = 'value';
-+    final public const NAME = 'value';
- }
-```
-
-<br>
 
 ### FirstClassCallableRector
 
