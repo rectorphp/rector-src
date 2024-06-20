@@ -54,6 +54,10 @@ return RectorConfig::configure()
 
         RemovePhpVersionIdCheckRector::class => [
             __DIR__ . '/src/Util/FileHasher.php',
+<<<<<<< HEAD
             __DIR__ . '/src/functions/notifications.php',
+=======
+            __DIR__ . '/src/Configuration/RectorConfigBuilder.php',
+>>>>>>> 0e1793f483 ([DX] withPreparedSets() should be used only on PHP 8+)
         ],
     ]);

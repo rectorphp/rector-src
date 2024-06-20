@@ -568,6 +568,14 @@ final class RectorConfigBuilder
         // composer based
         bool $twig = false,
     ): self {
+        if (PHP_VERSION_ID < 80000) {
+            echo sprintf(
+                'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use "withSets()" method instead',
+                __METHOD__
+            );
+            sleep(3);
+        }
+
         if ($deadCode) {
             $this->sets[] = SetList::DEAD_CODE;
         }
