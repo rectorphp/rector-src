@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
-use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
@@ -22,7 +21,7 @@ use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\Enum\SetGroup;
-use Rector\Set\SetCollector;
+use Rector\Set\SetManager;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\FOSRestSetList;
@@ -168,24 +167,8 @@ final class RectorConfigBuilder
                 ));
             }
 
-            $setCollector = new SetCollector($this->setProviders);
-
-            $installedPackageResolver = new InstalledPackageResolver();
-            $installedComposerPackages = $installedPackageResolver->resolve(getcwd());
-
-            foreach ($this->setGroups as $setGroup) {
-                $composerTriggeredSets = $setCollector->matchComposerTriggered($setGroup);
-
-                foreach ($composerTriggeredSets as $composerTriggeredSet) {
-                    if ($composerTriggeredSet->matchInstalledPackages($installedComposerPackages)) {
-                        // @todo add debug note somewhere
-                        // echo sprintf('Loaded "%s" set as it meets the conditions', $composerTriggeredSet->getSetFilePath());
-
-                        // it matched composer package + version requirements → load set
-                        $this->groupLoadedSets[] = $composerTriggeredSet->getSetFilePath();
-                    }
-                }
-            }
+            $setManager = new SetManager($this->setProviders);
+            $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
         }
 
         // merge sets together

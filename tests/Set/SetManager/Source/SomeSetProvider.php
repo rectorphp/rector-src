@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Set\SetCollector\Source;
+namespace Rector\Tests\Set\SetManager\Source;
 
 use Rector\Set\Contract\SetInterface;
 use Rector\Set\Contract\SetProviderInterface;
