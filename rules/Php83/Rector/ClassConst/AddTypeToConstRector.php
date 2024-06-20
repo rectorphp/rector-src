@@ -23,7 +23,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
 use Rector\PhpParser\AstResolver;
-use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -311,8 +310,6 @@ CODE_SAMPLE
 
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
-        if (! $this->allowHasChild) {
-            return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
-        }
+        return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
     }
 }
