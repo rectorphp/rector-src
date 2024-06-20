@@ -35,7 +35,7 @@ final class Notifier
         }
 
         $message = sprintf(
-            'The "%s()" method is suitable for PHP 7.4 and lower. use the following methods instead:
+            'The "%s()" method is suitable for PHP 7.4 and lower. Use the following methods instead:
 
     - "withPhpSets()" in PHP 8.0+
     - "withSets([...])" for use in both php ^7.2 and php 8.0+.',
@@ -54,7 +54,7 @@ final class Notifier
             return;
         }
 
-        $message = 'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. use the following methods instead:
+        $message = 'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. Use the following methods instead:
 
     - "withPhp53Sets()" ... "withPhp74Sets()" in lower PHP versions
     - "withSets([...])" for use both PHP ^7.2 and php 8.0+.';
