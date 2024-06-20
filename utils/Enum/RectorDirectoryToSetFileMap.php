@@ -54,6 +54,8 @@ final class RectorDirectoryToSetFileMap
             __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp74' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php74.php',
             __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp80' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php80.php',
             __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp81' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php81.php',
+            __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp82' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php82.php',
+            __DIR__ . '/../../vendor/rector/rector-downgrade-php/rules/DowngradePhp83' => __DIR__ . '/../../vendor/rector/rector-downgrade-php/config/set/downgrade-php83.php',
 
             // symfony
             __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony25' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony25.php',
@@ -73,6 +75,8 @@ final class RectorDirectoryToSetFileMap
             __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony60' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony60.php',
             __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony61' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony61.php',
             __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony62' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony62.php',
+            __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony63' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony63.php',
+            __DIR__ . '/../../vendor/rector/rector-symfony/rules/Symfony64' => __DIR__ . '/../../vendor/rector/rector-symfony/config/sets/symfony/symfony64.php',
         ];
     }
 }
