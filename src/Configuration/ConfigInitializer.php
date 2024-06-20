@@ -43,8 +43,6 @@ final readonly class ConfigInitializer
 
         $configContents = FileSystem::read(__DIR__ . '/../../templates/rector.php.dist');
 
-        $configContents = $this->replacePhpLevelContents($configContents);
-
         $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
         FileSystem::write($commonRectorConfigPath, $configContents, null);
@@ -67,18 +65,6 @@ final readonly class ConfigInitializer
         return array_filter(
             $rectors,
             static fn (RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
-        );
-    }
-
-    private function replacePhpLevelContents(string $rectorPhpTemplateContents): string
-    {
-        $fullPHPVersion = (string) $this->phpVersionProvider->provide();
-        $phpVersion = Strings::substring($fullPHPVersion, 0, 1) . Strings::substring($fullPHPVersion, 2, 1);
-
-        return str_replace(
-            'LevelSetList::UP_TO_PHP_XY',
-            'LevelSetList::UP_TO_PHP_' . $phpVersion,
-            $rectorPhpTemplateContents
         );
     }
 
