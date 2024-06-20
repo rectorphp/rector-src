@@ -457,6 +457,9 @@ final class RectorConfigBuilder
             $this->sets[] = LevelSetList::UP_TO_PHP_84;
         }
 
+        // make use of polyfill packages in composer.json
+        $this->sets[] = SetList::PHP_POLYFILLS;
+
         return $this;
     }
 
