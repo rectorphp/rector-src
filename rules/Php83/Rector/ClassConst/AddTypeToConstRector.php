@@ -77,16 +77,28 @@ CODE_SAMPLE
             ),
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-class SomeClass extends SomeOtherClass
+class ParentClass extends ChildClass
 {
     public const TYPE = 'some_type';
+    public const OTHER_TYPE = 'other_type';
+}
+
+class ChildClass
+{
+    public const OTHER_TYPE = 'other_type';
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-class SomeClass extends SomeOtherClass
+class ParentClass extends ChildClass
 {
     public const string TYPE = 'some_type';
+    public const OTHER_TYPE = 'other_type';
+}
+
+class ChildClass
+{
+    public const OTHER_TYPE = 'other_type';
 }
 CODE_SAMPLE
                 ,

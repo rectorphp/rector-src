@@ -5525,10 +5525,16 @@ Add type to constants
 <br>
 
 ```diff
- class SomeClass extends SomeOtherClass
+ class ParentClass extends ChildClass
  {
 -    public const TYPE = 'some_type';
 +    public const string TYPE = 'some_type';
+     public const OTHER_TYPE = 'other_type';
+ }
+
+ class ChildClass
+ {
+     public const OTHER_TYPE = 'other_type';
  }
 ```
 
