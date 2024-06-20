@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use Nette\Utils\Json;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -196,8 +197,21 @@ final class RectorConfigBuilder
 
             foreach ($this->dynamicSets as $dynamicSet) {
                 $composerTriggeredSets = $setCollector->matchComposerTriggered($dynamicSet);
+
+                $installedPackagesFilePath = getcwd() . '/vendor/composer/installed.json';
                 // @todo compoare installed package version and required version
                 // use vendor installed, as dependencies can be transitional
+                if (file_exists($installedPackagesFilePath)) {
+                    $installedPackagesJson = Json::decode(file_get_contents($installedPackagesFilePath), true);
+                    foreach ($installedPackagesJson['packages'] as $installedPackage) {
+                        dump($installedPackage['name']);
+                        dump($installedPackage['version_normalized']);
+                        die;
+                    }
+
+                    die;
+                }
+
             }
         }
 
