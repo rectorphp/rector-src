@@ -12,8 +12,8 @@ use Rector\Php80\Rector\Ternary\GetDebugTypeRector;
 
 // these rules can be used ahead of PHP version,
 // as long composer.json includes particular symfony/php-polyfill package
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
+return RectorConfig::configure()
+    ->withRules([
         ArrayKeyFirstLastRector::class,
         IsCountableRector::class,
         GetDebugTypeRector::class,
@@ -21,4 +21,3 @@ return static function (RectorConfig $rectorConfig): void {
         StrEndsWithRector::class,
         StrContainsRector::class,
     ]);
-};
