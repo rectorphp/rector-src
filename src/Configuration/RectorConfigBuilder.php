@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Nette\Utils\Json;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
