@@ -108,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->allowHasChild && $node->isAbstract()) {
+        if ($node->isAbstract()) {
             return null;
         }
 

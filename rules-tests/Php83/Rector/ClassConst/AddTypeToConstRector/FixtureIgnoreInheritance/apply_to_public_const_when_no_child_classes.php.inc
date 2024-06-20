@@ -2,20 +2,20 @@
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-abstract class ApplyToAbstractClass
+class ApplyTypeWhenNoChildren
 {
-    public const STRING = 'some_type';
+    private const A = 1000;
+    public const B = 'foo';
 }
-
 ?>
 -----
 <?php
 
 namespace Rector\Tests\Php83\Rector\ClassConst\AddTypeToConstRector\Fixture;
 
-abstract class ApplyToAbstractClass
+class ApplyTypeWhenNoChildren
 {
-    public const string STRING = 'some_type';
+    private const int A = 1000;
+    public const string B = 'foo';
 }
-
 ?>
