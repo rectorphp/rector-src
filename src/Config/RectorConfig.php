@@ -147,9 +147,6 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
     }
 
-    /**
-     * @todo merge with importShortClasses()
-     */
     public function importShortClasses(bool $importShortClasses = true): void
     {
         SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, $importShortClasses);

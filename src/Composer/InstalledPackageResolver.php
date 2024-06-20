@@ -10,6 +10,9 @@ use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Exception\ShouldNotHappenException;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see \Rector\Tests\Composer\InstalledPackageResolverTest
+ */
 final class InstalledPackageResolver
 {
     /**
