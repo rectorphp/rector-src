@@ -18,11 +18,7 @@ final class Notifier
         }
 
         $message = sprintf(
-            'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use the following methods instead:
-
-    - "%s()"
-    - withSets([' . LevelSetList::class . '::UP_TO_PHP_XX]) for use both php ^7.2 and php 8.0.
-            ',
+            'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use "%s()" method instead',
             $calledMethod,
             $recommendedMethod
         );
