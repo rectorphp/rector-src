@@ -226,7 +226,7 @@ CODE_SAMPLE
     /**
      * @param ClassReflection[] $childClassReflections
      */
-    public function isConstGuardedByChildren(Const_ $const, array $childClassReflections): bool
+    private function isConstGuardedByChildren(Const_ $const, array $childClassReflections): bool
     {
         foreach ($childClassReflections as $childClassReflection) {
             $classLike = $this->astResolver->resolveClassFromClassReflection($childClassReflection);

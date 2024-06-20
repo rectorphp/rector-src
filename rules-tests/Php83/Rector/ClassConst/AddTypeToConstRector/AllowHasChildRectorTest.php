@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class IgnoreInheritanceRectorTest extends AbstractRectorTestCase
+final class AllowHasChildRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,11 +18,11 @@ final class IgnoreInheritanceRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureIgnoreInheritance');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureAllowHasChild');
     }
 
     public function provideConfigFilePath(): string
     {
-        return __DIR__ . '/config/ignore_inheritance.php';
+        return __DIR__ . '/config/allow_has_child.php';
     }
 }
