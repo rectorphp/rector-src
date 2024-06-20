@@ -58,9 +58,7 @@ final class Notifier
 'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. use the following methods instead:
 
     - "withPhp53Sets()" ... "withPhp74Sets()" in lower PHP versions
-    - "withSets([...])" for use both PHP ^7.2 and php 8.0+.
-
-One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
+    - "withSets([...])" for use both PHP ^7.2 and php 8.0+.',
             PHP_EOL
         );
 
