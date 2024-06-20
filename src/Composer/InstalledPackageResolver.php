@@ -20,7 +20,6 @@ final class InstalledPackageResolver
      */
     private array $resolvedInstalledPackages = [];
 
-
     /**
      * @return InstalledPackage[]
      */
