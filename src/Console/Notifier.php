@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Console;
 
+use Rector\Set\ValueObject\LevelSetList;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -17,7 +18,7 @@ final class Notifier
         }
 
         $message = sprintf(
-            'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use "%s()" method instead or withSets([\Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0',
+            'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use "%s()" method instead or withSets([' . LevelSetList::class . '::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0',
             $calledMethod,
             $recommendedMethod
         );
@@ -36,7 +37,7 @@ final class Notifier
         }
 
         $message = sprintf(
-            'The "%s()" method is suitable for PHP 7.4 and lower. Use "%s()" method instead or withSets([\Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0',
+            'The "%s()" method is suitable for PHP 7.4 and lower. Use "%s()" method instead or withSets([' . LevelSetList::class . '::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0',
             $calledMethod,
             $recommendedMethod
         );
@@ -54,7 +55,7 @@ final class Notifier
         }
 
         $message = sprintf(
-            'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use withPhp53Sets() ... withPhp74Sets() instead or withSets([\Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0. One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
+            'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use withPhp53Sets() ... withPhp74Sets() instead or withSets([' . LevelSetList::class . '::UP_TO_PHP_XX]) method instead for use both php ^7.2 and php 8.0. One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
             PHP_EOL
         );
 
