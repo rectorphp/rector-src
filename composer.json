@@ -75,7 +75,8 @@
             "Rector\\Utils\\": "utils"
         },
         "files": [
-            "src/functions/node_helper.php"
+            "src/functions/node_helper.php",
+            "src/functions/notifications.php"
         ]
     },
     "autoload-dev": {
