@@ -176,6 +176,8 @@ CODE_SAMPLE
 
                 $classMethod->name = new Identifier($methodCallRename->getNewMethod());
                 $hasChanged = true;
+
+                continue 2;
             }
         }
 
@@ -190,7 +192,7 @@ CODE_SAMPLE
         string $methodName,
         ClassMethod $classMethod,
         MethodCallRenameInterface $methodCallRename,
-        ClassReflection $classReflection,
+        ?ClassReflection $classReflection,
         Class_|Interface_ $classOrInterface
     ): bool {
         if (! $this->nodeNameResolver->isStringName($methodName, $methodCallRename->getOldMethod())) {
