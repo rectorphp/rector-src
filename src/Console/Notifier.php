@@ -38,7 +38,7 @@ final class Notifier
             'The "%s()" method is suitable for PHP 7.4 and lower. use the following methods instead:
 
     - "withPhpSets()"
-    - "withSets([...])" for use in both php ^7.2 and php 8.0.
+    - "withSets([...])" for use in both php ^7.2 and php 8.0+.
             ',
             $calledMethod
         );
@@ -59,7 +59,7 @@ final class Notifier
             'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use the following methods instead:
 
     - "withPhp53Sets()" ... "withPhp74Sets()"
-    - "withSets([...])" for use both php ^7.2 and php 8.0.
+    - "withSets([...])" for use both php ^7.2 and php 8.0+.
 
     One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
             PHP_EOL
