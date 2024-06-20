@@ -14,6 +14,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\DependencyInjection\Laravel\ContainerMemento;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Set\SetProvider\TwigSetProvider;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Validation\RectorConfigValidator;
 use Rector\ValueObject\PhpVersion;
@@ -41,7 +42,10 @@ final class RectorConfig extends Container
 
     public static function configure(): RectorConfigBuilder
     {
-        return new RectorConfigBuilder();
+        $rectorConfigBuilder = new RectorConfigBuilder();
+        $rectorConfigBuilder->withSetProviders([new TwigSetProvider()]);
+
+        return $rectorConfigBuilder;
     }
 
     /**

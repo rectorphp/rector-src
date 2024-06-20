@@ -16,8 +16,12 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Exception\Configuration\InvalidConfigurationException;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
+use Rector\Set\Contract\SetProviderInterface;
+use Rector\Set\Enum\SetGroup;
+use Rector\Set\SetManager;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\FOSRestSetList;
@@ -137,8 +141,39 @@ final class RectorConfigBuilder
      */
     private array $registerServices = [];
 
+    /**
+     * @var SetProviderInterface[]
+     */
+    private array $setProviders = [];
+
+    /**
+     * @var array<SetGroup::*>
+     */
+    private array $setGroups = [];
+
+    /**
+     * @var string[]
+     */
+    private array $groupLoadedSets = [];
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
+        // @experimental 2024-06
+        if ($this->setGroups !== []) {
+            if ($this->setProviders === []) {
+                throw new ShouldNotHappenException(sprintf(
+                    'Register set providers first, as they are required for dynamic sets: "%s"',
+                    implode('", "', $this->setGroups)
+                ));
+            }
+
+            $setManager = new SetManager($this->setProviders);
+            $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
+        }
+
+        // merge sets together
+        $this->sets = array_merge($this->sets, $this->groupLoadedSets);
+
         $uniqueSets = array_unique($this->sets);
 
         if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
@@ -550,6 +585,16 @@ final class RectorConfigBuilder
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
+    /**
+     * @param SetProviderInterface[] $setProviders
+     */
+    public function withSetProviders(array $setProviders): self
+    {
+        $this->setProviders = array_merge($this->setProviders, $setProviders);
+
+        return $this;
+    }
+
     public function withPreparedSets(
         bool $deadCode = false,
         bool $codeQuality = false,
@@ -611,9 +656,9 @@ final class RectorConfigBuilder
             $this->sets[] = SetList::RECTOR_PRESET;
         }
 
+        // @experimental 2024-06
         if ($twig) {
-            // resolve sets based on composer.json versions
-            // @todo
+            $this->setGroups[] = SetGroup::TWIG;
         }
 
         return $this;

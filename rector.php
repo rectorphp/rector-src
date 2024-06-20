@@ -20,6 +20,8 @@ return RectorConfig::configure()
         earlyReturn: true,
         naming: true,
         rectorPreset: true,
+        // @experimental 2024-06
+        // twig: false,
     )
     ->withPhpSets()
     ->withPaths([
