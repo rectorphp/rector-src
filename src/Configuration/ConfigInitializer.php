@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\FileSystem\InitFilePathsResolver;
-use Rector\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -21,7 +19,6 @@ final readonly class ConfigInitializer
         private array $rectors,
         private InitFilePathsResolver $initFilePathsResolver,
         private SymfonyStyle $symfonyStyle,
-        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 

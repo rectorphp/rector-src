@@ -11,6 +11,7 @@ use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
 use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
+use Rector\Console\Notifier;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
@@ -480,7 +481,7 @@ final class RectorConfigBuilder
     // suitable for PHP 7.4 and lower, before named args
     public function withPhp53Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_53;
         return $this;
@@ -488,7 +489,7 @@ final class RectorConfigBuilder
 
     public function withPhp54Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_54;
         return $this;
@@ -496,7 +497,7 @@ final class RectorConfigBuilder
 
     public function withPhp55Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_55;
         return $this;
@@ -504,7 +505,7 @@ final class RectorConfigBuilder
 
     public function withPhp56Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_56;
         return $this;
@@ -512,7 +513,7 @@ final class RectorConfigBuilder
 
     public function withPhp70Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_70;
         return $this;
@@ -520,7 +521,7 @@ final class RectorConfigBuilder
 
     public function withPhp71Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_71;
         return $this;
@@ -528,7 +529,7 @@ final class RectorConfigBuilder
 
     public function withPhp72Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_72;
         return $this;
@@ -536,7 +537,7 @@ final class RectorConfigBuilder
 
     public function withPhp73Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_73;
         return $this;
@@ -544,7 +545,7 @@ final class RectorConfigBuilder
 
     public function withPhp74Sets(): self
     {
-        reportMethodUsedAbovePHP80(__METHOD__, 'withPhpSets');
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
 
         $this->sets[] = LevelSetList::UP_TO_PHP_74;
         return $this;
@@ -568,13 +569,7 @@ final class RectorConfigBuilder
         // composer based
         bool $twig = false,
     ): self {
-        if (PHP_VERSION_ID < 80000) {
-            echo sprintf(
-                'The "%s()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use "withSets()" method instead',
-                __METHOD__
-            );
-            sleep(3);
-        }
+        Notifier::notifyNotSuitableMethodForPHP74(__METHOD__, 'withSets');
 
         if ($deadCode) {
             $this->sets[] = SetList::DEAD_CODE;
