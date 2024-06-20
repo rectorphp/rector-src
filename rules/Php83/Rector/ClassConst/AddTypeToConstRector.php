@@ -21,6 +21,9 @@ use PhpParser\Node\Stmt\ClassConst;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\FamilyTree\Reflection\FamilyRelationsAnalyzer;
+use Rector\PhpParser\AstResolver;
+use Rector\PhpParser\Comparing\NodeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -45,7 +48,9 @@ final class AddTypeToConstRector extends AbstractRector implements ConfigurableR
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly FamilyRelationsAnalyzer $familyRelationsAnalyzer,
+        private readonly AstResolver $astResolver,
     ) {
     }
 
@@ -118,6 +123,7 @@ CODE_SAMPLE
         }
 
         $parentClassReflections = $this->getParentReflections($className);
+        $childClassReflections = $this->getChildClassReflections($className);
 
         $hasChanged = false;
 
@@ -136,6 +142,10 @@ CODE_SAMPLE
                 }
 
                 if (! $this->allowHasChild && $this->canBeInherited($classConst, $node)) {
+                    continue;
+                }
+
+                if ($this->allowHasChild && $this->isConstGuardedByChildren($constNode, $childClassReflections)) {
                     continue;
                 }
 
@@ -202,6 +212,29 @@ CODE_SAMPLE
         return false;
     }
 
+    /**
+     * @param ClassReflection[] $childClassReflections
+     */
+    public function isConstGuardedByChildren(Const_ $const, array $childClassReflections): bool
+    {
+        foreach ($childClassReflections as $childClassReflection) {
+            $classLike = $this->astResolver->resolveClassFromClassReflection($childClassReflection);
+            if (! $classLike instanceof Class_) {
+                continue;
+            }
+
+            foreach ($classLike->getConstants() as $childClassConstants) {
+                foreach ($childClassConstants->consts as $childConst) {
+                    if ($this->nodeComparator->areNodesEqual($childConst, $const)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     private function findValueType(Expr $expr): ?Identifier
     {
         if ($expr instanceof UnaryPlus || $expr instanceof UnaryMinus) {
@@ -262,8 +295,24 @@ CODE_SAMPLE
             $currentClassReflection !== $classReflection);
     }
 
+    /**
+     * @return ClassReflection[]
+     */
+    private function getChildClassReflections(string $className): array
+    {
+        if (! $this->reflectionProvider->hasClass($className)) {
+            return [];
+        }
+
+        $currentClassReflection = $this->reflectionProvider->getClass($className);
+
+        return $this->familyRelationsAnalyzer->getChildrenOfClassReflection($currentClassReflection);
+    }
+
     private function canBeInherited(ClassConst $classConst, Class_ $class): bool
     {
-        return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
+        if (! $this->allowHasChild) {
+            return ! $class->isFinal() && ! $classConst->isPrivate() && ! $classConst->isFinal();
+        }
     }
 }
