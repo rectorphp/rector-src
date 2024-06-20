@@ -526,7 +526,6 @@ final class RectorConfigBuilder
         return $this;
     }
 
-<<<<<<< HEAD
     // suitable for PHP 7.4 and lower, before named args
     public function withPhp53Sets(): self
     {
@@ -603,7 +602,6 @@ final class RectorConfigBuilder
     // there is no withPhp80Sets() and above,
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
-=======
     /**
      * @param SetProviderInterface[] $setProviders
      */
@@ -614,7 +612,6 @@ final class RectorConfigBuilder
         return $this;
     }
 
->>>>>>> 111da21ca6 (kick of set provider)
     public function withPreparedSets(
         bool $deadCode = false,
         bool $codeQuality = false,

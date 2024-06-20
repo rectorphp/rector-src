@@ -8,6 +8,9 @@ use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see \Rector\Tests\Set\SetCollector\SetCollectorTest
+ */
 final readonly class SetCollector
 {
     /**
