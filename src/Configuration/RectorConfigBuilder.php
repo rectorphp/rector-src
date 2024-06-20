@@ -410,12 +410,8 @@ final class RectorConfigBuilder
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         $pickedArguments = array_filter(func_get_args());
-        if ($pickedArguments !== [] && PHP_VERSION_ID < 80000) {
-            echo sprintf(
-                'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use withPhp53Sets() ... withPhp74Sets() method instead. One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
-                PHP_EOL
-            );
-            sleep(3);
+        if ($pickedArguments !== []) {
+            Notifier::notifyWithPhpSetsNotSuitableForPHP80();
         }
 
         if (count($pickedArguments) > 1) {
