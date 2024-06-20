@@ -52,5 +52,9 @@ return RectorConfig::configure()
             __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
         ],
 
-        RemovePhpVersionIdCheckRector::class => [__DIR__ . '/src/Util/FileHasher.php'],
+        RemovePhpVersionIdCheckRector::class => [
+            __DIR__ . '/src/Util/FileHasher.php',
+            __DIR__ . '/src/Configuration/RectorConfigBuilder.php',
+            __DIR__ . '/src/Console/Notifier.php',
+        ],
     ]);

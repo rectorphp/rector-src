@@ -11,6 +11,7 @@ use Rector\Config\Level\TypeDeclarationLevel;
 use Rector\Config\RectorConfig;
 use Rector\Config\RegisteredService;
 use Rector\Configuration\Levels\LevelRulesResolver;
+use Rector\Console\Notifier;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
@@ -409,6 +410,14 @@ final class RectorConfigBuilder
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
         $pickedArguments = array_filter(func_get_args());
+        if ($pickedArguments !== [] && PHP_VERSION_ID < 80000) {
+            echo sprintf(
+                'The "withPhpSets()" method uses named arguments. Its suitable for PHP 8.0+. In lower PHP versions, use withPhp53Sets() ... withPhp74Sets() method instead. One at a time.%sTo use your composer.json PHP version, keep arguments of this method.',
+                PHP_EOL
+            );
+            sleep(3);
+        }
+
         if (count($pickedArguments) > 1) {
             throw new InvalidConfigurationException(
                 sprintf(
@@ -469,6 +478,82 @@ final class RectorConfigBuilder
         return $this;
     }
 
+    // suitable for PHP 7.4 and lower, before named args
+    public function withPhp53Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_53;
+        return $this;
+    }
+
+    public function withPhp54Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_54;
+        return $this;
+    }
+
+    public function withPhp55Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_55;
+        return $this;
+    }
+
+    public function withPhp56Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_56;
+        return $this;
+    }
+
+    public function withPhp70Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_70;
+        return $this;
+    }
+
+    public function withPhp71Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_71;
+        return $this;
+    }
+
+    public function withPhp72Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_72;
+        return $this;
+    }
+
+    public function withPhp73Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_73;
+        return $this;
+    }
+
+    public function withPhp74Sets(): self
+    {
+        Notifier::notifyNotSuitableMethodForPHP80(__METHOD__, 'withPhpSets');
+
+        $this->sets[] = LevelSetList::UP_TO_PHP_74;
+        return $this;
+    }
+
+    // there is no withPhp80Sets() and above,
+    // as we already use PHP 8.0 and should go with withPhpSets() instead
+
     public function withPreparedSets(
         bool $deadCode = false,
         bool $codeQuality = false,
@@ -484,6 +569,8 @@ final class RectorConfigBuilder
         // composer based
         bool $twig = false,
     ): self {
+        Notifier::notifyNotSuitableMethodForPHP74(__METHOD__, 'withSets');
+
         if ($deadCode) {
             $this->sets[] = SetList::DEAD_CODE;
         }

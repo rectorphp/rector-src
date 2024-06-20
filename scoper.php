@@ -47,7 +47,16 @@ return [
 
     // expose
     'expose-classes' => ['Normalizer'],
-    'expose-functions' => ['u', 'b', 's', 'trigger_deprecation', 'dump_with_depth', 'dn', 'dump_node', 'print_node'],
+    'expose-functions' => [
+        'u',
+        'b',
+        's',
+        'trigger_deprecation',
+        'dump_with_depth',
+        'dn',
+        'dump_node',
+        'print_node',
+    ],
     'expose-constants' => ['__RECTOR_RUNNING__', '#^SYMFONY\_[\p{L}_]+$#'],
 
     'patchers' => [

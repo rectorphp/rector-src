@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\FileSystem\InitFilePathsResolver;
-use Rector\Php\PhpVersionProvider;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -21,7 +19,6 @@ final readonly class ConfigInitializer
         private array $rectors,
         private InitFilePathsResolver $initFilePathsResolver,
         private SymfonyStyle $symfonyStyle,
-        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -42,8 +39,6 @@ final readonly class ConfigInitializer
         }
 
         $configContents = FileSystem::read(__DIR__ . '/../../templates/rector.php.dist');
-
-        $configContents = $this->replacePhpLevelContents($configContents);
 
         $configContents = $this->replacePathsContents($configContents, $projectDirectory);
 
@@ -67,18 +62,6 @@ final readonly class ConfigInitializer
         return array_filter(
             $rectors,
             static fn (RectorInterface $rector): bool => ! $rector instanceof PostRectorInterface
-        );
-    }
-
-    private function replacePhpLevelContents(string $rectorPhpTemplateContents): string
-    {
-        $fullPHPVersion = (string) $this->phpVersionProvider->provide();
-        $phpVersion = Strings::substring($fullPHPVersion, 0, 1) . Strings::substring($fullPHPVersion, 2, 1);
-
-        return str_replace(
-            'LevelSetList::UP_TO_PHP_XY',
-            'LevelSetList::UP_TO_PHP_' . $phpVersion,
-            $rectorPhpTemplateContents
         );
     }
 
