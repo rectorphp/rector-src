@@ -16,10 +16,21 @@ use Webmozart\Assert\Assert;
 final class InstalledPackageResolver
 {
     /**
+     * @var array<string, InstalledPackage[]>
+     */
+    private array $resolvedInstalledPackages = [];
+
+
+    /**
      * @return InstalledPackage[]
      */
     public function resolve(string $projectDirectory): array
     {
+        // cache
+        if (isset($this->resolvedInstalledPackages[$projectDirectory])) {
+            return $this->resolvedInstalledPackages[$projectDirectory];
+        }
+
         Assert::directory($projectDirectory);
 
         $installedPackagesFilePath = $projectDirectory . '/vendor/composer/installed.json';
@@ -40,6 +51,8 @@ final class InstalledPackageResolver
                 $installedPackage['version_normalized']
             );
         }
+
+        $this->resolvedInstalledPackages[$projectDirectory] = $installedPackages;
 
         return $installedPackages;
     }
