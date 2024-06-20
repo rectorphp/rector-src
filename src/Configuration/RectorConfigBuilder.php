@@ -380,6 +380,15 @@ final class RectorConfigBuilder
     }
 
     /**
+     * make use of polyfill packages in composer.json
+     */
+    public function withPhpPolyfill(): self
+    {
+        $this->sets[] = SetList::PHP_POLYFILLS;
+        return $this;
+    }
+
+    /**
      * What PHP sets should be applied? By default the same version
      * as composer.json has is used
      */
@@ -456,9 +465,6 @@ final class RectorConfigBuilder
         } elseif ($php84) {
             $this->sets[] = LevelSetList::UP_TO_PHP_84;
         }
-
-        // make use of polyfill packages in composer.json
-        $this->sets[] = SetList::PHP_POLYFILLS;
 
         return $this;
     }
