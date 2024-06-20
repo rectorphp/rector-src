@@ -21,9 +21,11 @@ final readonly class ComposerTriggeredSet implements SetInterface
     public function __construct(
         private string $groupName,
         private string $packageName,
-        private string $version
+        private string $version,
+        private string $setFilePath
     ) {
         Assert::regex($this->packageName, self::PACKAGE_REGEX);
+        Assert::fileExists($setFilePath);
     }
 
     public function getGroupName(): string
@@ -39,5 +41,10 @@ final readonly class ComposerTriggeredSet implements SetInterface
     public function getVersion(): string
     {
         return $this->version;
+    }
+
+    public function getSetFilePath(): string
+    {
+        return $this->setFilePath;
     }
 }
