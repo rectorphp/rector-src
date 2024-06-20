@@ -39,9 +39,9 @@ final class AddTypeToConstRector extends AbstractRector implements ConfigurableR
      * @api
      * @var string
      */
-    final public const IGNORE_INHERITANCE = 'ignore_inheritance';
+    final public const ALLOW_HAS_CHILD = 'allow_has_child';
 
-    private bool $ignoreInheritance = false;
+    private bool $allowHasChild = false;
 
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
@@ -68,7 +68,7 @@ final class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    AddTypeToConstRector::IGNORE_INHERITANCE => false,
+                    AddTypeToConstRector::ALLOW_HAS_CHILD => false,
                 ]
             ),
             new ConfiguredCodeSample(
@@ -87,7 +87,7 @@ class SomeClass extends SomeOtherClass
 CODE_SAMPLE
                 ,
                 [
-                    AddTypeToConstRector::IGNORE_INHERITANCE => true,
+                    AddTypeToConstRector::ALLOW_HAS_CHILD => true,
                 ]
             ),
         ]);
@@ -108,7 +108,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->ignoreInheritance && $node->isAbstract()) {
+        if (! $this->allowHasChild && $node->isAbstract()) {
             return null;
         }
 
@@ -135,7 +135,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if (! $this->ignoreInheritance && $this->canBeInherited($classConst, $node)) {
+                if (! $this->allowHasChild && $this->canBeInherited($classConst, $node)) {
                     continue;
                 }
 
@@ -176,9 +176,9 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        $ignoreInheritance = $configuration[self::IGNORE_INHERITANCE] ?? (bool) current($configuration);
+        $ignoreInheritance = $configuration[self::ALLOW_HAS_CHILD] ?? (bool) current($configuration);
         Assert::boolean($ignoreInheritance);
-        $this->ignoreInheritance = $ignoreInheritance;
+        $this->allowHasChild = $ignoreInheritance;
     }
 
     public function provideMinPhpVersion(): int
