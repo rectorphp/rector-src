@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
-use Nette\Utils\Json;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
@@ -21,6 +21,7 @@ use Rector\Exception\ShouldNotHappenException;
 use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\Contract\SetProviderInterface;
+use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetCollector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -147,12 +148,49 @@ final class RectorConfigBuilder
     private array $setProviders = [];
 
     /**
+     * @var array<SetGroup::*>
+     */
+    private array $setGroups = [];
+
+    /**
      * @var string[]
      */
-    private array $dynamicSets = [];
+    private array $groupLoadedSets = [];
 
     public function __invoke(RectorConfig $rectorConfig): void
     {
+        // @experimental 2024-06
+        if ($this->setGroups !== []) {
+            if ($this->setProviders === []) {
+                throw new ShouldNotHappenException(sprintf(
+                    'Register set providers first, as they are required for dynamic sets: "%s"',
+                    implode('", "', $this->setGroups)
+                ));
+            }
+
+            $setCollector = new SetCollector($this->setProviders);
+
+            $installedPackageResolver = new InstalledPackageResolver();
+            $installedComposerPackages = $installedPackageResolver->resolve(getcwd());
+
+            foreach ($this->setGroups as $setGroup) {
+                $composerTriggeredSets = $setCollector->matchComposerTriggered($setGroup);
+
+                foreach ($composerTriggeredSets as $composerTriggeredSet) {
+                    if ($composerTriggeredSet->matchInstalledPackages($installedComposerPackages)) {
+                        // @todo add debug note somewhere
+                        // echo sprintf('Loaded "%s" set as it meets the conditions', $composerTriggeredSet->getSetFilePath());
+
+                        // it matched composer package + version requirements → load set
+                        $this->groupLoadedSets[] = $composerTriggeredSet->getSetFilePath();
+                    }
+                }
+            }
+        }
+
+        // merge sets together
+        $this->sets = array_merge($this->sets, $this->groupLoadedSets);
+
         $uniqueSets = array_unique($this->sets);
 
         if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
@@ -182,37 +220,6 @@ final class RectorConfigBuilder
 
         if ($this->paths !== []) {
             $rectorConfig->paths($this->paths);
-        }
-
-        // @experimental 2024-06
-        if ($this->dynamicSets !== []) {
-            if ($this->setProviders === []) {
-                throw new ShouldNotHappenException(sprintf(
-                    'Register set providers first, as they are required for dynamic sets: "%s"',
-                    implode('", "', $this->dynamicSets)
-                ));
-            }
-
-            $setCollector = new SetCollector($this->setProviders);
-
-            foreach ($this->dynamicSets as $dynamicSet) {
-                $composerTriggeredSets = $setCollector->matchComposerTriggered($dynamicSet);
-
-                $installedPackagesFilePath = getcwd() . '/vendor/composer/installed.json';
-                // @todo compoare installed package version and required version
-                // use vendor installed, as dependencies can be transitional
-                if (file_exists($installedPackagesFilePath)) {
-                    $installedPackagesJson = Json::decode(file_get_contents($installedPackagesFilePath), true);
-                    foreach ($installedPackagesJson['packages'] as $installedPackage) {
-                        dump($installedPackage['name']);
-                        dump($installedPackage['version_normalized']);
-                        die;
-                    }
-
-                    die;
-                }
-
-            }
         }
 
         // must be in upper part, as these services might be used by rule registered bellow
@@ -671,7 +678,7 @@ final class RectorConfigBuilder
 
         // @experimental 2024-06
         if ($twig) {
-            $this->dynamicSets[] = 'twig';
+            $this->setGroups[] = SetGroup::TWIG;
         }
 
         return $this;

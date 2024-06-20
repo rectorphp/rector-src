@@ -21,9 +21,7 @@ final class TwigSetProvider implements SetProviderInterface
      */
     public function provide(): array
     {
-        $sets = [];
-        $sets[] = new ComposerTriggeredSet(SetGroup::TWIG, 'twig/twig', '1.12', TwigSetList::TWIG_112);
-
-        return $sets;
+        // @todo temporary name to test, these will be located in rector-symfony, rector-doctrine, rector-phpunit packages
+        return [new ComposerTriggeredSet(SetGroup::TWIG, 'twig/twig', '1.12', TwigSetList::TWIG_112)];
     }
 }

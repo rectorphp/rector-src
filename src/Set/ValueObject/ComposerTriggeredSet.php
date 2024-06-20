@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Set\ValueObject;
 
+use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Set\Contract\SetInterface;
 use Webmozart\Assert\Assert;
 
@@ -33,18 +34,24 @@ final readonly class ComposerTriggeredSet implements SetInterface
         return $this->groupName;
     }
 
-    public function getPackageName(): string
-    {
-        return $this->packageName;
-    }
-
-    public function getVersion(): string
-    {
-        return $this->version;
-    }
-
     public function getSetFilePath(): string
     {
         return $this->setFilePath;
+    }
+
+    /**
+     * @param InstalledPackage[] $installedPackages
+     */
+    public function matchInstalledPackages(array $installedPackages): bool
+    {
+        foreach ($installedPackages as $installedPackage) {
+            if ($installedPackage->getName() !== $this->packageName) {
+                continue;
+            }
+
+            return version_compare($installedPackage->getVersion(), $this->version) !== -1;
+        }
+
+        return false;
     }
 }
