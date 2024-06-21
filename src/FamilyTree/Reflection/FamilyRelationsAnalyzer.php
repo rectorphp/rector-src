@@ -43,9 +43,11 @@ final class FamilyRelationsAnalyzer
             return [];
         }
 
+        $className = $desiredClassReflection->getName();
+
         // already collected in previous call
-        if (isset($this->childrenClassReflections[$desiredClassReflection->getName()])) {
-            return $this->childrenClassReflections[$desiredClassReflection->getName()];
+        if (isset($this->childrenClassReflections[$className])) {
+            return $this->childrenClassReflections[$className];
         }
 
         $this->loadClasses();
@@ -55,14 +57,14 @@ final class FamilyRelationsAnalyzer
         $childrenClassReflections = [];
 
         foreach ($classReflections as $classReflection) {
-            if (! $classReflection->isSubclassOf($desiredClassReflection->getName())) {
+            if (! $classReflection->isSubclassOf($className)) {
                 continue;
             }
 
             $childrenClassReflections[] = $classReflection;
         }
 
-        $this->childrenClassReflections[$desiredClassReflection->getName()] = $childrenClassReflections;
+        $this->childrenClassReflections[$className] = $childrenClassReflections;
         return $childrenClassReflections;
     }
 
