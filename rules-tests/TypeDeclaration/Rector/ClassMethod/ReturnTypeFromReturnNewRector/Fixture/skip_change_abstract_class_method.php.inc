@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-abstract class ChangeAbstractClassMethod
+abstract class SkipChangeAbstractClassMethod
 {
     public function run()
     {
@@ -12,7 +12,7 @@ abstract class ChangeAbstractClassMethod
     }
 }
 
-class ChangeAbstractClassMethodChild extends ChangeAbstractClassMethod
+class SkipChangeAbstractClassMethodChild extends SkipChangeAbstractClassMethod
 {
     public function run(): static
     {
