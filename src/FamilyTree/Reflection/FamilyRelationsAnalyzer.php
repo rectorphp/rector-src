@@ -19,6 +19,11 @@ use Rector\Util\Reflection\PrivatesAccessor;
 
 final class FamilyRelationsAnalyzer
 {
+    /**
+     * @var array<class-string, array<ClassReflection>>
+     */
+    private array $childrenClassReflections = [];
+
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider,
         private readonly NodeNameResolver $nodeNameResolver,
@@ -38,6 +43,11 @@ final class FamilyRelationsAnalyzer
             return [];
         }
 
+        // already collected in previous call
+        if (isset($this->childrenClassReflections[$desiredClassReflection->getName()])) {
+            return $this->childrenClassReflections[$desiredClassReflection->getName()];
+        }
+
         $this->loadClasses();
 
         /** @var ClassReflection[] $classReflections */
@@ -52,6 +62,7 @@ final class FamilyRelationsAnalyzer
             $childrenClassReflections[] = $classReflection;
         }
 
+        $this->childrenClassReflections[$desiredClassReflection->getName()] = $childrenClassReflections;
         return $childrenClassReflections;
     }
 
