@@ -9,7 +9,6 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class SymfonyStyleFactory
 {
@@ -21,7 +20,7 @@ final readonly class SymfonyStyleFactory
     /**
      * @api
      */
-    public function create(): SymfonyStyle
+    public function create(): RectorStyle
     {
         // to prevent missing argv indexes
         if (! isset($_SERVER['argv'])) {

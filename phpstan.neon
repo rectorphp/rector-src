@@ -38,6 +38,13 @@ parameters:
 
         - src/functions
 
+    # https://github.com/rectorphp/type-perfect/
+    type_perfect:
+        no_mixed: true
+        null_over_false: true
+        narrow_param: true
+        narrow_return: true
+
     ignoreErrors:
         -
             identifier: missingType.generics
@@ -218,11 +225,6 @@ parameters:
             message: '#Function "function_exists\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
             path: tests/debug_functions.php
 
-        # method signature kept for symmetry of hasParentClassMethod() with getParentClassMethod()
-        -
-            message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
-
         # checks for rector always autoloaded rules only
         -
             message: '#Function "(class_exists|interface_exists)\(\)" cannot be used/left in the code\: use ReflectionProvider\->has\*\(\) instead#'
@@ -244,11 +246,6 @@ parameters:
 
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
-
-        # soon to be extended
-        -
-            path: src/Reflection/ClassModifierChecker.php
-            message: '#Parameters should use "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
 
         # known enum from strings
         - '#Method Rector\\Php\\PolyfillPackagesProvider\:\:filterPolyfillPackages\(\) should return array\<.*\> but returns array<int, non\-falsy\-string>#'
@@ -278,11 +275,6 @@ parameters:
             message: '#Offset \(int\|string\) on non\-empty\-array<PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode> in isset\(\) always exists and is not nullable#'
             path: src/BetterPhpDocParser/PhpDocParser/DoctrineAnnotationDecorator.php
 
-        # false positive
-        -
-            message: '#Parameters should use "array" types as the only types passed to this method#'
-            path: src/Util/NodePrinter.php
-
         -
             message: '#Avoid static access of constants, as they can change value\. Use interface and contract method instead#'
             paths:
@@ -300,3 +292,18 @@ parameters:
                 - src/Contract/PhpParser/Node/StmtsAwareInterface.php
                 # designed for extension
                 - src/Skipper/Contract/SkipVoterInterface.php
+
+        # wider types for external use
+        -
+            message: '#Parameters should have "array" types as the only types passed to this method#'
+            path: src/Util/NodePrinter.php
+        -
+            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
+            path: src/Reflection/ClassModifierChecker.php
+
+        # false positive - should be fixed
+        -
+            message: '#Parameters should have "PhpParser\\Node\\Expr\\Closure" types as the only types passed to this method#'
+        -
+            message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
+            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php

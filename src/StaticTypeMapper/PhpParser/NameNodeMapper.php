@@ -55,7 +55,7 @@ final readonly class NameNodeMapper implements PhpParserNodeMapperInterface
         return new MixedType();
     }
 
-    private function expandedNamespacedName(Node $node): ?FullyQualified
+    private function expandedNamespacedName(Name $node): ?FullyQualified
     {
         if ($node::class !== Name::class) {
             return null;
