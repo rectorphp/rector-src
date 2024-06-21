@@ -37,11 +37,6 @@ final readonly class ClassMethodReturnTypeOverrideGuard
             return false;
         }
 
-        // final method can't be overridden
-        if ($classMethod->isFinal()) {
-            return false;
-        }
-
         $classReflection = $this->reflectionResolver->resolveClassReflection($classMethod);
         if (! $classReflection instanceof ClassReflection) {
             return true;
