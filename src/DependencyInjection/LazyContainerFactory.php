@@ -180,7 +180,6 @@ use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -421,8 +420,7 @@ final class LazyContainerFactory
             ->giveTagged(RectorInterface::class);
 
         // dev
-        if (class_exists(MissingInSetCommand::class)) {
-            $rectorConfig->singleton(MissingInSetCommand::class);
+        if (class_exists(OutsideAnySetCommand::class)) {
             $rectorConfig->singleton(OutsideAnySetCommand::class);
         }
 
