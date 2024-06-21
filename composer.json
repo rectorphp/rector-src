@@ -42,7 +42,6 @@
         "webmozart/assert": "^1.11"
     },
     "require-dev": {
-        "nette/robot-loader": "^4.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.6",

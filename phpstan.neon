@@ -143,7 +143,6 @@ parameters:
                 - bin/rector.php
                 # for config class reflection
                 - src/Bootstrap/ExtensionConfigResolver.php
-                - src/DependencyInjection/LazyContainerFactory.php
                 - src/Validation/RectorConfigValidator.php
 
         # use of internal phpstan classes

@@ -9,12 +9,10 @@ $config = new Configuration();
 
 return $config
     ->addPathToScan(__DIR__ . '/build/config', false)
-    ->ignoreErrorsOnPackage('phpunit/phpunit', [ErrorType::DEV_DEPENDENCY_IN_PROD]) // prepared test tooling
-    ->ignoreErrorsOnPackage('react/promise', [ErrorType::UNUSED_DEPENDENCY]) // pinned v3.x version
-    ->ignoreErrorsOnPackage(
-        'nette/robot-loader',
-        [ErrorType::DEV_DEPENDENCY_IN_PROD]
-    ) // https://github.com/rectorphp/rector-src/pull/5777#discussion_r1541304301
+    // prepared test tooling
+    ->ignoreErrorsOnPackage('phpunit/phpunit', [ErrorType::DEV_DEPENDENCY_IN_PROD])
+    // pinned v3.x version
+    ->ignoreErrorsOnPackage('react/promise', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPaths([
         __DIR__ . '/stubs',
         __DIR__ . '/tests',
