@@ -180,7 +180,6 @@ use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\Util\FileHasher;
 use Rector\Utils\Command\MissingInSetCommand;
 use Rector\Utils\Command\OutsideAnySetCommand;
 use Symfony\Component\Console\Application;
@@ -464,16 +463,6 @@ final class LazyContainerFactory
             static function (Container $container): DynamicSourceLocatorProvider {
                 $phpStanServicesFactory = $container->make(PHPStanServicesFactory::class);
                 return $phpStanServicesFactory->createDynamicSourceLocatorProvider();
-            }
-        );
-
-        $rectorConfig->afterResolving(
-            DynamicSourceLocatorProvider::class,
-            static function (DynamicSourceLocatorProvider $dynamicSourceLocatorProvider, Container $container): void {
-                $dynamicSourceLocatorProvider->autowire(
-                    $container->make(Cache::class),
-                    $container->make(FileHasher::class)
-                );
             }
         );
 
