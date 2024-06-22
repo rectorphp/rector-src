@@ -11,10 +11,9 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use Rector\Enum\ObjectReference;
+use PHPStan\Reflection\ReflectionProvider;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -27,14 +26,10 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class GetClassToInstanceOfRector extends AbstractRector
 {
-    /**
-     * @var string[]
-     */
-    private const NO_NAMESPACED_CLASSNAMES = ['self', 'static'];
-
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
-        private readonly ValueResolver $valueResolver
+        private readonly ValueResolver $valueResolver,
+        private readonly ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -79,7 +74,6 @@ final class GetClassToInstanceOfRector extends AbstractRector
 
         /** @var FuncCall $secondExpr */
         $secondExpr = $twoNodeMatch->getSecondExpr();
-
         if ($secondExpr->isFirstClassCallable()) {
             return null;
         }
@@ -89,7 +83,6 @@ final class GetClassToInstanceOfRector extends AbstractRector
         }
 
         $firstArg = $secondExpr->getArgs()[0];
-
         $varNode = $firstArg->value;
 
         if ($firstExpr instanceof String_) {
@@ -102,14 +95,16 @@ final class GetClassToInstanceOfRector extends AbstractRector
             return null;
         }
 
-        if ($className === ObjectReference::PARENT) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $class = in_array($className, self::NO_NAMESPACED_CLASSNAMES, true)
-            ? new Name($className)
-            : new FullyQualified($className);
-        $instanceof = new Instanceof_($varNode, $class);
+        $classReflection = $this->reflectionProvider->getClass($className);
+        if (! $classReflection->isFinal()) {
+            return null;
+        }
+
+        $instanceof = new Instanceof_($varNode, new FullyQualified($className));
         if ($node instanceof NotIdentical) {
             return new BooleanNot($instanceof);
         }
