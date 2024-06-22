@@ -65,7 +65,7 @@ CODE_SAMPLE
     /**
      * @param Class_|ClassMethod|Property $node
      */
-    public function refactor(Node $node): ?\PhpParser\Node
+    public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
 
