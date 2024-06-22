@@ -32,7 +32,6 @@ parameters:
         - '*tests/*/Fixture*'
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
-        - src/functions
 
     # https://github.com/rectorphp/type-perfect/
     type_perfect:
@@ -49,6 +48,10 @@ parameters:
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
             path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+
+        -
+            message: '#Function "var_dump\(\)" cannot be used/left in the code#'
+            path: src/functions/node_helper.php
 
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
@@ -101,9 +104,6 @@ parameters:
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: src/Parallel/Application/ParallelFileProcessor.php
-
-        # generics
-        - '#Parameter \#1 \$stmts of class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
 
         -
             message: '#Use value object over return of values#'
