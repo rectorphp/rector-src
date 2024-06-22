@@ -33,11 +33,6 @@ parameters:
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
 
-        # tests
-        - tests/DependencyInjection/config
-
-        - src/functions
-
     # https://github.com/rectorphp/type-perfect/
     type_perfect:
         no_mixed: true
@@ -53,6 +48,10 @@ parameters:
         -
             message: '#Access to an undefined property PhpParser\\Node\\Expr\:\:\$expr#'
             path: rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
+
+        -
+            message: '#Function "var_dump\(\)" cannot be used/left in the code#'
+            path: src/functions/node_helper.php
 
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
@@ -82,9 +81,6 @@ parameters:
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
 
-        # known types
-        - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
-
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
 
@@ -108,9 +104,6 @@ parameters:
         -
             message: '#Cannot call method (.*?)\(\) on (.*?)\\ProcessPool\|null#'
             path: src/Parallel/Application/ParallelFileProcessor.php
-
-        # generics
-        - '#Parameter \#1 \$stmts of class Rector\\PhpParser\\Node\\CustomNode\\FileWithoutNamespace constructor expects array<PhpParser\\Node\\Stmt\>, array<TNode of PhpParser\\Node\> given#'
 
         -
             message: '#Use value object over return of values#'
@@ -241,7 +234,6 @@ parameters:
 
         # to be extended
         - '#Interface "Rector\\Set\\Contract\\SetInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
-        - '#Interface "Rector\\Set\\Contract\\SetProviderInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
 
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'

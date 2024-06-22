@@ -63,6 +63,10 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
+        if (! $this->currentPhpParserNode instanceof PhpParserNode) {
+            throw new ShouldNotHappenException();
+        }
+
         $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
 
         if ($staticType instanceof ShortenedObjectType) {
@@ -81,10 +85,6 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
             return null;
-        }
-
-        if (! $this->currentPhpParserNode instanceof PhpParserNode) {
-            throw new ShouldNotHappenException();
         }
 
         return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $file);
