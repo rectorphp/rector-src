@@ -45,7 +45,6 @@
         "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan-webmozart-assert": "^1.2.6",
         "phpunit/phpunit": "^10.5",
-        "rector/rector-generator": "^0.7.12",
         "rector/release-notes-generator": "^0.1.1",
         "rector/swiss-knife": "^0.2.16",
         "rector/type-perfect": "^0.1.6",
