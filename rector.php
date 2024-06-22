@@ -22,6 +22,7 @@ return RectorConfig::configure()
         rectorPreset: true,
         // @experimental 2024-06
         // twig: false,
+        phpunitCodeQuality: true
     )
     ->withPhpSets()
     ->withPaths([
