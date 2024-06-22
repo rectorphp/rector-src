@@ -45,7 +45,6 @@ use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
-use Rector\CodeQuality\Rector\Identical\GetClassToInstanceOfRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector;
@@ -178,7 +177,6 @@ final class CodeQualityLevel
         CompleteMissingIfElseBracketRector::class,
         RemoveUselessIsObjectCheckRector::class,
         StaticToSelfStaticMethodCallOnFinalClassRector::class,
-        GetClassToInstanceOfRector::class,
     ];
 
     /**
