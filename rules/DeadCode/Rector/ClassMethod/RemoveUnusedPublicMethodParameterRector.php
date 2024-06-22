@@ -112,23 +112,16 @@ CODE_SAMPLE
         }
 
         // parameter is required for contract coupling
-        if ($this->isName($classMethod->name, '__invoke')) {
-            if ($this->phpAttributeAnalyzer->hasPhpAttribute(
-                $class,
-                'Symfony\Component\Messenger\Attribute\AsMessageHandler'
-            )) {
-                return true;
-            }
+        if ($this->isName($classMethod->name, '__invoke') && $this->phpAttributeAnalyzer->hasPhpAttribute(
+            $class,
+            'Symfony\Component\Messenger\Attribute\AsMessageHandler'
+        )) {
+            return true;
         }
 
         if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
             return true;
         }
-
-        if ($this->variadicFunctionLikeDetector->isVariadic($classMethod)) {
-            return true;
-        }
-
-        return false;
+        return $this->variadicFunctionLikeDetector->isVariadic($classMethod);
     }
 }
