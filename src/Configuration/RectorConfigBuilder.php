@@ -596,6 +596,7 @@ final class RectorConfigBuilder
         bool $carbon = false,
         bool $rectorPreset = false,
         bool $phpunitCodeQuality = false,
+        bool $doctrineCodeQuality = false,
         // composer based
         bool $twig = false,
         bool $phpunit = false,
@@ -648,6 +649,10 @@ final class RectorConfigBuilder
 
         if ($phpunitCodeQuality) {
             $this->sets[] = PHPUnitSetList::PHPUNIT_CODE_QUALITY;
+        }
+
+        if ($doctrineCodeQuality) {
+            $this->sets[] = DoctrineSetList::DOCTRINE_CODE_QUALITY;
         }
 
         // @experimental 2024-06
