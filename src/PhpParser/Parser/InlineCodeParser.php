@@ -188,7 +188,7 @@ final readonly class InlineCodeParser
 
             if (! $concat->left->right instanceof String_ && $concat->right instanceof String_) {
                 $firstChar = trim($concat->right->value)[0] ?? '';
-                if (! in_array($firstChar, [')', '(', '"', '\\', '.', ';'], true)) {
+                if (! in_array($firstChar, [')', '(', '"', "'", '\\', '.', ';'], true)) {
                     $concat->right->value = '.' . $concat->right->value;
                 }
             }
