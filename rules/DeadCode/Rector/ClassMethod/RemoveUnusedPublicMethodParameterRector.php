@@ -122,6 +122,7 @@ CODE_SAMPLE
         if ($this->magicClassMethodAnalyzer->isUnsafeOverridden($classMethod)) {
             return true;
         }
+
         return $this->variadicFunctionLikeDetector->isVariadic($classMethod);
     }
 }
