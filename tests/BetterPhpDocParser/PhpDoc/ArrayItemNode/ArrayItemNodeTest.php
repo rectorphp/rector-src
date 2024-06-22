@@ -86,7 +86,7 @@ final class ArrayItemNodeTest extends AbstractLazyTestCase
             $classDocComment = $this->printNodePhpDocInfoToString($classStmt);
         }
 
-        $this->assertEquals(
+        $this->assertSame(
             str_replace("\r\n", "\n", '/**
  * @ORM\Table(name="doctrine_entity", uniqueConstraints={@ORM\UniqueConstraint(name="property")})
  */'),
