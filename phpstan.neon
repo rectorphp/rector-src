@@ -32,7 +32,6 @@ parameters:
         - '*tests/*/Fixture*'
         - '*tests/*/Source/*'
         - '*tests/*/Source*'
-        #- tests/DependencyInjection/config
         - src/functions
 
     # https://github.com/rectorphp/type-perfect/
@@ -78,9 +77,6 @@ parameters:
                 - rules/Php70/EregToPcreTransformer.php
                 - src/BetterPhpDocParser/PhpDocManipulator/PhpDocClassRenamer.php
                 - src/NodeTypeResolver/PHPStan/Type/TypeFactory.php
-
-        # known types
-        - '#Parameter (.*?) expects PhpParser\\Node, PhpParser\\Node\|null given#'
 
         # array_index on generic types
         - '#Method Rector\\NodeTypeResolver\\PHPStan\\Type\\TypeFactory\:\:uniquateTypes\(\) should return array<TType of PHPStan\\Type\\Type\> but returns array<int, PHPStan\\Type\\Type\>#'
