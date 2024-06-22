@@ -96,6 +96,8 @@ final class DeadCodeLevel
         RemoveUselessReadOnlyTagRector::class,
         RemoveNonExistingVarAnnotationRector::class,
         RemoveUselessVarTagRector::class,
+        // prioritize safe belt on RemoveUseless*TagRector that registered previously first
+        RemoveNullTagValueNodeRector::class,
         RemovePhpVersionIdCheckRector::class,
 
         RemoveAlwaysTrueIfConditionRector::class,
@@ -126,8 +128,5 @@ final class DeadCodeLevel
         RemoveUnusedConstructorParamRector::class,
         RemoveEmptyClassMethodRector::class,
         RemoveDeadReturnRector::class,
-
-        // prioritize safe belt on RemoveUseless*TagRector that registered previously first
-        RemoveNullTagValueNodeRector::class,
     ];
 }
