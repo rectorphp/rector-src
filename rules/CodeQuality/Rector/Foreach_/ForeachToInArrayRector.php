@@ -157,8 +157,25 @@ CODE_SAMPLE
             return true;
         }
 
-        if (! $foreach->stmts[0] instanceof If_) {
+        $ifStatement = $foreach->stmts[0];
+
+        if (! $ifStatement instanceof If_) {
             return true;
+        }
+
+        $ifCondition = $ifStatement->cond;
+
+        if ($ifCondition instanceof Expr\BinaryOp && (
+            $ifCondition->left instanceof FuncCall
+            || $ifCondition->left instanceof Expr\MethodCall
+            || $ifCondition->left instanceof Expr\NullsafeMethodCall
+            || $ifCondition->left instanceof Expr\StaticCall
+            || $ifCondition->right instanceof FuncCall
+            || $ifCondition->right instanceof Expr\MethodCall
+            || $ifCondition->right instanceof Expr\NullsafeMethodCall
+            || $ifCondition->right instanceof Expr\StaticCall
+        )) {
+            return \true;
         }
 
         $foreachValueStaticType = $this->getType($foreach->expr);
