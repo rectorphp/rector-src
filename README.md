@@ -39,11 +39,6 @@ This project adheres to a [Contributor Code of Conduct](/CODE_OF_CONDUCT.md) By 
 
 ## Rector Packages CI Status
 
-**Rector Generator** - https://github.com/rectorphp/rector-generator
-
-* ![](https://github.com/rectorphp/rector-generator/actions/workflows/tests.yaml/badge.svg)
-![](https://github.com/rectorphp/rector-generator/actions/workflows/code_analysis.yaml/badge.svg)
-
 **Symfony** - https://github.com/rectorphp/rector-symfony
 
 * ![](https://github.com/rectorphp/rector-symfony/actions/workflows/tests.yaml/badge.svg)
