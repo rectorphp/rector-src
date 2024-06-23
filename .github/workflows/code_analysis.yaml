@@ -49,13 +49,6 @@ jobs:
                         name: 'Compatible PHPStan versions'
                         run: php bin/validate-phpstan-version.php
 
-                    # see https://github.com/rectorphp/rector-generator
-                    -
-                        name: 'Rector Generate From Recipe'
-                        run: |
-                            bin/rector init-recipe --ansi
-                            bin/rector generate --ansi
-
                     -
                         name: 'Detect composer dependency issues'
                         run: vendor/bin/composer-dependency-analyser

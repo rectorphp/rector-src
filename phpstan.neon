@@ -284,10 +284,12 @@ parameters:
                 # designed for extension
                 - src/Skipper/Contract/SkipVoterInterface.php
 
-        # wider types for external use
+        # generated class in /vendor
         -
-            message: '#Parameters should have "array" types as the only types passed to this method#'
-            path: src/Util/NodePrinter.php
+             message: '#Offset (.*?) on null on left side of \?\? does not exist#'
+             path: src/Bootstrap/ExtensionConfigResolver.php
+
+        # wider types for external use
         -
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/Reflection/ClassModifierChecker.php
