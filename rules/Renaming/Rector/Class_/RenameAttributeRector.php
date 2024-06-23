@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Renaming\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -71,13 +72,13 @@ CODE_SAMPLE
 
         foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
-                foreach ($this->renameAttributes as $renameAttribute) {
-                    if ($this->isName($attr->name, $renameAttribute->getOldAttribute())) {
-                        $attr->name = new FullyQualified($renameAttribute->getNewAttribute());
-
-                        $hasChanged = true;
-                    }
+                $newAttributeName = $this->matchNewAttributeName($attr);
+                if (! is_string($newAttributeName)) {
+                    continue;
                 }
+
+                $attr->name = new FullyQualified($newAttributeName);
+                $hasChanged = true;
             }
         }
 
@@ -101,5 +102,16 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::ATTRIBUTES;
+    }
+
+    private function matchNewAttributeName(Attribute $attribute): ?string
+    {
+        foreach ($this->renameAttributes as $renameAttribute) {
+            if ($this->isName($attribute->name, $renameAttribute->getOldAttribute())) {
+                return $renameAttribute->getNewAttribute();
+            }
+        }
+
+        return null;
     }
 }
