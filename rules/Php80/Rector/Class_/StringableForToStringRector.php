@@ -162,7 +162,7 @@ CODE_SAMPLE
             }
 
             $type = $this->nodeTypeResolver->getType($subNode->expr);
-            if ($type->isString()->yes()) {
+            if ($type->isString()->yes() || $type->isVoid()->no()) {
                 return null;
             }
 
