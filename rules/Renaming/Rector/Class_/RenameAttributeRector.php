@@ -76,6 +76,7 @@ CODE_SAMPLE
                         $attr->name = new FullyQualified($renameAttribute->getNewAttribute());
 
                         $hasChanged = true;
+                        continue 2;
                     }
                 }
             }
