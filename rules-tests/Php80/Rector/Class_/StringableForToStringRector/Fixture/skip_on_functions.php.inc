@@ -21,7 +21,7 @@ class View
     }
 }
 
-class SkipOnAnonymousFunctions implements \Stringable
+class SkipOnFunctions implements \Stringable
 {
     public function __construct(private array $items)
     {
@@ -29,6 +29,16 @@ class SkipOnAnonymousFunctions implements \Stringable
 
     public function __toString(): string
     {
+        $rand = rand(1, 3);
+
+        if ($rand === 1) {
+            return strtoupper('index');
+        }
+
+        if ($rand === 2) {
+            return 10;
+        }
+
         return View::make('index', [
             'only_uppercase' => array_filter(
                 $this->items,
@@ -65,7 +75,7 @@ class View
     }
 }
 
-class SkipOnAnonymousFunctions implements \Stringable
+class SkipOnFunctions implements \Stringable
 {
     public function __construct(private array $items)
     {
@@ -73,6 +83,16 @@ class SkipOnAnonymousFunctions implements \Stringable
 
     public function __toString(): string
     {
+        $rand = rand(1, 3);
+
+        if ($rand === 1) {
+            return strtoupper('index');
+        }
+
+        if ($rand === 2) {
+            return (string) 10;
+        }
+
         return (string) View::make('index', [
             'only_uppercase' => array_filter(
                 $this->items,
