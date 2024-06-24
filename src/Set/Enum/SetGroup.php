@@ -25,4 +25,14 @@ final class SetGroup
      * @var string
      */
     public const PHPUNIT = 'phpunit';
+
+    /**
+     * @var string
+     */
+    public const DOCTRINE = 'doctrine';
+
+    /**
+     * @var string
+     */
+    public const ATTRIBUTES = 'attributes';
 }
