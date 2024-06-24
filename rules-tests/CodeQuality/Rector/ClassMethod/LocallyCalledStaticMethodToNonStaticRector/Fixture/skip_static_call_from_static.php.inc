@@ -16,11 +16,6 @@ final class SkipPrivateStaticCallFromStatic
         return self::reallyFoo($input);
     }
 
-    public static function bar(string $input)
-    {
-        return SkipPrivateStaticCallFromStatic::reallyBar($input);
-    }
-
     private static function reallyClear($input)
     {
         return $input . ' - clean';
@@ -29,10 +24,5 @@ final class SkipPrivateStaticCallFromStatic
     private static function reallyFoo($input)
     {
         return $input . ' - foo';
-    }
-
-    private static function reallyBar($input)
-    {
-        return $input . ' - bar';
     }
 }
