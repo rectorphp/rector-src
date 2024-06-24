@@ -14,6 +14,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\NodeFinder;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\BinaryOpManipulator;
@@ -31,6 +32,7 @@ final class ForeachToInArrayRector extends AbstractRector
     public function __construct(
         private readonly BinaryOpManipulator $binaryOpManipulator,
         private readonly ValueResolver $valueResolver,
+        private readonly NodeFinder $nodeFinder
     ) {
     }
 
@@ -106,6 +108,14 @@ CODE_SAMPLE
                 return null;
             }
 
+            $variableNodes = $this->nodeFinder->findInstanceOf($twoNodeMatch->getSecondExpr(), Variable::class);
+
+            foreach ($variableNodes as $variableNode) {
+                if ($this->nodeComparator->areNodesEqual($variableNode, $foreach->valueVar)) {
+                    return null;
+                }
+            }
+
             $comparedExpr = $twoNodeMatch->getSecondExpr();
             if (! $this->isIfBodyABoolReturnNode($firstNodeInsideForeach)) {
                 return null;
@@ -157,27 +167,9 @@ CODE_SAMPLE
             return true;
         }
 
-        $ifStatement = $foreach->stmts[0];
-
-        if (! $ifStatement instanceof If_) {
+        if (! $foreach->stmts[0] instanceof If_) {
             return true;
         }
-
-        $ifCondition = $ifStatement->cond;
-
-        if ($ifCondition instanceof Expr\BinaryOp && (
-            $ifCondition->left instanceof FuncCall
-            || $ifCondition->left instanceof Expr\MethodCall
-            || $ifCondition->left instanceof Expr\NullsafeMethodCall
-            || $ifCondition->left instanceof Expr\StaticCall
-            || $ifCondition->right instanceof FuncCall
-            || $ifCondition->right instanceof Expr\MethodCall
-            || $ifCondition->right instanceof Expr\NullsafeMethodCall
-            || $ifCondition->right instanceof Expr\StaticCall
-        )) {
-            return \true;
-        }
-
         $foreachValueStaticType = $this->getType($foreach->expr);
         return $foreachValueStaticType instanceof ObjectType;
     }
