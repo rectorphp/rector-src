@@ -151,7 +151,7 @@ CODE_SAMPLE
      */
     private function isClassMethodCalledInAnotherStaticClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
-        $currentClassNamespacedName = implode('\\', $class->namespacedName?->getParts() ?? []);
+        $currentClassNamespacedName = (string) $this->getName($class);
         $currentClassMethodName = $this->getName($classMethod);
 
         $isInsideStaticClassMethod = false;
