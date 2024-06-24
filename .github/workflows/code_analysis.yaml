@@ -38,6 +38,7 @@ jobs:
                         run: |
                             vendor/bin/class-leak check bin config src rules utils \
                                 --skip-suffix "Rector" \
+                                --skip-type="Rector\\Set\\Contract\\SetProviderInterface" \
                                 --skip-type="Rector\\Utils\\Compiler\\Unprefixer" \
                                 --skip-type="Rector\\NodeTypeResolver\\PHPStan\\Scope\\Contract\\NodeVisitor\\ScopeResolverNodeVisitorInterface" \
                                 --skip-type="Rector\\PhpDocParser\\PhpParser\\SmartPhpParserFactory" \
