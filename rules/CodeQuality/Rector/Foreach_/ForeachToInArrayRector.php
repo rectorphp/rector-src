@@ -170,6 +170,7 @@ CODE_SAMPLE
         if (! $foreach->stmts[0] instanceof If_) {
             return true;
         }
+
         $foreachValueStaticType = $this->getType($foreach->expr);
         return $foreachValueStaticType instanceof ObjectType;
     }
