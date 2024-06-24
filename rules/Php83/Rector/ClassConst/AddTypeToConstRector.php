@@ -9,6 +9,7 @@ use PhpParser\Node\Const_;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp\Concat;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
@@ -176,8 +177,8 @@ CODE_SAMPLE
             return new Identifier('float');
         }
 
-        if ($expr instanceof ConstFetch) {
-            if ($expr->name->toLowerString() === 'null') {
+        if ($expr instanceof ConstFetch || $expr instanceof ClassConstFetch) {
+            if ($expr instanceof ConstFetch && $expr->name->toLowerString() === 'null') {
                 return new Identifier('null');
             }
 
