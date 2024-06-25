@@ -25,9 +25,12 @@ final readonly class SetProviderCollector
      */
     private array $setProviders;
 
-    public function __construct()
+    /**
+     * @param SetProviderInterface[] $extraSetProviders
+     */
+    public function __construct(array $extraSetProviders = [])
     {
-        $this->setProviders = [
+        $setProviders = [
             // register all known set providers here
             new PHPSetProvider(),
             new CoreSetProvider(),
@@ -36,6 +39,8 @@ final readonly class SetProviderCollector
             new DoctrineSetProvider(),
             new TwigSetProvider(),
         ];
+
+        $this->setProviders = array_merge($setProviders, $extraSetProviders);
     }
 
     /**

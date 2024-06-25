@@ -6,6 +6,7 @@ namespace Rector\Tests\Set\SetManager\Source;
 
 use Rector\Set\Contract\SetInterface;
 use Rector\Set\Contract\SetProviderInterface;
+use Rector\Set\Enum\SetGroup;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
 use Rector\Symfony\Set\TwigSetList;
 
@@ -17,7 +18,7 @@ final class SomeSetProvider implements SetProviderInterface
     public function provide(): array
     {
         return [
-            new ComposerTriggeredSet('twig', 'twig/twig', '1.12', TwigSetList::TWIG_112)
+            new ComposerTriggeredSet(SetGroup::TWIG, 'twig/twig', '1.12', TwigSetList::TWIG_112)
         ];
     }
 }

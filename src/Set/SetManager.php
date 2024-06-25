@@ -4,23 +4,18 @@ declare(strict_types=1);
 
 namespace Rector\Set;
 
+use Rector\Bridge\SetProviderCollector;
 use Rector\Composer\InstalledPackageResolver;
-use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
-use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\Set\SetCollector\SetCollectorTest
+ * @see \Rector\Tests\Set\SetManager\SetManagerTest
  */
 final readonly class SetManager
 {
-    /**
-     * @param SetProviderInterface[] $setProviders
-     */
     public function __construct(
-        private array $setProviders
+        private SetProviderCollector $setProviderCollector
     ) {
-        Assert::allIsInstanceOf($setProviders, SetProviderInterface::class);
     }
 
     /**
@@ -30,15 +25,13 @@ final readonly class SetManager
     {
         $matchedSets = [];
 
-        foreach ($this->setProviders as $setProvider) {
-            foreach ($setProvider->provide() as $set) {
-                if (! $set instanceof ComposerTriggeredSet) {
-                    continue;
-                }
+        foreach ($this->setProviderCollector->provideSets() as $set) {
+            if (! $set instanceof ComposerTriggeredSet) {
+                continue;
+            }
 
-                if ($set->getGroupName() === $groupName) {
-                    $matchedSets[] = $set;
-                }
+            if ($set->getGroupName() === $groupName) {
+                $matchedSets[] = $set;
             }
         }
 
