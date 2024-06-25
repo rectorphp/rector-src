@@ -35,8 +35,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://wiki.php.net/rfc/readonly_properties_v2
- *
  * @see \Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\ReadOnlyPropertyRectorTest
  */
 final class ReadOnlyPropertyRector extends AbstractScopeAwareRector implements MinPhpVersionInterface

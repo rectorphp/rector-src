@@ -16,8 +16,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @changelog https://github.com/symfony/symfony/pull/35308
- *
  * @see \Rector\Tests\Transform\Rector\StaticCall\StaticCallToNewRector\StaticCallToNewRectorTest
  */
 final class StaticCallToNewRector extends AbstractRector implements ConfigurableRectorInterface

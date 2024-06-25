@@ -17,8 +17,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://github.com/briannesbitt/Carbon/issues/231
- *
  * @see \Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\DateTimeInstanceToCarbonRectorTest
  */
 final class DateTimeInstanceToCarbonRector extends AbstractRector

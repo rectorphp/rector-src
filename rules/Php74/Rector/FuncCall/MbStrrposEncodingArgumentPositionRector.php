@@ -15,8 +15,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://wiki.php.net/rfc/deprecations_php_7_4 https://3v4l.org/kLdtB
- *
  * @see \Rector\Tests\Php74\Rector\FuncCall\MbStrrposEncodingArgumentPositionRector\MbStrrposEncodingArgumentPositionRectorTest
  */
 final class MbStrrposEncodingArgumentPositionRector extends AbstractRector implements MinPhpVersionInterface

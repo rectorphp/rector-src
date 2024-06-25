@@ -21,8 +21,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://www.php.net/manual/en/function.money-format.php#warning
- *
  * @see \Rector\Tests\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector\MoneyFormatToNumberFormatRectorTest
  */
 final class MoneyFormatToNumberFormatRector extends AbstractRector implements MinPhpVersionInterface

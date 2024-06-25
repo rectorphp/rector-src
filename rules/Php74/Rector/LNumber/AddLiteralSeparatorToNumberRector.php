@@ -18,11 +18,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @changelog https://wiki.php.net/rfc/numeric_literal_separator
- * @changelog https://github.com/nikic/PHP-Parser/pull/615
- *
  * @see \Rector\Tests\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector\AddLiteralSeparatorToNumberRectorTest
- * @changelog https://twitter.com/seldaek/status/1329064983120982022
  *
  * Taking the most generic use case to the account: https://wiki.php.net/rfc/numeric_literal_separator#should_it_be_the_role_of_an_ide_to_group_digits
  * The final check should be done manually

@@ -20,9 +20,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://www.php.net/manual/en/function.call-user-func-array.php#117655
- * @changelog https://3v4l.org/CBWt9
- *
  * @see \Rector\Tests\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector\CallUserFuncArrayToVariadicRectorTest
  */
 final class CallUserFuncArrayToVariadicRector extends AbstractRector implements MinPhpVersionInterface
