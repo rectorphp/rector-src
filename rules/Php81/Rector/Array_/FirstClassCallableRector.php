@@ -112,7 +112,7 @@ CODE_SAMPLE
             try {
                 $rf = new ReflectionFunction($functionName);
             } catch (ReflectionException) {
-                return $node;
+                return null;
             }
 
             $callableArgs = [];
