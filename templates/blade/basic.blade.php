@@ -1,1 +1,3 @@
-{{ some_function('value') }}
+@foreach ($values as $value)
+    {{ some_function('value') }}
+@endforeach

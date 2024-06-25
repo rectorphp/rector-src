@@ -75,9 +75,9 @@ final class File
         return $this->hasChanged;
     }
 
-    public function changeHasChanged(bool $status): void
+    public function resetHasChanged(): void
     {
-        $this->hasChanged = $status;
+        $this->hasChanged = false;
     }
 
     public function setFileDiff(FileDiff $fileDiff): void

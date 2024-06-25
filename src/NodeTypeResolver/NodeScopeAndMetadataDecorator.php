@@ -17,12 +17,12 @@ final readonly class NodeScopeAndMetadataDecorator
     public function __construct(
         CloningVisitor $cloningVisitor,
         private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
+        private FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser,
+        private readonly ScopeFactory $scopeFactory,
     ) {
+        // for format preserving printing
         $this->nodeTraverser = new NodeTraverser();
-
-        // needed for format preserving printing
-        $this->nodeTraverser->addVisitor($cloningVisitor);
+        $this->nodeTraverser->addVisitor(new CloningVisitor());
     }
 
     /**

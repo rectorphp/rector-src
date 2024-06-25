@@ -82,7 +82,6 @@ final class BetterStandardPrinter extends Standard
     public function printFormatPreserving(array $stmts, array $origStmts, array $origTokens): string
     {
         $newStmts = $this->resolveNewStmts($stmts);
-
         $content = parent::printFormatPreserving($newStmts, $origStmts, $origTokens);
 
         // add new line in case of added stmts
