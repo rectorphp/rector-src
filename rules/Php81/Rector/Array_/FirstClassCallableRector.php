@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\Array_;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -102,6 +103,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($node->isFirstClassCallable()) {
+                return null;
+            }
+
             $functionName = $node->name->toString();
 
             try {
@@ -118,12 +123,9 @@ CODE_SAMPLE
                 }
             }
 
+            /** @var Arg $arg */
             foreach ($node->getRawArgs() as $key => $arg) {
                 if (! in_array($key, $callableArgs, true)) {
-                    continue;
-                }
-
-                if ($arg instanceof VariadicPlaceholder) {
                     continue;
                 }
 
@@ -131,7 +133,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $node->args[$key] = new Node\Arg(
+                $node->args[$key] = new Arg(
                     new FuncCall(new Name($arg->value->value), [new VariadicPlaceholder()]),
                     name: $arg->name
                 );
