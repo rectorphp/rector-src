@@ -11,6 +11,7 @@ use Webmozart\Assert\Assert;
 
 /**
  * @api
+ * @experimental since 1.1.2
  * Utils class to ease building bridges by 3rd-party tools
  */
 final class SetRectorsResolver
