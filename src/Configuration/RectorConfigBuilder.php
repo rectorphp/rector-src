@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Configuration;
 
+use Nette\Utils\FileSystem;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -348,13 +349,49 @@ final class RectorConfigBuilder
      */
     public function withRootFiles(): self
     {
+        $gitIgnoreContents = [];
+        if (file_exists(getcwd() . '/.gitignore')) {
+            $gitIgnoreContents = array_filter(
+                iterator_to_array(FileSystem::readLines(getcwd() . '/.gitignore')),
+                function (string $string): bool {
+                    $string = trim($string);
+
+                    // new line
+                    if ($string === '') {
+                        return false;
+                    }
+
+                    // comment
+                    if (str_starts_with($string, '#')) {
+                        return false;
+                    }
+
+                    // only files
+                    // on .gitignore, define /foo.php means it foo.php in root project only
+                    return is_file($string) || is_file(ltrim($string, '/'));
+                }
+            );
+
+            // normalize it.
+            $gitIgnoreContents = array_map(
+                fn (string $string): string => realpath(ltrim($string, '/')),
+                $gitIgnoreContents
+            );
+        }
+
         $rootPhpFilesFinder = (new Finder())->files()
             ->in(getcwd())
             ->depth(0)
             ->name('*.php');
 
         foreach ($rootPhpFilesFinder as $rootPhpFileFinder) {
-            $this->paths[] = $rootPhpFileFinder->getRealPath();
+            $path = $rootPhpFileFinder->getRealPath();
+
+            if (in_array($path, $gitIgnoreContents, true)) {
+                continue;
+            }
+
+            $this->paths[] = $path;
         }
 
         return $this;
