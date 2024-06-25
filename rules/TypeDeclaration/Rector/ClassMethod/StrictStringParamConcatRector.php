@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp\Concat;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
@@ -70,11 +69,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -128,7 +127,7 @@ CODE_SAMPLE
 
     private function resolveVariableConcattedFromParam(
         Param $param,
-        ClassMethod|Function_|Closure $functionLike
+        ClassMethod|Function_ $functionLike
     ): ?Variable {
         if ($functionLike->stmts === null) {
             return null;

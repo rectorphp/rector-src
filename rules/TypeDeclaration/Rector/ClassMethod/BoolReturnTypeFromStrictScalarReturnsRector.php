@@ -91,11 +91,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -119,7 +119,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     private function shouldSkip(Node $node, Scope $scope): bool
     {
@@ -134,7 +134,7 @@ CODE_SAMPLE
     /**
      * @param Return_[] $returns
      */
-    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_|Closure $functionLike): bool
+    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_ $functionLike): bool
     {
         if ($returns === []) {
             return false;

@@ -6,8 +6,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -65,11 +63,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|ArrowFunction $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -103,9 +101,9 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function hasReturnArray(ClassMethod|Function_|Closure|ArrowFunction $functionLike): bool
+    private function hasReturnArray(ClassMethod|Function_ $functionLike): bool
     {
-        $stmts = $functionLike instanceof ArrowFunction ? $functionLike->getStmts() : $functionLike->stmts;
+        $stmts = $functionLike->stmts;
 
         if (! is_array($stmts)) {
             return false;

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\ArrowFunction;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -91,11 +89,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class, ArrowFunction::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|ArrowFunction $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -110,13 +108,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node instanceof ArrowFunction) {
-            $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
-            if (is_string($returnedNewClassName)) {
-                $node->returnType = new FullyQualified($returnedNewClassName);
+        $returnedNewClassName = $this->strictReturnNewAnalyzer->matchAlwaysReturnVariableNew($node);
+        if (is_string($returnedNewClassName)) {
+            $node->returnType = new FullyQualified($returnedNewClassName);
 
-                return $node;
-            }
+            return $node;
         }
 
         return $this->refactorDirectReturnNew($node);
@@ -161,14 +157,10 @@ CODE_SAMPLE
     }
 
     private function refactorDirectReturnNew(
-        ClassMethod|Function_|ArrowFunction|Closure $node
-    ): null|ArrowFunction|Function_|ClassMethod|Closure {
-        if ($node instanceof ArrowFunction) {
-            $returns = [new Return_($node->expr)];
-        } else {
-            /** @var Return_[] $returns */
-            $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
-        }
+        ClassMethod|Function_ $node
+    ): null|Function_|ClassMethod {
+        /** @var Return_[] $returns */
+        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
 
         if ($returns === []) {
             return null;

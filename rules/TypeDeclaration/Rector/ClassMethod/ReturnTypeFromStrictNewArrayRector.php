@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
@@ -86,11 +85,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -149,9 +148,9 @@ CODE_SAMPLE
     }
 
     private function processAddArrayReturnType(
-        ClassMethod|Function_|Closure $node,
+        ClassMethod|Function_ $node,
         Type $returnType
-    ): ClassMethod|Function_|Closure|null {
+    ): ClassMethod|Function_|null {
         if (! $returnType->isArray()->yes()) {
             return null;
         }
@@ -167,7 +166,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(ClassMethod|Function_|Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod|Function_ $node, Scope $scope): bool
     {
         if ($node->returnType !== null) {
             return true;
@@ -179,7 +178,7 @@ CODE_SAMPLE
         );
     }
 
-    private function changeReturnType(ClassMethod|Function_|Closure $node, ArrayType $arrayType): void
+    private function changeReturnType(ClassMethod|Function_ $node, ArrayType $arrayType): void
     {
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
@@ -202,7 +201,7 @@ CODE_SAMPLE
      * @return Variable[]
      */
     private function matchVariableNotOverriddenByNonArray(
-        ClassMethod|Function_|Closure $functionLike,
+        ClassMethod|Function_ $functionLike,
         array $variables
     ): array {
         // is variable overriden?

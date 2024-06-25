@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Identifier;
@@ -73,11 +72,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -95,7 +94,7 @@ CODE_SAMPLE
         return PhpVersionFeature::NEVER_TYPE;
     }
 
-    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod | Function_ $node, Scope $scope): bool
     {
         if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'void')) {
             return true;
@@ -128,7 +127,7 @@ CODE_SAMPLE
         return $this->isName($node->returnType, 'never');
     }
 
-    private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
+    private function hasReturnOrYields(ClassMethod|Function_ $node): bool
     {
         if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class)) {
             return true;
@@ -140,7 +139,7 @@ CODE_SAMPLE
         );
     }
 
-    private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_|Closure $node): bool
+    private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_ $node): bool
     {
         $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Throw_::class]);
         if ($hasNeverNodes) {

@@ -7,7 +7,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -89,7 +88,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -98,7 +97,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -132,7 +131,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isUnionPossibleReturnsVoid(ClassMethod | Function_ | Closure $node): bool
+    private function isUnionPossibleReturnsVoid(ClassMethod | Function_ $node): bool
     {
         $inferReturnType = $this->returnTypeInferer->inferFunctionLike($node);
         if ($inferReturnType instanceof UnionType) {
@@ -147,10 +146,10 @@ CODE_SAMPLE
     }
 
     private function processSingleUnionType(
-        ClassMethod | Function_ | Closure $node,
+        ClassMethod | Function_ $node,
         UnionType $unionType,
         NullableType $nullableType
-    ): Closure | ClassMethod | Function_ {
+    ): ClassMethod | Function_ {
         $types = $unionType->getTypes();
         $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
@@ -160,7 +159,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
+    private function shouldSkip(ClassMethod | Function_ $node, Scope $scope): bool
     {
         if ($node->returnType !== null) {
             return true;
@@ -179,8 +178,8 @@ CODE_SAMPLE
     private function refactorSingleReturnType(
         Return_ $return,
         Identifier|Name|NullableType|ComplexType $returnedStrictTypeNode,
-        ClassMethod | Function_ | Closure $functionLike
-    ): Closure | ClassMethod | Function_ {
+        ClassMethod | Function_ $functionLike
+    ): ClassMethod | Function_ {
         $resolvedType = $this->nodeTypeResolver->getType($return);
 
         if ($resolvedType instanceof UnionType) {
@@ -204,7 +203,7 @@ CODE_SAMPLE
     /**
      * @return Return_[]
      */
-    private function findCurrentScopeReturns(ClassMethod|Function_|Closure $node): array
+    private function findCurrentScopeReturns(ClassMethod|Function_ $node): array
     {
         $currentScopeReturns = [];
 

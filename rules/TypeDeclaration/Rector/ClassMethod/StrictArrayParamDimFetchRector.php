@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\AssignOp\Coalesce as AssignOpCoalesce;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast\Array_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Empty_;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -74,11 +73,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -111,7 +110,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function isParamAccessedArrayDimFetch(Param $param, ClassMethod|Function_|Closure $functionLike): bool
+    private function isParamAccessedArrayDimFetch(Param $param, ClassMethod|Function_ $functionLike): bool
     {
         if ($functionLike->stmts === null) {
             return false;
