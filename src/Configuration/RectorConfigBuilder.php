@@ -380,9 +380,15 @@ final class RectorConfigBuilder
                 }
             );
 
-            // normalize it.
+            // make realpath collection
             $gitIgnoreContents = array_map(
-                fn (string $string): string => realpath(ltrim($string, '/')),
+                function (string $string): string {
+                    // normalize
+                    $string = ltrim($string, '/');
+                    $string = ltrim($string, '\\');
+
+                    return realpath($string);
+                },
                 $gitIgnoreContents
             );
         }
