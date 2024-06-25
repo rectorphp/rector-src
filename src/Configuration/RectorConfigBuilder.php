@@ -367,8 +367,7 @@ final class RectorConfigBuilder
                     }
 
                     // normalize
-                    $string = ltrim($string, '/');
-                    $string = ltrim($string, '\\');
+                    $string = ltrim($string, '/\\');
 
                     // files in deep directory, no need to be in lists
                     if (str_contains($string, '/') || str_contains($string, '\\')) {
@@ -384,8 +383,7 @@ final class RectorConfigBuilder
             $gitIgnoreContents = array_map(
                 function (string $string): string {
                     // normalize
-                    $string = ltrim($string, '/');
-                    $string = ltrim($string, '\\');
+                    $string = ltrim($string, '/\\');
 
                     return realpath($string);
                 },
