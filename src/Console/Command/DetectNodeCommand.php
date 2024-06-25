@@ -33,10 +33,21 @@ final class DetectNodeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1e43be5ca1 (remove withSetProviders() as no longer needed)
         $this->symfonyStyle->warning(
             'This rule is deprecated as too sensitive on correct output and unable to click through.
  Use dynamic, sharedable online version https://getrector.com/ast instead.'
         );
+<<<<<<< HEAD
+=======
+        $this->symfonyStyle->warning('This rule is deprecated as too sensitive on correct output and unable to click through.
+ Use dynamic, sharedable online version https://getrector.com/ast instead.');
+>>>>>>> a02edbd617 (deprecated detect-node and recommend better online form instead)
+=======
+>>>>>>> 1e43be5ca1 (remove withSetProviders() as no longer needed)
 
         return self::SUCCESS;
     }
