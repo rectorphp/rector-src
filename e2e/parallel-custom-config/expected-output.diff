@@ -16,7 +16,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * DowngradeReadonlyPropertyRector (https://wiki.php.net/rfc/readonly_properties_v2)
+ * DowngradeReadonlyPropertyRector
 
 
  [OK] 1 file would have changed (dry-run) by Rector

@@ -99,7 +99,7 @@ final class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    TypedPropertyFromAssignsRector::INLINE_PUBLIC => false,
+                    self::INLINE_PUBLIC => false,
                 ]
             ),
         ]);
