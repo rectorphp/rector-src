@@ -151,6 +151,7 @@ CODE_SAMPLE
      */
     private function isClassMethodCalledInAnotherStaticClassMethod(Class_ $class, ClassMethod $classMethod): bool
     {
+        $currentClassNamespacedName = (string) $this->getName($class);
         $currentClassMethodName = $this->getName($classMethod);
 
         $isInsideStaticClassMethod = false;
@@ -163,6 +164,7 @@ CODE_SAMPLE
             }
 
             $this->traverseNodesWithCallable($checkedClassMethod, function (Node $node) use (
+                $currentClassNamespacedName,
                 $currentClassMethodName,
                 &$isInsideStaticClassMethod
             ): ?int {
@@ -170,7 +172,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->isNames($node->class, ['self', 'static'])) {
+                if (! $this->isNames($node->class, ['self', 'static', $currentClassNamespacedName])) {
                     return null;
                 }
 
