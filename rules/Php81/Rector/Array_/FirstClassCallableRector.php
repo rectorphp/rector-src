@@ -107,7 +107,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $functionName = $node->name->toString();
+            $functionName = (string) $node->name;
 
             try {
                 $rf = new ReflectionFunction($functionName);
