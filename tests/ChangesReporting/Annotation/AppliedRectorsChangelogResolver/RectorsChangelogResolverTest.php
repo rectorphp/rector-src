@@ -32,6 +32,7 @@ final class RectorsChangelogResolverTest extends AbstractLazyTestCase
 
         $expectedRectorsChangelogs = [
             RectorWithChangelog::class => 'https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md',
+            RectorWithOutChangelog::class => null,
         ];
         $this->assertSame($expectedRectorsChangelogs, $rectorsChangelogs);
     }

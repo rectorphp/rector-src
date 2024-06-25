@@ -15,19 +15,9 @@ final readonly class RectorsChangelogResolver
 
     /**
      * @param array<class-string<RectorInterface>> $rectorClasses
-     * @return array<class-string, string>
-     */
-    public function resolve(array $rectorClasses): array
-    {
-        $rectorClassesToChangelogUrls = $this->resolveIncludingMissing($rectorClasses);
-        return array_filter($rectorClassesToChangelogUrls);
-    }
-
-    /**
-     * @param array<class-string<RectorInterface>> $rectorClasses
      * @return array<class-string, string|null>
      */
-    public function resolveIncludingMissing(array $rectorClasses): array
+    public function resolve(array $rectorClasses): array
     {
         $rectorClassesToChangelogUrls = [];
         foreach ($rectorClasses as $rectorClass) {

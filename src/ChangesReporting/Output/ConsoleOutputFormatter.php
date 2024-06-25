@@ -152,7 +152,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
      */
     private function createRectorChangelogLines(FileDiff $fileDiff): array
     {
-        $rectorsChangelogs = $this->rectorsChangelogResolver->resolveIncludingMissing($fileDiff->getRectorClasses());
+        $rectorsChangelogs = $this->rectorsChangelogResolver->resolve($fileDiff->getRectorClasses());
 
         $rectorsChangelogsLines = [];
         foreach ($rectorsChangelogs as $rectorClass => $changelog) {
