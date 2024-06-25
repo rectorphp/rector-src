@@ -123,8 +123,7 @@ CODE_SAMPLE
                 }
             }
 
-            /** @var Arg $arg */
-            foreach ($node->getRawArgs() as $key => $arg) {
+            foreach ($node->getArgs() as $key => $arg) {
                 if (! in_array($key, $callableArgs, true)) {
                     continue;
                 }
