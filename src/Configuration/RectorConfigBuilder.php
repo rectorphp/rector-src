@@ -366,6 +366,11 @@ final class RectorConfigBuilder
                         return false;
                     }
 
+                    // files in deep directory, no need to be in lists
+                    if (str_contains($string, '/') || str_contains($string, '\\')) {
+                        return false;
+                    }
+
                     // only files
                     // on .gitignore, define /foo.php means it foo.php in root project only
                     return is_file($string) || is_file(ltrim($string, '/'));
