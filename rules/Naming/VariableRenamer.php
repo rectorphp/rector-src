@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Naming;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
@@ -69,7 +70,7 @@ final readonly class VariableRenamer
                     $currentStmt = $node;
                 }
 
-                if ($node instanceof Closure) {
+                if ($node instanceof Closure || $node instanceof ArrowFunction) {
                     $currentClosure = $node;
                 }
 
@@ -98,9 +99,9 @@ final readonly class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(Variable $variable, ?Closure $closure): bool
+    private function isParamInParentFunction(Variable $variable, null|Closure|ArrowFunction $functionLike): bool
     {
-        if (! $closure instanceof Closure) {
+        if (! $functionLike instanceof Closure && ! $functionLike instanceof ArrowFunction) {
             return false;
         }
 
@@ -109,7 +110,7 @@ final readonly class VariableRenamer
             return false;
         }
 
-        foreach ($closure->params as $param) {
+        foreach ($functionLike->params as $param) {
             if ($this->nodeNameResolver->isName($param, $variableName)) {
                 return true;
             }
