@@ -15,6 +15,8 @@ use Rector\Console\ExitCode;
 use Rector\Console\Output\OutputFormatterCollector;
 use Rector\Console\ProcessConfigureDecorator;
 use Rector\Exception\ShouldNotHappenException;
+use Rector\Reporting\DeprecatedRulesReporter;
+use Rector\Reporting\MissConfigurationReporter;
 use Rector\StaticReflection\DynamicSourceLocatorDecorator;
 use Rector\Util\MemoryLimiter;
 use Rector\ValueObject\Configuration;
@@ -36,7 +38,9 @@ final class ProcessCommand extends Command
         private readonly OutputFormatterCollector $outputFormatterCollector,
         private readonly SymfonyStyle $symfonyStyle,
         private readonly MemoryLimiter $memoryLimiter,
-        private readonly ConfigurationFactory $configurationFactory
+        private readonly ConfigurationFactory $configurationFactory,
+        private readonly DeprecatedRulesReporter $deprecatedRulesReporter,
+        private readonly MissConfigurationReporter $missConfigurationReporter,
     ) {
         parent::__construct();
     }
@@ -90,6 +94,11 @@ final class ProcessCommand extends Command
         $outputFormatter = $this->outputFormatterCollector->getByName($outputFormat);
 
         $outputFormatter->report($processResult, $configuration);
+
+        $this->deprecatedRulesReporter->reportDeprecatedRules();
+        $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
+
+        $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
 
         return $this->resolveReturnCode($processResult, $configuration);
     }

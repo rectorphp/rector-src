@@ -6,8 +6,8 @@ namespace Rector\PostRector\Collector;
 
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\Provider\CurrentFileProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
