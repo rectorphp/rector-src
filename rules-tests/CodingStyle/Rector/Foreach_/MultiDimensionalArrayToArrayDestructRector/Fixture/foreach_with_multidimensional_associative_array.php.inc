@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
-final class ForeachWithMultidimensionalAssociativeArray
+final class ForeachWithMultiDimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string}> $users
@@ -26,7 +26,7 @@ final class ForeachWithMultidimensionalAssociativeArray
 
 namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
-final class ForeachWithMultidimensionalAssociativeArray
+final class ForeachWithMultiDimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string}> $users
