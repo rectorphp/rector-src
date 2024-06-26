@@ -108,7 +108,7 @@ final readonly class VariableRenamer
             return false;
         }
 
-        foreach ($functionLike->params as $param) {
+        foreach ($functionLike->getParams() as $param) {
             if ($this->nodeNameResolver->isName($param, $variableName)) {
                 return true;
             }
