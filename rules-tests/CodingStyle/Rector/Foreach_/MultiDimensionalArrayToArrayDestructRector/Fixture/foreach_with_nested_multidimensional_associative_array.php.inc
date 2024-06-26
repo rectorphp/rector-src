@@ -1,13 +1,13 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
 final class ForeachWithNestedMultidimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string, emails: list<string>}> $users
      */
-    public function run(array $users)
+    public function run3(array $users)
     {
         foreach ($users as $user) {
             echo $user['id'];
@@ -24,14 +24,14 @@ final class ForeachWithNestedMultidimensionalAssociativeArray
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
 final class ForeachWithNestedMultidimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string, emails: list<string>}> $users
      */
-    public function run(array $users)
+    public function run3(array $users)
     {
         foreach ($users as ['id' => $id, 'name' => $name, 'emails' => $emails]) {
             echo $id;

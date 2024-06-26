@@ -1,13 +1,13 @@
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
-final class ForeachWithMultidimensionalAssociativeArray
+final class ForeachWithMultiDimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string}> $users
      */
-    public function run(array $users)
+    public function run2(array $users)
     {
         $translations = [
             'name' => 'Name',
@@ -24,14 +24,14 @@ final class ForeachWithMultidimensionalAssociativeArray
 -----
 <?php
 
-namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
-final class ForeachWithMultidimensionalAssociativeArray
+final class ForeachWithMultiDimensionalAssociativeArray
 {
     /**
      * @param array<int, array{id: int, name: string}> $users
      */
-    public function run(array $users)
+    public function run2(array $users)
     {
         $translations = [
             'name' => 'Name',
