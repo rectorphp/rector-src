@@ -13,6 +13,9 @@ use Rector\EarlyReturn\NodeTransformer\ConditionInverter;
 use Rector\NodeNestingScope\ContextAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
+/**
+ * @deprecated Since 1.1.2, as this rule creates inverted conditions and makes code much less readable.
+ */
 final readonly class InvertedIfFactory
 {
     public function __construct(
