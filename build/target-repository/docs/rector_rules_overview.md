@@ -32,7 +32,7 @@
 
 - [Php70](#php70) (19)
 
-- [Php71](#php71) (8)
+- [Php71](#php71) (7)
 
 - [Php72](#php72) (9)
 
@@ -4207,33 +4207,6 @@ Change `list()` to array destruct
 
 -        foreach ($data as list($id, $name)) {
 +        foreach ($data as [$id, $name]) {
-         }
-     }
- }
-```
-
-<br>
-
-### MultiDimensionalArrayToArrayDestructRector
-
-Change multidimensional array access in foreach to array destruct
-
-- class: [`Rector\Php71\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector`](../rules/Php71/Rector/Foreach/MultiDimensionalArrayToArrayDestructRector.php)
-
-```diff
- class SomeClass
- {
-     /**
-      * @param array<int, array{id: int, name: string}> $users
-      */
-     public function run(array $users)
-     {
--        foreach ($users as $user) {
--            echo $user['id'];
--            echo sprintf('Name: %s', $user['name']);
-+        foreach ($users as ['id' => $id, 'name' => $name]) {
-+            echo $id;
-+            echo sprintf('Name: %s', $name);
          }
      }
  }

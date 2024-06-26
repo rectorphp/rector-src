@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php71\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector;
+namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;

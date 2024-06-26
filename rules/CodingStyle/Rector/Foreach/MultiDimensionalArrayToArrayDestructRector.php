@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\Php71\Rector\Foreach;
+namespace Rector\CodingStyle\Rector\Foreach;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
@@ -22,7 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @changelog https://wiki.php.net/rfc/short_list_syntax https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.symmetric-array-destructuring
  *
- * @see \Rector\Tests\Php71\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\MultiDimensionalArrayToArrayDestructRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\MultiDimensionalArrayToArrayDestructRectorTest
  */
 final class MultiDimensionalArrayToArrayDestructRector extends AbstractRector implements MinPhpVersionInterface
 {

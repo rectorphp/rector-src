@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php71\Rector\List_\ListToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
 final class ForeachWithNestedMultidimensionalAssociativeArray
 {
@@ -24,7 +24,7 @@ final class ForeachWithNestedMultidimensionalAssociativeArray
 -----
 <?php
 
-namespace Rector\Tests\Php71\Rector\List_\ListToArrayDestructRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\Foreach\MultiDimensionalArrayToArrayDestructRector\Fixture;
 
 final class ForeachWithNestedMultidimensionalAssociativeArray
 {
