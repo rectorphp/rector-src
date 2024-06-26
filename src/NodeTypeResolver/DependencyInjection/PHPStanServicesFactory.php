@@ -161,6 +161,6 @@ MESSAGE_ERROR;
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/better-infer.neon';
         $additionalConfigFiles[] = __DIR__ . '/../../../config/phpstan/parser.neon';
 
-        return array_filter($additionalConfigFiles, 'file_exists');
+        return array_filter($additionalConfigFiles, file_exists(...));
     }
 }

@@ -110,16 +110,16 @@ CODE_SAMPLE
             $functionName = (string) $this->getName($node);
 
             try {
-                $rf = new ReflectionFunction($functionName);
+                $reflectionFunction = new ReflectionFunction($functionName);
             } catch (ReflectionException) {
                 return null;
             }
 
             $callableArgs = [];
 
-            foreach ($rf->getParameters() as $rp) {
-                if ($rp->getType() instanceof ReflectionNamedType && $rp->getType()->getName() === 'callable') {
-                    $callableArgs[] = $rp->getPosition();
+            foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
+                if ($reflectionParameter->getType() instanceof ReflectionNamedType && $reflectionParameter->getType()->getName() === 'callable') {
+                    $callableArgs[] = $reflectionParameter->getPosition();
                 }
             }
 

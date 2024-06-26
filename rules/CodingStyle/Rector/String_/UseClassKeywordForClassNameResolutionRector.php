@@ -90,7 +90,7 @@ CODE_SAMPLE
      */
     private function getParts(String_ $string, array $classNames): array
     {
-        $quotedClassNames = array_map('preg_quote', $classNames);
+        $quotedClassNames = array_map(preg_quote(...), $classNames);
 
         // @see https://regex101.com/r/8nGS0F/1
         $parts = Strings::split($string->value, '#(' . implode('|', $quotedClassNames) . ')#');
