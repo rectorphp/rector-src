@@ -152,7 +152,7 @@ CODE_SAMPLE
         $variableNodes = $this->nodeFinder->findInstanceOf($foreach, Variable::class);
 
         return array_unique(array_map(
-            fn (Variable $variable): string => (string) $this->getName($foreach),
+            fn (Variable $variable): string => (string) $this->getName($variable),
             $variableNodes
         ));
     }
