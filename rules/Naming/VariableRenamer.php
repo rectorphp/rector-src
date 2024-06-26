@@ -11,10 +11,12 @@ use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\MutatingScope;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final readonly class VariableRenamer
@@ -105,6 +107,15 @@ final readonly class VariableRenamer
 
         $variableName = $this->nodeNameResolver->getName($variable);
         if ($variableName === null) {
+            return false;
+        }
+
+        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        $functionLikeScope = $functionLike->getAttribute(AttributeKey::SCOPE);
+
+        if ($scope instanceof MutatingScope && $functionLikeScope instanceof MutatingScope && $scope->equals(
+            $functionLikeScope
+        )) {
             return false;
         }
 
