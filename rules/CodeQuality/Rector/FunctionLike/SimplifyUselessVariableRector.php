@@ -86,7 +86,7 @@ function () {
 };
 CODE_SAMPLE
                 ,
-                 [
+                [
                     self::ONLY_DIRECT_ASSIGN => false,
                 ]
             ),

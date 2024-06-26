@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Rector\Tests\Set\SetManager;
 
 use PHPUnit\Framework\TestCase;
+use Rector\Bridge\SetProviderCollector;
+use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
 use Rector\Tests\Set\SetManager\Source\SomeSetProvider;
 
@@ -12,9 +14,11 @@ final class SetManagerTest extends TestCase
 {
     public function test(): void
     {
-        $setManager = new SetManager([new SomeSetProvider()]);
+        $setProviderCollector = new SetProviderCollector([new SomeSetProvider()]);
 
-        $twigComposerTriggeredSet = $setManager->matchComposerTriggered('twig');
-        $this->assertCount(1, $twigComposerTriggeredSet);
+        $setManager = new SetManager($setProviderCollector);
+
+        $twigComposerTriggeredSet = $setManager->matchComposerTriggered(SetGroup::TWIG);
+        $this->assertGreaterThan(6, count($twigComposerTriggeredSet));
     }
 }
