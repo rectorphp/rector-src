@@ -83,7 +83,7 @@ CODE_SAMPLE
                 [
                     'ClassName',
                     'AnotherClassName',
-                    self::SHOULD_KEEP_PRE_SLASH => false,
+                    StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => false,
                 ],
             ),
         ]);

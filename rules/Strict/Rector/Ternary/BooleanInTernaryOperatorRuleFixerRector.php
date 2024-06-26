@@ -55,7 +55,7 @@ final class ArrayCompare
 CODE_SAMPLE
                 ,
                 [
-                    self::TREAT_AS_NON_EMPTY => false,
+                    BooleanInTernaryOperatorRuleFixerRector::TREAT_AS_NON_EMPTY => false,
                 ]
             ),
         ]);

@@ -62,7 +62,7 @@ final class SomeEmptyArray
 CODE_SAMPLE
                 ,
                 [
-                    self::TREAT_AS_NON_EMPTY => false,
+                    DisallowedEmptyRuleFixerRector::TREAT_AS_NON_EMPTY => false,
                 ]
             ),
         ]);

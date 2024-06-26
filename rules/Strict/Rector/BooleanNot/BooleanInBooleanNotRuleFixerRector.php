@@ -63,7 +63,7 @@ class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    self::TREAT_AS_NON_EMPTY => true,
+                    BooleanInBooleanNotRuleFixerRector::TREAT_AS_NON_EMPTY => true,
                 ]
             ),
         ]);
