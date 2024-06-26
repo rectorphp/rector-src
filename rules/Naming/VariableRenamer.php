@@ -6,16 +6,17 @@ namespace Rector\Naming;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
+use PHPStan\Analyser\MutatingScope;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Naming\PhpDoc\VarTagValueNodeRenamer;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 
 final readonly class VariableRenamer
@@ -42,7 +43,7 @@ final readonly class VariableRenamer
 
         $hasRenamed = false;
         $currentStmt = null;
-        $currentClosure = null;
+        $currentFunctionLike = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->getStmts(),
@@ -53,7 +54,7 @@ final readonly class VariableRenamer
                 &$isRenamingActive,
                 &$hasRenamed,
                 &$currentStmt,
-                &$currentClosure
+                &$currentFunctionLike
             ): int|null|Variable {
                 // skip param names
                 if ($node instanceof Param) {
@@ -69,8 +70,8 @@ final readonly class VariableRenamer
                     $currentStmt = $node;
                 }
 
-                if ($node instanceof Closure) {
-                    $currentClosure = $node;
+                if ($node instanceof FunctionLike) {
+                    $currentFunctionLike = $node;
                 }
 
                 if (! $node instanceof Variable) {
@@ -78,7 +79,7 @@ final readonly class VariableRenamer
                 }
 
                 // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
-                if ($this->isParamInParentFunction($node, $currentClosure)) {
+                if ($this->isParamInParentFunction($node, $currentFunctionLike)) {
                     return null;
                 }
 
@@ -98,9 +99,9 @@ final readonly class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(Variable $variable, ?Closure $closure): bool
+    private function isParamInParentFunction(Variable $variable, ?FunctionLike $functionLike): bool
     {
-        if (! $closure instanceof Closure) {
+        if (! $functionLike instanceof FunctionLike) {
             return false;
         }
 
@@ -109,7 +110,16 @@ final readonly class VariableRenamer
             return false;
         }
 
-        foreach ($closure->params as $param) {
+        $scope = $variable->getAttribute(AttributeKey::SCOPE);
+        $functionLikeScope = $functionLike->getAttribute(AttributeKey::SCOPE);
+
+        if ($scope instanceof MutatingScope && $functionLikeScope instanceof MutatingScope && $scope->equals(
+            $functionLikeScope
+        )) {
+            return false;
+        }
+
+        foreach ($functionLike->getParams() as $param) {
             if ($this->nodeNameResolver->isName($param, $variableName)) {
                 return true;
             }
