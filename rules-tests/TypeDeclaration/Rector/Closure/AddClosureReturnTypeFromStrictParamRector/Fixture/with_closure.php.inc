@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector\Fixture;
 
 class WithClosure
 {
@@ -16,7 +16,7 @@ class WithClosure
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector\Fixture;
 
 class WithClosure
 {

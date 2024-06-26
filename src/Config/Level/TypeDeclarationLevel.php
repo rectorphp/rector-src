@@ -39,6 +39,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureUnionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
@@ -104,6 +105,7 @@ final class TypeDeclarationLevel
         ReturnUnionTypeRector::class,
 
         // more risky rules
+        AddClosureReturnTypeFromStrictParamRector::class,
         ReturnTypeFromStrictParamRector::class,
         AddParamTypeFromPropertyTypeRector::class,
         MergeDateTimePropertyTypeDeclarationRector::class,
