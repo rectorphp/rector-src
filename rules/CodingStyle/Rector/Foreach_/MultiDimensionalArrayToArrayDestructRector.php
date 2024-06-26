@@ -105,21 +105,21 @@ CODE_SAMPLE
      *
      * @return array<string, string> List of destructor variables we need to create in format array key name => variable name
      */
-    private function replaceValueArrayAccessorsInForeachTree(Foreach_ $node): array
+    private function replaceValueArrayAccessorsInForeachTree(Foreach_ $foreach): array
     {
-        $usedVariableNames = $this->getUsedVariableNamesInForeachTree($node);
+        $usedVariableNames = $this->getUsedVariableNamesInForeachTree($foreach);
         $createdDestructedVariables = [];
 
-        $this->traverseNodesWithCallable($node->stmts, function (Node $traverseNode) use (
-            $node,
+        $this->traverseNodesWithCallable($foreach->stmts, function (Node $traverseNode) use (
+            $foreach,
             $usedVariableNames,
             &$createdDestructedVariables
-        ) {
+        ): null|int|Variable {
             if (! $traverseNode instanceof ArrayDimFetch) {
                 return null;
             }
 
-            if ($this->nodeComparator->areNodesEqual($traverseNode->var, $node->valueVar) === false) {
+            if ($this->nodeComparator->areNodesEqual($traverseNode->var, $foreach->valueVar) === false) {
                 return null;
             }
 
@@ -146,13 +146,13 @@ CODE_SAMPLE
      *
      * @return list<string>
      */
-    private function getUsedVariableNamesInForeachTree(Foreach_ $node): array
+    private function getUsedVariableNamesInForeachTree(Foreach_ $foreach): array
     {
         /** @var list<Variable> $variableNodes */
-        $variableNodes = $this->nodeFinder->findInstanceOf($node, Variable::class);
+        $variableNodes = $this->nodeFinder->findInstanceOf($foreach, Variable::class);
 
         return array_unique(array_map(
-            fn (Variable $node): string => (string) $this->getName($node),
+            fn (Variable $variable): string => (string) $this->getName($foreach),
             $variableNodes
         ));
     }
@@ -163,9 +163,9 @@ CODE_SAMPLE
      *
      * @param list<string> $usedVariableNames
      */
-    private function getDestructedVariableName(array $usedVariableNames, String_ $dim): string
+    private function getDestructedVariableName(array $usedVariableNames, String_ $string): string
     {
-        $desiredVariableName = (string) $dim->value;
+        $desiredVariableName = (string) $string->value;
 
         if (in_array($desiredVariableName, $usedVariableNames, true) === false) {
             return $desiredVariableName;
@@ -174,7 +174,7 @@ CODE_SAMPLE
         $i = 1;
         $variableName = sprintf('%s%s', $desiredVariableName, $i);
 
-        while (in_array($variableName, $usedVariableNames, true) === true) {
+        while (in_array($variableName, $usedVariableNames, true)) {
             ++$i;
 
             $variableName = sprintf('%s%s', $desiredVariableName, $i);
