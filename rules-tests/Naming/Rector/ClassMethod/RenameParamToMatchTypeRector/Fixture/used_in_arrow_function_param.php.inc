@@ -13,6 +13,8 @@ class UsedInArrowFunctionParam
           fn (Variable $node) => $node,
           []
         );
+
+        var_dump($node);
     }
 }
 
@@ -33,6 +35,8 @@ class UsedInArrowFunctionParam
           fn (Variable $variable) => $variable,
           []
         );
+
+        var_dump($foreach);
     }
 }
 
