@@ -21,7 +21,6 @@ use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -54,7 +53,7 @@ final class SimplifyUselessVariableRector extends AbstractRector implements Conf
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Removes useless variable assigns', [
-            new CodeSample(
+            new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 function () {
     $a = true;
@@ -67,6 +66,11 @@ function () {
     return true;
 };
 CODE_SAMPLE
+                ,
+                // default
+                [
+                    self::ONLY_DIRECT_ASSIGN => true,
+                ]
             ),
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
