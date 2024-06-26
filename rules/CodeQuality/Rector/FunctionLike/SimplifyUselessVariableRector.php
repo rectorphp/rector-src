@@ -15,25 +15,40 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeAnalyzer\CallAnalyzer;
 use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\AssignAndBinaryMap;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector\SimplifyUselessVariableRectorTest
  */
-final class SimplifyUselessVariableRector extends AbstractRector
+final class SimplifyUselessVariableRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    public const ONLY_DIRECT_ASSIGN = 'only_direct_assign';
+
+    private bool $onlyDirectAssign = false;
+
     public function __construct(
         private readonly AssignAndBinaryMap $assignAndBinaryMap,
         private readonly VariableAnalyzer $variableAnalyzer,
         private readonly CallAnalyzer $callAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory
     ) {
+    }
+
+    public function configure(array $configuration): void
+    {
+        $this->onlyDirectAssign = $configuration[self::ONLY_DIRECT_ASSIGN] ?? false;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -52,6 +67,28 @@ function () {
     return true;
 };
 CODE_SAMPLE
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+function () {
+    $a = 'Hello, ';
+    $a .= 'World!';
+
+    return $a;
+};
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+function () {
+    $a = 'Hello, ';
+
+    return $a . 'World!';
+};
+CODE_SAMPLE
+                ,
+                 [
+                    self::ONLY_DIRECT_ASSIGN => false,
+                ]
             ),
         ]);
     }
@@ -145,6 +182,10 @@ CODE_SAMPLE
         $previousNode = $previousStmt->expr;
 
         if (! $previousNode instanceof AssignOp && ! $previousNode instanceof Assign) {
+            return true;
+        }
+
+        if ($this->onlyDirectAssign && $previousNode instanceof AssignOp) {
             return true;
         }
 
