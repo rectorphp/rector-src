@@ -66,7 +66,7 @@ enum StatusEnum : string
 CODE_SAMPLE
                 ,
                 [
-                    self::TO_UPPER_SNAKE_CASE => false,
+                    SpatieEnumClassToEnumRector::TO_UPPER_SNAKE_CASE => false,
                 ]
             ),
         ]);

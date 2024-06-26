@@ -26,7 +26,7 @@ use Webmozart\Assert\Assert;
  */
 final class IncreaseDeclareStrictTypesRector extends AbstractRector implements ConfigurableRectorInterface
 {
-    private const LIMIT = 'limit';
+    public const LIMIT = 'limit';
 
     private int $limit = 10;
 
@@ -58,7 +58,7 @@ function someFunction()
 CODE_SAMPLE
                     ,
                     [
-                        self::LIMIT => 10,
+                        IncreaseDeclareStrictTypesRector::LIMIT => 10,
                     ],
                 ),
             ]

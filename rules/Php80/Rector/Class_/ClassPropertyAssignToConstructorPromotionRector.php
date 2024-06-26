@@ -115,8 +115,8 @@ class SomeClass
 CODE_SAMPLE
                     ,
                     [
-                        self::INLINE_PUBLIC => false,
-                        self::RENAME_PROPERTY => true,
+                        ClassPropertyAssignToConstructorPromotionRector::INLINE_PUBLIC => false,
+                        ClassPropertyAssignToConstructorPromotionRector::RENAME_PROPERTY => true,
                     ]
                 ),
             ]
