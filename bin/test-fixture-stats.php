@@ -4,17 +4,39 @@
 
 declare(strict_types=1);
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
-
 require __DIR__ . '/../vendor/autoload.php';
 
-$composerJsonFileContents = FileSystem::read(__DIR__ . '/../composer.json');
+$finder = \Symfony\Component\Finder\Finder::create()
+    ->in(__DIR__ . '/../rules-tests')
+    ->directories()
+    ->name('#Rector$#')
+    ->getIterator();
 
-$composerJson = Json::decode($composerJsonFileContents, forceArrays: true);
-$composerJson['replace']['phpstan/phpstan'] = $composerJson['require']['phpstan/phpstan'];
+$ruleToFixtureCount = [];
 
-$modifiedComposerJsonFileContents = Json::encode($composerJson, pretty: true);
-FileSystem::write(__DIR__ . '/../composer.json', $modifiedComposerJsonFileContents, null);
+foreach ($finder as $rectorTestDirectory) {
+    if ($rectorTestDirectory->getBasename() === 'Rector') {
+        continue;
+    }
 
-echo 'Done!' . PHP_EOL;
+    $fixtureCount = \Symfony\Component\Finder\Finder::create()
+        ->files()
+        ->name('*.php.inc')
+        ->in($rectorTestDirectory->getPathname())
+        ->count();
+
+     // very few fixture files, not relevant
+     if ($fixtureCount <= 15) {
+         continue;
+     }
+
+    $ruleToFixtureCount[$rectorTestDirectory->getBasename()] = $fixtureCount;
+}
+
+asort($ruleToFixtureCount);
+
+foreach ($ruleToFixtureCount as $rule => $fixtureCount) {
+    echo ' * ' . $rule . ': ';
+    echo $fixtureCount . PHP_EOL;
+}
+
