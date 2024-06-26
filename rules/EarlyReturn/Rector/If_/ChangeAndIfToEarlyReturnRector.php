@@ -31,7 +31,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\EarlyReturn\Rector\If_\ChangeAndIfToEarlyReturnRector\ChangeAndIfToEarlyReturnRectorTest
+ * @deprecated Since 1.1.2, as this rule creates inverted conditions and makes code much less readable.
  */
 final class ChangeAndIfToEarlyReturnRector extends AbstractRector
 {
