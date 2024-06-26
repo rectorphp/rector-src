@@ -43,7 +43,7 @@ final readonly class VariableRenamer
 
         $hasRenamed = false;
         $currentStmt = null;
-        $currentClosure = null;
+        $currentFunctionLike = null;
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->getStmts(),
@@ -54,7 +54,7 @@ final readonly class VariableRenamer
                 &$isRenamingActive,
                 &$hasRenamed,
                 &$currentStmt,
-                &$currentClosure
+                &$currentFunctionLike
             ): int|null|Variable {
                 // skip param names
                 if ($node instanceof Param) {
@@ -70,8 +70,8 @@ final readonly class VariableRenamer
                     $currentStmt = $node;
                 }
 
-                if ($node instanceof Closure || $node instanceof ArrowFunction) {
-                    $currentClosure = $node;
+                if ($node instanceof FunctionLike) {
+                    $currentFunctionLike = $node;
                 }
 
                 if (! $node instanceof Variable) {
@@ -79,7 +79,7 @@ final readonly class VariableRenamer
                 }
 
                 // TODO: Should be implemented in BreakingVariableRenameGuard::shouldSkipParam()
-                if ($this->isParamInParentFunction($node, $currentClosure)) {
+                if ($this->isParamInParentFunction($node, $currentFunctionLike)) {
                     return null;
                 }
 
@@ -99,9 +99,9 @@ final readonly class VariableRenamer
         return $hasRenamed;
     }
 
-    private function isParamInParentFunction(Variable $variable, null|Closure|ArrowFunction $functionLike): bool
+    private function isParamInParentFunction(Variable $variable, ?FunctionLike $functionLike): bool
     {
-        if (! $functionLike instanceof Closure && ! $functionLike instanceof ArrowFunction) {
+        if (! $functionLike instanceof FunctionLike) {
             return false;
         }
 
