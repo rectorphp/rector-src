@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Application;
 
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use PHPStan\AnalysedCodeException;
 use Rector\Caching\Detector\ChangedFilesDetector;
@@ -14,7 +15,7 @@ use Rector\FileSystem\FilePathHelper;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\PhpParser\Parser\RectorParser;
-use Rector\PhpParser\Printer\FormatPerservingPrinter;
+use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\ValueObject\Application\File;
@@ -34,7 +35,7 @@ final readonly class FileProcessor
     private const OPEN_TAG_SPACED_REGEX = '#^[ \t]+<\?php#m';
 
     public function __construct(
-        private FormatPerservingPrinter $formatPerservingPrinter,
+        private BetterStandardPrinter $betterStandardPrinter,
         private RectorNodeTraverser $rectorNodeTraverser,
         private SymfonyStyle $symfonyStyle,
         private FileDiffFactory $fileDiffFactory,
@@ -134,7 +135,11 @@ final readonly class FileProcessor
     private function printFile(File $file, Configuration $configuration, string $filePath): void
     {
         // only save to string first, no need to print to file when not needed
-        $newContent = $this->formatPerservingPrinter->printParsedStmstAndTokensToString($file);
+        $newContent = $this->betterStandardPrinter->printFormatPreserving(
+            $file->getNewStmts(),
+            $file->getOldStmts(),
+            $file->getOldTokens()
+        );
 
         /**
          * When no diff applied, the PostRector may still change the content, that's why printing still needed
@@ -173,7 +178,7 @@ final readonly class FileProcessor
             return;
         }
 
-        $this->formatPerservingPrinter->dumpFile($filePath, $newContent);
+        FileSystem::write($filePath, $newContent, null);
     }
 
     private function parseFileNodes(File $file): void
