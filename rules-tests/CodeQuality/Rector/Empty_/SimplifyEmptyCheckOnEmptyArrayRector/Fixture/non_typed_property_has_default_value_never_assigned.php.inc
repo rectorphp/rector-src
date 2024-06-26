@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRectorTest\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector\Fixture;
 
 final class NonTypedPropertyHasDefaultValueNeverAssigned
 {
@@ -17,7 +17,7 @@ final class NonTypedPropertyHasDefaultValueNeverAssigned
 -----
 <?php
 
-namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRectorTest\Fixture;
+namespace Rector\Tests\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector\Fixture;
 
 final class NonTypedPropertyHasDefaultValueNeverAssigned
 {
