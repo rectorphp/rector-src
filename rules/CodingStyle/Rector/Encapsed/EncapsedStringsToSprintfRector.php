@@ -17,16 +17,26 @@ use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Type;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector\EncapsedStringsToSprintfRectorTest
  */
-final class EncapsedStringsToSprintfRector extends AbstractRector
+final class EncapsedStringsToSprintfRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    /**
+     * @api
+     * @var string
+     */
+    public const ALWAYS = 'always';
+
+    private bool $always = false;
+
     /**
      * @var array<string, array<class-string<Type>>>
      */
@@ -46,6 +56,12 @@ final class EncapsedStringsToSprintfRector extends AbstractRector
      */
     private array $argumentVariables = [];
 
+    public function configure(array $configuration) : void
+    {
+        $this->always = $configuration[self::ALWAYS] ?? false;
+
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -63,6 +79,23 @@ echo sprintf('Unsupported format %s - use another', $format);
 
 echo 'Try ' . $allowed;
 CODE_SAMPLE
+                ),
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
+echo "Unsupported format {$format} - use another";
+
+echo "Try {$allowed}";
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+echo sprintf('Unsupported format %s - use another', $format);
+
+echo sprintf('Try %s', $allowed);
+CODE_SAMPLE
+                    ,
+                    [
+                        self::ALWAYS => true,
+                    ]
                 ),
             ]
         );
@@ -156,9 +189,11 @@ CODE_SAMPLE
             return $this->nodeFactory->createConcat($argumentVariables);
         }
 
-        $singleValueConcat = $this->createSingleValueEdgeConcat($argumentVariables, $mask);
-        if ($singleValueConcat instanceof Concat) {
-            return $singleValueConcat;
+        if (!$this->always) {
+            $singleValueConcat = $this->createSingleValueEdgeConcat($argumentVariables, $mask);
+            if ($singleValueConcat instanceof Concat) {
+                return $singleValueConcat;
+            }
         }
 
         // checks for windows or linux line ending. \n is contained in both.
