@@ -5,6 +5,9 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Expr\Variable;
 
+/**
+ * @see https://3v4l.org/Ba9fQ
+ */
 class UsedInArrowFunctionParam
 {
     public function run(Foreach_ $node)
@@ -27,6 +30,9 @@ namespace Rector\Tests\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector\Fi
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Expr\Variable;
 
+/**
+ * @see https://3v4l.org/Ba9fQ
+ */
 class UsedInArrowFunctionParam
 {
     public function run(Foreach_ $foreach)
