@@ -7,7 +7,7 @@ final class SkipForeachWithMultidimensionalIndexedArray
     /**
      * @param array<int, array{0: int, 1: string}> $users
      */
-    public function run(array $users)
+    public function run5(array $users)
     {
         foreach ($users as $user) {
             echo $user[0];

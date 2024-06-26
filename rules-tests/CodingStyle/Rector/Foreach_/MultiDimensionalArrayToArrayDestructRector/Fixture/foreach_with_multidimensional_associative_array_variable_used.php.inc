@@ -7,7 +7,7 @@ final class ForeachWithMultiDimensionalAssociativeArrayVariableUsed
     /**
      * @param array<int, array{id: int, name: string, email: list<string>}> $users
      */
-    public function run(array $users)
+    public function run1(array $users)
     {
         foreach ($users as $user) {
             echo $user['id'];
@@ -31,7 +31,7 @@ final class ForeachWithMultiDimensionalAssociativeArrayVariableUsed
     /**
      * @param array<int, array{id: int, name: string, email: list<string>}> $users
      */
-    public function run(array $users)
+    public function run1(array $users)
     {
         foreach ($users as ['id' => $id, 'name' => $name, 'email' => $email1]) {
             echo $id;

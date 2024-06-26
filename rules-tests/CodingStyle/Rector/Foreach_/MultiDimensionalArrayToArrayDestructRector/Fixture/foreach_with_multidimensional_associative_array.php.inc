@@ -7,7 +7,7 @@ final class ForeachWithMultiDimensionalAssociativeArray
     /**
      * @param array<int, array{id: int, name: string}> $users
      */
-    public function run(array $users)
+    public function run2(array $users)
     {
         $translations = [
             'name' => 'Name',
@@ -31,7 +31,7 @@ final class ForeachWithMultiDimensionalAssociativeArray
     /**
      * @param array<int, array{id: int, name: string}> $users
      */
-    public function run(array $users)
+    public function run2(array $users)
     {
         $translations = [
             'name' => 'Name',

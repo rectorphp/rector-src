@@ -7,7 +7,7 @@ final class SkipForeachWithNonMultiDimensionalArray
     /**
      * @param array{id: int, name: string} $userFields
      */
-    public function run(array $userFields)
+    public function run6(array $userFields)
     {
         $translations = [
             'id' => 'ID',

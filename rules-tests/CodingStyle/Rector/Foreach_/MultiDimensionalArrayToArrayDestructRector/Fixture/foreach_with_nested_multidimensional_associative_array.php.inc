@@ -7,7 +7,7 @@ final class ForeachWithNestedMultidimensionalAssociativeArray
     /**
      * @param array<int, array{id: int, name: string, emails: list<string>}> $users
      */
-    public function run(array $users)
+    public function run3(array $users)
     {
         foreach ($users as $user) {
             echo $user['id'];
@@ -31,7 +31,7 @@ final class ForeachWithNestedMultidimensionalAssociativeArray
     /**
      * @param array<int, array{id: int, name: string, emails: list<string>}> $users
      */
-    public function run(array $users)
+    public function run3(array $users)
     {
         foreach ($users as ['id' => $id, 'name' => $name, 'emails' => $emails]) {
             echo $id;
