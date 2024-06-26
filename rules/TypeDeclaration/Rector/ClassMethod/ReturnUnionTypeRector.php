@@ -11,7 +11,6 @@ use PHPStan\Analyser\Scope;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\NodeManipulator\AddUnionReturnType;
 use Rector\ValueObject\PhpVersionFeature;
-use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,8 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnUnionTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly AddUnionReturnType $addUnionReturnType
+        private readonly AddUnionReturnType $addUnionReturnType,
     ) {
     }
 
@@ -88,21 +86,6 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->stmts === null) {
-            return null;
-        }
-
-        if ($node->returnType instanceof Node) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $scope
-        )) {
-            return null;
-        }
-
-        return $this->addUnionReturnType->add($node);
+        return $this->addUnionReturnType->add($node, $scope);
     }
 }

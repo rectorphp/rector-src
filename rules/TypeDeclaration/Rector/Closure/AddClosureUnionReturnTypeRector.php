@@ -6,7 +6,8 @@ namespace Rector\TypeDeclaration\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
-use Rector\Rector\AbstractRector;
+use PHPStan\Analyser\Scope;
+use Rector\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\NodeManipulator\AddUnionReturnType;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -16,7 +17,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureUnionReturnTypeRector\AddClosureUnionReturnTypeRectorTest
  */
-final class AddClosureUnionReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
+final class AddClosureUnionReturnTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly AddUnionReturnType $addUnionReturnType
@@ -66,12 +67,8 @@ CODE_SAMPLE
     /**
      * @param Closure $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType instanceof Node) {
-            return null;
-        }
-
-        return $this->addUnionReturnType->add($node);
+        return $this->addUnionReturnType->add($node, $scope);
     }
 }
