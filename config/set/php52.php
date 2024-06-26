@@ -9,10 +9,7 @@ use Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector;
 use Rector\Removing\ValueObject\RemoveFuncCallArg;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->rules([
-        VarToPublicPropertyRector::class,
-        ContinueToBreakInSwitchRector::class,
-    ]);
+    $rectorConfig->rules([VarToPublicPropertyRector::class, ContinueToBreakInSwitchRector::class]);
 
     $rectorConfig->ruleWithConfiguration(RemoveFuncCallArgRector::class, [
         // see https://www.php.net/manual/en/function.ldap-first-attribute.php

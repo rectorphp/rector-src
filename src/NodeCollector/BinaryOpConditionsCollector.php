@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\BinaryOp;
 
 /**
  * @see \Rector\Tests\NodeCollector\BinaryOpConditionsCollectorTest
- * @deprecated Since 1.1.2, as this rule creates inverted conditions and makes code much less readable.
+ * @deprecated Since 1.1.2, as related rule creates inverted conditions and makes code much less readable.
  */
 final class BinaryOpConditionsCollector
 {
