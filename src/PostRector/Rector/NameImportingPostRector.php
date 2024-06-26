@@ -14,6 +14,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
@@ -25,7 +26,6 @@ use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
-use Rector\Provider\CurrentFileProvider;
 use Rector\ValueObject\Application\File;
 
 final class NameImportingPostRector extends AbstractPostRector

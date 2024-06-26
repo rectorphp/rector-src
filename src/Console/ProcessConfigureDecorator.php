@@ -57,9 +57,7 @@ final class ProcessConfigureDecorator
         );
 
         $command->addOption(Option::DEBUG, null, InputOption::VALUE_NONE, 'Display debug output.');
-
         $command->addOption(Option::MEMORY_LIMIT, null, InputOption::VALUE_REQUIRED, 'Memory limit for process');
-
         $command->addOption(Option::CLEAR_CACHE, null, InputOption::VALUE_NONE, 'Clear unchanged files cache');
 
         $command->addOption(Option::PARALLEL_PORT, null, InputOption::VALUE_REQUIRED);
