@@ -12,7 +12,7 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodeQuality\Rector\FuncCall\BoolvalToTypeCastRector\BoolvalToTypeCastRectorTest
+ * @deprecated Since 1.1.2 as no clear performance difference and both are equivalent.
  */
 final class BoolvalToTypeCastRector extends AbstractRector
 {
