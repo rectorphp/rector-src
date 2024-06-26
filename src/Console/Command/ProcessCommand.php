@@ -97,6 +97,7 @@ final class ProcessCommand extends Command
 
         $this->deprecatedRulesReporter->reportDeprecatedRules();
         $this->deprecatedRulesReporter->reportDeprecatedSkippedRules();
+
         $this->missConfigurationReporter->reportSkippedNeverRegisteredRules();
 
         return $this->resolveReturnCode($processResult, $configuration);
