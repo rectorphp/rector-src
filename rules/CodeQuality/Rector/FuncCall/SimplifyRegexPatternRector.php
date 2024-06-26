@@ -13,8 +13,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog http://php.net/manual/en/function.preg-match.php#105924
- *
  * @see \Rector\Tests\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector\SimplifyRegexPatternRectorTest
  */
 final class SimplifyRegexPatternRector extends AbstractRector

@@ -25,8 +25,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://php.watch/versions/8.0#deprecate-required-param-after-optional
- *
  * @see \Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\OptionalParametersAfterRequiredRectorTest
  */
 final class OptionalParametersAfterRequiredRector extends AbstractScopeAwareRector

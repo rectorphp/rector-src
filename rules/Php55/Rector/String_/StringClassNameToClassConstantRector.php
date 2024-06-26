@@ -22,8 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @changelog https://wiki.php.net/rfc/class_name_scalars https://github.com/symfony/symfony/blob/2.8/UPGRADE-2.8.md#form
- *
  * @see \Rector\Tests\Php55\Rector\String_\StringClassNameToClassConstantRector\StringClassNameToClassConstantRectorTest
  */
 final class StringClassNameToClassConstantRector extends AbstractRector implements MinPhpVersionInterface, ConfigurableRectorInterface
@@ -85,7 +83,7 @@ CODE_SAMPLE
                 [
                     'ClassName',
                     'AnotherClassName',
-                    StringClassNameToClassConstantRector::SHOULD_KEEP_PRE_SLASH => false,
+                    self::SHOULD_KEEP_PRE_SLASH => false,
                 ],
             ),
         ]);

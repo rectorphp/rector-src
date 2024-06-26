@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PhpCsFixer\Fixer\ClassNotation\SelfAccessorFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocTypesFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
@@ -26,10 +25,6 @@ return ECSConfig::configure()
         PhpdocTypesFixer::class => [
             // double to Double false positive
             __DIR__ . '/rules/Php74/Rector/Double/RealToFloatTypeCastRector.php',
-            // skip for enum types
-            __DIR__ . '/rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php',
         ],
-
-        SelfAccessorFixer::class => ['*/*Rector.php'],
     ])
     ->withRootFiles();

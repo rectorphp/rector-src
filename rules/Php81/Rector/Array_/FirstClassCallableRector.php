@@ -36,8 +36,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://php.watch/versions/8.1/first-class-callable-syntax
- *
  * @see \Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\FirstClassCallableRectorTest
  */
 final class FirstClassCallableRector extends AbstractScopeAwareRector implements MinPhpVersionInterface

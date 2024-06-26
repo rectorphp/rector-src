@@ -86,7 +86,7 @@ final class SomeClass
 CODE_SAMPLE
                 ,
                 [
-                    ReturnTypeFromStrictScalarReturnExprRector::HARD_CODED_ONLY => false,
+                    self::HARD_CODED_ONLY => false,
                 ]
             ),
         ]);

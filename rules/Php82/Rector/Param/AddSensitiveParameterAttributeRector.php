@@ -92,7 +92,7 @@ class SomeClass
 CODE_SAMPLE
                     ,
                     [
-                        AddSensitiveParameterAttributeRector::SENSITIVE_PARAMETERS => ['password'],
+                        self::SENSITIVE_PARAMETERS => ['password'],
                     ]
                 ),
 

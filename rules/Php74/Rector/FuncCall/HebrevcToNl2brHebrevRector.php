@@ -15,7 +15,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://www.php.net/manual/en/migration74.deprecated.php#migration74.deprecated.core.hebrevc
  * @see \Rector\Tests\Php74\Rector\FuncCall\HebrevcToNl2brHebrevRector\HebrevcToNl2brHebrevRectorTest
  */
 final class HebrevcToNl2brHebrevRector extends AbstractRector implements MinPhpVersionInterface

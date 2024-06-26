@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\Output;
 
 use Nette\Utils\Strings;
-use Rector\ChangesReporting\Annotation\RectorsChangelogResolver;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
@@ -28,7 +27,6 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
     public function __construct(
         private SymfonyStyle $symfonyStyle,
-        private RectorsChangelogResolver $rectorsChangelogResolver,
     ) {
     }
 
@@ -89,11 +87,9 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             $this->symfonyStyle->newLine();
             $this->symfonyStyle->writeln($fileDiff->getDiffConsoleFormatted());
 
-            $rectorsChangelogsLines = $this->createRectorChangelogLines($fileDiff);
-
             if ($fileDiff->getRectorChanges() !== []) {
                 $this->symfonyStyle->writeln('<options=underscore>Applied rules:</>');
-                $this->symfonyStyle->listing($rectorsChangelogsLines);
+                $this->symfonyStyle->listing($fileDiff->getRectorShortClasses());
                 $this->symfonyStyle->newLine();
             }
         }
@@ -145,21 +141,5 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             $changeCount > 1 ? 's' : '',
             $configuration->isDryRun() ? 'would have changed (dry-run)' : ($changeCount === 1 ? 'has' : 'have') . ' been changed'
         );
-    }
-
-    /**
-     * @return string[]
-     */
-    private function createRectorChangelogLines(FileDiff $fileDiff): array
-    {
-        $rectorsChangelogs = $this->rectorsChangelogResolver->resolveIncludingMissing($fileDiff->getRectorClasses());
-
-        $rectorsChangelogsLines = [];
-        foreach ($rectorsChangelogs as $rectorClass => $changelog) {
-            $rectorShortClass = (string) Strings::after($rectorClass, '\\', -1);
-            $rectorsChangelogsLines[] = $changelog === null ? $rectorShortClass : $rectorShortClass . ' (' . $changelog . ')';
-        }
-
-        return $rectorsChangelogsLines;
     }
 }

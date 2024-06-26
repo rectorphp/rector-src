@@ -60,6 +60,19 @@ final readonly class FileDiff implements SerializableInterface
     }
 
     /**
+     * @return string[]
+     */
+    public function getRectorShortClasses(): array
+    {
+        $rectorShortClasses = [];
+        foreach ($this->getRectorClasses() as $rectorClass) {
+            $rectorShortClasses[] = (string) Strings::after($rectorClass, '\\', -1);
+        }
+
+        return $rectorShortClasses;
+    }
+
+    /**
      * @return array<class-string<RectorInterface>>
      */
     public function getRectorClasses(): array

@@ -14,7 +14,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @changelog https://stackoverflow.com/questions/20043664/de-morgans-law
  * @see \Rector\Tests\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector\SimplifyDeMorganBinaryRectorTest
  */
 final class SimplifyDeMorganBinaryRector extends AbstractRector
