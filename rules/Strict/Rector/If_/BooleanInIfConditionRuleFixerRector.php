@@ -64,7 +64,7 @@ final class NegatedString
 CODE_SAMPLE
                 ,
                 [
-                    BooleanInIfConditionRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+                    self::TREAT_AS_NON_EMPTY => false,
                 ]
             ),
         ]);

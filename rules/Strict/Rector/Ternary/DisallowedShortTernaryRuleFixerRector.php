@@ -58,7 +58,7 @@ final class ShortTernaryArray
 CODE_SAMPLE
                 ,
                 [
-                    DisallowedShortTernaryRuleFixerRector::TREAT_AS_NON_EMPTY => false,
+                    self::TREAT_AS_NON_EMPTY => false,
                 ]
             ),
         ]);
