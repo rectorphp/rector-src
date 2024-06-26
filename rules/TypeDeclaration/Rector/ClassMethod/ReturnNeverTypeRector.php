@@ -6,21 +6,12 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Expr\Yield_;
-use PhpParser\Node\Expr\YieldFrom;
-use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\Node\Stmt\Throw_;
 use PHPStan\Analyser\Scope;
-use Rector\NodeNestingScope\ValueObject\ControlStructure;
-use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\Reflection\ClassModifierChecker;
-use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
+use Rector\TypeDeclaration\NodeManipulator\AddNeverReturnType;
 use Rector\ValueObject\PhpVersionFeature;
-use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -31,10 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnNeverTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
-        private readonly ClassModifierChecker $classModifierChecker,
+        private readonly AddNeverReturnType $addNeverReturnType
     ) {
     }
 
@@ -79,72 +67,11 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($this->shouldSkip($node, $scope)) {
-            return null;
-        }
-
-        $node->returnType = new Identifier('never');
-
-        return $node;
+        return $this->addNeverReturnType->add($node, $scope);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NEVER_TYPE;
-    }
-
-    private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
-    {
-        if ($node->returnType instanceof Node && ! $this->isName($node->returnType, 'void')) {
-            return true;
-        }
-
-        if ($this->hasReturnOrYields($node)) {
-            return true;
-        }
-
-        if (! $this->hasNeverNodesOrNeverFuncCalls($node)) {
-            return true;
-        }
-
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $scope
-        )) {
-            return true;
-        }
-
-        if (! $node->returnType instanceof Node) {
-            return false;
-        }
-
-        // skip as most likely intentional
-        if (! $this->classModifierChecker->isInsideFinalClass($node) && $this->isName($node->returnType, 'void')) {
-            return true;
-        }
-
-        return $this->isName($node->returnType, 'never');
-    }
-
-    private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
-    {
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class)) {
-            return true;
-        }
-
-        return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
-            $node,
-            [Yield_::class, YieldFrom::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
-        );
-    }
-
-    private function hasNeverNodesOrNeverFuncCalls(ClassMethod|Function_|Closure $node): bool
-    {
-        $hasNeverNodes = $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, [Throw_::class]);
-        if ($hasNeverNodes) {
-            return true;
-        }
-
-        return $this->neverFuncCallAnalyzer->hasNeverFuncCall($node);
     }
 }

@@ -1,4 +1,3 @@
-
 <?php
 
 declare(strict_types=1);
@@ -22,16 +21,15 @@ use Rector\Reflection\ClassModifierChecker;
 use Rector\TypeDeclaration\NodeAnalyzer\NeverFuncCallAnalyzer;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 
-final class AddNeverReturnType
+final readonly class AddNeverReturnType
 {
     public function __construct(
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ClassModifierChecker $classModifierChecker,
-        private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver
-    )
-    {
+        private ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private ClassModifierChecker $classModifierChecker,
+        private BetterNodeFinder $betterNodeFinder,
+        private NeverFuncCallAnalyzer $neverFuncCallAnalyzer,
+        private NodeNameResolver $nodeNameResolver
+    ) {
     }
 
     public function add(ClassMethod|Function_|Closure $node, Scope $scope): ClassMethod|Function_|Closure|null
@@ -71,7 +69,10 @@ final class AddNeverReturnType
         }
 
         // skip as most likely intentional
-        if (! $this->classModifierChecker->isInsideFinalClass($node) && $this->nodeNameResolver->isName($node->returnType, 'void')) {
+        if (! $this->classModifierChecker->isInsideFinalClass($node) && $this->nodeNameResolver->isName(
+            $node->returnType,
+            'void'
+        )) {
             return true;
         }
 
