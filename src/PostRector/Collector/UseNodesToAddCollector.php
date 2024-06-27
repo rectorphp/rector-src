@@ -88,9 +88,9 @@ final class UseNodesToAddCollector
     {
         $shortName = $fullyQualifiedObjectType->getShortName();
 
-        foreach ($this->constantUseImportTypes as $fileConstantUseImportType) {
+        foreach ($this->constantUseImportTypes as $constantUseImportType) {
             // don't compare strtolower for use const as insensitive is allowed, see https://3v4l.org/lteVa
-            if ($fileConstantUseImportType->getShortName() === $shortName) {
+            if ($constantUseImportType->getShortName() === $shortName) {
                 return true;
             }
         }
@@ -100,8 +100,8 @@ final class UseNodesToAddCollector
             return true;
         }
 
-        foreach ($this->functionUseImportTypes as $fileFunctionUseImportType) {
-            if (strtolower($fileFunctionUseImportType->getShortName()) === $shortName) {
+        foreach ($this->functionUseImportTypes as $functionUseImportType) {
+            if (strtolower($functionUseImportType->getShortName()) === $shortName) {
                 return true;
             }
         }
@@ -111,20 +111,20 @@ final class UseNodesToAddCollector
 
     public function isImportShortable(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        foreach ($this->useImportTypes as $fileUseImportType) {
-            if ($fullyQualifiedObjectType->equals($fileUseImportType)) {
+        foreach ($this->useImportTypes as $useImportType) {
+            if ($fullyQualifiedObjectType->equals($useImportType)) {
                 return true;
             }
         }
 
-        foreach ($this->constantUseImportTypes as $constantImport) {
-            if ($fullyQualifiedObjectType->equals($constantImport)) {
+        foreach ($this->constantUseImportTypes as $constantUseImportType) {
+            if ($fullyQualifiedObjectType->equals($constantUseImportType)) {
                 return true;
             }
         }
 
-        foreach ($this->functionUseImportTypes as $functionImport) {
-            if ($fullyQualifiedObjectType->equals($functionImport)) {
+        foreach ($this->functionUseImportTypes as $functionUseImportType) {
+            if ($fullyQualifiedObjectType->equals($functionUseImportType)) {
                 return true;
             }
         }
@@ -158,8 +158,8 @@ final class UseNodesToAddCollector
 
     private function isShortClassImported(string $shortName): bool
     {
-        foreach ($this->useImportTypes as $fileUseImport) {
-            if (strtolower($fileUseImport->getShortName()) === $shortName) {
+        foreach ($this->useImportTypes as $useImportType) {
+            if (strtolower($useImportType->getShortName()) === $shortName) {
                 return true;
             }
         }
