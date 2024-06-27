@@ -6,9 +6,7 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\CodingStyle\Application\UseImportsAdder;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
@@ -20,8 +18,7 @@ final class UseAddingPostRector extends AbstractPostRector
     public function __construct(
         private readonly TypeFactory $typeFactory,
         private readonly UseImportsAdder $useImportsAdder,
-        private readonly UseNodesToAddCollector $useNodesToAddCollector,
-        private readonly CurrentFileProvider $currentFileProvider
+        private readonly UseNodesToAddCollector $useNodesToAddCollector
     ) {
     }
 
@@ -44,14 +41,9 @@ final class UseAddingPostRector extends AbstractPostRector
             }
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException();
-        }
-
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath();
-        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath();
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath();
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImports();
+        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImports();
+        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImports();
 
         if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
             return $nodes;
