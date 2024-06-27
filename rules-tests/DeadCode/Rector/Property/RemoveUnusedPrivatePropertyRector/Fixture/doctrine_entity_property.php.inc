@@ -34,6 +34,9 @@ class DoctrineEntityProperty
      * @ORM\Column
      */
     private $unusedAnnotatedProperty;
+
+    #[Id, Column(type: "integer")]
+    private $id = null;
 }
 
 ?>
