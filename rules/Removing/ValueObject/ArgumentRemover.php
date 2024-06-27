@@ -33,10 +33,7 @@ final readonly class ArgumentRemover
         return $this->position;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }

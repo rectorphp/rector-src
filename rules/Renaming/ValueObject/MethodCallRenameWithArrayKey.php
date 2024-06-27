@@ -41,10 +41,7 @@ final readonly class MethodCallRenameWithArrayKey implements MethodCallRenameInt
         return $this->newMethod;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getArrayKey()
+    public function getArrayKey(): mixed
     {
         return $this->arrayKey;
     }
