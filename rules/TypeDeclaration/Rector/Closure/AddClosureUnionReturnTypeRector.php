@@ -35,7 +35,7 @@ function () {
     }
 
     return 'one';
-}
+};
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
@@ -45,7 +45,7 @@ function (): int|string {
     }
 
     return 'one';
-}
+};
 CODE_SAMPLE
             ),
         ]);

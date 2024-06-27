@@ -30,13 +30,13 @@ final class AddClosureVoidReturnTypeWhereNoReturnRector extends AbstractRector i
             new CodeSample(
                 <<<'CODE_SAMPLE'
 function () {
-}
+};
 CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
 function (): void {
-}
+};
 CODE_SAMPLE
             ),
         ]);
