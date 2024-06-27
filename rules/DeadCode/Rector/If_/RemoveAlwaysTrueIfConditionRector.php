@@ -11,13 +11,13 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
-use PHPStan\Node\StaticMethodCallableNode;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
@@ -150,7 +150,7 @@ CODE_SAMPLE
                 StaticPropertyFetch::class,
                 ArrayDimFetch::class,
                 MethodCall::class,
-                StaticMethodCallableNode::class,
+                StaticCall::class,
             ]
         );
     }
