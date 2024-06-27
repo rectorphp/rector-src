@@ -121,6 +121,7 @@ CODE_SAMPLE
                 }
             }
 
+            $hasChanged = false;
             foreach ($node->getArgs() as $key => $arg) {
                 if (! in_array($key, $callableArgs, true)) {
                     continue;
@@ -134,9 +135,10 @@ CODE_SAMPLE
                     new FuncCall(new Name($arg->value->value), [new VariadicPlaceholder()]),
                     name: $arg->name
                 );
+                $hasChanged = true;
             }
 
-            return $node;
+            return $hasChanged ? $node : null;
         }
 
         if ($node instanceof Property || $node instanceof ClassConst) {
