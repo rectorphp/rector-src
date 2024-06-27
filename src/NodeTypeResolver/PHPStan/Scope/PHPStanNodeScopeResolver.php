@@ -119,7 +119,11 @@ final class PHPStanNodeScopeResolver
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $hasUnreachableStatementNode = false;
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath, &$hasUnreachableStatementNode): void {
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
+            &$nodeCallback,
+            $filePath,
+            &$hasUnreachableStatementNode
+        ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
