@@ -8,7 +8,7 @@ use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class ComplexRenameClassRectorTest extends AbstractRectorTestCase
+final class RenameClassAndMethodTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void
@@ -18,7 +18,7 @@ final class ComplexRenameClassRectorTest extends AbstractRectorTestCase
 
     public static function provideData(): Iterator
     {
-        return self::yieldFilesFromDirectory(__DIR__ . '/ComplexFixture');
+        return self::yieldFilesFromDirectory(__DIR__ . '/FixtureRenameClassAndMethod');
     }
 
     public function provideConfigFilePath(): string
