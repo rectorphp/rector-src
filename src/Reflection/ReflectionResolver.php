@@ -32,6 +32,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\MethodName;
+use PHPStan\Type\TypeCombinator;
 
 final readonly class ReflectionResolver
 {
@@ -141,6 +142,11 @@ final readonly class ReflectionResolver
     public function resolveMethodReflectionFromMethodCall(MethodCall $methodCall): ?MethodReflection
     {
         $callerType = $this->nodeTypeResolver->getType($methodCall->var);
+
+        if ($callerType instanceof \PHPStan\Type\BenevolentUnionType) {
+            $callerType = TypeCombinator::removeFalsey($callerType);
+        }
+
         if (! $callerType instanceof TypeWithClassName) {
             return null;
         }
