@@ -4,9 +4,11 @@
 
 declare(strict_types=1);
 
+use Symfony\Component\Finder\Finder;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$finder = \Symfony\Component\Finder\Finder::create()
+$finder = Finder::create()
     ->in(__DIR__ . '/../rules-tests')
     ->directories()
     ->name('#Rector$#')
@@ -19,7 +21,7 @@ foreach ($finder as $rectorTestDirectory) {
         continue;
     }
 
-    $fixtureCount = \Symfony\Component\Finder\Finder::create()
+    $fixtureCount = Finder::create()
         ->files()
         ->name('*.php.inc')
         ->in($rectorTestDirectory->getPathname())
