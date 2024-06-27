@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Reflection;
 
+use PHPStan\Type\BenevolentUnionType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -143,7 +144,7 @@ final readonly class ReflectionResolver
     {
         $callerType = $this->nodeTypeResolver->getType($methodCall->var);
 
-        if ($callerType instanceof \PHPStan\Type\BenevolentUnionType) {
+        if ($callerType instanceof BenevolentUnionType) {
             $callerType = TypeCombinator::removeFalsey($callerType);
         }
 
