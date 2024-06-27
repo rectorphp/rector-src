@@ -11,7 +11,6 @@ use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\ValueObject\Application\File;
 
 final class UseAddingPostRector extends AbstractPostRector
 {
