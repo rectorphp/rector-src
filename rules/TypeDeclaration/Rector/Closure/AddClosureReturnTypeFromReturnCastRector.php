@@ -26,7 +26,7 @@ final class AddClosureReturnTypeFromReturnCastRector extends AbstractScopeAwareR
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add return type to closure like with return cast', [
+        return new RuleDefinition('Add return type to closure with return cast', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 function ($param) {
