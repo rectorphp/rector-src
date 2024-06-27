@@ -9,4 +9,3 @@ final class Baz
         return 5;
     }
 }
-?>

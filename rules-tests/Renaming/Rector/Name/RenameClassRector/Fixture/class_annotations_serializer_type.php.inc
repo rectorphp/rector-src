@@ -10,6 +10,11 @@ class ClassAnnotationsSerializerIterableType
      * @Serializer\Type("array<Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass>")
      */
     public $flights = [];
+
+    /**
+     * @Serializer\Type("Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\OldClass")
+     */
+    public $time;
 }
 
 ?>
@@ -26,6 +31,11 @@ class ClassAnnotationsSerializerIterableType
      * @Serializer\Type("array<Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass>")
      */
     public $flights = [];
+
+    /**
+     * @Serializer\Type("Rector\Tests\Renaming\Rector\Name\RenameClassRector\Source\NewClass")
+     */
+    public $time;
 }
 
 ?>

@@ -15,5 +15,3 @@ final class DoNotReplaceInterfaceCall
         return $dateTime;
     }
 }
-
-?>

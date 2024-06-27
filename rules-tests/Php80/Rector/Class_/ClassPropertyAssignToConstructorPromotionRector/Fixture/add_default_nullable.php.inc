@@ -6,9 +6,14 @@ final class AddDefaultNullable
 {
     public $name;
 
-    public function __construct(string $name = null)
-    {
+    public $surname;
+
+    public function __construct(
+        string $name = null,
+        string|false $surname = null
+    ) {
         $this->name = $name;
+        $this->surname = $surname;
     }
 }
 
@@ -20,7 +25,7 @@ namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromo
 
 final class AddDefaultNullable
 {
-    public function __construct(public ?string $name = null)
+    public function __construct(public ?string $name = null, public string|false|null $surname = null)
     {
     }
 }
