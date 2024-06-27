@@ -11,5 +11,3 @@ class ClassToInterface extends SomeBasicDateTime
         $oldClassWithTypo = new SomeBasicDateTime;
     }
 }
-
-?>
