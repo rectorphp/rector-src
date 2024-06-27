@@ -8,13 +8,7 @@ interface ReplaceArgumentDefaultValueInterface
 {
     public function getPosition(): int;
 
-    /**
-     * @return mixed
-     */
-    public function getValueBefore();
+    public function getValueBefore(): mixed;
 
-    /**
-     * @return mixed
-     */
-    public function getValueAfter();
+    public function getValueAfter(): mixed;
 }

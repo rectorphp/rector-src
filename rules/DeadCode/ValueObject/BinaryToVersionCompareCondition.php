@@ -25,10 +25,7 @@ final readonly class BinaryToVersionCompareCondition implements ConditionInterfa
         return $this->binaryClass;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getExpectedValue()
+    public function getExpectedValue(): mixed
     {
         return $this->expectedValue;
     }
