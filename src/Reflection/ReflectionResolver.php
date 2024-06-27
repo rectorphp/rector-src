@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Reflection;
 
+use PHPStan\Type\BenevolentUnionType;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -32,6 +33,7 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\AstResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\MethodName;
+use PHPStan\Type\TypeCombinator;
 
 final readonly class ReflectionResolver
 {
@@ -141,6 +143,11 @@ final readonly class ReflectionResolver
     public function resolveMethodReflectionFromMethodCall(MethodCall $methodCall): ?MethodReflection
     {
         $callerType = $this->nodeTypeResolver->getType($methodCall->var);
+
+        if ($callerType instanceof BenevolentUnionType) {
+            $callerType = TypeCombinator::removeFalsey($callerType);
+        }
+
         if (! $callerType instanceof TypeWithClassName) {
             return null;
         }
