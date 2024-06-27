@@ -5,67 +5,53 @@ declare(strict_types=1);
 namespace Rector\PostRector\Collector;
 
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name\FullyQualified;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\ValueObject\Application\File;
 
 final class UseNodesToAddCollector
 {
     /**
-     * @var array<string, FullyQualifiedObjectType[]>
+     * @var FullyQualifiedObjectType[]
      */
     private array $constantUseImportTypesInFilePath = [];
 
     /**
-     * @var array<string, FullyQualifiedObjectType[]>
+     * @var FullyQualifiedObjectType[]
      */
     private array $functionUseImportTypesInFilePath = [];
 
     /**
-     * @var array<string, FullyQualifiedObjectType[]>
+     * @var FullyQualifiedObjectType[]
      */
     private array $useImportTypesInFilePath = [];
 
     public function __construct(
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
 
     public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
-        $this->useImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
+        $this->useImportTypesInFilePath[] = $fullyQualifiedObjectType;
     }
 
     public function addConstantUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
-        $this->constantUseImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
+        $this->constantUseImportTypesInFilePath[] = $fullyQualifiedObjectType;
     }
 
     public function addFunctionUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
-        $this->functionUseImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
+        $this->functionUseImportTypesInFilePath[] = $fullyQualifiedObjectType;
     }
 
     /**
      * @return AliasedObjectType[]|FullyQualifiedObjectType[]
      */
-    public function getUseImportTypesByNode(File $file): array
+    public function getUseImportTypesByNode(): array
     {
-        $filePath = $file->getFilePath();
-        $objectTypes = $this->useImportTypesInFilePath[$filePath] ?? [];
+        $objectTypes = $this->useImportTypesInFilePath;
 
         $uses = $this->useImportsResolver->resolve();
 
@@ -85,11 +71,9 @@ final class UseNodesToAddCollector
     }
 
     public function hasImport(
-        File $file,
-        FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): bool {
-        $useImports = $this->getUseImportTypesByNode($file);
+        $useImports = $this->getUseImportTypesByNode();
 
         foreach ($useImports as $useImport) {
             if ($useImport->equals($fullyQualifiedObjectType)) {
@@ -100,12 +84,11 @@ final class UseNodesToAddCollector
         return false;
     }
 
-    public function isShortImported(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
+    public function isShortImported(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
         $shortName = $fullyQualifiedObjectType->getShortName();
-        $filePath = $file->getFilePath();
 
-        $fileConstantUseImportTypes = $this->constantUseImportTypesInFilePath[$filePath] ?? [];
+        $fileConstantUseImportTypes = $this->constantUseImportTypesInFilePath;
 
         foreach ($fileConstantUseImportTypes as $fileConstantUseImportType) {
             // don't compare strtolower for use const as insensitive is allowed, see https://3v4l.org/lteVa
@@ -115,11 +98,11 @@ final class UseNodesToAddCollector
         }
 
         $shortName = strtolower($shortName);
-        if ($this->isShortClassImported($filePath, $shortName)) {
+        if ($this->isShortClassImported($shortName)) {
             return true;
         }
 
-        $fileFunctionUseImportTypes = $this->functionUseImportTypesInFilePath[$filePath] ?? [];
+        $fileFunctionUseImportTypes = $this->functionUseImportTypesInFilePath;
         foreach ($fileFunctionUseImportTypes as $fileFunctionUseImportType) {
             if (strtolower($fileFunctionUseImportType->getShortName()) === $shortName) {
                 return true;
@@ -129,10 +112,9 @@ final class UseNodesToAddCollector
         return false;
     }
 
-    public function isImportShortable(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): bool
+    public function isImportShortable(FullyQualifiedObjectType $fullyQualifiedObjectType): bool
     {
-        $filePath = $file->getFilePath();
-        $fileUseImportTypes = $this->useImportTypesInFilePath[$filePath] ?? [];
+        $fileUseImportTypes = $this->useImportTypesInFilePath;
 
         foreach ($fileUseImportTypes as $fileUseImportType) {
             if ($fullyQualifiedObjectType->equals($fileUseImportType)) {
@@ -140,14 +122,14 @@ final class UseNodesToAddCollector
             }
         }
 
-        $constantImports = $this->constantUseImportTypesInFilePath[$filePath] ?? [];
+        $constantImports = $this->constantUseImportTypesInFilePath;
         foreach ($constantImports as $constantImport) {
             if ($fullyQualifiedObjectType->equals($constantImport)) {
                 return true;
             }
         }
 
-        $functionImports = $this->functionUseImportTypesInFilePath[$filePath] ?? [];
+        $functionImports = $this->functionUseImportTypesInFilePath;
         foreach ($functionImports as $functionImport) {
             if ($fullyQualifiedObjectType->equals($functionImport)) {
                 return true;
@@ -160,30 +142,30 @@ final class UseNodesToAddCollector
     /**
      * @return AliasedObjectType[]|FullyQualifiedObjectType[]
      */
-    public function getObjectImportsByFilePath(string $filePath): array
+    public function getObjectImportsByFilePath(): array
     {
-        return $this->useImportTypesInFilePath[$filePath] ?? [];
+        return $this->useImportTypesInFilePath;
     }
 
     /**
      * @return FullyQualifiedObjectType[]
      */
-    public function getConstantImportsByFilePath(string $filePath): array
+    public function getConstantImportsByFilePath(): array
     {
-        return $this->constantUseImportTypesInFilePath[$filePath] ?? [];
+        return $this->constantUseImportTypesInFilePath;
     }
 
     /**
      * @return FullyQualifiedObjectType[]
      */
-    public function getFunctionImportsByFilePath(string $filePath): array
+    public function getFunctionImportsByFilePath(): array
     {
-        return $this->functionUseImportTypesInFilePath[$filePath] ?? [];
+        return $this->functionUseImportTypesInFilePath;
     }
 
-    private function isShortClassImported(string $filePath, string $shortName): bool
+    private function isShortClassImported(string $shortName): bool
     {
-        $fileUseImports = $this->useImportTypesInFilePath[$filePath] ?? [];
+        $fileUseImports = $this->useImportTypesInFilePath;
 
         foreach ($fileUseImports as $fileUseImport) {
             if (strtolower($fileUseImport->getShortName()) === $shortName) {
@@ -192,5 +174,12 @@ final class UseNodesToAddCollector
         }
 
         return false;
+    }
+
+    public function reset(): void
+    {
+        $this->useImportTypesInFilePath = [];
+        $this->constantUseImportTypesInFilePath = [];
+        $this->functionUseImportTypesInFilePath = [];
     }
 }

@@ -49,9 +49,9 @@ final class UseAddingPostRector extends AbstractPostRector
             throw new ShouldNotHappenException();
         }
 
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
-        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath($file->getFilePath());
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath($file->getFilePath());
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath();
+        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath();
+        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath();
 
         if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
             return $nodes;
@@ -75,6 +75,16 @@ final class UseAddingPostRector extends AbstractPostRector
             $functionUseImportTypes,
             $rootNode
         );
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     * @return Stmt[]
+     */
+    public function afterTraverse(array $nodes)
+    {
+        $this->useNodesToAddCollector->reset();
+        return $nodes;
     }
 
     /**

@@ -79,15 +79,15 @@ final readonly class NameImporter
             return null;
         }
 
-        if ($this->useNodesToAddCollector->isShortImported($file, $fullyQualifiedObjectType)) {
-            if ($this->useNodesToAddCollector->isImportShortable($file, $fullyQualifiedObjectType)) {
+        if ($this->useNodesToAddCollector->isShortImported($fullyQualifiedObjectType)) {
+            if ($this->useNodesToAddCollector->isImportShortable($fullyQualifiedObjectType)) {
                 return $fullyQualifiedObjectType->getShortNameNode();
             }
 
             return null;
         }
 
-        $this->addUseImport($file, $fullyQualified, $fullyQualifiedObjectType);
+        $this->addUseImport($fullyQualified, $fullyQualifiedObjectType);
         return $fullyQualifiedObjectType->getShortNameNode();
     }
 
@@ -105,11 +105,10 @@ final readonly class NameImporter
     }
 
     private function addUseImport(
-        File $file,
         FullyQualified $fullyQualified,
         FullyQualifiedObjectType $fullyQualifiedObjectType
     ): void {
-        if ($this->useNodesToAddCollector->hasImport($file, $fullyQualified, $fullyQualifiedObjectType)) {
+        if ($this->useNodesToAddCollector->hasImport($fullyQualifiedObjectType)) {
             return;
         }
 
