@@ -4,7 +4,7 @@ namespace Rector\Tests\Php81\Rector\Property\ReadOnlyPropertyRector\Fixture;
 
 use PDO;
 
-class SkipUsedAsPassByReference
+class SkipUsedAsPassByReferenceFalsy
 {
     public function __construct(
         private int $id
