@@ -161,7 +161,10 @@ CODE_SAMPLE
         /** @var Arg $arg1 */
         $arg1 = $new->args[1];
         if ($arg1->name instanceof Identifier && $arg1->name->toString() === 'previous') {
-            $new->args[1] = new Arg(new MethodCall($catchedThrowableVariable, 'getCode'));
+            $new->args[1] = new Arg(
+                new MethodCall($catchedThrowableVariable, 'getCode'),
+                name: $shouldUseNamedArguments ? new Identifier('code') : null
+            );
             $new->args[$exceptionArgumentPosition] = $arg1;
         } else {
             $new->args[$exceptionArgumentPosition] = new Arg(
