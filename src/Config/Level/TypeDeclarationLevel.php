@@ -39,6 +39,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
+use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromReturnCastRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureUnionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
@@ -75,6 +76,7 @@ final class TypeDeclarationLevel
         ReturnTypeFromStrictScalarReturnExprRector::class,
         ReturnTypeFromReturnDirectArrayRector::class,
         ReturnTypeFromReturnNewRector::class,
+        AddClosureReturnTypeFromReturnCastRector::class,
         ReturnTypeFromReturnCastRector::class,
         ReturnTypeFromSymfonySerializerRector::class,
 
