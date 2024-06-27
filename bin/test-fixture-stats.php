@@ -25,10 +25,10 @@ foreach ($finder as $rectorTestDirectory) {
         ->in($rectorTestDirectory->getPathname())
         ->count();
 
-     // very few fixture files, not relevant
-     if ($fixtureCount <= 15) {
-         continue;
-     }
+    // very few fixture files, not relevant
+    if ($fixtureCount <= 15) {
+        continue;
+    }
 
     $ruleToFixtureCount[$rectorTestDirectory->getBasename()] = $fixtureCount;
 }
@@ -39,4 +39,3 @@ foreach ($ruleToFixtureCount as $rule => $fixtureCount) {
     echo ' * ' . $rule . ': ';
     echo $fixtureCount . PHP_EOL;
 }
-
