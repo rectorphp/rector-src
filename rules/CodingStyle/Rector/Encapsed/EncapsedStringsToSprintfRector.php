@@ -35,8 +35,6 @@ final class EncapsedStringsToSprintfRector extends AbstractRector implements Con
      */
     public const ALWAYS = 'always';
 
-    private bool $always = false;
-
     /**
      * @var array<string, array<class-string<Type>>>
      */
@@ -49,6 +47,8 @@ final class EncapsedStringsToSprintfRector extends AbstractRector implements Con
         ],
     ];
 
+    private bool $always = false;
+
     private string $sprintfFormat = '';
 
     /**
@@ -56,7 +56,7 @@ final class EncapsedStringsToSprintfRector extends AbstractRector implements Con
      */
     private array $argumentVariables = [];
 
-    public function configure(array $configuration) : void
+    public function configure(array $configuration): void
     {
         $this->always = $configuration[self::ALWAYS] ?? false;
 
@@ -189,7 +189,7 @@ CODE_SAMPLE
             return $this->nodeFactory->createConcat($argumentVariables);
         }
 
-        if (!$this->always) {
+        if (! $this->always) {
             $singleValueConcat = $this->createSingleValueEdgeConcat($argumentVariables, $mask);
             if ($singleValueConcat instanceof Concat) {
                 return $singleValueConcat;

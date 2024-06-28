@@ -9,6 +9,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -18,9 +19,7 @@ use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\ObjectType;
-use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\PropertyNaming;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
@@ -40,8 +39,6 @@ final class CatchExceptionNameMatchingTypeRector extends AbstractRector
 
     public function __construct(
         private readonly PropertyNaming $propertyNaming,
-        private readonly AliasNameResolver $aliasNameResolver,
-        private readonly UseImportsResolver $useImportsResolver
     ) {
     }
 
@@ -107,7 +104,6 @@ CODE_SAMPLE
         }
 
         $hasChanged = false;
-        $uses = null;
 
         foreach ($node->stmts as $key => $stmt) {
             if ($this->shouldSkip($stmt)) {
@@ -129,18 +125,7 @@ CODE_SAMPLE
             /** @var string $oldVariableName */
             $oldVariableName = (string) $this->getName($catchVar);
 
-            if ($uses === null) {
-                $uses = $this->useImportsResolver->resolve();
-            }
-
-            $type = $catch->types[0];
-            $typeShortName = $this->nodeNameResolver->getShortName($type);
-            $aliasName = $this->aliasNameResolver->resolveByName($type, $uses);
-
-            if (is_string($aliasName)) {
-                $typeShortName = $aliasName;
-            }
-
+            $typeShortName = $this->resolveVariableName($catch->types[0]);
             $newVariableName = $this->resolveNewVariableName($typeShortName);
 
             $objectType = new ObjectType($newVariableName);
@@ -290,5 +275,17 @@ CODE_SAMPLE
         $key += 2;
 
         $this->replaceNextUsageVariable($oldVariableName, $newVariableName, $key, $stmts, $nextNode);
+    }
+
+    private function resolveVariableName(Name $name): string
+    {
+        $originalName = $name->getAttribute(AttributeKey::ORIGINAL_NAME);
+
+        // this allows to respect the name alias, if used
+        if ($originalName instanceof Name) {
+            return $originalName->toString();
+        }
+
+        return $name->toString();
     }
 }
