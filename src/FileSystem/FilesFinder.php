@@ -13,6 +13,12 @@ use Symfony\Component\Finder\Finder;
  */
 final readonly class FilesFinder
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/3NwDLo/1
+     */
+    private const OPEN_SHORTTAG_REGEX = '#^\<\?=#';
+
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
         private UnchangedFilesFilter $unchangedFilesFilter,
@@ -34,7 +40,8 @@ final readonly class FilesFinder
 
         // exclude short "<?=" tags as lead to invalid changes
         $files = array_filter($files, static function (string $file): bool {
-            $fileContents = file_get_contents($file);
+            // @ on purpose to deal with broken symlinks
+            $fileContents = @file_get_contents($file);
             if (! is_string($fileContents)) {
                 return true;
             }
@@ -78,7 +85,7 @@ final readonly class FilesFinder
             // skip empty files
             ->size('> 0')
             // changes in PHP files with short echo tag will mostly create invalid code, "<?php" tags are required
-            ->notContains('<?=')
+            ->notContains(self::OPEN_SHORTTAG_REGEX)
             ->in($directories);
 
         if ($sortByName) {
