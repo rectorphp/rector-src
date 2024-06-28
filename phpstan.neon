@@ -301,7 +301,3 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
-        # on purpose to allow checking broken symlinks on windows
-        -
-            message: '#"@file_get_contents\(\$file\)" is forbidden to use#'
-            path: src/FileSystem/FilesFinder.php

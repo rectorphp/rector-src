@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\FileSystem;
 
+use Nette\Utils\FileSystem;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Skipper\Skipper\PathSkipper;
 use Symfony\Component\Finder\Finder;
@@ -40,12 +41,7 @@ final readonly class FilesFinder
 
         // exclude short "<?=" tags as lead to invalid changes
         $files = array_filter($files, static function (string $file): bool {
-            // @ on purpose to deal with broken symlinks
-            $fileContents = @file_get_contents($file);
-            if (! is_string($fileContents)) {
-                return true;
-            }
-
+            $fileContents = FileSystem::read($file);
             return ! str_starts_with($fileContents, '<?=');
         });
 
