@@ -8,23 +8,18 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\NodeTraverser;
 use Rector\Application\Provider\CurrentFileProvider;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Configuration\Option;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\ValueObject\Application\File;
 
@@ -32,56 +27,30 @@ final class NameImportingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NameImporter $nameImporter,
-        private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
-        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
-    public function enterNode(Node $node): ?Node
+    // @todo use refactorWithFile() with use of File directly
+    public function enterNode(Node $node): Node|int|null
     {
-        if (! $node instanceof Stmt && ! $node instanceof Param && ! $node instanceof FullyQualified) {
-            return null;
-        }
-
-        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+        if (! $node instanceof FullyQualified) {
             return null;
         }
 
         $file = $this->currentFileProvider->getFile();
         if (! $file instanceof File) {
-            return null;
+            throw new ShouldNotHappenException();
         }
 
         if ($this->shouldSkipFileWithoutNamespace($file)) {
-            return null;
+            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
 
-        if ($node instanceof FullyQualified) {
-            return $this->processNodeName($node, $file);
-        }
-
-        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
-        if (! $shouldImportDocBlocks) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return null;
-        }
-
-        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
-        if (! $hasDocChanged) {
-            return null;
-        }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-        return $node;
+        return $this->processNodeName($node, $file);
     }
 
     private function shouldSkipFileWithoutNamespace(File $file): bool
