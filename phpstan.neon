@@ -232,9 +232,6 @@ parameters:
         # dev rule
         - '#Class "Rector\\Utils\\Rector\\MoveAbstractRectorToChildrenRector" is missing @see annotation with test case class reference#'
 
-        # to be extended
-        - '#Interface "Rector\\Set\\Contract\\SetInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
-
         # optional as changes behavior, should be used explicitly outside PHP upgrade
         - '#Register "Rector\\Php73\\Rector\\FuncCall\\JsonThrowOnErrorRector" service to "php73\.php" config set#'
 
@@ -251,11 +248,6 @@ parameters:
                  - src/CustomRules/SimpleNodeDumper.php
                  - src/PhpDocParser/PhpDocParser/PhpDocNodeTraverser.php
                  - src/Testing/PHPUnit/AbstractTestCase.php
-
-        # way to invoke repeated quesitons in symfony
-        -
-            message: '#While loop condition is always true#'
-            path: src/Console/Command/DetectNodeCommand.php
 
         # known node variables
         -
@@ -293,6 +285,9 @@ parameters:
         -
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/Reflection/ClassModifierChecker.php
+
+        # node / stmts
+        - '#Parameter \#3 \$stmts of method Rector\\PostRector\\Application\\PostFileProcessor\:\:shouldSkipPostRector\(\) expects array<PhpParser\\Node\\Stmt>, array<PhpParser\\Node> given#'
 
         # false positive - should be fixed
         -

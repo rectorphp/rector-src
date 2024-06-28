@@ -13,15 +13,12 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\NodeTraverser;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\ValueObject\Application\File;
 
 final class NameImportingPostRector extends AbstractPostRector
@@ -36,23 +33,30 @@ final class NameImportingPostRector extends AbstractPostRector
     ) {
     }
 
-    // @todo use refactorWithFile() with use of File directly
     public function enterNode(Node $node): Node|int|null
     {
         if (! $node instanceof FullyQualified) {
             return null;
         }
 
+        if ($node->isSpecialClassName()) {
+            return null;
+        }
+
+        $currentUses = $this->useImportsResolver->resolve();
+        if ($this->classNameImportSkipper->shouldSkipName($node, $currentUses)) {
+            return null;
+        }
+
+        // make use of existing use import
+        $nameInUse = $this->resolveNameInUse($node, $currentUses);
+        if ($nameInUse instanceof Name) {
+            return $nameInUse;
+        }
+
+        /** @var File $file */
         $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException();
-        }
-
-        if ($this->shouldSkipFileWithoutNamespace($file)) {
-            return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-        }
-
-        return $this->processNodeName($node, $file);
+        return $this->nameImporter->importName($node, $file);
     }
 
     /**
@@ -60,47 +64,14 @@ final class NameImportingPostRector extends AbstractPostRector
      */
     public function shouldTraverse(array $stmts): bool
     {
-        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
-    }
+        $namespaces = $this->betterNodeFinder->findInstanceOf($stmts, Namespace_::class);
 
-    private function shouldSkipFileWithoutNamespace(File $file): bool
-    {
-        $firstStmt = current($file->getNewStmts());
-        if (! $firstStmt instanceof FileWithoutNamespace) {
+        // skip if 2 namespaces are present
+        if (count($namespaces) > 1) {
             return false;
         }
 
-        $currentStmt = current($firstStmt->stmts);
-        return $currentStmt instanceof InlineHTML || $currentStmt === false;
-    }
-
-    private function processNodeName(FullyQualified $fullyQualified, File $file): ?Node
-    {
-        if ($fullyQualified->isSpecialClassName()) {
-            return null;
-        }
-
-        $namespaces = array_filter(
-            $file->getNewStmts(),
-            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
-        );
-
-        if (count($namespaces) > 1) {
-            return null;
-        }
-
-        /** @var Use_[]|GroupUse[] $currentUses */
-        $currentUses = $this->useImportsResolver->resolve();
-        if ($this->classNameImportSkipper->shouldSkipName($fullyQualified, $currentUses)) {
-            return null;
-        }
-
-        $nameInUse = $this->resolveNameInUse($fullyQualified, $currentUses);
-        if ($nameInUse instanceof Name) {
-            return $nameInUse;
-        }
-
-        return $this->nameImporter->importName($fullyQualified, $file);
+        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 
     /**
@@ -113,14 +84,6 @@ final class NameImportingPostRector extends AbstractPostRector
             return new Name($aliasName);
         }
 
-        return $this->resolveLongNameInUseName($fullyQualified, $currentUses);
-    }
-
-    /**
-     * @param Use_[]|GroupUse[] $currentUses
-     */
-    private function resolveLongNameInUseName(FullyQualified $fullyQualified, array $currentUses): ?Name
-    {
         if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
             return null;
         }
