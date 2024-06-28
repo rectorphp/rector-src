@@ -32,20 +32,16 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
-        $rootNode = null;
-        foreach ($nodes as $node) {
-            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
-                $rootNode = $node;
-                break;
-            }
-        }
+        $rootNode = $this->resolveRootNode($nodes);
 
         $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($this->getFile()->getFilePath());
         $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath(
-            $this->getFile()->getFilePath()
+            $this->getFile()
+                ->getFilePath()
         );
         $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
-            $this->getFile()->getFilePath()
+            $this->getFile()
+                ->getFilePath()
         );
 
         if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
@@ -130,5 +126,19 @@ final class UseAddingPostRector extends AbstractPostRector
         }
 
         return $namespacedUseImportTypes;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function resolveRootNode(array $nodes): Namespace_|FileWithoutNamespace|null
+    {
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                return $node;
+            }
+        }
+
+        return null;
     }
 }
