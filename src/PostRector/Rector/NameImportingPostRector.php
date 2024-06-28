@@ -8,120 +8,70 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Application\Provider\CurrentFileProvider;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Configuration\Option;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
-use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\ValueObject\Application\File;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NameImporter $nameImporter,
-        private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
-    public function enterNode(Node $node): ?Node
+    public function enterNode(Node $node): Node|int|null
     {
-        if (! $node instanceof Stmt && ! $node instanceof Param && ! $node instanceof FullyQualified) {
+        if (! $node instanceof FullyQualified) {
             return null;
         }
 
-        if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
+        if ($node->isSpecialClassName()) {
             return null;
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        if ($this->shouldSkipFileWithoutNamespace($file)) {
-            return null;
-        }
-
-        if ($node instanceof FullyQualified) {
-            return $this->processNodeName($node, $file);
-        }
-
-        $shouldImportDocBlocks = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES);
-        if (! $shouldImportDocBlocks) {
-            return null;
-        }
-
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNode($node);
-        if (! $phpDocInfo instanceof PhpDocInfo) {
-            return null;
-        }
-
-        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
-        if (! $hasDocChanged) {
-            return null;
-        }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-        return $node;
-    }
-
-    private function shouldSkipFileWithoutNamespace(File $file): bool
-    {
-        $firstStmt = current($file->getNewStmts());
-        if (! $firstStmt instanceof FileWithoutNamespace) {
-            return false;
-        }
-
-        $currentStmt = current($firstStmt->stmts);
-        return $currentStmt instanceof InlineHTML || $currentStmt === false;
-    }
-
-    private function processNodeName(FullyQualified $fullyQualified, File $file): ?Node
-    {
-        if ($fullyQualified->isSpecialClassName()) {
-            return null;
-        }
-
-        $namespaces = array_filter(
-            $file->getNewStmts(),
-            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_
-        );
-
-        if (count($namespaces) > 1) {
-            return null;
-        }
-
-        /** @var Use_[]|GroupUse[] $currentUses */
         $currentUses = $this->useImportsResolver->resolve();
-        if ($this->classNameImportSkipper->shouldSkipName($fullyQualified, $currentUses)) {
+        if ($this->classNameImportSkipper->shouldSkipName($node, $currentUses)) {
             return null;
         }
 
-        $nameInUse = $this->resolveNameInUse($fullyQualified, $currentUses);
+        // make use of existing use import
+        $nameInUse = $this->resolveNameInUse($node, $currentUses);
         if ($nameInUse instanceof Name) {
             return $nameInUse;
         }
 
-        return $this->nameImporter->importName($fullyQualified, $file);
+        /** @var File $file */
+        $file = $this->currentFileProvider->getFile();
+        return $this->nameImporter->importName($node, $file);
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    public function shouldTraverse(array $stmts): bool
+    {
+        $namespaces = $this->betterNodeFinder->findInstanceOf($stmts, Namespace_::class);
+
+        // skip if 2 namespaces are present
+        if (count($namespaces) > 1) {
+            return false;
+        }
+
+        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 
     /**
@@ -134,14 +84,6 @@ final class NameImportingPostRector extends AbstractPostRector
             return new Name($aliasName);
         }
 
-        return $this->resolveLongNameInUseName($fullyQualified, $currentUses);
-    }
-
-    /**
-     * @param Use_[]|GroupUse[] $currentUses
-     */
-    private function resolveLongNameInUseName(FullyQualified $fullyQualified, array $currentUses): ?Name
-    {
         if (substr_count($fullyQualified->toCodeString(), '\\') === 1) {
             return null;
         }
