@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use Rector\NodeTypeResolver\PhpDocNodeVisitor\NameImportingPhpDocNodeVisitor;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
+use Rector\ValueObject\Application\File;
 
 final readonly class DocBlockNameImporter
 {
@@ -16,13 +17,13 @@ final readonly class DocBlockNameImporter
     ) {
     }
 
-    public function importNames(PhpDocNode $phpDocNode, Node $node): bool
+    public function importNames(PhpDocNode $phpDocNode, Node $node, File $file): bool
     {
         if ($phpDocNode->children === []) {
             return false;
         }
 
-        $this->nameImportingPhpDocNodeVisitor->setCurrentNode($node);
+        $this->nameImportingPhpDocNodeVisitor->setCurrentFileAndNode($file, $node);
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->addPhpDocNodeVisitor($this->nameImportingPhpDocNodeVisitor);

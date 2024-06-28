@@ -114,11 +114,11 @@ final readonly class NameImporter
         }
 
         if ($fullyQualified->getAttribute(AttributeKey::IS_FUNCCALL_NAME) === true) {
-            $this->useNodesToAddCollector->addFunctionUseImport($fullyQualifiedObjectType);
+            $this->useNodesToAddCollector->addFunctionUseImport($file, $fullyQualifiedObjectType);
         } elseif ($fullyQualified->getAttribute(AttributeKey::IS_CONSTFETCH_NAME) === true) {
-            $this->useNodesToAddCollector->addConstantUseImport($fullyQualifiedObjectType);
+            $this->useNodesToAddCollector->addConstantUseImport($file, $fullyQualifiedObjectType);
         } else {
-            $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+            $this->useNodesToAddCollector->addUseImport($file, $fullyQualifiedObjectType);
         }
     }
 }

@@ -296,3 +296,7 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
+        # known value
+        -
+            message: '#Parameter \#4 \$file of method Rector\\NodeTypeResolver\\PhpDocNodeVisitor\\NameImportingPhpDocNodeVisitor\:\:processFqnNameImport\(\) expects Rector\\ValueObject\\Application\\File, Rector\\ValueObject\\Application\\File\|null given#'
+            path: src/NodeTypeResolver/PhpDocNodeVisitor/NameImportingPhpDocNodeVisitor.php

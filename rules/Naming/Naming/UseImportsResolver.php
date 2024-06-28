@@ -25,6 +25,8 @@ final readonly class UseImportsResolver
      */
     public function resolve(): array
     {
+        // @todo pass argument here :)
+
         $namespace = $this->resolveNamespace();
         if (! $namespace instanceof Node) {
             return [];
@@ -57,7 +59,7 @@ final readonly class UseImportsResolver
             : '';
     }
 
-    private function resolveNamespace(): Namespace_|FileWithoutNamespace|null
+    private function resolveNamespace(?File $file = null): Namespace_|FileWithoutNamespace|null
     {
         /** @var File|null $file */
         $file = $this->currentFileProvider->getFile();

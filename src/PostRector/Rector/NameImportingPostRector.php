@@ -13,11 +13,32 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+use PhpParser\NodeTraverser;
+=======
+>>>>>>> 3e387888c4 (add fixture to be skipped)
+use Rector\Application\Provider\CurrentFileProvider;
+>>>>>>> 56c9567d68 (split docblock name imports and name imports as different scope)
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+use Rector\Exception\ShouldNotHappenException;
+use Rector\Naming\Naming\AliasNameResolver;
+use Rector\Naming\Naming\UseImportsResolver;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
+>>>>>>> 06a7fb75dd (split docblock name imports and name imports as different scope)
+=======
+>>>>>>> 3e387888c4 (add fixture to be skipped)
+use Rector\ValueObject\Application\File;
+>>>>>>> 56c9567d68 (split docblock name imports and name imports as different scope)
 
 final class NameImportingPostRector extends AbstractPostRector
 {

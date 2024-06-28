@@ -30,8 +30,8 @@ final class PostFileProcessor implements ResetableInterface
         private readonly Skipper $skipper,
         private readonly UseAddingPostRector $useAddingPostRector,
         private readonly NameImportingPostRector $nameImportingPostRector,
-        private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly DocblockNameImportingPostRector $docblockNameImportingPostRector,
+        private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
     ) {
     }

@@ -6,12 +6,14 @@ namespace Rector\PostRector\Collector;
 
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\Application\File;
 
+/**
+ * @internal
+ */
 final class UseNodesToAddCollector
 {
     /**
@@ -30,32 +32,23 @@ final class UseNodesToAddCollector
     private array $useImportTypesInFilePath = [];
 
     public function __construct(
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
     ) {
     }
 
-    public function addUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
+    public function addUseImport(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
-        $this->useImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
+        $filePath = $file->getFilePath();
+        $this->useImportTypesInFilePath[$filePath][] = $fullyQualifiedObjectType;
     }
 
-    public function addConstantUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
+    public function addConstantUseImport(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
         $this->constantUseImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
     }
 
-    public function addFunctionUseImport(FullyQualifiedObjectType $fullyQualifiedObjectType): void
+    public function addFunctionUseImport(File $file, FullyQualifiedObjectType $fullyQualifiedObjectType): void
     {
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
         $this->functionUseImportTypesInFilePath[$file->getFilePath()][] = $fullyQualifiedObjectType;
     }
 

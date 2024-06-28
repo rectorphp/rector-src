@@ -221,7 +221,10 @@ CODE_SAMPLE
                     continue;
                 }
 
-                $this->useNodesToAddCollector->addUseImport(new FullyQualifiedObjectType($namespacedAttrName));
+                $this->useNodesToAddCollector->addUseImport(
+                    $this->file,
+                    new FullyQualifiedObjectType($namespacedAttrName)
+                );
             }
         }
     }
