@@ -10,13 +10,15 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\ValueObject\Application\File;
 
 final readonly class UseImportsResolver
 {
     public function __construct(
-        private CurrentFileProvider $currentFileProvider
+        private CurrentFileProvider $currentFileProvider,
+        private BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -69,10 +71,6 @@ final readonly class UseImportsResolver
 
         $newStmts = $file->getNewStmts();
 
-        if ($newStmts === []) {
-            return null;
-        }
-
         $namespaces = array_filter($newStmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
 
         // multiple namespaces is not supported
@@ -80,16 +78,9 @@ final readonly class UseImportsResolver
             return null;
         }
 
-        $currentNamespace = current($namespaces);
-        if ($currentNamespace instanceof Namespace_) {
-            return $currentNamespace;
-        }
-
-        $currentStmt = current($newStmts);
-        if (! $currentStmt instanceof FileWithoutNamespace) {
-            return null;
-        }
-
-        return $currentStmt;
+        return $this->betterNodeFinder->findFirstInstancesOf($newStmts, [
+            Namespace_::class,
+            FileWithoutNamespace::class,
+        ]);
     }
 }
