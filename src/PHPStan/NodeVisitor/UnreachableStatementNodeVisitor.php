@@ -13,14 +13,13 @@ use PHPStan\Analyser\Scope;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
-use Rector\NodeTypeResolver\PHPStan\Scope\ScopeFactory;
 
 final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 {
     public function __construct(
         private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
         private readonly string $filePath,
-        private readonly ScopeFactory $scopeFactory
+        private readonly MutatingScope $mutatingScope
     ) {
     }
 
@@ -59,8 +58,6 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
     private function resolveScope(?Scope $mutatingScope): MutatingScope
     {
-        return $mutatingScope instanceof MutatingScope ? $mutatingScope : $this->scopeFactory->createFromFile(
-            $this->filePath
-        );
+        return $mutatingScope instanceof MutatingScope ? $mutatingScope : $this->mutatingScope;
     }
 }

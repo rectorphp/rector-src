@@ -60,6 +60,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PHPStan\Scope\Contract\NodeVisitor\ScopeResolverNodeVisitorInterface;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PHPStan\NodeVisitor\ExprScopeFromStmtNodeVisitor;
+use Rector\PHPStan\NodeVisitor\UnreachableStatementNodeVisitor;
 use Rector\PHPStan\NodeVisitor\WrappedNodeRestoringNodeVisitor;
 use Rector\Util\Reflection\PrivatesAccessor;
 use Webmozart\Assert\Assert;
@@ -76,8 +77,6 @@ final class PHPStanNodeScopeResolver
     private const CONTEXT = 'context';
 
     private readonly NodeTraverser $nodeTraverser;
-
-    private bool $hasUnreachableStatementNode = false;
 
     /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
@@ -119,7 +118,8 @@ final class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
-        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath): void {
+        $hasUnreachableStatementNode = false;
+        $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (&$nodeCallback, $filePath, &$hasUnreachableStatementNode): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
@@ -139,6 +139,7 @@ final class PHPStanNodeScopeResolver
             // so node to be checked inside
             if ($node instanceof UnreachableStatementNode) {
                 $this->processUnreachableStatementNode($node, $filePath, $mutatingScope);
+                $hasUnreachableStatementNode = true;
                 return;
             }
 
@@ -265,19 +266,14 @@ final class PHPStanNodeScopeResolver
         $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
         $nodeTraverser->addVisitor(new ExprScopeFromStmtNodeVisitor($this, $filePath, $scope));
+
+        if ($hasUnreachableStatementNode) {
+            $nodeTraverser->addVisitor(new UnreachableStatementNodeVisitor($this, $filePath, $scope));
+        }
+
         $nodeTraverser->traverse($stmts);
 
         return $stmts;
-    }
-
-    public function hasUnreachableStatementNode(): bool
-    {
-        return $this->hasUnreachableStatementNode;
-    }
-
-    public function resetHasUnreachableStatementNode(): void
-    {
-        $this->hasUnreachableStatementNode = false;
     }
 
     /**
@@ -384,8 +380,6 @@ final class PHPStanNodeScopeResolver
         $originalStmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
 
         $this->processNodes([$originalStmt], $filePath, $mutatingScope);
-
-        $this->hasUnreachableStatementNode = true;
     }
 
     private function processProperty(Property $property, MutatingScope $mutatingScope): void
