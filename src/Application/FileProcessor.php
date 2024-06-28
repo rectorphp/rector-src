@@ -69,7 +69,7 @@ final readonly class FileProcessor
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
             // apply post rectors
-            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $filePath);
+            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
 
             // this is needed for new tokens added in "afterTraverse()"
             $file->changeNewStmts($postNewStmts);
