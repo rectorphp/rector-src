@@ -8,13 +8,11 @@ use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\ValueObject\Application\File;
 
 final class DocblockNameImportingPostRector extends AbstractPostRector
 {
@@ -23,7 +21,6 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly CurrentFileProvider $currentFileProvider,
     ) {
     }
 
@@ -38,10 +35,11 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-
-        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node, $file);
+        $hasDocChanged = $this->docBlockNameImporter->importNames(
+            $phpDocInfo->getPhpDocNode(),
+            $node,
+            $this->getFile()
+        );
         if (! $hasDocChanged) {
             return null;
         }
