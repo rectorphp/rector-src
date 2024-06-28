@@ -12,8 +12,6 @@ use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\MagicConst\Dir;
-use PhpParser\Node\Scalar\MagicConst\File;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
@@ -21,7 +19,6 @@ use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\TypeWithClassName;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ConstFetchAnalyzer;
@@ -45,7 +42,6 @@ final class ValueResolver
         private readonly NodeTypeResolver $nodeTypeResolver,
         private readonly ConstFetchAnalyzer $constFetchAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassReflectionAnalyzer $classReflectionAnalyzer
     ) {
@@ -179,16 +175,6 @@ final class ValueResolver
         }
 
         $this->constExprEvaluator = new ConstExprEvaluator(function (Expr $expr) {
-            if ($expr instanceof Dir) {
-                // __DIR__
-                return $this->resolveDirConstant();
-            }
-
-            if ($expr instanceof File) {
-                // __FILE__
-                return $this->resolveFileConstant($expr);
-            }
-
             // resolve "SomeClass::SOME_CONST"
             if ($expr instanceof ClassConstFetch && $expr->class instanceof Name) {
                 return $this->resolveClassConstFetch($expr);
@@ -230,26 +216,6 @@ final class ValueResolver
         }
 
         return $values;
-    }
-
-    private function resolveDirConstant(): string
-    {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof \Rector\ValueObject\Application\File) {
-            throw new ShouldNotHappenException();
-        }
-
-        return dirname($file->getFilePath());
-    }
-
-    private function resolveFileConstant(File $file): string
-    {
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof \Rector\ValueObject\Application\File) {
-            throw new ShouldNotHappenException();
-        }
-
-        return $file->getFilePath();
     }
 
     /**
