@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\FileSystem;
 
+use Nette\Utils\FileSystem;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Skipper\Skipper\PathSkipper;
 use Symfony\Component\Finder\Finder;
@@ -13,12 +14,6 @@ use Symfony\Component\Finder\Finder;
  */
 final readonly class FilesFinder
 {
-    /**
-     * @var string
-     * @see https://regex101.com/r/3NwDLo/1
-     */
-    private const OPEN_SHORTTAG_REGEX = '#^\<\?=#';
-
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
         private UnchangedFilesFilter $unchangedFilesFilter,
@@ -39,15 +34,10 @@ final readonly class FilesFinder
         $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
 
         // exclude short "<?=" tags as lead to invalid changes
-        $files = array_filter($files, static function (string $file): bool {
-            // @ on purpose to deal with broken symlinks
-            $fileContents = @file_get_contents($file);
-            if (! is_string($fileContents)) {
-                return true;
-            }
-
-            return ! str_starts_with($fileContents, '<?=');
-        });
+        $files = array_filter(
+            $files,
+            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
+        );
 
         $filteredFilePaths = array_filter(
             $files,
@@ -69,6 +59,11 @@ final readonly class FilesFinder
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
+    private function isStartWithShortPHPTag(string $fileContent): bool
+    {
+        return str_starts_with(ltrim($fileContent), '<?=');
+    }
+
     /**
      * @param string[] $directories
      * @param string[] $suffixes
@@ -84,8 +79,6 @@ final readonly class FilesFinder
             ->files()
             // skip empty files
             ->size('> 0')
-            // changes in PHP files with short echo tag will mostly create invalid code, "<?php" tags are required
-            ->notContains(self::OPEN_SHORTTAG_REGEX)
             ->in($directories);
 
         if ($sortByName) {
@@ -109,6 +102,10 @@ final readonly class FilesFinder
             }
 
             if ($this->pathSkipper->shouldSkip($path)) {
+                continue;
+            }
+
+            if ($this->isStartWithShortPHPTag($fileInfo->getContents())) {
                 continue;
             }
 
