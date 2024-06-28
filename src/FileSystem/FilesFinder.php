@@ -13,6 +13,12 @@ use Symfony\Component\Finder\Finder;
  */
 final readonly class FilesFinder
 {
+    /**
+     * @var string
+     * @see https://regex101.com/r/3NwDLo/1
+     */
+    private const OPEN_SHORTTAG_REGEX = '#^\<\?=#';
+
     public function __construct(
         private FilesystemTweaker $filesystemTweaker,
         private UnchangedFilesFilter $unchangedFilesFilter,
@@ -31,6 +37,18 @@ final readonly class FilesFinder
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
+
+        // exclude short "<?=" tags as lead to invalid changes
+        $files = array_filter($files, static function (string $file): bool {
+            // @ on purpose to deal with broken symlinks
+            $fileContents = @file_get_contents($file);
+            if (! is_string($fileContents)) {
+                return true;
+            }
+
+            return ! str_starts_with($fileContents, '<?=');
+        });
+
         $filteredFilePaths = array_filter(
             $files,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
@@ -48,7 +66,7 @@ final readonly class FilesFinder
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
 
-        return $this->unchangedFilesFilter->filterFileInfos($filePaths);
+        return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
     /**
@@ -66,6 +84,8 @@ final readonly class FilesFinder
             ->files()
             // skip empty files
             ->size('> 0')
+            // changes in PHP files with short echo tag will mostly create invalid code, "<?php" tags are required
+            ->notContains(self::OPEN_SHORTTAG_REGEX)
             ->in($directories);
 
         if ($sortByName) {

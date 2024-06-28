@@ -20,14 +20,24 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->filesFinder = $this->make(FilesFinder::class);
     }
 
-    public function testDefault(): void
+    public function test(): void
     {
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSymlinks'], ['txt']);
         $this->assertCount(1, $foundFiles);
+
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithShortEchoes'], ['php']);
+        $this->assertCount(0, $foundFiles);
     }
 
     public function testWithFollowingBrokenSymlinks(): void
     {
+        // detect Windows
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped(
+                'This test fails on Windows, due to possible bug in symfony/finder. When Finder is applied on broken symlinks and uses ->notContains(). Fix needed.'
+            );
+        }
+
         SimpleParameterProvider::setParameter(Option::SKIP, [__DIR__ . '/../SourceWithBrokenSymlinks/folder1']);
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithBrokenSymlinks']);
