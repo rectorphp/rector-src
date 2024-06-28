@@ -49,30 +49,18 @@ final class CatchExceptionNameMatchingTypeRector extends AbstractRector
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        try {
-            // ...
-        } catch (SomeException $typoException) {
-            $typoException->getMessage();
-        }
-    }
+try {
+    // ...
+} catch (SomeException $typoException) {
+    $typoException->getMessage();
 }
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
-class SomeClass
-{
-    public function run()
-    {
-        try {
-            // ...
-        } catch (SomeException $someException) {
-            $someException->getMessage();
-        }
-    }
+try {
+    // ...
+} catch (SomeException $someException) {
+    $someException->getMessage();
 }
 CODE_SAMPLE
                 ),
