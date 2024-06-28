@@ -20,10 +20,13 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->filesFinder = $this->make(FilesFinder::class);
     }
 
-    public function testDefault(): void
+    public function test(): void
     {
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithSymlinks'], ['txt']);
         $this->assertCount(1, $foundFiles);
+
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/SourceWithShortEchoes'], ['php']);
+        $this->assertCount(0, $foundFiles);
     }
 
     public function testWithFollowingBrokenSymlinks(): void

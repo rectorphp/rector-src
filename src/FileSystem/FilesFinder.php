@@ -31,6 +31,17 @@ final readonly class FilesFinder
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
+
+        // exclude short "<?=" tags as lead to invalid changes
+        $files = array_filter($files, static function (string $file): bool {
+            $fileContents = file_get_contents($file);
+            if (! is_string($fileContents)) {
+                return true;
+            }
+
+            return ! str_starts_with($fileContents, '<?=');
+        });
+
         $filteredFilePaths = array_filter(
             $files,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
@@ -48,7 +59,7 @@ final readonly class FilesFinder
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
 
-        return $this->unchangedFilesFilter->filterFileInfos($filePaths);
+        return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
     /**
@@ -66,6 +77,8 @@ final readonly class FilesFinder
             ->files()
             // skip empty files
             ->size('> 0')
+            // changes in PHP files with short echo tag will mostly create invalid code, "<?php" tags are required
+            ->notContains('<?=')
             ->in($directories);
 
         if ($sortByName) {
