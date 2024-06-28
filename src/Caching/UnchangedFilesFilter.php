@@ -20,6 +20,7 @@ final readonly class UnchangedFilesFilter
     public function filterFilePaths(array $filePaths): array
     {
         $changedFileInfos = [];
+        $filePaths = array_unique($filePaths);
 
         foreach ($filePaths as $filePath) {
             if (! $this->changedFilesDetector->hasFileChanged($filePath)) {
@@ -30,6 +31,6 @@ final readonly class UnchangedFilesFilter
             $this->changedFilesDetector->invalidateFile($filePath);
         }
 
-        return array_unique($changedFileInfos);
+        return $changedFileInfos;
     }
 }

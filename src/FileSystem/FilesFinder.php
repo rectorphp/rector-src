@@ -31,16 +31,10 @@ final readonly class FilesFinder
     {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
-        $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-
-        // exclude short "<?=" tags as lead to invalid changes
-        $files = array_filter(
-            $files,
-            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
-        );
-
+        // filtering files in files collection
+        $filteredFilePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
         $filteredFilePaths = array_filter(
-            $files,
+            $filteredFilePaths,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
 
@@ -52,13 +46,22 @@ final readonly class FilesFinder
             $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
         }
 
+        $filteredFilePaths = array_filter(
+            $filteredFilePaths,
+            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
+        );
+
+        // filtering files in directories collection
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
-        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
 
+        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
+    /**
+     * Exclude short "<?=" tags as lead to invalid changes
+     */
     private function isStartWithShortPHPTag(string $fileContent): bool
     {
         return str_starts_with(ltrim($fileContent), '<?=');
