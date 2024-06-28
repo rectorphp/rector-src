@@ -38,14 +38,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
     public function beforeTraverse(array $nodes): array
     {
         // ensure reset early on every run to avoid reuse existing value
-        $this->rootNode = null;
-
-        foreach ($nodes as $node) {
-            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
-                $this->rootNode = $node;
-                break;
-            }
-        }
+        $this->rootNode = $this->resolveRootNode($nodes);
 
         return $nodes;
     }
@@ -110,6 +103,20 @@ final class ClassRenamingPostRector extends AbstractPostRector
                 $oldToNewClasses,
                 $scope
             );
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function resolveRootNode(array $nodes): FileWithoutNamespace|Namespace_|null
+    {
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                return $node;
+            }
         }
 
         return null;

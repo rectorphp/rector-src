@@ -6,14 +6,11 @@ namespace Rector\PostRector\Rector;
 
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\CodingStyle\Application\UseImportsAdder;
-use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
-use Rector\ValueObject\Application\File;
 
 final class UseAddingPostRector extends AbstractPostRector
 {
@@ -21,7 +18,6 @@ final class UseAddingPostRector extends AbstractPostRector
         private readonly TypeFactory $typeFactory,
         private readonly UseImportsAdder $useImportsAdder,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
-        private readonly CurrentFileProvider $currentFileProvider
     ) {
     }
 
@@ -36,22 +32,17 @@ final class UseAddingPostRector extends AbstractPostRector
             return $nodes;
         }
 
-        $rootNode = null;
-        foreach ($nodes as $node) {
-            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
-                $rootNode = $node;
-                break;
-            }
-        }
+        $rootNode = $this->resolveRootNode($nodes);
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            throw new ShouldNotHappenException();
-        }
-
-        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($file->getFilePath());
-        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath($file->getFilePath());
-        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath($file->getFilePath());
+        $useImportTypes = $this->useNodesToAddCollector->getObjectImportsByFilePath($this->getFile()->getFilePath());
+        $constantUseImportTypes = $this->useNodesToAddCollector->getConstantImportsByFilePath(
+            $this->getFile()
+                ->getFilePath()
+        );
+        $functionUseImportTypes = $this->useNodesToAddCollector->getFunctionImportsByFilePath(
+            $this->getFile()
+                ->getFilePath()
+        );
 
         if ($useImportTypes === [] && $constantUseImportTypes === [] && $functionUseImportTypes === []) {
             return $nodes;
@@ -135,5 +126,19 @@ final class UseAddingPostRector extends AbstractPostRector
         }
 
         return $namespacedUseImportTypes;
+    }
+
+    /**
+     * @param Stmt[] $nodes
+     */
+    private function resolveRootNode(array $nodes): Namespace_|FileWithoutNamespace|null
+    {
+        foreach ($nodes as $node) {
+            if ($node instanceof FileWithoutNamespace || $node instanceof Namespace_) {
+                return $node;
+            }
+        }
+
+        return null;
     }
 }

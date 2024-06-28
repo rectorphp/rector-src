@@ -13,20 +13,17 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\ValueObject\Application\File;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NameImporter $nameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
@@ -54,9 +51,7 @@ final class NameImportingPostRector extends AbstractPostRector
             return $nameInUse;
         }
 
-        /** @var File $file */
-        $file = $this->currentFileProvider->getFile();
-        return $this->nameImporter->importName($node, $file);
+        return $this->nameImporter->importName($node, $this->getFile());
     }
 
     /**
