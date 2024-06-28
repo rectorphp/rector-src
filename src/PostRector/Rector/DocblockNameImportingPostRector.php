@@ -7,12 +7,14 @@ namespace Rector\PostRector\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\InlineHTML;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\ValueObject\Application\File;
 
 final class DocblockNameImportingPostRector extends AbstractPostRector
@@ -21,7 +23,8 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
         private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly CurrentFileProvider $currentFileProvider,
-        private readonly DocBlockUpdater $docBlockUpdater
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -49,5 +52,13 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    public function shouldTraverse(array $stmts): bool
+    {
+        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 }

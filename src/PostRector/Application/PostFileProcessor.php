@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Application;
 
-use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -41,13 +41,13 @@ final class PostFileProcessor implements ResetableInterface
     }
 
     /**
-     * @param Node[] $stmts
-     * @return Node[]
+     * @param Stmt[] $stmts
+     * @return Stmt[]
      */
     public function traverse(array $stmts, string $filePath): array
     {
         foreach ($this->getPostRectors() as $postRector) {
-            if ($this->shouldSkipPostRector($postRector, $filePath)) {
+            if ($this->shouldSkipPostRector($postRector, $filePath, $stmts)) {
                 continue;
             }
 
@@ -59,8 +59,15 @@ final class PostFileProcessor implements ResetableInterface
         return $stmts;
     }
 
-    private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath): bool
+    /**
+     * @param Stmt[] $stmts
+     */
+    private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath, array $stmts): bool
     {
+        if (! $postRector->shouldTraverse($stmts)) {
+            return true;
+        }
+
         if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
             return true;
         }

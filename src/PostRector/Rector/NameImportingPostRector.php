@@ -20,6 +20,7 @@ use Rector\CodingStyle\Node\NameImporter;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\ValueObject\Application\File;
 
@@ -31,6 +32,7 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
@@ -51,6 +53,14 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         return $this->processNodeName($node, $file);
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     */
+    public function shouldTraverse(array $stmts): bool
+    {
+        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 
     private function shouldSkipFileWithoutNamespace(File $file): bool
