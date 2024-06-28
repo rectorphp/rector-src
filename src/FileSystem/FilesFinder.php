@@ -31,9 +31,10 @@ final readonly class FilesFinder
     {
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
-        $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-        $files = array_filter(
-            $files,
+        // filtering files in files collection
+        $filteredFilePaths = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
+        $filteredFilePaths = array_filter(
+            $filteredFilePaths,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
 
@@ -42,22 +43,25 @@ final readonly class FilesFinder
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                 return in_array($filePathExtension, $suffixes, true);
             };
-            $files = array_filter($files, $fileWithExtensionsFilter);
+            $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
         }
 
-        // exclude short "<?=" tags as lead to invalid changes
-        $files = array_filter(
-            $files,
+        $filteredFilePaths = array_filter(
+            $filteredFilePaths,
             fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
         );
 
+        // filtering files in directories collection
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
-        $filesInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
-        $filePaths = [...$files, ...$filesInDirectories];
+        $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
 
+        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
 
+    /**
+     * Exclude short "<?=" tags as lead to invalid changes
+     */
     private function isStartWithShortPHPTag(string $fileContent): bool
     {
         return str_starts_with(ltrim($fileContent), '<?=');
