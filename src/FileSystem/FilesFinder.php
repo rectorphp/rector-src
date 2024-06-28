@@ -32,14 +32,7 @@ final readonly class FilesFinder
         $filesAndDirectories = $this->filesystemTweaker->resolveWithFnmatch($source);
 
         $files = $this->fileAndDirectoryFilter->filterFiles($filesAndDirectories);
-
-        // exclude short "<?=" tags as lead to invalid changes
         $files = array_filter(
-            $files,
-            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
-        );
-
-        $filteredFilePaths = array_filter(
             $files,
             fn (string $filePath): bool => ! $this->pathSkipper->shouldSkip($filePath)
         );
@@ -49,12 +42,18 @@ final readonly class FilesFinder
                 $filePathExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                 return in_array($filePathExtension, $suffixes, true);
             };
-            $filteredFilePaths = array_filter($filteredFilePaths, $fileWithExtensionsFilter);
+            $files = array_filter($files, $fileWithExtensionsFilter);
         }
 
+        // exclude short "<?=" tags as lead to invalid changes
+        $files = array_filter(
+            $files,
+            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
+        );
+
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
-        $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
-        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+        $filesInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
+        $filePaths = [...$files, ...$filesInDirectories];
 
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
     }
