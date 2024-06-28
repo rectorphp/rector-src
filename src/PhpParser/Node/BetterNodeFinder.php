@@ -74,16 +74,17 @@ final readonly class BetterNodeFinder
 
     /**
      * @template T of Node
+     *
+     * @param Node[] $nodes
      * @param array<class-string<T>> $types
-     * @param Node|Node[] $nodes
      *
      * @return T|null
      */
-    public function findFirstInstancesOf(Node | array $nodes, array $types): ?Node
+    public function findFirstInstancesOf(array $nodes, array $types): ?Node
     {
         foreach ($types as $type) {
             $foundNode = $this->nodeFinder->findFirstInstanceOf($nodes, $type);
-            if ($foundNode instanceof \PhpParser\Node) {
+            if ($foundNode instanceof Node) {
                 return $foundNode;
             }
         }

@@ -304,3 +304,4 @@ parameters:
         - '#Parameter (.*?) Rector\\ValueObject\\Application\\File, Rector\\ValueObject\\Application\\File\|null given#'
         - '#Cannot call method getFilePath\(\) on Rector\\ValueObject\\Application\\File\|null#'
 
+        - '#Method Rector\\PhpParser\\Node\\BetterNodeFinder\:\:findFirstInstancesOf\(\) should return \(T of PhpParser\\Node\)\|null but returns PhpParser\\Node#'
