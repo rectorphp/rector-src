@@ -70,7 +70,7 @@ final class NameImportingPostRector extends AbstractPostRector
     }
 
     /**
-     * @param Use_[]|GroupUse[] $currentUses
+     * @param array<Use_|GroupUse> $currentUses
      */
     private function resolveNameInUse(FullyQualified $fullyQualified, array $currentUses): null|Name
     {

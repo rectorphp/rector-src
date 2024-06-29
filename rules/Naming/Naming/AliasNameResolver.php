@@ -17,7 +17,7 @@ final readonly class AliasNameResolver
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     public function resolveByName(FullyQualified $fullyQualified, array $uses): ?string
     {

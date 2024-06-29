@@ -53,7 +53,7 @@ final class ClassAnnotationMatcher
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): ?string
     {
@@ -82,7 +82,7 @@ final class ClassAnnotationMatcher
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     private function resolveAsAliased(array $uses, string $tag): ?string
     {
