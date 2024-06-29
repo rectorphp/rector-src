@@ -28,7 +28,6 @@ final readonly class UseImportsResolver
     public function resolve(): array
     {
         // @todo pass argument here :)
-
         $namespace = $this->resolveNamespace();
         if (! $namespace instanceof Node) {
             return [];
