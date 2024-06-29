@@ -9,6 +9,7 @@ use Rector\Application\Provider\CurrentFileProvider;
 use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\FileSystem\FilesFinder;
 use Rector\Parallel\Application\ParallelFileProcessor;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
@@ -19,7 +20,6 @@ use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\FileProcessResult;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
-use Rector\ValueObjectFactory\Application\FileFactory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symplify\EasyParallel\CpuCoreCountProvider;
@@ -41,7 +41,7 @@ final class ApplicationFileProcessor
 
     public function __construct(
         private readonly SymfonyStyle $symfonyStyle,
-        private readonly FileFactory $fileFactory,
+        private readonly FilesFinder $filesFinder,
         private readonly ParallelFileProcessor $parallelFileProcessor,
         private readonly ScheduleFactory $scheduleFactory,
         private readonly CpuCoreCountProvider $cpuCoreCountProvider,
@@ -55,7 +55,7 @@ final class ApplicationFileProcessor
 
     public function run(Configuration $configuration, InputInterface $input): ProcessResult
     {
-        $filePaths = $this->fileFactory->findFilesInPaths($configuration->getPaths(), $configuration);
+        $filePaths = $this->filesFinder->findFilesInPaths($configuration->getPaths(), $configuration);
         $this->missConfigurationReporter->reportVendorInPaths($filePaths);
         $this->missConfigurationReporter->reportStartWithShortOpenTag();
 

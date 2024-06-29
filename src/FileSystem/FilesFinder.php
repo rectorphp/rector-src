@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Rector\FileSystem;
 
 use Nette\Utils\FileSystem;
+use Rector\Caching\Detector\ChangedFilesDetector;
 use Rector\Caching\UnchangedFilesFilter;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\PathSkipper;
+use Rector\ValueObject\Configuration;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -21,7 +23,8 @@ final readonly class FilesFinder
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
         private PathSkipper $pathSkipper,
-        private FilePathHelper $filePathHelper
+        private FilePathHelper $filePathHelper,
+        private ChangedFilesDetector $changedFilesDetector,
     ) {
     }
 
@@ -70,6 +73,20 @@ final readonly class FilesFinder
 
         $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
         return $this->unchangedFilesFilter->filterFilePaths($filePaths);
+    }
+
+    /**
+     * @param string[] $paths
+     * @return string[]
+     */
+    public function findFilesInPaths(array $paths, Configuration $configuration): array
+    {
+        if ($configuration->shouldClearCache()) {
+            $this->changedFilesDetector->clear();
+        }
+
+        $supportedFileExtensions = $configuration->getFileExtensions();
+        return $this->findInDirectoriesAndFiles($paths, $supportedFileExtensions);
     }
 
     /**
