@@ -296,3 +296,5 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
+        # temporary
+        - '#Property Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:\$useImportsScopeResolver is never read, only written#'

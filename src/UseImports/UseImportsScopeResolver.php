@@ -11,11 +11,11 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\UseImports\Storage\FileStorage;
 use Rector\UseImports\ValueObject\UseImportsScope;
 
-final class UseImportsScopeResolver
+final readonly class UseImportsScopeResolver
 {
     public function __construct(
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private readonly FileStorage $fileStorage
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private FileStorage $fileStorage
     ) {
     }
 
@@ -39,10 +39,8 @@ final class UseImportsScopeResolver
                 return null;
             }
 
-            if ($node instanceof Use_) {
-                if ($node->type === Use_::TYPE_NORMAL) {
-                    $uses[] = $node;
-                }
+            if ($node instanceof Use_ && $node->type === Use_::TYPE_NORMAL) {
+                $uses[] = $node;
             }
 
             return null;

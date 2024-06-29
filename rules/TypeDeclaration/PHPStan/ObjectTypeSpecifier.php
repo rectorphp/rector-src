@@ -23,21 +23,57 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
+use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SameNamespacedTypeSpecifier;
+use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SelfStaticParentTypeSpecifier;
+=======
+>>>>>>> db0c78f022 (remove object type specifier, as already handled in PHPStan)
+use Rector\UseImports\UseImportsScopeResolver;
+>>>>>>> 187c99ca3d (simplify object type specifier)
 
 final readonly class ObjectTypeSpecifier
 {
     public function __construct(
+<<<<<<< HEAD
         private ReflectionProvider $reflectionProvider,
         private UseImportsResolver $useImportsResolver,
+=======
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsResolver $useImportsResolver,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
+<<<<<<< HEAD
+        SelfStaticParentTypeSpecifier $selfStaticParentTypeSpecifier,
+        SameNamespacedTypeSpecifier $sameNamespacedTypeSpecifier,
+>>>>>>> 187c99ca3d (simplify object type specifier)
+=======
+>>>>>>> db0c78f022 (remove object type specifier, as already handled in PHPStan)
     ) {
     }
 
     public function narrowToFullyQualifiedOrAliasedObjectType(
         Node $node,
         ObjectType $objectType,
-        Scope|null $scope
+        ?Scope $scope = null,
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+//        if ($scope instanceof Scope) {
+//            foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
+//                if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
+//                    return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
+//                }
+//            }
+//        }
+
+>>>>>>> 187c99ca3d (simplify object type specifier)
+=======
+>>>>>>> db0c78f022 (remove object type specifier, as already handled in PHPStan)
         $uses = $this->useImportsResolver->resolve();
+        // $useImportScope = $this->useImportsScopeResolver->resolve();
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
         if ($aliasedObjectType instanceof AliasedObjectType) {

@@ -156,8 +156,7 @@ final class NodeTypeResolver
             $type = $this->genericClassStringTypeCorrector->correct($type);
 
             if ($type instanceof ObjectType) {
-                $scope = $node->getAttribute(AttributeKey::SCOPE);
-                $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $type, $scope);
+                $type = $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $type);
             }
 
             return $type;

@@ -22,7 +22,6 @@ use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Enum\ObjectReference;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
@@ -98,8 +97,7 @@ final readonly class IdentifierTypeMapper implements PhpDocTypeMapperInterface
             $objectType = new ObjectType($identifierTypeNode->name);
         }
 
-        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $objectType, $scope);
+        return $this->objectTypeSpecifier->narrowToFullyQualifiedOrAliasedObjectType($node, $objectType);
     }
 
     private function mapSelf(Node $node): MixedType | SelfObjectType

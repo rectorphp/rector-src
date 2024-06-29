@@ -46,7 +46,7 @@ final readonly class UseImportsResolver
      */
     public function resolveBareUses(): array
     {
-        // trigger_error(sprintf(__METHOD__ . ' is deprecated. Use $this->file->getUses() instead'), E_USER_DEPRECATED);
+        trigger_error(__METHOD__ . ' is deprecated. Use $this->file->getUses() instead', E_USER_DEPRECATED);
 
         $namespace = $this->resolveNamespace();
         if (! $namespace instanceof Node) {
