@@ -41,7 +41,7 @@ final readonly class ClassNameImportSkipper
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     public function shouldSkipName(FullyQualified $fullyQualified, array $uses): bool
     {

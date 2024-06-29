@@ -79,7 +79,7 @@ final class ObjectTypeSpecifier
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     private function matchAliasedObjectType(ObjectType $objectType, array $uses): ?AliasedObjectType
     {
@@ -136,7 +136,7 @@ final class ObjectTypeSpecifier
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     private function matchShortenedObjectType(
         ObjectType $objectType,

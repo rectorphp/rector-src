@@ -43,7 +43,7 @@ final readonly class UseImportNameMatcher
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     public function matchNameWithUses(string $tag, array $uses): ?string
     {

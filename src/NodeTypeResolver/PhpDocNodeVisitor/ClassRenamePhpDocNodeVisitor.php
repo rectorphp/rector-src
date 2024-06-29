@@ -176,7 +176,7 @@ final class ClassRenamePhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
     }
 
     /**
-     * @param Use_[]|GroupUse[] $uses
+     * @param array<Use_|GroupUse> $uses
      */
     private function resolveNamefromUse(array $uses, string $name): string
     {
