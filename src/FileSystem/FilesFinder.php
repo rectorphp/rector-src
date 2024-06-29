@@ -21,6 +21,7 @@ final readonly class FilesFinder
         private UnchangedFilesFilter $unchangedFilesFilter,
         private FileAndDirectoryFilter $fileAndDirectoryFilter,
         private PathSkipper $pathSkipper,
+        private FilePathHelper $filePathHelper
     ) {
     }
 
@@ -118,8 +119,7 @@ final readonly class FilesFinder
             }
 
             if ($this->isStartWithShortPHPTag($fileInfo->getContents())) {
-                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $fileInfo->getRelativePathname());
-                continue;
+                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $this->filePathHelper->relativePath($path));
             }
 
             $filePaths[] = $path;
