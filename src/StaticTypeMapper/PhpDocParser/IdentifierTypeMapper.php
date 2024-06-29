@@ -7,6 +7,7 @@ namespace Rector\StaticTypeMapper\PhpDocParser;
 use Nette\Utils\Strings;
 use PhpParser\Node;
 use PHPStan\Analyser\NameScope;
+use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Reflection\ClassReflection;
@@ -116,21 +117,20 @@ final readonly class IdentifierTypeMapper implements PhpDocTypeMapperInterface
 
     private function mapParent(Node $node): ParentStaticType | MixedType
     {
-        $className = $this->resolveClassName($node);
-        if (! is_string($className)) {
-            // parent outside the class, e.g. in a function
-            return new MixedType();
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
+
+        if ($scope instanceof Scope) {
+            $classReflection = $scope->getClassReflection();
+            if ($classReflection instanceof ClassReflection) {
+                $parentClassReflection = $classReflection->getParentClass();
+
+                if ($parentClassReflection instanceof ClassReflection) {
+                    return new ParentStaticType($parentClassReflection);
+                }
+            }
         }
 
-        /** @var ClassReflection $classReflection */
-        $classReflection = $this->reflectionProvider->getClass($className);
-        $parentClassReflection = $classReflection->getParentClass();
-
-        if (! $parentClassReflection instanceof ClassReflection) {
-            return new MixedType();
-        }
-
-        return new ParentStaticType($parentClassReflection);
+        return new MixedType();
     }
 
     private function mapStatic(Node $node): MixedType | StaticType

@@ -11,7 +11,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\TemplateTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\ObjectType;
-use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDoc\SpacelessPhpDocTagNode;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
@@ -32,10 +31,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
 
     private bool $hasChanged = false;
 
+    private ?File $currentFile = null;
+
     public function __construct(
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
-        private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly IdentifierTypeMapper $identifierTypeMapper,
     ) {
@@ -82,17 +82,13 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             return null;
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
-        return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $file);
+        return $this->processFqnNameImport($this->currentPhpParserNode, $node, $staticType, $this->currentFile);
     }
 
-    public function setCurrentNode(PhpParserNode $phpParserNode): void
+    public function setCurrentFileAndNode(File $file, PhpParserNode $phpParserNode): void
     {
         $this->hasChanged = false;
+        $this->currentFile = $file;
         $this->currentPhpParserNode = $phpParserNode;
     }
 
@@ -138,7 +134,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         if ($this->shouldImport($newNode, $identifierTypeNode, $fullyQualifiedObjectType)) {
-            $this->useNodesToAddCollector->addUseImport($fullyQualifiedObjectType);
+            $this->useNodesToAddCollector->addUseImport($file, $fullyQualifiedObjectType);
             $this->hasChanged = true;
 
             return $newNode;
@@ -215,16 +211,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $staticType = new FullyQualifiedObjectType($staticType->getClassName());
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return;
-        }
-
         $shortentedIdentifierTypeNode = $this->processFqnNameImport(
             $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
-            $file
+            $this->currentFile
         );
 
         if (! $shortentedIdentifierTypeNode instanceof IdentifierTypeNode) {
@@ -268,16 +259,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             $staticType = new FullyQualifiedObjectType($staticType->getClassName());
         }
 
-        $file = $this->currentFileProvider->getFile();
-        if (! $file instanceof File) {
-            return null;
-        }
-
         $importedName = $this->processFqnNameImport(
             $currentPhpParserNode,
             $identifierTypeNode,
             $staticType,
-            $file
+            $this->currentFile
         );
 
         if ($importedName instanceof IdentifierTypeNode) {

@@ -35,7 +35,11 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $hasDocChanged = $this->docBlockNameImporter->importNames($phpDocInfo->getPhpDocNode(), $node);
+        $hasDocChanged = $this->docBlockNameImporter->importNames(
+            $phpDocInfo->getPhpDocNode(),
+            $node,
+            $this->getFile()
+        );
         if (! $hasDocChanged) {
             return null;
         }
