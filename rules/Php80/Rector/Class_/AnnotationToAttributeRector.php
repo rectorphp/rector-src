@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -34,6 +33,7 @@ use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Rector\AbstractRector;
 use Rector\UseImports\UseImportsScopeResolver;
+use Rector\UseImports\ValueObject\UseImportsScope;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -135,7 +135,7 @@ CODE_SAMPLE
         $useImportsScope = $this->useImportsScopeResolver->resolve($this->file->getFilePath());
 
         // 2. Doctrine annotation classes
-        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $useImportsScope->getUses());
+        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $useImportsScope);
 
         $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
         if ($attributeGroups === []) {
@@ -208,10 +208,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Use_[] $uses
      * @return AttributeGroup[]
      */
-    private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo, array $uses): array
+    private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo, UseImportsScope $useImportsScope): array
     {
         if ($phpDocInfo->getPhpDocNode()->children === []) {
             return [];
@@ -244,7 +243,10 @@ CODE_SAMPLE
             $doctrineTagValueNodes[] = $doctrineTagValueNode;
         }
 
-        $attributeGroups = $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes, $uses);
+        $attributeGroups = $this->attrGroupsFactory->create(
+            $doctrineTagAndAnnotationToAttributes,
+            $useImportsScope->getUses()
+        );
 
         if ($this->phpAttributeAnalyzer->hasRemoveArrayState($attributeGroups)) {
             return [];

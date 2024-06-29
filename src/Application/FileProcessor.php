@@ -18,6 +18,7 @@ use Rector\PhpParser\Parser\RectorParser;
 use Rector\PhpParser\Printer\BetterStandardPrinter;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
+use Rector\UseImports\Storage\FileStorage;
 use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
@@ -45,6 +46,7 @@ final readonly class FileProcessor
         private PostFileProcessor $postFileProcessor,
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private FileStorage $fileStorage,
     ) {
     }
 
@@ -56,6 +58,8 @@ final readonly class FileProcessor
             // we cannot process this file as the parsing and type resolving itself went wrong
             return new FileProcessResult([$parsingSystemError], null);
         }
+
+        $this->fileStorage->addFile($file->getFilePath(), $file);
 
         $fileHasChanged = false;
         $filePath = $file->getFilePath();

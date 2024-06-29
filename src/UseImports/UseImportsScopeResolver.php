@@ -5,25 +5,23 @@ declare(strict_types=1);
 namespace Rector\UseImports;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PHPStan\Parser\Parser;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\UseImports\Storage\FileStorage;
 use Rector\UseImports\ValueObject\UseImportsScope;
 
 final class UseImportsScopeResolver
 {
     public function __construct(
-        private readonly Parser $parser,
         private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private readonly FileStorage $fileStorage
     ) {
     }
 
     public function resolve(string $filePath): UseImportsScope
     {
-        // @todo cache
-        $stmts = $this->parser->parseFile($filePath);
+        $stmts = $this->fileStorage->getStmtsByFile($filePath);
 
         $namespace = null;
         $namespaceCount = 0;
@@ -39,10 +37,6 @@ final class UseImportsScopeResolver
                 ++$namespaceCount;
 
                 return null;
-            }
-
-            if ($node instanceof GroupUse) {
-                $uses[] = $node;
             }
 
             if ($node instanceof Use_) {

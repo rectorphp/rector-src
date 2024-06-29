@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\UseImports\UseImportsScopeResolver;
@@ -42,15 +43,21 @@ final class ClassAnnotationMatcher
 
         $tag = ltrim($tag, '@');
 
-        $uses = $this->useImportsResolver->resolve();
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
-        //        $scope = $node->getAttribute(AttributeKey::SCOPE);
-        //        $filePath = $scope->getFile();
+        // not in a class, invoked in PhpDocInfoPrinterTest
+        if (! $scope instanceof Scope) {
+            if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+                return $tag;
+            }
 
-        //        $useImportsScope = $this->useImportsScopeResolver->resolve($filePath);
-        //        dump(count($useImportsScope->getUses()));
+            throw new ShouldNotHappenException();
+        }
 
-        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
+        $filePath = $scope->getFile();
+        $useImportsScope = $this->useImportsScopeResolver->resolve($filePath);
+
+        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($useImportsScope->getUses(), $node, $tag);
         if ($fullyQualifiedClass === null) {
             $fullyQualifiedClass = $tag;
         }

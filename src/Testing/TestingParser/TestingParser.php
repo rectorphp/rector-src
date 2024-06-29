@@ -10,6 +10,7 @@ use Rector\Application\Provider\CurrentFileProvider;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\PhpParser\Parser\RectorParser;
+use Rector\UseImports\Storage\FileStorage;
 use Rector\ValueObject\Application\File;
 
 /**
@@ -22,6 +23,7 @@ final readonly class TestingParser
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
         private CurrentFileProvider $currentFileProvider,
         private DynamicSourceLocatorProvider $dynamicSourceLocatorProvider,
+        private FileStorage $fileStorage
     ) {
     }
 
@@ -35,6 +37,7 @@ final readonly class TestingParser
         $stmts = $this->rectorParser->parseString($fileContent);
 
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
+        $this->fileStorage->addFile($filePath, $file);
 
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
         $this->currentFileProvider->setFile($file);
@@ -56,6 +59,7 @@ final readonly class TestingParser
 
         $stmts = $this->nodeScopeAndMetadataDecorator->decorateNodesFromFile($filePath, $stmts);
         $file->hydrateStmtsAndTokens($stmts, $stmts, []);
+        $this->fileStorage->addFile($filePath, $file);
 
         $this->currentFileProvider->setFile($file);
 
