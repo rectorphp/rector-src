@@ -25,7 +25,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Exception\Configuration\InvalidConfigurationException;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
@@ -56,7 +55,6 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
-        private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -129,13 +127,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $uses = $this->useImportsResolver->resolveBareUses();
-
         // 1. bare tags without annotation class, e.g. "@require"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
         // 2. Doctrine annotation classes
-        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $uses);
+        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $this->file->getUses());
 
         $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
         if ($attributeGroups === []) {
