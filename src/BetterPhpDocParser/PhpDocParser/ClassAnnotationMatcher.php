@@ -55,11 +55,8 @@ final class ClassAnnotationMatcher
     /**
      * @param Use_[]|GroupUse[] $uses
      */
-    private function resolveFullyQualifiedClass(
-        array $uses,
-        Node $node,
-        string $tag
-    ): ?string {
+    private function resolveFullyQualifiedClass(array $uses, Node $node, string $tag): ?string
+    {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         if ($scope instanceof Scope) {
