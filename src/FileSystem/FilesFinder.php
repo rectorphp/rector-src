@@ -6,6 +6,8 @@ namespace Rector\FileSystem;
 
 use Nette\Utils\FileSystem;
 use Rector\Caching\UnchangedFilesFilter;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Skipper\Skipper\PathSkipper;
 use Symfony\Component\Finder\Finder;
 
@@ -48,7 +50,14 @@ final readonly class FilesFinder
 
         $filteredFilePaths = array_filter(
             $filteredFilePaths,
-            fn (string $file): bool => ! $this->isStartWithShortPHPTag(FileSystem::read($file))
+            function (string $file): bool {
+                if (! $this->isStartWithShortPHPTag(FileSystem::read($file))) {
+                    return true;
+                }
+
+                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $file);
+                return false;
+            }
         );
 
         // filtering files in directories collection
@@ -109,6 +118,7 @@ final readonly class FilesFinder
             }
 
             if ($this->isStartWithShortPHPTag($fileInfo->getContents())) {
+                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $fileInfo->getRelativePath());
                 continue;
             }
 

@@ -248,4 +248,10 @@ final class Option
      * @var string
      */
     public const SKIPPED_RECTOR_RULES = 'skipped_rector_rules';
+
+    /**
+     * @internal For collect skipped start with short open tag files to be reported
+     * @var string
+     */
+    public const SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES = 'skipped_start_with_short_open_tag_files';
 }
