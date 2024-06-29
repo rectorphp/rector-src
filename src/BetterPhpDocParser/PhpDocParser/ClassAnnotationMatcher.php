@@ -13,6 +13,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\UseImports\UseImportsScopeResolver;
 
 /**
  * Matches "@ORM\Entity" to FQN names based on use imports in the file
@@ -27,7 +28,8 @@ final class ClassAnnotationMatcher
     public function __construct(
         private readonly UseImportNameMatcher $useImportNameMatcher,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -41,8 +43,14 @@ final class ClassAnnotationMatcher
         $tag = ltrim($tag, '@');
 
         $uses = $this->useImportsResolver->resolve();
-        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
 
+        //        $scope = $node->getAttribute(AttributeKey::SCOPE);
+        //        $filePath = $scope->getFile();
+
+        //        $useImportsScope = $this->useImportsScopeResolver->resolve($filePath);
+        //        dump(count($useImportsScope->getUses()));
+
+        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
         if ($fullyQualifiedClass === null) {
             $fullyQualifiedClass = $tag;
         }

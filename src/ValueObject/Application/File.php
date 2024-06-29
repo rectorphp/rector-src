@@ -6,8 +6,6 @@ namespace Rector\ValueObject\Application;
 
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Use_;
-use PhpParser\NodeFinder;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\ValueObject\Reporting\FileDiff;
@@ -39,12 +37,6 @@ final class File
      * @var RectorWithLineChange[]
      */
     private array $rectorWithLineChanges = [];
-
-    /**
-     * Note: nullable on purpose to cache
-     * @var Node[]
-     */
-    private ?array $uses = null;
 
     public function __construct(
         private readonly string $filePath,
@@ -157,20 +149,5 @@ final class File
     public function getRectorWithLineChanges(): array
     {
         return $this->rectorWithLineChanges;
-    }
-
-    /**
-     * @return Use_[]
-     */
-    public function getUses(): array
-    {
-        if ($this->uses !== null) {
-            return $this->uses;
-        }
-
-        $nodeFinder = new NodeFinder();
-        $this->uses = $nodeFinder->findInstanceOf($this->newStmts, Use_::class);
-
-        return $this->uses;
     }
 }

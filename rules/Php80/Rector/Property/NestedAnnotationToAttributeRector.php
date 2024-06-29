@@ -18,6 +18,7 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
@@ -43,6 +44,7 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
     private array $nestedAnnotationsToAttributes = [];
 
     public function __construct(
+        private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
@@ -115,10 +117,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups(
-            $phpDocInfo,
-            $this->file->getUses()
-        );
+        $uses = $this->useImportsResolver->resolveBareUses();
+
+        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
         if ($attributeGroups === []) {
             return null;
         }

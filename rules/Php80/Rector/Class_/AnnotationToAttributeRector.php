@@ -33,6 +33,7 @@ use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Rector\AbstractRector;
+use Rector\UseImports\UseImportsScopeResolver;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -58,6 +59,7 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -130,8 +132,10 @@ CODE_SAMPLE
         // 1. bare tags without annotation class, e.g. "@require"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
+        $useImportsScope = $this->useImportsScopeResolver->resolve($this->file->getFilePath());
+
         // 2. Doctrine annotation classes
-        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $this->file->getUses());
+        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $useImportsScope->getUses());
 
         $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
         if ($attributeGroups === []) {
