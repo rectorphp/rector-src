@@ -55,7 +55,7 @@ final readonly class MissConfigurationReporter
         sleep(3);
     }
 
-    public function reportWithShortOpenTag(): void
+    public function reportStartWithShortOpenTag(): void
     {
         $files = SimpleParameterProvider::provideArrayParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES);
         if ($files === []) {

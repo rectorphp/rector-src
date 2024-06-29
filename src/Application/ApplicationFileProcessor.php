@@ -57,7 +57,7 @@ final class ApplicationFileProcessor
     {
         $filePaths = $this->fileFactory->findFilesInPaths($configuration->getPaths(), $configuration);
         $this->missConfigurationReporter->reportVendorInPaths($filePaths);
-        $this->missConfigurationReporter->reportWithShortOpenTag();
+        $this->missConfigurationReporter->reportStartWithShortOpenTag();
 
         // no files found
         if ($filePaths === []) {
