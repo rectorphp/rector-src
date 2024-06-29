@@ -62,11 +62,12 @@ final readonly class MissConfigurationReporter
             return;
         }
 
-        $suffix = count($files) > 1 ? 's' : '';
+        $suffix = count($files) > 1 ? 's were' : ' was';
         $fileList = implode(PHP_EOL, $files);
 
         $this->symfonyStyle->warning(sprintf(
-            'The following file' . $suffix . ' skipped as start with short open tag, migrate to long open php tag first: %s%s',
+            'The following file%s skipped as starting with short open tag. Migrate to long open PHP tag first: %s%s',
+            $suffix,
             PHP_EOL . PHP_EOL,
             $fileList
         ));
