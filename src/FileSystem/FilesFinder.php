@@ -118,7 +118,7 @@ final readonly class FilesFinder
             }
 
             if ($this->isStartWithShortPHPTag($fileInfo->getContents())) {
-                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $fileInfo->getRelativePath());
+                SimpleParameterProvider::addParameter(Option::SKIPPED_START_WITH_SHORT_OPEN_TAG_FILES, $fileInfo->getRelativePathname());
                 continue;
             }
 
