@@ -14,7 +14,6 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
@@ -61,19 +60,11 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        // note: cannot be handled by PHPStan as uses no-space around |
         $unionTypesNodes = [];
-        $skipIterable = $this->shouldSkipIterable($type);
-
         foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType instanceof IterableType && $skipIterable) {
-                continue;
-            }
-
             $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
         }
 
-        $unionTypesNodes = array_unique($unionTypesNodes);
         return new BracketsAwareUnionTypeNode($unionTypesNodes);
     }
 
