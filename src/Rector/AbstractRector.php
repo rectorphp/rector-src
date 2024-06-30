@@ -118,6 +118,15 @@ CODE_SAMPLE;
         return parent::beforeTraverse($nodes);
     }
 
+    /**
+     * @return Node[]|null
+     */
+    public function afterTraverse(array $nodes): ?array
+    {
+        $this->file->changeNewStmts($nodes);
+        return parent::afterTraverse($nodes);
+    }
+
     final public function enterNode(Node $node): int|Node|null
     {
         if (! $this->isMatchingNodeType($node)) {

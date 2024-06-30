@@ -66,13 +66,10 @@ final readonly class FileProcessor
         do {
             $file->changeHasChanged(false);
 
-            $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
+            $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
             // apply post rectors
-            $postNewStmts = $this->postFileProcessor->traverse($newStmts, $file);
-
-            // this is needed for new tokens added in "afterTraverse()"
-            $file->changeNewStmts($postNewStmts);
+            $this->postFileProcessor->traverse($file->getNewStmts(), $file);
 
             // 3. print to file or string
             // important to detect if file has changed
