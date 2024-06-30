@@ -95,6 +95,16 @@ final readonly class ReturnStrictTypeAnalyzer
 
     public function resolveMethodCallReturnNode(MethodCall | StaticCall | FuncCall $call): ?Node
     {
+        $returnType = $this->resolveMethodCallReturnType($call);
+        if (! $returnType instanceof Type) {
+            return null;
+        }
+
+        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+    }
+
+    public function resolveMethodCallReturnType(MethodCall | StaticCall | FuncCall $call): ?Type
+    {
         $methodReflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($call);
         if ($methodReflection === null) {
             return null;
@@ -121,8 +131,7 @@ final readonly class ReturnStrictTypeAnalyzer
             return null;
         }
 
-        $returnType = $this->normalizeStaticType($call, $returnType);
-        return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
+        return $this->normalizeStaticType($call, $returnType);
     }
 
     private function normalizeStaticType(MethodCall | StaticCall | FuncCall $call, Type $type): Type
