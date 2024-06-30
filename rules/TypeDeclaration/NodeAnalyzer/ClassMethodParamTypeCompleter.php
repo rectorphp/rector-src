@@ -16,11 +16,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeCommonTypeNarrower;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 
 final readonly class ClassMethodParamTypeCompleter
@@ -28,8 +25,6 @@ final readonly class ClassMethodParamTypeCompleter
     public function __construct(
         private StaticTypeMapper $staticTypeMapper,
         private ClassMethodParamVendorLockResolver $classMethodParamVendorLockResolver,
-        private UnionTypeCommonTypeNarrower $unionTypeCommonTypeNarrower,
-        private PhpVersionProvider $phpVersionProvider,
     ) {
     }
 
@@ -116,9 +111,6 @@ final readonly class ClassMethodParamTypeCompleter
             return true;
         }
 
-        // narrow union type in case its not supported yet
-        $argumentStaticType = $this->narrowUnionTypeIfNotSupported($argumentStaticType);
-
         // too many union types
         if ($this->isTooDetailedUnionType($currentParameterStaticType, $argumentStaticType, $maxUnionTypes)) {
             return true;
@@ -167,25 +159,6 @@ final readonly class ClassMethodParamTypeCompleter
         }
 
         return count($newType->getTypes()) > $maxUnionTypes;
-    }
-
-    private function narrowUnionTypeIfNotSupported(Type $type): Type
-    {
-        if (! $type instanceof UnionType) {
-            return $type;
-        }
-
-        // union is supported, so it's ok
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            return $type;
-        }
-
-        $narrowedObjectType = $this->unionTypeCommonTypeNarrower->narrowToSharedObjectType($type);
-        if ($narrowedObjectType instanceof ObjectType) {
-            return $narrowedObjectType;
-        }
-
-        return $type;
     }
 
     private function isAcceptedByDefault(Param $param, Type $argumentStaticType): bool
