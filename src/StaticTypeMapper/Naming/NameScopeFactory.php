@@ -5,44 +5,23 @@ declare(strict_types=1);
 namespace Rector\StaticTypeMapper\Naming;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\NameScope;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Type\Generic\TemplateTypeMap;
-use PHPStan\Type\Type;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
-use Rector\PhpParser\AstResolver;
-use Rector\Reflection\ReflectionResolver;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 
 /**
  * @see https://github.com/phpstan/phpstan-src/blob/8376548f76e2c845ae047e3010e873015b796818/src/Analyser/NameScope.php#L32
  */
-final class NameScopeFactory
+final readonly class NameScopeFactory
 {
-    private StaticTypeMapper $staticTypeMapper;
-
-    private PhpDocInfoFactory $phpDocInfoFactory;
-
     public function __construct(
-        private readonly UseImportsResolver $useImportsResolver,
-        private readonly AstResolver $astResolver,
-        private readonly ReflectionResolver $reflectionResolver
+        private UseImportsResolver $useImportsResolver,
     ) {
-    }
-
-    // This is needed to avoid circular references
-
-    public function autowire(PhpDocInfoFactory $phpDocInfoFactory, StaticTypeMapper $staticTypeMapper): void
-    {
-        $this->phpDocInfoFactory = $phpDocInfoFactory;
-        $this->staticTypeMapper = $staticTypeMapper;
     }
 
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
@@ -66,7 +45,7 @@ final class NameScopeFactory
     public function createNameScopeFromNode(Node $node): NameScope
     {
         $nameScope = $this->createNameScopeFromNodeWithoutTemplateTypes($node);
-        $templateTypeMap = $this->templateTemplateTypeMap($node);
+
         /** @var non-empty-string|null $namespace */
         $namespace = $nameScope->getNamespace();
 
@@ -75,7 +54,8 @@ final class NameScopeFactory
             $nameScope->getUses(),
             $nameScope->getClassName(),
             null,
-            $templateTypeMap
+            null
+            // $templateTypeMap
         );
     }
 
@@ -102,43 +82,5 @@ final class NameScopeFactory
         }
 
         return $useNamesByAlias;
-    }
-
-    private function templateTemplateTypeMap(Node $node): TemplateTypeMap
-    {
-        $nodeTemplateTypes = $this->resolveTemplateTypesFromNode($node);
-
-        $classTemplateTypes = [];
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if ($classReflection instanceof ClassReflection) {
-            $classLike = $this->astResolver->resolveClassFromClassReflection($classReflection);
-
-            if ($classLike instanceof ClassLike) {
-                $classTemplateTypes = $this->resolveTemplateTypesFromNode($classLike);
-            }
-        }
-
-        $templateTypes = [...$nodeTemplateTypes, ...$classTemplateTypes];
-        return new TemplateTypeMap($templateTypes);
-    }
-
-    /**
-     * @return Type[]
-     */
-    private function resolveTemplateTypesFromNode(Node $node): array
-    {
-        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-
-        $templateTypes = [];
-
-        foreach ($phpDocInfo->getTemplateTagValueNodes() as $templateTagValueNode) {
-            $templateTypes[$templateTagValueNode->name] = $this->staticTypeMapper->mapPHPStanPhpDocTypeToPHPStanType(
-                $templateTagValueNode,
-                $node
-            );
-        }
-
-        return $templateTypes;
     }
 }
