@@ -25,12 +25,17 @@ use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\UseImports\UseImportsScopeResolver;
 use Rector\UseImports\ValueObject\UseImportsScope;
 
-final readonly class ObjectTypeSpecifier
+final class ObjectTypeSpecifier
 {
+    /**
+     * @var array<string, \PHPStan\Type\Type>
+     */
+    private array $cache = [];
+
     public function __construct(
-        private ReflectionProvider $reflectionProvider,
-        private UseImportsResolver $useImportsResolver,
-        private UseImportsScopeResolver $useImportsScopeResolver,
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsResolver $useImportsResolver,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -41,27 +46,32 @@ final readonly class ObjectTypeSpecifier
     ): FullyQualifiedObjectType | AliasedObjectType | ShortenedGenericObjectType | ShortenedObjectType | NonExistingObjectType | UnionType | MixedType {
         $filePath = $node->getAttribute(AttributeKey::FILE_PATH);
 
+        $resolvedTypeHash = $filePath . $objectType->getClassName();
+        if (isset($this->cache[$resolvedTypeHash])) {
+            return $this->cache[$resolvedTypeHash];
+        }
+
         // $useImportsScope = $this->useImportsResolver->resolve();
         $useImportScope = $this->useImportsScopeResolver->resolve($filePath);
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $useImportScope);
         if ($aliasedObjectType instanceof AliasedObjectType) {
-            return $aliasedObjectType;
+            return $this->cache[$resolvedTypeHash] = $aliasedObjectType;
         }
 
         $shortenedObjectType = $this->matchShortenedObjectType($objectType, $useImportScope);
         if ($shortenedObjectType !== null) {
-            return $shortenedObjectType;
+            return $this->cache[$resolvedTypeHash] = $shortenedObjectType;
         }
 
         $className = ltrim($objectType->getClassName(), '\\');
 
         if ($this->reflectionProvider->hasClass($className)) {
-            return new FullyQualifiedObjectType($className);
+            return $this->cache[$resolvedTypeHash] = new FullyQualifiedObjectType($className);
         }
 
         // invalid type
-        return new NonExistingObjectType($className);
+        return $this->cache[$resolvedTypeHash] = new NonExistingObjectType($className);
     }
 
     private function matchAliasedObjectType(
