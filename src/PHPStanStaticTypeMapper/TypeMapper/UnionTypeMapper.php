@@ -88,6 +88,7 @@ final class UnionTypeMapper implements TypeMapperInterface
     {
         // special case for nullable
         $nullabledType = $this->matchTypeForNullableUnionType($type);
+
         if (! $nullabledType instanceof Type) {
             return $this->matchTypeForUnionedTypes($type, $typeKind);
         }

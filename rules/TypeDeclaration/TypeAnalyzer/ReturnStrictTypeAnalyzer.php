@@ -97,12 +97,18 @@ final readonly class ReturnStrictTypeAnalyzer
     {
         $returnType = $this->resolveMethodCallReturnType($call);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 8e47df14f2 (add union type test fixture for ReturnTypeFromStrictTypedCallRector)
         if (! $returnType instanceof Type) {
             return null;
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> c1a7c8b301 (traverse with file path, improve CleanupUnneededNullsafeOperatorRector to use type directly isntead of node juggling)
+=======
+>>>>>>> 8e47df14f2 (add union type test fixture for ReturnTypeFromStrictTypedCallRector)
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
     }
 
