@@ -644,16 +644,6 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->afterResolving(
-            NameScopeFactory::class,
-            static function (NameScopeFactory $nameScopeFactory, Container $container): void {
-                $nameScopeFactory->autowire(
-                    $container->make(PhpDocInfoFactory::class),
-                    $container->make(StaticTypeMapper::class),
-                );
-            }
-        );
-
-        $rectorConfig->afterResolving(
             PlainValueParser::class,
             static function (PlainValueParser $plainValueParser, Container $container): void {
                 $plainValueParser->autowire(
