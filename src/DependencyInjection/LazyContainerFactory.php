@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DependencyInjection;
 
+use Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
@@ -22,7 +23,6 @@ use Rector\Application\FileProcessor;
 use Rector\Application\Provider\CurrentFileProvider;
 use Rector\BetterPhpDocParser\Contract\BasePhpDocNodeVisitorInterface;
 use Rector\BetterPhpDocParser\Contract\PhpDocParser\PhpDocNodeDecoratorInterface;
-use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocNodeMapper;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\ArrayTypePhpDocNodeVisitor;
 use Rector\BetterPhpDocParser\PhpDocNodeVisitor\CallableTypePhpDocNodeVisitor;
@@ -165,7 +165,6 @@ use Rector\Skipper\SkipVoter\ClassSkipVoter;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
-use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IntersectionTypeMapper;
@@ -179,7 +178,6 @@ use Rector\StaticTypeMapper\PhpParser\NameNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\NullableTypeNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\StringNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\UnionTypeNodeMapper;
-use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -297,7 +295,7 @@ final class LazyContainerFactory
         ParentStaticTypeMapper::class,
         ResourceTypeMapper::class,
         SelfObjectTypeMapper::class,
-        \Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper::class,
+        StaticTypeMapper::class,
         StrictMixedTypeMapper::class,
         StringTypeMapper::class,
         ThisTypeMapper::class,

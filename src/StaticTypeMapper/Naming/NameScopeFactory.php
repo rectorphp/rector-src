@@ -17,10 +17,10 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 /**
  * @see https://github.com/phpstan/phpstan-src/blob/8376548f76e2c845ae047e3010e873015b796818/src/Analyser/NameScope.php#L32
  */
-final class NameScopeFactory
+final readonly class NameScopeFactory
 {
     public function __construct(
-        private readonly UseImportsResolver $useImportsResolver,
+        private UseImportsResolver $useImportsResolver,
     ) {
     }
 
