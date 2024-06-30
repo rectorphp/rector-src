@@ -40,6 +40,7 @@ final readonly class ObjectTypeSpecifier
         ?Scope $scope = null,
     ): FullyQualifiedObjectType | AliasedObjectType | ShortenedGenericObjectType | ShortenedObjectType | NonExistingObjectType | UnionType | MixedType {
         $filePath = $node->getAttribute(AttributeKey::FILE_PATH);
+
         // $useImportsScope = $this->useImportsResolver->resolve();
         $useImportScope = $this->useImportsScopeResolver->resolve($filePath);
 
