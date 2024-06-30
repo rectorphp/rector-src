@@ -2,10 +2,12 @@
 
 namespace Rector\Tests\Issues\Issue6480\Fixture;
 
+use Rector\Tests\Issues\Issue6480\Source\ExistingClass;
+
 class Fixture
 {
-    function test(Foo $foo, mixed $bar): void {
-        if ($foo instanceof Foo) {
+    function test(ExistingClass $foo, mixed $bar): void {
+        if ($foo instanceof ExistingClass) {
             var_dump(!empty($bar) ? $bar : null);
         }
     }
@@ -17,9 +19,11 @@ class Fixture
 
 namespace Rector\Tests\Issues\Issue6480\Fixture;
 
+use Rector\Tests\Issues\Issue6480\Source\ExistingClass;
+
 class Fixture
 {
-    function test(Foo $foo, mixed $bar): void {
+    function test(ExistingClass $foo, mixed $bar): void {
         var_dump(empty($bar) ? null : $bar);
     }
 }
