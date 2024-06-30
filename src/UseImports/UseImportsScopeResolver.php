@@ -39,7 +39,7 @@ final readonly class UseImportsScopeResolver
                 return null;
             }
 
-            if ($node instanceof Use_ && $node->type === Use_::TYPE_NORMAL) {
+            if ($node instanceof Use_ && ($node->type === Use_::TYPE_NORMAL || $node->type === Use_::TYPE_FUNCTION)) {
                 $uses[] = $node;
             }
 

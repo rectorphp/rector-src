@@ -298,3 +298,5 @@ parameters:
 
         # temporary
         - '#Property Rector\\TypeDeclaration\\PHPStan\\ObjectTypeSpecifier\:\:\$useImportsScopeResolver is never read, only written#'
+        # used in doctrine with extra arg
+        - '#Parameters should have "PhpParser\\Node\|PHPStan\\Type\\ObjectType" types as the only types passed to this method#'
