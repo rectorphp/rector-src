@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DependencyInjection;
 
-use Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
@@ -152,6 +151,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\OversizedArrayTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ParentStaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ResourceTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\SelfObjectTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\StaticTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StrictMixedTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ThisTypeMapper;

@@ -35,7 +35,7 @@ final class PhpDocTypeMapperTest extends AbstractLazyTestCase
     public function test(TypeNode $typeNode, string $expectedPHPStanType): void
     {
         $nop = new Nop();
-        $nameScope = $this->nameScopeFactory->createNameScopeFromNode($nop);
+        $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($nop);
 
         $phpStanType = $this->phpDocTypeMapper->mapToPHPStanType($typeNode, $nop, $nameScope);
         $this->assertInstanceOf($expectedPHPStanType, $phpStanType);
