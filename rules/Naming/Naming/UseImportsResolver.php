@@ -21,6 +21,9 @@ final readonly class UseImportsResolver
     }
 
     /**
+     * @deprecated Use cached and file-based
+     * @see UseImportsScopeResolver instead
+     *
      * @return array<Use_|GroupUse>
      */
     public function resolve(): array
@@ -38,10 +41,13 @@ final readonly class UseImportsResolver
 
     /**
      * @api
+     * @deprecated Deprecated since 1.1.2, use cached $this->file->getUses() instead
      * @return Use_[]
      */
     public function resolveBareUses(): array
     {
+        trigger_error(__METHOD__ . ' is deprecated. Use $this->file->getUses() instead', E_USER_DEPRECATED);
+
         $namespace = $this->resolveNamespace();
         if (! $namespace instanceof Node) {
             return [];

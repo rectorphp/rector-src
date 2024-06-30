@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\Node as DocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\GenericTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -25,7 +24,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Exception\Configuration\InvalidConfigurationException;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\Php80\NodeFactory\AttrGroupsFactory;
 use Rector\Php80\NodeManipulator\AttributeGroupNamedArgumentManipulator;
@@ -34,6 +32,8 @@ use Rector\Php80\ValueObject\DoctrineTagAndAnnotationToAttribute;
 use Rector\PhpAttribute\NodeFactory\PhpAttributeGroupFactory;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\Rector\AbstractRector;
+use Rector\UseImports\UseImportsScopeResolver;
+use Rector\UseImports\ValueObject\UseImportsScope;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -56,10 +56,10 @@ final class AnnotationToAttributeRector extends AbstractRector implements Config
         private readonly AttrGroupsFactory $attrGroupsFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly AttributeGroupNamedArgumentManipulator $attributeGroupNamedArgumentManipulator,
-        private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -129,13 +129,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $uses = $this->useImportsResolver->resolveBareUses();
-
         // 1. bare tags without annotation class, e.g. "@require"
         $genericAttributeGroups = $this->processGenericTags($phpDocInfo);
 
+        $useImportsScope = $this->useImportsScopeResolver->resolve($this->file->getFilePath());
+
         // 2. Doctrine annotation classes
-        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $uses);
+        $annotationAttributeGroups = $this->processDoctrineAnnotationClasses($phpDocInfo, $useImportsScope);
 
         $attributeGroups = [...$genericAttributeGroups, ...$annotationAttributeGroups];
         if ($attributeGroups === []) {
@@ -208,10 +208,9 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Use_[] $uses
      * @return AttributeGroup[]
      */
-    private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo, array $uses): array
+    private function processDoctrineAnnotationClasses(PhpDocInfo $phpDocInfo, UseImportsScope $useImportsScope): array
     {
         if ($phpDocInfo->getPhpDocNode()->children === []) {
             return [];
@@ -244,7 +243,10 @@ CODE_SAMPLE
             $doctrineTagValueNodes[] = $doctrineTagValueNode;
         }
 
-        $attributeGroups = $this->attrGroupsFactory->create($doctrineTagAndAnnotationToAttributes, $uses);
+        $attributeGroups = $this->attrGroupsFactory->create(
+            $doctrineTagAndAnnotationToAttributes,
+            $useImportsScope->getUses()
+        );
 
         if ($this->phpAttributeAnalyzer->hasRemoveArrayState($attributeGroups)) {
             return [];

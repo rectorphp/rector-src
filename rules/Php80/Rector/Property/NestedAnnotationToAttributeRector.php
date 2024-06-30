@@ -9,7 +9,6 @@ use PhpParser\Node\AttributeGroup;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
-use PhpParser\Node\Stmt\Use_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use Rector\BetterPhpDocParser\PhpDoc\DoctrineAnnotationTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
@@ -18,7 +17,6 @@ use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\BetterPhpDocParser\ValueObject\PhpDocAttributeKey;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeFactory\NestedAttrGroupsFactory;
 use Rector\Php80\ValueObject\AnnotationPropertyToAttributeClass;
@@ -27,6 +25,8 @@ use Rector\Php80\ValueObject\NestedDoctrineTagAndAnnotationToAttribute;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
+use Rector\UseImports\UseImportsScopeResolver;
+use Rector\UseImports\ValueObject\UseImportsScope;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
@@ -44,11 +44,11 @@ final class NestedAnnotationToAttributeRector extends AbstractRector implements 
     private array $nestedAnnotationsToAttributes = [];
 
     public function __construct(
-        private readonly UseImportsResolver $useImportsResolver,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly NestedAttrGroupsFactory $nestedAttrGroupsFactory,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
@@ -117,9 +117,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $uses = $this->useImportsResolver->resolveBareUses();
+        $useImportsScope = $this->useImportsScopeResolver->resolve($this->file->getFilePath());
 
-        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $uses);
+        $attributeGroups = $this->transformDoctrineAnnotationClassesToAttributeGroups($phpDocInfo, $useImportsScope);
         if ($attributeGroups === []) {
             return null;
         }
@@ -148,11 +148,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Use_[] $uses
      * @return AttributeGroup[]
      */
-    private function transformDoctrineAnnotationClassesToAttributeGroups(PhpDocInfo $phpDocInfo, array $uses): array
-    {
+    private function transformDoctrineAnnotationClassesToAttributeGroups(
+        PhpDocInfo $phpDocInfo,
+        UseImportsScope $useImportsScope
+    ): array {
         if ($phpDocInfo->getPhpDocNode()->children === []) {
             return [];
         }
@@ -182,7 +183,10 @@ CODE_SAMPLE
             );
         }
 
-        return $this->nestedAttrGroupsFactory->create($nestedDoctrineTagAndAnnotationToAttributes, $uses);
+        return $this->nestedAttrGroupsFactory->create(
+            $nestedDoctrineTagAndAnnotationToAttributes,
+            $useImportsScope->getUses()
+        );
     }
 
     private function matchAnnotationToAttribute(

@@ -11,6 +11,7 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTextNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\Printer\PhpDocInfoPrinter;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockTagReplacer;
 use Rector\NodeTypeResolver\Reflection\BetterReflection\SourceLocatorProvider\DynamicSourceLocatorProvider;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
@@ -96,6 +97,7 @@ final class PhpDocInfoTest extends AbstractLazyTestCase
 
         $nop = new Nop();
         $nop->setDocComment(new Doc($phpDocContent));
+        $nop->setAttribute(AttributeKey::FILE_PATH, $path);
 
         return $phpDocInfoFactory->createFromNode($nop);
     }

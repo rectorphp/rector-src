@@ -11,8 +11,10 @@ use PhpParser\Node\Stmt\Use_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\CodingStyle\NodeAnalyzer\UseImportNameMatcher;
+use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\UseImports\UseImportsScopeResolver;
 
 /**
  * Matches "@ORM\Entity" to FQN names based on use imports in the file
@@ -27,7 +29,8 @@ final class ClassAnnotationMatcher
     public function __construct(
         private readonly UseImportNameMatcher $useImportNameMatcher,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly ReflectionProvider $reflectionProvider
+        private readonly ReflectionProvider $reflectionProvider,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -40,9 +43,21 @@ final class ClassAnnotationMatcher
 
         $tag = ltrim($tag, '@');
 
-        $uses = $this->useImportsResolver->resolve();
-        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($uses, $node, $tag);
+        $scope = $node->getAttribute(AttributeKey::SCOPE);
 
+        // not in a class, invoked in PhpDocInfoPrinterTest
+        if (! $scope instanceof Scope) {
+            if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+                return $tag;
+            }
+
+            throw new ShouldNotHappenException();
+        }
+
+        $filePath = $scope->getFile();
+        $useImportsScope = $this->useImportsScopeResolver->resolve($filePath);
+
+        $fullyQualifiedClass = $this->resolveFullyQualifiedClass($useImportsScope->getUses(), $node, $tag);
         if ($fullyQualifiedClass === null) {
             $fullyQualifiedClass = $tag;
         }

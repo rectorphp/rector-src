@@ -16,17 +16,17 @@ use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
-use Rector\Naming\Naming\UseImportsResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\UseImports\UseImportsScopeResolver;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
     public function __construct(
         private readonly NameImporter $nameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
-        private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly UseImportsScopeResolver $useImportsScopeResolver,
     ) {
     }
 
@@ -40,7 +40,9 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $currentUses = $this->useImportsResolver->resolve();
+        $useImportsScope = $this->useImportsScopeResolver->resolve($this->getFile()->getFilePath());
+
+        $currentUses = $useImportsScope->getUses();
         if ($this->classNameImportSkipper->shouldSkipName($node, $currentUses)) {
             return null;
         }

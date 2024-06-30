@@ -45,6 +45,9 @@ final class NameScopeFactory
         $this->staticTypeMapper = $staticTypeMapper;
     }
 
+    /**
+     * @note possible bottle neck, as creates NameScope for every node, without cache; better target file level and cache
+     */
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
@@ -63,6 +66,9 @@ final class NameScopeFactory
         return new NameScope($namespace, $usesAliasesToNames, $className);
     }
 
+    /**
+     * @note possible bottle neck, as creates NameScope for every node, without cache; better target file level and cache
+     */
     public function createNameScopeFromNode(Node $node): NameScope
     {
         $nameScope = $this->createNameScopeFromNodeWithoutTemplateTypes($node);
