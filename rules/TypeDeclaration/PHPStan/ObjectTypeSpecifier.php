@@ -15,7 +15,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
@@ -38,7 +37,7 @@ final readonly class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         ?Scope $scope = null,
-    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
+    ): FullyQualifiedObjectType | AliasedObjectType | ShortenedGenericObjectType | ShortenedObjectType | NonExistingObjectType | UnionType | MixedType {
         $uses = $this->useImportsResolver->resolve();
         // $useImportScope = $this->useImportsScopeResolver->resolve();
 
