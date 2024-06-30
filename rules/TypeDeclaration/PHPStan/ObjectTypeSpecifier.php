@@ -23,24 +23,13 @@ use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
-use Rector\TypeDeclaration\Contract\PHPStan\TypeWithClassTypeSpecifierInterface;
-use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SameNamespacedTypeSpecifier;
-use Rector\TypeDeclaration\PHPStan\TypeSpecifier\SelfStaticParentTypeSpecifier;
 
-final class ObjectTypeSpecifier
+final readonly class ObjectTypeSpecifier
 {
-    /**
-     * @var TypeWithClassTypeSpecifierInterface[]
-     */
-    private array $typeWithClassTypeSpecifiers = [];
-
     public function __construct(
-        private readonly ReflectionProvider $reflectionProvider,
-        private readonly UseImportsResolver $useImportsResolver,
-        SelfStaticParentTypeSpecifier $selfStaticParentTypeSpecifier,
-        SameNamespacedTypeSpecifier $sameNamespacedTypeSpecifier,
+        private ReflectionProvider $reflectionProvider,
+        private UseImportsResolver $useImportsResolver,
     ) {
-        $this->typeWithClassTypeSpecifiers = [$selfStaticParentTypeSpecifier, $sameNamespacedTypeSpecifier];
     }
 
     public function narrowToFullyQualifiedOrAliasedObjectType(
@@ -48,14 +37,6 @@ final class ObjectTypeSpecifier
         ObjectType $objectType,
         Scope|null $scope
     ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
-        if ($scope instanceof Scope) {
-            foreach ($this->typeWithClassTypeSpecifiers as $typeWithClassTypeSpecifier) {
-                if ($typeWithClassTypeSpecifier->match($objectType, $scope)) {
-                    return $typeWithClassTypeSpecifier->resolveObjectReferenceType($objectType, $scope);
-                }
-            }
-        }
-
         $uses = $this->useImportsResolver->resolve();
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
