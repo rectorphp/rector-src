@@ -26,7 +26,7 @@ use Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Source
 
 final class ExtendedClass extends SomeParentClass
 {
-    public function run(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Source\SomeParentClass
+    public function run(): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture\ExtendedClass|\Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Source\SomeParentClass
     {
         if (rand(0, 1)) {
             return new ExtendedClass();
