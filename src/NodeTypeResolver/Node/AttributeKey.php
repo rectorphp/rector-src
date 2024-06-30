@@ -290,4 +290,9 @@ final class AttributeKey
      * @var string
      */
     public const ATTRIBUTE_COMMENT = 'attribute_comment';
+
+    /**
+     * @var string
+     */
+    public const FILE_PATH = 'file_path';
 }

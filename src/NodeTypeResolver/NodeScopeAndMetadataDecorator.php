@@ -9,6 +9,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
+use Rector\PhpParser\NodeVisitor\FilePathNodeVisitor;
 
 final class NodeScopeAndMetadataDecorator
 {
@@ -33,6 +34,8 @@ final class NodeScopeAndMetadataDecorator
     {
         $stmts = $this->fileWithoutNamespaceNodeTraverser->traverse($stmts);
         $stmts = $this->phpStanNodeScopeResolver->processNodes($stmts, $filePath);
+
+        $this->nodeTraverser->addVisitor(new FilePathNodeVisitor($filePath));
 
         return $this->nodeTraverser->traverse($stmts);
     }

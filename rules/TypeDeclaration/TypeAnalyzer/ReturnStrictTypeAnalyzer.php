@@ -96,10 +96,13 @@ final readonly class ReturnStrictTypeAnalyzer
     public function resolveMethodCallReturnNode(MethodCall | StaticCall | FuncCall $call): ?Node
     {
         $returnType = $this->resolveMethodCallReturnType($call);
+<<<<<<< HEAD
         if (! $returnType instanceof Type) {
             return null;
         }
 
+=======
+>>>>>>> c1a7c8b301 (traverse with file path, improve CleanupUnneededNullsafeOperatorRector to use type directly isntead of node juggling)
         return $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
     }
 

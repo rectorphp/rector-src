@@ -8,6 +8,5 @@ use Rector\ValueObject\PhpVersionFeature;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->phpVersion(PhpVersionFeature::NULLSAFE_OPERATOR);
-
     $rectorConfig->rule(CleanupUnneededNullsafeOperatorRector::class);
 };

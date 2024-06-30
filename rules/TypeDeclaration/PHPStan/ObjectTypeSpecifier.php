@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -17,12 +16,14 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedGenericObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\UseImports\UseImportsScopeResolver;
+use Rector\UseImports\ValueObject\UseImportsScope;
 
 final readonly class ObjectTypeSpecifier
 {
@@ -38,15 +39,16 @@ final readonly class ObjectTypeSpecifier
         ObjectType $objectType,
         ?Scope $scope = null,
     ): FullyQualifiedObjectType | AliasedObjectType | ShortenedGenericObjectType | ShortenedObjectType | NonExistingObjectType | UnionType | MixedType {
-        $uses = $this->useImportsResolver->resolve();
-        // $useImportScope = $this->useImportsScopeResolver->resolve();
+        $filePath = $node->getAttribute(AttributeKey::FILE_PATH);
+        // $useImportsScope = $this->useImportsResolver->resolve();
+        $useImportScope = $this->useImportsScopeResolver->resolve($filePath);
 
-        $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
+        $aliasedObjectType = $this->matchAliasedObjectType($objectType, $useImportScope);
         if ($aliasedObjectType instanceof AliasedObjectType) {
             return $aliasedObjectType;
         }
 
-        $shortenedObjectType = $this->matchShortenedObjectType($objectType, $uses);
+        $shortenedObjectType = $this->matchShortenedObjectType($objectType, $useImportScope);
         if ($shortenedObjectType !== null) {
             return $shortenedObjectType;
         }
@@ -61,18 +63,17 @@ final readonly class ObjectTypeSpecifier
         return new NonExistingObjectType($className);
     }
 
-    /**
-     * @param array<Use_|GroupUse> $uses
-     */
-    private function matchAliasedObjectType(ObjectType $objectType, array $uses): ?AliasedObjectType
-    {
-        if ($uses === []) {
+    private function matchAliasedObjectType(
+        ObjectType $objectType,
+        UseImportsScope $useImportsScope
+    ): ?AliasedObjectType {
+        if ($useImportsScope->getUses() === []) {
             return null;
         }
 
         $className = $objectType->getClassName();
 
-        foreach ($uses as $use) {
+        foreach ($useImportsScope->getUses() as $use) {
             $prefix = $this->useImportsResolver->resolvePrefix($use);
             foreach ($use->uses as $useUse) {
                 if (! $useUse->alias instanceof Identifier) {
@@ -118,18 +119,11 @@ final readonly class ObjectTypeSpecifier
         return null;
     }
 
-    /**
-     * @param array<Use_|GroupUse> $uses
-     */
     private function matchShortenedObjectType(
         ObjectType $objectType,
-        array $uses
+        UseImportsScope $useImportsScope
     ): ShortenedObjectType|ShortenedGenericObjectType|null {
-        if ($uses === []) {
-            return null;
-        }
-
-        foreach ($uses as $use) {
+        foreach ($useImportsScope->getUses() as $use) {
             $prefix = $use instanceof GroupUse
                 ? $use->prefix . '\\'
                 : '';
