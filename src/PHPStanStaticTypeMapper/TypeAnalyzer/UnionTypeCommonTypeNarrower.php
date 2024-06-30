@@ -44,25 +44,6 @@ final readonly class UnionTypeCommonTypeNarrower
     ) {
     }
 
-    public function narrowToSharedObjectType(UnionType $unionType): ?ObjectType
-    {
-        $sharedTypes = $this->narrowToSharedTypes($unionType);
-
-        if ($sharedTypes !== []) {
-            foreach (self::PRIORITY_TYPES as $winningType => $groupTypes) {
-                $intersectedGroupTypes = array_intersect($groupTypes, $sharedTypes);
-                if ($intersectedGroupTypes === $groupTypes) {
-                    return new ObjectType($winningType);
-                }
-            }
-
-            $firstSharedType = $sharedTypes[0];
-            return new ObjectType($firstSharedType);
-        }
-
-        return null;
-    }
-
     public function narrowToGenericClassStringType(UnionType $unionType): UnionType | GenericClassStringType
     {
         $availableTypes = [];
@@ -93,35 +74,6 @@ final readonly class UnionTypeCommonTypeNarrower
         }
 
         return $unionType;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function narrowToSharedTypes(UnionType $unionType): array
-    {
-        $availableTypes = [];
-
-        foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof ObjectType) {
-                return [];
-            }
-
-            $typeClassReflections = $this->resolveClassParentClassesAndInterfaces($unionedType);
-            $typeClassNames = [];
-
-            foreach ($typeClassReflections as $typeClassReflection) {
-                $typeClassNames[] = $typeClassReflection->getName();
-            }
-
-            if ($typeClassNames === []) {
-                continue;
-            }
-
-            $availableTypes[] = $typeClassNames;
-        }
-
-        return $this->narrowAvailableTypes($availableTypes);
     }
 
     /**
