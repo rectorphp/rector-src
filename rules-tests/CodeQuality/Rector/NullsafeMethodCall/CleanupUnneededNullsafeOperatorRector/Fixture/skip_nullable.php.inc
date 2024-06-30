@@ -16,5 +16,3 @@ function run(): ?SkipNullable
 }
 
 echo run()?->getString();
-
-?>
