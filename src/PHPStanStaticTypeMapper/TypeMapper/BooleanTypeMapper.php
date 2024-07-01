@@ -51,6 +51,10 @@ final readonly class BooleanTypeMapper implements TypeMapperInterface
             return new Identifier('bool');
         }
 
+        if ($typeKind === TypeKind::UNION && $type instanceof ConstantBooleanType && $type->getValue() === false) {
+            return new Identifier('false');
+        }
+
         if ($this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE
         ) && $type instanceof ConstantBooleanType) {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\FixturePhp81;
 
-final class MultiScalar
+final class FalseInUnion
 {
     public function run($value)
     {
@@ -18,9 +18,9 @@ final class MultiScalar
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\FixturePhp81;
 
-final class MultiScalar
+final class FalseInUnion
 {
     public function run($value): false|string
     {

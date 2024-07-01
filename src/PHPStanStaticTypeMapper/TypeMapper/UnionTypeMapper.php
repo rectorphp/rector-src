@@ -67,10 +67,6 @@ final class UnionTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         $phpParserUnionType = $this->matchPhpParserUnionType($type);
-        if ($phpParserUnionType instanceof NullableType) {
-            return $phpParserUnionType;
-        }
-
         if ($phpParserUnionType instanceof PhpParserUnionType) {
             return $this->resolveUnionTypeNode($phpParserUnionType);
         }

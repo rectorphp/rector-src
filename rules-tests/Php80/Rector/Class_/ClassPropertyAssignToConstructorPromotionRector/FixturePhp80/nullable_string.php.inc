@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\FixturePhp80;
 
-final class AddDefaultFalseToBool
+final class NullableString
 {
     public $name;
 
-    public function __construct(string $name = false)
+    public function __construct(string $name = null)
     {
         $this->name = $name;
     }
@@ -18,9 +18,9 @@ final class AddDefaultFalseToBool
 
 namespace Rector\Tests\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector\FixturePhp80;
 
-final class AddDefaultFalseToBool
+final class NullableString
 {
-    public function __construct(public string|false $name = false)
+    public function __construct(public ?string $name = null)
     {
     }
 }
