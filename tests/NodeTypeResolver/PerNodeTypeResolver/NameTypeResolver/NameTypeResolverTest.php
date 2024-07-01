@@ -37,4 +37,15 @@ final class NameTypeResolverTest extends AbstractNodeTypeResolverTestCase
         # test new
         yield [__DIR__ . '/Source/ParentCall.php', 2, $expectedFullyQualifiedObjectType];
     }
+
+    public function testShortNameNode(): void
+    {
+        $objectType = new FullyQualifiedObjectType(AnotherClass::class);
+        $nameNode = $objectType->getShortNameNode();
+
+        $resolvedType = $this->nodeTypeResolver->getType($nameNode);
+        $expectedFullyQualifiedObjectType = new FullyQualifiedObjectType(AnotherClass::class);
+
+        $this->assertEquals($expectedFullyQualifiedObjectType, $resolvedType);
+    }
 }
