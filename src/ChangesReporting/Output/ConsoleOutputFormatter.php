@@ -139,7 +139,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             '%d file%s %s by Rector',
             $changeCount,
             $changeCount > 1 ? 's' : '',
-            $configuration->isDryRun() ? 'would have changed (dry-run)' : ($changeCount === 1 ? 'has' : 'have') . ' been changed'
+            $configuration->isDryRun() ? 'would have been changed (dry-run)' : ($changeCount === 1 ? 'has' : 'have') . ' been changed'
         );
     }
 }

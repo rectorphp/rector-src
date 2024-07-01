@@ -31,4 +31,4 @@ Applied rules:
  * RemoveUnusedPrivatePropertyRector
 
 
- [OK] 2 files would have changed (dry-run) by Rector
+ [OK] 2 files would have been changed (dry-run) by Rector
