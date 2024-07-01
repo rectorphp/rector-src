@@ -16,7 +16,6 @@ final class NullableIfChecked
         if ($this->connection == null) {
             $this->initConnection();
         }
-        return $this->connection;
     }
 
     private function initConnection(): void
@@ -42,7 +41,6 @@ final class NullableIfChecked
         if ($this->connection == null) {
             $this->initConnection();
         }
-        return $this->connection;
     }
 
     private function initConnection(): void
