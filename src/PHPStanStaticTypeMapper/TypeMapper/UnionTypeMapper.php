@@ -122,6 +122,13 @@ final class UnionTypeMapper implements TypeMapperInterface
         /** @var PHPParserNodeIntersectionType|Identifier|Name $type */
         $type = $nullableType->type;
         if (! $type instanceof PHPParserNodeIntersectionType) {
+            // ?false is allowed only since PHP 8.2+, lets fallback to bool instead
+            if ($type->toString() === 'false' && ! $this->phpVersionProvider->isAtLeastPhpVersion(
+                PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE
+            )) {
+                return new NullableType(new Identifier('bool'));
+            }
+
             return $nullableType;
         }
 
@@ -193,9 +200,9 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $phpParserUnionedTypes[0];
         }
 
-        if ($countPhpParserUnionedTypes === 0) {
-            return null;
-        }
+        //        if ($countPhpParserUnionedTypes === 0) {
+        //            return null;
+        //        }
 
         return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
     }
@@ -206,6 +213,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
+        // special case that would crash, when stdClass and object is used,
         if ($this->hasObjectAndStaticType($phpParserUnionType)) {
             return null;
         }
