@@ -37,7 +37,7 @@ final class NameTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        // not instanceof FullyQualified it is a Name
+        // not instanceof FullyQualified means it is a Name
         if (! $node instanceof FullyQualified && $node->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
             return $this->resolve(new FullyQualified($node->getAttribute(AttributeKey::NAMESPACED_NAME)));
         }
