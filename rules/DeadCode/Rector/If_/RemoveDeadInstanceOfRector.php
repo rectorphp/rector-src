@@ -158,10 +158,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $instanceof->class instanceof FullyQualified) {
-            return null;
-        }
-
         $exprType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
         if (! $exprType instanceof ObjectType) {
             return null;
