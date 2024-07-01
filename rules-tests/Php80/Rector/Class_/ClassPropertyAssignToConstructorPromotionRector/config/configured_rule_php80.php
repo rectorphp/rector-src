@@ -7,9 +7,6 @@ use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\ValueObject\PhpVersion;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->ruleWithConfiguration(ClassPropertyAssignToConstructorPromotionRector::class, [
-        ClassPropertyAssignToConstructorPromotionRector::INLINE_PUBLIC => true,
-    ]);
-
-    $rectorConfig->phpVersion(PhpVersion::PHP_10);
+    $rectorConfig->rule(ClassPropertyAssignToConstructorPromotionRector::class);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
 };

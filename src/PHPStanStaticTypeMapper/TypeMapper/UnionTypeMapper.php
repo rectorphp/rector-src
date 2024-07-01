@@ -13,9 +13,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
@@ -68,10 +66,18 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
-        // special case for nullable
-        return $this->matchTypeForUnionedTypes($type, $typeKind);
+        $phpParserUnionType = $this->matchPhpParserUnionType($type);
+        if ($phpParserUnionType instanceof PhpParserUnionType) {
+            return $this->resolveUnionTypeNode($phpParserUnionType);
+        }
+
+        return $phpParserUnionType;
     }
 
+    /**
+     * If type is nullable, and has only one other value,
+     * this creates at least "?Type" in case of PHP 7.1-7.4
+     */
     private function resolveTypeWithNullablePHPParserUnionType(
         PhpParserUnionType $phpParserUnionType
     ): PhpParserUnionType|NullableType|null {
@@ -116,6 +122,13 @@ final class UnionTypeMapper implements TypeMapperInterface
         /** @var PHPParserNodeIntersectionType|Identifier|Name $type */
         $type = $nullableType->type;
         if (! $type instanceof PHPParserNodeIntersectionType) {
+            // ?false is allowed only since PHP 8.2+, lets fallback to bool instead
+            if ($type->toString() === 'false' && ! $this->phpVersionProvider->isAtLeastPhpVersion(
+                PhpVersionFeature::NULL_FALSE_TRUE_STANDALONE_TYPE
+            )) {
+                return new NullableType(new Identifier('bool'));
+            }
+
             return $nullableType;
         }
 
@@ -158,28 +171,9 @@ final class UnionTypeMapper implements TypeMapperInterface
     }
 
     /**
-     * @param TypeKind::* $typeKind
      * @return Name|FullyQualified|ComplexType|Identifier|null
      */
-    private function matchTypeForUnionedTypes(UnionType $unionType, string $typeKind): ?Node
-    {
-        $phpParserUnionType = $this->matchPhpParserUnionType($unionType, $typeKind);
-        if ($phpParserUnionType instanceof NullableType) {
-            return $phpParserUnionType;
-        }
-
-        if ($phpParserUnionType instanceof PhpParserUnionType) {
-            return $this->resolveUnionTypeNode($phpParserUnionType);
-        }
-
-        return $phpParserUnionType;
-    }
-
-    /**
-     * @param TypeKind::* $typeKind
-     * @return Name|FullyQualified|ComplexType|Identifier|null
-     */
-    private function matchPhpParserUnionType(UnionType $unionType, string $typeKind): ?Node
+    private function matchPhpParserUnionType(UnionType $unionType): ?Node
     {
         $phpParserUnionedTypes = [];
 
@@ -189,10 +183,8 @@ final class UnionTypeMapper implements TypeMapperInterface
                 return null;
             }
 
-            /**
-             * NullType or ConstantBooleanType with false value inside UnionType is allowed
-             */
-            $phpParserNode = $this->resolveAllowedStandaloneTypeInUnionType($unionedType, $typeKind);
+            // NullType or ConstantBooleanType with false value inside UnionType is allowed
+            $phpParserNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, TypeKind::UNION);
             if ($phpParserNode === null) {
                 return null;
             }
@@ -208,29 +200,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $phpParserUnionedTypes[0];
         }
 
-        if ($countPhpParserUnionedTypes === 0) {
-            return null;
-        }
-
         return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
-    }
-
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    private function resolveAllowedStandaloneTypeInUnionType(
-        Type $unionedType,
-        string $typeKind
-    ): Identifier|Name|null|PHPParserNodeIntersectionType|ComplexType {
-        if ($unionedType instanceof NullType) {
-            return new Identifier('null');
-        }
-
-        if ($unionedType instanceof ConstantBooleanType && ! $unionedType->getValue()) {
-            return new Identifier('false');
-        }
-
-        return $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, $typeKind);
     }
 
     private function resolveUnionTypeNode(PhpParserUnionType $phpParserUnionType): ?PhpParserUnionType
@@ -239,6 +209,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
+        // special case that would crash, when stdClass and object is used,
         if ($this->hasObjectAndStaticType($phpParserUnionType)) {
             return null;
         }
