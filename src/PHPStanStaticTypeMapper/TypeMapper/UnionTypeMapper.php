@@ -14,20 +14,16 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\Constant\ConstantBooleanType;
-use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
-use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\PHPStanStaticTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
-use Rector\PHPStanStaticTypeMapper\ValueObject\UnionTypeAnalysis;
 use Rector\ValueObject\PhpVersionFeature;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
@@ -41,8 +37,6 @@ final class UnionTypeMapper implements TypeMapperInterface
 
     public function __construct(
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly UnionTypeAnalyzer $unionTypeAnalyzer,
-        private readonly NodeNameResolver $nodeNameResolver
     ) {
     }
 
@@ -61,19 +55,11 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        // note: cannot be handled by PHPStan as uses no-space around |
         $unionTypesNodes = [];
-        $skipIterable = $this->shouldSkipIterable($type);
-
         foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType instanceof IterableType && $skipIterable) {
-                continue;
-            }
-
             $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
         }
 
-        $unionTypesNodes = array_unique($unionTypesNodes);
         return new BracketsAwareUnionTypeNode($unionTypesNodes);
     }
 
@@ -83,15 +69,10 @@ final class UnionTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         // special case for nullable
-        $nullabledType = $this->matchTypeForNullableUnionType($type);
-        if (! $nullabledType instanceof Type) {
-            return $this->matchTypeForUnionedTypes($type, $typeKind);
-        }
-
-        return $this->mapNullabledType($nullabledType, $typeKind);
+        return $this->matchTypeForUnionedTypes($type, $typeKind);
     }
 
-    public function resolveTypeWithNullablePHPParserUnionType(
+    private function resolveTypeWithNullablePHPParserUnionType(
         PhpParserUnionType $phpParserUnionType
     ): PhpParserUnionType|NullableType|null {
         $totalTypes = count($phpParserUnionType->types);
@@ -138,7 +119,7 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $nullableType;
         }
 
-        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::INTERSECTION_TYPES)) {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             return null;
         }
 
@@ -148,49 +129,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         return new PhpParserUnionType($types);
     }
 
-    /**
-     * @param TypeKind::* $typeKind
-     */
-    private function mapNullabledType(
-        Type $nullabledType,
-        string $typeKind
-    ): NullableType|ComplexType|PhpParserUnionType|null {
-        // void cannot be nullable
-        if ($nullabledType->isVoid()->yes()) {
-            return null;
-        }
-
-        $nullabledTypeNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($nullabledType, $typeKind);
-        if (! $nullabledTypeNode instanceof Node) {
-            return null;
-        }
-
-        if (in_array($nullabledTypeNode::class, [NullableType::class, ComplexType::class], true)) {
-            return $nullabledTypeNode;
-        }
-
-        /** @var Name $nullabledTypeNode */
-        if (! $this->nodeNameResolver->isNames($nullabledTypeNode, ['false', 'mixed'])) {
-            return $this->resolveNullableType(new NullableType($nullabledTypeNode));
-        }
-
-        return null;
-    }
-
-    private function shouldSkipIterable(UnionType $unionType): bool
-    {
-        $unionTypeAnalysis = $this->unionTypeAnalyzer->analyseForArrayAndIterable($unionType);
-        if (! $unionTypeAnalysis instanceof UnionTypeAnalysis) {
-            return false;
-        }
-
-        if (! $unionTypeAnalysis->hasIterable()) {
-            return false;
-        }
-
-        return $unionTypeAnalysis->hasArray();
-    }
-
     private function resolveUnionTypes(PhpParserUnionType $phpParserUnionType): ?PhpParserUnionType
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
@@ -198,26 +136,6 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         return $phpParserUnionType;
-    }
-
-    private function matchTypeForNullableUnionType(UnionType $unionType): ?Type
-    {
-        if (count($unionType->getTypes()) !== 2) {
-            return null;
-        }
-
-        $firstType = $unionType->getTypes()[0];
-        $secondType = $unionType->getTypes()[1];
-
-        if ($firstType instanceof NullType) {
-            return $secondType;
-        }
-
-        if ($secondType instanceof NullType) {
-            return $firstType;
-        }
-
-        return null;
     }
 
     private function hasObjectAndStaticType(PhpParserUnionType $phpParserUnionType): bool

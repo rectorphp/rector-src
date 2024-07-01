@@ -27,17 +27,17 @@ final readonly class NameScopeFactory
     public function createNameScopeFromNodeWithoutTemplateTypes(Node $node): NameScope
     {
         $scope = $node->getAttribute(AttributeKey::SCOPE);
-        $namespace = $scope instanceof Scope ? $scope->getNamespace() : null;
+        if ($scope instanceof Scope) {
+            $namespace = $scope->getNamespace();
+            $classReflection = $scope->getClassReflection();
+            $className = $classReflection instanceof ClassReflection ? $classReflection->getName() : null;
+        } else {
+            $namespace = null;
+            $className = null;
+        }
 
         $uses = $this->useImportsResolver->resolve();
         $usesAliasesToNames = $this->resolveUseNamesByAlias($uses);
-
-        if ($scope instanceof Scope && $scope->getClassReflection() instanceof ClassReflection) {
-            $classReflection = $scope->getClassReflection();
-            $className = $classReflection->getName();
-        } else {
-            $className = null;
-        }
 
         return new NameScope($namespace, $usesAliasesToNames, $className);
     }
