@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
@@ -55,6 +56,11 @@ final readonly class AddUnionReturnType
 
         $returnType = $this->unionTypeMapper->mapToPhpParserNode($inferReturnType, TypeKind::RETURN);
         if (! $returnType instanceof Node) {
+            return null;
+        }
+
+        // handled by another PHP 7.1 rule with broader scope
+        if ($returnType instanceof NullableType) {
             return null;
         }
 

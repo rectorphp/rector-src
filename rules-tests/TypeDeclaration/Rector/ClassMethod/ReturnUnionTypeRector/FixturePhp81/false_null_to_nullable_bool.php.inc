@@ -22,7 +22,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\
 
 final class FalseNullToNullableBool
 {
-    public function run($value): ?bool
+    public function run($value): bool|null
     {
         if ($value) {
             return null;

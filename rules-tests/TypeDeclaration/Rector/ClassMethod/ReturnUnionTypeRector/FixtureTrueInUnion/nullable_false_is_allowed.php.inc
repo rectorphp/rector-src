@@ -23,7 +23,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\
 
 final class NullableFalseIsAllowed
 {
-    public function run($value): ?false
+    public function run($value): false|null
     {
 
         if (rand(0, 1)) {
