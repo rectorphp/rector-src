@@ -11,9 +11,9 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 
-final class ReturnAnalyzer
+final readonly class ReturnAnalyzer
 {
-    public function __construct(private readonly SilentVoidResolver $silentVoidResolver)
+    public function __construct(private SilentVoidResolver $silentVoidResolver)
     {
     }
 
