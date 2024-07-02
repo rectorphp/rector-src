@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromReturnCastRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
 final class CastStringReturn
 {
@@ -16,7 +16,7 @@ final class CastStringReturn
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromReturnCastRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
 final class CastStringReturn
 {

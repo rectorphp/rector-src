@@ -59,20 +59,11 @@ final readonly class AddUnionReturnType
             return null;
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 151216c2da (use union | types on PHP 8.0+)
         // handled by another PHP 7.1 rule with broader scope
         if ($returnType instanceof NullableType) {
             return null;
         }
 
-<<<<<<< HEAD
-=======
->>>>>>> 10b3b6d639 (Skip docblock update, as out of our scope)
-=======
->>>>>>> 151216c2da (use union | types on PHP 8.0+)
         $node->returnType = $returnType;
         return $node;
     }

@@ -228,6 +228,8 @@ final class NodeTypeResolver
             $type = $this->resolveArrayDimFetchType($expr, $scope, $type);
         }
 
+        dump_node($expr);
+
         if (! $type instanceof UnionType) {
             if ($this->isAnonymousObjectType($type)) {
                 return new ObjectWithoutClassType();

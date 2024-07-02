@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictNativeCallRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
 final class ReturnDateTimeFormat
 {
@@ -8,7 +8,9 @@ final class ReturnDateTimeFormat
     {
         function () {
             $dt = new \DateTime('now');
-            echo $dt->format('Y-m-d');
+            return $dt->format('Y-m-d');
         };
     }
 }
+
+?>
