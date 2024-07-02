@@ -26,7 +26,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector\
 final class FalseBoolDocblock
 {
     /**
-     * @return array|false some description
+     * @return array|bool some description
      */
     public function run(): array|false
     {
