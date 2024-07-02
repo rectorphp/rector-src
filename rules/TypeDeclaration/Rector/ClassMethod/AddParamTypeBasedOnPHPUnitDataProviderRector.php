@@ -165,6 +165,7 @@ CODE_SAMPLE
             $dataProviderClassMethod,
             Return_::class
         );
+
         if ($returns !== []) {
             return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
         }

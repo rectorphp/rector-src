@@ -19,7 +19,6 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\StaticType;
 use PHPStan\Type\Type;
-use PHPStan\Type\UnionType;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
@@ -31,8 +30,8 @@ use Rector\Rector\AbstractScopeAwareRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\SelfStaticType;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictReturnNewAnalyzer;
-use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -50,11 +49,11 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly ReflectionResolver $reflectionResolver,
         private readonly StrictReturnNewAnalyzer $strictReturnNewAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly ClassAnalyzer $classAnalyzer,
         private readonly NewTypeResolver $newTypeResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ReturnAnalyzer $returnAnalyzer,
     ) {
     }
 
@@ -98,6 +97,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        // already filled
         if ($node->returnType !== null) {
             return null;
         }
@@ -106,6 +106,11 @@ CODE_SAMPLE
             $node,
             $scope
         )) {
+            return null;
+        }
+
+        // there must be at least one root return
+        if (! $this->returnAnalyzer->hasClassMethodRootReturn($node)) {
             return null;
         }
 
@@ -157,12 +162,15 @@ CODE_SAMPLE
         return new ObjectType($className, null, $classReflection);
     }
 
-    private function refactorDirectReturnNew(
-        ClassMethod|Function_|Closure $node
-    ): null|Function_|ClassMethod|Closure {
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
-
+    /**
+     * @template TCallLike as ClassMethod|Function_|Closure
+     *
+     * @param TCallLike $node
+     * @return TCallLike|null
+     */
+    private function refactorDirectReturnNew(ClassMethod|Function_|Closure $node): null|Function_|ClassMethod|Closure
+    {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if ($returns === []) {
             return null;
         }
@@ -176,11 +184,6 @@ CODE_SAMPLE
 
         $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($returnType, TypeKind::RETURN);
         if (! $returnTypeNode instanceof Node) {
-            return null;
-        }
-
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        if ($returnType instanceof UnionType) {
             return null;
         }
 
