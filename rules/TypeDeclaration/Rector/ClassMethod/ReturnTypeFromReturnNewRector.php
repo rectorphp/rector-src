@@ -109,8 +109,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // there must be at least one root return
-        if (! $this->returnAnalyzer->hasClassMethodRootReturn($node)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

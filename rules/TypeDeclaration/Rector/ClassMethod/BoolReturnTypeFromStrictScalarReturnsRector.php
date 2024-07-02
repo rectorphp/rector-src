@@ -140,7 +140,7 @@ CODE_SAMPLE
             return false;
         }
 
-        if (! $this->returnAnalyzer->hasClassMethodRootReturn($functionLike)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
             return false;
         }
 
