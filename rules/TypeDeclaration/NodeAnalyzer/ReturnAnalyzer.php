@@ -9,9 +9,14 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
+use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 
 final class ReturnAnalyzer
 {
+    public function __construct(private readonly SilentVoidResolver $silentVoidResolver)
+    {
+    }
+
     public function hasClassMethodRootReturn(ClassMethod|Function_|Closure $functionLike): bool
     {
         foreach ((array) $functionLike->stmts as $stmt) {
@@ -20,7 +25,7 @@ final class ReturnAnalyzer
             }
         }
 
-        return false;
+        return ! $this->silentVoidResolver->hasSilentVoid($functionLike);
     }
 
     /**
