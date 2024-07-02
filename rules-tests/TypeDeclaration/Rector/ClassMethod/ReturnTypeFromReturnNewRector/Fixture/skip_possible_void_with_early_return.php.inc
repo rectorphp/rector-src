@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector\Fixture;
 
-class SkipPossibleVoid
+final class SkipPossibleVoidWithEarlyReturn
 {
     public function bar()
     {
         if (random_int(0,1)) {
-        	return new self();
+            return;
         }
+
+        return new self();
     }
 }
