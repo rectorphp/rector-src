@@ -200,12 +200,6 @@ final class UnionTypeMapper implements TypeMapperInterface
             return $phpParserUnionedTypes[0];
         }
 
-        // in case of PHP 8.0+, there is no need to narrow down nullable types
-        // nullable types are handled by separate PHP 7.1-7.4 rule
-        if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
-            return new PhpParserUnionType($phpParserUnionedTypes);
-        }
-
         return $this->resolveTypeWithNullablePHPParserUnionType(new PhpParserUnionType($phpParserUnionedTypes));
     }
 
