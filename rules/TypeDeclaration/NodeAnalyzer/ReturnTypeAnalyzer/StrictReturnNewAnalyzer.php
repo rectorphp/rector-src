@@ -51,13 +51,7 @@ final readonly class StrictReturnNewAnalyzer
             return null;
         }
 
-        // is one statement depth 3?
-        if (! $this->returnAnalyzer->areExclusiveExprReturns($returns)) {
-            return null;
-        }
-
-        // has root return?
-        if (! $this->returnAnalyzer->hasClassMethodRootReturn($functionLike)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
             return null;
         }
 
