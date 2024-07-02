@@ -78,7 +78,7 @@ CODE_SAMPLE
 
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NULLABLE_TYPE;
+        return PhpVersionFeature::UNION_TYPES;
     }
 
     /**
