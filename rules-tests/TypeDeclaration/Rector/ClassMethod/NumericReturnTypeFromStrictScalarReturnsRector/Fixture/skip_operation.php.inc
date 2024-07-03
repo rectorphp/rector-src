@@ -2,10 +2,10 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class SkipDivideIntegers
+final class SkipOperation
 {
-    public function resolve(int $first, int $second)
+    public function resolve(int $value)
     {
-        return $first / $second;
+        return ++$value;
     }
 }

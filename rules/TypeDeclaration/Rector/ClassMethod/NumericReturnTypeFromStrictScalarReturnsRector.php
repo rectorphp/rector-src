@@ -9,8 +9,8 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -24,20 +24,20 @@ final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScope
 {
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change numeric return type based on strict returns type operations', [
+        return new RuleDefinition('Add int/float return type based on strict scalar returns type', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function resolve(int $first, int $second)
+    public function getNumber()
     {
-        return $first - $second;
+        return 200;
     }
 }
 CODE_SAMPLE
@@ -46,9 +46,9 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function resolve(int $first, int $second): int
+    public function getNumber(): int
     {
-        return $first - $second;
+        return 200;
     }
 }
 CODE_SAMPLE
@@ -69,28 +69,33 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType instanceof Node) {
+        if ($this->shouldSkip($node, $scope)) {
             return null;
         }
 
-        if ($node->stmts === null) {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if ($returns === []) {
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $scope
-        )) {
-            return null;
+        $isAlwaysInt = true;
+        $isAlwaysFloat = true;
+
+        foreach ($returns as $return) {
+            if (! $return->expr instanceof Node\Scalar\DNumber) {
+                $isAlwaysFloat = false;
+            }
+            if (! $return->expr instanceof Node\Scalar\LNumber) {
+                $isAlwaysInt = false;
+            }
         }
 
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
-        if ($returnType->isFloat()->yes()) {
+        if ($isAlwaysFloat) {
             $node->returnType = new Identifier('float');
             return $node;
         }
 
-        if ($returnType->isInteger()->yes()) {
+        if ($isAlwaysInt) {
             $node->returnType = new Identifier('int');
             return $node;
         }
@@ -101,5 +106,24 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::SCALAR_TYPES;
+    }
+
+    private function shouldSkip(ClassMethod|Function_ $functionLike, Scope $scope): bool
+    {
+        // type is already known, skip
+        if ($functionLike->returnType instanceof Node) {
+            return true;
+        }
+
+        // empty, nothing to ifnd
+        if ($functionLike->stmts === null || $functionLike->stmts === []) {
+            return true;
+        }
+
+        if (! $functionLike instanceof ClassMethod) {
+            return false;
+        }
+
+        return $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $scope);
     }
 }

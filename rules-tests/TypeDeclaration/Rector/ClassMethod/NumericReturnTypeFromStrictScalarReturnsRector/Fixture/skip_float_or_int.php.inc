@@ -2,14 +2,14 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class SkipUnionFalse
+final class SkipFloatOrInt
 {
-    public function resolve($param)
+    public function resolve($condition)
     {
-        if (! $param) {
-            return false;
+        if ($condition)  {
+            return 525.252;
         }
 
-        return 1 + (int) $param;
+        return 1000;
     }
 }

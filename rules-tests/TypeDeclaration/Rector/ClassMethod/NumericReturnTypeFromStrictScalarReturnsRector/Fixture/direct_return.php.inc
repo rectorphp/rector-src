@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class BitwiseAnd
+final class DirectReturn
 {
-    public function resolve(int $first, int $second)
+    public function resolve()
     {
-        return $first & $second;
+        return 1000;
     }
 }
 
@@ -16,11 +16,11 @@ final class BitwiseAnd
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\Fixture;
 
-final class BitwiseAnd
+final class DirectReturn
 {
-    public function resolve(int $first, int $second): int
+    public function resolve(): int
     {
-        return $first & $second;
+        return 1000;
     }
 }
 
