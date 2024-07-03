@@ -82,11 +82,11 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Function_::class, ClassMethod::class, Closure::class];
+        return [Function_::class, ClassMethod::class];
     }
 
     /**
-     * @param Function_|ClassMethod|Closure $node
+     * @param Function_|ClassMethod $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -201,7 +201,7 @@ CODE_SAMPLE
      */
     private function resolveYieldType(
         array $yieldNodes,
-        ClassMethod|Function_|Closure $functionLike
+        ClassMethod|Function_ $functionLike
     ): FullyQualifiedObjectType|FullyQualifiedGenericObjectType {
         $yieldedTypes = $this->resolveYieldedTypes($yieldNodes);
 

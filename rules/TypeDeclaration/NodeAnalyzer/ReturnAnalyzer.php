@@ -23,7 +23,7 @@ final readonly class ReturnAnalyzer
     ) {
     }
 
-    public function hasOnlyReturnWithExpr(ClassMethod|Function_|Closure $functionLike): bool
+    public function hasOnlyReturnWithExpr(ClassMethod|Function_ $functionLike): bool
     {
         if ($functionLike->stmts === null) {
             return false;

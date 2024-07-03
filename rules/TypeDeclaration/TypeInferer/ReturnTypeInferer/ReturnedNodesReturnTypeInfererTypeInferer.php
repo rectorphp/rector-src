@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeTraverser;
+use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
 use Rector\TypeDeclaration\TypeInferer\SplArrayFixedTypeNarrower;
@@ -28,15 +27,15 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 {
     public function __construct(
         private SilentVoidResolver $silentVoidResolver,
+        private BetterNodeFinder $betterNodeFinder,
         private NodeTypeResolver $nodeTypeResolver,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private TypeFactory $typeFactory,
         private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private ReflectionResolver $reflectionResolver,
     ) {
     }
 
-    public function inferFunctionLike(FunctionLike $functionLike): Type
+    public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
         if (! $classReflection instanceof ClassReflection) {
@@ -49,7 +48,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 
         $types = [];
 
-        $localReturnNodes = $this->collectReturns($functionLike);
+        $localReturnNodes = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($localReturnNodes === []) {
             return $this->resolveNoLocalReturnNodes($classReflection, $functionLike);
         }
@@ -67,33 +66,6 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
         }
 
         return $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($types);
-    }
-
-    /**
-     * @return Return_[]
-     */
-    private function collectReturns(FunctionLike $functionLike): array
-    {
-        $returns = [];
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable((array) $functionLike->getStmts(), static function (
-            Node $node
-        ) use (&$returns): ?int {
-            // skip Return_ nodes in nested functions or switch statements
-            if ($node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-            }
-
-            if (! $node instanceof Return_) {
-                return null;
-            }
-
-            $returns[] = $node;
-
-            return null;
-        });
-
-        return $returns;
     }
 
     private function resolveNoLocalReturnNodes(

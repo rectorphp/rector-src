@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictNativeCallRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
 final class ReturnDateTimeFormat
 {

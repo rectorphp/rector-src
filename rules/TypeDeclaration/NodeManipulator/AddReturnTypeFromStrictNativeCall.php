@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeManipulator;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
@@ -28,20 +27,29 @@ final readonly class AddReturnTypeFromStrictNativeCall
     ) {
     }
 
-    public function add(ClassMethod|Function_|Closure $node, Scope $scope): ClassMethod|Function_|Closure|null
+    /**
+     * @template TFunctionLike as ClassMethod|Function_
+     *
+     * @param TFunctionLike $functionLike
+     * @return TFunctionLike|null
+     */
+    public function add(ClassMethod|Function_ $functionLike, Scope $scope): ClassMethod|Function_|null
     {
-        if ($node->returnType !== null) {
+        // already filled, skip
+        if ($functionLike->returnType instanceof Node) {
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $functionLike,
             $scope
         )) {
             return null;
         }
 
-        $nativeCallLikes = $this->strictNativeFunctionReturnTypeAnalyzer->matchAlwaysReturnNativeCallLikes($node);
+        $nativeCallLikes = $this->strictNativeFunctionReturnTypeAnalyzer->matchAlwaysReturnNativeCallLikes(
+            $functionLike
+        );
         if ($nativeCallLikes === null) {
             return null;
         }
@@ -61,7 +69,7 @@ final readonly class AddReturnTypeFromStrictNativeCall
             return null;
         }
 
-        $node->returnType = $returnTypeNode;
-        return $node;
+        $functionLike->returnType = $returnTypeNode;
+        return $functionLike;
     }
 }

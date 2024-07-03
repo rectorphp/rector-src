@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeManipulator;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -26,12 +25,12 @@ final readonly class AddUnionReturnType
     }
 
     /**
-     * @template TCallLike as ClassMethod|Function_|Closure
+     * @template TCallLike as ClassMethod|Function_
      *
      * @param TCallLike $node
      * @return TCallLike|null
      */
-    public function add(ClassMethod|Function_|Closure $node, Scope $scope): ClassMethod|Function_|Closure|null
+    public function add(ClassMethod|Function_ $node, Scope $scope): ClassMethod|Function_|null
     {
         if ($node->stmts === null) {
             return null;

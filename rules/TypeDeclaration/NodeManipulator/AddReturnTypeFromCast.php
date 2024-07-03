@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Cast;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
@@ -28,21 +27,21 @@ final readonly class AddReturnTypeFromCast
     ) {
     }
 
-    public function add(ClassMethod|Function_|Closure $node, Scope $scope): ClassMethod|Function_|Closure|null
+    public function add(ClassMethod|Function_ $functionLike, Scope $scope): ClassMethod|Function_|null
     {
-        if ($node->returnType !== null) {
+        if ($functionLike->returnType !== null) {
             return null;
         }
 
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
+        if ($functionLike instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
+            $functionLike,
             $scope
         )) {
             return null;
         }
 
         $hasNonCastReturn = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $node,
+            $functionLike,
             static fn (Node $subNode): bool => $subNode instanceof Return_ && ! $subNode->expr instanceof Cast
         );
 
@@ -50,7 +49,7 @@ final readonly class AddReturnTypeFromCast
             return null;
         }
 
-        $returnType = $this->returnTypeInferer->inferFunctionLike($node);
+        $returnType = $this->returnTypeInferer->inferFunctionLike($functionLike);
         if ($returnType instanceof UnionType || $returnType->isVoid()->yes()) {
             return null;
         }
@@ -60,7 +59,7 @@ final readonly class AddReturnTypeFromCast
             return null;
         }
 
-        $node->returnType = $returnTypeNode;
-        return $node;
+        $functionLike->returnType = $returnTypeNode;
+        return $functionLike;
     }
 }

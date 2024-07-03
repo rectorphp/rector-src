@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -27,7 +26,7 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
     /**
      * @return CallLike[]|null
      */
-    public function matchAlwaysReturnNativeCallLikes(ClassMethod|Closure|Function_ $functionLike): ?array
+    public function matchAlwaysReturnNativeCallLikes(ClassMethod|Function_ $functionLike): ?array
     {
         if ($functionLike->stmts === null) {
             return null;

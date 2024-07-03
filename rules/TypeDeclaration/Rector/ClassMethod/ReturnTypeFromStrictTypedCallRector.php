@@ -6,9 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -17,12 +15,12 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
-use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Php\PhpVersionProvider;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
@@ -42,6 +40,7 @@ final class ReturnTypeFromStrictTypedCallRector extends AbstractScopeAwareRector
         private readonly TypeNodeUnwrapper $typeNodeUnwrapper,
         private readonly ReturnStrictTypeAnalyzer $returnStrictTypeAnalyzer,
         private readonly ReturnTypeInferer $returnTypeInferer,
+        private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
@@ -89,7 +88,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -98,10 +97,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        // already filled → skip
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
         if ($node->stmts === null) {
             return null;
         }
@@ -110,7 +114,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $currentScopeReturns = $this->findCurrentScopeReturns($node);
+        $currentScopeReturns = $this->betterNodeFinder->findReturnsScoped($node);
 
         $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($currentScopeReturns, $scope);
         if ($returnedStrictTypes === []) {
@@ -199,36 +203,5 @@ CODE_SAMPLE
         $functionLike->returnType = $returnType;
 
         return $functionLike;
-    }
-
-    /**
-     * @return Return_[]
-     */
-    private function findCurrentScopeReturns(ClassMethod|Function_|Closure $node): array
-    {
-        $currentScopeReturns = [];
-
-        if ($node->stmts === null) {
-            return [];
-        }
-
-        $this->traverseNodesWithCallable($node->stmts, static function (Node $node) use (&$currentScopeReturns): ?int {
-            // skip scope nesting
-            if ($node instanceof FunctionLike) {
-                return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
-            }
-
-            if (! $node instanceof Return_) {
-                return null;
-            }
-
-            if (! $node->expr instanceof Expr) {
-                return null;
-            }
-
-            $currentScopeReturns[] = $node;
-            return null;
-        });
-        return $currentScopeReturns;
     }
 }

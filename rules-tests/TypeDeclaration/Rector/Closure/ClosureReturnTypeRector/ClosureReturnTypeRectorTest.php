@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureUnionReturnTypeRector;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
-final class AddClosureUnionReturnTypeRectorTest extends AbstractRectorTestCase
+final class ClosureReturnTypeRectorTest extends AbstractRectorTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $filePath): void

@@ -32,7 +32,7 @@ final readonly class StrictReturnNewAnalyzer
     ) {
     }
 
-    public function matchAlwaysReturnVariableNew(ClassMethod|Closure|Function_ $functionLike): ?string
+    public function matchAlwaysReturnVariableNew(ClassMethod|Function_ $functionLike): ?string
     {
         if ($functionLike->stmts === null) {
             return null;

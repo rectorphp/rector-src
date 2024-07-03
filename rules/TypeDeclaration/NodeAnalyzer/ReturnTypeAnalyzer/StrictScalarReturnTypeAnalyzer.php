@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Expr\UnaryPlus;
@@ -26,7 +25,7 @@ final readonly class StrictScalarReturnTypeAnalyzer
     }
 
     public function matchAlwaysScalarReturnType(
-        ClassMethod|Closure|Function_ $functionLike,
+        ClassMethod|Function_ $functionLike,
         bool $hardCodedOnly = false
     ): ?Type {
         $returns = $this->alwaysStrictReturnAnalyzer->matchAlwaysStrictReturns($functionLike);
