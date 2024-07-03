@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\LNumber;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -28,6 +29,11 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
         'srand' => 'mt_srand',
         'rand' => 'random_int',
     ];
+
+    public function __construct(
+        private readonly ValueResolver $valueResolver
+    ) {
+    }
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -50,14 +56,29 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
      */
     public function refactor(Node $node): FuncCall|null
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         foreach (self::OLD_TO_NEW_FUNCTION_NAMES as $oldFunctionName => $newFunctionName) {
             if ($this->isName($node, $oldFunctionName)) {
                 $node->name = new Name($newFunctionName);
 
                 // special case: random_int(); → random_int(0, getrandmax());
-                if ($newFunctionName === 'random_int' && $node->args === []) {
-                    $node->args[0] = new Arg(new LNumber(0));
-                    $node->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
+                if ($newFunctionName === 'random_int') {
+                    if ($node->args === []) {
+                        $node->args[0] = new Arg(new LNumber(0));
+                        $node->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
+                    } else {
+                        $minValue = $this->valueResolver->getValue($node->args[0]->value);
+                        $maxValue = $this->valueResolver->getValue($node->args[1]->value);
+
+                        if ($minValue > $maxValue) {
+                            $temp = $node->args[0];
+                            $node->args[0] = $node->args[1];
+                            $node->args[1] = $temp;
+                        }
+                    }
                 }
 
                 return $node;
