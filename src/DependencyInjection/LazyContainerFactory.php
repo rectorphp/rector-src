@@ -168,7 +168,7 @@ use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
 use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IntersectionTypeMapper;
-use Rector\StaticTypeMapper\PhpDocParser\NullableTypeMapper;
+use Rector\StaticTypeMapper\PhpDocParser\NullablePhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\UnionPhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpParser\ExprNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
@@ -247,7 +247,7 @@ final class LazyContainerFactory
     private const PHPDOC_TYPE_MAPPER_CLASSES = [
         IdentifierTypeMapper::class,
         IntersectionTypeMapper::class,
-        NullableTypeMapper::class,
+        NullablePhpDocTypeMapper::class,
         UnionPhpDocTypeMapper::class,
     ];
 
