@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\DNumber;
@@ -85,7 +86,7 @@ CODE_SAMPLE
 
         foreach ($returns as $return) {
             $expr = $return->expr;
-            if ($expr instanceof Node\Expr\UnaryMinus) {
+            if ($expr instanceof UnaryMinus) {
                 $expr = $expr->expr;
             }
 

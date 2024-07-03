@@ -28,11 +28,6 @@ final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwar
      */
     public const HARD_CODED_ONLY = 'hard_coded_only';
 
-    /**
-     * @api
-     */
-    private bool $hardCodedOnly = false;
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Change return type based on strict scalar returns - string, int, float or bool', [
@@ -108,7 +103,5 @@ CODE_SAMPLE
     {
         $hardCodedOnly = $configuration[self::HARD_CODED_ONLY] ?? false;
         Assert::boolean($hardCodedOnly);
-
-        $this->hardCodedOnly = $hardCodedOnly;
     }
 }
