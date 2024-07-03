@@ -28,7 +28,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnCastRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictBoolReturnExprRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector;
@@ -70,7 +69,6 @@ final class TypeDeclarationLevel
         AddArrowFunctionReturnTypeRector::class,
         ReturnTypeFromStrictConstantReturnRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
-        ReturnTypeFromStrictBoolReturnExprRector::class,
 
         // scalar values
         BoolReturnTypeFromBooleanConstReturnsRector::class,
