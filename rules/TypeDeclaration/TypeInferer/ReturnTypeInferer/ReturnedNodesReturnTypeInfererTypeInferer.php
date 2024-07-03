@@ -4,20 +4,16 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
-use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
-use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
@@ -53,7 +49,6 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
             return new MixedType();
         }
 
-
         $types = [];
 
         $localReturnNodes = $this->betterNodeFinder->findReturnsScoped($functionLike);
@@ -66,15 +61,8 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
                 ? $this->nodeTypeResolver->getNativeType($localReturnNode->expr)
                 : new VoidType();
 
-            $scope = $localReturnNode->expr->getAttribute(AttributeKey::SCOPE);
-            dump($scope->getType($localReturnNode->expr));
-            //dump($scope->getNativeType($localReturnNode->expr));
-            dump($returnedExprType);
-            die;
-
             $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
         }
-
 
         if ($this->silentVoidResolver->hasSilentVoid($functionLike)) {
             $types[] = new VoidType();
