@@ -35,6 +35,7 @@ final readonly class CallCollectionAnalyzer
 
             if (! $callerType instanceof TypeWithClassName) {
                 // handle fluent by $this->bar()->baz()->qux()
+                // that methods don't have return type
                 if ($callerType instanceof MixedType && ! $callerType->isExplicitMixed()) {
                     $cloneCallerRoot = clone $callerRoot;
                     while ($cloneCallerRoot instanceof MethodCall && $cloneCallerRoot->var instanceof MethodCall) {
