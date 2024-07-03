@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/ExtendingTestClass.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+ class ExtendingTestClass extends TestClass {
+-    public function test()
++    public function test(?string $string3 = '')
+     {
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * AddParamBasedOnParentClassMethodRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
+use TypeError;
+use PhpParser\Internal\TokenStream;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;
@@ -136,7 +138,18 @@ final class BetterStandardPrinter extends Standard
             $node = $node->getExpr();
         }
 
-        $content = parent::p($node, $parentFormatPreserved);
+        try {
+            $content = parent::p($node, $parentFormatPreserved);
+        } catch (TypeError $typeError) {
+            if ($typeError->getMessage() === TokenStream::class . '::getIndentationBefore(): Return value must be of type int, null returned') {
+                $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
+                if ($originalNode instanceof Node) {
+                    return $this->p($originalNode, $parentFormatPreserved);
+                }
+            }
+
+            throw $typeError;
+        }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
