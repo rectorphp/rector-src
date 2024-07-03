@@ -25,13 +25,12 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @deprecated since 1.2.1, as duplicate of split rules. Use @see BoolReturnTypeFromStrictScalarReturnsRector, NumericReturnTypeFromStrictScalarReturnsRector instead.
- *
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\ReturnTypeFromStrictScalarReturnExprRectorTest
+ * @deprecated since 1.2.1, as duplicate of split rules. Use @see BoolReturnTypeFromStrictScalarReturnsRector, NumericReturnTypeFromStrictScalarReturnsRector, StringReturnTypeFromStrictScalarReturnsRector instead.
  */
 final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
 {
     /**
+     * @api
      * @var string
      */
     public const HARD_CODED_ONLY = 'hard_coded_only';
