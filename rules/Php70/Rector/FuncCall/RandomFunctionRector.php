@@ -66,8 +66,8 @@ final class RandomFunctionRector extends AbstractRector implements MinPhpVersion
                         $node->args[0] = new Arg(new LNumber(0));
                         $node->args[1] = new Arg($this->nodeFactory->createFuncCall('mt_getrandmax'));
                     } elseif (count($node->args) === 2) {
-                        $minValue = $this->valueResolver->getValue($node->args[0]->value);
-                        $maxValue = $this->valueResolver->getValue($node->args[1]->value);
+                        $minValue = (int) $this->valueResolver->getValue($node->args[0]->value);
+                        $maxValue = (int) $this->valueResolver->getValue($node->args[1]->value);
 
                         if ($minValue > $maxValue) {
                             $temp = $node->args[0];
