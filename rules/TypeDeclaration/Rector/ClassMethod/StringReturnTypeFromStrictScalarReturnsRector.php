@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\Type;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictScalarReturnTypeAnalyzer;
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -25,15 +24,14 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class StringReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly StrictScalarReturnTypeAnalyzer $strictScalarReturnTypeAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change return type based on strict string scalar returns', [
+        return new RuleDefinition('Add string return type based on returned string values', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -85,34 +83,38 @@ CODE_SAMPLE
             return null;
         }
 
-        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType($node);
-        if (! $scalarReturnType instanceof Type) {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if ($returns === []) {
+            // void
             return null;
         }
 
-        // must be string type
-        if (! $scalarReturnType->isString()->yes()) {
+        foreach ($returns as $return) {
+            // we need exact string "value" return
+            if (! $return->expr instanceof String_ && ! $return->expr instanceof Node\Scalar\Encapsed) {
+                return null;
+            }
+        }
+
+        if ($this->shouldSkipClassMethodForOverride($node, $scope)) {
             return null;
         }
 
-        $returnTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($scalarReturnType, TypeKind::RETURN);
-        if (! $returnTypeNode instanceof Node) {
-            return null;
-        }
-
-        if ($node instanceof ClassMethod && $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod(
-            $node,
-            $scope
-        )) {
-            return null;
-        }
-
-        $node->returnType = $returnTypeNode;
+        $node->returnType = new Identifier('string');
         return $node;
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
+    }
+
+    private function shouldSkipClassMethodForOverride(ClassMethod|Function_ $functionLike, Scope $scope): bool
+    {
+        if (! $functionLike instanceof ClassMethod) {
+            return false;
+        }
+
+        return $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $scope);
     }
 }
