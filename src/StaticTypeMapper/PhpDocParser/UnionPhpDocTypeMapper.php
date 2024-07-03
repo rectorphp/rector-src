@@ -41,12 +41,20 @@ final readonly class UnionPhpDocTypeMapper implements PhpDocTypeMapperInterface
         $unionedTypes = [];
         foreach ($typeNode->types as $unionedTypeNode) {
             if ($unionedTypeNode instanceof IdentifierTypeNode) {
-                $unionedTypes[] = $this->identifierPhpDocTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
+                $unionedTypes[] = $this->identifierPhpDocTypeMapper->mapToPHPStanType(
+                    $unionedTypeNode,
+                    $node,
+                    $nameScope
+                );
                 continue;
             }
 
             if ($unionedTypeNode instanceof IntersectionTypeNode) {
-                $unionedTypes[] = $this->intersectionPhpDocTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
+                $unionedTypes[] = $this->intersectionPhpDocTypeMapper->mapToPHPStanType(
+                    $unionedTypeNode,
+                    $node,
+                    $nameScope
+                );
                 continue;
             }
 

@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\NullType;
-use PHPStan\Type\Type;
-use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -20,23 +16,14 @@ use Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer\StrictScalarReturnTyp
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
 
 /**
- * @deprecated since 1.2.1, as duplicate of split rules. Use @see BoolReturnTypeFromStrictScalarReturnsRector, NumericReturnTypeFromStrictScalarReturnsRector, StringReturnTypeFromStrictScalarReturnsRector instead.
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictScalarReturnsRector\StringReturnTypeFromStrictScalarReturnsRectorTest
  */
-final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
+final class StringReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
-    /**
-     * @api
-     * @var string
-     */
-    public const HARD_CODED_ONLY = 'hard_coded_only';
-
-    private bool $hardCodedOnly = false;
-
     public function __construct(
         private readonly StrictScalarReturnTypeAnalyzer $strictScalarReturnTypeAnalyzer,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
@@ -46,23 +33,18 @@ final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwar
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Change return type based on strict scalar returns - string, int, float or bool', [
-            new ConfiguredCodeSample(
+        return new RuleDefinition('Change return type based on strict string scalar returns', [
+            new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function foo($value)
+    public function foo($condition, $value)
     {
         if ($value) {
             return 'yes';
         }
 
-        return 'no';
-    }
-
-    public function bar(string $value)
-    {
-        return strlen($value);
+        return strtoupper($value);
     }
 }
 CODE_SAMPLE
@@ -70,25 +52,17 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function foo($value): string
+    public function foo($condition, $value): string;
     {
         if ($value) {
             return 'yes';
         }
 
-        return 'no';
-    }
-
-    public function bar(string $value): int
-    {
-        return strlen($value);
+        return strtoupper($value);
     }
 }
 CODE_SAMPLE
                 ,
-                [
-                    self::HARD_CODED_ONLY => false,
-                ]
             ),
         ]);
     }
@@ -111,16 +85,13 @@ CODE_SAMPLE
             return null;
         }
 
-        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType(
-            $node,
-            $this->hardCodedOnly
-        );
+        $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType($node);
         if (! $scalarReturnType instanceof Type) {
             return null;
         }
 
-        // skip null as often placeholder value and not an only type
-        if ($scalarReturnType instanceof NullType) {
+        // must be string type
+        if (! $scalarReturnType->isString()->yes()) {
             return null;
         }
 
@@ -136,11 +107,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // handled by another rule
-        if ($returnTypeNode instanceof UnionType) {
-            return null;
-        }
-
         $node->returnType = $returnTypeNode;
         return $node;
     }
@@ -148,13 +114,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersion::PHP_70;
-    }
-
-    public function configure(array $configuration): void
-    {
-        $hardCodedOnly = $configuration[self::HARD_CODED_ONLY] ?? false;
-        Assert::boolean($hardCodedOnly);
-
-        $this->hardCodedOnly = $hardCodedOnly;
     }
 }
