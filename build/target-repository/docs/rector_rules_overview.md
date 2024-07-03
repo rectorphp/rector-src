@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 377 Rules Overview
+=======
+# 375 Rules Overview
+>>>>>>> fe1e262546 (Deprecate ReturnTypeFromStrictScalarReturnExprRector as duplicate of BoolReturnTypeFromStrictScalarReturnsRector and NumericReturnTypeFromStrictScalarReturnsRector)
 
 <br>
 
@@ -60,7 +64,11 @@
 
 - [Transform](#transform) (25)
 
+<<<<<<< HEAD
 - [TypeDeclaration](#typedeclaration) (53)
+=======
+- [TypeDeclaration](#typedeclaration) (51)
+>>>>>>> fe1e262546 (Deprecate ReturnTypeFromStrictScalarReturnExprRector as duplicate of BoolReturnTypeFromStrictScalarReturnsRector and NumericReturnTypeFromStrictScalarReturnsRector)
 
 - [Visibility](#visibility) (3)
 
@@ -7227,37 +7235,6 @@ Add return type based on strict parameter type
 +    public function resolve(ParamType $item): ParamType
      {
          return $item;
-     }
- }
-```
-
-<br>
-
-### ReturnTypeFromStrictScalarReturnExprRector
-
-Change return type based on strict scalar returns - string, int, float or bool
-
-:wrench: **configure it!**
-
-- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictScalarReturnExprRector.php)
-
-```diff
- final class SomeClass
- {
--    public function foo($value)
-+    public function foo($value): string
-     {
-         if ($value) {
-             return 'yes';
-         }
-
-         return 'no';
-     }
-
--    public function bar(string $value)
-+    public function bar(string $value): int
-     {
-         return strlen($value);
      }
  }
 ```

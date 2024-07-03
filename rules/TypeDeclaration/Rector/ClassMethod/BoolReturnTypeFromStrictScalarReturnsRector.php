@@ -123,6 +123,7 @@ CODE_SAMPLE
      */
     private function shouldSkip(Node $node, Scope $scope): bool
     {
+        // already has the type, skip
         if ($node->returnType instanceof Node) {
             return true;
         }

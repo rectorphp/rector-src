@@ -11,6 +11,7 @@ use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
 use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
@@ -24,9 +25,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
+ * @deprecated since 1.2.1, as duplicate of split rules. Use @see BoolReturnTypeFromStrictScalarReturnsRector, NumericReturnTypeFromStrictScalarReturnsRector instead.
+ *
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictScalarReturnExprRector\ReturnTypeFromStrictScalarReturnExprRectorTest
  */
-final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, ConfigurableRectorInterface
+final class ReturnTypeFromStrictScalarReturnExprRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, ConfigurableRectorInterface, DeprecatedInterface
 {
     /**
      * @var string
@@ -134,6 +137,7 @@ CODE_SAMPLE
             return null;
         }
 
+        // handled by another rule
         if ($returnTypeNode instanceof UnionType) {
             return null;
         }
