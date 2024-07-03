@@ -22,8 +22,8 @@ final readonly class UnionPhpDocTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
         private TypeFactory $typeFactory,
-        private IdentifierTypeMapper $identifierTypeMapper,
-        private IntersectionTypeMapper $intersectionTypeMapper,
+        private IdentifierPhpDocTypeMapper $identifierTypeMapper,
+        private IntersectionPhpDocTypeMapper $intersectionTypeMapper,
         private TypeNodeResolver $typeNodeResolver
     ) {
     }
