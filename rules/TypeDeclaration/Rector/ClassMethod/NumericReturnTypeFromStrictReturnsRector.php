@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\DNumber;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
@@ -20,9 +22,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector\NumericReturnTypeFromStrictScalarReturnsRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictReturnsRector\NumericReturnTypeFromStrictReturnsRectorTest
  */
-final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class NumericReturnTypeFromStrictReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
@@ -32,14 +34,14 @@ final class NumericReturnTypeFromStrictScalarReturnsRector extends AbstractScope
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add int/float return type based on strict scalar returns type', [
+        return new RuleDefinition('Add int/float return type based on strict typed returns', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function getNumber()
+    public function increase($value)
     {
-        return 200;
+        return ++$value;
     }
 }
 CODE_SAMPLE
@@ -48,9 +50,9 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
-    public function getNumber(): int
+    public function increase($value): int
     {
-        return 200;
+        return ++$value;
     }
 }
 CODE_SAMPLE
@@ -80,25 +82,35 @@ CODE_SAMPLE
             return null;
         }
 
-        $isAlwaysInt = true;
-        $isAlwaysFloat = true;
+        // handled by another rule
+        if ($this->isAlwaysNumeric($returns)) {
+            return null;
+        }
+
+        $isAlwaysIntType = true;
+        $isAlwaysFloatType = true;
 
         foreach ($returns as $return) {
-            if (! $return->expr instanceof DNumber) {
-                $isAlwaysFloat = false;
+            if (! $return->expr instanceof Expr) {
+                return null;
             }
 
-            if (! $return->expr instanceof LNumber) {
-                $isAlwaysInt = false;
+            $exprType = $this->nodeTypeResolver->getType($return->expr);
+            if (! $exprType->isInteger()->yes()) {
+                $isAlwaysIntType = false;
+            }
+
+            if (! $exprType->isFloat()->yes()) {
+                $isAlwaysFloatType = false;
             }
         }
 
-        if ($isAlwaysFloat) {
+        if ($isAlwaysFloatType) {
             $node->returnType = new Identifier('float');
             return $node;
         }
 
-        if ($isAlwaysInt) {
+        if ($isAlwaysIntType) {
             $node->returnType = new Identifier('int');
             return $node;
         }
@@ -118,7 +130,7 @@ CODE_SAMPLE
             return true;
         }
 
-        // empty, nothing to ifnd
+        // empty, nothing to find
         if ($functionLike->stmts === null || $functionLike->stmts === []) {
             return true;
         }
@@ -128,5 +140,30 @@ CODE_SAMPLE
         }
 
         return $this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($functionLike, $scope);
+    }
+
+    /**
+     * @param Return_[] $returns
+     */
+    private function isAlwaysNumeric(array $returns): bool
+    {
+        $isAlwaysFloat = true;
+        $isAlwaysInt = true;
+
+        foreach ($returns as $return) {
+            if (! $return->expr instanceof DNumber) {
+                $isAlwaysFloat = false;
+            }
+
+            if (! $return->expr instanceof LNumber) {
+                $isAlwaysInt = false;
+            }
+        }
+
+        if ($isAlwaysFloat) {
+            return true;
+        }
+
+        return $isAlwaysInt;
     }
 }

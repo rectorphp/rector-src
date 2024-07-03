@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -91,7 +92,7 @@ CODE_SAMPLE
 
         foreach ($returns as $return) {
             // we need exact string "value" return
-            if (! $return->expr instanceof String_ && ! $return->expr instanceof Node\Scalar\Encapsed) {
+            if (! $return->expr instanceof String_ && ! $return->expr instanceof Encapsed) {
                 return null;
             }
         }

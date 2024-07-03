@@ -19,6 +19,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnPar
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanConstReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanStrictReturnsRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
@@ -72,14 +73,13 @@ final class TypeDeclarationLevel
         ReturnTypeFromStrictBoolReturnExprRector::class,
 
         // scalar values
-        // @todo - split this one
-        NumericReturnTypeFromStrictScalarReturnsRector::class,
-
         BoolReturnTypeFromBooleanConstReturnsRector::class,
         StringReturnTypeFromStrictScalarReturnsRector::class,
+        NumericReturnTypeFromStrictScalarReturnsRector::class,
 
         BoolReturnTypeFromBooleanStrictReturnsRector::class,
         StringReturnTypeFromStrictStringReturnsRector::class,
+        NumericReturnTypeFromStrictReturnsRector::class,
 
         ReturnTypeFromStrictTernaryRector::class,
         ReturnTypeFromReturnDirectArrayRector::class,

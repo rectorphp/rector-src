@@ -30,7 +30,6 @@ use PHPStan\Type\BooleanType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -43,7 +42,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class BoolReturnTypeFromBooleanStrictReturnsRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly ReflectionProvider $reflectionProvider,
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
