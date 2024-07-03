@@ -34,7 +34,7 @@ final class ReturnNullableTypeRector extends AbstractScopeAwareRector implements
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add union return type', [
+        return new RuleDefinition('Add basic ? nullable type to class methods and functions, as of PHP 7.1', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
@@ -45,11 +45,7 @@ final class SomeClass
             return null;
         }
 
-        if (rand(0, 1)) {
-            return new DateTime('now');
-        }
-
-        return new stdClass;
+        return 100;
     }
 }
 CODE_SAMPLE
@@ -57,17 +53,13 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function getData(): null|\DateTime|\stdClass
+    public function getData(): ?int
     {
         if (rand(0, 1)) {
             return null;
         }
 
-        if (rand(0, 1)) {
-            return new DateTime('now');
-        }
-
-        return new stdClass;
+        return 100;
     }
 }
 CODE_SAMPLE
@@ -120,7 +112,7 @@ CODE_SAMPLE
             return null;
         }
 
-        // handled by another PHP 7.1 rule with broader scope
+        // handled by union PHP 8.0 rule
         if (! $returnType instanceof NullableType) {
             return null;
         }
