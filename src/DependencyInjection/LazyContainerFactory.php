@@ -169,7 +169,7 @@ use Rector\StaticTypeMapper\PhpDoc\PhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\IntersectionTypeMapper;
 use Rector\StaticTypeMapper\PhpDocParser\NullableTypeMapper;
-use Rector\StaticTypeMapper\PhpDocParser\UnionTypeMapper;
+use Rector\StaticTypeMapper\PhpDocParser\UnionPhpDocTypeMapper;
 use Rector\StaticTypeMapper\PhpParser\ExprNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\FullyQualifiedNodeMapper;
 use Rector\StaticTypeMapper\PhpParser\IdentifierNodeMapper;
@@ -248,7 +248,7 @@ final class LazyContainerFactory
         IdentifierTypeMapper::class,
         IntersectionTypeMapper::class,
         NullableTypeMapper::class,
-        UnionTypeMapper::class,
+        UnionPhpDocTypeMapper::class,
     ];
 
     /**

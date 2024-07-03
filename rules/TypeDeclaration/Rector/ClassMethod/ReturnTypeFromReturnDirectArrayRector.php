@@ -71,7 +71,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        if ($node->returnType !== null) {
+        // already has return type, skip
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
