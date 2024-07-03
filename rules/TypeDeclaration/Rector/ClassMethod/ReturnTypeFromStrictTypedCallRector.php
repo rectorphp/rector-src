@@ -89,7 +89,7 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [ClassMethod::class, Function_::class, Closure::class];
+        return [ClassMethod::class, Function_::class];
     }
 
     public function provideMinPhpVersion(): int
@@ -98,10 +98,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
+        // already filled → skip
+        if ($node->returnType instanceof Node) {
+            return null;
+        }
+
         if ($node->stmts === null) {
             return null;
         }

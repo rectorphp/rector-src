@@ -1,8 +1,9 @@
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
-class ReturnSelf {
+class ReturnSelf
+{
     public static function fromEvent() : self
     {
         return new self;
@@ -24,9 +25,10 @@ final class UseReturnSelf
 -----
 <?php
 
-namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture;
 
-class ReturnSelf {
+class ReturnSelf
+{
     public static function fromEvent() : self
     {
         return new self;
@@ -35,10 +37,10 @@ class ReturnSelf {
 
 final class UseReturnSelf
 {
-    public function run(): array
+    public function run()
     {
         return
-            array_map(function (): \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector\Fixture\ReturnSelf {
+            array_map(function (): \Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\Fixture\ReturnSelf {
                 return ReturnSelf::fromEvent();
             }, ['event']);
     }
