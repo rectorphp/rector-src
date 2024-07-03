@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
-use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -44,7 +44,7 @@ final class SomeClass
             return 'yes';
         }
 
-        return strtoupper($value);
+        return 'no';
     }
 }
 CODE_SAMPLE
@@ -58,7 +58,7 @@ final class SomeClass
             return 'yes';
         }
 
-        return strtoupper($value);
+        return 'no';
     }
 }
 CODE_SAMPLE

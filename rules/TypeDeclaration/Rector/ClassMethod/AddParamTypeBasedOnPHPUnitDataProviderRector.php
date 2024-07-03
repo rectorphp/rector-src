@@ -160,12 +160,7 @@ CODE_SAMPLE
             return new MixedType();
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped(
-            $dataProviderClassMethod,
-            Return_::class
-        );
-
+        $returns = $this->betterNodeFinder->findReturnsScoped($dataProviderClassMethod);
         if ($returns !== []) {
             return $this->resolveReturnStaticArrayTypeByParameterPosition($returns, $parameterPosition);
         }

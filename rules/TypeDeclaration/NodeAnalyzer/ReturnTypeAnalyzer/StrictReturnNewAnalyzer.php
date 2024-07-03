@@ -14,7 +14,6 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
@@ -45,8 +44,7 @@ final readonly class StrictReturnNewAnalyzer
             return null;
         }
 
-        /** @var Return_[] $returns */
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
+        $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($returns === []) {
             return null;
         }

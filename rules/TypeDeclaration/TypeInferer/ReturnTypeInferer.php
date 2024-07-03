@@ -167,7 +167,7 @@ final readonly class ReturnTypeInferer
         }
 
         if (! $functionLike instanceof ArrowFunction) {
-            $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($functionLike, Return_::class);
+            $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
             $returnsWithExpr = array_filter(
                 $returns,
                 static fn (Return_ $return): bool => $return->expr instanceof Expr
