@@ -70,7 +70,6 @@ final class TypeDeclarationLevel
         AddArrowFunctionReturnTypeRector::class,
         ReturnTypeFromStrictConstantReturnRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
-        ReturnTypeFromStrictBoolReturnExprRector::class,
 
         // scalar values
         BoolReturnTypeFromBooleanConstReturnsRector::class,
