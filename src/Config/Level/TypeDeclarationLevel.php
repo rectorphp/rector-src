@@ -39,7 +39,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromReturnCastRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
@@ -60,8 +59,7 @@ final class TypeDeclarationLevel
      * @var array<class-string<RectorInterface>>
      */
     public const RULES = [
-        // php 7.0
-        // start with closure first, as safest
+        // php 7.1, start with closure first, as safest
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         AddFunctionVoidReturnTypeWhereNoReturnRector::class,
         AddTestsVoidReturnTypeWhereNoReturnRector::class,
@@ -76,7 +74,6 @@ final class TypeDeclarationLevel
         ReturnTypeFromStrictScalarReturnExprRector::class,
         ReturnTypeFromReturnDirectArrayRector::class,
         ReturnTypeFromReturnNewRector::class,
-        AddClosureReturnTypeFromReturnCastRector::class,
         ReturnTypeFromReturnCastRector::class,
         ReturnTypeFromSymfonySerializerRector::class,
 
@@ -91,8 +88,6 @@ final class TypeDeclarationLevel
         AddParamTypeSplFixedArrayRector::class,
         AddReturnTypeDeclarationFromYieldsRector::class,
         AddParamTypeBasedOnPHPUnitDataProviderRector::class,
-
-        // php 7.4
         TypedPropertyFromStrictSetUpRector::class,
         AddClosureReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
@@ -106,6 +101,8 @@ final class TypeDeclarationLevel
         // multi types (nullable, union)
         ReturnUnionTypeRector::class,
 
+        // closures
+        AddClosureNeverReturnTypeRector::class,
         ClosureReturnTypeRector::class,
 
         // more risky rules
@@ -117,7 +114,6 @@ final class TypeDeclarationLevel
         TypedPropertyFromAssignsRector::class,
         AddReturnTypeDeclarationBasedOnParentClassMethodRector::class,
         ReturnTypeFromStrictFluentReturnRector::class,
-        AddClosureNeverReturnTypeRector::class,
         ReturnNeverTypeRector::class,
         StrictArrayParamDimFetchRector::class,
         StrictStringParamConcatRector::class,
