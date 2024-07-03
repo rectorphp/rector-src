@@ -143,12 +143,14 @@ final class BetterStandardPrinter extends Standard
         } catch (TypeError $typeError) {
             if ($typeError->getMessage() === TokenStream::class . '::getIndentationBefore(): Return value must be of type int, null returned') {
                 $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-                if ($originalNode instanceof Node) {
-                    return $this->p($originalNode, $parentFormatPreserved);
+                if (! $originalNode instanceof Node) {
+                    throw $typeError;
                 }
-            }
 
-            throw $typeError;
+                $content = $this->p($originalNode, $parentFormatPreserved);
+            } else {
+                throw $typeError;
+            }
         }
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
