@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -143,6 +144,11 @@ CODE_SAMPLE
     private function isAlwaysStringStrictType(array $returns): bool
     {
         foreach ($returns as $return) {
+            // void return
+            if (! $return->expr instanceof Expr) {
+                return false;
+            }
+
             $exprType = $this->nodeTypeResolver->getNativeType($return->expr);
             if (! $exprType->isString()->yes()) {
                 return false;
