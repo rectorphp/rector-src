@@ -51,7 +51,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function foo($condition): string;
+    public function foo($condition): string
     {
         if ($condition) {
             return 'yes';
