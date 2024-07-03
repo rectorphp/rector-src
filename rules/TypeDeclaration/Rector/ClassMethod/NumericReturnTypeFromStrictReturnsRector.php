@@ -151,11 +151,16 @@ CODE_SAMPLE
         $isAlwaysInt = true;
 
         foreach ($returns as $return) {
-            if (! $return->expr instanceof DNumber) {
+            $epxr = $return->expr;
+            if ($epxr instanceof Expr\UnaryMinus) {
+                $epxr = $epxr->expr;
+            }
+
+            if (! $epxr instanceof DNumber) {
                 $isAlwaysFloat = false;
             }
 
-            if (! $return->expr instanceof LNumber) {
+            if (! $epxr instanceof LNumber) {
                 $isAlwaysInt = false;
             }
         }

@@ -84,11 +84,16 @@ CODE_SAMPLE
         $isAlwaysFloat = true;
 
         foreach ($returns as $return) {
-            if (! $return->expr instanceof DNumber) {
+            $expr = $return->expr;
+            if ($expr instanceof Node\Expr\UnaryMinus) {
+                $expr = $expr->expr;
+            }
+
+            if (! $expr instanceof DNumber) {
                 $isAlwaysFloat = false;
             }
 
-            if (! $return->expr instanceof LNumber) {
+            if (! $expr instanceof LNumber) {
                 $isAlwaysInt = false;
             }
         }
