@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\DependencyInjection;
 
-use Rector\PHPStanStaticTypeMapper\TypeMapper\IntersectionTypeMapper;
-use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
@@ -142,6 +140,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasOffsetValueTypeTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\HasPropertyTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\IntegerTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\IntersectionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\IterableTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\MixedTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\NeverTypeMapper;
@@ -158,6 +157,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\StrictMixedTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\StringTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\ThisTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\TypeWithClassNameTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
@@ -502,10 +502,7 @@ final class LazyContainerFactory
 
         $rectorConfig->afterResolving(
             UnionTypeMapper::class,
-            static function (
-                UnionTypeMapper $unionTypeMapper,
-                Container $container
-            ): void {
+            static function (UnionTypeMapper $unionTypeMapper, Container $container): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);
                 $unionTypeMapper->autowire($phpStanStaticTypeMapper);
             }

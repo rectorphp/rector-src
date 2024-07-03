@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # 377 Rules Overview
-=======
-# 375 Rules Overview
->>>>>>> fe1e262546 (Deprecate ReturnTypeFromStrictScalarReturnExprRector as duplicate of BoolReturnTypeFromStrictScalarReturnsRector and NumericReturnTypeFromStrictScalarReturnsRector)
 
 <br>
 
@@ -64,11 +60,7 @@
 
 - [Transform](#transform) (25)
 
-<<<<<<< HEAD
-- [TypeDeclaration](#typedeclaration) (53)
-=======
 - [TypeDeclaration](#typedeclaration) (51)
->>>>>>> fe1e262546 (Deprecate ReturnTypeFromStrictScalarReturnExprRector as duplicate of BoolReturnTypeFromStrictScalarReturnsRector and NumericReturnTypeFromStrictScalarReturnsRector)
 
 - [Visibility](#visibility) (3)
 
