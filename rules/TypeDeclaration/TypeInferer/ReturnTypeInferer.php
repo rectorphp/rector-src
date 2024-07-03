@@ -50,7 +50,7 @@ final readonly class ReturnTypeInferer
     ) {
     }
 
-    public function inferFunctionLike(ClassMethod|Function_|Closure|ArrowFunction $functionLike): Type
+    public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         $isSupportedStaticReturnType = $this->phpVersionProvider->isAtLeastPhpVersion(
             PhpVersionFeature::STATIC_RETURN_TYPE

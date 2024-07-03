@@ -162,14 +162,15 @@ CODE_SAMPLE
     }
 
     /**
-     * @template TCallLike as ClassMethod|Function_|Closure
+     * @template TFunctionLike as ClassMethod|Function_|Closure
      *
-     * @param TCallLike $node
-     * @return TCallLike|null
+     * @param TFunctionLike $functionLike
+     * @return TFunctionLike|null
      */
-    private function refactorDirectReturnNew(ClassMethod|Function_|Closure $node): null|Function_|ClassMethod|Closure
-    {
-        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+    private function refactorDirectReturnNew(
+        ClassMethod|Function_|Closure $functionLike
+    ): null|Function_|ClassMethod|Closure {
+        $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($returns === []) {
             return null;
         }
@@ -186,9 +187,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->returnType = $returnTypeNode;
+        $functionLike->returnType = $returnTypeNode;
 
-        return $node;
+        return $functionLike;
     }
 
     /**

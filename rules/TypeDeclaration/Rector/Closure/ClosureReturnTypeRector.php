@@ -18,12 +18,15 @@ use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector\ClosureReturnTypeRectorTest
+ */
 final class ClosureReturnTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly StrictNativeFunctionReturnTypeAnalyzer $strictNativeFunctionReturnTypeAnalyzer,
+        // private readonly StrictNativeFunctionReturnTypeAnalyzer $strictNativeFunctionReturnTypeAnalyzer,
     ) {
     }
 

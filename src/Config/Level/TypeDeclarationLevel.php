@@ -41,9 +41,8 @@ use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromReturnCastRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictNativeCallRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureUnionReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
 use Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector;
@@ -105,11 +104,11 @@ final class TypeDeclarationLevel
         ParamTypeByParentCallTypeRector::class,
 
         // multi types (nullable, union)
-        AddClosureUnionReturnTypeRector::class,
         ReturnUnionTypeRector::class,
 
+        ClosureReturnTypeRector::class,
+
         // more risky rules
-        AddClosureReturnTypeFromStrictParamRector::class,
         ReturnTypeFromStrictParamRector::class,
         AddParamTypeFromPropertyTypeRector::class,
         MergeDateTimePropertyTypeDeclarationRector::class,

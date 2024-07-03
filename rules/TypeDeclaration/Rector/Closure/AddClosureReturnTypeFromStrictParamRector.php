@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\Closure;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PHPStan\Analyser\Scope;
+use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\NodeManipulator\AddReturnTypeFromParam;
 use Rector\ValueObject\PhpVersionFeature;
@@ -15,9 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictParamRector\AddClosureReturnTypeFromStrictParamRectorTest
+ * @deprecated since 1.2.1, use @see \Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector instead
  */
-final class AddClosureReturnTypeFromStrictParamRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class AddClosureReturnTypeFromStrictParamRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, DeprecatedInterface
 {
     public function __construct(
         private readonly AddReturnTypeFromParam $addReturnTypeFromParam

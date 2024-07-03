@@ -525,7 +525,7 @@ final class NodeTypeResolver
     {
         if ($expr instanceof MethodCall) {
             $callerType = $scope->getType($expr->var);
-            if ($callerType instanceof ObjectType && $callerType->getClassReflection()->isBuiltin()) {
+            if ($callerType instanceof ObjectType && $callerType->getClassReflection() instanceof ClassReflection && $callerType->getClassReflection()->isBuiltin()) {
                 return $scope->getType($expr);
             }
         }

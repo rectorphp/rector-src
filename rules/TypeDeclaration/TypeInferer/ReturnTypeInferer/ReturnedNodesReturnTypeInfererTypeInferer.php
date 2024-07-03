@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -16,7 +15,6 @@ use PHPStan\Type\Type;
 use PHPStan\Type\VoidType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\SilentVoidResolver;
@@ -31,14 +29,13 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
         private SilentVoidResolver $silentVoidResolver,
         private BetterNodeFinder $betterNodeFinder,
         private NodeTypeResolver $nodeTypeResolver,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
         private TypeFactory $typeFactory,
         private SplArrayFixedTypeNarrower $splArrayFixedTypeNarrower,
         private ReflectionResolver $reflectionResolver,
     ) {
     }
 
-    public function inferFunctionLike(ClassMethod|Function_|Closure|ArrowFunction $functionLike): Type
+    public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
         if (! $classReflection instanceof ClassReflection) {
