@@ -89,7 +89,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -200,7 +200,7 @@ CODE_SAMPLE
      * @return Variable[]
      */
     private function matchVariableNotOverriddenByNonArray(
-        ClassMethod|Function_|Closure $functionLike,
+        ClassMethod|Function_ $functionLike,
         array $variables
     ): array {
         // is variable overriden?
