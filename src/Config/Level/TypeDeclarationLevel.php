@@ -39,7 +39,6 @@ use Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureReturnTypeFromStrictNativeCallRector;
 use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector;
 use Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector;
@@ -89,7 +88,6 @@ final class TypeDeclarationLevel
         AddReturnTypeDeclarationFromYieldsRector::class,
         AddParamTypeBasedOnPHPUnitDataProviderRector::class,
         TypedPropertyFromStrictSetUpRector::class,
-        AddClosureReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictNativeCallRector::class,
         ReturnTypeFromStrictTypedCallRector::class,
         ChildDoctrineRepositoryClassTypeRector::class,

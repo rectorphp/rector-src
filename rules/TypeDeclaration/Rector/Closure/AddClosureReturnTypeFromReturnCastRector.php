@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Closure;
 use PHPStan\Analyser\Scope;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\TypeDeclaration\NodeManipulator\AddReturnTypeFromCast;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,11 +19,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddClosureReturnTypeFromReturnCastRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, DeprecatedInterface
 {
-    public function __construct(
-        private readonly AddReturnTypeFromCast $addReturnTypeFromCast
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add return type to closure with return cast', [
@@ -57,7 +51,8 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        return $this->addReturnTypeFromCast->add($node, $scope);
+        // deprecated
+        return null;
     }
 
     public function provideMinPhpVersion(): int

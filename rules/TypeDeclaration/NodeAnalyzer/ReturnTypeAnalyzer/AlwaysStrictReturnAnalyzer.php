@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -24,7 +23,7 @@ final readonly class AlwaysStrictReturnAnalyzer
     /**
      * @return Return_[]
      */
-    public function matchAlwaysStrictReturns(ClassMethod|Closure|Function_ $functionLike): array
+    public function matchAlwaysStrictReturns(ClassMethod|Function_ $functionLike): array
     {
         if ($functionLike->stmts === null) {
             return [];

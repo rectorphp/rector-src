@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -162,14 +161,13 @@ CODE_SAMPLE
     }
 
     /**
-     * @template TFunctionLike as ClassMethod|Function_|Closure
+     * @template TFunctionLike as ClassMethod|Function_
      *
      * @param TFunctionLike $functionLike
      * @return TFunctionLike|null
      */
-    private function refactorDirectReturnNew(
-        ClassMethod|Function_|Closure $functionLike
-    ): null|Function_|ClassMethod|Closure {
+    private function refactorDirectReturnNew(ClassMethod|Function_ $functionLike): null|Function_|ClassMethod
+    {
         $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($returns === []) {
             return null;

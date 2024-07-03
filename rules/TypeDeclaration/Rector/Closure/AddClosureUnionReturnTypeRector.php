@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Closure;
 use PHPStan\Analyser\Scope;
 use Rector\Configuration\Deprecation\Contract\DeprecatedInterface;
 use Rector\Rector\AbstractScopeAwareRector;
-use Rector\TypeDeclaration\NodeManipulator\AddUnionReturnType;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -20,11 +19,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddClosureUnionReturnTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface, DeprecatedInterface
 {
-    public function __construct(
-        private readonly AddUnionReturnType $addUnionReturnType
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add union return type on closure', [
@@ -70,6 +64,7 @@ CODE_SAMPLE
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        return $this->addUnionReturnType->add($node, $scope);
+        // deprecated
+        return null;
     }
 }

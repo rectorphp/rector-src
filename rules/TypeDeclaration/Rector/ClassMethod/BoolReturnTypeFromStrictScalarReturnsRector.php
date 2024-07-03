@@ -95,7 +95,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -103,7 +103,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returns = $this->betterNodeFinder->findInstancesOfInFunctionLikeScoped($node, Return_::class);
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if (! $this->hasOnlyBoolScalarReturnExprs($returns, $node)) {
             return null;
         }
@@ -134,7 +134,7 @@ CODE_SAMPLE
     /**
      * @param Return_[] $returns
      */
-    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_|Closure $functionLike): bool
+    private function hasOnlyBoolScalarReturnExprs(array $returns, ClassMethod|Function_ $functionLike): bool
     {
         if ($returns === []) {
             return false;

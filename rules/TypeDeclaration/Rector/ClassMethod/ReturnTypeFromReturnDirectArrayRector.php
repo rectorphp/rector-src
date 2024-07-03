@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -68,7 +67,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param ClassMethod|Function_|Closure $node
+     * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
@@ -102,7 +101,7 @@ CODE_SAMPLE
         return PhpVersionFeature::SCALAR_TYPES;
     }
 
-    private function hasReturnArray(ClassMethod|Function_|Closure $functionLike): bool
+    private function hasReturnArray(ClassMethod|Function_ $functionLike): bool
     {
         $stmts = $functionLike->stmts;
 
