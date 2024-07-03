@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use PHPStan\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -85,7 +86,7 @@ CODE_SAMPLE
         }
 
         $scalarReturnType = $this->strictScalarReturnTypeAnalyzer->matchAlwaysScalarReturnType($node);
-        if (! $scalarReturnType instanceof \PHPStan\Type\Type) {
+        if (! $scalarReturnType instanceof Type) {
             return null;
         }
 
