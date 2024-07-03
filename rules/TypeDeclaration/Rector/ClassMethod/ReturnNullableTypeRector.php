@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Identifier;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Type\UnionType;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
@@ -20,41 +21,49 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector\ReturnTypeFromReturnDirectArrayRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector\ReturnNullableTypeRectorTest
  */
-final class ReturnTypeFromReturnDirectArrayRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class ReturnNullableTypeRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function __construct(
+        private readonly UnionTypeMapper $unionTypeMapper,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnTypeInferer $returnTypeInferer
+        private readonly ReturnTypeInferer $returnTypeInferer,
     ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add return type from return direct array', [
+        return new RuleDefinition('Add basic ? nullable type to class methods and functions, as of PHP 7.1', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-final class AddReturnArray
+final class SomeClass
 {
-    public function getArray()
+    public function getData()
     {
-        return [1, 2, 3];
+        if (rand(0, 1)) {
+            return null;
+        }
+
+        return 100;
     }
 }
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-final class AddReturnArray
+final class SomeClass
 {
-    public function getArray(): array
+    public function getData(): ?int
     {
-        return [1, 2, 3];
+        if (rand(0, 1)) {
+            return null;
+        }
+
+        return 100;
     }
 }
 CODE_SAMPLE
             ),
-
         ]);
     }
 
@@ -66,12 +75,22 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class];
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::NULLABLE_TYPE;
+    }
+
     /**
      * @param ClassMethod|Function_ $node
      */
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
-        // already has return type, skip
+        // empty body, nothing to resolve
+        if ($node->stmts === null || $node->stmts === []) {
+            return null;
+        }
+
+        // type is already known, skip
         if ($node->returnType instanceof Node) {
             return null;
         }
@@ -83,45 +102,22 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->hasReturnArray($node)) {
+        $inferReturnType = $this->returnTypeInferer->inferFunctionLike($node);
+        if (! $inferReturnType instanceof UnionType) {
             return null;
         }
 
-        $type = $this->returnTypeInferer->inferFunctionLike($node);
-        if (! $type->isArray()->yes()) {
+        $returnType = $this->unionTypeMapper->mapToPhpParserNode($inferReturnType, TypeKind::RETURN);
+        if (! $returnType instanceof Node) {
             return null;
         }
 
-        $node->returnType = new Identifier('array');
+        // handled by union PHP 8.0 rule
+        if (! $returnType instanceof NullableType) {
+            return null;
+        }
 
+        $node->returnType = $returnType;
         return $node;
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::SCALAR_TYPES;
-    }
-
-    private function hasReturnArray(ClassMethod|Function_ $functionLike): bool
-    {
-        $stmts = $functionLike->stmts;
-
-        if (! is_array($stmts)) {
-            return false;
-        }
-
-        foreach ($stmts as $stmt) {
-            if (! $stmt instanceof Return_) {
-                continue;
-            }
-
-            if (! $stmt->expr instanceof Array_) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 }

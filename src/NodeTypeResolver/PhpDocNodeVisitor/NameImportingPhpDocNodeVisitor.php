@@ -21,7 +21,7 @@ use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeVisitor\AbstractPhpDocNodeVisitor;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
-use Rector\StaticTypeMapper\PhpDocParser\IdentifierTypeMapper;
+use Rector\StaticTypeMapper\PhpDocParser\IdentifierPhpDocTypeMapper;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\Application\File;
@@ -37,11 +37,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
         private readonly CurrentFileProvider $currentFileProvider,
         private readonly ReflectionProvider $reflectionProvider,
-        private readonly IdentifierTypeMapper $identifierTypeMapper,
+        private readonly IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper,
     ) {
     }
 
-    public function beforeTraverse(Node $node): void
+    public function beforeTraverse(\PHPStan\PhpDocParser\Ast\Node $node): void
     {
         if (! $this->currentPhpParserNode instanceof PhpParserNode) {
             throw new ShouldNotHappenException('Set "$currentPhpParserNode" first');
@@ -67,7 +67,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException();
         }
 
-        $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
+        $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
 
         if ($staticType instanceof ShortenedObjectType) {
             $staticType = new FullyQualifiedObjectType($staticType->getFullyQualifiedName());
@@ -202,7 +202,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
         }
 
         $identifierTypeNode = $doctrineAnnotationTagValueNode->identifierTypeNode;
-        $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode(
+        $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode(
             $identifierTypeNode,
             $currentPhpParserNode
         );
@@ -255,7 +255,7 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException();
         }
 
-        $staticType = $this->identifierTypeMapper->mapIdentifierTypeNode(
+        $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode(
             new IdentifierTypeNode($attributeClass),
             $currentPhpParserNode
         );

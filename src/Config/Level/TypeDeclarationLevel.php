@@ -22,6 +22,7 @@ use Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarR
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnCastRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector;
 use Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector;
@@ -75,15 +76,16 @@ final class TypeDeclarationLevel
         ReturnTypeFromReturnNewRector::class,
         ReturnTypeFromReturnCastRector::class,
         ReturnTypeFromSymfonySerializerRector::class,
-
         AddVoidReturnTypeWhereNoReturnRector::class,
+        ReturnTypeFromStrictTypedPropertyRector::class,
+
+        ReturnNullableTypeRector::class,
 
         // php 7.4
         EmptyOnNullableObjectToInstanceOfRector::class,
 
         // php 7.4
         TypedPropertyFromStrictConstructorRector::class,
-        ReturnTypeFromStrictTypedPropertyRector::class,
         AddParamTypeSplFixedArrayRector::class,
         AddReturnTypeDeclarationFromYieldsRector::class,
         AddParamTypeBasedOnPHPUnitDataProviderRector::class,
