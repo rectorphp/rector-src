@@ -21,7 +21,7 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 final readonly class NullablePhpDocTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private IdentifierPhpDocTypeMapper $identifierTypeMapper,
+        private IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper,
         private TypeNodeResolver $typeNodeResolver
     ) {
     }
@@ -37,7 +37,7 @@ final readonly class NullablePhpDocTypeMapper implements PhpDocTypeMapperInterfa
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
     {
         if ($typeNode->type instanceof IdentifierTypeNode) {
-            $type = $this->identifierTypeMapper->mapToPHPStanType($typeNode->type, $node, $nameScope);
+            $type = $this->identifierPhpDocTypeMapper->mapToPHPStanType($typeNode->type, $node, $nameScope);
 
             if ($type instanceof UnionType) {
                 return new UnionType([new NullType(), ...$type->getTypes()]);

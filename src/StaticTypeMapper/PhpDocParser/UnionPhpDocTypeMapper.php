@@ -22,8 +22,8 @@ final readonly class UnionPhpDocTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
         private TypeFactory $typeFactory,
-        private IdentifierPhpDocTypeMapper $identifierTypeMapper,
-        private IntersectionPhpDocTypeMapper $intersectionTypeMapper,
+        private IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper,
+        private IntersectionPhpDocTypeMapper $intersectionPhpDocTypeMapper,
         private TypeNodeResolver $typeNodeResolver
     ) {
     }
@@ -41,12 +41,12 @@ final readonly class UnionPhpDocTypeMapper implements PhpDocTypeMapperInterface
         $unionedTypes = [];
         foreach ($typeNode->types as $unionedTypeNode) {
             if ($unionedTypeNode instanceof IdentifierTypeNode) {
-                $unionedTypes[] = $this->identifierTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
+                $unionedTypes[] = $this->identifierPhpDocTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
                 continue;
             }
 
             if ($unionedTypeNode instanceof IntersectionTypeNode) {
-                $unionedTypes[] = $this->intersectionTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
+                $unionedTypes[] = $this->intersectionPhpDocTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
                 continue;
             }
 

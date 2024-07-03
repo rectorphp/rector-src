@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\DependencyInjection;
 
+use Rector\PHPStanStaticTypeMapper\TypeMapper\IntersectionTypeMapper;
+use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Illuminate\Container\Container;
@@ -283,7 +285,7 @@ final class LazyContainerFactory
         HasOffsetValueTypeTypeMapper::class,
         HasPropertyTypeMapper::class,
         IntegerTypeMapper::class,
-        \Rector\PHPStanStaticTypeMapper\TypeMapper\IntersectionTypeMapper::class,
+        IntersectionTypeMapper::class,
         IterableTypeMapper::class,
         MixedTypeMapper::class,
         NeverTypeMapper::class,
@@ -300,7 +302,7 @@ final class LazyContainerFactory
         StringTypeMapper::class,
         ThisTypeMapper::class,
         TypeWithClassNameTypeMapper::class,
-        \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
+        UnionTypeMapper::class,
         VoidTypeMapper::class,
     ];
 
@@ -499,9 +501,9 @@ final class LazyContainerFactory
         );
 
         $rectorConfig->afterResolving(
-            \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper::class,
+            UnionTypeMapper::class,
             static function (
-                \Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper $unionTypeMapper,
+                UnionTypeMapper $unionTypeMapper,
                 Container $container
             ): void {
                 $phpStanStaticTypeMapper = $container->make(PHPStanStaticTypeMapper::class);

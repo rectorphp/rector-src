@@ -20,7 +20,7 @@ use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 final readonly class IntersectionPhpDocTypeMapper implements PhpDocTypeMapperInterface
 {
     public function __construct(
-        private IdentifierPhpDocTypeMapper $identifierTypeMapper
+        private IdentifierPhpDocTypeMapper $identifierPhpDocTypeMapper
     ) {
     }
 
@@ -40,7 +40,7 @@ final readonly class IntersectionPhpDocTypeMapper implements PhpDocTypeMapperInt
                 return new MixedType();
             }
 
-            $intersectionedTypes[] = $this->identifierTypeMapper->mapIdentifierTypeNode(
+            $intersectionedTypes[] = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode(
                 $intersectionedTypeNode,
                 $node
             );
