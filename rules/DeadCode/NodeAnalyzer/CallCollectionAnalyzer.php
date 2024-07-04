@@ -38,13 +38,14 @@ final readonly class CallCollectionAnalyzer
                 // that methods don't have return type
                 if ($callerType instanceof MixedType && ! $callerType->isExplicitMixed()) {
                     $cloneCallerRoot = clone $callerRoot;
-                    while ($cloneCallerRoot instanceof MethodCall && $cloneCallerRoot->var instanceof MethodCall) {
-                        $callerType = $this->nodeTypeResolver->getType($cloneCallerRoot->var->var);
-                        $cloneCallerRoot = $cloneCallerRoot->var;
+                    while ($cloneCallerRoot instanceof MethodCall) {
+                        $callerType = $this->nodeTypeResolver->getType($cloneCallerRoot->var);
 
                         if ($callerType instanceof ThisType && $callerType->getStaticObjectType()->getClassName() === $className) {
                             return true;
                         }
+
+                        $cloneCallerRoot = $cloneCallerRoot->var;
                     }
                 }
 
