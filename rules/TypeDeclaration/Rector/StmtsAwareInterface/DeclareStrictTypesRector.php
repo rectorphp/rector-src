@@ -10,6 +10,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Nop;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -75,6 +76,10 @@ CODE_SAMPLE
             $currentStmt = current($rootStmt->stmts);
 
             if (! $currentStmt instanceof Stmt) {
+                return null;
+            }
+
+            if ($currentStmt instanceof InlineHTML) {
                 return null;
             }
 
