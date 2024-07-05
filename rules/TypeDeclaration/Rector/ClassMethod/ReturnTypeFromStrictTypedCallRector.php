@@ -22,6 +22,7 @@ use PHPStan\Type\UnionType;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
@@ -42,7 +43,8 @@ final class ReturnTypeFromStrictTypedCallRector extends AbstractScopeAwareRector
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpVersionProvider $phpVersionProvider,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -118,6 +120,10 @@ CODE_SAMPLE
 
         $returnedStrictTypes = $this->returnStrictTypeAnalyzer->collectStrictReturnTypes($currentScopeReturns, $scope);
         if ($returnedStrictTypes === []) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

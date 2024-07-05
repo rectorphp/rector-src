@@ -96,10 +96,6 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
-            return null;
-        }
-
         $returns = $this->betterNodeFinder->findReturnsScoped($node);
 
         // handled in another rule
@@ -109,6 +105,10 @@ CODE_SAMPLE
 
         // handled in another rule
         if (! $this->hasOnlyBoolScalarReturnExprs($returns)) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 
