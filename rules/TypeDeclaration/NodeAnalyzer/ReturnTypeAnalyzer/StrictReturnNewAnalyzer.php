@@ -18,7 +18,6 @@ use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\ValueObject\AssignToVariable;
 
 final readonly class StrictReturnNewAnalyzer
@@ -27,7 +26,6 @@ final readonly class StrictReturnNewAnalyzer
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
         private NodeTypeResolver $nodeTypeResolver,
-        private ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -46,10 +44,6 @@ final readonly class StrictReturnNewAnalyzer
 
         $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($returns === []) {
-            return null;
-        }
-
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
             return null;
         }
 
