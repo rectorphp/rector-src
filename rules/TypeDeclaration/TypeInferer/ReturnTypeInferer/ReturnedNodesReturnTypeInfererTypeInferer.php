@@ -38,7 +38,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
     public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
-        if ($functionLike instanceof ClassMethod && $classReflection instanceof ClassReflection && $classReflection->isInterface()) {
+        if ($functionLike instanceof ClassMethod && (! $classReflection instanceof ClassReflection || $classReflection->isInterface())) {
             return new MixedType();
         }
 
