@@ -42,7 +42,7 @@ final class AddTypeToConstRector extends AbstractRector implements MinPhpVersion
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add type to constants', [
+        return new RuleDefinition('Add type to constants based on their value', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
 final class SomeClass
