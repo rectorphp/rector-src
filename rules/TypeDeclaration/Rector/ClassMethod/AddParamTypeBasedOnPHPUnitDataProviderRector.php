@@ -57,7 +57,6 @@ final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -159,10 +158,6 @@ CODE_SAMPLE
     ): Type {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
-            return new MixedType();
-        }
-
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($dataProviderClassMethod)) {
             return new MixedType();
         }
 
