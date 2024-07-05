@@ -90,7 +90,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
+        $returns = $this->betterNodeFinder->findReturnsScoped($node);
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
             return null;
         }
 

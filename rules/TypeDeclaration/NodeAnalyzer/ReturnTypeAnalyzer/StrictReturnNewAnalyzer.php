@@ -49,7 +49,7 @@ final readonly class StrictReturnNewAnalyzer
             return null;
         }
 
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike, $returns)) {
             return null;
         }
 

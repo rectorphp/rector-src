@@ -43,7 +43,7 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
             return null;
         }
 
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike, $returns)) {
             return null;
         }
 
