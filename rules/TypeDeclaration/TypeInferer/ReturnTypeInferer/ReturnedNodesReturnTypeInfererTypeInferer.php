@@ -38,11 +38,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
     public function inferFunctionLike(ClassMethod|Function_|Closure $functionLike): Type
     {
         $classReflection = $this->reflectionResolver->resolveClassReflection($functionLike);
-        if (! $classReflection instanceof ClassReflection) {
-            return new MixedType();
-        }
-
-        if ($functionLike instanceof ClassMethod && $classReflection->isInterface()) {
+        if ($functionLike instanceof ClassMethod && (! $classReflection instanceof ClassReflection || $classReflection->isInterface())) {
             return new MixedType();
         }
 
@@ -50,7 +46,7 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 
         $localReturnNodes = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($localReturnNodes === []) {
-            return $this->resolveNoLocalReturnNodes($classReflection, $functionLike);
+            return $this->resolveNoLocalReturnNodes($functionLike, $classReflection);
         }
 
         foreach ($localReturnNodes as $localReturnNode) {
@@ -69,21 +65,25 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
     }
 
     private function resolveNoLocalReturnNodes(
-        ClassReflection $classReflection,
-        FunctionLike $functionLike
+        FunctionLike $functionLike,
+        ?ClassReflection $classReflection,
     ): VoidType | MixedType {
         // void type
-        if (! $this->isAbstractMethod($classReflection, $functionLike)) {
+        if (! $this->isAbstractMethod($functionLike, $classReflection)) {
             return new VoidType();
         }
 
         return new MixedType();
     }
 
-    private function isAbstractMethod(ClassReflection $classReflection, FunctionLike $functionLike): bool
+    private function isAbstractMethod(FunctionLike $functionLike, ?ClassReflection $classReflection): bool
     {
         if ($functionLike instanceof ClassMethod && $functionLike->isAbstract()) {
             return true;
+        }
+
+        if (! $classReflection instanceof ClassReflection) {
+            return false;
         }
 
         if (! $classReflection->isClass()) {
