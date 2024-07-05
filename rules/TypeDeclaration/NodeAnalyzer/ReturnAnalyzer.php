@@ -26,6 +26,10 @@ final readonly class ReturnAnalyzer
             return false;
         }
 
+        if ($returns === []) {
+            return false;
+        }
+
         foreach ($returns as $return) {
             if (! $return->expr instanceof Expr) {
                 return false;

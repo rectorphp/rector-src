@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $matchedType = $this->matchAlwaysReturnConstFetch($node);
+        $matchedType = $this->matchAlwaysReturnConstFetch($node, $returns);
         if (! $matchedType instanceof Type) {
             return null;
         }
@@ -122,13 +122,11 @@ CODE_SAMPLE
         return PhpVersion::PHP_70;
     }
 
-    private function matchAlwaysReturnConstFetch(ClassMethod $classMethod): ?Type
+    /**
+     * @param Return_[] $returns
+     */
+    private function matchAlwaysReturnConstFetch(ClassMethod $classMethod, array $returns): ?Type
     {
-        $returns = $this->betterNodeFinder->findReturnsScoped($classMethod);
-        if ($returns === []) {
-            return null;
-        }
-
         $classConstFetchTypes = [];
 
         foreach ($returns as $return) {
