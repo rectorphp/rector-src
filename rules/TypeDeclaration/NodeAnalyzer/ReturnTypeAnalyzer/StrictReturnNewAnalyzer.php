@@ -45,11 +45,7 @@ final readonly class StrictReturnNewAnalyzer
         }
 
         $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
-        if ($returns === []) {
-            return null;
-        }
-
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike, $returns)) {
             return null;
         }
 
