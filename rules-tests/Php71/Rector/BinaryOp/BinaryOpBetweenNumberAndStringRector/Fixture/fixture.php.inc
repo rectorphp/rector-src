@@ -26,7 +26,7 @@ class Fixture
     public function run()
     {
         $value = 5 + 0;
-        $value = 5.0 + 0;
+        $value = 5.0 + 0.0;
         $value = 5 + 0;
 
         $value = 5 * 0;
