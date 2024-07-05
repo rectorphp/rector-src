@@ -27,6 +27,7 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Php52\Rector\Switch_\ContinueToBreakInSwitchRector\ContinueToBreakInSwitchRectorTest
@@ -106,7 +107,7 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function processContinueStatement(Stmt $stmt): void
+    private function processContinueStatement(Stmt|StmtsAwareInterface $stmt): void
     {
         if ($stmt instanceof Class_
             || $stmt instanceof Function_
@@ -157,7 +158,7 @@ CODE_SAMPLE
                 }
 
                 $this->hasChanged = true;
-                $stmtStmt[$key] = new Break_();
+                $stmt->stmts[$key] = new Break_();
             }
         }
     }
