@@ -26,16 +26,19 @@ final readonly class ReturnAnalyzer
             return false;
         }
 
+        // VOID
         if ($returns === []) {
             return false;
         }
 
+        // POSSIBLE VOID
         foreach ($returns as $return) {
             if (! $return->expr instanceof Expr) {
                 return false;
             }
         }
 
+        // POSSIBLE SILENT VOID
         return ! $this->silentVoidResolver->hasSilentVoid($functionLike);
     }
 }
