@@ -99,7 +99,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $matchedType = $this->matchAlwaysReturnConstFetch($node, $returns);
+        $matchedType = $this->matchAlwaysReturnConstFetch($returns);
         if (! $matchedType instanceof Type) {
             return null;
         }
@@ -125,7 +125,7 @@ CODE_SAMPLE
     /**
      * @param Return_[] $returns
      */
-    private function matchAlwaysReturnConstFetch(ClassMethod $classMethod, array $returns): ?Type
+    private function matchAlwaysReturnConstFetch(array $returns): ?Type
     {
         $classConstFetchTypes = [];
 
