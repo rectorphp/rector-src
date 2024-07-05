@@ -102,7 +102,9 @@ CODE_SAMPLE
         if ($this->isStringOrStaticNonNumericString($node->left) && $this->nodeTypeResolver->isNumberType(
             $node->right
         )) {
-            $node->left = $this->nodeTypeResolver->getNativeType($node->right)->isInteger()->yes()
+            $node->left = $this->nodeTypeResolver->getNativeType($node->right)
+                ->isInteger()
+                ->yes()
                 ? new LNumber(0)
                 : new DNumber(0);
 
@@ -112,7 +114,9 @@ CODE_SAMPLE
         if ($this->isStringOrStaticNonNumericString($node->right) && $this->nodeTypeResolver->isNumberType(
             $node->left
         )) {
-            $node->right = $this->nodeTypeResolver->getNativeType($node->left)->isInteger()->yes()
+            $node->right = $this->nodeTypeResolver->getNativeType($node->left)
+                ->isInteger()
+                ->yes()
                 ? new LNumber(0)
                 : new DNumber(0);
 
