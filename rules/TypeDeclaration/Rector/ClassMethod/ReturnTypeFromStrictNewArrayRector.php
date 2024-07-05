@@ -27,6 +27,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -44,7 +45,8 @@ final class ReturnTypeFromStrictNewArrayRector extends AbstractScopeAwareRector 
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly ReturnTypeInferer $returnTypeInferer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -115,6 +117,10 @@ CODE_SAMPLE
 
         $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if ($returns === []) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

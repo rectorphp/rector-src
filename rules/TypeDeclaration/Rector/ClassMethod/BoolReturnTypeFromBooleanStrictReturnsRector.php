@@ -30,6 +30,7 @@ use PHPStan\Type\BooleanType;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -46,6 +47,7 @@ final class BoolReturnTypeFromBooleanStrictReturnsRector extends AbstractScopeAw
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -103,6 +105,10 @@ CODE_SAMPLE
 
         // handled in another rule
         if (! $this->hasOnlyBoolScalarReturnExprs($returns)) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

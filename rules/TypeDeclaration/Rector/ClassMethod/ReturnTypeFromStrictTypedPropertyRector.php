@@ -19,6 +19,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -35,7 +36,8 @@ final class ReturnTypeFromStrictTypedPropertyRector extends AbstractScopeAwareRe
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -149,6 +151,10 @@ CODE_SAMPLE
             }
 
             $propertyTypes[] = $this->nodeTypeResolver->getNativeType($return->expr);
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($classMethod)) {
+            return [];
         }
 
         return $propertyTypes;

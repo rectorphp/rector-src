@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -27,6 +28,7 @@ final class StringReturnTypeFromStrictScalarReturnsRector extends AbstractScopeA
     public function __construct(
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
         private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -87,6 +89,10 @@ CODE_SAMPLE
         $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if ($returns === []) {
             // void
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

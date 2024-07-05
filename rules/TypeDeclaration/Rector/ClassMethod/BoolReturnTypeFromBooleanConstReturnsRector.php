@@ -15,6 +15,7 @@ use PHPStan\Analyser\Scope;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -30,6 +31,7 @@ final class BoolReturnTypeFromBooleanConstReturnsRector extends AbstractScopeAwa
         private readonly ValueResolver $valueResolver,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -88,6 +90,10 @@ CODE_SAMPLE
 
         $returns = $this->betterNodeFinder->findReturnsScoped($node);
         if (! $this->hasOnlyBooleanConstExprs($returns)) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 
