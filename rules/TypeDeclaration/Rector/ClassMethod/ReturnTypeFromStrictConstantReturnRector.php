@@ -17,6 +17,7 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersion;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -33,6 +34,7 @@ final class ReturnTypeFromStrictConstantReturnRector extends AbstractScopeAwareR
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly TypeFactory $typeFactory,
+        private readonly ReturnAnalyzer $returnAnalyzer,
     ) {
     }
 
@@ -85,6 +87,10 @@ CODE_SAMPLE
         }
 
         if ($this->hasYield($node)) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

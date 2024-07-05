@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnFilter\ExclusiveNativeCallLikeReturnMatcher;
 
 final readonly class StrictNativeFunctionReturnTypeAnalyzer
@@ -17,6 +18,7 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
     public function __construct(
         private BetterNodeFinder $betterNodeFinder,
         private ExclusiveNativeCallLikeReturnMatcher $exclusiveNativeCallLikeReturnMatcher,
+        private ReturnAnalyzer $returnAnalyzer,
     ) {
     }
 
@@ -38,6 +40,10 @@ final readonly class StrictNativeFunctionReturnTypeAnalyzer
 
         $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($returns === []) {
+            return null;
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
             return null;
         }
 
