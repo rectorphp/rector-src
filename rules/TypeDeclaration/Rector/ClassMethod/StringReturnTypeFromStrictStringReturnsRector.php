@@ -94,7 +94,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node)) {
             return null;
         }
 

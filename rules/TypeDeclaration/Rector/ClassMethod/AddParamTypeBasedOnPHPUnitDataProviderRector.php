@@ -30,6 +30,7 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\ValueObject\DataProviderNodes;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -55,7 +56,8 @@ final class AddParamTypeBasedOnPHPUnitDataProviderRector extends AbstractRector
         private readonly TestsNodeAnalyzer $testsNodeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -157,6 +159,10 @@ CODE_SAMPLE
     ): Type {
         $dataProviderClassMethod = $this->resolveDataProviderClassMethod($class, $dataProviderNode);
         if (! $dataProviderClassMethod instanceof ClassMethod) {
+            return new MixedType();
+        }
+
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($dataProviderClassMethod)) {
             return new MixedType();
         }
 
