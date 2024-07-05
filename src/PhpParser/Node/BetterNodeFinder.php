@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
@@ -18,7 +17,6 @@ use PhpParser\NodeTraverser;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
-use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Webmozart\Assert\Assert;
 
 /**
@@ -30,8 +28,7 @@ final readonly class BetterNodeFinder
         private NodeFinder $nodeFinder,
         private NodeNameResolver $nodeNameResolver,
         private ClassAnalyzer $classAnalyzer,
-        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
-        private ReturnAnalyzer $returnAnalyzer
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser
     ) {
     }
 
@@ -194,11 +191,6 @@ final readonly class BetterNodeFinder
      */
     public function findReturnsScoped(ClassMethod | Function_ | Closure $functionLike): array
     {
-        // possible void, return empty
-        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($functionLike)) {
-            return [];
-        }
-
         $returns = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
@@ -208,7 +200,7 @@ final readonly class BetterNodeFinder
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if ($subNode instanceof Return_ && $subNode->expr instanceof Expr) {
+                if ($subNode instanceof Return_) {
                     $returns[] = $subNode;
                 }
 
