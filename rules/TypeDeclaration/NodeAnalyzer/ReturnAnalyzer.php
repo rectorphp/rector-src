@@ -26,19 +26,19 @@ final readonly class ReturnAnalyzer
             return false;
         }
 
-        // VOID
+        // void or combined with yield/yield from
         if ($returns === []) {
             return false;
         }
 
-        // POSSIBLE VOID
+        // possible void
         foreach ($returns as $return) {
             if (! $return->expr instanceof Expr) {
                 return false;
             }
         }
 
-        // POSSIBLE SILENT VOID
+        // possible silent void
         return ! $this->silentVoidResolver->hasSilentVoid($functionLike);
     }
 }
