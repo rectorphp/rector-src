@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\TypeInferer;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\FunctionLike;
@@ -116,14 +115,10 @@ final readonly class ReturnTypeInferer
     }
 
     private function resolveTypeWithVoidHandling(
-        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
+        ClassMethod|Function_|Closure $functionLike,
         Type $resolvedType
     ): Type {
         if ($resolvedType->isVoid()->yes()) {
-            if ($functionLike instanceof ArrowFunction) {
-                return new MixedType();
-            }
-
             $hasReturnValue = (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
                 $functionLike,
                 static function (Node $subNode): bool {
@@ -152,7 +147,7 @@ final readonly class ReturnTypeInferer
     }
 
     private function resolveBenevolentUnionTypeInteger(
-        ClassMethod|Function_|Closure|ArrowFunction $functionLike,
+        ClassMethod|Function_|Closure $functionLike,
         UnionType $unionType
     ): Type {
         $types = $unionType->getTypes();
@@ -166,16 +161,11 @@ final readonly class ReturnTypeInferer
             return $unionType;
         }
 
-        if (! $functionLike instanceof ArrowFunction) {
-            $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
-            $returnsWithExpr = array_filter(
-                $returns,
-                static fn (Return_ $return): bool => $return->expr instanceof Expr
-            );
-        } else {
-            $returns = $functionLike->getStmts();
-            $returnsWithExpr = $returns;
-        }
+        $returns = $this->betterNodeFinder->findReturnsScoped($functionLike);
+        $returnsWithExpr = array_filter(
+            $returns,
+            static fn (Return_ $return): bool => $return->expr instanceof Expr
+        );
 
         if ($returns !== $returnsWithExpr) {
             return $unionType;
