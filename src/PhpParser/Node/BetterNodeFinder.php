@@ -7,6 +7,8 @@ namespace Rector\PhpParser\Node;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Expr\Yield_;
+use PhpParser\Node\Expr\YieldFrom;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -198,6 +200,11 @@ final readonly class BetterNodeFinder
             function (Node $subNode) use (&$returns): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
+                    $returns = [];
+                    return NodeTraverser::STOP_TRAVERSAL;
                 }
 
                 if ($subNode instanceof Return_) {
