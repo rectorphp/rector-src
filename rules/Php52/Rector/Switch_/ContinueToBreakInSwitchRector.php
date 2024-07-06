@@ -6,6 +6,7 @@ namespace Rector\Php52\Rector\Switch_;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Stmt;
@@ -18,6 +19,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
+use PhpParser\NodeTraverser;
 use PHPStan\Type\Constant\ConstantIntegerType;
 use PHPStan\Type\ConstantType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
@@ -108,58 +110,44 @@ CODE_SAMPLE
 
     private function processContinueStatement(Stmt|StmtsAwareInterface $stmt): void
     {
-        if ($stmt instanceof Class_
-            || $stmt instanceof Function_
-            || $stmt instanceof While_
-            || $stmt instanceof Do_
-            || $stmt instanceof Foreach_
-            || $stmt instanceof For_
-        ) {
-            return;
-        }
+        $this->traverseNodesWithCallable(
+            $stmt,
+            function (Node $subNode): null|int|Break_ {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-        if (! $stmt instanceof StmtsAwareInterface) {
-            return;
-        }
+                // continue is belong to loop
+                if ($subNode instanceof Foreach_ || $subNode instanceof While_ || $subNode instanceof Do_ || $subNode instanceof For_) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
-        if ($stmt->stmts === null) {
-            return;
-        }
+                if (! $subNode instanceof Continue_) {
+                    return null;
+                }
 
-        foreach ($stmt->stmts as $key => $stmtStmt) {
-            if ($stmtStmt instanceof StmtsAwareInterface) {
-                $this->processContinueStatement($stmtStmt);
-                continue;
-            }
-
-            if (! $stmtStmt instanceof Continue_) {
-                continue;
-            }
-
-            if (! $stmtStmt->num instanceof Expr) {
-                $this->hasChanged = true;
-                $stmt->stmts[$key] = new Break_();
-                continue;
-            }
-
-            if ($stmtStmt->num instanceof LNumber) {
-                $continueNumber = $this->valueResolver->getValue($stmtStmt->num);
-                if ($continueNumber <= 1) {
+                if (! $subNode->num instanceof Expr) {
                     $this->hasChanged = true;
-                    $stmt->stmts[$key] = new Break_();
-
-                    continue;
-                }
-            } elseif ($stmtStmt->num instanceof Variable) {
-                $continue = $this->processVariableNum($stmtStmt, $stmtStmt->num);
-                if ($continue instanceof Continue_) {
-                    continue;
+                    return new Break_();
                 }
 
-                $this->hasChanged = true;
-                $stmt->stmts[$key] = new Break_();
+                if ($subNode->num instanceof LNumber) {
+                    $continueNumber = $this->valueResolver->getValue($subNode->num);
+                    if ($continueNumber <= 1) {
+                        $this->hasChanged = true;
+                        return new Break_();
+                    }
+                } elseif ($subNode->num instanceof Variable) {
+                    $processVariableNum = $this->processVariableNum($subNode, $subNode->num);
+                    if ($processVariableNum instanceof Break_) {
+                        $this->hasChanged = true;
+                        return $processVariableNum;
+                    }
+                }
+
+                return null;
             }
-        }
+        );
     }
 
     private function processVariableNum(Continue_ $continue, Variable $numVariable): Continue_ | Break_
