@@ -8,7 +8,7 @@ use Rector\Contract\Rector\RectorInterface;
 use Symplify\EasyParallel\Contract\SerializableInterface;
 use Webmozart\Assert\Assert;
 
-final class RectorWithLineChange implements SerializableInterface
+final readonly class RectorWithLineChange implements SerializableInterface
 {
     /**
      * @var string
@@ -23,14 +23,14 @@ final class RectorWithLineChange implements SerializableInterface
     /**
      * @var class-string<RectorInterface>
      */
-    private readonly string $rectorClass;
+    private string $rectorClass;
 
     /**
      * @param class-string<RectorInterface>|RectorInterface $rectorClass
      */
     public function __construct(
         string|RectorInterface $rectorClass,
-        private readonly int $line
+        private int $line
     ) {
         if ($rectorClass instanceof RectorInterface) {
             $rectorClass = $rectorClass::class;

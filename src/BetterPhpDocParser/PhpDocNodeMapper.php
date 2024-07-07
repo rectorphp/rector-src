@@ -16,18 +16,18 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\BetterPhpDocParser\PhpDocNodeMapperTest
  */
-final class PhpDocNodeMapper
+final readonly class PhpDocNodeMapper
 {
-    private readonly PhpDocNodeTraverser $phpDocNodeTraverser;
+    private PhpDocNodeTraverser $phpDocNodeTraverser;
 
     /**
      * @param BasePhpDocNodeVisitorInterface[] $phpDocNodeVisitors
      */
     public function __construct(
-        private readonly CurrentTokenIteratorProvider $currentTokenIteratorProvider,
+        private CurrentTokenIteratorProvider $currentTokenIteratorProvider,
         ParentConnectingPhpDocNodeVisitor $parentConnectingPhpDocNodeVisitor,
         CloningPhpDocNodeVisitor $cloningPhpDocNodeVisitor,
-        private readonly array $phpDocNodeVisitors
+        private array $phpDocNodeVisitors
     ) {
         Assert::notEmpty($phpDocNodeVisitors);
 
