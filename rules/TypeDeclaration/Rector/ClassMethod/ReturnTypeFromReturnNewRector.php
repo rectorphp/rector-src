@@ -168,8 +168,10 @@ CODE_SAMPLE
      * @param Return_[] $returns
      * @return TFunctionLike|null
      */
-    private function refactorDirectReturnNew(ClassMethod|Function_ $functionLike, array $returns): null|Function_|ClassMethod
-    {
+    private function refactorDirectReturnNew(
+        ClassMethod|Function_ $functionLike,
+        array $returns
+    ): null|Function_|ClassMethod {
         $newTypes = $this->resolveReturnNewType($returns);
         if ($newTypes === null) {
             return null;
