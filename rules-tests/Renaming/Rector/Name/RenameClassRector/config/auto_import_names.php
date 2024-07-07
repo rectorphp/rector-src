@@ -19,5 +19,10 @@ return static function (RectorConfig $rectorConfig): void {
         SomeServiceClassFirstNamespace::class => SomeServiceClass::class,
         'Storage' => 'Illuminate\Support\Facades\Storage',
         'Queue' => 'Illuminate\Support\Facades\Queue',
+
+        // test same last name with alias
+        'Project\PedBook\Manual\Stc\TableMedicine' => 'Project\PedBook\Manual\Stc\TableDisease',
+        'Project\PedBook\Auto\Obj\TableMedicine' => 'Project\PedBook\Auto\Obj\TableDisease',
+        'Project\PedBook\Auto\Stc\TableMedicine' => 'Project\PedBook\Auto\Stc\TableDisease',
     ]);
 };
