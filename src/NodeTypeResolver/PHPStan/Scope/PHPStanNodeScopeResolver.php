@@ -69,26 +69,26 @@ use Webmozart\Assert\Assert;
  * @inspired by https://github.com/silverstripe/silverstripe-upgrader/blob/532182b23e854d02e0b27e68ebc394f436de0682/src/UpgradeRule/PHP/Visitor/PHPStanScopeVisitor.php
  * - https://github.com/silverstripe/silverstripe-upgrader/pull/57/commits/e5c7cfa166ad940d9d4ff69537d9f7608e992359#diff-5e0807bb3dc03d6a8d8b6ad049abd774
  */
-final class PHPStanNodeScopeResolver
+final readonly class PHPStanNodeScopeResolver
 {
     /**
      * @var string
      */
     private const CONTEXT = 'context';
 
-    private readonly NodeTraverser $nodeTraverser;
+    private NodeTraverser $nodeTraverser;
 
     /**
      * @param ScopeResolverNodeVisitorInterface[] $nodeVisitors
      */
     public function __construct(
-        private readonly NodeScopeResolver $nodeScopeResolver,
-        private readonly ReflectionProvider $reflectionProvider,
+        private NodeScopeResolver $nodeScopeResolver,
+        private ReflectionProvider $reflectionProvider,
         iterable $nodeVisitors,
-        private readonly ScopeFactory $scopeFactory,
-        private readonly PrivatesAccessor $privatesAccessor,
-        private readonly NodeNameResolver $nodeNameResolver,
-        private readonly ClassAnalyzer $classAnalyzer
+        private ScopeFactory $scopeFactory,
+        private PrivatesAccessor $privatesAccessor,
+        private NodeNameResolver $nodeNameResolver,
+        private ClassAnalyzer $classAnalyzer
     ) {
         $this->nodeTraverser = new NodeTraverser();
 

@@ -10,14 +10,14 @@ use PhpParser\NodeVisitor\CloningVisitor;
 use Rector\NodeTypeResolver\PHPStan\Scope\PHPStanNodeScopeResolver;
 use Rector\PhpParser\NodeTraverser\FileWithoutNamespaceNodeTraverser;
 
-final class NodeScopeAndMetadataDecorator
+final readonly class NodeScopeAndMetadataDecorator
 {
-    private readonly NodeTraverser $nodeTraverser;
+    private NodeTraverser $nodeTraverser;
 
     public function __construct(
         CloningVisitor $cloningVisitor,
-        private readonly PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
-        private readonly FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
+        private PHPStanNodeScopeResolver $phpStanNodeScopeResolver,
+        private FileWithoutNamespaceNodeTraverser $fileWithoutNamespaceNodeTraverser
     ) {
         $this->nodeTraverser = new NodeTraverser();
 
