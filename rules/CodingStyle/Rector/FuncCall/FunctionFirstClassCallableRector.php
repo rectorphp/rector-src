@@ -21,9 +21,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see \Rector\Tests\CodingStyle\Rector\FuncCall\FirstClassCallableRector\FirstClassCallableRectorTest
+ * @see \Rector\Tests\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector\FunctionFirstClassCallableRectorTest
  */
-final class FirstClassCallableRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class FunctionFirstClassCallableRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
     public function getRuleDefinition(): RuleDefinition
     {
