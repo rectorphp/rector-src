@@ -611,93 +611,94 @@ final class RectorConfigBuilder
     // as we already use PHP 8.0 and should go with withPhpSets() instead
 
     public function withPreparedSets(
-        bool $deadCode = false,
-        bool $codeQuality = false,
-        bool $codingStyle = false,
-        bool $typeDeclarations = false,
-        bool $privatization = false,
-        bool $naming = false,
-        bool $instanceOf = false,
-        bool $earlyReturn = false,
-        bool $strictBooleans = false,
-        bool $carbon = false,
-        bool $rectorPreset = false,
-        bool $phpunitCodeQuality = false,
-        bool $doctrineCodeQuality = false,
-        bool $symfonyCodeQuality = false,
-        bool $symfonyConfigs = false,
+        bool $all = false,
+        bool $deadCode = null,
+        bool $codeQuality = null,
+        bool $codingStyle = null,
+        bool $typeDeclarations = null,
+        bool $privatization = null,
+        bool $naming = null,
+        bool $instanceOf = null,
+        bool $earlyReturn = null,
+        bool $strictBooleans = null,
+        bool $carbon = null,
+        bool $rectorPreset = null,
+        bool $phpunitCodeQuality = null,
+        bool $doctrineCodeQuality = null,
+        bool $symfonyCodeQuality = null,
+        bool $symfonyConfigs = null,
         // composer based
-        bool $twig = false,
-        bool $phpunit = false,
+        bool $twig = null,
+        bool $phpunit = null,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
-        if ($deadCode) {
+        if ($deadCode || ($all && $deadCode !== false)) {
             $this->sets[] = SetList::DEAD_CODE;
         }
 
-        if ($codeQuality) {
+        if ($codeQuality || ($all && $codeQuality !== false)) {
             $this->sets[] = SetList::CODE_QUALITY;
         }
 
-        if ($codingStyle) {
+        if ($codingStyle || ($all && $codingStyle !== false)) {
             $this->sets[] = SetList::CODING_STYLE;
         }
 
-        if ($typeDeclarations) {
+        if ($typeDeclarations || ($all && $typeDeclarations !== false)) {
             $this->sets[] = SetList::TYPE_DECLARATION;
         }
 
-        if ($privatization) {
+        if ($privatization || ($all && $privatization !== false)) {
             $this->sets[] = SetList::PRIVATIZATION;
         }
 
-        if ($naming) {
+        if ($naming || ($all && $naming !== false)) {
             $this->sets[] = SetList::NAMING;
         }
 
-        if ($instanceOf) {
+        if ($instanceOf || ($all && $instanceOf !== false)) {
             $this->sets[] = SetList::INSTANCEOF;
         }
 
-        if ($earlyReturn) {
+        if ($earlyReturn || ($all && $earlyReturn !== false)) {
             $this->sets[] = SetList::EARLY_RETURN;
         }
 
-        if ($strictBooleans) {
+        if ($strictBooleans || ($all && $strictBooleans !== false)) {
             $this->sets[] = SetList::STRICT_BOOLEANS;
         }
 
-        if ($carbon) {
+        if ($carbon || ($all && $carbon !== false)) {
             $this->sets[] = SetList::CARBON;
         }
 
-        if ($rectorPreset) {
+        if ($rectorPreset || ($all && $rectorPreset !== false)) {
             $this->sets[] = SetList::RECTOR_PRESET;
         }
 
-        if ($phpunitCodeQuality) {
+        if ($phpunitCodeQuality || ($all && $phpunitCodeQuality !== false)) {
             $this->sets[] = PHPUnitSetList::PHPUNIT_CODE_QUALITY;
         }
 
-        if ($doctrineCodeQuality) {
+         if ($doctrineCodeQuality || ($all && $doctrineCodeQuality !== false)) {
             $this->sets[] = DoctrineSetList::DOCTRINE_CODE_QUALITY;
         }
 
-        if ($symfonyCodeQuality) {
+        if ($symfonyCodeQuality || ($all && $symfonyCodeQuality !== false)) {
             $this->sets[] = SymfonySetList::SYMFONY_CODE_QUALITY;
         }
 
-        if ($symfonyConfigs) {
+        if ($symfonyConfigs || ($all && $symfonyConfigs !== false)) {
             $this->sets[] = SymfonySetList::CONFIGS;
         }
 
         // @experimental 2024-06
-        if ($twig) {
+        if ($twig || ($all && $twig !== false)) {
             $this->setGroups[] = SetGroup::TWIG;
         }
 
-        if ($phpunit) {
+        if ($phpunit || ($all && $phpunit !== false)) {
             $this->setGroups[] = SetGroup::PHPUNIT;
         }
 
