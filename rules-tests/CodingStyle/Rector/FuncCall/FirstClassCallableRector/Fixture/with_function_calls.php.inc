@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\FuncCall\FirstClassCallableRector\Fixture;
 
 final class WithFunctionCalls
 {
@@ -36,7 +36,7 @@ final class WithFunctionCalls
 -----
 <?php
 
-namespace Rector\Tests\Php81\Rector\Array_\FirstClassCallableRector\Fixture;
+namespace Rector\Tests\CodingStyle\Rector\FuncCall\FirstClassCallableRector\Fixture;
 
 final class WithFunctionCalls
 {
