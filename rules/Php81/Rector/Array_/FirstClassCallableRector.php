@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Rector\Php81\Rector\Array_;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\VariadicPlaceholder;
@@ -29,9 +25,6 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
-use ReflectionException;
-use ReflectionFunction;
-use ReflectionNamedType;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -89,59 +82,14 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Property::class, ClassConst::class, Array_::class, FuncCall::class];
+        return [Property::class, ClassConst::class, Array_::class];
     }
 
     /**
-     * @param Property|ClassConst|Array_|FuncCall $node
+     * @param Property|ClassConst|Array_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): int|null|StaticCall|MethodCall|FuncCall
+    public function refactorWithScope(Node $node, Scope $scope): int|null|StaticCall|MethodCall
     {
-        if ($node instanceof FuncCall) {
-            if (! $node->name instanceof Name) {
-                return null;
-            }
-
-            if ($node->isFirstClassCallable()) {
-                return null;
-            }
-
-            $functionName = (string) $this->getName($node);
-
-            try {
-                $reflectionFunction = new ReflectionFunction($functionName);
-            } catch (ReflectionException) {
-                return null;
-            }
-
-            $callableArgs = [];
-
-            foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
-                if ($reflectionParameter->getType() instanceof ReflectionNamedType && $reflectionParameter->getType()->getName() === 'callable') {
-                    $callableArgs[] = $reflectionParameter->getPosition();
-                }
-            }
-
-            $hasChanged = false;
-            foreach ($node->getArgs() as $key => $arg) {
-                if (! in_array($key, $callableArgs, true)) {
-                    continue;
-                }
-
-                if (! $arg->value instanceof String_) {
-                    continue;
-                }
-
-                $node->args[$key] = new Arg(
-                    new FuncCall(new Name($arg->value->value), [new VariadicPlaceholder()]),
-                    name: $arg->name
-                );
-                $hasChanged = true;
-            }
-
-            return $hasChanged ? $node : null;
-        }
-
         if ($node instanceof Property || $node instanceof ClassConst) {
             return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
         }
