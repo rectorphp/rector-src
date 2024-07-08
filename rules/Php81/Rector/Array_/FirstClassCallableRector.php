@@ -49,6 +49,7 @@ final class FirstClassCallableRector extends AbstractScopeAwareRector implements
 
     public function getRuleDefinition(): RuleDefinition
     {
+        // see RFC https://wiki.php.net/rfc/first_class_callable_syntax
         return new RuleDefinition('Upgrade array callable to first class callable', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
