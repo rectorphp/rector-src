@@ -258,24 +258,25 @@ final class PhpDocInfo
             &$hasChanged,
             $name
         ): ?int {
-            if (! $node instanceof PhpDocTagNode) {
-                return null;
+            if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
+                // keep special annotation for tools
+                if (str_starts_with($node->name, '@psalm-')) {
+                    return null;
+                }
+
+                if (str_starts_with($node->name, '@phpstan-')) {
+                    return null;
+                }
+
+                if ($name !== null && $node->value instanceof VarTagValueNode && $node->value->variableName !== '$' . ltrim($name, '$')) {
+                    return null;
+                }
+
+                $hasChanged = true;
+                return PhpDocNodeTraverser::NODE_REMOVE;
             }
 
-            if (! $node->value instanceof $typeToRemove) {
-                return null;
-            }
-
-            // keep special annotation for tools
-            if (str_starts_with($node->name, '@psalm-')) {
-                return null;
-            }
-
-            if (str_starts_with($node->name, '@phpstan-')) {
-                return null;
-            }
-
-            if ($name !== null && $node->value instanceof VarTagValueNode && $node->value->variableName !== '$' . ltrim($name, '$')) {
+            if (! $node instanceof $typeToRemove) {
                 return null;
             }
 
