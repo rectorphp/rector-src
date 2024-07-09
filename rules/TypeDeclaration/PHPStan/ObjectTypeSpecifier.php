@@ -59,7 +59,7 @@ final readonly class ObjectTypeSpecifier
         if ($scope instanceof Scope) {
             $namespaceName = $scope->getNamespace();
             if ($namespaceName !== null) {
-                $newClassName = $namespaceName . '\\' .$className;
+                $newClassName = $namespaceName . '\\' . $className;
                 if ($this->reflectionProvider->hasClass($newClassName)) {
                     return new FullyQualifiedObjectType($newClassName);
                 }
