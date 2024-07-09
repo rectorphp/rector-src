@@ -56,7 +56,7 @@ final readonly class ObjectTypeSpecifier
         }
 
         // probably in same namespace
-        if ($scope instanceof \PHPStan\Analyser\Scope && ! str_contains($className, '\\')) {
+        if ($scope instanceof Scope && ! str_contains($className, '\\')) {
             $namespaceName = $scope->getNamespace();
             if ($namespaceName !== null) {
                 $newClassName = $namespaceName . '\\' .$className;
