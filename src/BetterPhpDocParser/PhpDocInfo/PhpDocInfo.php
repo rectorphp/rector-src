@@ -248,30 +248,34 @@ final class PhpDocInfo
      * @template T of \PHPStan\PhpDocParser\Ast\Node
      * @param class-string<T> $typeToRemove
      */
-    public function removeByType(string $typeToRemove): bool
+    public function removeByType(string $typeToRemove, ?string $name = null): bool
     {
         $hasChanged = false;
 
         $phpDocNodeTraverser = new PhpDocNodeTraverser();
         $phpDocNodeTraverser->traverseWithCallable($this->phpDocNode, '', static function (Node $node) use (
             $typeToRemove,
-            &$hasChanged
+            &$hasChanged,
+            $name
         ): ?int {
-            if ($node instanceof PhpDocTagNode && $node->value instanceof $typeToRemove) {
-                // keep special annotation for tools
-                if (str_starts_with($node->name, '@psalm-')) {
-                    return null;
-                }
-
-                if (str_starts_with($node->name, '@phpstan-')) {
-                    return null;
-                }
-
-                $hasChanged = true;
-                return PhpDocNodeTraverser::NODE_REMOVE;
+            if (! $node instanceof PhpDocTagNode) {
+                return null;
             }
 
-            if (! $node instanceof $typeToRemove) {
+            if (! $node->value instanceof $typeToRemove) {
+                return null;
+            }
+
+            // keep special annotation for tools
+            if (str_starts_with($node->name, '@psalm-')) {
+                return null;
+            }
+
+            if (str_starts_with($node->name, '@phpstan-')) {
+                return null;
+            }
+
+            if ($name !== null && $node->value instanceof VarTagValueNode && $node->value->variableName !== '$' . ltrim($name, '$')) {
                 return null;
             }
 
