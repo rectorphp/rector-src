@@ -9,6 +9,7 @@ class RemoveUnusedVarDocblockKey
         $items = [];
         /**
          * @var int $key
+         * @var string $value
          */
         foreach ($items as $key => $value) {
             $result = $value;
@@ -27,6 +28,9 @@ class RemoveUnusedVarDocblockKey
     public function run()
     {
         $items = [];
+        /**
+         * @var string $value
+         */
         foreach ($items as $value) {
             $result = $value;
         }
