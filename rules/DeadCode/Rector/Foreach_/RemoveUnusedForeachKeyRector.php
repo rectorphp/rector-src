@@ -104,7 +104,7 @@ CODE_SAMPLE
             }
 
             $varTagValues = $phpDocInfo->getPhpDocNode()->getVarTagValues();
-            foreach ($varTagValues as $key => $varTagValue) {
+            foreach ($varTagValues as $varTagValue) {
                 $variableName = $varTagValue->variableName;
                 if ($varTagValue->variableName === '$' . $keyVarName) {
                     $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
