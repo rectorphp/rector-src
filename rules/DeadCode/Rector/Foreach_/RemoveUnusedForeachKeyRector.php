@@ -8,6 +8,10 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\NodeFinder;
+use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Rector\AbstractRector;
@@ -21,7 +25,9 @@ final class RemoveUnusedForeachKeyRector extends AbstractRector
 {
     public function __construct(
         private readonly NodeFinder $nodeFinder,
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater
     ) {
     }
 
@@ -84,12 +90,27 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, (string) $this->getName($keyVar))) {
+            $keyVarName = (string) $this->getName($keyVar);
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $keyVarName)) {
                 continue;
             }
 
             $stmt->keyVar = null;
             $hasChanged = true;
+
+            $phpDocInfo = $this->phpDocInfoFactory->createFromNode($stmt);
+            if (! $phpDocInfo instanceof PhpDocInfo) {
+                continue;
+            }
+
+            $varTagValues = $phpDocInfo->getPhpDocNode()->getVarTagValues();
+            foreach ($varTagValues as $varTagValue) {
+                $variableName = $varTagValue->variableName;
+                if ($varTagValue->variableName === '$' . $keyVarName) {
+                    $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($stmt);
+                }
+            }
         }
 
         if ($hasChanged) {
