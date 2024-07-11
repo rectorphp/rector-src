@@ -45,6 +45,8 @@ final readonly class CallTypesResolver
             }
 
             foreach ($call->args as $position => $arg) {
+                // there is first class callable usage, or argument unpack, or named arg
+                // simply returns array marks as unknown as can be anything and in any position
                 if (! $arg instanceof Arg || $arg->unpack || $arg->name instanceof Identifier) {
                     return [];
                 }
