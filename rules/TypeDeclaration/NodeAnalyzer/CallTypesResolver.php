@@ -16,7 +16,6 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -32,7 +31,7 @@ final readonly class CallTypesResolver
     }
 
     /**
-     * @param MethodCall[]|StaticCall[]|ArrayCallable[] $calls
+     * @param MethodCall[]|StaticCall[] $calls
      * @return array<int, Type>
      */
     public function resolveStrictTypesFromCalls(array $calls): array
@@ -40,10 +39,6 @@ final readonly class CallTypesResolver
         $staticTypesByArgumentPosition = [];
 
         foreach ($calls as $call) {
-            if (! $call instanceof StaticCall && ! $call instanceof MethodCall) {
-                continue;
-            }
-
             foreach ($call->args as $position => $arg) {
                 // there is first class callable usage, or argument unpack, or named arg
                 // simply returns array marks as unknown as can be anything and in any position
