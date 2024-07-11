@@ -27,7 +27,7 @@ final readonly class CallTypesResolver
         private NodeTypeResolver $nodeTypeResolver,
         private TypeFactory $typeFactory,
         private ReflectionProvider $reflectionProvider,
-        private TypeComparator $typeComparator,
+        private TypeComparator $typeComparator
     ) {
     }
 
