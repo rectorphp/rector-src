@@ -15,6 +15,7 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -26,7 +27,8 @@ final readonly class CallTypesResolver
         private NodeTypeResolver $nodeTypeResolver,
         private TypeFactory $typeFactory,
         private ReflectionProvider $reflectionProvider,
-        private TypeComparator $typeComparator
+        private TypeComparator $typeComparator,
+        private ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -41,6 +43,10 @@ final readonly class CallTypesResolver
         foreach ($calls as $call) {
             if (! $call instanceof StaticCall && ! $call instanceof MethodCall) {
                 continue;
+            }
+
+            if ($this->argsAnalyzer->hasNamedArg($call->args)) {
+                return [];
             }
 
             foreach ($call->args as $position => $arg) {
