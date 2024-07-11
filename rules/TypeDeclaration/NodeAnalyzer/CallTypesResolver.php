@@ -45,11 +45,7 @@ final readonly class CallTypesResolver
             }
 
             foreach ($call->args as $position => $arg) {
-                if (! $arg instanceof Arg) {
-                    continue;
-                }
-
-                if ($arg->unpack || $arg->name instanceof Identifier) {
+                if (! $arg instanceof Arg || $arg->unpack || $arg->name instanceof Identifier) {
                     return [];
                 }
 
