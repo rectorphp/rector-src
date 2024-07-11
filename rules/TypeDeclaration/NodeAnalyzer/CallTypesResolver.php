@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\NodeAnalyzer;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NullType;
@@ -15,7 +16,6 @@ use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\NodeCollector\ValueObject\ArrayCallable;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -28,7 +28,6 @@ final readonly class CallTypesResolver
         private TypeFactory $typeFactory,
         private ReflectionProvider $reflectionProvider,
         private TypeComparator $typeComparator,
-        private ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -45,17 +44,13 @@ final readonly class CallTypesResolver
                 continue;
             }
 
-            if ($this->argsAnalyzer->hasNamedArg($call->args)) {
-                return [];
-            }
-
             foreach ($call->args as $position => $arg) {
                 if (! $arg instanceof Arg) {
                     continue;
                 }
 
-                if ($arg->unpack) {
-                    continue;
+                if ($arg->unpack || $arg->name instanceof Identifier) {
+                    return [];
                 }
 
                 $staticTypesByArgumentPosition[$position][] = $this->resolveStrictArgValueType($arg);
