@@ -292,7 +292,7 @@ final readonly class AnonymousFunctionFactory
             return null;
         }
 
-        return $this->nodeFactory->createReprintedExpr($paramDefaultExpr);
+        return $this->nodeFactory->createReprintedNode($paramDefaultExpr);
     }
 
     /**
