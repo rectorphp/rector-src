@@ -273,7 +273,10 @@ final class PhpDocInfo
                     return null;
                 }
 
-                if ($name !== null && $node->value instanceof VarTagValueNode && $node->value->variableName !== '$' . ltrim($name, '$')) {
+                if ($name !== null && $node->value instanceof VarTagValueNode && $node->value->variableName !== '$' . ltrim(
+                    $name,
+                    '$'
+                )) {
                     return null;
                 }
 

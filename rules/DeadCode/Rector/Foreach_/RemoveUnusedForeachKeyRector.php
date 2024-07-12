@@ -103,7 +103,8 @@ CODE_SAMPLE
                 continue;
             }
 
-            $varTagValues = $phpDocInfo->getPhpDocNode()->getVarTagValues();
+            $varTagValues = $phpDocInfo->getPhpDocNode()
+                ->getVarTagValues();
             foreach ($varTagValues as $varTagValue) {
                 $variableName = $varTagValue->variableName;
                 if ($varTagValue->variableName === '$' . $keyVarName) {
