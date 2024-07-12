@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\Printer;
 
-use TypeError;
-use PhpParser\Internal\TokenStream;
 use Nette\Utils\Strings;
 use PhpParser\Comment;
 use PhpParser\Node;

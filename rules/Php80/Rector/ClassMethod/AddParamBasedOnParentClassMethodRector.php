@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
@@ -258,6 +259,12 @@ CODE_SAMPLE
 
         $paramType = $param->type;
         $paramType->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+
+        // this is needed to avoid reprint of invalid tokens
+        // @see https://github.com/rectorphp/rector/issues/8712
+        if ($paramType instanceof NullableType) {
+            $paramType->type->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+        }
 
         return $paramType;
     }
