@@ -213,7 +213,7 @@ CODE_SAMPLE
                 throw new ShouldNotHappenException('Previous position does not have default value');
             }
 
-            $node->args[$index] = new Arg($this->nodeFactory->createReprintedExpr($param->default));
+            $node->args[$index] = new Arg($this->nodeFactory->createReprintedNode($param->default));
         }
     }
 
