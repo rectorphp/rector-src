@@ -138,22 +138,7 @@ final class BetterStandardPrinter extends Standard
             $node = $node->getExpr();
         }
 
-        try {
-            $content = parent::p($node, $parentFormatPreserved);
-        } catch (TypeError $typeError) {
-            if ($typeError->getMessage() === TokenStream::class . '::getIndentationBefore(): Return value must be of type int, null returned') {
-                $originalNode = $node->getAttribute(AttributeKey::ORIGINAL_NODE);
-                if (! $originalNode instanceof Node) {
-                    throw $typeError;
-                }
-
-                // use $this->p() instead of parent::p() to ensure this override functionality
-                // from this method is still executed
-                return $this->p($originalNode, $parentFormatPreserved);
-            }
-
-            throw $typeError;
-        }
+        $content = parent::p($node, $parentFormatPreserved);
 
         return $node->getAttribute(AttributeKey::WRAPPED_IN_PARENTHESES) === true
             ? ('(' . $content . ')')
