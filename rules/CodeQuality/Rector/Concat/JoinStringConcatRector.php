@@ -89,7 +89,7 @@ CODE_SAMPLE
         $leftValue = $leftString->value;
         $rightValue = $rightString->value;
 
-        if ($leftValue === "\n" || $rightValue === "\n") {
+        if (str_contains($leftValue, "\n") || str_contains($rightValue, "\n")) {
             return null;
         }
 
