@@ -106,21 +106,8 @@ final readonly class ReflectionResolver
                 return $classReflection;
             }
 
-            $nativeReflection = $classReflection->getNativeReflection();
-            $properties = $nativeReflection->getProperties();
-
-            foreach ($properties as $property) {
-                if ($property->getName() !== $propertyName) {
-                    continue;
-                }
-
-                if ($property->getDeclaringClass()->getName() === $className) {
-                    return $classReflection;
-                }
-
-                if ($this->reflectionProvider->hasClass($property->getDeclaringClass()->getName())) {
-                    return $this->reflectionProvider->getClass($property->getDeclaringClass()->getName());
-                }
+            if ($this->reflectionProvider->hasClass($property->getDeclaringClass()->getName())) {
+                return $this->reflectionProvider->getClass($property->getDeclaringClass()->getName());
             }
 
             return $classReflection;
@@ -136,17 +123,8 @@ final readonly class ReflectionResolver
             return $classReflection;
         }
 
-        $nativeReflection = $classReflection->getNativeReflection();
-        $methods = $nativeReflection->getMethods();
-
-        foreach ($methods as $method) {
-            if ($method->getName() !== $methodName) {
-                continue;
-            }
-
-            if ($this->reflectionProvider->hasClass($method->getDeclaringClass()->getName())) {
-                return $this->reflectionProvider->getClass($method->getDeclaringClass()->getName());
-            }
+        if ($this->reflectionProvider->hasClass($extendedMethodReflection->getDeclaringClass()->getName())) {
+            return $this->reflectionProvider->getClass($extendedMethodReflection->getDeclaringClass()->getName());
         }
 
         return $classReflection;
