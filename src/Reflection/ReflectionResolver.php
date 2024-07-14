@@ -108,8 +108,6 @@ final readonly class ReflectionResolver
 
             $nativeReflection = $classReflection->getNativeReflection();
             $properties = $nativeReflection->getProperties();
-            // no need to lookup properties on interfaces
-            $ancestors = $classReflection->getParents();
 
             foreach ($properties as $property) {
                 if ($property->getName() !== $propertyName) {
@@ -120,10 +118,8 @@ final readonly class ReflectionResolver
                     return $classReflection;
                 }
 
-                foreach ($ancestors as $ancestor) {
-                    if ($ancestor->hasNativeProperty($propertyName)) {
-                        return $ancestor;
-                    }
+                if ($this->reflectionProvider->hasClass($property->getDeclaringClass()->getName())) {
+                    return $this->reflectionProvider->getClass($property->getDeclaringClass()->getName());
                 }
             }
 
@@ -142,21 +138,14 @@ final readonly class ReflectionResolver
 
         $nativeReflection = $classReflection->getNativeReflection();
         $methods = $nativeReflection->getMethods();
-        $ancestors = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
 
         foreach ($methods as $method) {
             if ($method->getName() !== $methodName) {
                 continue;
             }
 
-            if ($method->getDeclaringClass()->getName() === $className) {
-                return $classReflection;
-            }
-
-            foreach ($ancestors as $ancestor) {
-                if ($ancestor->hasNativeMethod($methodName)) {
-                    return $ancestor;
-                }
+            if ($this->reflectionProvider->hasClass($method->getDeclaringClass()->getName())) {
+                return $this->reflectionProvider->getClass($method->getDeclaringClass()->getName());
             }
         }
 
