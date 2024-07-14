@@ -106,13 +106,23 @@ final readonly class ReflectionResolver
                 return $classReflection;
             }
 
-            foreach ($classReflection->getAncestors() as $ancestor) {
-                if ($ancestor === $classReflection) {
+            $nativeReflection = $classReflection->getNativeReflection();
+            $properties = $nativeReflection->getProperties();
+            $ancestors = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
+
+            foreach ($properties as $property) {
+                if ($property->getName() !== $propertyName) {
                     continue;
                 }
 
-                if ($ancestor->hasNativeProperty($propertyName)) {
-                    return $ancestor;
+                if ($property->getDeclaringClass()->getName() === $className) {
+                    return $classReflection;
+                }
+
+                foreach ($ancestors as $ancestor) {
+                    if ($ancestor->hasNativeProperty($propertyName)) {
+                        return $ancestor;
+                    }
                 }
             }
 
@@ -129,13 +139,23 @@ final readonly class ReflectionResolver
             return $classReflection;
         }
 
-        foreach ($classReflection->getAncestors() as $ancestor) {
-            if ($ancestor === $classReflection) {
+        $nativeReflection = $classReflection->getNativeReflection();
+        $methods = $nativeReflection->getMethods();
+        $ancestors = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
+
+        foreach ($methods as $method) {
+            if ($method->getName() !== $methodName) {
                 continue;
             }
 
-            if ($ancestor->hasNativeMethod($methodName)) {
-                return $ancestor;
+            if ($method->getDeclaringClass()->getName() === $className) {
+                return $classReflection;
+            }
+
+            foreach ($ancestors as $ancestor) {
+                if ($ancestor->hasNativeMethod($methodName)) {
+                    return $ancestor;
+                }
             }
         }
 
