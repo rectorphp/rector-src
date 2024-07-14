@@ -108,7 +108,8 @@ final readonly class ReflectionResolver
 
             $nativeReflection = $classReflection->getNativeReflection();
             $properties = $nativeReflection->getProperties();
-            $ancestors = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
+            // no need to lookup properties on interfaces
+            $ancestors = $classReflection->getParents();
 
             foreach ($properties as $property) {
                 if ($property->getName() !== $propertyName) {
