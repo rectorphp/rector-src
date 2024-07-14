@@ -128,9 +128,15 @@ CODE_SAMPLE
         $classMethodName = $this->getName($classMethod);
         $shouldSkip = false;
 
-        $this->traverseNodesWithCallable($class->getMethods(), function (Node $node) use (&$shouldSkip, $classMethodName): int|null {
+        $this->traverseNodesWithCallable($class->getMethods(), function (Node $node) use (
+            &$shouldSkip,
+            $classMethodName
+        ): int|null {
             if (($node instanceof Closure || $node instanceof ArrowFunction) && $node->static) {
-                $this->traverseNodesWithCallable($node->getStmts(), function (Node $subNode) use (&$shouldSkip, $classMethodName): ?int {
+                $this->traverseNodesWithCallable($node->getStmts(), function (Node $subNode) use (
+                    &$shouldSkip,
+                    $classMethodName
+                ): ?int {
                     if (! $subNode instanceof StaticCall) {
                         return null;
                     }
@@ -161,7 +167,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->traverseNodesWithCallable($class->getMethods(), function (Node $node) use ($classMethodName): ?MethodCall {
+        $this->traverseNodesWithCallable($class->getMethods(), function (Node $node) use (
+            $classMethodName
+        ): ?MethodCall {
             if (! $node instanceof StaticCall) {
                 return null;
             }
