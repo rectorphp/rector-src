@@ -339,6 +339,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if ($param->variadic) {
+                continue;
+            }
+
             $paramTypes = [];
             foreach ($dataProviderNodes as $dataProviderNode) {
                 $paramTypes[] = $this->inferParam($class, $parameterPosition, $dataProviderNode);
