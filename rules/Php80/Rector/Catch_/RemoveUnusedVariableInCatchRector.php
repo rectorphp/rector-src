@@ -8,7 +8,9 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
+use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -21,7 +23,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer
     ) {
     }
 
@@ -96,7 +100,15 @@ CODE_SAMPLE
                     continue;
                 }
 
-                // in next stmt, check start from key + 1
+                $isFoundInCatchStmts = (bool) $this->betterNodeFinder->findFirst(
+                    $stmts,
+                    fn (Node $subNode): bool => $this->exprUsedInNodeAnalyzer->isUsed($subNode, $caughtVar)
+                );
+
+                if ($isFoundInCatchStmts) {
+                    continue;
+                }
+
                 if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $variableName)) {
                     continue;
                 }
