@@ -91,11 +91,12 @@ CODE_SAMPLE
                 /** @var string $variableName */
                 $variableName = $this->getName($caughtVar);
 
-                $isVariableUsed = (bool) $this->betterNodeFinder->findVariableOfName($catch->stmts, $variableName);
-                if ($isVariableUsed) {
+                // in catch stmts, check start from 0 until end
+                if ($this->stmtsManipulator->isVariableUsedInNextStmt($catch, 0, $variableName)) {
                     continue;
                 }
 
+                // in next stmt, check start from key + 1
                 if ($this->stmtsManipulator->isVariableUsedInNextStmt($node, $key + 1, $variableName)) {
                     continue;
                 }
