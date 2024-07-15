@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\CodingStyle\Rector\Use_;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TraitUse;
@@ -126,7 +127,10 @@ CODE_SAMPLE
             $adaptation = [];
 
             foreach ($traitUse->adaptations as $traitAdaptation) {
-                if ($traitAdaptation instanceof Alias && $traitAdaptation->trait->toString() === $singleTraitUse->toString()) {
+                if ($traitAdaptation instanceof Alias
+                    && $traitAdaptation->trait
+                    && $traitAdaptation->trait instanceof Name
+                    && $traitAdaptation->trait->toString() === $singleTraitUse->toString()) {
                     $adaptation[] = $traitAdaptation;
                 }
             }
