@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\TryCatch;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\StmtsManipulator;
+use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -21,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveUnusedVariableInCatchRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly StmtsManipulator $stmtsManipulator
+        private readonly StmtsManipulator $stmtsManipulator,
+        private readonly BetterNodeFinder $betterNodeFinder
     ) {
     }
 
