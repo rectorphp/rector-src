@@ -84,6 +84,11 @@ final readonly class RegexMatcher
 
     private function matchConcat(Concat $concat): ?Concat
     {
+        // cause parse error
+        if (! $concat->left instanceof Concat) {
+            return null;
+        }
+
         $lastItem = $concat->right;
         if (! $lastItem instanceof String_) {
             return null;
