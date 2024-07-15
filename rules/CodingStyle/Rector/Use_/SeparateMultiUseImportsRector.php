@@ -122,7 +122,7 @@ CODE_SAMPLE
         }
 
         $traitUses = [];
-        foreach ($traitUse->traits as $key => $singleTraitUse) {
+        foreach ($traitUse->traits as $singleTraitUse) {
             $adaptation = [];
 
             foreach ($traitUse->adaptations as $traitAdaptation) {
