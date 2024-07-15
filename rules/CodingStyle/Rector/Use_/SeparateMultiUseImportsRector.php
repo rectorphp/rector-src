@@ -121,8 +121,8 @@ CODE_SAMPLE
         }
 
         $traitUses = [];
-        foreach ($traitUse->traits as $singleTraitUse) {
-            $traitUses[] = new TraitUse([$singleTraitUse]);
+        foreach ($traitUse->traits as $key => $singleTraitUse) {
+            $traitUses[] = new TraitUse([$singleTraitUse], isset($traitUse->adaptations[$key]) ? [$traitUse->adaptations[$key]]: []);
         }
 
         return $traitUses;

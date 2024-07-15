@@ -6,5 +6,8 @@ namespace Rector\Tests\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector\Sou
 
 trait FirstTrait
 {
-
+    public function exec(): string
+    {
+        return 'foo';
+    }
 }

@@ -6,5 +6,8 @@ namespace Rector\Tests\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector\Sou
 
 trait SecondTrait
 {
-
+    public function exec(): string
+    {
+        return 'bar';
+    }
 }
