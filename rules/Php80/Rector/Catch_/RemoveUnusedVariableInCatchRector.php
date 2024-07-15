@@ -89,8 +89,10 @@ CODE_SAMPLE
                 /** @var string $variableName */
                 $variableName = $this->getName($caughtVar);
 
+                $stmts = $catch->stmts;
+
                 // in catch stmts, check start from 0 until end
-                if ($this->stmtsManipulator->isVariableUsedInNextStmt($catch, 0, $variableName)) {
+                if ($this->stmtsManipulator->isVariableUsedInNextStmt($stmts, 0, $variableName)) {
                     continue;
                 }
 
