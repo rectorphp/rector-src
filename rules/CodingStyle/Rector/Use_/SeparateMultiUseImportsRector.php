@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TraitUse;
+use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 use PhpParser\Node\Stmt\Use_;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\Rector\AbstractRector;
@@ -122,7 +123,15 @@ CODE_SAMPLE
 
         $traitUses = [];
         foreach ($traitUse->traits as $key => $singleTraitUse) {
-            $traitUses[] = new TraitUse([$singleTraitUse], isset($traitUse->adaptations[$key]) ? [$traitUse->adaptations[$key]]: []);
+            $adaptation = [];
+
+            foreach ($traitUse->adaptations as $traitAdaptation) {
+                if ($traitAdaptation instanceof Alias && $traitAdaptation->trait->toString() === $singleTraitUse->toString()) {
+                    $adaptation[] = $traitAdaptation;
+                }
+            }
+
+            $traitUses[] = new TraitUse([$singleTraitUse], $adaptation);
         }
 
         return $traitUses;
