@@ -199,6 +199,9 @@ CODE_SAMPLE
                 continue;
             }
 
+            // todo
+            // 1. verify phpversion provider
+            // 2. verify nullable + other type
             if (count($paramTypes) === 1) {
                 $this->mirrorParamType($param, $paramTypes[0]);
             } else {
