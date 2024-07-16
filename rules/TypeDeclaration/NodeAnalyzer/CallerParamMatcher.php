@@ -57,6 +57,10 @@ final readonly class CallerParamMatcher
             return $callParam->type;
         }
 
+        if (! $callParam->type instanceof Node) {
+            return null;
+        }
+
         $default = $param->default ?? $callParam->default;
         if (! $default instanceof Expr) {
             return null;
