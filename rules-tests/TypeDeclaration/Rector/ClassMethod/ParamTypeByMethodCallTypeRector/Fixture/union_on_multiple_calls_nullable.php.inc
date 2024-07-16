@@ -44,7 +44,7 @@ final class UnionOnMultipleCallsNullable
     public function hashSet2(string $key, array $value): void {
     }
 
-    public function set(string $type, string $key, null|array|string $value): void {
+    public function set(string $type, string $key, array|null|string $value): void {
     	switch ($type) {
             case 'hash':
                 return $this->hashSet($key, $value);

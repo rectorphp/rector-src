@@ -5,21 +5,19 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
-use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\UnionType;
 use PHPStan\Analyser\Scope;
-use Rector\NodeTypeResolver\Node\AttributeKey;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\Guard\ParamTypeAddGuard;
 use Rector\TypeDeclaration\NodeAnalyzer\CallerParamMatcher;
 use Rector\VendorLocker\ParentClassMethodTypeOverrideGuard;
@@ -35,7 +33,10 @@ final class ParamTypeByMethodCallTypeRector extends AbstractScopeAwareRector
         private readonly CallerParamMatcher $callerParamMatcher,
         private readonly ParentClassMethodTypeOverrideGuard $parentClassMethodTypeOverrideGuard,
         private readonly ParamTypeAddGuard $paramTypeAddGuard,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly PhpParserNodeMapper $phpParserNodeMapper,
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly TypeFactory $typeFactory
     ) {
     }
 
@@ -138,25 +139,6 @@ CODE_SAMPLE
         return $this->parentClassMethodTypeOverrideGuard->hasParentClassMethod($classMethod);
     }
 
-    private function mirrorParamType(
-        Param $decoratedParam,
-        Identifier | Name | NullableType | UnionType | ComplexType $paramType
-    ): void {
-        // mimic type
-        $newParamType = $paramType;
-
-        $this->traverseNodesWithCallable(
-            $paramType,
-            static function (Node $node): null {
-                // original node has to removed to avoid tokens crashing from origin positions
-                $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-                return null;
-            }
-        );
-
-        $decoratedParam->type = $newParamType;
-    }
-
     private function shouldSkipParam(Param $param, ClassMethod $classMethod): bool
     {
         // already has type, skip
@@ -191,7 +173,7 @@ CODE_SAMPLE
                     break;
                 }
 
-                $paramTypes[] = $paramType;
+                $paramTypes[] = $this->phpParserNodeMapper->mapToPHPStanType($paramType);
                 $hasChanged = true;
             }
 
@@ -199,14 +181,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            // todo
-            // 1. verify phpversion provider
-            // 2. verify nullable + other type
-            if (count($paramTypes) === 1) {
-                $this->mirrorParamType($param, $paramTypes[0]);
-            } else {
-                $paramTypes = array_unique($paramTypes);
-                $this->mirrorParamType($param, new UnionType($paramTypes));
+            $type = $this->typeFactory->createMixedPassedOrUnionType($paramTypes);
+            $paramNodeType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
+
+            if ($paramNodeType instanceof Node) {
+                $param->type = $paramNodeType;
             }
         }
 
