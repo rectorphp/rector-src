@@ -146,7 +146,7 @@ CODE_SAMPLE
         $newParamType = $paramType;
 
         $this->traverseNodesWithCallable(
-            $newParamType,
+            $paramType,
             static function (Node $node): null {
                 // original node has to removed to avoid tokens crashing from origin positions
                 $node->setAttribute(AttributeKey::ORIGINAL_NODE, null);
@@ -183,14 +183,27 @@ CODE_SAMPLE
                 continue;
             }
 
+            $paramTypes = [];
             foreach ($callers as $caller) {
                 $paramType = $this->callerParamMatcher->matchCallParamType($caller, $param, $scope);
                 if ($paramType === null) {
-                    continue;
+                    $paramTypes = [];
+                    break;
                 }
 
-                $this->mirrorParamType($param, $paramType);
+                $paramTypes[] = $paramType;
                 $hasChanged = true;
+            }
+
+            if ($paramTypes === []) {
+                continue;
+            }
+
+            if (count($paramTypes) === 1) {
+                $this->mirrorParamType($param, $paramTypes[0]);
+            } else {
+                $paramTypes = array_unique($paramTypes);
+                $this->mirrorParamType($param, new UnionType($paramTypes));
             }
         }
 
