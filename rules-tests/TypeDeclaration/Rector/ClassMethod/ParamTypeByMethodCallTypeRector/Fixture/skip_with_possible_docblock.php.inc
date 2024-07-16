@@ -19,8 +19,6 @@ final class SkipWithPossibleDocblock
                 return $this->hashSet($key, $value);
             case 'value':
                 return $this->valueSet($key, $value);
-            case 'hash2':
-                return $this->hashSet2($key, $value);
             default:
                 throw new \Exception('ohno');
         }
