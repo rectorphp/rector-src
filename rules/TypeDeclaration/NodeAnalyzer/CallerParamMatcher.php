@@ -42,10 +42,12 @@ final readonly class CallerParamMatcher
         StaticCall | MethodCall | FuncCall $call,
         Param $param,
         Scope $scope
-    ): null | Identifier | Name | NullableType | UnionType | ComplexType {
+    ): null | Identifier | Name | NullableType | UnionType | ComplexType | StaticCall | MethodCall | FuncCall {
         $callParam = $this->matchCallParam($call, $param, $scope);
+
+        // just return caller, it means the caller is nothing to do with param
         if (! $callParam instanceof Param) {
-            return null;
+            return $call;
         }
 
         if (! $param->default instanceof Expr && ! $callParam->default instanceof Expr) {
