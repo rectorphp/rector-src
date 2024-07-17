@@ -175,7 +175,7 @@ CODE_SAMPLE
                 }
 
                 $paramType = $this->callerParamMatcher->matchCallParamType($param, $matchCallParam);
-                if ($paramType === null) {
+                if (! $paramType instanceof Node) {
                     $paramTypes = [];
                     break;
                 }

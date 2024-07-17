@@ -42,17 +42,17 @@ final readonly class CallerParamMatcher
         Param $param,
         Param $callParam
     ): null | Identifier | Name | NullableType | UnionType | ComplexType {
+        if (! $callParam->type instanceof Node) {
+            return null;
+        }
+
         if (! $param->default instanceof Expr && ! $callParam->default instanceof Expr) {
             // skip as mixed is not helpful and possibly requires more precise change elsewhere
-            if ($this->isCallParamMixed($callParam)) {
+            if ($this->isCallParamMixed($callParam->type)) {
                 return null;
             }
 
             return $callParam->type;
-        }
-
-        if (! $callParam->type instanceof Node) {
-            return null;
         }
 
         $default = $param->default ?? $callParam->default;
@@ -163,13 +163,9 @@ final readonly class CallerParamMatcher
         return null;
     }
 
-    private function isCallParamMixed(Param $param): bool
+    private function isCallParamMixed(Node $node): bool
     {
-        if (! $param->type instanceof Node) {
-            return false;
-        }
-
-        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);
         return $callParamType instanceof MixedType;
     }
 }
