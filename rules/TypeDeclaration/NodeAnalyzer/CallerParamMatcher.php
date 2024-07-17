@@ -39,28 +39,20 @@ final readonly class CallerParamMatcher
     }
 
     public function matchCallParamType(
-        StaticCall | MethodCall | FuncCall $call,
         Param $param,
-        Scope $scope
-    ): null | Identifier | Name | NullableType | UnionType | ComplexType | StaticCall | MethodCall | FuncCall {
-        $callParam = $this->matchCallParam($call, $param, $scope);
-
-        // just return caller, it means the caller is nothing to do with param
-        if (! $callParam instanceof Param) {
-            return $call;
+        Param $callParam
+    ): null | Identifier | Name | NullableType | UnionType | ComplexType {
+        if (! $callParam->type instanceof Node) {
+            return null;
         }
 
         if (! $param->default instanceof Expr && ! $callParam->default instanceof Expr) {
             // skip as mixed is not helpful and possibly requires more precise change elsewhere
-            if ($this->isCallParamMixed($callParam)) {
+            if ($this->isCallParamMixed($callParam->type)) {
                 return null;
             }
 
             return $callParam->type;
-        }
-
-        if (! $callParam->type instanceof Node) {
-            return null;
         }
 
         $default = $param->default ?? $callParam->default;
@@ -110,7 +102,7 @@ final readonly class CallerParamMatcher
         return $this->resolveParentMethodParam($scope, $methodName, $parentStaticCallArgPosition);
     }
 
-    private function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param, Scope $scope): ?Param
+    public function matchCallParam(StaticCall | MethodCall | FuncCall $call, Param $param, Scope $scope): ?Param
     {
         $callArgPosition = $this->matchCallArgPosition($call, $param);
         if ($callArgPosition === null) {
@@ -171,13 +163,9 @@ final readonly class CallerParamMatcher
         return null;
     }
 
-    private function isCallParamMixed(Param $param): bool
+    private function isCallParamMixed(Node $node): bool
     {
-        if (! $param->type instanceof Node) {
-            return false;
-        }
-
-        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
+        $callParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($node);
         return $callParamType instanceof MixedType;
     }
 }

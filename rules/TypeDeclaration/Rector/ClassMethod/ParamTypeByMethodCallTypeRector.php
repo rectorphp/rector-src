@@ -167,14 +167,15 @@ CODE_SAMPLE
 
             $paramTypes = [];
             foreach ($callers as $caller) {
-                $paramType = $this->callerParamMatcher->matchCallParamType($caller, $param, $scope);
+                $matchCallParam = $this->callerParamMatcher->matchCallParam($caller, $param, $scope);
 
                 // nothing to do with param, continue
-                if ($paramType === $caller) {
+                if (! $matchCallParam instanceof Param) {
                     continue;
                 }
 
-                if ($paramType === null) {
+                $paramType = $this->callerParamMatcher->matchCallParamType($param, $matchCallParam);
+                if (! $paramType instanceof Node) {
                     $paramTypes = [];
                     break;
                 }
