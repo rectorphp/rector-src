@@ -38,7 +38,7 @@ final readonly class PureFunctionDetector
             return false;
         }
 
-        // yes() and maybe() can has side effect
+        // yes() and maybe() may have side effect
         return $functionReflection->hasSideEffects()->no();
     }
 }
