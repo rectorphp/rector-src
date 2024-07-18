@@ -122,7 +122,10 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        /** @var ClassReflection $classReflection */
+        if (!$this->reflectionProvider->hasClass($className)) {
+            return new MixedType();
+        }
+
         $classReflection = $this->reflectionProvider->getClass($className);
         $parentClassReflection = $classReflection->getParentClass();
 
@@ -141,7 +144,10 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        /** @var ClassReflection $classReflection */
+        if (!$this->reflectionProvider->hasClass($className)) {
+            return new MixedType();
+        }
+
         $classReflection = $this->reflectionProvider->getClass($className);
         return new StaticType($classReflection);
     }
