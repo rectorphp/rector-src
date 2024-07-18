@@ -157,6 +157,10 @@ CODE_SAMPLE
             return new StaticType($classReflection);
         }
 
+        if (!$this->reflectionProvider->hasClass($className)) {
+            return null;
+        }
+        
         $classReflection = $this->reflectionProvider->getClass($className);
         return new ObjectType($className, null, $classReflection);
     }
