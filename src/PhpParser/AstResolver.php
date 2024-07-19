@@ -336,7 +336,7 @@ final class AstResolver
             $traits,
             function (Node $node) use ($methodName): bool {
                 if (! $node instanceof ClassMethod) {
-                    return null;
+                    return false;
                 }
 
                 return $this->nodeNameResolver->isName($node, $methodName);
