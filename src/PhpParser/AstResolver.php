@@ -383,6 +383,8 @@ final class AstResolver
                         return true;
                     }
                 }
+
+                return false;
             }
         );
 
