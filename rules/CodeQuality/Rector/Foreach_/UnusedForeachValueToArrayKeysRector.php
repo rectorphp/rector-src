@@ -96,6 +96,10 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! $this->isArrayType($stmt->expr)) {
+                continue;
+            }
+
             // special case of nested array items
             if ($stmt->valueVar instanceof Array_) {
                 $valueArray = $this->refactorArrayForeachValue($stmt->valueVar, $stmt);
@@ -113,23 +117,19 @@ CODE_SAMPLE
                 continue;
             }
 
-            if ($stmt->valueVar instanceof Variable) {
-                if ($this->isVariableUsedInForeach($stmt->valueVar, $stmt)) {
-                    continue;
-                }
-
-                if ($this->stmtsManipulator->isVariableUsedInNextStmt(
-                    $stmts,
-                    $key + 1,
-                    (string) $this->getName($stmt->valueVar)
-                )) {
-                    continue;
-                }
-            } else {
+            if (! $stmt->valueVar instanceof Variable) {
                 continue;
             }
 
-            if (! $this->isArrayType($stmt->expr)) {
+            if ($this->isVariableUsedInForeach($stmt->valueVar, $stmt)) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt(
+                $stmts,
+                $key + 1,
+                (string) $this->getName($stmt->valueVar)
+            )) {
                 continue;
             }
 
