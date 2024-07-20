@@ -11,7 +11,9 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\Type\ObjectType;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
+use Rector\NodeManipulator\StmtsManipulator;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -24,7 +26,8 @@ final class UnusedForeachValueToArrayKeysRector extends AbstractRector
 {
     public function __construct(
         private readonly ExprUsedInNodeAnalyzer $exprUsedInNodeAnalyzer,
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly StmtsManipulator $stmtsManipulator
     ) {
     }
 
@@ -69,42 +72,74 @@ CODE_SAMPLE
      */
     public function getNodeTypes(): array
     {
-        return [Foreach_::class];
+        return [StmtsAwareInterface::class];
     }
 
     /**
-     * @param Foreach_ $node
+     * @param StmtsAwareInterface $node
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $node->keyVar instanceof Expr) {
+        $stmts = $node->stmts;
+
+        if ($stmts === null) {
             return null;
         }
 
-        // special case of nested array items
-        if ($node->valueVar instanceof Array_) {
-            $valueArray = $this->refactorArrayForeachValue($node->valueVar, $node);
-            if ($valueArray instanceof Array_) {
-                $node->valueVar = $valueArray;
+        $hasChanged = false;
+        foreach ($stmts as $key => $stmt) {
+            if (! $stmt instanceof Foreach_) {
+                continue;
             }
 
-            // not sure what does this mean :)
-            if ($node->valueVar->items !== []) {
-                return null;
+            if (! $stmt->keyVar instanceof Expr) {
+                continue;
             }
-        } elseif ($node->valueVar instanceof Variable) {
-            if ($this->isVariableUsedInForeach($node->valueVar, $node)) {
-                return null;
+
+            if (! $this->isArrayType($stmt->expr)) {
+                continue;
             }
-        } else {
-            return null;
+
+            // special case of nested array items
+            if ($stmt->valueVar instanceof Array_) {
+                $valueArray = $this->refactorArrayForeachValue($stmt->valueVar, $stmt);
+                if ($valueArray instanceof Array_) {
+                    $stmt->valueVar = $valueArray;
+                }
+
+                // not sure what does this mean :)
+                if ($stmt->valueVar->items !== []) {
+                    continue;
+                }
+
+                $hasChanged = true;
+                $this->removeForeachValueAndUseArrayKeys($stmt, $stmt->keyVar);
+                continue;
+            }
+
+            if (! $stmt->valueVar instanceof Variable) {
+                continue;
+            }
+
+            if ($this->isVariableUsedInForeach($stmt->valueVar, $stmt)) {
+                continue;
+            }
+
+            if ($this->stmtsManipulator->isVariableUsedInNextStmt(
+                $stmts,
+                $key + 1,
+                (string) $this->getName($stmt->valueVar)
+            )) {
+                continue;
+            }
+
+            $hasChanged = true;
+            $this->removeForeachValueAndUseArrayKeys($stmt, $stmt->keyVar);
         }
 
-        if (! $this->isArrayType($node->expr)) {
+        if (! $hasChanged) {
             return null;
         }
-
-        $this->removeForeachValueAndUseArrayKeys($node, $node->keyVar);
 
         return $node;
     }
