@@ -13,7 +13,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -123,7 +122,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return in_array(MockObject::class, $type->getObjectClassNames());
+        return in_array(self::MOCK_OBJECT_CLASS, $type->getObjectClassNames());
     }
 
     private function isMockObjectType(Type $returnType): bool
