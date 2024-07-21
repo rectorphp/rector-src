@@ -123,7 +123,7 @@ CODE_SAMPLE
             return false;
         }
 
-        return in_array(MockObject::class, $type->getObjectClassNames());
+        return in_array(self::MOCK_OBJECT_CLASS, $type->getObjectClassNames());
     }
 
     private function isMockObjectType(Type $returnType): bool
