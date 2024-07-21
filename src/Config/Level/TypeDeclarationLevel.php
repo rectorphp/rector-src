@@ -69,11 +69,11 @@ final class TypeDeclarationLevel
 
         ReturnTypeFromMockObjectRector::class,
         AddArrowFunctionReturnTypeRector::class,
-        ReturnTypeFromStrictConstantReturnRector::class,
+        BoolReturnTypeFromBooleanConstReturnsRector::class,
         ReturnTypeFromStrictNewArrayRector::class,
 
-        // scalar values
-        BoolReturnTypeFromBooleanConstReturnsRector::class,
+        // scalar and array from constant
+        ReturnTypeFromStrictConstantReturnRector::class,
         StringReturnTypeFromStrictScalarReturnsRector::class,
         NumericReturnTypeFromStrictScalarReturnsRector::class,
 
