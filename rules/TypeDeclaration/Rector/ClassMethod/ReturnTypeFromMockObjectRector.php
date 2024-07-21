@@ -13,11 +13,10 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use PHPUnit\Framework\TestCase;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\Rector\AbstractRector;
+use Rector\Rector\AbstractScopeAwareRector;
 use Rector\ValueObject\PhpVersionFeature;
+use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -25,15 +24,21 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector\ReturnTypeFromMockObjectRectorTest
  */
-final class ReturnTypeFromMockObjectRector extends AbstractRector implements MinPhpVersionInterface
+final class ReturnTypeFromMockObjectRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
 {
+    /**
+     * @var string
+     */
+    private const TESTCASE_CLASS = 'PHPUnit\Framework\TestCase';
+
     /**
      * @var string
      */
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
-        private readonly BetterNodeFinder $betterNodeFinder
+        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
     ) {
     }
 
@@ -75,14 +80,18 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactor(Node $node): ?Node
+    public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         // type is already known
         if ($node->returnType instanceof Node) {
             return null;
         }
 
-        if (! $this->isInsideTestCaseClass($node)) {
+        if (! $this->isInsideTestCaseClass($scope)) {
+            return null;
+        }
+
+        if ($this->classMethodReturnTypeOverrideGuard->shouldSkipClassMethod($node, $scope)) {
             return null;
         }
 
@@ -97,7 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->getType($soleReturn->expr);
+        $returnType = $this->nodeTypeResolver->getNativeType($soleReturn->expr);
         if (! $this->isMockObjectType($returnType)) {
             return null;
         }
@@ -134,19 +143,14 @@ CODE_SAMPLE
         return $this->isIntersectionWithMockObjectType($returnType);
     }
 
-    private function isInsideTestCaseClass(ClassMethod $classMethod): bool
+    private function isInsideTestCaseClass(Scope $scope): bool
     {
-        $scope = $classMethod->getAttribute(AttributeKey::SCOPE);
-        if (! $scope instanceof Scope) {
-            return false;
-        }
-
         $classReflection = $scope->getClassReflection();
         if (! $classReflection instanceof ClassReflection) {
             return false;
         }
 
         // is phpunit test case?
-        return $classReflection->isSubclassOf(TestCase::class);
+        return $classReflection->isSubclassOf(self::TESTCASE_CLASS);
     }
 }
