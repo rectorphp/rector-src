@@ -106,7 +106,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->nodeTypeResolver->getNativeType($soleReturn->expr);
+        $returnType = $scope->getType($soleReturn->expr);
         if (! $this->isMockObjectType($returnType)) {
             return null;
         }
