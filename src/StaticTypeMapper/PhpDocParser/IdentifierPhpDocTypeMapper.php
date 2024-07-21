@@ -122,7 +122,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        if (!$this->reflectionProvider->hasClass($className)) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return new MixedType();
         }
 
@@ -144,7 +144,7 @@ final readonly class IdentifierPhpDocTypeMapper implements PhpDocTypeMapperInter
             return new MixedType();
         }
 
-        if (!$this->reflectionProvider->hasClass($className)) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return new MixedType();
         }
 
