@@ -15,6 +15,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -38,7 +39,8 @@ final class ReturnTypeFromMockObjectRector extends AbstractScopeAwareRector impl
 
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
-        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard
+        private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
+        private readonly ReturnAnalyzer $returnAnalyzer
     ) {
     }
 
@@ -101,12 +103,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $soleReturn = $returns[0];
-        if (! $soleReturn->expr instanceof Expr) {
+        if (! $this->returnAnalyzer->hasOnlyReturnWithExpr($node, $returns)) {
             return null;
         }
 
-        $returnType = $this->getType($soleReturn->expr);
+        /** @var Expr $expr */
+        $expr = $returns[0]->expr;
+        $returnType = $this->nodeTypeResolver->getNativeType($expr);
+
         if (! $this->isMockObjectType($returnType)) {
             return null;
         }
