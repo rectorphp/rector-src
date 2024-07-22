@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
@@ -106,7 +107,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $returnType = $this->nodeTypeResolver->getNativeType($returns[0]->expr);
+        /** @var Expr $expr */
+        $expr = $returns[0]->expr;
+        $returnType = $this->nodeTypeResolver->getNativeType($expr);
+
         if (! $this->isMockObjectType($returnType)) {
             return null;
         }
