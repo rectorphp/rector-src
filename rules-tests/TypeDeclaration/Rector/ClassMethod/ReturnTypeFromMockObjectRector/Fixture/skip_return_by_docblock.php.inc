@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SkipReturnByDocblock extends TestCase
 {
-    public function test()
+    public function createSomeMock()
     {
         /** @var MockObject $x */
         return $x;

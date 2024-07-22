@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SkipPossibleVoid extends TestCase
 {
-    public function test()
+    public function createSomeMock()
     {
         if (rand(0, 1)) {
             return $this->createMock('SomeType');
