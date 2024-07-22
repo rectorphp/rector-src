@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SomeTestWithMock extends TestCase
 {
-    public function test()
+    public function createSomeMock()
     {
         return $this->createMock('SomeType');
     }
@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SomeTestWithMock extends TestCase
 {
-    public function test(): \PHPUnit\Framework\MockObject\MockObject
+    public function createSomeMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         return $this->createMock('SomeType');
     }

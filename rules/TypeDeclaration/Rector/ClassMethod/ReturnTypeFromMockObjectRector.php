@@ -51,7 +51,7 @@ final class ReturnTypeFromMockObjectRector extends AbstractScopeAwareRector impl
                 <<<'CODE_SAMPLE'
 class SomeTest extends TestCase
 {
-    public function test()
+    public function createSomeMock()
     {
         $someMock = $this->createMock(SomeClass::class);
         return $someMock;
@@ -62,7 +62,7 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 class SomeTest extends TestCase
 {
-    public function test(): \PHPUnit\Framework\MockObject\MockObject
+    public function createSomeMock(): \PHPUnit\Framework\MockObject\MockObject
     {
         $someMock = $this->createMock(SomeClass::class);
         return $someMock;

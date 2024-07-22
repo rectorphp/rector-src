@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SkipFilledType extends TestCase
 {
-    public function test(): MockObject
+    public function createSomeMock(): MockObject
     {
         return $this->createMock('SomeType');
     }
