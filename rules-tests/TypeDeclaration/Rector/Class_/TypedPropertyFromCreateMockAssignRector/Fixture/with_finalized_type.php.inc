@@ -1,10 +1,10 @@
 <?php
 
-namespace Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeFinalizedMockedClass;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeFinalizedMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
 class WithFinalizedType extends TestCase
 {
@@ -20,11 +20,11 @@ class WithFinalizedType extends TestCase
 -----
 <?php
 
-namespace Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeFinalizedMockedClass;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeFinalizedMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
 class WithFinalizedType extends TestCase
 {

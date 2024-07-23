@@ -1,9 +1,9 @@
 <?php
 
-namespace Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
 class SomeTest extends TestCase
 {
@@ -19,10 +19,10 @@ class SomeTest extends TestCase
 -----
 <?php
 
-namespace Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Fixture;
+namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Fixture;
 
 use PHPUnit\Framework\TestCase;
-use Utils\Rector\Tests\Rector\TypedPropertyFromAssignedMockRector\Source\SomeMockedClass;
+use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
 class SomeTest extends TestCase
 {

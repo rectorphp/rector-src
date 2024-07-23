@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Testing\PHPUnit\AbstractRectorTestCase;
 
@@ -15,7 +16,7 @@ final class TypedPropertyFromCreateMockAssignRectorTest extends AbstractRectorTe
         $this->doTestFile($filePath);
     }
 
-    public static function provideData(): \Iterator
+    public static function provideData(): Iterator
     {
         return self::yieldFilesFromDirectory(__DIR__ . '/Fixture');
     }
