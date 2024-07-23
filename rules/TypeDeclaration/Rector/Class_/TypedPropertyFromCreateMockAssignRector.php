@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Type\IntersectionType;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
-use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
+use Rector\Reflection\ReflectionResolver;
+use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -35,7 +37,9 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
-        private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -88,7 +92,9 @@ CODE_SAMPLE
             return null;
         }
 
+        $classReflection = null;
         $hasChanged = false;
+
         foreach ($node->getProperties() as $property) {
             // already typed
             if ($property->type instanceof Node) {
@@ -100,17 +106,35 @@ CODE_SAMPLE
                 continue;
             }
 
-            $type = $this->trustedClassMethodPropertyTypeInferer->inferProperty(
-                $node,
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            // ClassReflection not detected, early skip
+            if (! $classReflection instanceof ClassReflection) {
+                return null;
+            }
+
+            $type = $this->allAssignNodePropertyTypeInferer->inferProperty(
                 $property,
-                $setUpClassMethod
+                $classReflection,
+                $this->file
             );
 
-            if (! $this->isMockObjectType($type)) {
+            if (! $type instanceof Type) {
                 continue;
             }
 
-            $property->type = new FullyQualified(self::MOCK_OBJECT_CLASS);
+            $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
+            if (! $propertyType instanceof Node) {
+                continue;
+            }
+
+            if (! $this->isObjectType($propertyType, new ObjectType(self::MOCK_OBJECT_CLASS))) {
+                continue;
+            }
+
+            $property->type = $propertyType;
             $hasChanged = true;
         }
 
@@ -124,27 +148,5 @@ CODE_SAMPLE
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::TYPED_PROPERTIES;
-    }
-
-    private function isMockObjectType(Type $type): bool
-    {
-        if ($type instanceof ObjectType && $type->isInstanceOf(self::MOCK_OBJECT_CLASS)->yes()) {
-            return true;
-        }
-
-        return $this->isIntersectionWithMockObjectType($type);
-    }
-
-    private function isIntersectionWithMockObjectType(Type $type): bool
-    {
-        if (! $type instanceof IntersectionType) {
-            return false;
-        }
-
-        if (count($type->getTypes()) !== 2) {
-            return false;
-        }
-
-        return in_array(self::MOCK_OBJECT_CLASS, $type->getObjectClassNames());
     }
 }
