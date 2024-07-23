@@ -25,7 +25,7 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
+use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,7 +42,7 @@ final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRe
     private const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
 
     public function __construct(
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ValueResolver $valueResolver,
@@ -119,10 +119,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty(
+            $propertyName = (string) $this->getName($property);
+            $inferredType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
                 $property,
-                $classReflection,
-                $this->file
+                $propertyName,
+                $node
             );
             // has assigned with type
             if ($inferredType instanceof Type) {

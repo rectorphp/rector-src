@@ -25,6 +25,7 @@ use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeTypeAnalyzer\PropertyTypeDecorator;
+use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -53,7 +54,7 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
     private bool $inlinePublic = false;
 
     public function __construct(
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly PropertyTypeDecorator $propertyTypeDecorator,
         private readonly VarTagRemover $varTagRemover,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
@@ -124,7 +125,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
-        $classReflection = null;
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         foreach ($node->getProperties() as $property) {
             // non-private property can be anything with not inline public configured
@@ -132,22 +137,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
-            }
-
             if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, $this->inlinePublic)) {
                 continue;
             }
 
-            $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty(
+            $propertyName = (string) $this->getName($property);
+            $inferredType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
                 $property,
-                $classReflection,
-                $this->file
+                $propertyName,
+                $node
             );
             if (! $inferredType instanceof Type) {
                 continue;
