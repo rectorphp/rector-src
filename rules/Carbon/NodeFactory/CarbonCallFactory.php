@@ -33,6 +33,12 @@ final class CarbonCallFactory
      */
     private const PLUS_MONTH_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(month|months)#';
 
+    private const PLUS_HOUR_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
+
+    private const PLUS_MINUTE_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(minute|minuts)#';
+
+    private const PLUS_SECOND_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
+
     /**
      * @var string
      * @see https://regex101.com/r/dWRjk5/1
@@ -56,6 +62,12 @@ final class CarbonCallFactory
      * @see https://regex101.com/r/IvyT7w/1
      */
     private const MINUS_MONTH_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(month|months)#';
+
+    private const MINUS_HOUR_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
+
+    private const MINUS_MINUTE_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(minute|minutes)#';
+
+    private const MINUS_SECOND_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
 
     /**
      * @var string
