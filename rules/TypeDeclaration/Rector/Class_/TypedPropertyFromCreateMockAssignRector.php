@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
-use Rector\NodeManipulator\ClassMethodPropertyFetchManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
 use Rector\ValueObject\MethodName;
@@ -150,14 +146,5 @@ CODE_SAMPLE
         }
 
         return in_array(self::MOCK_OBJECT_CLASS, $type->getObjectClassNames());
-    }
-
-    private function resolveSingleAssignedExprType(Class_ $class, Property $property, ClassMethod $classMethod): Type
-    {
-        return $this->trustedClassMethodPropertyTypeInferer->inferProperty(
-            $class,
-            $property,
-            $classMethod
-        );
     }
 }
