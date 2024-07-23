@@ -9,12 +9,14 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\NodeManipulator\ClassMethodPropertyFetchManipulator;
 use Rector\Rector\AbstractRector;
+use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\TrustedClassMethodPropertyTypeInferer;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -37,7 +39,7 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
-        private readonly ClassMethodPropertyFetchManipulator $classMethodPropertyFetchManipulator
+        private readonly TrustedClassMethodPropertyTypeInferer $trustedClassMethodPropertyTypeInferer
     ) {
     }
 
@@ -97,19 +99,18 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyName = $this->getName($property);
-
             $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
             if (! $setUpClassMethod instanceof ClassMethod) {
                 continue;
             }
 
-            $assignedType = $this->resolveSingleAssignedExprType($setUpClassMethod, $propertyName);
-            if (! $assignedType instanceof Type) {
-                continue;
-            }
+            $type = $this->trustedClassMethodPropertyTypeInferer->inferProperty(
+                $node,
+                $property,
+                $setUpClassMethod
+            );
 
-            if (! $this->isMockObjectType($assignedType)) {
+            if (! $this->isMockObjectType($type)) {
                 continue;
             }
 
@@ -151,27 +152,12 @@ CODE_SAMPLE
         return in_array(self::MOCK_OBJECT_CLASS, $type->getObjectClassNames());
     }
 
-    private function resolveSingleAssignedExprType(ClassMethod $setUpClassMethod, string $propertyName): ?Type
+    private function resolveSingleAssignedExprType(Class_ $class, Property $property, ClassMethod $classMethod): Type
     {
-        $assignedExprs = $this->classMethodPropertyFetchManipulator->findAssignsToPropertyName(
-            $setUpClassMethod,
-            $propertyName
+        return $this->trustedClassMethodPropertyTypeInferer->inferProperty(
+            $class,
+            $property,
+            $classMethod
         );
-        if (count($assignedExprs) !== 1) {
-            return null;
-        }
-
-        $assignedExpr = $assignedExprs[0];
-        $exprType = $this->getType($assignedExpr);
-
-        // work around finalized class mock
-        if ($exprType instanceof NeverType && $assignedExpr instanceof MethodCall && $this->isName(
-            $assignedExpr->name,
-            'createMock'
-        )) {
-            return new ObjectType(self::MOCK_OBJECT_CLASS);
-        }
-
-        return $exprType;
     }
 }
