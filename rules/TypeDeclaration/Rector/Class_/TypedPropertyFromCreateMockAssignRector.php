@@ -126,6 +126,10 @@ CODE_SAMPLE
             }
 
             $propertyType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PROPERTY);
+            if (! $propertyType instanceof Node) {
+                continue;
+            }
+
             if (! $this->isObjectType($propertyType, new ObjectType(self::MOCK_OBJECT_CLASS))) {
                 continue;
             }
