@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -14,8 +14,8 @@ use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
-use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -39,7 +39,8 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -101,8 +102,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
-            if (! $setUpClassMethod instanceof ClassMethod) {
+            if (count($property->props) !== 1) {
                 continue;
             }
 
@@ -132,6 +132,15 @@ CODE_SAMPLE
 
             if (! $this->isObjectType($propertyType, new ObjectType(self::MOCK_OBJECT_CLASS))) {
                 continue;
+            }
+
+            $propertyName = (string) $this->getName($property);
+            if (! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
+                if (! $propertyType instanceof NullableType) {
+                    continue;
+                }
+
+                $property->props[0]->default = $this->nodeFactory->createNull();
             }
 
             $property->type = $propertyType;
