@@ -33,11 +33,23 @@ final class CarbonCallFactory
      */
     private const PLUS_MONTH_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(month|months)#';
 
+    private const PLUS_HOUR_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
+
+    private const PLUS_MINUTE_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(minute|minuts)#';
+
+    private const PLUS_SECOND_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
+
     /**
      * @var string
      * @see https://regex101.com/r/IvyT7w/1
      */
     private const MINUS_MONTH_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(month|months)#';
+
+    private const MINUS_HOUR_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
+
+    private const MINUS_MINUTE_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(minute|minutes)#';
+
+    private const MINUS_SECOND_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
 
     /**
      * @var array<self::*_REGEX, string>
@@ -47,6 +59,12 @@ final class CarbonCallFactory
         self::MINUS_DAY_COUNT_REGEX => 'subDays',
         self::PLUS_MONTH_COUNT_REGEX => 'addMonths',
         self::MINUS_MONTH_COUNT_REGEX => 'subMonths',
+        self::PLUS_HOUR_COUNT_REGEX => 'addHours',
+        self::MINUS_HOUR_COUNT_REGEX => 'subHours',
+        self::PLUS_MINUTE_COUNT_REGEX => 'addMinutes',
+        self::MINUS_MINUTE_COUNT_REGEX => 'subMinutes',
+        self::PLUS_SECOND_COUNT_REGEX => 'addSeconds',
+        self::MINUS_SECOND_COUNT_REGEX => 'subSeconds',
     ];
 
     public function createFromDateTimeString(
