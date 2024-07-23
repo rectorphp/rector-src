@@ -7,12 +7,10 @@ namespace Rector\TypeDeclaration\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
@@ -37,7 +35,6 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ConstructorAssignDetector $constructorAssignDetector
