@@ -140,13 +140,16 @@ CODE_SAMPLE
                 continue;
             }
 
-            $property->type = $propertyType;
-
             $propertyName = (string) $this->getName($property);
-            if ($propertyType instanceof NullableType && ! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
+            if (! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
+                if (! $propertyType instanceof NullableType) {
+                    continue;
+                }
+
                 $property->props[0]->default = $this->nodeFactory->createNull();
             }
 
+            $property->type = $propertyType;
             $hasChanged = true;
         }
 
