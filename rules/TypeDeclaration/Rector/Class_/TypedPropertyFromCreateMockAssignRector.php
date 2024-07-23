@@ -93,7 +93,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = null;
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
+
         $hasChanged = false;
 
         foreach ($node->getProperties() as $property) {
@@ -104,15 +108,6 @@ CODE_SAMPLE
 
             if (count($property->props) !== 1) {
                 continue;
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            // ClassReflection not detected, early skip
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
             }
 
             $type = $this->allAssignNodePropertyTypeInferer->inferProperty(

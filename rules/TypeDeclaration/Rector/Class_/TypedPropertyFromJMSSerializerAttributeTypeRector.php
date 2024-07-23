@@ -96,7 +96,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
-        $classReflection = null;
+
+        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+        if (! $classReflection instanceof ClassReflection) {
+            return null;
+        }
 
         foreach ($node->getProperties() as $property) {
             if (! $property->isPrivate()) {
@@ -109,14 +113,6 @@ CODE_SAMPLE
 
             if (! $this->phpAttributeAnalyzer->hasPhpAttribute($property, self::JMS_TYPE)) {
                 continue;
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
             }
 
             if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, false)) {
