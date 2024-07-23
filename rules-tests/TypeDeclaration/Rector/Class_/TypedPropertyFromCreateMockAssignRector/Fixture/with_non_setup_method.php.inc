@@ -5,15 +5,11 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMock
 use PHPUnit\Framework\TestCase;
 use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
-class SetupMethodExistsButNotAssign extends TestCase
+class WithNonSetupMethod extends TestCase
 {
     public $someMock;
 
-    protected function setUp(): void
-    {
-    }
-
-    private function factory()
+    protected function factory(): void
     {
         $this->someMock = $this->createMock(SomeMockedClass::class);
     }
@@ -28,15 +24,11 @@ namespace Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMock
 use PHPUnit\Framework\TestCase;
 use Rector\Tests\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector\Source\SomeMockedClass;
 
-class SetupMethodExistsButNotAssign extends TestCase
+class WithNonSetupMethod extends TestCase
 {
     public ?\PHPUnit\Framework\MockObject\MockObject $someMock = null;
 
-    protected function setUp(): void
-    {
-    }
-
-    private function factory()
+    protected function factory(): void
     {
         $this->someMock = $this->createMock(SomeMockedClass::class);
     }

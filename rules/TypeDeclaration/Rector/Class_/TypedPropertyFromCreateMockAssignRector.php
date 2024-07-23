@@ -5,15 +5,21 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\Class_;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\PhpParser\Node\NodeFactory;
+use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
@@ -39,7 +45,8 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     public function __construct(
         private readonly ReflectionResolver $reflectionResolver,
         private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
     }
 
@@ -101,8 +108,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $setUpClassMethod = $node->getMethod(MethodName::SET_UP);
-            if (! $setUpClassMethod instanceof ClassMethod) {
+            if (count($property->props) !== 1) {
                 continue;
             }
 
@@ -135,6 +141,12 @@ CODE_SAMPLE
             }
 
             $property->type = $propertyType;
+
+            $propertyName = (string) $this->getName($property);
+            if ($propertyType instanceof NullableType && ! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
+                $property->props[0]->default = $this->nodeFactory->createNull();
+            }
+
             $hasChanged = true;
         }
 
