@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\Fixture;
 
-final class DateTimeWithMonths
+final class DateTimeToday
 {
     public function run()
     {
-        $date = new \DateTime('+ 2 months');
+        $date = new \DateTime('today');
     }
 }
 
@@ -16,11 +16,11 @@ final class DateTimeWithMonths
 
 namespace Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\Fixture;
 
-final class DateTimeWithMonths
+final class DateTimeToday
 {
     public function run()
     {
-        $date = \Carbon\Carbon::parse('+ 2 months');
+        $date = \Carbon\Carbon::today();
     }
 }
 

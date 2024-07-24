@@ -82,6 +82,14 @@ CODE_SAMPLE
             $firstArg = $new->getArgs()[0];
 
             if ($firstArg->value instanceof String_) {
+                if ($firstArg->value->value === 'today') {
+                    return new StaticCall($carbonFullyQualified, 'today');
+                }
+
+                if ($firstArg->value->value === 'now') {
+                    return new StaticCall($carbonFullyQualified, 'now');
+                }
+
                 return new StaticCall($carbonFullyQualified, 'parse', [new Arg($firstArg->value)]);
             }
         }
