@@ -25,7 +25,7 @@ use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
+use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -42,7 +42,7 @@ final class TypedPropertyFromJMSSerializerAttributeTypeRector extends AbstractRe
     private const JMS_TYPE = 'JMS\Serializer\Annotation\Type';
 
     public function __construct(
-        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
+        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
         private readonly MakePropertyTypedGuard $makePropertyTypedGuard,
         private readonly ReflectionResolver $reflectionResolver,
         private readonly ValueResolver $valueResolver,
@@ -96,11 +96,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
+        $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
             if (! $property->isPrivate()) {
@@ -115,15 +111,22 @@ CODE_SAMPLE
                 continue;
             }
 
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                return null;
+            }
+
             if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, false)) {
                 continue;
             }
 
-            $propertyName = (string) $this->getName($property);
-            $inferredType = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
+            $inferredType = $this->allAssignNodePropertyTypeInferer->inferProperty(
                 $property,
-                $propertyName,
-                $node
+                $classReflection,
+                $this->file
             );
             // has assigned with type
             if ($inferredType instanceof Type) {

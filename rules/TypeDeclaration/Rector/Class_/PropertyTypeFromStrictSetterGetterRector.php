@@ -96,11 +96,7 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $hasChanged = false;
-
-        $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-        if (! $classReflection instanceof ClassReflection) {
-            return null;
-        }
+        $classReflection = null;
 
         foreach ($node->getProperties() as $property) {
             if ($property->type instanceof Node) {
@@ -118,6 +114,14 @@ CODE_SAMPLE
 
             if (! $this->isDefaultExprTypeCompatible($property, $getterSetterPropertyType)) {
                 continue;
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
+            }
+
+            if (! $classReflection instanceof ClassReflection) {
+                return null;
             }
 
             if (! $this->makePropertyTypedGuard->isLegal($property, $classReflection, false)) {
