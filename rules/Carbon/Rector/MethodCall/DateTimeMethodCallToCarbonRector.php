@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Rector\Carbon\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
-use Rector\Carbon\NodeFactory\CarbonCallFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -21,7 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DateTimeMethodCallToCarbonRector extends AbstractRector
 {
     public function __construct(
-        private readonly CarbonCallFactory $carbonCallFactory
     ) {
     }
 
@@ -99,9 +99,10 @@ CODE_SAMPLE
             $carbonFullyQualified = new FullyQualified('Carbon\CarbonImmutable');
         }
 
-        $carbonCall = $this->carbonCallFactory->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
 
-        $node->var = $carbonCall;
+        $parseStaticCall = new StaticCall($carbonFullyQualified, 'parse', [new Arg($firstArg->value)]);
+
+        $node->var = $parseStaticCall;
 
         return $node;
     }
