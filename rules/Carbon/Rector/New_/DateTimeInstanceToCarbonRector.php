@@ -35,7 +35,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-$date = \Carbon\Carbon::today();
+$date = \Carbon\Carbon::parse('today');
 CODE_SAMPLE
             ),
         ]);
