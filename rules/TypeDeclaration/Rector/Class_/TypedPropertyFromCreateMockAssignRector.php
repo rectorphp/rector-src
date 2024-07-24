@@ -7,15 +7,13 @@ namespace Rector\TypeDeclaration\Rector\Class_;
 use PhpParser\Node;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
-use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
-use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\AlreadyAssignDetector\ConstructorAssignDetector;
-use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
+use Rector\TypeDeclaration\TypeInferer\AssignToPropertyTypeInferer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -37,8 +35,7 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
-        private readonly ReflectionResolver $reflectionResolver,
-        private readonly AllAssignNodePropertyTypeInferer $allAssignNodePropertyTypeInferer,
+        private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ConstructorAssignDetector $constructorAssignDetector
     ) {
@@ -93,7 +90,6 @@ CODE_SAMPLE
             return null;
         }
 
-        $classReflection = null;
         $hasChanged = false;
 
         foreach ($node->getProperties() as $property) {
@@ -106,19 +102,11 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $classReflection instanceof ClassReflection) {
-                $classReflection = $this->reflectionResolver->resolveClassReflection($node);
-            }
-
-            // ClassReflection not detected, early skip
-            if (! $classReflection instanceof ClassReflection) {
-                return null;
-            }
-
-            $type = $this->allAssignNodePropertyTypeInferer->inferProperty(
+            $propertyName = (string) $this->getName($property);
+            $type = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
                 $property,
-                $classReflection,
-                $this->file
+                $propertyName,
+                $node
             );
 
             if (! $type instanceof Type) {
@@ -134,7 +122,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            $propertyName = (string) $this->getName($property);
             if (! $this->constructorAssignDetector->isPropertyAssigned($node, $propertyName)) {
                 if (! $propertyType instanceof NullableType) {
                     continue;
