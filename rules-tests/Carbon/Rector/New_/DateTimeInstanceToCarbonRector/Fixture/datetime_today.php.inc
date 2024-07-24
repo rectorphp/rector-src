@@ -20,7 +20,7 @@ final class DateTimeWithMonths
 {
     public function run()
     {
-        $date = \Carbon\Carbon::now()->addMonths(2);
+        $date = \Carbon\Carbon::parse('+ 2 months');
     }
 }
 

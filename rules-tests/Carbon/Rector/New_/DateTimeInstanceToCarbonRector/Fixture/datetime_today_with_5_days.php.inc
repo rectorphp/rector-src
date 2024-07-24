@@ -24,11 +24,11 @@ final class DateTimeTodayWith5Days
 {
     public function run()
     {
-        $date = \Carbon\Carbon::today()->addDays(5);
+        $date = \Carbon\Carbon::parse('today + 5 day');
 
-        $middleDate = \Carbon\Carbon::today()->addDays(7);
+        $middleDate = \Carbon\Carbon::parse('today +7day');
 
-        $nextDate = \Carbon\Carbon::today()->addDays(10);
+        $nextDate = \Carbon\Carbon::parse('today +10 days');
     }
 }
 

@@ -24,11 +24,11 @@ final class DateTimeTodayWithNegative5Days
 {
     public function run()
     {
-        $date = \Carbon\Carbon::today()->subDays(5);
+        $date = \Carbon\Carbon::parse('today - 5 day');
 
-        $middleDate = \Carbon\Carbon::today()->subDays(7);
+        $middleDate = \Carbon\Carbon::parse('today -7day');
 
-        $nextDate = \Carbon\Carbon::today()->subDays(10);
+        $nextDate = \Carbon\Carbon::parse('today -10 days');
     }
 }
 
