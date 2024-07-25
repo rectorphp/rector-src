@@ -36,7 +36,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             $this->reportFileDiffs($processResult->getFileDiffs(), $configuration->isReportingWithRealPath());
         }
 
-        $this->reportErrors($processResult->getSystemErrors());
+        $this->reportErrors($processResult->getSystemErrors(), $configuration->isReportingWithRealPath());
 
         if ($processResult->getSystemErrors() !== []) {
             return;
@@ -100,15 +100,17 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
     /**
      * @param SystemError[] $errors
      */
-    private function reportErrors(array $errors): void
+    private function reportErrors(array $errors, bool $absoluteFilePath): void
     {
         foreach ($errors as $error) {
             $errorMessage = $error->getMessage();
             $errorMessage = $this->normalizePathsToRelativeWithLine($errorMessage);
 
+            $filePath = $absoluteFilePath ? $error->getAbsoluteFilePath() : $error->getRelativeFilePath();
+
             $message = sprintf(
                 'Could not process %s%s, due to: %s"%s".',
-                $error->getFile() !== null ? '"' . $error->getFile() . '" file' : 'some files',
+                $filePath !== null ? '"' . $filePath . '" file' : 'some files',
                 $error->getRectorClass() !== null ? ' by "' . $error->getRectorClass() . '"' : '',
                 PHP_EOL,
                 $errorMessage

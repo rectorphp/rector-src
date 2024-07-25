@@ -52,7 +52,7 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
         $systemErrors = $processResult->getSystemErrors();
         $errorsJson['totals']['errors'] = count($systemErrors);
 
-        $errorsData = $this->createErrorsData($systemErrors);
+        $errorsData = $this->createErrorsData($systemErrors, $configuration->isReportingWithRealPath());
         if ($errorsData !== []) {
             $errorsJson['errors'] = $errorsData;
         }
@@ -65,14 +65,14 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
      * @param SystemError[] $errors
      * @return mixed[]
      */
-    private function createErrorsData(array $errors): array
+    private function createErrorsData(array $errors, bool $absoluteFilePath): array
     {
         $errorsData = [];
 
         foreach ($errors as $error) {
             $errorDataJson = [
                 'message' => $error->getMessage(),
-                'file' => $error->getRelativeFilePath(),
+                'file' => $absoluteFilePath ? $error->getAbsoluteFilePath() : $error->getRelativeFilePath(),
             ];
 
             if ($error->getRectorClass() !== null) {
