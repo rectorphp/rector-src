@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\Fixture;
 
-final class DateTimeNowAddSubTime
+final class DateTimeNowAddSub
 {
     public function run()
     {
