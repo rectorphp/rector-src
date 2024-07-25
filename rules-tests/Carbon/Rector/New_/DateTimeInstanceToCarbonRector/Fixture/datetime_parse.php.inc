@@ -6,7 +6,7 @@ final class DateTimeParse
 {
     public function run()
     {
-        $date = new \DateTime('today');
+        $date = new \DateTime('next week');
     }
 }
 
@@ -20,7 +20,7 @@ final class DateTimeParse
 {
     public function run()
     {
-        $date = \Carbon\Carbon::today();
+        $date = \Carbon\Carbon::parse('next week');
     }
 }
 
