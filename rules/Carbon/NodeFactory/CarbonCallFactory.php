@@ -17,7 +17,7 @@ final class CarbonCallFactory
      * @var string
      * @see https://regex101.com/r/19qPHr/1
      */
-    private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>sec|second|seconds|min|minute|minutes|hour|hours|day|days|week|weeks|month|months)#';
+    private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>sec|second|seconds|min|minute|minutes|hour|hours|day|days|week|weeks|month|months|year|years)#';
 
     /**
      * @var string
@@ -53,6 +53,7 @@ final class CarbonCallFactory
             'day', 'days' => 'days',
             'week', 'weeks' => 'weeks',
             'month', 'months' => 'months',
+            'year', 'years' => 'years',
             default => null,
         };
 
