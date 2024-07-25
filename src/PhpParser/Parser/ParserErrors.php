@@ -15,7 +15,7 @@ final class ParserErrors
     public function __construct(ParserErrorsException $exception)
     {
         $this->message = $exception->getMessage();
-        $this->line = $exception->getAttributes()['startLine'] ?? 0;
+        $this->line = $exception->getAttributes()['startLine'] ?? $exception->getLine();
     }
 
     public function getMessage(): string
