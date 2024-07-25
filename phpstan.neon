@@ -298,3 +298,4 @@ parameters:
 
         # deprecated
         - '#Property Rector\\TypeDeclaration\\Rector\\ClassMethod\\ReturnTypeFromStrictScalarReturnExprRector\:\:\$hardCodedOnly is never read, only written#'
+        - '#Public method "Rector\\ValueObject\\Error\\SystemError\:\:getFile\(\)" is never used#'
