@@ -23,7 +23,7 @@ final class CarbonCallFactory
      * @var string
      * @see https://regex101.com/r/IhxHTO/1
      */
-    private const STATIC_DATES_REGEX = '#now|yesterday|today|tomorrow#';
+    private const STATIC_DATE_REGEX = '#now|yesterday|today|tomorrow#';
 
     /**
      * @return \PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall
@@ -35,7 +35,7 @@ final class CarbonCallFactory
             return new StaticCall($carbonFullyQualified, new Identifier($dateTimeValue));
         }
 
-        $startDate = Strings::match($dateTimeValue, self::STATIC_DATES_REGEX)[0] ?? 'now';
+        $startDate = Strings::match($dateTimeValue, self::STATIC_DATE_REGEX)[0] ?? 'now';
         $carbonCall = new StaticCall($carbonFullyQualified, new Identifier($startDate));
 
         $match = Strings::match($dateTimeValue, self::PLUS_MINUS_COUNT_REGEX);
@@ -53,12 +53,20 @@ final class CarbonCallFactory
             'day', 'days' => 'days',
             'week', 'weeks' => 'weeks',
             'month', 'months' => 'months',
+            default => null,
         };
 
-        $methodName = match((string) $match['operator']) {
+        $operator = match((string) $match['operator']) {
             '+' => 'add',
             '-' => 'sub',
-        } . ucfirst($unit);
+            default => null,
+        };
+
+        if ($unit === null || $operator === null) {
+            return new StaticCall($carbonFullyQualified, new Identifier('parse'), [new Arg($string)]);
+        }
+
+        $methodName = $operator . ucfirst($unit);
 
         return new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
     }
