@@ -20,7 +20,7 @@ class SomeClass
 {
     public function run()
     {
-        $date = (\Carbon\Carbon::parse('today +20 day'))->format('Y-m-d');
+        $date = (\Carbon\Carbon::today()->addDays(20))->format('Y-m-d');
     }
 }
 

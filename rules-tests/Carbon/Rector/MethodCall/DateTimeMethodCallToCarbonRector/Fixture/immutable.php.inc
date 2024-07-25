@@ -20,7 +20,7 @@ final class Immutable
 {
     public function run()
     {
-        $date = (\Carbon\CarbonImmutable::parse('today +20 day'))->format('Y-m-d');
+        $date = (\Carbon\CarbonImmutable::today()->addDays(20))->format('Y-m-d');
     }
 }
 

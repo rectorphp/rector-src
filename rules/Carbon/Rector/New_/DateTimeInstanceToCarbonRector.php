@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Rector\Carbon\Rector\New_;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
+use Rector\Carbon\NodeFactory\CarbonCallFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,6 +22,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DateTimeInstanceToCarbonRector extends AbstractRector
 {
     public function __construct(
+        private readonly CarbonCallFactory $carbonCallFactory
     ) {
     }
 
@@ -35,7 +36,7 @@ CODE_SAMPLE
 
                 ,
                 <<<'CODE_SAMPLE'
-$date = \Carbon\Carbon::parse('today');
+$date = \Carbon\Carbon::today();
 CODE_SAMPLE
             ),
         ]);
@@ -69,7 +70,7 @@ CODE_SAMPLE
         return null;
     }
 
-    private function refactorWithClass(New_ $new, string $className): StaticCall|null
+    private function refactorWithClass(New_ $new, string $className): MethodCall|StaticCall|null
     {
         // no arg? ::now()
         $carbonFullyQualified = new FullyQualified($className);
@@ -82,15 +83,7 @@ CODE_SAMPLE
             $firstArg = $new->getArgs()[0];
 
             if ($firstArg->value instanceof String_) {
-                if ($firstArg->value->value === 'today') {
-                    return new StaticCall($carbonFullyQualified, 'today');
-                }
-
-                if ($firstArg->value->value === 'now') {
-                    return new StaticCall($carbonFullyQualified, 'now');
-                }
-
-                return new StaticCall($carbonFullyQualified, 'parse', [new Arg($firstArg->value)]);
+                return $this->carbonCallFactory->createFromDateTimeString($carbonFullyQualified, $firstArg->value);
             }
         }
 

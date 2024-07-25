@@ -26,13 +26,13 @@ final class DateTimeTodayAddSubTime
 {
     public function run()
     {
-        $addHours = \Carbon\Carbon::parse('+ 5 hours');
-        $addMinutes = \Carbon\Carbon::parse('+ 5 minutes');
-        $addSeconds = \Carbon\Carbon::parse('+ 5 seconds');
+        $addHours = \Carbon\Carbon::now()->addHours(5);
+        $addMinutes = \Carbon\Carbon::now()->addMinutes(5);
+        $addSeconds = \Carbon\Carbon::now()->addSeconds(5);
 
-        $subHours = \Carbon\Carbon::parse('- 5 hours');
-        $subMinuts = \Carbon\Carbon::parse('- 5 minutes');
-        $subSeconds = \Carbon\Carbon::parse('- 5 seconds');
+        $subHours = \Carbon\Carbon::now()->subHours(5);
+        $subMinuts = \Carbon\Carbon::now()->subMinutes(5);
+        $subSeconds = \Carbon\Carbon::now()->subSeconds(5);
     }
 }
 
