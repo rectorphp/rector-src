@@ -33,7 +33,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
     public function report(ProcessResult $processResult, Configuration $configuration): void
     {
         if ($configuration->shouldShowDiffs()) {
-            $this->reportFileDiffs($processResult->getFileDiffs());
+            $this->reportFileDiffs($processResult->getFileDiffs(), $configuration->isReportingWithRealPath());
         }
 
         $this->reportErrors($processResult->getSystemErrors());
@@ -59,7 +59,7 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
     /**
      * @param FileDiff[] $fileDiffs
      */
-    private function reportFileDiffs(array $fileDiffs): void
+    private function reportFileDiffs(array $fileDiffs, bool $absoluteFilePath): void
     {
         if (count($fileDiffs) <= 0) {
             return;
@@ -73,15 +73,17 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
 
         $i = 0;
         foreach ($fileDiffs as $fileDiff) {
-            $relativeFilePath = $fileDiff->getRelativeFilePath();
+            $filePath = $absoluteFilePath
+                ? ($fileDiff->getAbsoluteFilePath() ?? '')
+                : $fileDiff->getRelativeFilePath();
 
             // append line number for faster file jump in diff
             $firstLineNumber = $fileDiff->getFirstLineNumber();
             if ($firstLineNumber !== null) {
-                $relativeFilePath .= ':' . $firstLineNumber;
+                $filePath .= ':' . $firstLineNumber;
             }
 
-            $message = sprintf('<options=bold>%d) %s</>', ++$i, $relativeFilePath);
+            $message = sprintf('<options=bold>%d) %s</>', ++$i, $filePath);
 
             $this->symfonyStyle->writeln($message);
             $this->symfonyStyle->newLine();

@@ -28,6 +28,11 @@ final class BridgeItem
     /**
      * @var string
      */
+    public const ABSOLUTE_FILE_PATH = 'absolute_file_path';
+
+    /**
+     * @var string
+     */
     public const DIFF = 'diff';
 
     /**

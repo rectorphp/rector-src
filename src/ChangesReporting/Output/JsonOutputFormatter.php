@@ -34,16 +34,19 @@ final readonly class JsonOutputFormatter implements OutputFormatterInterface
         $fileDiffs = $processResult->getFileDiffs();
         ksort($fileDiffs);
         foreach ($fileDiffs as $fileDiff) {
-            $relativeFilePath = $fileDiff->getRelativeFilePath();
+            $filePath = $configuration->isReportingWithRealPath()
+                ? ($fileDiff->getAbsoluteFilePath() ?? '')
+                : $fileDiff->getRelativeFilePath()
+            ;
 
             $errorsJson[Bridge::FILE_DIFFS][] = [
-                'file' => $relativeFilePath,
+                'file' => $filePath,
                 'diff' => $fileDiff->getDiff(),
                 'applied_rectors' => $fileDiff->getRectorClasses(),
             ];
 
             // for Rector CI
-            $errorsJson['changed_files'][] = $relativeFilePath;
+            $errorsJson['changed_files'][] = $filePath;
         }
 
         $systemErrors = $processResult->getSystemErrors();

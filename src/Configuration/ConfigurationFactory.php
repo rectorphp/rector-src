@@ -41,6 +41,7 @@ final readonly class ConfigurationFactory
             false,
             null,
             false,
+            false
         );
     }
 
@@ -73,6 +74,8 @@ final readonly class ConfigurationFactory
 
         $memoryLimit = $this->resolveMemoryLimit($input);
 
+        $isReportingWithRealPath = SimpleParameterProvider::provideBoolParameter(Option::ABSOLUTE_FILE_PATH);
+
         return new Configuration(
             $isDryRun,
             $showProgressBar,
@@ -86,6 +89,7 @@ final readonly class ConfigurationFactory
             $isParallel,
             $memoryLimit,
             $isDebug,
+            $isReportingWithRealPath,
         );
     }
 
