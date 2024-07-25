@@ -173,7 +173,11 @@ final readonly class PHPStanNodeScopeResolver
                 $this->processAssign($node, $mutatingScope);
 
                 if ($node->var instanceof Variable && $node->var->name instanceof Expr) {
-                    $this->nodeScopeResolverProcessNodes([new Expression($node->var), new Expression($node->expr)], $mutatingScope, $nodeCallback);
+                    $this->nodeScopeResolverProcessNodes(
+                        [new Expression($node->var), new Expression($node->expr)],
+                        $mutatingScope,
+                        $nodeCallback
+                    );
                 }
 
                 return;
