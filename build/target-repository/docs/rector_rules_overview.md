@@ -4,65 +4,65 @@
 
 ## Categories
 
--   [Arguments](#arguments) (4)
+- [Arguments](#arguments) (4)
 
--   [Carbon](#carbon) (4)
+- [Carbon](#carbon) (4)
 
--   [CodeQuality](#codequality) (69)
+- [CodeQuality](#codequality) (69)
 
--   [CodingStyle](#codingstyle) (29)
+- [CodingStyle](#codingstyle) (29)
 
--   [DeadCode](#deadcode) (45)
+- [DeadCode](#deadcode) (45)
 
--   [EarlyReturn](#earlyreturn) (8)
+- [EarlyReturn](#earlyreturn) (8)
 
--   [Instanceof](#instanceof) (1)
+- [Instanceof](#instanceof) (1)
 
--   [Naming](#naming) (6)
+- [Naming](#naming) (6)
 
--   [Php52](#php52) (2)
+- [Php52](#php52) (2)
 
--   [Php53](#php53) (3)
+- [Php53](#php53) (3)
 
--   [Php54](#php54) (3)
+- [Php54](#php54) (3)
 
--   [Php55](#php55) (6)
+- [Php55](#php55) (6)
 
--   [Php56](#php56) (1)
+- [Php56](#php56) (1)
 
--   [Php70](#php70) (19)
+- [Php70](#php70) (19)
 
--   [Php71](#php71) (7)
+- [Php71](#php71) (7)
 
--   [Php72](#php72) (9)
+- [Php72](#php72) (9)
 
--   [Php73](#php73) (9)
+- [Php73](#php73) (9)
 
--   [Php74](#php74) (14)
+- [Php74](#php74) (14)
 
--   [Php80](#php80) (16)
+- [Php80](#php80) (16)
 
--   [Php81](#php81) (8)
+- [Php81](#php81) (8)
 
--   [Php82](#php82) (5)
+- [Php82](#php82) (5)
 
--   [Php83](#php83) (3)
+- [Php83](#php83) (3)
 
--   [Php84](#php84) (1)
+- [Php84](#php84) (1)
 
--   [Privatization](#privatization) (4)
+- [Privatization](#privatization) (4)
 
--   [Removing](#removing) (5)
+- [Removing](#removing) (5)
 
--   [Renaming](#renaming) (11)
+- [Renaming](#renaming) (11)
 
--   [Strict](#strict) (5)
+- [Strict](#strict) (5)
 
--   [Transform](#transform) (25)
+- [Transform](#transform) (25)
 
--   [TypeDeclaration](#typedeclaration) (56)
+- [TypeDeclaration](#typedeclaration) (56)
 
--   [Visibility](#visibility) (3)
+- [Visibility](#visibility) (3)
 
 <br>
 
@@ -74,7 +74,7 @@ This Rector adds new default arguments in calls of defined methods and class typ
 
 :wrench: **configure it!**
 
--   class: [`Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector`](../rules/Arguments/Rector/ClassMethod/ArgumentAdderRector.php)
+- class: [`Rector\Arguments\Rector\ClassMethod\ArgumentAdderRector`](../rules/Arguments/Rector/ClassMethod/ArgumentAdderRector.php)
 
 ```diff
  $someObject = new SomeExampleClass;
@@ -98,7 +98,7 @@ Streamline the operator arguments of version_compare function
 
 :wrench: **configure it!**
 
--   class: [`Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector`](../rules/Arguments/Rector/FuncCall/FunctionArgumentDefaultValueReplacerRector.php)
+- class: [`Rector\Arguments\Rector\FuncCall\FunctionArgumentDefaultValueReplacerRector`](../rules/Arguments/Rector/FuncCall/FunctionArgumentDefaultValueReplacerRector.php)
 
 ```diff
 -version_compare(PHP_VERSION, '5.6', 'gte');
@@ -113,7 +113,7 @@ Remove parameter of method call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Arguments\Rector\MethodCall\RemoveMethodCallParamRector`](../rules/Arguments/Rector/MethodCall/RemoveMethodCallParamRector.php)
+- class: [`Rector\Arguments\Rector\MethodCall\RemoveMethodCallParamRector`](../rules/Arguments/Rector/MethodCall/RemoveMethodCallParamRector.php)
 
 ```diff
  final class SomeClass
@@ -134,7 +134,7 @@ Replaces defined map of arguments in defined methods and their calls.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector`](../rules/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector.php)
+- class: [`Rector\Arguments\Rector\ClassMethod\ReplaceArgumentDefaultValueRector`](../rules/Arguments/Rector/ClassMethod/ReplaceArgumentDefaultValueRector.php)
 
 ```diff
  $someObject = new SomeClass;
@@ -150,7 +150,7 @@ Replaces defined map of arguments in defined methods and their calls.
 
 Convert `date()` function call to `Carbon::now()->format(*)`
 
--   class: [`Rector\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/DateFuncCallToCarbonRector.php)
+- class: [`Rector\Carbon\Rector\FuncCall\DateFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/DateFuncCallToCarbonRector.php)
 
 ```diff
  class SomeClass
@@ -167,9 +167,9 @@ Convert `date()` function call to `Carbon::now()->format(*)`
 
 ### DateTimeInstanceToCarbonRector
 
-Convert new `DateTime()` to Carbon::\*()
+Convert new `DateTime()` to Carbon::*()
 
--   class: [`Rector\Carbon\Rector\New_\DateTimeInstanceToCarbonRector`](../rules/Carbon/Rector/New_/DateTimeInstanceToCarbonRector.php)
+- class: [`Rector\Carbon\Rector\New_\DateTimeInstanceToCarbonRector`](../rules/Carbon/Rector/New_/DateTimeInstanceToCarbonRector.php)
 
 ```diff
 -$date = new \DateTime('today');
@@ -180,9 +180,9 @@ Convert new `DateTime()` to Carbon::\*()
 
 ### DateTimeMethodCallToCarbonRector
 
-Convert new `DateTime()` with a method call to Carbon::\*()
+Convert new `DateTime()` with a method call to Carbon::*()
 
--   class: [`Rector\Carbon\Rector\MethodCall\DateTimeMethodCallToCarbonRector`](../rules/Carbon/Rector/MethodCall/DateTimeMethodCallToCarbonRector.php)
+- class: [`Rector\Carbon\Rector\MethodCall\DateTimeMethodCallToCarbonRector`](../rules/Carbon/Rector/MethodCall/DateTimeMethodCallToCarbonRector.php)
 
 ```diff
  class SomeClass
@@ -190,7 +190,7 @@ Convert new `DateTime()` with a method call to Carbon::\*()
      public function run()
      {
 -        $date = (new \DateTime('today +20 day'))->format('Y-m-d');
-+        $date = \Carbon\Carbon::parse('today +20 day')->format('Y-m-d')
++        $date = \Carbon\Carbon::today()->addDays(20)->format('Y-m-d')
      }
  }
 ```
@@ -201,7 +201,7 @@ Convert new `DateTime()` with a method call to Carbon::\*()
 
 Convert `time()` function call to `Carbon::now()->timestamp`
 
--   class: [`Rector\Carbon\Rector\FuncCall\TimeFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/TimeFuncCallToCarbonRector.php)
+- class: [`Rector\Carbon\Rector\FuncCall\TimeFuncCallToCarbonRector`](../rules/Carbon/Rector/FuncCall/TimeFuncCallToCarbonRector.php)
 
 ```diff
  class SomeClass
@@ -222,7 +222,7 @@ Convert `time()` function call to `Carbon::now()->timestamp`
 
 include/require to absolute path. This Rector might introduce backwards incompatible code, when the include/require being changed depends on the current working directory.
 
--   class: [`Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector`](../rules/CodeQuality/Rector/Include_/AbsolutizeRequireAndIncludePathRector.php)
+- class: [`Rector\CodeQuality\Rector\Include_\AbsolutizeRequireAndIncludePathRector`](../rules/CodeQuality/Rector/Include_/AbsolutizeRequireAndIncludePathRector.php)
 
 ```diff
  class SomeClass
@@ -243,7 +243,7 @@ include/require to absolute path. This Rector might introduce backwards incompat
 
 Split 2 assigns ands to separate line
 
--   class: [`Rector\CodeQuality\Rector\LogicalAnd\AndAssignsToSeparateLinesRector`](../rules/CodeQuality/Rector/LogicalAnd/AndAssignsToSeparateLinesRector.php)
+- class: [`Rector\CodeQuality\Rector\LogicalAnd\AndAssignsToSeparateLinesRector`](../rules/CodeQuality/Rector/LogicalAnd/AndAssignsToSeparateLinesRector.php)
 
 ```diff
  class SomeClass
@@ -264,7 +264,7 @@ Split 2 assigns ands to separate line
 
 Change `array_key_exists()` ternary to coalescing
 
--   class: [`Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector`](../rules/CodeQuality/Rector/Ternary/ArrayKeyExistsTernaryThenValueToCoalescingRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\ArrayKeyExistsTernaryThenValueToCoalescingRector`](../rules/CodeQuality/Rector/Ternary/ArrayKeyExistsTernaryThenValueToCoalescingRector.php)
 
 ```diff
  class SomeClass
@@ -283,7 +283,7 @@ Change `array_key_exists()` ternary to coalescing
 
 Change array_merge of non arrays to array directly
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector`](../rules/CodeQuality/Rector/FuncCall/ArrayMergeOfNonArraysToSimpleArrayRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\ArrayMergeOfNonArraysToSimpleArrayRector`](../rules/CodeQuality/Rector/FuncCall/ArrayMergeOfNonArraysToSimpleArrayRector.php)
 
 ```diff
  class SomeClass
@@ -305,7 +305,7 @@ Change array_merge of non arrays to array directly
 
 Negated identical boolean compare to not identical compare (does not apply to non-bool values)
 
--   class: [`Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector`](../rules/CodeQuality/Rector/Identical/BooleanNotIdenticalToNotIdenticalRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector`](../rules/CodeQuality/Rector/Identical/BooleanNotIdenticalToNotIdenticalRector.php)
 
 ```diff
  class SomeClass
@@ -330,7 +330,7 @@ Negated identical boolean compare to not identical compare (does not apply to no
 
 Refactor `call_user_func()` with arrow function to direct call
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector`](../rules/CodeQuality/Rector/FuncCall/CallUserFuncWithArrowFunctionToInlineRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\CallUserFuncWithArrowFunctionToInlineRector`](../rules/CodeQuality/Rector/FuncCall/CallUserFuncWithArrowFunctionToInlineRector.php)
 
 ```diff
  final class SomeClass
@@ -349,7 +349,7 @@ Refactor `call_user_func()` with arrow function to direct call
 
 Change `array_push()` to direct variable assign
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector`](../rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\ChangeArrayPushToArrayAssignRector`](../rules/CodeQuality/Rector/FuncCall/ChangeArrayPushToArrayAssignRector.php)
 
 ```diff
  $items = [];
@@ -363,7 +363,7 @@ Change `array_push()` to direct variable assign
 
 Cleanup unneeded nullsafe operator
 
--   class: [`Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodeQuality/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
+- class: [`Rector\CodeQuality\Rector\NullsafeMethodCall\CleanupUnneededNullsafeOperatorRector`](../rules/CodeQuality/Rector/NullsafeMethodCall/CleanupUnneededNullsafeOperatorRector.php)
 
 ```diff
  class HelloWorld {
@@ -388,7 +388,7 @@ Cleanup unneeded nullsafe operator
 
 Merges nested if statements
 
--   class: [`Rector\CodeQuality\Rector\If_\CombineIfRector`](../rules/CodeQuality/Rector/If_/CombineIfRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\CombineIfRector`](../rules/CodeQuality/Rector/If_/CombineIfRector.php)
 
 ```diff
  class SomeClass
@@ -412,7 +412,7 @@ Merges nested if statements
 
 Simplify `$value` = `$value` + 5; assignments to shorter ones
 
--   class: [`Rector\CodeQuality\Rector\Assign\CombinedAssignRector`](../rules/CodeQuality/Rector/Assign/CombinedAssignRector.php)
+- class: [`Rector\CodeQuality\Rector\Assign\CombinedAssignRector`](../rules/CodeQuality/Rector/Assign/CombinedAssignRector.php)
 
 ```diff
 -$value = $value + 5;
@@ -425,7 +425,7 @@ Simplify `$value` = `$value` + 5; assignments to shorter ones
 
 Use common != instead of less known <> with same meaning
 
--   class: [`Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector`](../rules/CodeQuality/Rector/NotEqual/CommonNotEqualRector.php)
+- class: [`Rector\CodeQuality\Rector\NotEqual\CommonNotEqualRector`](../rules/CodeQuality/Rector/NotEqual/CommonNotEqualRector.php)
 
 ```diff
  final class SomeClass
@@ -444,7 +444,7 @@ Use common != instead of less known <> with same meaning
 
 Change `compact()` call to own array
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector`](../rules/CodeQuality/Rector/FuncCall/CompactToVariablesRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\CompactToVariablesRector`](../rules/CodeQuality/Rector/FuncCall/CompactToVariablesRector.php)
 
 ```diff
  class SomeClass
@@ -466,7 +466,7 @@ Change `compact()` call to own array
 
 Add missing dynamic properties
 
--   class: [`Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector`](../rules/CodeQuality/Rector/Class_/CompleteDynamicPropertiesRector.php)
+- class: [`Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector`](../rules/CodeQuality/Rector/Class_/CompleteDynamicPropertiesRector.php)
 
 ```diff
  class SomeClass
@@ -489,7 +489,7 @@ Add missing dynamic properties
 
 Complete missing if/else brackets
 
--   class: [`Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector`](../rules/CodeQuality/Rector/If_/CompleteMissingIfElseBracketRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\CompleteMissingIfElseBracketRector`](../rules/CodeQuality/Rector/If_/CompleteMissingIfElseBracketRector.php)
 
 ```diff
  class SomeClass
@@ -510,7 +510,7 @@ Complete missing if/else brackets
 
 Change multiple null compares to ?? queue
 
--   class: [`Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector`](../rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector`](../rules/CodeQuality/Rector/If_/ConsecutiveNullCompareReturnsToNullCoalesceQueueRector.php)
 
 ```diff
  class SomeClass
@@ -535,9 +535,9 @@ Change multiple null compares to ?? queue
 
 ### ConvertStaticPrivateConstantToSelfRector
 
-Replaces static::_ access to private constants with self::_
+Replaces static::* access to private constants with self::*
 
--   class: [`Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector`](../rules/CodeQuality/Rector/ClassConstFetch/ConvertStaticPrivateConstantToSelfRector.php)
+- class: [`Rector\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector`](../rules/CodeQuality/Rector/ClassConstFetch/ConvertStaticPrivateConstantToSelfRector.php)
 
 ```diff
  final class Foo
@@ -558,7 +558,7 @@ Replaces static::_ access to private constants with self::_
 
 Make if conditions more explicit
 
--   class: [`Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector`](../rules/CodeQuality/Rector/If_/ExplicitBoolCompareRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector`](../rules/CodeQuality/Rector/If_/ExplicitBoolCompareRector.php)
 
 ```diff
  final class SomeController
@@ -579,7 +579,7 @@ Make if conditions more explicit
 
 Add explicit return null to method/function that returns a value, but missed main return
 
--   class: [`Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector`](../rules/CodeQuality/Rector/ClassMethod/ExplicitReturnNullRector.php)
+- class: [`Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector`](../rules/CodeQuality/Rector/ClassMethod/ExplicitReturnNullRector.php)
 
 ```diff
  class SomeClass
@@ -605,7 +605,7 @@ Add explicit return null to method/function that returns a value, but missed mai
 
 Flip type control from null compare to use exclusive instanceof object
 
--   class: [`Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector`](../rules/CodeQuality/Rector/Identical/FlipTypeControlToUseExclusiveTypeRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector`](../rules/CodeQuality/Rector/Identical/FlipTypeControlToUseExclusiveTypeRector.php)
 
 ```diff
  function process(?DateTime $dateTime)
@@ -623,7 +623,7 @@ Flip type control from null compare to use exclusive instanceof object
 
 Change `count()` in for function to own variable
 
--   class: [`Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector`](../rules/CodeQuality/Rector/For_/ForRepeatedCountToOwnVariableRector.php)
+- class: [`Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector`](../rules/CodeQuality/Rector/For_/ForRepeatedCountToOwnVariableRector.php)
 
 ```diff
  class SomeClass
@@ -645,7 +645,7 @@ Change `count()` in for function to own variable
 
 Change `foreach()` items assign to empty array to direct assign
 
--   class: [`Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector`](../rules/CodeQuality/Rector/Foreach_/ForeachItemsAssignToEmptyArrayToAssignRector.php)
+- class: [`Rector\CodeQuality\Rector\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector`](../rules/CodeQuality/Rector/Foreach_/ForeachItemsAssignToEmptyArrayToAssignRector.php)
 
 ```diff
  class SomeClass
@@ -668,7 +668,7 @@ Change `foreach()` items assign to empty array to direct assign
 
 Simplify `foreach` loops into `in_array` when possible
 
--   class: [`Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector`](../rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php)
+- class: [`Rector\CodeQuality\Rector\Foreach_\ForeachToInArrayRector`](../rules/CodeQuality/Rector/Foreach_/ForeachToInArrayRector.php)
 
 ```diff
 -foreach ($items as $item) {
@@ -687,7 +687,7 @@ Simplify `foreach` loops into `in_array` when possible
 
 Inline just in time array dim fetch assigns to direct return
 
--   class: [`Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector`](../rules/CodeQuality/Rector/ClassMethod/InlineArrayReturnAssignRector.php)
+- class: [`Rector\CodeQuality\Rector\ClassMethod\InlineArrayReturnAssignRector`](../rules/CodeQuality/Rector/ClassMethod/InlineArrayReturnAssignRector.php)
 
 ```diff
  function getPerson()
@@ -710,7 +710,7 @@ Inline just in time array dim fetch assigns to direct return
 
 Move property default from constructor to property default
 
--   class: [`Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector`](../rules/CodeQuality/Rector/Class_/InlineConstructorDefaultToPropertyRector.php)
+- class: [`Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector`](../rules/CodeQuality/Rector/Class_/InlineConstructorDefaultToPropertyRector.php)
 
 ```diff
  final class SomeClass
@@ -731,7 +731,7 @@ Move property default from constructor to property default
 
 Change inline if to explicit if
 
--   class: [`Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector`](../rules/CodeQuality/Rector/Expression/InlineIfToExplicitIfRector.php)
+- class: [`Rector\CodeQuality\Rector\Expression\InlineIfToExplicitIfRector`](../rules/CodeQuality/Rector/Expression/InlineIfToExplicitIfRector.php)
 
 ```diff
  class SomeClass
@@ -754,7 +754,7 @@ Change inline if to explicit if
 
 Change `is_a()` with object and class name check to instanceof
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector`](../rules/CodeQuality/Rector/FuncCall/InlineIsAInstanceOfRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\InlineIsAInstanceOfRector`](../rules/CodeQuality/Rector/FuncCall/InlineIsAInstanceOfRector.php)
 
 ```diff
  class SomeClass
@@ -773,7 +773,7 @@ Change `is_a()` with object and class name check to instanceof
 
 Complete missing 3rd argument in case `is_a()` function in case of strings
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector`](../rules/CodeQuality/Rector/FuncCall/IsAWithStringWithThirdArgumentRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\IsAWithStringWithThirdArgumentRector`](../rules/CodeQuality/Rector/FuncCall/IsAWithStringWithThirdArgumentRector.php)
 
 ```diff
  class SomeClass
@@ -792,7 +792,7 @@ Complete missing 3rd argument in case `is_a()` function in case of strings
 
 Change isset on property object to `property_exists()` and not null check
 
--   class: [`Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector`](../rules/CodeQuality/Rector/Isset_/IssetOnPropertyObjectToPropertyExistsRector.php)
+- class: [`Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector`](../rules/CodeQuality/Rector/Isset_/IssetOnPropertyObjectToPropertyExistsRector.php)
 
 ```diff
  class SomeClass
@@ -813,7 +813,7 @@ Change isset on property object to `property_exists()` and not null check
 
 Joins concat of 2 strings, unless the length is too long
 
--   class: [`Rector\CodeQuality\Rector\Concat\JoinStringConcatRector`](../rules/CodeQuality/Rector/Concat/JoinStringConcatRector.php)
+- class: [`Rector\CodeQuality\Rector\Concat\JoinStringConcatRector`](../rules/CodeQuality/Rector/Concat/JoinStringConcatRector.php)
 
 ```diff
  class SomeClass
@@ -832,7 +832,7 @@ Joins concat of 2 strings, unless the length is too long
 
 Change static method and local-only calls to non-static
 
--   class: [`Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector`](../rules/CodeQuality/Rector/ClassMethod/LocallyCalledStaticMethodToNonStaticRector.php)
+- class: [`Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector`](../rules/CodeQuality/Rector/ClassMethod/LocallyCalledStaticMethodToNonStaticRector.php)
 
 ```diff
  class SomeClass
@@ -856,7 +856,7 @@ Change static method and local-only calls to non-static
 
 Change OR, AND to ||, && with more common understanding
 
--   class: [`Rector\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector`](../rules/CodeQuality/Rector/LogicalAnd/LogicalToBooleanRector.php)
+- class: [`Rector\CodeQuality\Rector\LogicalAnd\LogicalToBooleanRector`](../rules/CodeQuality/Rector/LogicalAnd/LogicalToBooleanRector.php)
 
 ```diff
 -if ($f = false or true) {
@@ -871,7 +871,7 @@ Change OR, AND to ||, && with more common understanding
 
 Change unsafe new `static()` to new `self()`
 
--   class: [`Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector`](../rules/CodeQuality/Rector/New_/NewStaticToNewSelfRector.php)
+- class: [`Rector\CodeQuality\Rector\New_\NewStaticToNewSelfRector`](../rules/CodeQuality/Rector/New_/NewStaticToNewSelfRector.php)
 
 ```diff
  final class SomeClass
@@ -890,7 +890,7 @@ Change unsafe new `static()` to new `self()`
 
 Ternary number compare to `max()` call
 
--   class: [`Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector`](../rules/CodeQuality/Rector/Ternary/NumberCompareToMaxFuncCallRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\NumberCompareToMaxFuncCallRector`](../rules/CodeQuality/Rector/Ternary/NumberCompareToMaxFuncCallRector.php)
 
 ```diff
  class SomeClass
@@ -909,7 +909,7 @@ Ternary number compare to `max()` call
 
 Move required parameters after optional ones
 
--   class: [`Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector`](../rules/CodeQuality/Rector/ClassMethod/OptionalParametersAfterRequiredRector.php)
+- class: [`Rector\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector`](../rules/CodeQuality/Rector/ClassMethod/OptionalParametersAfterRequiredRector.php)
 
 ```diff
  class SomeObject
@@ -927,7 +927,7 @@ Move required parameters after optional ones
 
 Remove `sprintf()` wrapper if not needed
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector`](../rules/CodeQuality/Rector/FuncCall/RemoveSoleValueSprintfRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\RemoveSoleValueSprintfRector`](../rules/CodeQuality/Rector/FuncCall/RemoveSoleValueSprintfRector.php)
 
 ```diff
  class SomeClass
@@ -947,7 +947,7 @@ Remove `sprintf()` wrapper if not needed
 
 Remove useless `is_object()` check on combine with instanceof check
 
--   class: [`Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector`](../rules/CodeQuality/Rector/BooleanAnd/RemoveUselessIsObjectCheckRector.php)
+- class: [`Rector\CodeQuality\Rector\BooleanAnd\RemoveUselessIsObjectCheckRector`](../rules/CodeQuality/Rector/BooleanAnd/RemoveUselessIsObjectCheckRector.php)
 
 ```diff
 -is_object($obj) && $obj instanceof DateTime
@@ -960,7 +960,7 @@ Remove useless `is_object()` check on combine with instanceof check
 
 Replace the Double not operator (!!) by type-casting to boolean
 
--   class: [`Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector`](../rules/CodeQuality/Rector/BooleanNot/ReplaceMultipleBooleanNotRector.php)
+- class: [`Rector\CodeQuality\Rector\BooleanNot\ReplaceMultipleBooleanNotRector`](../rules/CodeQuality/Rector/BooleanNot/ReplaceMultipleBooleanNotRector.php)
 
 ```diff
 -$bool = !!$var;
@@ -973,7 +973,7 @@ Replace the Double not operator (!!) by type-casting to boolean
 
 Changes `settype()` to (type) where possible
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SetTypeToCastRector`](../rules/CodeQuality/Rector/FuncCall/SetTypeToCastRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SetTypeToCastRector`](../rules/CodeQuality/Rector/FuncCall/SetTypeToCastRector.php)
 
 ```diff
  class SomeClass
@@ -995,7 +995,7 @@ Changes `settype()` to (type) where possible
 
 Shortens else/if to elseif
 
--   class: [`Rector\CodeQuality\Rector\If_\ShortenElseIfRector`](../rules/CodeQuality/Rector/If_/ShortenElseIfRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\ShortenElseIfRector`](../rules/CodeQuality/Rector/If_/ShortenElseIfRector.php)
 
 ```diff
  class SomeClass
@@ -1021,7 +1021,7 @@ Shortens else/if to elseif
 
 Simplify array_search to in_array
 
--   class: [`Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector`](../rules/CodeQuality/Rector/Identical/SimplifyArraySearchRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector`](../rules/CodeQuality/Rector/Identical/SimplifyArraySearchRector.php)
 
 ```diff
 -array_search("searching", $array) !== false;
@@ -1041,7 +1041,7 @@ Simplify array_search to in_array
 
 Simplify bool value compare to true or false
 
--   class: [`Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector`](../rules/CodeQuality/Rector/Identical/SimplifyBoolIdenticalTrueRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector`](../rules/CodeQuality/Rector/Identical/SimplifyBoolIdenticalTrueRector.php)
 
 ```diff
  class SomeClass
@@ -1063,7 +1063,7 @@ Simplify bool value compare to true or false
 
 Simplify conditions
 
--   class: [`Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector`](../rules/CodeQuality/Rector/Identical/SimplifyConditionsRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\SimplifyConditionsRector`](../rules/CodeQuality/Rector/Identical/SimplifyConditionsRector.php)
 
 ```diff
 -if (! ($foo !== 'bar')) {...
@@ -1076,7 +1076,7 @@ Simplify conditions
 
 Simplify negated conditions with de Morgan theorem
 
--   class: [`Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector`](../rules/CodeQuality/Rector/BooleanNot/SimplifyDeMorganBinaryRector.php)
+- class: [`Rector\CodeQuality\Rector\BooleanNot\SimplifyDeMorganBinaryRector`](../rules/CodeQuality/Rector/BooleanNot/SimplifyDeMorganBinaryRector.php)
 
 ```diff
  $a = 5;
@@ -1091,7 +1091,7 @@ Simplify negated conditions with de Morgan theorem
 
 Simplify `is_array` and `empty` functions combination into a simple identical check for an empty array
 
--   class: [`Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector`](../rules/CodeQuality/Rector/BooleanAnd/SimplifyEmptyArrayCheckRector.php)
+- class: [`Rector\CodeQuality\Rector\BooleanAnd\SimplifyEmptyArrayCheckRector`](../rules/CodeQuality/Rector/BooleanAnd/SimplifyEmptyArrayCheckRector.php)
 
 ```diff
 -is_array($values) && empty($values)
@@ -1104,7 +1104,7 @@ Simplify `is_array` and `empty` functions combination into a simple identical ch
 
 Simplify `empty()` functions calls on empty arrays
 
--   class: [`Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector`](../rules/CodeQuality/Rector/Empty_/SimplifyEmptyCheckOnEmptyArrayRector.php)
+- class: [`Rector\CodeQuality\Rector\Empty_\SimplifyEmptyCheckOnEmptyArrayRector`](../rules/CodeQuality/Rector/Empty_/SimplifyEmptyCheckOnEmptyArrayRector.php)
 
 ```diff
  $array = [];
@@ -1120,7 +1120,7 @@ Simplify `empty()` functions calls on empty arrays
 
 Changes foreach that returns set value to ??
 
--   class: [`Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector`](../rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php)
+- class: [`Rector\CodeQuality\Rector\Foreach_\SimplifyForeachToCoalescingRector`](../rules/CodeQuality/Rector/Foreach_/SimplifyForeachToCoalescingRector.php)
 
 ```diff
 -foreach ($this->oldToNewFunctions as $oldFunction => $newFunction) {
@@ -1139,7 +1139,7 @@ Changes foreach that returns set value to ??
 
 Simplify count of `func_get_args()` to `func_num_args()`
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyFuncGetArgsCountRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyFuncGetArgsCountRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyFuncGetArgsCountRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyFuncGetArgsCountRector.php)
 
 ```diff
 -count(func_get_args());
@@ -1152,7 +1152,7 @@ Simplify count of `func_get_args()` to `func_num_args()`
 
 Changes if/else for same value as assign to ternary
 
--   class: [`Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector`](../rules/CodeQuality/Rector/If_/SimplifyIfElseToTernaryRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector`](../rules/CodeQuality/Rector/If_/SimplifyIfElseToTernaryRector.php)
 
 ```diff
  class SomeClass
@@ -1175,7 +1175,7 @@ Changes if/else for same value as assign to ternary
 
 Changes redundant null check to instant return
 
--   class: [`Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector`](../rules/CodeQuality/Rector/If_/SimplifyIfNotNullReturnRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\SimplifyIfNotNullReturnRector`](../rules/CodeQuality/Rector/If_/SimplifyIfNotNullReturnRector.php)
 
 ```diff
  $newNode = 'something';
@@ -1193,7 +1193,7 @@ Changes redundant null check to instant return
 
 Direct return on if nullable check before return
 
--   class: [`Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector`](../rules/CodeQuality/Rector/If_/SimplifyIfNullableReturnRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\SimplifyIfNullableReturnRector`](../rules/CodeQuality/Rector/If_/SimplifyIfNullableReturnRector.php)
 
 ```diff
  class SomeClass
@@ -1220,7 +1220,7 @@ Direct return on if nullable check before return
 
 Shortens if return false/true to direct return
 
--   class: [`Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector`](../rules/CodeQuality/Rector/If_/SimplifyIfReturnBoolRector.php)
+- class: [`Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector`](../rules/CodeQuality/Rector/If_/SimplifyIfReturnBoolRector.php)
 
 ```diff
 -if (strpos($docToken->getContent(), "\n") === false) {
@@ -1237,7 +1237,7 @@ Shortens if return false/true to direct return
 
 Removes unneeded `array_values()` in `in_array()` call
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyInArrayValuesRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyInArrayValuesRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyInArrayValuesRector.php)
 
 ```diff
 -in_array("key", array_values($array), true);
@@ -1250,7 +1250,7 @@ Removes unneeded `array_values()` in `in_array()` call
 
 Simplify regex pattern to known ranges
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyRegexPatternRector.php)
 
 ```diff
  class SomeClass
@@ -1269,7 +1269,7 @@ Simplify regex pattern to known ranges
 
 Simplify `strpos(strtolower()`, "...") calls
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyStrposLowerRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector`](../rules/CodeQuality/Rector/FuncCall/SimplifyStrposLowerRector.php)
 
 ```diff
 -strpos(strtolower($var), "...")
@@ -1282,7 +1282,7 @@ Simplify `strpos(strtolower()`, "...") calls
 
 Simplify tautology ternary to value
 
--   class: [`Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector`](../rules/CodeQuality/Rector/Ternary/SimplifyTautologyTernaryRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\SimplifyTautologyTernaryRector`](../rules/CodeQuality/Rector/Ternary/SimplifyTautologyTernaryRector.php)
 
 ```diff
 -$value = ($fullyQualifiedTypeHint !== $typeHint) ? $fullyQualifiedTypeHint : $typeHint;
@@ -1297,7 +1297,7 @@ Removes useless variable assigns
 
 :wrench: **configure it!**
 
--   class: [`Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector`](../rules/CodeQuality/Rector/FunctionLike/SimplifyUselessVariableRector.php)
+- class: [`Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector`](../rules/CodeQuality/Rector/FunctionLike/SimplifyUselessVariableRector.php)
 
 ```diff
  function () {
@@ -1325,7 +1325,7 @@ Removes useless variable assigns
 
 Changes `in_array()` with single element to ===
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector`](../rules/CodeQuality/Rector/FuncCall/SingleInArrayToCompareRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector`](../rules/CodeQuality/Rector/FuncCall/SingleInArrayToCompareRector.php)
 
 ```diff
  class SomeClass
@@ -1346,7 +1346,7 @@ Changes `in_array()` with single element to ===
 
 Change switch with only 1 check to if
 
--   class: [`Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector`](../rules/CodeQuality/Rector/Switch_/SingularSwitchToIfRector.php)
+- class: [`Rector\CodeQuality\Rector\Switch_\SingularSwitchToIfRector`](../rules/CodeQuality/Rector/Switch_/SingularSwitchToIfRector.php)
 
 ```diff
  class SomeObject
@@ -1371,7 +1371,7 @@ Change switch with only 1 check to if
 
 Change `static::methodCall()` to `self::methodCall()` on final class
 
--   class: [`Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector`](../rules/CodeQuality/Rector/Class_/StaticToSelfStaticMethodCallOnFinalClassRector.php)
+- class: [`Rector\CodeQuality\Rector\Class_\StaticToSelfStaticMethodCallOnFinalClassRector`](../rules/CodeQuality/Rector/Class_/StaticToSelfStaticMethodCallOnFinalClassRector.php)
 
 ```diff
  final class SomeClass
@@ -1395,7 +1395,7 @@ Change `static::methodCall()` to `self::methodCall()` on final class
 
 Changes strlen comparison to 0 to direct empty string compare
 
--   class: [`Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector`](../rules/CodeQuality/Rector/Identical/StrlenZeroToIdenticalEmptyStringRector.php)
+- class: [`Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector`](../rules/CodeQuality/Rector/Identical/StrlenZeroToIdenticalEmptyStringRector.php)
 
 ```diff
  class SomeClass
@@ -1414,7 +1414,7 @@ Changes strlen comparison to 0 to direct empty string compare
 
 Switch negated ternary condition rector
 
--   class: [`Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector`](../rules/CodeQuality/Rector/Ternary/SwitchNegatedTernaryRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\SwitchNegatedTernaryRector`](../rules/CodeQuality/Rector/Ternary/SwitchNegatedTernaryRector.php)
 
 ```diff
  class SomeClass
@@ -1437,7 +1437,7 @@ Switch negated ternary condition rector
 
 Change switch (true) to if statements
 
--   class: [`Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector`](../rules/CodeQuality/Rector/Switch_/SwitchTrueToIfRector.php)
+- class: [`Rector\CodeQuality\Rector\Switch_\SwitchTrueToIfRector`](../rules/CodeQuality/Rector/Switch_/SwitchTrueToIfRector.php)
 
 ```diff
  class SomeClass
@@ -1473,7 +1473,7 @@ Change switch (true) to if statements
 
 Change ternary empty on array property with array dim fetch to coalesce operator
 
--   class: [`Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector`](../rules/CodeQuality/Rector/Ternary/TernaryEmptyArrayArrayDimFetchToCoalesceRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\TernaryEmptyArrayArrayDimFetchToCoalesceRector`](../rules/CodeQuality/Rector/Ternary/TernaryEmptyArrayArrayDimFetchToCoalesceRector.php)
 
 ```diff
  final class SomeClass
@@ -1494,7 +1494,7 @@ Change ternary empty on array property with array dim fetch to coalesce operator
 
 Change ternary with false to if and explicit call
 
--   class: [`Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector`](../rules/CodeQuality/Rector/Expression/TernaryFalseExpressionToIfRector.php)
+- class: [`Rector\CodeQuality\Rector\Expression\TernaryFalseExpressionToIfRector`](../rules/CodeQuality/Rector/Expression/TernaryFalseExpressionToIfRector.php)
 
 ```diff
  final class SomeClass
@@ -1515,7 +1515,7 @@ Change ternary with false to if and explicit call
 
 When throwing into a catch block, checks that the previous exception is passed to the new throw clause
 
--   class: [`Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector`](../rules/CodeQuality/Rector/Catch_/ThrowWithPreviousExceptionRector.php)
+- class: [`Rector\CodeQuality\Rector\Catch_\ThrowWithPreviousExceptionRector`](../rules/CodeQuality/Rector/Catch_/ThrowWithPreviousExceptionRector.php)
 
 ```diff
  class SomeClass
@@ -1538,7 +1538,7 @@ When throwing into a catch block, checks that the previous exception is passed t
 
 Remove unnecessary ternary expressions
 
--   class: [`Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector`](../rules/CodeQuality/Rector/Ternary/UnnecessaryTernaryExpressionRector.php)
+- class: [`Rector\CodeQuality\Rector\Ternary\UnnecessaryTernaryExpressionRector`](../rules/CodeQuality/Rector/Ternary/UnnecessaryTernaryExpressionRector.php)
 
 ```diff
 -$foo === $bar ? true : false;
@@ -1551,7 +1551,7 @@ Remove unnecessary ternary expressions
 
 Change foreach with unused `$value` but only `$key,` to `array_keys()`
 
--   class: [`Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector`](../rules/CodeQuality/Rector/Foreach_/UnusedForeachValueToArrayKeysRector.php)
+- class: [`Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector`](../rules/CodeQuality/Rector/Foreach_/UnusedForeachValueToArrayKeysRector.php)
 
 ```diff
  class SomeClass
@@ -1573,7 +1573,7 @@ Change foreach with unused `$value` but only `$key,` to `array_keys()`
 
 unwrap `sprintf()` with one argument
 
--   class: [`Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector`](../rules/CodeQuality/Rector/FuncCall/UnwrapSprintfOneArgumentRector.php)
+- class: [`Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector`](../rules/CodeQuality/Rector/FuncCall/UnwrapSprintfOneArgumentRector.php)
 
 ```diff
 -echo sprintf('value');
@@ -1586,7 +1586,7 @@ unwrap `sprintf()` with one argument
 
 Use ===/!== over ==/!=, it values have the same type
 
--   class: [`Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector`](../rules/CodeQuality/Rector/Equal/UseIdenticalOverEqualWithSameTypeRector.php)
+- class: [`Rector\CodeQuality\Rector\Equal\UseIdenticalOverEqualWithSameTypeRector`](../rules/CodeQuality/Rector/Equal/UseIdenticalOverEqualWithSameTypeRector.php)
 
 ```diff
  class SomeClass
@@ -1609,7 +1609,7 @@ Use ===/!== over ==/!=, it values have the same type
 
 Change `array_merge()` to spread operator
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector`](../rules/CodingStyle/Rector/FuncCall/ArraySpreadInsteadOfArrayMergeRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\ArraySpreadInsteadOfArrayMergeRector`](../rules/CodingStyle/Rector/FuncCall/ArraySpreadInsteadOfArrayMergeRector.php)
 
 ```diff
  class SomeClass
@@ -1635,7 +1635,7 @@ Change `array_merge()` to spread operator
 
 Replace `call_user_func_array()` with variadic
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector`](../rules/CodingStyle/Rector/FuncCall/CallUserFuncArrayToVariadicRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\CallUserFuncArrayToVariadicRector`](../rules/CodingStyle/Rector/FuncCall/CallUserFuncArrayToVariadicRector.php)
 
 ```diff
  class SomeClass
@@ -1654,7 +1654,7 @@ Replace `call_user_func_array()` with variadic
 
 Refactor `call_user_func()` on known class method to a method call
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector`](../rules/CodingStyle/Rector/FuncCall/CallUserFuncToMethodCallRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\CallUserFuncToMethodCallRector`](../rules/CodingStyle/Rector/FuncCall/CallUserFuncToMethodCallRector.php)
 
 ```diff
  final class SomeClass
@@ -1673,7 +1673,7 @@ Refactor `call_user_func()` on known class method to a method call
 
 Type and name of catch exception should match
 
--   class: [`Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector`](../rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php)
+- class: [`Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector`](../rules/CodingStyle/Rector/Catch_/CatchExceptionNameMatchingTypeRector.php)
 
 ```diff
  try {
@@ -1691,7 +1691,7 @@ Type and name of catch exception should match
 
 Changes various implode forms to consistent one
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector`](../rules/CodingStyle/Rector/FuncCall/ConsistentImplodeRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\ConsistentImplodeRector`](../rules/CodingStyle/Rector/FuncCall/ConsistentImplodeRector.php)
 
 ```diff
  class SomeClass
@@ -1712,7 +1712,7 @@ Changes various implode forms to consistent one
 
 Change count array comparison to empty array comparison to improve performance
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector`](../rules/CodingStyle/Rector/FuncCall/CountArrayToEmptyArrayComparisonRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector`](../rules/CodingStyle/Rector/FuncCall/CountArrayToEmptyArrayComparisonRector.php)
 
 ```diff
 -count($array) === 0;
@@ -1731,7 +1731,7 @@ Convert enscaped {$string} to more readable sprintf or concat, if no mask is use
 
 :wrench: **configure it!**
 
--   class: [`Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector`](../rules/CodingStyle/Rector/Encapsed/EncapsedStringsToSprintfRector.php)
+- class: [`Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector`](../rules/CodingStyle/Rector/Encapsed/EncapsedStringsToSprintfRector.php)
 
 ```diff
 -echo "Unsupported format {$format} - use another";
@@ -1757,7 +1757,7 @@ Convert enscaped {$string} to more readable sprintf or concat, if no mask is use
 
 Refactor `func_get_args()` in to a variadic param
 
--   class: [`Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector`](../rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php)
+- class: [`Rector\CodingStyle\Rector\ClassMethod\FuncGetArgsToVariadicParamRector`](../rules/CodingStyle/Rector/ClassMethod/FuncGetArgsToVariadicParamRector.php)
 
 ```diff
 -function run()
@@ -1773,7 +1773,7 @@ Refactor `func_get_args()` in to a variadic param
 
 Upgrade string callback functions to first class callable
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector`](../rules/CodingStyle/Rector/FuncCall/FunctionFirstClassCallableRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector`](../rules/CodingStyle/Rector/FuncCall/FunctionFirstClassCallableRector.php)
 
 ```diff
  final class SomeClass
@@ -1792,7 +1792,7 @@ Upgrade string callback functions to first class callable
 
 Make method visibility same as parent one
 
--   class: [`Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector`](../rules/CodingStyle/Rector/ClassMethod/MakeInheritedMethodVisibilitySameAsParentRector.php)
+- class: [`Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector`](../rules/CodingStyle/Rector/ClassMethod/MakeInheritedMethodVisibilitySameAsParentRector.php)
 
 ```diff
  class ChildClass extends ParentClass
@@ -1817,7 +1817,7 @@ Make method visibility same as parent one
 
 Change multidimensional array access in foreach to array destruct
 
--   class: [`Rector\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector`](../rules/CodingStyle/Rector/Foreach_/MultiDimensionalArrayToArrayDestructRector.php)
+- class: [`Rector\CodingStyle\Rector\Foreach_\MultiDimensionalArrayToArrayDestructRector`](../rules/CodingStyle/Rector/Foreach_/MultiDimensionalArrayToArrayDestructRector.php)
 
 ```diff
  class SomeClass
@@ -1844,7 +1844,7 @@ Change multidimensional array access in foreach to array destruct
 
 Add new line after statements to tidify code
 
--   class: [`Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector`](../rules/CodingStyle/Rector/Stmt/NewlineAfterStatementRector.php)
+- class: [`Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector`](../rules/CodingStyle/Rector/Stmt/NewlineAfterStatementRector.php)
 
 ```diff
  class SomeClass
@@ -1865,7 +1865,7 @@ Add new line after statements to tidify code
 
 Add extra space before new assign set
 
--   class: [`Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector`](../rules/CodingStyle/Rector/ClassMethod/NewlineBeforeNewAssignSetRector.php)
+- class: [`Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector`](../rules/CodingStyle/Rector/ClassMethod/NewlineBeforeNewAssignSetRector.php)
 
 ```diff
  final class SomeClass
@@ -1887,7 +1887,7 @@ Add extra space before new assign set
 
 Changes negate of empty comparison of nullable value to explicit === or !== compare
 
--   class: [`Rector\CodingStyle\Rector\If_\NullableCompareToNullRector`](../rules/CodingStyle/Rector/If_/NullableCompareToNullRector.php)
+- class: [`Rector\CodingStyle\Rector\If_\NullableCompareToNullRector`](../rules/CodingStyle/Rector/If_/NullableCompareToNullRector.php)
 
 ```diff
  /** @var stdClass|null $value */
@@ -1904,9 +1904,9 @@ Changes negate of empty comparison of nullable value to explicit === or !== comp
 
 ### PostIncDecToPreIncDecRector
 
-Use ++$value or --$value instead of `$value++` or `$value--`
+Use ++$value or --$value  instead of `$value++` or `$value--`
 
--   class: [`Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector`](../rules/CodingStyle/Rector/PostInc/PostIncDecToPreIncDecRector.php)
+- class: [`Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector`](../rules/CodingStyle/Rector/PostInc/PostIncDecToPreIncDecRector.php)
 
 ```diff
  class SomeClass
@@ -1927,7 +1927,7 @@ Use ++$value or --$value instead of `$value++` or `$value--`
 
 Remove final from constants in classes defined as final
 
--   class: [`Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector`](../rules/CodingStyle/Rector/ClassConst/RemoveFinalFromConstRector.php)
+- class: [`Rector\CodingStyle\Rector\ClassConst\RemoveFinalFromConstRector`](../rules/CodingStyle/Rector/ClassConst/RemoveFinalFromConstRector.php)
 
 ```diff
  final class SomeClass
@@ -1943,7 +1943,7 @@ Remove final from constants in classes defined as final
 
 Remove useless alias in use statement as same name with last use statement name
 
--   class: [`Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector`](../rules/CodingStyle/Rector/Stmt/RemoveUselessAliasInUseStatementRector.php)
+- class: [`Rector\CodingStyle\Rector\Stmt\RemoveUselessAliasInUseStatementRector`](../rules/CodingStyle/Rector/Stmt/RemoveUselessAliasInUseStatementRector.php)
 
 ```diff
 -use App\Bar as Bar;
@@ -1956,7 +1956,7 @@ Remove useless alias in use statement as same name with last use statement name
 
 Split multi use imports and trait statements to standalone lines
 
--   class: [`Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector`](../rules/CodingStyle/Rector/Use_/SeparateMultiUseImportsRector.php)
+- class: [`Rector\CodingStyle\Rector\Use_\SeparateMultiUseImportsRector`](../rules/CodingStyle/Rector/Use_/SeparateMultiUseImportsRector.php)
 
 ```diff
 -use A, B;
@@ -1977,7 +1977,7 @@ Split multi use imports and trait statements to standalone lines
 
 Split multiple inline assigns to each own lines default value, to prevent undefined array issues
 
--   class: [`Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector`](../rules/CodingStyle/Rector/Assign/SplitDoubleAssignRector.php)
+- class: [`Rector\CodingStyle\Rector\Assign\SplitDoubleAssignRector`](../rules/CodingStyle/Rector/Assign/SplitDoubleAssignRector.php)
 
 ```diff
  class SomeClass
@@ -1997,7 +1997,7 @@ Split multiple inline assigns to each own lines default value, to prevent undefi
 
 Separate class constant to own lines
 
--   class: [`Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector`](../rules/CodingStyle/Rector/ClassConst/SplitGroupedClassConstantsRector.php)
+- class: [`Rector\CodingStyle\Rector\ClassConst\SplitGroupedClassConstantsRector`](../rules/CodingStyle/Rector/ClassConst/SplitGroupedClassConstantsRector.php)
 
 ```diff
  class SomeClass
@@ -2014,7 +2014,7 @@ Separate class constant to own lines
 
 Separate grouped properties to own lines
 
--   class: [`Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector`](../rules/CodingStyle/Rector/Property/SplitGroupedPropertiesRector.php)
+- class: [`Rector\CodingStyle\Rector\Property\SplitGroupedPropertiesRector`](../rules/CodingStyle/Rector/Property/SplitGroupedPropertiesRector.php)
 
 ```diff
  class SomeClass
@@ -2038,7 +2038,7 @@ Separate grouped properties to own lines
 
 Changes ArrowFunction to be static when possible
 
--   class: [`Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector`](../rules/CodingStyle/Rector/ArrowFunction/StaticArrowFunctionRector.php)
+- class: [`Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector`](../rules/CodingStyle/Rector/ArrowFunction/StaticArrowFunctionRector.php)
 
 ```diff
 -fn (): string => 'test';
@@ -2051,7 +2051,7 @@ Changes ArrowFunction to be static when possible
 
 Changes Closure to be static when possible
 
--   class: [`Rector\CodingStyle\Rector\Closure\StaticClosureRector`](../rules/CodingStyle/Rector/Closure/StaticClosureRector.php)
+- class: [`Rector\CodingStyle\Rector\Closure\StaticClosureRector`](../rules/CodingStyle/Rector/Closure/StaticClosureRector.php)
 
 ```diff
 -function () {
@@ -2070,7 +2070,7 @@ Changes Closure to be static when possible
 
 Makes array_search search for identical elements
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector`](../rules/CodingStyle/Rector/FuncCall/StrictArraySearchRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\StrictArraySearchRector`](../rules/CodingStyle/Rector/FuncCall/StrictArraySearchRector.php)
 
 ```diff
 -array_search($value, $items);
@@ -2083,7 +2083,7 @@ Makes array_search search for identical elements
 
 Prefer quote that are not inside the string
 
--   class: [`Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector`](../rules/CodingStyle/Rector/String_/SymplifyQuoteEscapeRector.php)
+- class: [`Rector\CodingStyle\Rector\String_\SymplifyQuoteEscapeRector`](../rules/CodingStyle/Rector/String_/SymplifyQuoteEscapeRector.php)
 
 ```diff
  class SomeClass
@@ -2104,7 +2104,7 @@ Prefer quote that are not inside the string
 
 Assign outcome of ternary condition to variable, where applicable
 
--   class: [`Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector`](../rules/CodingStyle/Rector/Ternary/TernaryConditionVariableAssignmentRector.php)
+- class: [`Rector\CodingStyle\Rector\Ternary\TernaryConditionVariableAssignmentRector`](../rules/CodingStyle/Rector/Ternary/TernaryConditionVariableAssignmentRector.php)
 
 ```diff
  function ternary($value)
@@ -2120,7 +2120,7 @@ Assign outcome of ternary condition to variable, where applicable
 
 Use `class` keyword for class name resolution in string instead of hardcoded string reference
 
--   class: [`Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector`](../rules/CodingStyle/Rector/String_/UseClassKeywordForClassNameResolutionRector.php)
+- class: [`Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRector`](../rules/CodingStyle/Rector/String_/UseClassKeywordForClassNameResolutionRector.php)
 
 ```diff
 -$value = 'App\SomeClass::someMethod()';
@@ -2133,7 +2133,7 @@ Use `class` keyword for class name resolution in string instead of hardcoded str
 
 Changes use of call to version compare function to use of PHP version constant
 
--   class: [`Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector`](../rules/CodingStyle/Rector/FuncCall/VersionCompareFuncCallToConstantRector.php)
+- class: [`Rector\CodingStyle\Rector\FuncCall\VersionCompareFuncCallToConstantRector`](../rules/CodingStyle/Rector/FuncCall/VersionCompareFuncCallToConstantRector.php)
 
 ```diff
  class SomeClass
@@ -2152,7 +2152,7 @@ Changes use of call to version compare function to use of PHP version constant
 
 Wrap encapsed variables in curly braces
 
--   class: [`Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector`](../rules/CodingStyle/Rector/Encapsed/WrapEncapsedVariableInCurlyBracesRector.php)
+- class: [`Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector`](../rules/CodingStyle/Rector/Encapsed/WrapEncapsedVariableInCurlyBracesRector.php)
 
 ```diff
  function run($world)
@@ -2170,7 +2170,7 @@ Wrap encapsed variables in curly braces
 
 Removes recasting of the same type
 
--   class: [`Rector\DeadCode\Rector\Cast\RecastingRemovalRector`](../rules/DeadCode/Rector/Cast/RecastingRemovalRector.php)
+- class: [`Rector\DeadCode\Rector\Cast\RecastingRemovalRector`](../rules/DeadCode/Rector/Cast/RecastingRemovalRector.php)
 
 ```diff
  $string = '';
@@ -2188,7 +2188,7 @@ Removes recasting of the same type
 
 Reduce always false in a if ( || ) condition
 
--   class: [`Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector`](../rules/DeadCode/Rector/If_/ReduceAlwaysFalseIfOrRector.php)
+- class: [`Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector`](../rules/DeadCode/Rector/If_/ReduceAlwaysFalseIfOrRector.php)
 
 ```diff
  class SomeClass
@@ -2211,7 +2211,7 @@ Reduce always false in a if ( || ) condition
 
 Remove if condition that is always true
 
--   class: [`Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector`](../rules/DeadCode/Rector/If_/RemoveAlwaysTrueIfConditionRector.php)
+- class: [`Rector\DeadCode\Rector\If_\RemoveAlwaysTrueIfConditionRector`](../rules/DeadCode/Rector/If_/RemoveAlwaysTrueIfConditionRector.php)
 
 ```diff
  final class SomeClass
@@ -2234,7 +2234,7 @@ Remove if condition that is always true
 
 Remove and true that has no added value
 
--   class: [`Rector\DeadCode\Rector\BooleanAnd\RemoveAndTrueRector`](../rules/DeadCode/Rector/BooleanAnd/RemoveAndTrueRector.php)
+- class: [`Rector\DeadCode\Rector\BooleanAnd\RemoveAndTrueRector`](../rules/DeadCode/Rector/BooleanAnd/RemoveAndTrueRector.php)
 
 ```diff
  class SomeClass
@@ -2255,7 +2255,7 @@ Remove annotation by names
 
 :wrench: **configure it!**
 
--   class: [`Rector\DeadCode\Rector\ClassLike\RemoveAnnotationRector`](../rules/DeadCode/Rector/ClassLike/RemoveAnnotationRector.php)
+- class: [`Rector\DeadCode\Rector\ClassLike\RemoveAnnotationRector`](../rules/DeadCode/Rector/ClassLike/RemoveAnnotationRector.php)
 
 ```diff
 -/**
@@ -2272,7 +2272,7 @@ Remove annotation by names
 
 Remove (string) casting when it comes to concat, that does this by default
 
--   class: [`Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector`](../rules/DeadCode/Rector/Concat/RemoveConcatAutocastRector.php)
+- class: [`Rector\DeadCode\Rector\Concat\RemoveConcatAutocastRector`](../rules/DeadCode/Rector/Concat/RemoveConcatAutocastRector.php)
 
 ```diff
  class SomeConcatingClass
@@ -2291,7 +2291,7 @@ Remove (string) casting when it comes to concat, that does this by default
 
 Remove dead condition above return
 
--   class: [`Rector\DeadCode\Rector\Return_\RemoveDeadConditionAboveReturnRector`](../rules/DeadCode/Rector/Return_/RemoveDeadConditionAboveReturnRector.php)
+- class: [`Rector\DeadCode\Rector\Return_\RemoveDeadConditionAboveReturnRector`](../rules/DeadCode/Rector/Return_/RemoveDeadConditionAboveReturnRector.php)
 
 ```diff
  final class SomeClass
@@ -2313,7 +2313,7 @@ Remove dead condition above return
 
 Remove useless continue at the end of loops
 
--   class: [`Rector\DeadCode\Rector\For_\RemoveDeadContinueRector`](../rules/DeadCode/Rector/For_/RemoveDeadContinueRector.php)
+- class: [`Rector\DeadCode\Rector\For_\RemoveDeadContinueRector`](../rules/DeadCode/Rector/For_/RemoveDeadContinueRector.php)
 
 ```diff
  while ($i < 10) {
@@ -2328,7 +2328,7 @@ Remove useless continue at the end of loops
 
 Remove if, foreach and for that does not do anything
 
--   class: [`Rector\DeadCode\Rector\For_\RemoveDeadIfForeachForRector`](../rules/DeadCode/Rector/For_/RemoveDeadIfForeachForRector.php)
+- class: [`Rector\DeadCode\Rector\For_\RemoveDeadIfForeachForRector`](../rules/DeadCode/Rector/For_/RemoveDeadIfForeachForRector.php)
 
 ```diff
  class SomeClass
@@ -2352,7 +2352,7 @@ Remove if, foreach and for that does not do anything
 
 Remove dead instanceof check on type hinted variable
 
--   class: [`Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector`](../rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php)
+- class: [`Rector\DeadCode\Rector\If_\RemoveDeadInstanceOfRector`](../rules/DeadCode/Rector/If_/RemoveDeadInstanceOfRector.php)
 
 ```diff
  function run(stdClass $stdClass)
@@ -2371,7 +2371,7 @@ Remove dead instanceof check on type hinted variable
 
 Remove loop with no body
 
--   class: [`Rector\DeadCode\Rector\For_\RemoveDeadLoopRector`](../rules/DeadCode/Rector/For_/RemoveDeadLoopRector.php)
+- class: [`Rector\DeadCode\Rector\For_\RemoveDeadLoopRector`](../rules/DeadCode/Rector/For_/RemoveDeadLoopRector.php)
 
 ```diff
  class SomeClass
@@ -2390,7 +2390,7 @@ Remove loop with no body
 
 Remove last return in the functions, since does not do anything
 
--   class: [`Rector\DeadCode\Rector\FunctionLike\RemoveDeadReturnRector`](../rules/DeadCode/Rector/FunctionLike/RemoveDeadReturnRector.php)
+- class: [`Rector\DeadCode\Rector\FunctionLike\RemoveDeadReturnRector`](../rules/DeadCode/Rector/FunctionLike/RemoveDeadReturnRector.php)
 
 ```diff
  class SomeClass
@@ -2414,7 +2414,7 @@ Remove last return in the functions, since does not do anything
 
 Removes dead code statements
 
--   class: [`Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector`](../rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php)
+- class: [`Rector\DeadCode\Rector\Expression\RemoveDeadStmtRector`](../rules/DeadCode/Rector/Expression/RemoveDeadStmtRector.php)
 
 ```diff
 -$value = 5;
@@ -2428,7 +2428,7 @@ Removes dead code statements
 
 Remove dead try/catch
 
--   class: [`Rector\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector`](../rules/DeadCode/Rector/TryCatch/RemoveDeadTryCatchRector.php)
+- class: [`Rector\DeadCode\Rector\TryCatch\RemoveDeadTryCatchRector`](../rules/DeadCode/Rector/TryCatch/RemoveDeadTryCatchRector.php)
 
 ```diff
  class SomeClass
@@ -2451,7 +2451,7 @@ Remove dead try/catch
 
 Remove operation with 1 and 0, that have no effect on the value
 
--   class: [`Rector\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector`](../rules/DeadCode/Rector/Plus/RemoveDeadZeroAndOneOperationRector.php)
+- class: [`Rector\DeadCode\Rector\Plus\RemoveDeadZeroAndOneOperationRector`](../rules/DeadCode/Rector/Plus/RemoveDeadZeroAndOneOperationRector.php)
 
 ```diff
  class SomeClass
@@ -2472,7 +2472,7 @@ Remove operation with 1 and 0, that have no effect on the value
 
 Simplify useless double assigns
 
--   class: [`Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector`](../rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php)
+- class: [`Rector\DeadCode\Rector\Assign\RemoveDoubleAssignRector`](../rules/DeadCode/Rector/Assign/RemoveDoubleAssignRector.php)
 
 ```diff
 -$value = 1;
@@ -2485,7 +2485,7 @@ Simplify useless double assigns
 
 Remove duplicated key in defined arrays.
 
--   class: [`Rector\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector`](../rules/DeadCode/Rector/Array_/RemoveDuplicatedArrayKeyRector.php)
+- class: [`Rector\DeadCode\Rector\Array_\RemoveDuplicatedArrayKeyRector`](../rules/DeadCode/Rector/Array_/RemoveDuplicatedArrayKeyRector.php)
 
 ```diff
  $item = [
@@ -2498,9 +2498,9 @@ Remove duplicated key in defined arrays.
 
 ### RemoveDuplicatedCaseInSwitchRector
 
-2 following switch keys with identical will be reduced to one result
+2 following switch keys with identical  will be reduced to one result
 
--   class: [`Rector\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector`](../rules/DeadCode/Rector/Switch_/RemoveDuplicatedCaseInSwitchRector.php)
+- class: [`Rector\DeadCode\Rector\Switch_\RemoveDuplicatedCaseInSwitchRector`](../rules/DeadCode/Rector/Switch_/RemoveDuplicatedCaseInSwitchRector.php)
 
 ```diff
  class SomeClass
@@ -2527,7 +2527,7 @@ Remove duplicated key in defined arrays.
 
 Remove empty class methods not required by parents
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector`](../rules/DeadCode/Rector/ClassMethod/RemoveEmptyClassMethodRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector`](../rules/DeadCode/Rector/ClassMethod/RemoveEmptyClassMethodRector.php)
 
 ```diff
  class OrphanClass
@@ -2544,7 +2544,7 @@ Remove empty class methods not required by parents
 
 Removes non-existing `@var` annotations above the code
 
--   class: [`Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector`](../rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php)
+- class: [`Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector`](../rules/DeadCode/Rector/Node/RemoveNonExistingVarAnnotationRector.php)
 
 ```diff
  class SomeClass
@@ -2563,7 +2563,7 @@ Removes non-existing `@var` annotations above the code
 
 Remove initialization with null value from property declarations
 
--   class: [`Rector\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector`](../rules/DeadCode/Rector/PropertyProperty/RemoveNullPropertyInitializationRector.php)
+- class: [`Rector\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector`](../rules/DeadCode/Rector/PropertyProperty/RemoveNullPropertyInitializationRector.php)
 
 ```diff
  class SunshineCommand extends ParentClassWithNewConstructor
@@ -2579,7 +2579,7 @@ Remove initialization with null value from property declarations
 
 Remove `@var/@param/@return` null docblock
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector`](../rules/DeadCode/Rector/ClassMethod/RemoveNullTagValueNodeRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveNullTagValueNodeRector`](../rules/DeadCode/Rector/ClassMethod/RemoveNullTagValueNodeRector.php)
 
 ```diff
  class SomeClass
@@ -2600,7 +2600,7 @@ Remove `@var/@param/@return` null docblock
 
 Remove unused parent call with no parent class
 
--   class: [`Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector`](../rules/DeadCode/Rector/StaticCall/RemoveParentCallWithoutParentRector.php)
+- class: [`Rector\DeadCode\Rector\StaticCall\RemoveParentCallWithoutParentRector`](../rules/DeadCode/Rector/StaticCall/RemoveParentCallWithoutParentRector.php)
 
 ```diff
  class OrphanClass
@@ -2618,7 +2618,7 @@ Remove unused parent call with no parent class
 
 Remove unneeded PHP_VERSION_ID conditional checks
 
--   class: [`Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector`](../rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php)
+- class: [`Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector`](../rules/DeadCode/Rector/ConstFetch/RemovePhpVersionIdCheckRector.php)
 
 ```diff
  class SomeClass
@@ -2640,7 +2640,7 @@ Remove unneeded PHP_VERSION_ID conditional checks
 
 Remove dead instanceof check on type hinted property
 
--   class: [`Rector\DeadCode\Rector\If_\RemoveTypedPropertyDeadInstanceOfRector`](../rules/DeadCode/Rector/If_/RemoveTypedPropertyDeadInstanceOfRector.php)
+- class: [`Rector\DeadCode\Rector\If_\RemoveTypedPropertyDeadInstanceOfRector`](../rules/DeadCode/Rector/If_/RemoveTypedPropertyDeadInstanceOfRector.php)
 
 ```diff
  final class SomeClass
@@ -2670,7 +2670,7 @@ Remove dead instanceof check on type hinted property
 
 Remove unreachable statements
 
--   class: [`Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector`](../rules/DeadCode/Rector/Stmt/RemoveUnreachableStatementRector.php)
+- class: [`Rector\DeadCode\Rector\Stmt\RemoveUnreachableStatementRector`](../rules/DeadCode/Rector/Stmt/RemoveUnreachableStatementRector.php)
 
 ```diff
  class SomeClass
@@ -2690,7 +2690,7 @@ Remove unreachable statements
 
 Remove unused parameter in constructor
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedConstructorParamRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedConstructorParamRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedConstructorParamRector.php)
 
 ```diff
  final class SomeClass
@@ -2711,7 +2711,7 @@ Remove unused parameter in constructor
 
 Remove unused key in foreach
 
--   class: [`Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector`](../rules/DeadCode/Rector/Foreach_/RemoveUnusedForeachKeyRector.php)
+- class: [`Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector`](../rules/DeadCode/Rector/Foreach_/RemoveUnusedForeachKeyRector.php)
 
 ```diff
  $items = [];
@@ -2727,7 +2727,7 @@ Remove unused key in foreach
 
 Remove unused if check to non-empty array before foreach of the array
 
--   class: [`Rector\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector`](../rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php)
+- class: [`Rector\DeadCode\Rector\If_\RemoveUnusedNonEmptyArrayBeforeForeachRector`](../rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php)
 
 ```diff
  class SomeClass
@@ -2752,7 +2752,7 @@ Remove unused if check to non-empty array before foreach of the array
 
 Remove unused class constants
 
--   class: [`Rector\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector`](../rules/DeadCode/Rector/ClassConst/RemoveUnusedPrivateClassConstantRector.php)
+- class: [`Rector\DeadCode\Rector\ClassConst\RemoveUnusedPrivateClassConstantRector`](../rules/DeadCode/Rector/ClassConst/RemoveUnusedPrivateClassConstantRector.php)
 
 ```diff
  class SomeClass
@@ -2771,7 +2771,7 @@ Remove unused class constants
 
 Remove unused parameter, if not required by interface or parent class
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPrivateMethodParameterRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodParameterRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPrivateMethodParameterRector.php)
 
 ```diff
  class SomeClass
@@ -2790,7 +2790,7 @@ Remove unused parameter, if not required by interface or parent class
 
 Remove unused private method
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPrivateMethodRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPrivateMethodRector.php)
 
 ```diff
  final class SomeController
@@ -2813,7 +2813,7 @@ Remove unused private method
 
 Remove unused private properties
 
--   class: [`Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector`](../rules/DeadCode/Rector/Property/RemoveUnusedPrivatePropertyRector.php)
+- class: [`Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector`](../rules/DeadCode/Rector/Property/RemoveUnusedPrivatePropertyRector.php)
 
 ```diff
  class SomeClass
@@ -2828,7 +2828,7 @@ Remove unused private properties
 
 Remove unused promoted property
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPromotedPropertyRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPromotedPropertyRector.php)
 
 ```diff
  class SomeClass
@@ -2852,7 +2852,7 @@ Remove unused promoted property
 
 Remove unused parameter in public method on final class without extends and interface
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPublicMethodParameterRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUnusedPublicMethodParameterRector.php)
 
 ```diff
  final class SomeClass
@@ -2871,7 +2871,7 @@ Remove unused parameter in public method on final class without extends and inte
 
 Remove unused assigns to variables
 
--   class: [`Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector`](../rules/DeadCode/Rector/Assign/RemoveUnusedVariableAssignRector.php)
+- class: [`Rector\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector`](../rules/DeadCode/Rector/Assign/RemoveUnusedVariableAssignRector.php)
 
 ```diff
  class SomeClass
@@ -2889,7 +2889,7 @@ Remove unused assigns to variables
 
 Remove `@param` docblock with same type as parameter type
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessParamTagRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessParamTagRector.php)
 
 ```diff
  class SomeClass
@@ -2910,7 +2910,7 @@ Remove `@param` docblock with same type as parameter type
 
 Remove useless `@readonly` annotation on native readonly type
 
--   class: [`Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector`](../rules/DeadCode/Rector/Property/RemoveUselessReadOnlyTagRector.php)
+- class: [`Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector`](../rules/DeadCode/Rector/Property/RemoveUselessReadOnlyTagRector.php)
 
 ```diff
  final class SomeClass
@@ -2933,7 +2933,7 @@ Remove useless `@readonly` annotation on native readonly type
 
 Remove useless return Expr in `__construct()`
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnExprInConstructRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnExprInConstructRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnExprInConstructRector.php)
 
 ```diff
  class SomeClass
@@ -2963,7 +2963,7 @@ Remove useless return Expr in `__construct()`
 
 Remove `@return` docblock with same type as defined in PHP
 
--   class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnTagRector.php)
+- class: [`Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector`](../rules/DeadCode/Rector/ClassMethod/RemoveUselessReturnTagRector.php)
 
 ```diff
  use stdClass;
@@ -2985,7 +2985,7 @@ Remove `@return` docblock with same type as defined in PHP
 
 Remove unused `@var` annotation for properties
 
--   class: [`Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector`](../rules/DeadCode/Rector/Property/RemoveUselessVarTagRector.php)
+- class: [`Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector`](../rules/DeadCode/Rector/Property/RemoveUselessVarTagRector.php)
 
 ```diff
  final class SomeClass
@@ -3003,7 +3003,7 @@ Remove unused `@var` annotation for properties
 
 Remove if/else if they have same content
 
--   class: [`Rector\DeadCode\Rector\If_\SimplifyIfElseWithSameContentRector`](../rules/DeadCode/Rector/If_/SimplifyIfElseWithSameContentRector.php)
+- class: [`Rector\DeadCode\Rector\If_\SimplifyIfElseWithSameContentRector`](../rules/DeadCode/Rector/If_/SimplifyIfElseWithSameContentRector.php)
 
 ```diff
  class SomeClass
@@ -3026,7 +3026,7 @@ Remove if/else if they have same content
 
 Removes unneeded `$value` = `$value` assigns
 
--   class: [`Rector\DeadCode\Rector\Expression\SimplifyMirrorAssignRector`](../rules/DeadCode/Rector/Expression/SimplifyMirrorAssignRector.php)
+- class: [`Rector\DeadCode\Rector\Expression\SimplifyMirrorAssignRector`](../rules/DeadCode/Rector/Expression/SimplifyMirrorAssignRector.php)
 
 ```diff
  function run() {
@@ -3040,7 +3040,7 @@ Removes unneeded `$value` = `$value` assigns
 
 Change ternary of bool : false to && bool
 
--   class: [`Rector\DeadCode\Rector\Ternary\TernaryToBooleanOrFalseToBooleanAndRector`](../rules/DeadCode/Rector/Ternary/TernaryToBooleanOrFalseToBooleanAndRector.php)
+- class: [`Rector\DeadCode\Rector\Ternary\TernaryToBooleanOrFalseToBooleanAndRector`](../rules/DeadCode/Rector/Ternary/TernaryToBooleanOrFalseToBooleanAndRector.php)
 
 ```diff
  class SomeClass
@@ -3064,7 +3064,7 @@ Change ternary of bool : false to && bool
 
 Remove php version checks if they are passed
 
--   class: [`Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector`](../rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php)
+- class: [`Rector\DeadCode\Rector\If_\UnwrapFutureCompatibleIfPhpVersionRector`](../rules/DeadCode/Rector/If_/UnwrapFutureCompatibleIfPhpVersionRector.php)
 
 ```diff
  // current PHP: 7.2
@@ -3084,7 +3084,7 @@ Remove php version checks if they are passed
 
 Change if/else value to early return
 
--   class: [`Rector\EarlyReturn\Rector\If_\ChangeIfElseValueAssignToEarlyReturnRector`](../rules/EarlyReturn/Rector/If_/ChangeIfElseValueAssignToEarlyReturnRector.php)
+- class: [`Rector\EarlyReturn\Rector\If_\ChangeIfElseValueAssignToEarlyReturnRector`](../rules/EarlyReturn/Rector/If_/ChangeIfElseValueAssignToEarlyReturnRector.php)
 
 ```diff
  class SomeClass
@@ -3110,7 +3110,7 @@ Change if/else value to early return
 
 Change nested ifs to foreach with continue
 
--   class: [`Rector\EarlyReturn\Rector\Foreach_\ChangeNestedForeachIfsToEarlyContinueRector`](../rules/EarlyReturn/Rector/Foreach_/ChangeNestedForeachIfsToEarlyContinueRector.php)
+- class: [`Rector\EarlyReturn\Rector\Foreach_\ChangeNestedForeachIfsToEarlyContinueRector`](../rules/EarlyReturn/Rector/Foreach_/ChangeNestedForeachIfsToEarlyContinueRector.php)
 
 ```diff
  class SomeClass
@@ -3143,7 +3143,7 @@ Change nested ifs to foreach with continue
 
 Change nested ifs to early return
 
--   class: [`Rector\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector`](../rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php)
+- class: [`Rector\EarlyReturn\Rector\If_\ChangeNestedIfsToEarlyReturnRector`](../rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php)
 
 ```diff
  class SomeClass
@@ -3173,7 +3173,7 @@ Change nested ifs to early return
 
 Changes if || to early return
 
--   class: [`Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector`](../rules/EarlyReturn/Rector/If_/ChangeOrIfContinueToMultiContinueRector.php)
+- class: [`Rector\EarlyReturn\Rector\If_\ChangeOrIfContinueToMultiContinueRector`](../rules/EarlyReturn/Rector/If_/ChangeOrIfContinueToMultiContinueRector.php)
 
 ```diff
  class SomeClass
@@ -3202,7 +3202,7 @@ Changes if || to early return
 
 Return early prepared value in ifs
 
--   class: [`Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector`](../rules/EarlyReturn/Rector/Return_/PreparedValueToEarlyReturnRector.php)
+- class: [`Rector\EarlyReturn\Rector\Return_\PreparedValueToEarlyReturnRector`](../rules/EarlyReturn/Rector/Return_/PreparedValueToEarlyReturnRector.php)
 
 ```diff
  class SomeClass
@@ -3233,7 +3233,7 @@ Return early prepared value in ifs
 
 Split if statement, when if condition always break execution flow
 
--   class: [`Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector`](../rules/EarlyReturn/Rector/If_/RemoveAlwaysElseRector.php)
+- class: [`Rector\EarlyReturn\Rector\If_\RemoveAlwaysElseRector`](../rules/EarlyReturn/Rector/If_/RemoveAlwaysElseRector.php)
 
 ```diff
  class SomeClass
@@ -3257,7 +3257,7 @@ Split if statement, when if condition always break execution flow
 
 Changes Single return of || to early returns
 
--   class: [`Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector`](../rules/EarlyReturn/Rector/Return_/ReturnBinaryOrToEarlyReturnRector.php)
+- class: [`Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector`](../rules/EarlyReturn/Rector/Return_/ReturnBinaryOrToEarlyReturnRector.php)
 
 ```diff
  class SomeClass
@@ -3279,7 +3279,7 @@ Changes Single return of || to early returns
 
 Replace if conditioned variable override with direct return
 
--   class: [`Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector`](../rules/EarlyReturn/Rector/StmtsAwareInterface/ReturnEarlyIfVariableRector.php)
+- class: [`Rector\EarlyReturn\Rector\StmtsAwareInterface\ReturnEarlyIfVariableRector`](../rules/EarlyReturn/Rector/StmtsAwareInterface/ReturnEarlyIfVariableRector.php)
 
 ```diff
  final class SomeClass
@@ -3304,7 +3304,7 @@ Replace if conditioned variable override with direct return
 
 Flip negated ternary of instanceof to direct use of object
 
--   class: [`Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector`](../rules/Instanceof_/Rector/Ternary/FlipNegatedTernaryInstanceofRector.php)
+- class: [`Rector\Instanceof_\Rector\Ternary\FlipNegatedTernaryInstanceofRector`](../rules/Instanceof_/Rector/Ternary/FlipNegatedTernaryInstanceofRector.php)
 
 ```diff
 -echo ! $object instanceof Product ? null : $object->getPrice();
@@ -3319,7 +3319,7 @@ Flip negated ternary of instanceof to direct use of object
 
 Renames value variable name in foreach loop to match expression variable
 
--   class: [`Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector`](../rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchExprVariableRector.php)
+- class: [`Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector`](../rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchExprVariableRector.php)
 
 ```diff
  class SomeClass
@@ -3342,7 +3342,7 @@ Renames value variable name in foreach loop to match expression variable
 
 Renames value variable name in foreach loop to match method type
 
--   class: [`Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector`](../rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchMethodCallReturnTypeRector.php)
+- class: [`Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector`](../rules/Naming/Rector/Foreach_/RenameForeachValueVariableToMatchMethodCallReturnTypeRector.php)
 
 ```diff
  class SomeClass
@@ -3365,7 +3365,7 @@ Renames value variable name in foreach loop to match method type
 
 Rename param to match ClassType
 
--   class: [`Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector`](../rules/Naming/Rector/ClassMethod/RenameParamToMatchTypeRector.php)
+- class: [`Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector`](../rules/Naming/Rector/ClassMethod/RenameParamToMatchTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -3385,7 +3385,7 @@ Rename param to match ClassType
 
 Rename property and method param to match its type
 
--   class: [`Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector`](../rules/Naming/Rector/Class_/RenamePropertyToMatchTypeRector.php)
+- class: [`Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector`](../rules/Naming/Rector/Class_/RenamePropertyToMatchTypeRector.php)
 
 ```diff
  class SomeClass
@@ -3411,7 +3411,7 @@ Rename property and method param to match its type
 
 Rename variable to match method return type
 
--   class: [`Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector`](../rules/Naming/Rector/Assign/RenameVariableToMatchMethodCallReturnTypeRector.php)
+- class: [`Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector`](../rules/Naming/Rector/Assign/RenameVariableToMatchMethodCallReturnTypeRector.php)
 
 ```diff
  class SomeClass
@@ -3435,7 +3435,7 @@ Rename variable to match method return type
 
 Rename variable to match new ClassType
 
--   class: [`Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector`](../rules/Naming/Rector/ClassMethod/RenameVariableToMatchNewTypeRector.php)
+- class: [`Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector`](../rules/Naming/Rector/ClassMethod/RenameVariableToMatchNewTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -3458,7 +3458,7 @@ Rename variable to match new ClassType
 
 Use break instead of continue in switch statements
 
--   class: [`Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector`](../rules/Php52/Rector/Switch_/ContinueToBreakInSwitchRector.php)
+- class: [`Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector`](../rules/Php52/Rector/Switch_/ContinueToBreakInSwitchRector.php)
 
 ```diff
  function some_run($value)
@@ -3481,7 +3481,7 @@ Use break instead of continue in switch statements
 
 Change property modifier from `var` to `public`
 
--   class: [`Rector\Php52\Rector\Property\VarToPublicPropertyRector`](../rules/Php52/Rector/Property/VarToPublicPropertyRector.php)
+- class: [`Rector\Php52\Rector\Property\VarToPublicPropertyRector`](../rules/Php52/Rector/Property/VarToPublicPropertyRector.php)
 
 ```diff
  final class SomeController
@@ -3497,9 +3497,9 @@ Change property modifier from `var` to `public`
 
 ### DirNameFileConstantToDirConstantRector
 
-Convert dirname(**FILE**) to **DIR**
+Convert dirname(__FILE__) to __DIR__
 
--   class: [`Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector`](../rules/Php53/Rector/FuncCall/DirNameFileConstantToDirConstantRector.php)
+- class: [`Rector\Php53\Rector\FuncCall\DirNameFileConstantToDirConstantRector`](../rules/Php53/Rector/FuncCall/DirNameFileConstantToDirConstantRector.php)
 
 ```diff
  class SomeClass
@@ -3518,7 +3518,7 @@ Convert dirname(**FILE**) to **DIR**
 
 Rename old `$HTTP_*` variable names to new replacements
 
--   class: [`Rector\Php53\Rector\Variable\ReplaceHttpServerVarsByServerRector`](../rules/Php53/Rector/Variable/ReplaceHttpServerVarsByServerRector.php)
+- class: [`Rector\Php53\Rector\Variable\ReplaceHttpServerVarsByServerRector`](../rules/Php53/Rector/Variable/ReplaceHttpServerVarsByServerRector.php)
 
 ```diff
 -$serverVars = $HTTP_SERVER_VARS;
@@ -3531,7 +3531,7 @@ Rename old `$HTTP_*` variable names to new replacements
 
 Use ?: instead of ?, where useful
 
--   class: [`Rector\Php53\Rector\Ternary\TernaryToElvisRector`](../rules/Php53/Rector/Ternary/TernaryToElvisRector.php)
+- class: [`Rector\Php53\Rector\Ternary\TernaryToElvisRector`](../rules/Php53/Rector/Ternary/TernaryToElvisRector.php)
 
 ```diff
  function elvis()
@@ -3549,7 +3549,7 @@ Use ?: instead of ?, where useful
 
 Long array to short array
 
--   class: [`Rector\Php54\Rector\Array_\LongArrayToShortArrayRector`](../rules/Php54/Rector/Array_/LongArrayToShortArrayRector.php)
+- class: [`Rector\Php54\Rector\Array_\LongArrayToShortArrayRector`](../rules/Php54/Rector/Array_/LongArrayToShortArrayRector.php)
 
 ```diff
  class SomeClass
@@ -3568,7 +3568,7 @@ Long array to short array
 
 Remove & from function and method calls
 
--   class: [`Rector\Php54\Rector\FuncCall\RemoveReferenceFromCallRector`](../rules/Php54/Rector/FuncCall/RemoveReferenceFromCallRector.php)
+- class: [`Rector\Php54\Rector\FuncCall\RemoveReferenceFromCallRector`](../rules/Php54/Rector/FuncCall/RemoveReferenceFromCallRector.php)
 
 ```diff
  final class SomeClass
@@ -3587,7 +3587,7 @@ Remove & from function and method calls
 
 Remove 0 from break and continue
 
--   class: [`Rector\Php54\Rector\Break_\RemoveZeroBreakContinueRector`](../rules/Php54/Rector/Break_/RemoveZeroBreakContinueRector.php)
+- class: [`Rector\Php54\Rector\Break_\RemoveZeroBreakContinueRector`](../rules/Php54/Rector/Break_/RemoveZeroBreakContinueRector.php)
 
 ```diff
  class SomeClass
@@ -3617,7 +3617,7 @@ Remove 0 from break and continue
 
 Change `__CLASS__` to self::class
 
--   class: [`Rector\Php55\Rector\Class_\ClassConstantToSelfClassRector`](../rules/Php55/Rector/Class_/ClassConstantToSelfClassRector.php)
+- class: [`Rector\Php55\Rector\Class_\ClassConstantToSelfClassRector`](../rules/Php55/Rector/Class_/ClassConstantToSelfClassRector.php)
 
 ```diff
  class SomeClass
@@ -3636,7 +3636,7 @@ Change `__CLASS__` to self::class
 
 Change `get_called_class()` to self::class on final class
 
--   class: [`Rector\Php55\Rector\FuncCall\GetCalledClassToSelfClassRector`](../rules/Php55/Rector/FuncCall/GetCalledClassToSelfClassRector.php)
+- class: [`Rector\Php55\Rector\FuncCall\GetCalledClassToSelfClassRector`](../rules/Php55/Rector/FuncCall/GetCalledClassToSelfClassRector.php)
 
 ```diff
  final class SomeClass
@@ -3655,7 +3655,7 @@ Change `get_called_class()` to self::class on final class
 
 Change `get_called_class()` to static::class on non-final class
 
--   class: [`Rector\Php55\Rector\FuncCall\GetCalledClassToStaticClassRector`](../rules/Php55/Rector/FuncCall/GetCalledClassToStaticClassRector.php)
+- class: [`Rector\Php55\Rector\FuncCall\GetCalledClassToStaticClassRector`](../rules/Php55/Rector/FuncCall/GetCalledClassToStaticClassRector.php)
 
 ```diff
  class SomeClass
@@ -3674,7 +3674,7 @@ Change `get_called_class()` to static::class on non-final class
 
 The /e modifier is no longer supported, use preg_replace_callback instead
 
--   class: [`Rector\Php55\Rector\FuncCall\PregReplaceEModifierRector`](../rules/Php55/Rector/FuncCall/PregReplaceEModifierRector.php)
+- class: [`Rector\Php55\Rector\FuncCall\PregReplaceEModifierRector`](../rules/Php55/Rector/FuncCall/PregReplaceEModifierRector.php)
 
 ```diff
  class SomeClass
@@ -3695,7 +3695,7 @@ The /e modifier is no longer supported, use preg_replace_callback instead
 
 Change `static::class` to `self::class` on final class
 
--   class: [`Rector\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector`](../rules/Php55/Rector/ClassConstFetch/StaticToSelfOnFinalClassRector.php)
+- class: [`Rector\Php55\Rector\ClassConstFetch\StaticToSelfOnFinalClassRector`](../rules/Php55/Rector/ClassConstFetch/StaticToSelfOnFinalClassRector.php)
 
 ```diff
  final class SomeClass
@@ -3716,7 +3716,7 @@ Replace string class names by <class>::class constant
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php55\Rector\String_\StringClassNameToClassConstantRector`](../rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php)
+- class: [`Rector\Php55\Rector\String_\StringClassNameToClassConstantRector`](../rules/Php55/Rector/String_/StringClassNameToClassConstantRector.php)
 
 ```diff
  class AnotherClass
@@ -3739,9 +3739,9 @@ Replace string class names by <class>::class constant
 
 ### PowToExpRector
 
-Changes pow(val, val2) to \*\* (exp) parameter
+Changes pow(val, val2) to ** (exp) parameter
 
--   class: [`Rector\Php56\Rector\FuncCall\PowToExpRector`](../rules/Php56/Rector/FuncCall/PowToExpRector.php)
+- class: [`Rector\Php56\Rector\FuncCall\PowToExpRector`](../rules/Php56/Rector/FuncCall/PowToExpRector.php)
 
 ```diff
 -pow(1, 2);
@@ -3756,7 +3756,7 @@ Changes pow(val, val2) to \*\* (exp) parameter
 
 Convert break outside for/foreach/switch context to return
 
--   class: [`Rector\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector`](../rules/Php70/Rector/Break_/BreakNotInLoopOrSwitchToReturnRector.php)
+- class: [`Rector\Php70\Rector\Break_\BreakNotInLoopOrSwitchToReturnRector`](../rules/Php70/Rector/Break_/BreakNotInLoopOrSwitchToReturnRector.php)
 
 ```diff
  class SomeClass
@@ -3779,7 +3779,7 @@ Convert break outside for/foreach/switch context to return
 
 Changes `call_user_method()/call_user_method_array()` to `call_user_func()/call_user_func_array()`
 
--   class: [`Rector\Php70\Rector\FuncCall\CallUserMethodRector`](../rules/Php70/Rector/FuncCall/CallUserMethodRector.php)
+- class: [`Rector\Php70\Rector\FuncCall\CallUserMethodRector`](../rules/Php70/Rector/FuncCall/CallUserMethodRector.php)
 
 ```diff
 -call_user_method($method, $obj, "arg1", "arg2");
@@ -3792,7 +3792,7 @@ Changes `call_user_method()/call_user_method_array()` to `call_user_func()/call_
 
 `list()` cannot be empty
 
--   class: [`Rector\Php70\Rector\List_\EmptyListRector`](../rules/Php70/Rector/List_/EmptyListRector.php)
+- class: [`Rector\Php70\Rector\List_\EmptyListRector`](../rules/Php70/Rector/List_/EmptyListRector.php)
 
 ```diff
 -'list() = $values;'
@@ -3805,7 +3805,7 @@ Changes `call_user_method()/call_user_method_array()` to `call_user_func()/call_
 
 Changes ereg*() to preg*() calls
 
--   class: [`Rector\Php70\Rector\FuncCall\EregToPregMatchRector`](../rules/Php70/Rector/FuncCall/EregToPregMatchRector.php)
+- class: [`Rector\Php70\Rector\FuncCall\EregToPregMatchRector`](../rules/Php70/Rector/FuncCall/EregToPregMatchRector.php)
 
 ```diff
 -ereg("hi")
@@ -3818,7 +3818,7 @@ Changes ereg*() to preg*() calls
 
 Change typehint from `Exception` to `Throwable`.
 
--   class: [`Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector`](../rules/Php70/Rector/FunctionLike/ExceptionHandlerTypehintRector.php)
+- class: [`Rector\Php70\Rector\FunctionLike\ExceptionHandlerTypehintRector`](../rules/Php70/Rector/FunctionLike/ExceptionHandlerTypehintRector.php)
 
 ```diff
 -function handler(Exception $exception) { ... }
@@ -3832,7 +3832,7 @@ Change typehint from `Exception` to `Throwable`.
 
 Change if with isset and return to coalesce
 
--   class: [`Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector`](../rules/Php70/Rector/StmtsAwareInterface/IfIssetToCoalescingRector.php)
+- class: [`Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector`](../rules/Php70/Rector/StmtsAwareInterface/IfIssetToCoalescingRector.php)
 
 ```diff
  class SomeClass
@@ -3857,7 +3857,7 @@ Change if with isset and return to coalesce
 
 Changes if/else to spaceship <=> where useful
 
--   class: [`Rector\Php70\Rector\If_\IfToSpaceshipRector`](../rules/Php70/Rector/If_/IfToSpaceshipRector.php)
+- class: [`Rector\Php70\Rector\If_\IfToSpaceshipRector`](../rules/Php70/Rector/If_/IfToSpaceshipRector.php)
 
 ```diff
  usort($languages, function ($first, $second) {
@@ -3876,7 +3876,7 @@ Changes if/else to spaceship <=> where useful
 
 `list()` cannot split string directly anymore, use `str_split()`
 
--   class: [`Rector\Php70\Rector\Assign\ListSplitStringRector`](../rules/Php70/Rector/Assign/ListSplitStringRector.php)
+- class: [`Rector\Php70\Rector\Assign\ListSplitStringRector`](../rules/Php70/Rector/Assign/ListSplitStringRector.php)
 
 ```diff
 -list($foo) = "string";
@@ -3889,7 +3889,7 @@ Changes if/else to spaceship <=> where useful
 
 `list()` assigns variables in reverse order - relevant in array assign
 
--   class: [`Rector\Php70\Rector\Assign\ListSwapArrayOrderRector`](../rules/Php70/Rector/Assign/ListSwapArrayOrderRector.php)
+- class: [`Rector\Php70\Rector\Assign\ListSwapArrayOrderRector`](../rules/Php70/Rector/Assign/ListSwapArrayOrderRector.php)
 
 ```diff
 -list($a[], $a[]) = [1, 2];
@@ -3902,7 +3902,7 @@ Changes if/else to spaceship <=> where useful
 
 Changes multiple `dirname()` calls to one with nesting level
 
--   class: [`Rector\Php70\Rector\FuncCall\MultiDirnameRector`](../rules/Php70/Rector/FuncCall/MultiDirnameRector.php)
+- class: [`Rector\Php70\Rector\FuncCall\MultiDirnameRector`](../rules/Php70/Rector/FuncCall/MultiDirnameRector.php)
 
 ```diff
 -dirname(dirname($path));
@@ -3913,9 +3913,9 @@ Changes multiple `dirname()` calls to one with nesting level
 
 ### Php4ConstructorRector
 
-Changes PHP 4 style constructor to \_\_construct.
+Changes PHP 4 style constructor to __construct.
 
--   class: [`Rector\Php70\Rector\ClassMethod\Php4ConstructorRector`](../rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php)
+- class: [`Rector\Php70\Rector\ClassMethod\Php4ConstructorRector`](../rules/Php70/Rector/ClassMethod/Php4ConstructorRector.php)
 
 ```diff
  class SomeClass
@@ -3933,7 +3933,7 @@ Changes PHP 4 style constructor to \_\_construct.
 
 Changes rand, srand, and getrandmax to newer alternatives
 
--   class: [`Rector\Php70\Rector\FuncCall\RandomFunctionRector`](../rules/Php70/Rector/FuncCall/RandomFunctionRector.php)
+- class: [`Rector\Php70\Rector\FuncCall\RandomFunctionRector`](../rules/Php70/Rector/FuncCall/RandomFunctionRector.php)
 
 ```diff
 -rand();
@@ -3946,7 +3946,7 @@ Changes rand, srand, and getrandmax to newer alternatives
 
 Remove first default switch, that is ignored
 
--   class: [`Rector\Php70\Rector\Switch_\ReduceMultipleDefaultSwitchRector`](../rules/Php70/Rector/Switch_/ReduceMultipleDefaultSwitchRector.php)
+- class: [`Rector\Php70\Rector\Switch_\ReduceMultipleDefaultSwitchRector`](../rules/Php70/Rector/Switch_/ReduceMultipleDefaultSwitchRector.php)
 
 ```diff
  switch ($expr) {
@@ -3965,7 +3965,7 @@ Remove first default switch, that is ignored
 
 Renames `mktime()` without arguments to `time()`
 
--   class: [`Rector\Php70\Rector\FuncCall\RenameMktimeWithoutArgsToTimeRector`](../rules/Php70/Rector/FuncCall/RenameMktimeWithoutArgsToTimeRector.php)
+- class: [`Rector\Php70\Rector\FuncCall\RenameMktimeWithoutArgsToTimeRector`](../rules/Php70/Rector/FuncCall/RenameMktimeWithoutArgsToTimeRector.php)
 
 ```diff
  class SomeClass
@@ -3985,7 +3985,7 @@ Renames `mktime()` without arguments to `time()`
 
 Changes static call to instance call, where not useful
 
--   class: [`Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector`](../rules/Php70/Rector/StaticCall/StaticCallOnNonStaticToInstanceCallRector.php)
+- class: [`Rector\Php70\Rector\StaticCall\StaticCallOnNonStaticToInstanceCallRector`](../rules/Php70/Rector/StaticCall/StaticCallOnNonStaticToInstanceCallRector.php)
 
 ```diff
  class Something
@@ -4011,7 +4011,7 @@ Changes static call to instance call, where not useful
 
 Changes unneeded null check to ?? operator
 
--   class: [`Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector`](../rules/Php70/Rector/Ternary/TernaryToNullCoalescingRector.php)
+- class: [`Rector\Php70\Rector\Ternary\TernaryToNullCoalescingRector`](../rules/Php70/Rector/Ternary/TernaryToNullCoalescingRector.php)
 
 ```diff
 -$value === null ? 10 : $value;
@@ -4031,7 +4031,7 @@ Changes unneeded null check to ?? operator
 
 Use <=> spaceship instead of ternary with same effect
 
--   class: [`Rector\Php70\Rector\Ternary\TernaryToSpaceshipRector`](../rules/Php70/Rector/Ternary/TernaryToSpaceshipRector.php)
+- class: [`Rector\Php70\Rector\Ternary\TernaryToSpaceshipRector`](../rules/Php70/Rector/Ternary/TernaryToSpaceshipRector.php)
 
 ```diff
  function order_func($a, $b) {
@@ -4046,7 +4046,7 @@ Use <=> spaceship instead of ternary with same effect
 
 Changes `$this->call()` to static method to static call
 
--   class: [`Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector`](../rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php)
+- class: [`Rector\Php70\Rector\MethodCall\ThisCallOnStaticMethodToStaticCallRector`](../rules/Php70/Rector/MethodCall/ThisCallOnStaticMethodToStaticCallRector.php)
 
 ```diff
  class SomeClass
@@ -4069,7 +4069,7 @@ Changes `$this->call()` to static method to static call
 
 Ensure variable variables are wrapped in curly braces
 
--   class: [`Rector\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector`](../rules/Php70/Rector/Variable/WrapVariableVariableNameInCurlyBracesRector.php)
+- class: [`Rector\Php70\Rector\Variable\WrapVariableVariableNameInCurlyBracesRector`](../rules/Php70/Rector/Variable/WrapVariableVariableNameInCurlyBracesRector.php)
 
 ```diff
  function run($foo)
@@ -4087,7 +4087,7 @@ Ensure variable variables are wrapped in curly braces
 
 String cannot be turned into array by assignment anymore
 
--   class: [`Rector\Php71\Rector\Assign\AssignArrayToStringRector`](../rules/Php71/Rector/Assign/AssignArrayToStringRector.php)
+- class: [`Rector\Php71\Rector\Assign\AssignArrayToStringRector`](../rules/Php71/Rector/Assign/AssignArrayToStringRector.php)
 
 ```diff
 -$string = '';
@@ -4101,7 +4101,7 @@ String cannot be turned into array by assignment anymore
 
 Change binary operation between some number + string to PHP 7.1 compatible version
 
--   class: [`Rector\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector`](../rules/Php71/Rector/BinaryOp/BinaryOpBetweenNumberAndStringRector.php)
+- class: [`Rector\Php71\Rector\BinaryOp\BinaryOpBetweenNumberAndStringRector`](../rules/Php71/Rector/BinaryOp/BinaryOpBetweenNumberAndStringRector.php)
 
 ```diff
  class SomeClass
@@ -4122,7 +4122,7 @@ Change binary operation between some number + string to PHP 7.1 compatible versi
 
 Changes is_array + Traversable check to is_iterable
 
--   class: [`Rector\Php71\Rector\BooleanOr\IsIterableRector`](../rules/Php71/Rector/BooleanOr/IsIterableRector.php)
+- class: [`Rector\Php71\Rector\BooleanOr\IsIterableRector`](../rules/Php71/Rector/BooleanOr/IsIterableRector.php)
 
 ```diff
 -is_array($foo) || $foo instanceof Traversable;
@@ -4135,7 +4135,7 @@ Changes is_array + Traversable check to is_iterable
 
 Change `list()` to array destruct
 
--   class: [`Rector\Php71\Rector\List_\ListToArrayDestructRector`](../rules/Php71/Rector/List_/ListToArrayDestructRector.php)
+- class: [`Rector\Php71\Rector\List_\ListToArrayDestructRector`](../rules/Php71/Rector/List_/ListToArrayDestructRector.php)
 
 ```diff
  class SomeClass
@@ -4158,7 +4158,7 @@ Change `list()` to array destruct
 
 Changes multi catch of same exception to single one | separated.
 
--   class: [`Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector`](../rules/Php71/Rector/TryCatch/MultiExceptionCatchRector.php)
+- class: [`Rector\Php71\Rector\TryCatch\MultiExceptionCatchRector`](../rules/Php71/Rector/TryCatch/MultiExceptionCatchRector.php)
 
 ```diff
  try {
@@ -4177,7 +4177,7 @@ Changes multi catch of same exception to single one | separated.
 
 Add explicit public constant visibility.
 
--   class: [`Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector`](../rules/Php71/Rector/ClassConst/PublicConstantVisibilityRector.php)
+- class: [`Rector\Php71\Rector\ClassConst\PublicConstantVisibilityRector`](../rules/Php71/Rector/ClassConst/PublicConstantVisibilityRector.php)
 
 ```diff
  class SomeClass
@@ -4193,7 +4193,7 @@ Add explicit public constant visibility.
 
 Remove extra parameters
 
--   class: [`Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector`](../rules/Php71/Rector/FuncCall/RemoveExtraParametersRector.php)
+- class: [`Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector`](../rules/Php71/Rector/FuncCall/RemoveExtraParametersRector.php)
 
 ```diff
 -strlen("asdf", 1);
@@ -4208,7 +4208,7 @@ Remove extra parameters
 
 Use anonymous functions instead of deprecated `create_function()`
 
--   class: [`Rector\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector`](../rules/Php72/Rector/FuncCall/CreateFunctionToAnonymousFunctionRector.php)
+- class: [`Rector\Php72\Rector\FuncCall\CreateFunctionToAnonymousFunctionRector`](../rules/Php72/Rector/FuncCall/CreateFunctionToAnonymousFunctionRector.php)
 
 ```diff
  class ClassWithCreateFunction
@@ -4229,7 +4229,7 @@ Use anonymous functions instead of deprecated `create_function()`
 
 Null is no more allowed in `get_class()`
 
--   class: [`Rector\Php72\Rector\FuncCall\GetClassOnNullRector`](../rules/Php72/Rector/FuncCall/GetClassOnNullRector.php)
+- class: [`Rector\Php72\Rector\FuncCall\GetClassOnNullRector`](../rules/Php72/Rector/FuncCall/GetClassOnNullRector.php)
 
 ```diff
  final class SomeClass
@@ -4249,7 +4249,7 @@ Null is no more allowed in `get_class()`
 
 `each()` function is deprecated, use `key()` and `current()` instead
 
--   class: [`Rector\Php72\Rector\Assign\ListEachRector`](../rules/Php72/Rector/Assign/ListEachRector.php)
+- class: [`Rector\Php72\Rector\Assign\ListEachRector`](../rules/Php72/Rector/Assign/ListEachRector.php)
 
 ```diff
 -list($key, $callback) = each($callbacks);
@@ -4264,7 +4264,7 @@ Null is no more allowed in `get_class()`
 
 Use `$result` argument in `parse_str()` function
 
--   class: [`Rector\Php72\Rector\FuncCall\ParseStrWithResultArgumentRector`](../rules/Php72/Rector/FuncCall/ParseStrWithResultArgumentRector.php)
+- class: [`Rector\Php72\Rector\FuncCall\ParseStrWithResultArgumentRector`](../rules/Php72/Rector/FuncCall/ParseStrWithResultArgumentRector.php)
 
 ```diff
 -parse_str($this->query);
@@ -4279,7 +4279,7 @@ Use `$result` argument in `parse_str()` function
 
 Replace `each()` assign outside loop
 
--   class: [`Rector\Php72\Rector\Assign\ReplaceEachAssignmentWithKeyCurrentRector`](../rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php)
+- class: [`Rector\Php72\Rector\Assign\ReplaceEachAssignmentWithKeyCurrentRector`](../rules/Php72/Rector/Assign/ReplaceEachAssignmentWithKeyCurrentRector.php)
 
 ```diff
  $array = ['b' => 1, 'a' => 2];
@@ -4299,7 +4299,7 @@ Replace `each()` assign outside loop
 
 Make first argument of `define()` string
 
--   class: [`Rector\Php72\Rector\FuncCall\StringifyDefineRector`](../rules/Php72/Rector/FuncCall/StringifyDefineRector.php)
+- class: [`Rector\Php72\Rector\FuncCall\StringifyDefineRector`](../rules/Php72/Rector/FuncCall/StringifyDefineRector.php)
 
 ```diff
  class SomeClass
@@ -4319,7 +4319,7 @@ Make first argument of `define()` string
 
 String asserts must be passed directly to `assert()`
 
--   class: [`Rector\Php72\Rector\FuncCall\StringsAssertNakedRector`](../rules/Php72/Rector/FuncCall/StringsAssertNakedRector.php)
+- class: [`Rector\Php72\Rector\FuncCall\StringsAssertNakedRector`](../rules/Php72/Rector/FuncCall/StringsAssertNakedRector.php)
 
 ```diff
  function nakedAssert()
@@ -4337,7 +4337,7 @@ String asserts must be passed directly to `assert()`
 
 Removes (unset) cast
 
--   class: [`Rector\Php72\Rector\Unset_\UnsetCastRector`](../rules/Php72/Rector/Unset_/UnsetCastRector.php)
+- class: [`Rector\Php72\Rector\Unset_\UnsetCastRector`](../rules/Php72/Rector/Unset_/UnsetCastRector.php)
 
 ```diff
 -$different = (unset) $value;
@@ -4353,7 +4353,7 @@ Removes (unset) cast
 
 `each()` function is deprecated, use `foreach()` instead.
 
--   class: [`Rector\Php72\Rector\While_\WhileEachToForeachRector`](../rules/Php72/Rector/While_/WhileEachToForeachRector.php)
+- class: [`Rector\Php72\Rector\While_\WhileEachToForeachRector`](../rules/Php72/Rector/While_/WhileEachToForeachRector.php)
 
 ```diff
 -while (list($key, $callback) = each($callbacks)) {
@@ -4379,7 +4379,7 @@ Removes (unset) cast
 
 Make use of `array_key_first()` and `array_key_last()`
 
--   class: [`Rector\Php73\Rector\FuncCall\ArrayKeyFirstLastRector`](../rules/Php73/Rector/FuncCall/ArrayKeyFirstLastRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\ArrayKeyFirstLastRector`](../rules/Php73/Rector/FuncCall/ArrayKeyFirstLastRector.php)
 
 ```diff
 -reset($items);
@@ -4401,7 +4401,7 @@ Make use of `array_key_first()` and `array_key_last()`
 
 Changes is_array + Countable check to is_countable
 
--   class: [`Rector\Php73\Rector\BooleanOr\IsCountableRector`](../rules/Php73/Rector/BooleanOr/IsCountableRector.php)
+- class: [`Rector\Php73\Rector\BooleanOr\IsCountableRector`](../rules/Php73/Rector/BooleanOr/IsCountableRector.php)
 
 ```diff
 -is_array($foo) || $foo instanceof Countable;
@@ -4414,7 +4414,7 @@ Changes is_array + Countable check to is_countable
 
 Adds JSON_THROW_ON_ERROR to `json_encode()` and `json_decode()` to throw JsonException on error
 
--   class: [`Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector`](../rules/Php73/Rector/FuncCall/JsonThrowOnErrorRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\JsonThrowOnErrorRector`](../rules/Php73/Rector/FuncCall/JsonThrowOnErrorRector.php)
 
 ```diff
 -json_encode($content);
@@ -4429,7 +4429,7 @@ Adds JSON_THROW_ON_ERROR to `json_encode()` and `json_decode()` to throw JsonExc
 
 Escape - in some cases
 
--   class: [`Rector\Php73\Rector\FuncCall\RegexDashEscapeRector`](../rules/Php73/Rector/FuncCall/RegexDashEscapeRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\RegexDashEscapeRector`](../rules/Php73/Rector/FuncCall/RegexDashEscapeRector.php)
 
 ```diff
 -preg_match("#[\w-()]#", 'some text');
@@ -4442,7 +4442,7 @@ Escape - in some cases
 
 Changes case insensitive constants to sensitive ones.
 
--   class: [`Rector\Php73\Rector\ConstFetch\SensitiveConstantNameRector`](../rules/Php73/Rector/ConstFetch/SensitiveConstantNameRector.php)
+- class: [`Rector\Php73\Rector\ConstFetch\SensitiveConstantNameRector`](../rules/Php73/Rector/ConstFetch/SensitiveConstantNameRector.php)
 
 ```diff
  define('FOO', 42, true);
@@ -4457,7 +4457,7 @@ Changes case insensitive constants to sensitive ones.
 
 Changes case insensitive constants to sensitive ones.
 
--   class: [`Rector\Php73\Rector\FuncCall\SensitiveDefineRector`](../rules/Php73/Rector/FuncCall/SensitiveDefineRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\SensitiveDefineRector`](../rules/Php73/Rector/FuncCall/SensitiveDefineRector.php)
 
 ```diff
 -define('FOO', 42, true);
@@ -4470,7 +4470,7 @@ Changes case insensitive constants to sensitive ones.
 
 Changes heredoc/nowdoc that contains closing word to safe wrapper name
 
--   class: [`Rector\Php73\Rector\String_\SensitiveHereNowDocRector`](../rules/Php73/Rector/String_/SensitiveHereNowDocRector.php)
+- class: [`Rector\Php73\Rector\String_\SensitiveHereNowDocRector`](../rules/Php73/Rector/String_/SensitiveHereNowDocRector.php)
 
 ```diff
 -$value = <<<A
@@ -4486,7 +4486,7 @@ Changes heredoc/nowdoc that contains closing word to safe wrapper name
 
 Convert setcookie argument to PHP7.3 option array
 
--   class: [`Rector\Php73\Rector\FuncCall\SetCookieRector`](../rules/Php73/Rector/FuncCall/SetCookieRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\SetCookieRector`](../rules/Php73/Rector/FuncCall/SetCookieRector.php)
 
 ```diff
 -setcookie('name', $value, 360);
@@ -4506,7 +4506,7 @@ Convert setcookie argument to PHP7.3 option array
 
 Makes needles explicit strings
 
--   class: [`Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector`](../rules/Php73/Rector/FuncCall/StringifyStrNeedlesRector.php)
+- class: [`Rector\Php73\Rector\FuncCall\StringifyStrNeedlesRector`](../rules/Php73/Rector/FuncCall/StringifyStrNeedlesRector.php)
 
 ```diff
  $needle = 5;
@@ -4520,11 +4520,11 @@ Makes needles explicit strings
 
 ### AddLiteralSeparatorToNumberRector
 
-Add "\_" as thousands separator in numbers for higher or equals to limitValue config
+Add "_" as thousands separator in numbers for higher or equals to limitValue config
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector`](../rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php)
+- class: [`Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector`](../rules/Php74/Rector/LNumber/AddLiteralSeparatorToNumberRector.php)
 
 ```diff
  class SomeClass
@@ -4545,7 +4545,7 @@ Add "\_" as thousands separator in numbers for higher or equals to limitValue co
 
 Change `array_key_exists()` on property to `property_exists()`
 
--   class: [`Rector\Php74\Rector\FuncCall\ArrayKeyExistsOnPropertyRector`](../rules/Php74/Rector/FuncCall/ArrayKeyExistsOnPropertyRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\ArrayKeyExistsOnPropertyRector`](../rules/Php74/Rector/FuncCall/ArrayKeyExistsOnPropertyRector.php)
 
 ```diff
  class SomeClass
@@ -4564,7 +4564,7 @@ Change `array_key_exists()` on property to `property_exists()`
 
 Change closure to arrow function
 
--   class: [`Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector`](../rules/Php74/Rector/Closure/ClosureToArrowFunctionRector.php)
+- class: [`Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector`](../rules/Php74/Rector/Closure/ClosureToArrowFunctionRector.php)
 
 ```diff
  class SomeClass
@@ -4585,7 +4585,7 @@ Change closure to arrow function
 
 Change curly based array and string to square bracket
 
--   class: [`Rector\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector`](../rules/Php74/Rector/ArrayDimFetch/CurlyToSquareBracketArrayStringRector.php)
+- class: [`Rector\Php74\Rector\ArrayDimFetch\CurlyToSquareBracketArrayStringRector`](../rules/Php74/Rector/ArrayDimFetch/CurlyToSquareBracketArrayStringRector.php)
 
 ```diff
  $string = 'test';
@@ -4603,7 +4603,7 @@ Change curly based array and string to square bracket
 
 Change `export()` to ReflectionFunction alternatives
 
--   class: [`Rector\Php74\Rector\StaticCall\ExportToReflectionFunctionRector`](../rules/Php74/Rector/StaticCall/ExportToReflectionFunctionRector.php)
+- class: [`Rector\Php74\Rector\StaticCall\ExportToReflectionFunctionRector`](../rules/Php74/Rector/StaticCall/ExportToReflectionFunctionRector.php)
 
 ```diff
 -$reflectionFunction = ReflectionFunction::export('foo');
@@ -4618,7 +4618,7 @@ Change `export()` to ReflectionFunction alternatives
 
 Change `filter_var()` with slash escaping to `addslashes()`
 
--   class: [`Rector\Php74\Rector\FuncCall\FilterVarToAddSlashesRector`](../rules/Php74/Rector/FuncCall/FilterVarToAddSlashesRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\FilterVarToAddSlashesRector`](../rules/Php74/Rector/FuncCall/FilterVarToAddSlashesRector.php)
 
 ```diff
  $var= "Satya's here!";
@@ -4632,7 +4632,7 @@ Change `filter_var()` with slash escaping to `addslashes()`
 
 Change hebrevc($str) to nl2br(hebrev($str))
 
--   class: [`Rector\Php74\Rector\FuncCall\HebrevcToNl2brHebrevRector`](../rules/Php74/Rector/FuncCall/HebrevcToNl2brHebrevRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\HebrevcToNl2brHebrevRector`](../rules/Php74/Rector/FuncCall/HebrevcToNl2brHebrevRector.php)
 
 ```diff
 -hebrevc($str);
@@ -4645,7 +4645,7 @@ Change hebrevc($str) to nl2br(hebrev($str))
 
 Change `mb_strrpos()` encoding argument position
 
--   class: [`Rector\Php74\Rector\FuncCall\MbStrrposEncodingArgumentPositionRector`](../rules/Php74/Rector/FuncCall/MbStrrposEncodingArgumentPositionRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\MbStrrposEncodingArgumentPositionRector`](../rules/Php74/Rector/FuncCall/MbStrrposEncodingArgumentPositionRector.php)
 
 ```diff
 -mb_strrpos($text, "abc", "UTF-8");
@@ -4658,7 +4658,7 @@ Change `mb_strrpos()` encoding argument position
 
 Change `money_format()` to equivalent `number_format()`
 
--   class: [`Rector\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector`](../rules/Php74/Rector/FuncCall/MoneyFormatToNumberFormatRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\MoneyFormatToNumberFormatRector`](../rules/Php74/Rector/FuncCall/MoneyFormatToNumberFormatRector.php)
 
 ```diff
 -$value = money_format('%i', $value);
@@ -4671,7 +4671,7 @@ Change `money_format()` to equivalent `number_format()`
 
 Use null coalescing operator ??=
 
--   class: [`Rector\Php74\Rector\Assign\NullCoalescingOperatorRector`](../rules/Php74/Rector/Assign/NullCoalescingOperatorRector.php)
+- class: [`Rector\Php74\Rector\Assign\NullCoalescingOperatorRector`](../rules/Php74/Rector/Assign/NullCoalescingOperatorRector.php)
 
 ```diff
  $array = [];
@@ -4685,7 +4685,7 @@ Use null coalescing operator ??=
 
 Add parentheses to nested ternary
 
--   class: [`Rector\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector`](../rules/Php74/Rector/Ternary/ParenthesizeNestedTernaryRector.php)
+- class: [`Rector\Php74\Rector\Ternary\ParenthesizeNestedTernaryRector`](../rules/Php74/Rector/Ternary/ParenthesizeNestedTernaryRector.php)
 
 ```diff
 -$value = $a ? $b : $a ?: null;
@@ -4698,7 +4698,7 @@ Add parentheses to nested ternary
 
 Change deprecated (real) to (float)
 
--   class: [`Rector\Php74\Rector\Double\RealToFloatTypeCastRector`](../rules/Php74/Rector/Double/RealToFloatTypeCastRector.php)
+- class: [`Rector\Php74\Rector\Double\RealToFloatTypeCastRector`](../rules/Php74/Rector/Double/RealToFloatTypeCastRector.php)
 
 ```diff
  class SomeClass
@@ -4719,7 +4719,7 @@ Change deprecated (real) to (float)
 
 Add null default to properties with PHP 7.4 property nullable type
 
--   class: [`Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector`](../rules/Php74/Rector/Property/RestoreDefaultNullToNullableTypePropertyRector.php)
+- class: [`Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector`](../rules/Php74/Rector/Property/RestoreDefaultNullToNullableTypePropertyRector.php)
 
 ```diff
  class SomeClass
@@ -4735,7 +4735,7 @@ Add null default to properties with PHP 7.4 property nullable type
 
 Change `restore_include_path()` to ini_restore("include_path")
 
--   class: [`Rector\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector`](../rules/Php74/Rector/FuncCall/RestoreIncludePathToIniRestoreRector.php)
+- class: [`Rector\Php74\Rector\FuncCall\RestoreIncludePathToIniRestoreRector`](../rules/Php74/Rector/FuncCall/RestoreIncludePathToIniRestoreRector.php)
 
 ```diff
 -restore_include_path();
@@ -4750,7 +4750,7 @@ Change `restore_include_path()` to ini_restore("include_path")
 
 Add missing parameter based on parent class method
 
--   class: [`Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector`](../rules/Php80/Rector/ClassMethod/AddParamBasedOnParentClassMethodRector.php)
+- class: [`Rector\Php80\Rector\ClassMethod\AddParamBasedOnParentClassMethodRector`](../rules/Php80/Rector/ClassMethod/AddParamBasedOnParentClassMethodRector.php)
 
 ```diff
  class A
@@ -4776,7 +4776,7 @@ Change annotation to attribute
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php80\Rector\Class_\AnnotationToAttributeRector`](../rules/Php80/Rector/Class_/AnnotationToAttributeRector.php)
+- class: [`Rector\Php80\Rector\Class_\AnnotationToAttributeRector`](../rules/Php80/Rector/Class_/AnnotationToAttributeRector.php)
 
 ```diff
  use Symfony\Component\Routing\Annotation\Route;
@@ -4799,7 +4799,7 @@ Change annotation to attribute
 
 Change `switch()` to `match()`
 
--   class: [`Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector`](../rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php)
+- class: [`Rector\Php80\Rector\Switch_\ChangeSwitchToMatchRector`](../rules/Php80/Rector/Switch_/ChangeSwitchToMatchRector.php)
 
 ```diff
 -switch ($input) {
@@ -4825,7 +4825,7 @@ Change `switch()` to `match()`
 
 Change get_class($object) to faster `$object::class`
 
--   class: [`Rector\Php80\Rector\FuncCall\ClassOnObjectRector`](../rules/Php80/Rector/FuncCall/ClassOnObjectRector.php)
+- class: [`Rector\Php80\Rector\FuncCall\ClassOnObjectRector`](../rules/Php80/Rector/FuncCall/ClassOnObjectRector.php)
 
 ```diff
  class SomeClass
@@ -4844,7 +4844,7 @@ Change get_class($object) to faster `$object::class`
 
 Change `$this::class` to static::class or self::class depends on class modifier
 
--   class: [`Rector\Php80\Rector\ClassConstFetch\ClassOnThisVariableObjectRector`](../rules/Php80/Rector/ClassConstFetch/ClassOnThisVariableObjectRector.php)
+- class: [`Rector\Php80\Rector\ClassConstFetch\ClassOnThisVariableObjectRector`](../rules/Php80/Rector/ClassConstFetch/ClassOnThisVariableObjectRector.php)
 
 ```diff
  class SomeClass
@@ -4865,7 +4865,7 @@ Change simple property init and assign to constructor promotion
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector`](../rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php)
+- class: [`Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector`](../rules/Php80/Rector/Class_/ClassPropertyAssignToConstructorPromotionRector.php)
 
 ```diff
  class SomeClass
@@ -4887,7 +4887,7 @@ Change simple property init and assign to constructor promotion
 
 Changes method visibility from final private to only private
 
--   class: [`Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector`](../rules/Php80/Rector/ClassMethod/FinalPrivateToPrivateVisibilityRector.php)
+- class: [`Rector\Php80\Rector\ClassMethod\FinalPrivateToPrivateVisibilityRector`](../rules/Php80/Rector/ClassMethod/FinalPrivateToPrivateVisibilityRector.php)
 
 ```diff
  class SomeClass
@@ -4905,7 +4905,7 @@ Changes method visibility from final private to only private
 
 Change ternary type resolve to `get_debug_type()`
 
--   class: [`Rector\Php80\Rector\Ternary\GetDebugTypeRector`](../rules/Php80/Rector/Ternary/GetDebugTypeRector.php)
+- class: [`Rector\Php80\Rector\Ternary\GetDebugTypeRector`](../rules/Php80/Rector/Ternary/GetDebugTypeRector.php)
 
 ```diff
  class SomeClass
@@ -4924,7 +4924,7 @@ Change ternary type resolve to `get_debug_type()`
 
 Change mixed docs type to mixed typed
 
--   class: [`Rector\Php80\Rector\FunctionLike\MixedTypeRector`](../rules/Php80/Rector/FunctionLike/MixedTypeRector.php)
+- class: [`Rector\Php80\Rector\FunctionLike\MixedTypeRector`](../rules/Php80/Rector/FunctionLike/MixedTypeRector.php)
 
 ```diff
  class SomeClass
@@ -4947,7 +4947,7 @@ Changed nested annotations to attributes
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php80\Rector\Property\NestedAnnotationToAttributeRector`](../rules/Php80/Rector/Property/NestedAnnotationToAttributeRector.php)
+- class: [`Rector\Php80\Rector\Property\NestedAnnotationToAttributeRector`](../rules/Php80/Rector/Property/NestedAnnotationToAttributeRector.php)
 
 ```diff
  use Doctrine\ORM\Mapping as ORM;
@@ -4973,7 +4973,7 @@ Changed nested annotations to attributes
 
 Remove unused variable in `catch()`
 
--   class: [`Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector`](../rules/Php80/Rector/Catch_/RemoveUnusedVariableInCatchRector.php)
+- class: [`Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector`](../rules/Php80/Rector/Catch_/RemoveUnusedVariableInCatchRector.php)
 
 ```diff
  final class SomeClass
@@ -4994,7 +4994,7 @@ Remove unused variable in `catch()`
 
 Adds static visibility to `__set_state()` methods
 
--   class: [`Rector\Php80\Rector\ClassMethod\SetStateToStaticRector`](../rules/Php80/Rector/ClassMethod/SetStateToStaticRector.php)
+- class: [`Rector\Php80\Rector\ClassMethod\SetStateToStaticRector`](../rules/Php80/Rector/ClassMethod/SetStateToStaticRector.php)
 
 ```diff
  class SomeClass
@@ -5010,9 +5010,9 @@ Adds static visibility to `__set_state()` methods
 
 ### StrContainsRector
 
-Replace `strpos()` !== false and `strstr()` with `str_contains()`
+Replace `strpos()` !== false and `strstr()`  with `str_contains()`
 
--   class: [`Rector\Php80\Rector\NotIdentical\StrContainsRector`](../rules/Php80/Rector/NotIdentical/StrContainsRector.php)
+- class: [`Rector\Php80\Rector\NotIdentical\StrContainsRector`](../rules/Php80/Rector/NotIdentical/StrContainsRector.php)
 
 ```diff
  class SomeClass
@@ -5031,7 +5031,7 @@ Replace `strpos()` !== false and `strstr()` with `str_contains()`
 
 Change helper functions to `str_ends_with()`
 
--   class: [`Rector\Php80\Rector\Identical\StrEndsWithRector`](../rules/Php80/Rector/Identical/StrEndsWithRector.php)
+- class: [`Rector\Php80\Rector\Identical\StrEndsWithRector`](../rules/Php80/Rector/Identical/StrEndsWithRector.php)
 
 ```diff
  class SomeClass
@@ -5069,7 +5069,7 @@ Change helper functions to `str_ends_with()`
 
 Change helper functions to `str_starts_with()`
 
--   class: [`Rector\Php80\Rector\Identical\StrStartsWithRector`](../rules/Php80/Rector/Identical/StrStartsWithRector.php)
+- class: [`Rector\Php80\Rector\Identical\StrStartsWithRector`](../rules/Php80/Rector/Identical/StrStartsWithRector.php)
 
 ```diff
  class SomeClass
@@ -5091,7 +5091,7 @@ Change helper functions to `str_starts_with()`
 
 Add `Stringable` interface to classes with `__toString()` method
 
--   class: [`Rector\Php80\Rector\Class_\StringableForToStringRector`](../rules/Php80/Rector/Class_/StringableForToStringRector.php)
+- class: [`Rector\Php80\Rector\Class_\StringableForToStringRector`](../rules/Php80/Rector/Class_/StringableForToStringRector.php)
 
 ```diff
 -class SomeClass
@@ -5113,7 +5113,7 @@ Add `Stringable` interface to classes with `__toString()` method
 
 Upgrade array callable to first class callable
 
--   class: [`Rector\Php81\Rector\Array_\FirstClassCallableRector`](../rules/Php81/Rector/Array_/FirstClassCallableRector.php)
+- class: [`Rector\Php81\Rector\Array_\FirstClassCallableRector`](../rules/Php81/Rector/Array_/FirstClassCallableRector.php)
 
 ```diff
  final class SomeClass
@@ -5136,7 +5136,7 @@ Upgrade array callable to first class callable
 
 Refactor MyCLabs enum class to native Enum
 
--   class: [`Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector`](../rules/Php81/Rector/Class_/MyCLabsClassToEnumRector.php)
+- class: [`Rector\Php81\Rector\Class_\MyCLabsClassToEnumRector`](../rules/Php81/Rector/Class_/MyCLabsClassToEnumRector.php)
 
 ```diff
 -use MyCLabs\Enum\Enum;
@@ -5157,7 +5157,7 @@ Refactor MyCLabs enum class to native Enum
 
 Refactor MyCLabs enum fetch to Enum const
 
--   class: [`Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector`](../rules/Php81/Rector/MethodCall/MyCLabsMethodCallToEnumConstRector.php)
+- class: [`Rector\Php81\Rector\MethodCall\MyCLabsMethodCallToEnumConstRector`](../rules/Php81/Rector/MethodCall/MyCLabsMethodCallToEnumConstRector.php)
 
 ```diff
 -$name = SomeEnum::VALUE()->getKey();
@@ -5170,7 +5170,7 @@ Refactor MyCLabs enum fetch to Enum const
 
 Replace property declaration of new state with direct new
 
--   class: [`Rector\Php81\Rector\ClassMethod\NewInInitializerRector`](../rules/Php81/Rector/ClassMethod/NewInInitializerRector.php)
+- class: [`Rector\Php81\Rector\ClassMethod\NewInInitializerRector`](../rules/Php81/Rector/ClassMethod/NewInInitializerRector.php)
 
 ```diff
  class SomeClass
@@ -5192,7 +5192,7 @@ Replace property declaration of new state with direct new
 
 Change null to strict string defined function call args
 
--   class: [`Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector`](../rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php)
+- class: [`Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector`](../rules/Php81/Rector/FuncCall/NullToStrictStringFuncCallArgRector.php)
 
 ```diff
  class SomeClass
@@ -5211,7 +5211,7 @@ Change null to strict string defined function call args
 
 Decorate read-only property with `readonly` attribute
 
--   class: [`Rector\Php81\Rector\Property\ReadOnlyPropertyRector`](../rules/Php81/Rector/Property/ReadOnlyPropertyRector.php)
+- class: [`Rector\Php81\Rector\Property\ReadOnlyPropertyRector`](../rules/Php81/Rector/Property/ReadOnlyPropertyRector.php)
 
 ```diff
  class SomeClass
@@ -5237,7 +5237,7 @@ Refactor Spatie enum class to native Enum
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector`](../rules/Php81/Rector/Class_/SpatieEnumClassToEnumRector.php)
+- class: [`Rector\Php81\Rector\Class_\SpatieEnumClassToEnumRector`](../rules/Php81/Rector/Class_/SpatieEnumClassToEnumRector.php)
 
 ```diff
 -use \Spatie\Enum\Enum;
@@ -5262,7 +5262,7 @@ Refactor Spatie enum class to native Enum
 
 Refactor Spatie enum method calls
 
--   class: [`Rector\Php81\Rector\MethodCall\SpatieEnumMethodCallToEnumConstRector`](../rules/Php81/Rector/MethodCall/SpatieEnumMethodCallToEnumConstRector.php)
+- class: [`Rector\Php81\Rector\MethodCall\SpatieEnumMethodCallToEnumConstRector`](../rules/Php81/Rector/MethodCall/SpatieEnumMethodCallToEnumConstRector.php)
 
 ```diff
 -$value1 = SomeEnum::SOME_CONSTANT()->getValue();
@@ -5285,7 +5285,7 @@ Add SensitiveParameter attribute to method and function configured parameters
 
 :wrench: **configure it!**
 
--   class: [`Rector\Php82\Rector\Param\AddSensitiveParameterAttributeRector`](../rules/Php82/Rector/Param/AddSensitiveParameterAttributeRector.php)
+- class: [`Rector\Php82\Rector\Param\AddSensitiveParameterAttributeRector`](../rules/Php82/Rector/Param/AddSensitiveParameterAttributeRector.php)
 
 ```diff
  class SomeClass
@@ -5303,7 +5303,7 @@ Add SensitiveParameter attribute to method and function configured parameters
 
 Prior PHP 8.2 FilesystemIterator::SKIP_DOTS was always set and could not be removed, therefore FilesystemIterator::SKIP_DOTS is added in order to keep this behaviour.
 
--   class: [`Rector\Php82\Rector\New_\FilesystemIteratorSkipDotsRector`](../rules/Php82/Rector/New_/FilesystemIteratorSkipDotsRector.php)
+- class: [`Rector\Php82\Rector\New_\FilesystemIteratorSkipDotsRector`](../rules/Php82/Rector/New_/FilesystemIteratorSkipDotsRector.php)
 
 ```diff
 -new FilesystemIterator(__DIR__, FilesystemIterator::KEY_AS_FILENAME);
@@ -5316,7 +5316,7 @@ Prior PHP 8.2 FilesystemIterator::SKIP_DOTS was always set and could not be remo
 
 Decorate read-only class with `readonly` attribute
 
--   class: [`Rector\Php82\Rector\Class_\ReadOnlyClassRector`](../rules/Php82/Rector/Class_/ReadOnlyClassRector.php)
+- class: [`Rector\Php82\Rector\Class_\ReadOnlyClassRector`](../rules/Php82/Rector/Class_/ReadOnlyClassRector.php)
 
 ```diff
 -final class SomeClass
@@ -5336,7 +5336,7 @@ Decorate read-only class with `readonly` attribute
 
 Change deprecated utf8_decode and utf8_encode to mb_convert_encoding
 
--   class: [`Rector\Php82\Rector\FuncCall\Utf8DecodeEncodeToMbConvertEncodingRector`](../rules/Php82/Rector/FuncCall/Utf8DecodeEncodeToMbConvertEncodingRector.php)
+- class: [`Rector\Php82\Rector\FuncCall\Utf8DecodeEncodeToMbConvertEncodingRector`](../rules/Php82/Rector/FuncCall/Utf8DecodeEncodeToMbConvertEncodingRector.php)
 
 ```diff
 -utf8_decode($value);
@@ -5351,7 +5351,7 @@ Change deprecated utf8_decode and utf8_encode to mb_convert_encoding
 
 Replace deprecated "${var}" to "{$var}"
 
--   class: [`Rector\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector`](../rules/Php82/Rector/Encapsed/VariableInStringInterpolationFixerRector.php)
+- class: [`Rector\Php82\Rector\Encapsed\VariableInStringInterpolationFixerRector`](../rules/Php82/Rector/Encapsed/VariableInStringInterpolationFixerRector.php)
 
 ```diff
  $c = "football";
@@ -5367,7 +5367,7 @@ Replace deprecated "${var}" to "{$var}"
 
 Add override attribute to overridden methods
 
--   class: [`Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector`](../rules/Php83/Rector/ClassMethod/AddOverrideAttributeToOverriddenMethodsRector.php)
+- class: [`Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector`](../rules/Php83/Rector/ClassMethod/AddOverrideAttributeToOverriddenMethodsRector.php)
 
 ```diff
  class ParentClass
@@ -5392,7 +5392,7 @@ Add override attribute to overridden methods
 
 Add type to constants based on their value
 
--   class: [`Rector\Php83\Rector\ClassConst\AddTypeToConstRector`](../rules/Php83/Rector/ClassConst/AddTypeToConstRector.php)
+- class: [`Rector\Php83\Rector\ClassConst\AddTypeToConstRector`](../rules/Php83/Rector/ClassConst/AddTypeToConstRector.php)
 
 ```diff
  final class SomeClass
@@ -5408,7 +5408,7 @@ Add type to constants based on their value
 
 Combine separated host and port on `ldap_connect()` args
 
--   class: [`Rector\Php83\Rector\FuncCall\CombineHostPortLdapUriRector`](../rules/Php83/Rector/FuncCall/CombineHostPortLdapUriRector.php)
+- class: [`Rector\Php83\Rector\FuncCall\CombineHostPortLdapUriRector`](../rules/Php83/Rector/FuncCall/CombineHostPortLdapUriRector.php)
 
 ```diff
 -ldap_connect('ldap://ldap.example.com', 389);
@@ -5423,7 +5423,7 @@ Combine separated host and port on `ldap_connect()` args
 
 Make implicit nullable param to explicit
 
--   class: [`Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector`](../rules/Php84/Rector/Param/ExplicitNullableParamTypeRector.php)
+- class: [`Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector`](../rules/Php84/Rector/Param/ExplicitNullableParamTypeRector.php)
 
 ```diff
 -function foo(string $param = null) {}
@@ -5438,7 +5438,7 @@ Make implicit nullable param to explicit
 
 PHPUnit test case will be finalized
 
--   class: [`Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector`](../rules/Privatization/Rector/Class_/FinalizeTestCaseClassRector.php)
+- class: [`Rector\Privatization\Rector\Class_\FinalizeTestCaseClassRector`](../rules/Privatization/Rector/Class_/FinalizeTestCaseClassRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -5455,7 +5455,7 @@ PHPUnit test case will be finalized
 
 Change protected class method to private if possible
 
--   class: [`Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector`](../rules/Privatization/Rector/ClassMethod/PrivatizeFinalClassMethodRector.php)
+- class: [`Rector\Privatization\Rector\ClassMethod\PrivatizeFinalClassMethodRector`](../rules/Privatization/Rector/ClassMethod/PrivatizeFinalClassMethodRector.php)
 
 ```diff
  final class SomeClass
@@ -5473,7 +5473,7 @@ Change protected class method to private if possible
 
 Change property to private if possible
 
--   class: [`Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector`](../rules/Privatization/Rector/Property/PrivatizeFinalClassPropertyRector.php)
+- class: [`Rector\Privatization\Rector\Property\PrivatizeFinalClassPropertyRector`](../rules/Privatization/Rector/Property/PrivatizeFinalClassPropertyRector.php)
 
 ```diff
  final class SomeClass
@@ -5489,7 +5489,7 @@ Change property to private if possible
 
 Privatize getter of local property to property
 
--   class: [`Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector`](../rules/Privatization/Rector/MethodCall/PrivatizeLocalGetterToPropertyRector.php)
+- class: [`Rector\Privatization\Rector\MethodCall\PrivatizeLocalGetterToPropertyRector`](../rules/Privatization/Rector/MethodCall/PrivatizeLocalGetterToPropertyRector.php)
 
 ```diff
  class SomeClass
@@ -5519,7 +5519,7 @@ Removes defined arguments in defined methods and their calls.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Removing\Rector\ClassMethod\ArgumentRemoverRector`](../rules/Removing/Rector/ClassMethod/ArgumentRemoverRector.php)
+- class: [`Rector\Removing\Rector\ClassMethod\ArgumentRemoverRector`](../rules/Removing/Rector/ClassMethod/ArgumentRemoverRector.php)
 
 ```diff
  $someObject = new SomeClass;
@@ -5535,7 +5535,7 @@ Remove argument by position by function name
 
 :wrench: **configure it!**
 
--   class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallArgRector.php)
+- class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallArgRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallArgRector.php)
 
 ```diff
 -remove_last_arg(1, 2);
@@ -5550,7 +5550,7 @@ Remove function
 
 :wrench: **configure it!**
 
--   class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallRector.php)
+- class: [`Rector\Removing\Rector\FuncCall\RemoveFuncCallRector`](../rules/Removing/Rector/FuncCall/RemoveFuncCallRector.php)
 
 ```diff
 -$x = 'something';
@@ -5566,7 +5566,7 @@ Removes interfaces usage from class.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Removing\Rector\Class_\RemoveInterfacesRector`](../rules/Removing/Rector/Class_/RemoveInterfacesRector.php)
+- class: [`Rector\Removing\Rector\Class_\RemoveInterfacesRector`](../rules/Removing/Rector/Class_/RemoveInterfacesRector.php)
 
 ```diff
 -class SomeClass implements SomeInterface
@@ -5583,7 +5583,7 @@ Remove specific traits from code
 
 :wrench: **configure it!**
 
--   class: [`Rector\Removing\Rector\Class_\RemoveTraitUseRector`](../rules/Removing/Rector/Class_/RemoveTraitUseRector.php)
+- class: [`Rector\Removing\Rector\Class_\RemoveTraitUseRector`](../rules/Removing/Rector/Class_/RemoveTraitUseRector.php)
 
 ```diff
  class SomeClass
@@ -5602,7 +5602,7 @@ Turns defined annotations above properties and methods to their new values.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector`](../rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php)
+- class: [`Rector\Renaming\Rector\ClassMethod\RenameAnnotationRector`](../rules/Renaming/Rector/ClassMethod/RenameAnnotationRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -5627,7 +5627,7 @@ Rename attribute class names
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\Class_\RenameAttributeRector`](../rules/Renaming/Rector/Class_/RenameAttributeRector.php)
+- class: [`Rector\Renaming\Rector\Class_\RenameAttributeRector`](../rules/Renaming/Rector/Class_/RenameAttributeRector.php)
 
 ```diff
 -#[SimpleRoute()]
@@ -5645,7 +5645,7 @@ Replaces defined class constants in their calls.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector`](../rules/Renaming/Rector/ClassConstFetch/RenameClassConstFetchRector.php)
+- class: [`Rector\Renaming\Rector\ClassConstFetch\RenameClassConstFetchRector`](../rules/Renaming/Rector/ClassConstFetch/RenameClassConstFetchRector.php)
 
 ```diff
 -$value = SomeClass::OLD_CONSTANT;
@@ -5662,7 +5662,7 @@ Replaces defined classes by new ones.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\Name\RenameClassRector`](../rules/Renaming/Rector/Name/RenameClassRector.php)
+- class: [`Rector\Renaming\Rector\Name\RenameClassRector`](../rules/Renaming/Rector/Name/RenameClassRector.php)
 
 ```diff
  namespace App;
@@ -5689,7 +5689,7 @@ Replace constant by new ones
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\ConstFetch\RenameConstantRector`](../rules/Renaming/Rector/ConstFetch/RenameConstantRector.php)
+- class: [`Rector\Renaming\Rector\ConstFetch\RenameConstantRector`](../rules/Renaming/Rector/ConstFetch/RenameConstantRector.php)
 
 ```diff
  final class SomeClass
@@ -5710,7 +5710,7 @@ Rename param within closures and arrow functions based on use with specified met
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector`](../rules/Renaming/Rector/FunctionLike/RenameFunctionLikeParamWithinCallLikeArgRector.php)
+- class: [`Rector\Renaming\Rector\FunctionLike\RenameFunctionLikeParamWithinCallLikeArgRector`](../rules/Renaming/Rector/FunctionLike/RenameFunctionLikeParamWithinCallLikeArgRector.php)
 
 ```diff
 -(new SomeClass)->process(function ($param) {});
@@ -5725,7 +5725,7 @@ Turns defined function call new one.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\FuncCall\RenameFunctionRector`](../rules/Renaming/Rector/FuncCall/RenameFunctionRector.php)
+- class: [`Rector\Renaming\Rector\FuncCall\RenameFunctionRector`](../rules/Renaming/Rector/FuncCall/RenameFunctionRector.php)
 
 ```diff
 -view("...", []);
@@ -5740,7 +5740,7 @@ Turns method names to new ones.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\MethodCall\RenameMethodRector`](../rules/Renaming/Rector/MethodCall/RenameMethodRector.php)
+- class: [`Rector\Renaming\Rector\MethodCall\RenameMethodRector`](../rules/Renaming/Rector/MethodCall/RenameMethodRector.php)
 
 ```diff
  $someObject = new SomeExampleClass;
@@ -5756,7 +5756,7 @@ Replaces defined old properties by new ones.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector`](../rules/Renaming/Rector/PropertyFetch/RenamePropertyRector.php)
+- class: [`Rector\Renaming\Rector\PropertyFetch\RenamePropertyRector`](../rules/Renaming/Rector/PropertyFetch/RenamePropertyRector.php)
 
 ```diff
 -$someObject->someOldProperty;
@@ -5771,7 +5771,7 @@ Turns method names to new ones.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector`](../rules/Renaming/Rector/StaticCall/RenameStaticMethodRector.php)
+- class: [`Rector\Renaming\Rector\StaticCall\RenameStaticMethodRector`](../rules/Renaming/Rector/StaticCall/RenameStaticMethodRector.php)
 
 ```diff
 -SomeClass::oldStaticMethod();
@@ -5786,7 +5786,7 @@ Change string value
 
 :wrench: **configure it!**
 
--   class: [`Rector\Renaming\Rector\String_\RenameStringRector`](../rules/Renaming/Rector/String_/RenameStringRector.php)
+- class: [`Rector\Renaming\Rector\String_\RenameStringRector`](../rules/Renaming/Rector/String_/RenameStringRector.php)
 
 ```diff
  class SomeClass
@@ -5809,7 +5809,7 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 
 :wrench: **configure it!**
 
--   class: [`Rector\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector`](../rules/Strict/Rector/BooleanNot/BooleanInBooleanNotRuleFixerRector.php)
+- class: [`Rector\Strict\Rector\BooleanNot\BooleanInBooleanNotRuleFixerRector`](../rules/Strict/Rector/BooleanNot/BooleanInBooleanNotRuleFixerRector.php)
 
 ```diff
  class SomeClass
@@ -5834,7 +5834,7 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 
 :wrench: **configure it!**
 
--   class: [`Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector`](../rules/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector.php)
+- class: [`Rector\Strict\Rector\If_\BooleanInIfConditionRuleFixerRector`](../rules/Strict/Rector/If_/BooleanInIfConditionRuleFixerRector.php)
 
 ```diff
  final class NegatedString
@@ -5859,7 +5859,7 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\BooleansInConditi
 
 :wrench: **configure it!**
 
--   class: [`Rector\Strict\Rector\Ternary\BooleanInTernaryOperatorRuleFixerRector`](../rules/Strict/Rector/Ternary/BooleanInTernaryOperatorRuleFixerRector.php)
+- class: [`Rector\Strict\Rector\Ternary\BooleanInTernaryOperatorRuleFixerRector`](../rules/Strict/Rector/Ternary/BooleanInTernaryOperatorRuleFixerRector.php)
 
 ```diff
  final class ArrayCompare
@@ -5880,7 +5880,7 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\DisallowedConstru
 
 :wrench: **configure it!**
 
--   class: [`Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector`](../rules/Strict/Rector/Empty_/DisallowedEmptyRuleFixerRector.php)
+- class: [`Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector`](../rules/Strict/Rector/Empty_/DisallowedEmptyRuleFixerRector.php)
 
 ```diff
  final class SomeEmptyArray
@@ -5901,7 +5901,7 @@ Fixer for PHPStan reports by strict type rule - "PHPStan\Rules\DisallowedConstru
 
 :wrench: **configure it!**
 
--   class: [`Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector`](../rules/Strict/Rector/Ternary/DisallowedShortTernaryRuleFixerRector.php)
+- class: [`Rector\Strict\Rector\Ternary\DisallowedShortTernaryRuleFixerRector`](../rules/Strict/Rector/Ternary/DisallowedShortTernaryRuleFixerRector.php)
 
 ```diff
  final class ShortTernaryArray
@@ -5924,7 +5924,7 @@ Add the `AllowDynamicProperties` attribute to all classes
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector`](../rules/Transform/Rector/Class_/AddAllowDynamicPropertiesAttributeRector.php)
+- class: [`Rector\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector`](../rules/Transform/Rector/Class_/AddAllowDynamicPropertiesAttributeRector.php)
 
 ```diff
  namespace Example\Domain;
@@ -5943,7 +5943,7 @@ Add interface by used trait
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Class_\AddInterfaceByTraitRector`](../rules/Transform/Rector/Class_/AddInterfaceByTraitRector.php)
+- class: [`Rector\Transform\Rector\Class_\AddInterfaceByTraitRector`](../rules/Transform/Rector/Class_/AddInterfaceByTraitRector.php)
 
 ```diff
 -class SomeClass
@@ -5961,7 +5961,7 @@ Change array dim fetch to method call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector`](../rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php)
+- class: [`Rector\Transform\Rector\ArrayDimFetch\ArrayDimFetchToMethodCallRector`](../rules/Transform/Rector/ArrayDimFetch/ArrayDimFetchToMethodCallRector.php)
 
 ```diff
 -$app['someService'];
@@ -5976,7 +5976,7 @@ Replace key value on specific attribute to class constant
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector`](../rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php)
+- class: [`Rector\Transform\Rector\Attribute\AttributeKeyToClassConstFetchRector`](../rules/Transform/Rector/Attribute/AttributeKeyToClassConstFetchRector.php)
 
 ```diff
  use Doctrine\ORM\Mapping\Column;
@@ -5998,7 +5998,7 @@ Change const fetch to class const fetch
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\ConstFetch\ConstFetchToClassConstFetchRector`](../rules/Transform/Rector/ConstFetch/ConstFetchToClassConstFetchRector.php)
+- class: [`Rector\Transform\Rector\ConstFetch\ConstFetchToClassConstFetchRector`](../rules/Transform/Rector/ConstFetch/ConstFetchToClassConstFetchRector.php)
 
 ```diff
 -$x = CONTEXT_COURSE
@@ -6013,7 +6013,7 @@ Changes use of function calls to use constants
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector`](../rules/Transform/Rector/FuncCall/FuncCallToConstFetchRector.php)
+- class: [`Rector\Transform\Rector\FuncCall\FuncCallToConstFetchRector`](../rules/Transform/Rector/FuncCall/FuncCallToConstFetchRector.php)
 
 ```diff
  class SomeClass
@@ -6034,7 +6034,7 @@ Turns defined function calls to local method calls.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php)
+- class: [`Rector\Transform\Rector\FuncCall\FuncCallToMethodCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToMethodCallRector.php)
 
 ```diff
  class SomeClass
@@ -6065,7 +6065,7 @@ Change configured function calls to new Instance
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\FuncCall\FuncCallToNewRector`](../rules/Transform/Rector/FuncCall/FuncCallToNewRector.php)
+- class: [`Rector\Transform\Rector\FuncCall\FuncCallToNewRector`](../rules/Transform/Rector/FuncCall/FuncCallToNewRector.php)
 
 ```diff
  class SomeClass
@@ -6086,7 +6086,7 @@ Turns defined function call to static method call.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\FuncCall\FuncCallToStaticCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToStaticCallRector.php)
+- class: [`Rector\Transform\Rector\FuncCall\FuncCallToStaticCallRector`](../rules/Transform/Rector/FuncCall/FuncCallToStaticCallRector.php)
 
 ```diff
 -view("...", []);
@@ -6101,7 +6101,7 @@ Merges old interface to a new one, that already has its methods
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Class_\MergeInterfacesRector`](../rules/Transform/Rector/Class_/MergeInterfacesRector.php)
+- class: [`Rector\Transform\Rector\Class_\MergeInterfacesRector`](../rules/Transform/Rector/Class_/MergeInterfacesRector.php)
 
 ```diff
 -class SomeClass implements SomeInterface, SomeOldInterface
@@ -6118,7 +6118,7 @@ Change method call to function call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\MethodCall\MethodCallToFuncCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToFuncCallRector.php)
+- class: [`Rector\Transform\Rector\MethodCall\MethodCallToFuncCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToFuncCallRector.php)
 
 ```diff
  final class SomeClass
@@ -6139,7 +6139,7 @@ Turns method call `"$this->something()"` to property fetch "$this->something"
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\MethodCall\MethodCallToPropertyFetchRector`](../rules/Transform/Rector/MethodCall/MethodCallToPropertyFetchRector.php)
+- class: [`Rector\Transform\Rector\MethodCall\MethodCallToPropertyFetchRector`](../rules/Transform/Rector/MethodCall/MethodCallToPropertyFetchRector.php)
 
 ```diff
  class SomeClass
@@ -6160,7 +6160,7 @@ Change method call to desired static call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\MethodCall\MethodCallToStaticCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToStaticCallRector.php)
+- class: [`Rector\Transform\Rector\MethodCall\MethodCallToStaticCallRector`](../rules/Transform/Rector/MethodCall/MethodCallToStaticCallRector.php)
 
 ```diff
  final class SomeClass
@@ -6188,7 +6188,7 @@ Change new Object to static call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\New_\NewToStaticCallRector`](../rules/Transform/Rector/New_/NewToStaticCallRector.php)
+- class: [`Rector\Transform\Rector\New_\NewToStaticCallRector`](../rules/Transform/Rector/New_/NewToStaticCallRector.php)
 
 ```diff
  class SomeClass
@@ -6209,7 +6209,7 @@ Replaces parent class to specific traits
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Class_\ParentClassToTraitsRector`](../rules/Transform/Rector/Class_/ParentClassToTraitsRector.php)
+- class: [`Rector\Transform\Rector\Class_\ParentClassToTraitsRector`](../rules/Transform/Rector/Class_/ParentClassToTraitsRector.php)
 
 ```diff
 -class SomeClass extends Nette\Object
@@ -6227,7 +6227,7 @@ Turns property assign of specific type and property name to method call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Assign\PropertyAssignToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyAssignToMethodCallRector.php)
+- class: [`Rector\Transform\Rector\Assign\PropertyAssignToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyAssignToMethodCallRector.php)
 
 ```diff
  $someObject = new SomeClass;
@@ -6243,7 +6243,7 @@ Replaces properties assign calls be defined methods.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyFetchToMethodCallRector.php)
+- class: [`Rector\Transform\Rector\Assign\PropertyFetchToMethodCallRector`](../rules/Transform/Rector/Assign/PropertyFetchToMethodCallRector.php)
 
 ```diff
 -$result = $object->property;
@@ -6261,7 +6261,7 @@ Replaces properties assign calls be defined methods.
 
 Change RectorConfig to RectorConfigBuilder
 
--   class: [`Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector`](../rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php)
+- class: [`Rector\Transform\Rector\FileWithoutNamespace\RectorConfigBuilderRector`](../rules/Transform/Rector/FileWithoutNamespace/RectorConfigBuilderRector.php)
 
 ```diff
 -return static function (RectorConfig $rectorConfig): void {
@@ -6278,7 +6278,7 @@ Changes method calls in child of specific types to defined property method call
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\MethodCall\ReplaceParentCallByPropertyCallRector`](../rules/Transform/Rector/MethodCall/ReplaceParentCallByPropertyCallRector.php)
+- class: [`Rector\Transform\Rector\MethodCall\ReplaceParentCallByPropertyCallRector`](../rules/Transform/Rector/MethodCall/ReplaceParentCallByPropertyCallRector.php)
 
 ```diff
  final class SomeClass
@@ -6299,7 +6299,7 @@ Add #[\ReturnTypeWillChange] attribute to configured instanceof class with metho
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector`](../rules/Transform/Rector/ClassMethod/ReturnTypeWillChangeRector.php)
+- class: [`Rector\Transform\Rector\ClassMethod\ReturnTypeWillChangeRector`](../rules/Transform/Rector/ClassMethod/ReturnTypeWillChangeRector.php)
 
 ```diff
  class SomeClass implements ArrayAccess
@@ -6319,7 +6319,7 @@ Turns static call to function call.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToFuncCallRector.php)
+- class: [`Rector\Transform\Rector\StaticCall\StaticCallToFuncCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToFuncCallRector.php)
 
 ```diff
 -OldClass::oldMethod("args");
@@ -6334,7 +6334,7 @@ Change static call to service method via constructor injection
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php)
+- class: [`Rector\Transform\Rector\StaticCall\StaticCallToMethodCallRector`](../rules/Transform/Rector/StaticCall/StaticCallToMethodCallRector.php)
 
 ```diff
 -use Nette\Utils\FileSystem;
@@ -6368,7 +6368,7 @@ Change static call to new instance
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\StaticCall\StaticCallToNewRector`](../rules/Transform/Rector/StaticCall/StaticCallToNewRector.php)
+- class: [`Rector\Transform\Rector\StaticCall\StaticCallToNewRector`](../rules/Transform/Rector/StaticCall/StaticCallToNewRector.php)
 
 ```diff
  class SomeClass
@@ -6389,7 +6389,7 @@ Changes strings to specific constants
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\String_\StringToClassConstantRector`](../rules/Transform/Rector/String_/StringToClassConstantRector.php)
+- class: [`Rector\Transform\Rector\String_\StringToClassConstantRector`](../rules/Transform/Rector/String_/StringToClassConstantRector.php)
 
 ```diff
  final class SomeSubscriber
@@ -6410,7 +6410,7 @@ Wrap return value of specific method
 
 :wrench: **configure it!**
 
--   class: [`Rector\Transform\Rector\ClassMethod\WrapReturnRector`](../rules/Transform/Rector/ClassMethod/WrapReturnRector.php)
+- class: [`Rector\Transform\Rector\ClassMethod\WrapReturnRector`](../rules/Transform/Rector/ClassMethod/WrapReturnRector.php)
 
 ```diff
  final class SomeClass
@@ -6431,7 +6431,7 @@ Wrap return value of specific method
 
 Add known return type to arrow function
 
--   class: [`Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector`](../rules/TypeDeclaration/Rector/ArrowFunction/AddArrowFunctionReturnTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ArrowFunction\AddArrowFunctionReturnTypeRector`](../rules/TypeDeclaration/Rector/ArrowFunction/AddArrowFunctionReturnTypeRector.php)
 
 ```diff
 -fn () => [];
@@ -6444,7 +6444,7 @@ Add known return type to arrow function
 
 Add "never" return-type for closure that never return anything
 
--   class: [`Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector`](../rules/TypeDeclaration/Rector/Closure/AddClosureNeverReturnTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Closure\AddClosureNeverReturnTypeRector`](../rules/TypeDeclaration/Rector/Closure/AddClosureNeverReturnTypeRector.php)
 
 ```diff
 -function () {
@@ -6459,7 +6459,7 @@ Add "never" return-type for closure that never return anything
 
 Add closure return type void if there is no return
 
--   class: [`Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Closure/AddClosureVoidReturnTypeWhereNoReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Closure/AddClosureVoidReturnTypeWhereNoReturnRector.php)
 
 ```diff
 -function () {
@@ -6473,7 +6473,7 @@ Add closure return type void if there is no return
 
 Add function return type void if there is no return
 
--   class: [`Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Function_/AddFunctionVoidReturnTypeWhereNoReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Function_\AddFunctionVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Function_/AddFunctionVoidReturnTypeWhereNoReturnRector.php)
 
 ```diff
 -function restore() {
@@ -6487,7 +6487,7 @@ Add function return type void if there is no return
 
 Change private method param type to strict type, based on passed strict types
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddMethodCallBasedStrictParamTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddMethodCallBasedStrictParamTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -6510,7 +6510,7 @@ Change private method param type to strict type, based on passed strict types
 
 Adds param type declaration based on PHPUnit provider return type declaration
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeBasedOnPHPUnitDataProviderRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeBasedOnPHPUnitDataProviderRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeBasedOnPHPUnitDataProviderRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -6540,7 +6540,7 @@ Add param types where needed
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeDeclarationRector.php)
 
 ```diff
  class SomeClass
@@ -6560,7 +6560,7 @@ Add param types where needed
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector.php)
 
 ```diff
 -(new SomeClass)->process(function ($parameter) {});
@@ -6573,7 +6573,7 @@ Add param types where needed
 
 Adds param type declaration based on property type the value is assigned to PHPUnit provider return type declaration
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeFromPropertyTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddParamTypeFromPropertyTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddParamTypeFromPropertyTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -6594,7 +6594,7 @@ Adds param type declaration based on property type the value is assigned to PHPU
 
 Add exact fixed array type in known cases
 
--   class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeSplFixedArrayRector.php)
+- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeSplFixedArrayRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddParamTypeSplFixedArrayRector.php)
 
 ```diff
 +use PhpCsFixer\Tokenizer\Token;
@@ -6619,7 +6619,7 @@ Add type to property by added rules, mostly public/property by parent type
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector`](../rules/TypeDeclaration/Rector/Property/AddPropertyTypeDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector`](../rules/TypeDeclaration/Rector/Property/AddPropertyTypeDeclarationRector.php)
 
 ```diff
  class SomeClass extends ParentClass
@@ -6635,7 +6635,7 @@ Add type to property by added rules, mostly public/property by parent type
 
 Add missing return type declaration based on parent class method
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationBasedOnParentClassMethodRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationBasedOnParentClassMethodRector.php)
 
 ```diff
  class A
@@ -6659,7 +6659,7 @@ Add missing return type declaration based on parent class method
 
 Add return type declarations from yields
 
--   class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddReturnTypeDeclarationFromYieldsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\FunctionLike\AddReturnTypeDeclarationFromYieldsRector`](../rules/TypeDeclaration/Rector/FunctionLike/AddReturnTypeDeclarationFromYieldsRector.php)
 
 ```diff
  class SomeClass
@@ -6683,7 +6683,7 @@ Changes defined return typehint of method and class.
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddReturnTypeDeclarationRector.php)
 
 ```diff
  class SomeClass
@@ -6701,7 +6701,7 @@ Changes defined return typehint of method and class.
 
 Add void to PHPUnit test methods
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Class_/AddTestsVoidReturnTypeWhereNoReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/Class_/AddTestsVoidReturnTypeWhereNoReturnRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -6723,7 +6723,7 @@ Add param and return types on resource docblock
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddTypeFromResourceDocblockRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddTypeFromResourceDocblockRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddTypeFromResourceDocblockRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddTypeFromResourceDocblockRector.php)
 
 ```diff
  class SomeClass
@@ -6752,7 +6752,7 @@ Add param and return types on resource docblock
 
 Add return type void to function like without any return
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddVoidReturnTypeWhereNoReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/AddVoidReturnTypeWhereNoReturnRector.php)
 
 ```diff
  final class SomeClass
@@ -6772,7 +6772,7 @@ Add return type void to function like without any return
 
 Change && and || between nullable objects to instanceof compares
 
--   class: [`Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector`](../rules/TypeDeclaration/Rector/BooleanAnd/BinaryOpNullableToInstanceofRector.php)
+- class: [`Rector\TypeDeclaration\Rector\BooleanAnd\BinaryOpNullableToInstanceofRector`](../rules/TypeDeclaration/Rector/BooleanAnd/BinaryOpNullableToInstanceofRector.php)
 
 ```diff
  function someFunction(?SomeClass $someClass)
@@ -6792,7 +6792,7 @@ Change && and || between nullable objects to instanceof compares
 
 Add return bool, based on direct true/false returns
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanConstReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/BoolReturnTypeFromBooleanConstReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanConstReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/BoolReturnTypeFromBooleanConstReturnsRector.php)
 
 ```diff
  class SomeClass
@@ -6815,7 +6815,7 @@ Add return bool, based on direct true/false returns
 
 Add bool return type based on strict bool returns type operations
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanStrictReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/BoolReturnTypeFromBooleanStrictReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanStrictReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/BoolReturnTypeFromBooleanStrictReturnsRector.php)
 
 ```diff
  class SomeClass
@@ -6834,7 +6834,7 @@ Add bool return type based on strict bool returns type operations
 
 Add return type to classes that extend `Doctrine\ORM\EntityRepository` based on return Doctrine method names
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeRector`](../rules/TypeDeclaration/Rector/Class_/ChildDoctrineRepositoryClassTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\ChildDoctrineRepositoryClassTypeRector`](../rules/TypeDeclaration/Rector/Class_/ChildDoctrineRepositoryClassTypeRector.php)
 
 ```diff
  use Doctrine\ORM\EntityRepository;
@@ -6860,7 +6860,7 @@ Add return type to classes that extend `Doctrine\ORM\EntityRepository` based on 
 
 Add return type to closures based on known return values
 
--   class: [`Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector`](../rules/TypeDeclaration/Rector/Closure/ClosureReturnTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Closure\ClosureReturnTypeRector`](../rules/TypeDeclaration/Rector/Closure/ClosureReturnTypeRector.php)
 
 ```diff
 -function () {
@@ -6875,7 +6875,7 @@ Add return type to closures based on known return values
 
 Add declare(strict_types=1) if missing
 
--   class: [`Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector`](../rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php)
+- class: [`Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector`](../rules/TypeDeclaration/Rector/StmtsAwareInterface/DeclareStrictTypesRector.php)
 
 ```diff
 +declare(strict_types=1);
@@ -6891,7 +6891,7 @@ Add declare(strict_types=1) if missing
 
 Change `empty()` on nullable object to instanceof check
 
--   class: [`Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector`](../rules/TypeDeclaration/Rector/Empty_/EmptyOnNullableObjectToInstanceOfRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Empty_\EmptyOnNullableObjectToInstanceOfRector`](../rules/TypeDeclaration/Rector/Empty_/EmptyOnNullableObjectToInstanceOfRector.php)
 
 ```diff
  class SomeClass
@@ -6916,7 +6916,7 @@ Add declare strict types to a limited amount of classes at a time, to try out in
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector`](../rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php)
+- class: [`Rector\TypeDeclaration\Rector\StmtsAwareInterface\IncreaseDeclareStrictTypesRector`](../rules/TypeDeclaration/Rector/StmtsAwareInterface/IncreaseDeclareStrictTypesRector.php)
 
 ```diff
 +declare(strict_types=1);
@@ -6932,7 +6932,7 @@ Add declare strict types to a limited amount of classes at a time, to try out in
 
 Set DateTime to DateTimeInterface for DateTime property with DateTimeInterface docblock
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector`](../rules/TypeDeclaration/Rector/Class_/MergeDateTimePropertyTypeDeclarationRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\MergeDateTimePropertyTypeDeclarationRector`](../rules/TypeDeclaration/Rector/Class_/MergeDateTimePropertyTypeDeclarationRector.php)
 
 ```diff
  final class SomeClass
@@ -6951,7 +6951,7 @@ Set DateTime to DateTimeInterface for DateTime property with DateTimeInterface d
 
 Add int/float return type based on strict typed returns
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/NumericReturnTypeFromStrictReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/NumericReturnTypeFromStrictReturnsRector.php)
 
 ```diff
  class SomeClass
@@ -6970,7 +6970,7 @@ Add int/float return type based on strict typed returns
 
 Add int/float return type based on strict scalar returns type
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/NumericReturnTypeFromStrictScalarReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\NumericReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/NumericReturnTypeFromStrictScalarReturnsRector.php)
 
 ```diff
  class SomeClass
@@ -6989,7 +6989,7 @@ Add int/float return type based on strict scalar returns type
 
 Change param type based on passed method call type
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByMethodCallTypeRector.php)
 
 ```diff
  class SomeTypedService
@@ -7020,7 +7020,7 @@ Change param type based on passed method call type
 
 Change param type based on parent param type
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByParentCallTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ParamTypeByParentCallTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ParamTypeByParentCallTypeRector.php)
 
 ```diff
  class SomeControl
@@ -7046,7 +7046,7 @@ Change param type based on parent param type
 
 Add property type based on strict setter and getter method
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector`](../rules/TypeDeclaration/Rector/Class_/PropertyTypeFromStrictSetterGetterRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\PropertyTypeFromStrictSetterGetterRector`](../rules/TypeDeclaration/Rector/Class_/PropertyTypeFromStrictSetterGetterRector.php)
 
 ```diff
  final class SomeClass
@@ -7072,7 +7072,7 @@ Add property type based on strict setter and getter method
 
 Add "never" return-type for methods that never return anything
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnNeverTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnNeverTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -7091,7 +7091,7 @@ Add "never" return-type for methods that never return anything
 
 Add basic ? nullable type to class methods and functions, as of PHP 7.1
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnNullableTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnNullableTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnNullableTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -7114,7 +7114,7 @@ Add basic ? nullable type to class methods and functions, as of PHP 7.1
 
 Add known property and return MockObject types
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromMockObjectRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromMockObjectRector.php)
 
 ```diff
  class SomeTest extends TestCase
@@ -7134,7 +7134,7 @@ Add known property and return MockObject types
 
 Add return type to function like with return cast
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnCastRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnCastRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnCastRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnCastRector.php)
 
 ```diff
  final class SomeClass
@@ -7158,7 +7158,7 @@ Add return type to function like with return cast
 
 Add return type from return direct array
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnDirectArrayRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnDirectArrayRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnDirectArrayRector.php)
 
 ```diff
  final class AddReturnArray
@@ -7177,7 +7177,7 @@ Add return type from return direct array
 
 Add return type to function like with return new
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnNewRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromReturnNewRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromReturnNewRector.php)
 
 ```diff
  final class SomeClass
@@ -7196,7 +7196,7 @@ Add return type to function like with return new
 
 Add strict type declaration based on returned constants
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictConstantReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictConstantReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictConstantReturnRector.php)
 
 ```diff
  class SomeClass
@@ -7217,7 +7217,7 @@ Add strict type declaration based on returned constants
 
 Add return type from strict return `$this`
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictFluentReturnRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictFluentReturnRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictFluentReturnRector.php)
 
 ```diff
  final class SomeClass
@@ -7236,7 +7236,7 @@ Add return type from strict return `$this`
 
 Add strict return type based native function or native method
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNativeCallRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNativeCallRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNativeCallRector.php)
 
 ```diff
  final class SomeClass
@@ -7255,7 +7255,7 @@ Add strict return type based native function or native method
 
 Add strict return array type based on created empty array and returned
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictNewArrayRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictNewArrayRector.php)
 
 ```diff
  final class SomeClass
@@ -7276,7 +7276,7 @@ Add strict return array type based on created empty array and returned
 
 Add return type based on strict parameter type
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictParamRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictParamRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictParamRector.php)
 
 ```diff
  class SomeClass
@@ -7295,7 +7295,7 @@ Add return type based on strict parameter type
 
 Add method return type based on strict ternary values
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector`](../rules/TypeDeclaration/Rector/Class_/ReturnTypeFromStrictTernaryRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\ReturnTypeFromStrictTernaryRector`](../rules/TypeDeclaration/Rector/Class_/ReturnTypeFromStrictTernaryRector.php)
 
 ```diff
  final class SomeClass
@@ -7314,7 +7314,7 @@ Add method return type based on strict ternary values
 
 Add return type from strict return type of call
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictTypedCallRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedCallRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictTypedCallRector.php)
 
 ```diff
  final class SomeClass
@@ -7338,7 +7338,7 @@ Add return type from strict return type of call
 
 Add return method return type based on strict typed property
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictTypedPropertyRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTypedPropertyRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromStrictTypedPropertyRector.php)
 
 ```diff
  final class SomeClass
@@ -7359,7 +7359,7 @@ Add return method return type based on strict typed property
 
 Add return type from symfony serializer
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromSymfonySerializerRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromSymfonySerializerRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromSymfonySerializerRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnTypeFromSymfonySerializerRector.php)
 
 ```diff
  final class SomeClass
@@ -7380,7 +7380,7 @@ Add return type from symfony serializer
 
 Add union return type
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnUnionTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\ReturnUnionTypeRector`](../rules/TypeDeclaration/Rector/ClassMethod/ReturnUnionTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -7407,7 +7407,7 @@ Add union return type
 
 Add array type based on array dim fetch use
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictArrayParamDimFetchRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictArrayParamDimFetchRector.php)
 
 ```diff
  class SomeClass
@@ -7426,7 +7426,7 @@ Add array type based on array dim fetch use
 
 Add string type based on concat use
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictStringParamConcatRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StrictStringParamConcatRector`](../rules/TypeDeclaration/Rector/ClassMethod/StrictStringParamConcatRector.php)
 
 ```diff
  class SomeClass
@@ -7445,7 +7445,7 @@ Add string type based on concat use
 
 Add string return type based on returned string scalar values
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/StringReturnTypeFromStrictScalarReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictScalarReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/StringReturnTypeFromStrictScalarReturnsRector.php)
 
 ```diff
  final class SomeClass
@@ -7468,7 +7468,7 @@ Add string return type based on returned string scalar values
 
 Add string return type based on returned strict string values
 
--   class: [`Rector\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictStringReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/StringReturnTypeFromStrictStringReturnsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\ClassMethod\StringReturnTypeFromStrictStringReturnsRector`](../rules/TypeDeclaration/Rector/ClassMethod/StringReturnTypeFromStrictStringReturnsRector.php)
 
 ```diff
  final class SomeClass
@@ -7493,7 +7493,7 @@ Add typed property from assigned types
 
 :wrench: **configure it!**
 
--   class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromAssignsRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromAssignsRector.php)
 
 ```diff
  final class SomeClass
@@ -7514,7 +7514,7 @@ Add typed property from assigned types
 
 Add typed property from JMS Serializer Type attribute
 
--   class: [`Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector`](../rules/TypeDeclaration/Rector/Class_/TypedPropertyFromJMSSerializerAttributeTypeRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromJMSSerializerAttributeTypeRector`](../rules/TypeDeclaration/Rector/Class_/TypedPropertyFromJMSSerializerAttributeTypeRector.php)
 
 ```diff
  final class SomeClass
@@ -7531,7 +7531,7 @@ Add typed property from JMS Serializer Type attribute
 
 Add typed properties based only on strict constructor types
 
--   class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictConstructorRector.php)
 
 ```diff
  class SomeObject
@@ -7552,7 +7552,7 @@ Add typed properties based only on strict constructor types
 
 Add strict typed property based on `setUp()` strict typed assigns in TestCase
 
--   class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictSetUpRector.php)
+- class: [`Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictSetUpRector`](../rules/TypeDeclaration/Rector/Property/TypedPropertyFromStrictSetUpRector.php)
 
 ```diff
  use PHPUnit\Framework\TestCase;
@@ -7575,7 +7575,7 @@ Add strict typed property based on `setUp()` strict typed assigns in TestCase
 
 Change while null compare to strict instanceof check
 
--   class: [`Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector`](../rules/TypeDeclaration/Rector/While_/WhileNullableToInstanceofRector.php)
+- class: [`Rector\TypeDeclaration\Rector\While_\WhileNullableToInstanceofRector`](../rules/TypeDeclaration/Rector/While_/WhileNullableToInstanceofRector.php)
 
 ```diff
  final class SomeClass
@@ -7600,7 +7600,7 @@ Change visibility of constant from parent class.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector`](../rules/Visibility/Rector/ClassConst/ChangeConstantVisibilityRector.php)
+- class: [`Rector\Visibility\Rector\ClassConst\ChangeConstantVisibilityRector`](../rules/Visibility/Rector/ClassConst/ChangeConstantVisibilityRector.php)
 
 ```diff
  class FrameworkClass
@@ -7623,7 +7623,7 @@ Change visibility of method from parent class.
 
 :wrench: **configure it!**
 
--   class: [`Rector\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector`](../rules/Visibility/Rector/ClassMethod/ChangeMethodVisibilityRector.php)
+- class: [`Rector\Visibility\Rector\ClassMethod\ChangeMethodVisibilityRector`](../rules/Visibility/Rector/ClassMethod/ChangeMethodVisibilityRector.php)
 
 ```diff
  class FrameworkClass
@@ -7648,7 +7648,7 @@ Change visibility of method from parent class.
 
 Add explicit public method visibility.
 
--   class: [`Rector\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector`](../rules/Visibility/Rector/ClassMethod/ExplicitPublicClassMethodRector.php)
+- class: [`Rector\Visibility\Rector\ClassMethod\ExplicitPublicClassMethodRector`](../rules/Visibility/Rector/ClassMethod/ExplicitPublicClassMethodRector.php)
 
 ```diff
  class SomeClass

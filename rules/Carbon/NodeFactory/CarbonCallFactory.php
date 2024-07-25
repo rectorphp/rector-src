@@ -20,6 +20,12 @@ final class CarbonCallFactory
     private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>sec|second|seconds|min|minute|minutes|hour|hours|day|days|week|weeks|month|months)#';
 
     /**
+     * @var string
+     * @see https://regex101.com/r/IhxHTO/1
+     */
+    private const STATIC_DATES_REGEX = '#now|yesterday|today|tomorrow#';
+
+    /**
      * @return \PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall
      */
     public function createFromDateTimeString(FullyQualified $carbonFullyQualified, String_ $string)
@@ -29,7 +35,7 @@ final class CarbonCallFactory
             return new StaticCall($carbonFullyQualified, new Identifier($dateTimeValue));
         }
 
-        $startDate = Strings::match($dateTimeValue, '#now|yesterday|today|tomorrow#')[0] ?? 'now';
+        $startDate = Strings::match($dateTimeValue, self::STATIC_DATES_REGEX)[0] ?? 'now';
         $carbonCall = new StaticCall($carbonFullyQualified, new Identifier($startDate));
 
         $match = Strings::match($dateTimeValue, self::PLUS_MINUS_COUNT_REGEX);
