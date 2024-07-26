@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
+use Rector\Configuration\RenamedClassesDataCollector;
 use Rector\Contract\DependencyInjection\ResetableInterface;
 use Rector\PostRector\Contract\Rector\PostRectorInterface;
 use Rector\PostRector\Rector\ClassRenamingPostRector;
@@ -33,6 +34,7 @@ final class PostFileProcessor implements ResetableInterface
         private readonly ClassRenamingPostRector $classRenamingPostRector,
         private readonly DocblockNameImportingPostRector $docblockNameImportingPostRector,
         private readonly UnusedImportRemovingPostRector $unusedImportRemovingPostRector,
+        private readonly RenamedClassesDataCollector $renamedClassesDataCollector
     ) {
     }
 
@@ -92,6 +94,7 @@ final class PostFileProcessor implements ResetableInterface
             return $this->postRectors;
         }
 
+        $isRenamedClassEnabled = $this->renamedClassesDataCollector->getOldToNewClasses() !== [];
         $isNameImportingEnabled = SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES);
         $isDocblockNameImportingEnabled = SimpleParameterProvider::provideBoolParameter(
             Option::AUTO_IMPORT_DOC_BLOCK_NAMES
@@ -99,8 +102,12 @@ final class PostFileProcessor implements ResetableInterface
 
         $isRemovingUnusedImportsEnabled = SimpleParameterProvider::provideBoolParameter(Option::REMOVE_UNUSED_IMPORTS);
 
+        $postRectors = [];
+
         // sorted by priority, to keep removed imports in order
-        $postRectors = [$this->classRenamingPostRector];
+        if ($isRenamedClassEnabled) {
+            $postRectors[] = $this->classRenamingPostRector;
+        }
 
         // import names
         if ($isNameImportingEnabled) {
