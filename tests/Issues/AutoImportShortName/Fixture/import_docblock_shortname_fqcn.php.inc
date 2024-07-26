@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
-class InNoNamespaceShortName
+class ImportDocblockShortName
 {
     /**
      * @param \DateTime $dateTime
@@ -19,7 +19,7 @@ class InNoNamespaceShortName
 namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
-class InNoNamespaceShortName
+class ImportDocblockShortName
 {
     /**
      * @param DateTime $dateTime
