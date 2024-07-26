@@ -12,6 +12,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->importNames();
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'Some\Exception' => 'Some\Target\Exception',
+        'DateTime' => 'DateTimeInterface',
     ]);
     $rectorConfig->rule(TernaryToNullCoalescingRector::class);
     $rectorConfig->ruleWithConfiguration(AnnotationToAttributeRector::class, [
