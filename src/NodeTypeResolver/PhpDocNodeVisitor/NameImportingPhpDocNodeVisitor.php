@@ -67,6 +67,11 @@ final class NameImportingPhpDocNodeVisitor extends AbstractPhpDocNodeVisitor
             throw new ShouldNotHappenException();
         }
 
+        // no \, skip early
+        if (! str_contains($node->name, '\\')) {
+            return null;
+        }
+
         $staticType = $this->identifierPhpDocTypeMapper->mapIdentifierTypeNode($node, $this->currentPhpParserNode);
 
         if ($staticType instanceof ShortenedObjectType) {
