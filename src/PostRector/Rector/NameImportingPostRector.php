@@ -59,11 +59,19 @@ final class NameImportingPostRector extends AbstractPostRector
      */
     public function shouldTraverse(array $stmts): bool
     {
-        $namespaces = $this->betterNodeFinder->findInstanceOf($stmts, Namespace_::class);
+        $totalNamespaces = 0;
 
-        // skip if 2 namespaces are present
-        if (count($namespaces) > 1) {
-            return false;
+        // just loop the first level stmts to locate namespace to improve performance
+        // as namespace is always on first level
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Namespace_) {
+                ++$totalNamespaces;
+            }
+
+            // skip if 2 namespaces are present
+            if ($totalNamespaces === 2) {
+                return false;
+            }
         }
 
         return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
