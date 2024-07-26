@@ -6,6 +6,7 @@ namespace Rector\NodeManipulator;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -43,7 +44,7 @@ final readonly class PropertyFetchAssignManipulator
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                if (! $node instanceof Assign) {
+                if (! $node instanceof Assign && ! $node instanceof AssignOp) {
                     return null;
                 }
 
