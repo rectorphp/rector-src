@@ -6,16 +6,16 @@ namespace Rector\PhpParser\Parser;
 
 use PHPStan\Parser\ParserErrorsException;
 
-final class ParserErrors
+final readonly class ParserErrors
 {
     private string $message;
 
     private int $line;
 
-    public function __construct(ParserErrorsException $exception)
+    public function __construct(ParserErrorsException $parserErrorsException)
     {
-        $this->message = $exception->getMessage();
-        $this->line = $exception->getAttributes()['startLine'] ?? $exception->getLine();
+        $this->message = $parserErrorsException->getMessage();
+        $this->line = $parserErrorsException->getAttributes()['startLine'] ?? $parserErrorsException->getLine();
     }
 
     public function getMessage(): string
