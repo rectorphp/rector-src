@@ -6,4 +6,8 @@ namespace Rector\Tests\Issues\AutoImport\Source;
 
 class SomeClass
 {
+    public function __toString()
+    {
+        return 'test';
+    }
 }

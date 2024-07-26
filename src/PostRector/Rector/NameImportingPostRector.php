@@ -13,12 +13,11 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\NodeTraverser;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
+use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
@@ -26,8 +25,7 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly NameImporter $nameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseImportsResolver $useImportsResolver,
-        private readonly AliasNameResolver $aliasNameResolver,
-        private readonly SimpleCallableNodeTraverser $simpleCallableNodeTraverser
+        private readonly AliasNameResolver $aliasNameResolver
     ) {
     }
 
@@ -60,32 +58,26 @@ final class NameImportingPostRector extends AbstractPostRector
      */
     public function shouldTraverse(array $stmts): bool
     {
-        $shouldTraverse = true;
+        $rootStmt = $stmts[0] ?? null;
+
+        if ($rootStmt instanceof FileWithoutNamespace) {
+            $firstStmt = $rootStmt->stmts[0] ?? null;
+            return ! $firstStmt instanceof InlineHTML;
+        }
+
         $totalNamespaces = 0;
-
-        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            $stmts,
-            function (Node $subNode) use (&$totalNamespaces, &$shouldTraverse): ?int {
-                // skip if 2 namespaces are present
-                if ($totalNamespaces > 1) {
-                    $shouldTraverse = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-
-                if ($subNode instanceof Namespace_) {
-                    ++$totalNamespaces;
-                }
-
-                if ($subNode instanceof InlineHTML) {
-                    $shouldTraverse = false;
-                    return NodeTraverser::STOP_TRAVERSAL;
-                }
-
-                return null;
+        foreach ($stmts as $stmt) {
+            if ($stmt instanceof Namespace_) {
+                ++$totalNamespaces;
             }
-        );
 
-        return $shouldTraverse;
+            // skip if 2 namespaces are present
+            if ($totalNamespaces === 2) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
