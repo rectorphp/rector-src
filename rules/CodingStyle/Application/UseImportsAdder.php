@@ -69,7 +69,7 @@ final readonly class UseImportsAdder
                 continue;
             }
 
-            // declare always on first stmt, when we found a non-declare, directly stop
+            // when we found a non-declare, directly stop
             if (! $stmt instanceof Declare_) {
                 break;
             }
