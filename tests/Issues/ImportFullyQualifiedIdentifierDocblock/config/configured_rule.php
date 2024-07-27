@@ -6,7 +6,5 @@ use Rector\Config\RectorConfig;
 use Rector\Tests\Issues\ImportFullyQualifiedIdentifierDocblock\Source\AddFullyQualifiedIdentifierDocblockRector;
 
 return RectorConfig::configure()
-    ->withRules([
-        AddFullyQualifiedIdentifierDocblockRector::class,
-    ])
+    ->withRules([AddFullyQualifiedIdentifierDocblockRector::class])
     ->withImportNames();

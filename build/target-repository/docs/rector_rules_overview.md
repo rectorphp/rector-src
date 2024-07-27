@@ -1,4 +1,4 @@
-# 381 Rules Overview
+# 383 Rules Overview
 
 <br>
 
@@ -58,9 +58,9 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (25)
+- [Transform](#transform) (26)
 
-- [TypeDeclaration](#typedeclaration) (56)
+- [TypeDeclaration](#typedeclaration) (57)
 
 - [Visibility](#visibility) (3)
 
@@ -6313,6 +6313,21 @@ Add #[\ReturnTypeWillChange] attribute to configured instanceof class with metho
 
 <br>
 
+### ScalarValueToConstFetchRector
+
+Replaces Scalar values with a ConstFetch or ClassConstFetch
+
+:wrench: **configure it!**
+
+- class: [`Rector\Transform\Rector\Scalar\ScalarValueToConstFetchRector`](../rules/Transform/Rector/Scalar/ScalarValueToConstFetchRector.php)
+
+```diff
+-$var = 10;
++$var = \SomeClass::FOOBAR_INT;
+```
+
+<br>
+
 ### StaticCallToFuncCallRector
 
 Turns static call to function call.
@@ -7504,6 +7519,29 @@ Add typed property from assigned types
      public function run()
      {
          $this->name = 'string';
+     }
+ }
+```
+
+<br>
+
+### TypedPropertyFromCreateMockAssignRector
+
+Add typed property from assigned mock
+
+- class: [`Rector\TypeDeclaration\Rector\Class_\TypedPropertyFromCreateMockAssignRector`](../rules/TypeDeclaration/Rector/Class_/TypedPropertyFromCreateMockAssignRector.php)
+
+```diff
+ use PHPUnit\Framework\TestCase;
+
+ final class SomeTest extends TestCase
+ {
+-    private $someProperty;
++    private \PHPUnit\Framework\MockObject\MockObject $someProperty;
+
+     protected function setUp(): void
+     {
+         $this->someProperty = $this->createMock(SomeMockedClass::class);
      }
  }
 ```
