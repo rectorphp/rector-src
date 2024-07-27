@@ -15,6 +15,7 @@ function simpleWithStrictTypesWithOtherImport() {
 declare(strict_types=1);
 
 use Foo\Bar;
+
 use Foo\Baz;
 
 function simpleWithStrictTypesWithOtherImport() {

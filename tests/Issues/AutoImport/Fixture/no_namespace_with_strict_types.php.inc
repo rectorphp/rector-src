@@ -25,6 +25,7 @@ final class NoNamespaceWithStrictTypes
 <?php
 
 declare(strict_types=1);
+
 /**
  * License
  */

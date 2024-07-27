@@ -64,23 +64,26 @@ final readonly class UseImportsAdder
 
         // place after declare strict_types
         foreach ($stmts as $key => $stmt) {
-            if ($stmt instanceof Declare_) {
-                if (isset($stmts[$key + 1]) && ($stmts[$key + 1] instanceof Use_ || $stmts[$key + 1] instanceof GroupUse)) {
-                    $nodesToAdd = $newUses;
-                } else {
-                    // add extra space, if there are no new use imports to be added
-                    $nodesToAdd = array_merge([new Nop()], $newUses);
-                }
-
-                $this->mirrorUseComments($stmts, $newUses, $key + 1);
-
-                array_splice($stmts, $key + 1, 0, $nodesToAdd);
-
-                $fileWithoutNamespace->stmts = $stmts;
-                $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
-
-                return [$fileWithoutNamespace];
+            // maybe just added a space
+            if ($stmt instanceof Nop) {
+                continue;
             }
+
+            // declare always on first stmt, when we found a non-declare, directly stop
+            if (! $stmt instanceof Declare_) {
+                break;
+            }
+
+            $nodesToAdd = array_merge([new Nop()], $newUses);
+
+            $this->mirrorUseComments($stmts, $newUses, $key + 1);
+
+            array_splice($stmts, $key + 1, 0, $nodesToAdd);
+
+            $fileWithoutNamespace->stmts = $stmts;
+            $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
+
+            return [$fileWithoutNamespace];
         }
 
         $this->mirrorUseComments($stmts, $newUses);
