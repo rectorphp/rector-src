@@ -22,6 +22,7 @@ class DoubleImportConstant
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\FixtureConstant;
 
 use const Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Source\Constant_\MY_BEAUTIFUL_CONSTANT;
+
 class DoubleImportConstant
 {
     public function create()

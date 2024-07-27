@@ -23,6 +23,7 @@ function someFunctionWithNoEffect()
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Fixture;
 
 use function Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Source\Function_\count;
+
 class ImportFunction
 {
     public function run()

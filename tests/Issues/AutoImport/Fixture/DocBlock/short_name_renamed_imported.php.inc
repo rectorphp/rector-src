@@ -19,6 +19,7 @@ class ShortNameRenamedImported
 namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use DateTimeInterface;
+
 class ShortNameRenamedImported
 {
     /**

@@ -53,6 +53,7 @@ final class ImportRootNamespaceClassesDisabled
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Fixture;
 
 use Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Source\Response;
+
 final class ImportRootNamespaceClassesDisabled
 {
     /**

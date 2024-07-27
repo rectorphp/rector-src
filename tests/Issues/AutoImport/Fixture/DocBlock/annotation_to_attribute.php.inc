@@ -16,6 +16,7 @@ class SomeEntity
 namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Doctrine\ORM\Mapping\Entity;
+
 #[Entity]
 class SomeEntity
 {

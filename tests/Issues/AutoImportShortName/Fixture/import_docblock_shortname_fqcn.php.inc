@@ -19,6 +19,7 @@ class ImportDocblockShortName
 namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
+
 class ImportDocblockShortName
 {
     /**

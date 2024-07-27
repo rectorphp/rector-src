@@ -20,6 +20,7 @@ class SameLastNameNotImported
 namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
+
 class SameLastNameNotImported
 {
     public function run(DateTime $dateTime)

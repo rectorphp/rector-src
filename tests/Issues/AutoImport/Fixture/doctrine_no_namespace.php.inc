@@ -12,6 +12,7 @@ class NoNamespace
 <?php
 
 use Doctrine\ORM\Mapping\Table;
+
 /**
  * @Table("Table_Name")
  */
