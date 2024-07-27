@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+use Foo\Baz;
+use Some\SomeClass;
+
+function simpleWithStrictTypesWithOtherImportMultiple() {
+    $baz = new \Foo\Bar;
+    $bat = new \Foo\Bat;
+}
+
+?>
+-----
+<?php
+
+declare(strict_types=1);
+
+use Foo\Bar;
+use Foo\Bat;
+use Foo\Baz;
+use Some\SomeClass;
+
+function simpleWithStrictTypesWithOtherImportMultiple() {
+    $baz = new Bar;
+    $bat = new Bat;
+}
+
+?>
