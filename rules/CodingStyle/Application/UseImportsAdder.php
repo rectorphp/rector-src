@@ -78,6 +78,11 @@ final readonly class UseImportsAdder
 
             $this->mirrorUseComments($stmts, $newUses, $key + 1);
 
+            // remove space before next use tweak
+            if (isset($stmts[$key + 1]) && ($stmts[$key + 1] instanceof Use_ || $stmts[$key + 1] instanceof GroupUse)) {
+                $stmts[$key + 1]->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            }
+
             array_splice($stmts, $key + 1, 0, $nodesToAdd);
 
             $fileWithoutNamespace->stmts = $stmts;
