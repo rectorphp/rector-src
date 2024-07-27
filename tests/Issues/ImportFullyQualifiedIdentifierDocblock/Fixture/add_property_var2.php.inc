@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\ImportFullyQualifiedIdentifierDocblock;
 
-final class AddPropertyVar
+use stdClass;
+
+final class AddPropertyVar2
 {
     public $property;
 }
@@ -18,8 +20,9 @@ declare(strict_types=1);
 namespace Rector\Tests\Issues\ImportFullyQualifiedIdentifierDocblock;
 
 use DateTime;
+use stdClass;
 
-final class AddPropertyVar
+final class AddPropertyVar2
 {
     /**
      * @var DateTime

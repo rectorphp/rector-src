@@ -34,6 +34,7 @@ final class ImportRootNamespaceClassesEnabled
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Fixture;
 
 use DateTime;
+
 final class ImportRootNamespaceClassesEnabled
 {
     /**

@@ -22,6 +22,7 @@ class DoubleImportFunction
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\FixtureFunction;
 
 use function Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Source\Function_\substr;
+
 class DoubleImportFunction
 {
     public function create()

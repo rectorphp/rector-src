@@ -16,6 +16,7 @@ class ImportShortName
 namespace Rector\Tests\Issues\AutoImportShortName\Fixture;
 
 use DateTime;
+
 class ImportShortName
 {
     public function run(DateTime $dateTime)

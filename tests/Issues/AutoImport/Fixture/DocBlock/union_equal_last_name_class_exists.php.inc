@@ -16,6 +16,7 @@ function unionEqualLastNameClassExists($param)
 namespace App;
 
 use stdClass;
+
 /**
  * @param stdClass|\Rector\Tests\Issues\AutoImport\Source\stdClass $param
  */

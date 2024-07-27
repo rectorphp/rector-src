@@ -13,6 +13,7 @@ class SomeException extends \Exception
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Fixture;
 
 use Exception;
+
 class SomeException extends Exception
 {
 }

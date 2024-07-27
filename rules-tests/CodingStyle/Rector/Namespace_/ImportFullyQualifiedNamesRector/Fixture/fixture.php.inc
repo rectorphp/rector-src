@@ -17,6 +17,7 @@ class SomeClass
 namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Fixture;
 
 use SomeAnother\AnotherClass;
+
 class SomeClass
 {
     public function create()

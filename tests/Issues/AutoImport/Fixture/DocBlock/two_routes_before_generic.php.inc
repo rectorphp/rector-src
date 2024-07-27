@@ -25,6 +25,7 @@ class TwoRoutesBeforeGeneric
 namespace Rector\Tests\Issues\AutoImport\Fixture\DocBlock;
 
 use Symfony\Component\Routing\Annotation\Route;
+
 class TwoRoutesBeforeGeneric
 {
     /**

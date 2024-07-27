@@ -18,6 +18,7 @@ namespace Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRe
 
 use Doctrine\ORM\EntityRepository;
 use Rector\Tests\CodingStyle\Rector\Namespace_\ImportFullyQualifiedNamesRector\Source\Generic\SomeGeneral;
+
 final class RepositoryGeneric
 {
     /**

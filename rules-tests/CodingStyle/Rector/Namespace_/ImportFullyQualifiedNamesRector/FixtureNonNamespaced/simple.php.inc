@@ -9,6 +9,7 @@ function importFromThisFunction() {
 <?php
 
 use Foo\Bar;
+
 function importFromThisFunction() {
     $baz = new Bar;
 }

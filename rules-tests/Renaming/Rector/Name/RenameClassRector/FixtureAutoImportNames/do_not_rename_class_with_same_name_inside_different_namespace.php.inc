@@ -20,6 +20,7 @@ class Foo extends FooBar
 namespace Foo;
 
 use DateTime;
+
 class Foo extends FooBar
 {
     /**

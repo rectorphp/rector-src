@@ -8,6 +8,7 @@ use Nette\Utils\Strings;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Nop;
 use PhpParser\Node\Stmt\Use_;
@@ -64,7 +65,7 @@ final readonly class UseImportsAdder
         // place after declare strict_types
         foreach ($stmts as $key => $stmt) {
             if ($stmt instanceof Declare_) {
-                if (isset($stmts[$key + 1]) && $stmts[$key + 1] instanceof Use_) {
+                if (isset($stmts[$key + 1]) && ($stmts[$key + 1] instanceof Use_ || $stmts[$key + 1] instanceof GroupUse)) {
                     $nodesToAdd = $newUses;
                 } else {
                     // add extra space, if there are no new use imports to be added
@@ -85,7 +86,7 @@ final readonly class UseImportsAdder
         $this->mirrorUseComments($stmts, $newUses);
 
         // make use stmts first
-        $fileWithoutNamespace->stmts = array_merge($newUses, $stmts);
+        $fileWithoutNamespace->stmts = array_merge($newUses, $this->resolveInsertNop($fileWithoutNamespace), $stmts);
         $fileWithoutNamespace->stmts = array_values($fileWithoutNamespace->stmts);
 
         return [$fileWithoutNamespace];
@@ -131,8 +132,21 @@ final readonly class UseImportsAdder
 
         $this->mirrorUseComments($namespace->stmts, $newUses);
 
-        $namespace->stmts = array_merge($newUses, $namespace->stmts);
+        $namespace->stmts = array_merge($newUses, $this->resolveInsertNop($namespace), $namespace->stmts);
         $namespace->stmts = array_values($namespace->stmts);
+    }
+
+    /**
+     * @return Nop[]
+     */
+    private function resolveInsertNop(FileWithoutNamespace|Namespace_ $namespace): array
+    {
+        $currentStmt = $namespace->stmts[0] ?? null;
+        if (! $currentStmt instanceof Stmt || $currentStmt instanceof Use_ || $currentStmt instanceof GroupUse) {
+            return [];
+        }
+
+        return [new Nop()];
     }
 
     /**
