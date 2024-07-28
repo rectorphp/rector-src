@@ -14,6 +14,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php\PhpVersionProvider;
@@ -183,34 +184,46 @@ CODE_SAMPLE
 
         $this->refactorParameter(
             $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()],
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+            $callLike->getArgs(),
         );
     }
 
+    /**
+     * @param Arg[] $args
+     */
     private function refactorParameter(
         Param $param,
-        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+        array $args
     ): void {
+        $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
+
+        if (is_callable($newParameterType)) {
+            $newParameterType = call_user_func($newParameterType, $args);
+        }
+
+        if (! $newParameterType instanceof Type) {
+            return;
+        }
+
         // already set → no change
         if ($param->type !== null) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-            if ($this->typeComparator->areTypesEqual(
-                $currentParamType,
-                $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType()
-            )) {
+            if ($this->typeComparator->areTypesEqual($currentParamType, $newParameterType)) {
                 return;
             }
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType(),
+            $newParameterType,
             TypeKind::PARAM
         );
 
         $this->hasChanged = true;
 
         // remove it
-        if ($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType() instanceof MixedType) {
+        if ($newParameterType instanceof MixedType) {
             if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
                 $param->type = $paramTypeNode;
                 return;
