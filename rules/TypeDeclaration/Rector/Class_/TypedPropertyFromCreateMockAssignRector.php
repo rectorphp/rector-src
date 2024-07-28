@@ -103,11 +103,7 @@ CODE_SAMPLE
             }
 
             $propertyName = (string) $this->getName($property);
-            $type = $this->assignToPropertyTypeInferer->inferPropertyInClassLike(
-                $property,
-                $propertyName,
-                $node
-            );
+            $type = $this->assignToPropertyTypeInferer->inferPropertyInClassLike($property, $propertyName, $node);
 
             if (! $type instanceof Type) {
                 continue;
