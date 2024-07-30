@@ -87,11 +87,10 @@ final class CarbonCallFactory
             // Rebuild original call from callstack
             if (count($callStack) !== 0) {
                 foreach(array_reverse($callStack) as $call) {
-                    if (!$call instanceof MethodCall) {
-                        continue;
+                    if ($call instanceof MethodCall) {
+                        $call->var = $currentCall;
                     }
 
-                    $call->var = $currentCall;
                     $currentCall = $call;
                 }
             }
