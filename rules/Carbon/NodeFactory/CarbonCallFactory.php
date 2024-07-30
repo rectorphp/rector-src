@@ -82,8 +82,8 @@ final class CarbonCallFactory
 
             // Rebuild original call from callstack
             foreach(array_reverse($callStack) as $call) {
-                $currentCall->var = $call;
-                $currentCall = $call->var;
+                $call->var = $currentCall;
+                $currentCall = $call;
             }
 
             $carbonCall = $currentCall;
