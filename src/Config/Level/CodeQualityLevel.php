@@ -113,7 +113,6 @@ final class CodeQualityLevel
         SimplifyConditionsRector::class,
         SimplifyIfNotNullReturnRector::class,
         SimplifyIfReturnBoolRector::class,
-        SimplifyUselessVariableRector::class,
         UnnecessaryTernaryExpressionRector::class,
         RemoveExtraParametersRector::class,
         SimplifyDeMorganBinaryRector::class,
