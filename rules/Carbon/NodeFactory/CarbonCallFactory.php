@@ -65,6 +65,9 @@ final class CarbonCallFactory
         if (($rest = Strings::trim($string->value)) !== '') {
             $originialStaticCall = &$carbonCall;
             while (!$originialStaticCall instanceof StaticCall) {
+                if (property_exists($originialStaticCall, 'var') === false) {
+                    break;
+                }
                 $originialStaticCall = &$originialStaticCall->var;
             }
 
@@ -110,6 +113,7 @@ final class CarbonCallFactory
     private function createSetTimeMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
     {
         $match = Strings::match($string->value, self::SET_TIME_REGEX);
+
         $hour = (int)$match['hour'] ?? 0;
         $minute = (int)$match['minute'] ?? 0;
         $second = (int)$match['second'] ?? 0;
