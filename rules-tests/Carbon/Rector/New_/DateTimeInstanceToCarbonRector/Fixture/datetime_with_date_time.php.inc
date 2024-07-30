@@ -15,6 +15,8 @@ final class DateTimeWithDateTime
 
         $dateNoon = new \DateTime('2024-07-30 noon');
         $restStringToParse = new \DateTime('tomorrow noon');
+
+        $fullDate = new \DateTime('2024-07-30T11:12:13.000Z');
     }
 }
 
@@ -37,6 +39,8 @@ final class DateTimeWithDateTime
 
         $dateNoon = \Carbon\Carbon::parse('noon')->setDate(2024, 7, 30);
         $restStringToParse = \Carbon\Carbon::parse('noon tomorrow');
+
+        $fullDate = \Carbon\Carbon::now()->setDateTime(2024, 7, 30, 11, 12, 13, 0);
     }
 }
 
