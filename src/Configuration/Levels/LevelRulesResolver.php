@@ -26,7 +26,7 @@ final class LevelRulesResolver
         }
 
         // level < 0 is not allowed
-        Assert::natural($level, 'Level must be > 0');
+        Assert::natural($level, sprintf('Level must be > 0 on %s', $methodName));
 
         // start with 0
         $maxLevel = $rulesCount - 1;
