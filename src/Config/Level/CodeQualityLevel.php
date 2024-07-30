@@ -42,7 +42,6 @@ use Rector\CodeQuality\Rector\FuncCall\SimplifyRegexPatternRector;
 use Rector\CodeQuality\Rector\FuncCall\SimplifyStrposLowerRector;
 use Rector\CodeQuality\Rector\FuncCall\SingleInArrayToCompareRector;
 use Rector\CodeQuality\Rector\FuncCall\UnwrapSprintfOneArgumentRector;
-use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\BooleanNotIdenticalToNotIdenticalRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyArraySearchRector;
@@ -114,7 +113,6 @@ final class CodeQualityLevel
         SimplifyConditionsRector::class,
         SimplifyIfNotNullReturnRector::class,
         SimplifyIfReturnBoolRector::class,
-        SimplifyUselessVariableRector::class,
         UnnecessaryTernaryExpressionRector::class,
         RemoveExtraParametersRector::class,
         SimplifyDeMorganBinaryRector::class,
