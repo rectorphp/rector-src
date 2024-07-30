@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Configuration\Levels;
 
 use Rector\Contract\Rector\RectorInterface;
-use Webmozart\Assert\Assert;
+use Rector\Exception\ShouldNotHappenException;
 
 final class LevelRulesResolver
 {
@@ -13,16 +13,19 @@ final class LevelRulesResolver
      * @param array<class-string<RectorInterface>> $availableRules
      * @return array<class-string<RectorInterface>>
      */
-    public static function resolve(int $level, array $availableRules, string $methodName): array
+    public static function resolve(int $level, array $availableRules): array
     {
         $rulesCount = count($availableRules);
 
-        Assert::range(
-            $level,
-            0,
-            $rulesCount - 1,
-            'Level %s is not available "' . $methodName . '" method. Pick one between %2$s (lowest) and %3$s (highest).'
-        );
+        if ($availableRules === []) {
+            throw new ShouldNotHappenException('There is no available rules, define the available rules first');
+        }
+
+        // start with 0
+        $maxLevel = $rulesCount - 1;
+        if ($level > $maxLevel) {
+            $level = $maxLevel;
+        }
 
         $levelRules = [];
 
