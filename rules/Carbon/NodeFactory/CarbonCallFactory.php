@@ -85,14 +85,10 @@ final class CarbonCallFactory
             $currentCall->args = [new Arg(new String_($rest))];
 
             // Rebuild original call from callstack
-            if (count($callStack) !== 0) {
-                foreach(array_reverse($callStack) as $call) {
-                    if ($call instanceof MethodCall) {
-                        $call->var = $currentCall;
-                    }
-
-                    $currentCall = $call;
-                }
+            $callStack = array_reverse($callStack);
+            foreach($callStack as $call) {
+                $call->var = $currentCall;
+                $currentCall = $call;
             }
 
             $carbonCall = $currentCall;
