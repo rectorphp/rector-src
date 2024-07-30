@@ -870,7 +870,8 @@ final class RectorConfigBuilder
 
         $levelRules = LevelRulesResolver::resolve(
             $level,
-            DeadCodeLevel::RULES
+            DeadCodeLevel::RULES,
+            'RectorConfig::withDeadCodeLevel()'
         );
 
         $this->rules = array_merge($this->rules, $levelRules);
@@ -888,7 +889,8 @@ final class RectorConfigBuilder
 
         $levelRules = LevelRulesResolver::resolve(
             $level,
-            TypeDeclarationLevel::RULES
+            TypeDeclarationLevel::RULES,
+            'RectorConfig::withTypeCoverageLevel()'
         );
 
         $this->rules = array_merge($this->rules, $levelRules);
@@ -906,7 +908,8 @@ final class RectorConfigBuilder
 
         $levelRules = LevelRulesResolver::resolve(
             $level,
-            CodeQualityLevel::RULES
+            CodeQualityLevel::RULES,
+            'RectorConfig::withCodeQualityLevel()'
         );
 
         $this->rules = array_merge($this->rules, $levelRules);

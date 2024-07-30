@@ -14,16 +14,19 @@ final class LevelRulesResolver
      * @param array<class-string<RectorInterface>> $availableRules
      * @return array<class-string<RectorInterface>>
      */
-    public static function resolve(int $level, array $availableRules): array
+    public static function resolve(int $level, array $availableRules, string $methodName): array
     {
         $rulesCount = count($availableRules);
 
         if ($availableRules === []) {
-            throw new ShouldNotHappenException('There is no available rules, define the available rules first');
+            throw new ShouldNotHappenException(sprintf(
+                'There is no available rules in %s, define the available rules first',
+                $methodName
+            ));
         }
 
         // level < 0 is not allowed
-        Assert::natural($level);
+        Assert::natural($level, 'Level must be > 0');
 
         // start with 0
         $maxLevel = $rulesCount - 1;
