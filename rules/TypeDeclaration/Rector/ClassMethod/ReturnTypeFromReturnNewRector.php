@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use Rector\Symfony\TypeAnalyzer\ControllerAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -54,7 +55,7 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReturnAnalyzer $returnAnalyzer,
-        private readonly \Rector\Symfony\TypeAnalyzer\ControllerAnalyzer $controllerAnalyzer
+        private readonly ControllerAnalyzer $controllerAnalyzer
     ) {
     }
 
