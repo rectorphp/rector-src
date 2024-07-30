@@ -63,20 +63,30 @@ final class CarbonCallFactory
 
         // If we still have something in the string, we go back to the first method and replace this with a parse
         if (($rest = Strings::trim($string->value)) !== '') {
-            $originialStaticCall = &$carbonCall;
-            while ($originialStaticCall instanceof MethodCall) {
-                $originialStaticCall = &$originialStaticCall->var;
+            $currentCall = $carbonCall;
+            $callStack = [];
+            while ($currentCall instanceof MethodCall) {
+                $callStack[] = $currentCall;
+                $currentCall = $currentCall->var;
             }
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
-            if ($originialStaticCall->name instanceof Identifier) {
-                if ($originialStaticCall->name->name != 'now') {
-                    $rest .= ' ' . $originialStaticCall->name->name;
-                }
+            if ($currentCall->name instanceof Identifier) {
+                 if ($currentCall->name->name != 'now') {
+                     $rest .= ' ' . $currentCall->name->name;
+                 }
             }
 
-            $originialStaticCall->name = new Identifier('parse');
-            $originialStaticCall->args = [new Arg(new String_($rest))];
+            $currentCall->name = new Identifier('parse');
+            $currentCall->args = [new Arg(new String_($rest))];
+
+            // Rebuild original call from callstack
+            foreach(array_reverse($callStack) as $call) {
+                $currentCall->var = $call;
+                $currentCall = $call->var;
+            }
+
+            $carbonCall = $currentCall;
         }
 
         return $carbonCall;
