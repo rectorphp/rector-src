@@ -64,16 +64,15 @@ final class CarbonCallFactory
         // If we still have something in the string, we go back to the first method and replace this with a parse
         if (($rest = Strings::trim($string->value)) !== '') {
             $originialStaticCall = &$carbonCall;
-            while (!$originialStaticCall instanceof StaticCall) {
-                if (property_exists($originialStaticCall, 'var') === false) {
-                    break;
-                }
+            while ($originialStaticCall instanceof MethodCall) {
                 $originialStaticCall = &$originialStaticCall->var;
             }
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
-            if ($originialStaticCall->name->name != 'now') {
-                $rest .= ' ' . $originialStaticCall->name->name;
+            if ($originialStaticCall->name instanceof Identifier) {
+                if ($originialStaticCall->name->name != 'now') {
+                    $rest .= ' ' . $originialStaticCall->name->name;
+                }
             }
 
             $originialStaticCall->name = new Identifier('parse');
@@ -95,9 +94,9 @@ final class CarbonCallFactory
     {
         $match = Strings::match($string->value, self::SET_DATE_REGEX);
 
-        $year = (int)$match['year'] ?? 0;
-        $month = (int)$match['month'] ?? 0;
-        $day = (int)$match['day'] ?? 0;
+        $year = (int)($match['year'] ?? 0);
+        $month = (int)($match['month'] ?? 0);
+        $day = (int)($match['day'] ?? 0);
 
         if (($year > 0) && ($month > 0) && ($day > 0)) {
             return new MethodCall($carbonCall, new Identifier('setDate'), [
@@ -114,9 +113,9 @@ final class CarbonCallFactory
     {
         $match = Strings::match($string->value, self::SET_TIME_REGEX);
 
-        $hour = (int)$match['hour'] ?? 0;
-        $minute = (int)$match['minute'] ?? 0;
-        $second = (int)$match['second'] ?? 0;
+        $hour = (int)($match['hour'] ?? 0);
+        $minute = (int)($match['minute'] ?? 0);
+        $second = (int)($match['second'] ?? 0);
 
         if (($hour > 0) || ($minute > 0) || ($second > 0)) {
             return new MethodCall($carbonCall, new Identifier('setTime'), [
