@@ -11,14 +11,9 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Reflection\ReflectionProvider;
 
 final class CarbonCallFactory
 {
-    public function __construct(private readonly ReflectionProvider $reflectionProvider)
-    {
-    }
-
     /**
      * @var string
      * @see https://regex101.com/r/LLMrFw/1
@@ -90,13 +85,15 @@ final class CarbonCallFactory
             $currentCall->args = [new Arg(new String_($rest))];
 
             // Rebuild original call from callstack
-            foreach(array_reverse($callStack) as $call) {
-                if (!$call instanceof MethodCall) {
-                    continue;
-                }
+            if (count($callStack) !== 0) {
+                foreach(array_reverse($callStack) as $call) {
+                    if (!$call instanceof MethodCall) {
+                        continue;
+                    }
 
-                $call->var = $currentCall;
-                $currentCall = $call;
+                    $call->var = $currentCall;
+                    $currentCall = $call;
+                }
             }
 
             $carbonCall = $currentCall;
