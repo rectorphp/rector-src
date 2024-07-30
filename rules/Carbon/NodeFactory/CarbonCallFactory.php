@@ -70,6 +70,10 @@ final class CarbonCallFactory
                 $currentCall = $currentCall->var;
             }
 
+            if (! $currentCall instanceof StaticCall) {
+                return $carbonCall;
+            }
+
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
             if ($currentCall->name instanceof Identifier) {
                  if ($currentCall->name->name != 'now') {
