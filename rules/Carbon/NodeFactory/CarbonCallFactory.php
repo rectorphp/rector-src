@@ -103,6 +103,10 @@ final class CarbonCallFactory
     {
         $match = Strings::match($string->value, self::SET_DATE_REGEX);
 
+        if ($match === null) {
+            return $carbonCall;
+        }
+
         $year = (int)($match['year'] ?? 0);
         $month = (int)($match['month'] ?? 0);
         $day = (int)($match['day'] ?? 0);
@@ -122,19 +126,19 @@ final class CarbonCallFactory
     {
         $match = Strings::match($string->value, self::SET_TIME_REGEX);
 
+        if ($match === null) {
+            return $carbonCall;
+        }
+
         $hour = (int)($match['hour'] ?? 0);
         $minute = (int)($match['minute'] ?? 0);
         $second = (int)($match['second'] ?? 0);
 
-        if (($hour > 0) || ($minute > 0) || ($second > 0)) {
-            return new MethodCall($carbonCall, new Identifier('setTime'), [
-                new Arg(new LNumber($hour)),
-                new Arg(new LNumber($minute)),
-                new Arg(new LNumber($second))
-            ]);
-        }
-
-        return $carbonCall;
+        return new MethodCall($carbonCall, new Identifier('setTime'), [
+            new Arg(new LNumber($hour)),
+            new Arg(new LNumber($minute)),
+            new Arg(new LNumber($second))
+        ]);
     }
 
     private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): ?MethodCall
