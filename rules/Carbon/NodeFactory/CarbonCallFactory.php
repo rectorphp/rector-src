@@ -16,15 +16,21 @@ final class CarbonCallFactory
 {
     /**
      * @var string
-     * @see https://regex101.com/r/t3rizF/1
+     * @see https://regex101.com/r/LLMrFw/1
      */
     private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>seconds|second|sec|minutes|minute|min|hours|hour|days|day|weeks|week|months|month|years|year)#';
 
     /**
      * @var string
-     * @see https://regex101.com/r/JKfc1R/1
+     * @see https://regex101.com/r/tMpHK4/1
      */
-    private const SET_TIME_REGEX = '#(?<hour>.\\d{1,2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?#';
+    private const SET_TIME_REGEX = '#(?<hour>\\d{1,2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?#';
+
+    /**
+     * @var string
+     * @see https://regex101.com/r/HrppaL/1
+     */
+    private const SET_DATE_REGEX = '#(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})?#';
 
     /**
      * @var string
@@ -39,6 +45,9 @@ final class CarbonCallFactory
     {
         $carbonCall = $this->createStaticCall($carbonFullyQualified, $string);
         $string->value = Strings::replace($string->value, self::STATIC_DATE_REGEX);
+
+        $carbonCall = $this->createSetDateMethodCall($carbonCall, $string);
+        $string->value = Strings::replace($string->value, self::SET_DATE_REGEX);
 
         $carbonCall = $this->createSetTimeMethodCall($carbonCall, $string);
         $string->value = Strings::replace($string->value, self::SET_TIME_REGEX);
@@ -79,22 +88,40 @@ final class CarbonCallFactory
         return $carbonCall;
     }
 
-    private function createSetTimeMethodCall(StaticCall $carbonCall, String_ $string): MethodCall|StaticCall
+    private function createSetDateMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
+    {
+        $match = Strings::match($string->value, self::SET_DATE_REGEX);
+
+        $year = (int)$match['year'] ?? 0;
+        $month = (int)$match['month'] ?? 0;
+        $day = (int)$match['day'] ?? 0;
+
+        if (($year > 0) && ($month > 0) && ($day > 0)) {
+            return new MethodCall($carbonCall, new Identifier('setDate'), [
+                new Arg(new LNumber($year)),
+                new Arg(new LNumber($month)),
+                new Arg(new LNumber($day))
+            ]);
+        }
+
+        return $carbonCall;
+    }
+
+    private function createSetTimeMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
     {
         $match = Strings::match($string->value, self::SET_TIME_REGEX);
-
-        $hour = (int)$match['hour'] ?? null;
-        $minute = (int)$match['minute'] ?? null;
+        $hour = (int)$match['hour'] ?? 0;
+        $minute = (int)$match['minute'] ?? 0;
         $second = (int)$match['second'] ?? 0;
-
-        if (!isset($hour) || !isset($minute)) {
-            return $carbonCall;
-        }
 
         // Use today when we set a time so base is always 00:00:00
         $second = $second ?? 0;
         if (($hour > 0) || ($minute > 0) || ($second > 0)) {
-            return new MethodCall($carbonCall, new Identifier('setTime'), [new Arg(new LNumber($hour)), new Arg(new LNumber($minute)), new Arg(new LNumber($second))]);
+            return new MethodCall($carbonCall, new Identifier('setTime'), [
+                new Arg(new LNumber($hour)),
+                new Arg(new LNumber($minute)),
+                new Arg(new LNumber($second))
+            ]);
         }
 
         return $carbonCall;
