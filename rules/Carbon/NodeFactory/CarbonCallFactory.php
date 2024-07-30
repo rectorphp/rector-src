@@ -85,15 +85,7 @@ final class CarbonCallFactory
             $currentCall->args = [new Arg(new String_($rest))];
 
             // Rebuild original call from callstack
-            $callStack = array_reverse($callStack);
-            if (!empty($callStack)) {
-                foreach($callStack as $call) {
-                    $call->var = $currentCall;
-                    $currentCall = $call;
-                }
-            }
-
-            $carbonCall = $currentCall;
+            $carbonCall = $this->rebuildCallStack($currentCall, $callStack);
         }
 
         return $carbonCall;
@@ -171,5 +163,24 @@ final class CarbonCallFactory
         $methodName = $operator . ucfirst($unit);
 
         return new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
+    }
+
+    /**
+    * @param MethodCall[] $callStack
+    */
+    private function rebuildCallStack(StaticCall $carbonCall, array $callStack): MethodCall|StaticCall
+    {
+        if (count($callStack) === 0) {
+            return $carbonCall;
+        }
+
+        $currentCall = $carbonCall;
+        $callStack = array_reverse($callStack);
+        foreach($callStack as $call) {
+            $call->var = $currentCall;
+            $currentCall = $call;
+        }
+
+        return $currentCall;
     }
 }
