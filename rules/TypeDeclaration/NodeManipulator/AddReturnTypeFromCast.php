@@ -29,7 +29,7 @@ final readonly class AddReturnTypeFromCast
 
     public function add(ClassMethod|Function_ $functionLike, Scope $scope): ClassMethod|Function_|null
     {
-        if ($functionLike->returnType !== null) {
+        if ($functionLike->returnType instanceof Node) {
             return null;
         }
 

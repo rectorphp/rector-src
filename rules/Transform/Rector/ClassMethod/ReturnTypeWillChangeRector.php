@@ -95,7 +95,7 @@ CODE_SAMPLE
             }
 
             // the return type is known, no need to add attribute
-            if ($classMethod->returnType !== null) {
+            if ($classMethod->returnType instanceof Node) {
                 continue;
             }
 

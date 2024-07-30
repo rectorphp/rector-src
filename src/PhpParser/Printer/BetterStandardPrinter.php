@@ -181,7 +181,7 @@ final class BetterStandardPrinter extends Standard
             . ($arrowFunction->static ? 'static ' : '')
             . 'fn' . ($arrowFunction->byRef ? '&' : '')
             . '(' . $this->pCommaSeparated($arrowFunction->params) . ')'
-            . ($arrowFunction->returnType !== null ? ': ' . $this->p($arrowFunction->returnType) : '')
+            . ($arrowFunction->returnType instanceof Node ? ': ' . $this->p($arrowFunction->returnType) : '')
             . ' =>'
             . $text
             . $indent

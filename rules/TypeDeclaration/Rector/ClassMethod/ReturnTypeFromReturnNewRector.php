@@ -63,9 +63,9 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function action()
+    public function create()
     {
-        return new Response();
+        return new Project();
     }
 }
 CODE_SAMPLE
@@ -73,9 +73,9 @@ CODE_SAMPLE
                 <<<'CODE_SAMPLE'
 final class SomeClass
 {
-    public function action(): Response
+    public function create(): Project
     {
-        return new Response();
+        return new Project();
     }
 }
 CODE_SAMPLE
@@ -97,7 +97,7 @@ CODE_SAMPLE
     public function refactorWithScope(Node $node, Scope $scope): ?Node
     {
         // already filled
-        if ($node->returnType !== null) {
+        if ($node->returnType instanceof Node) {
             return null;
         }
 
