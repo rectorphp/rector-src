@@ -114,8 +114,6 @@ final class CarbonCallFactory
         $minute = (int)$match['minute'] ?? 0;
         $second = (int)$match['second'] ?? 0;
 
-        // Use today when we set a time so base is always 00:00:00
-        $second = $second ?? 0;
         if (($hour > 0) || ($minute > 0) || ($second > 0)) {
             return new MethodCall($carbonCall, new Identifier('setTime'), [
                 new Arg(new LNumber($hour)),
