@@ -105,15 +105,9 @@ final class CarbonCallFactory
         }
 
         // Use today when we set a time so base is always 00:00:00
-        $carbonCall->name = new Identifier('today');
         $second = $second ?? 0;
         if (($hour > 0) || ($minute > 0) || ($second > 0)) {
-            $args = [new Arg(new LNumber($hour)), new Arg(new LNumber($minute))];
-            if ($second > 0) {
-                $args[] = new Arg(new LNumber($second));
-            }
-
-            return new MethodCall($carbonCall, new Identifier('setTime'), $args);
+            return new MethodCall($carbonCall, new Identifier('setTime'), [new Arg(new LNumber($hour)), new Arg(new LNumber($minute)), new Arg(new LNumber($second))]);
         }
 
         return $carbonCall;
