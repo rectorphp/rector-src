@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
+use Rector\Symfony\TypeAnalyzer\ControllerAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -54,6 +55,7 @@ final class ReturnTypeFromReturnNewRector extends AbstractScopeAwareRector imple
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReturnAnalyzer $returnAnalyzer,
+        private readonly ControllerAnalyzer $controllerAnalyzer
     ) {
     }
 
@@ -184,9 +186,8 @@ CODE_SAMPLE
 
         $returnType = $this->typeFactory->createMixedPassedOrUnionType($newTypes);
 
-        // skip in case of response, as handled by another rule earlier
-        /** @see ResponseReturnTypeControllerActionRector */
-        if ($returnType instanceof ObjectType && $returnType->isInstanceOf(ResponseClass::BASIC)->yes()) {
+        /** handled by @see \Rector\Symfony\CodeQuality\Rector\ClassMethod\ResponseReturnTypeControllerActionRector earlier */
+        if ($this->isResponseInsideController($returnType, $functionLike)) {
             return null;
         }
 
@@ -221,5 +222,22 @@ CODE_SAMPLE
         }
 
         return $newTypes;
+    }
+
+    private function isResponseInsideController(Type $returnType, ClassMethod|Function_ $functionLike): bool
+    {
+        if (! $functionLike instanceof ClassMethod) {
+            return false;
+        }
+
+        if (! $returnType instanceof ObjectType) {
+            return false;
+        }
+
+        if (! $returnType->isInstanceOf(ResponseClass::BASIC)->yes()) {
+            return false;
+        }
+
+        return $this->controllerAnalyzer->isInsideController($functionLike);
     }
 }
