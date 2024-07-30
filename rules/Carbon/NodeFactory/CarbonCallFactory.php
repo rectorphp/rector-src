@@ -16,10 +16,14 @@ final class CarbonCallFactory
 {
     /**
      * @var string
-     * @see https://regex101.com/r/19qPHr/1
+     * @see https://regex101.com/r/t3rizF/1
      */
     private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>seconds|second|sec|minutes|minute|min|hours|hour|days|day|weeks|week|months|month|years|year)#';
 
+    /**
+     * @var string
+     * @see https://regex101.com/r/JKfc1R/1
+     */
     private const SET_TIME_REGEX = '#(?<hour>.\\d{1,2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?#';
 
     /**
@@ -54,7 +58,7 @@ final class CarbonCallFactory
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
             if ($originialStaticCall->name != 'now') {
-                $rest .= ' ' . $originialStaticCall->name;
+                $rest .= ' ' . $originialStaticCall->name->value;
             }
 
             $originialStaticCall->name = new Identifier('parse');
@@ -115,7 +119,7 @@ final class CarbonCallFactory
         return $carbonCall;
     }
 
-    private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): MethodCall|null
+    private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): ?MethodCall
     {
         $unit = match($unit) {
             'sec', 'second', 'seconds' => 'seconds',
