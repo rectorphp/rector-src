@@ -45,8 +45,11 @@ final class CarbonCallFactory
 
         // Handle add/sub multiple times
         while ($match = Strings::match($string->value, self::PLUS_MINUS_COUNT_REGEX)) {
-            $carbonCall = $this->createModifyMethodCall($carbonCall, new LNumber((int) $match['count']), $match['unit'], $match['operator']);
-            $string->value = Strings::replace($string->value, self::PLUS_MINUS_COUNT_REGEX, '', 1);
+            $methodCall = $this->createModifyMethodCall($carbonCall, new LNumber((int) $match['count']), $match['unit'], $match['operator']);
+            if ($methodCall) {
+                $carbonCall = $methodCall;
+                $string->value = Strings::replace($string->value, self::PLUS_MINUS_COUNT_REGEX, '', 1);
+            }
         }
 
         // If we still have something in the string, we go back to the first method and replace this with a parse
@@ -57,8 +60,8 @@ final class CarbonCallFactory
             }
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
-            if ($originialStaticCall->name != 'now') {
-                $rest .= ' ' . $originialStaticCall->name->value;
+            if ($originialStaticCall->name->name != 'now') {
+                $rest .= ' ' . $originialStaticCall->name->name;
             }
 
             $originialStaticCall->name = new Identifier('parse');
@@ -78,27 +81,11 @@ final class CarbonCallFactory
 
     private function createSetTimeMethodCall(StaticCall $carbonCall, String_ $string): MethodCall|StaticCall
     {
-        $hour = null;
-        $minute = null;
-        $second = null;
+        $match = Strings::match($string->value, self::SET_TIME_REGEX);
 
-        $matches = Strings::match($string->value, self::SET_TIME_REGEX);
-
-        foreach($matches ?? [] as $group => $value) {
-            switch ($group) {
-                case 'hour':
-                    $hour = (int) $value;
-                    break;
-                case 'minute':
-                    $minute = (int) $value;
-                    break;
-                case 'second':
-                    $second = (int) $value;
-                    break;
-                default:
-                    break;
-            }
-        }
+        $hour = (int)$match['hour'] ?? null;
+        $minute = (int)$match['minute'] ?? null;
+        $second = (int)$match['second'] ?? 0;
 
         if (!isset($hour) || !isset($minute)) {
             return $carbonCall;
