@@ -125,7 +125,7 @@ CODE_SAMPLE
     private function getReturnTypeRecursive(ClassMethod $classMethod): ?Type
     {
         $returnType = $classMethod->getReturnType();
-        if ($returnType !== null) {
+        if ($returnType instanceof Node) {
             return $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnType);
         }
 
@@ -166,7 +166,7 @@ CODE_SAMPLE
         if ($parentType instanceof MixedType) {
             $className = (string) $this->nodeNameResolver->getName($class);
             $currentObjectType = new ObjectType($className);
-            if (! $parentType->equals($currentObjectType) && $classMethod->returnType !== null) {
+            if (! $parentType->equals($currentObjectType) && $classMethod->returnType instanceof Node) {
                 return null;
             }
         }

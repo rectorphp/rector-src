@@ -172,7 +172,7 @@ CODE_SAMPLE
 
     private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
-        if ($node->returnType !== null) {
+        if ($node->returnType instanceof Node) {
             return true;
         }
 
