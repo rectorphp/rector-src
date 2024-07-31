@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Rector\Carbon\NodeFactory;
 
 use Nette\Utils\Strings;
@@ -17,111 +16,115 @@ final class CarbonCallFactory
 {
     /**
      * @var string
-     * @see https://regex101.com/r/9vGt8r/1
+     * @see https://regex101.com/r/LLMrFw/1
      */
-    private const PLUS_DAY_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(day|days)#';
+    private const PLUS_MINUS_COUNT_REGEX = '#(?<operator>\+|-)(\\s+)?(?<count>\\d+)(\s+)?(?<unit>seconds|second|sec|minutes|minute|min|hours|hour|days|day|weeks|week|months|month|years|year)#';
 
     /**
      * @var string
-     * @see https://regex101.com/r/pqOPg6/1
+     * @see https://regex101.com/r/IhxHTO/1
      */
-    private const MINUS_DAY_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(day|days)#';
+    private const STATIC_DATE_REGEX = '#now|yesterday|today|tomorrow#';
 
     /**
-     * @var string
-     * @see https://regex101.com/r/6VUUQF/1
+     * @return \PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall
      */
-    private const PLUS_MONTH_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(month|months)#';
+    public function createFromDateTimeString(FullyQualified $carbonFullyQualified, String_ $string)
+    {
+        $carbonCall = $this->createStaticCall($carbonFullyQualified, $string);
+        $string->value = Strings::replace($string->value, self::STATIC_DATE_REGEX);
 
-    /**
-     * @var string
-     * @see https://regex101.com/r/dWRjk5/1
-     */
-    private const PLUS_HOUR_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/dfK0Ri/1
-     */
-    private const PLUS_MINUTE_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(minute|minuts)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/o7QDYL/1
-     */
-    private const PLUS_SECOND_COUNT_REGEX = '#\+(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/IvyT7w/1
-     */
-    private const MINUS_MONTH_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(month|months)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/bICKg6/1
-     */
-    private const MINUS_HOUR_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(hour|hours)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/WILFvX/1
-     */
-    private const MINUS_MINUTE_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(minute|minutes)#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/FwCUup/1
-     */
-    private const MINUS_SECOND_COUNT_REGEX = '#-(\s+)?(?<count>\d+)(\s+)?(second|seconds)#';
-
-    /**
-     * @var array<self::*_REGEX, string>
-     */
-    private const REGEX_TO_METHOD_NAME_MAP = [
-        self::PLUS_DAY_COUNT_REGEX => 'addDays',
-        self::MINUS_DAY_COUNT_REGEX => 'subDays',
-        self::PLUS_MONTH_COUNT_REGEX => 'addMonths',
-        self::MINUS_MONTH_COUNT_REGEX => 'subMonths',
-        self::PLUS_HOUR_COUNT_REGEX => 'addHours',
-        self::MINUS_HOUR_COUNT_REGEX => 'subHours',
-        self::PLUS_MINUTE_COUNT_REGEX => 'addMinutes',
-        self::MINUS_MINUTE_COUNT_REGEX => 'subMinutes',
-        self::PLUS_SECOND_COUNT_REGEX => 'addSeconds',
-        self::MINUS_SECOND_COUNT_REGEX => 'subSeconds',
-    ];
-
-    public function createFromDateTimeString(
-        FullyQualified $carbonFullyQualified,
-        String_ $string
-    ): MethodCall|StaticCall {
-        $dateTimeValue = $string->value;
-        if ($dateTimeValue === 'now') {
-            return new StaticCall($carbonFullyQualified, new Identifier('now'));
+        // Handle add/sub multiple times
+        while ($match = Strings::match($string->value, self::PLUS_MINUS_COUNT_REGEX)) {
+            $methodCall = $this->createModifyMethodCall($carbonCall, new LNumber((int) $match['count']), $match['unit'], $match['operator']);
+            if ($methodCall) {
+                $carbonCall = $methodCall;
+                $string->value = Strings::replace($string->value, self::PLUS_MINUS_COUNT_REGEX, '', 1);
+            }
         }
 
-        if ($dateTimeValue === 'today') {
-            return new StaticCall($carbonFullyQualified, new Identifier('today'));
-        }
-
-        $hasToday = Strings::match($dateTimeValue, '#today#');
-        if ($hasToday !== null) {
-            $carbonCall = new StaticCall($carbonFullyQualified, new Identifier('today'));
-        } else {
-            $carbonCall = new StaticCall($carbonFullyQualified, new Identifier('now'));
-        }
-
-        foreach (self::REGEX_TO_METHOD_NAME_MAP as $regex => $methodName) {
-            $match = Strings::match($dateTimeValue, $regex);
-            if ($match === null) {
-                continue;
+        // If we still have something in the string, we go back to the first method and replace this with a parse
+        if (($rest = Strings::trim($string->value)) !== '') {
+            $currentCall = $carbonCall;
+            $callStack = [];
+            while ($currentCall instanceof MethodCall) {
+                $callStack[] = $currentCall;
+                $currentCall = $currentCall->var;
             }
 
-            $countLNumber = new LNumber((int) $match['count']);
+            if (! $currentCall instanceof StaticCall) {
+                return $carbonCall;
+            }
 
-            $carbonCall = new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
+            // If we fallback to a parse we want to include tomorrow/today/yesterday etc
+            if ($currentCall->name instanceof Identifier) {
+                 if ($currentCall->name->name != 'now') {
+                     $rest .= ' ' . $currentCall->name->name;
+                 }
+            }
+
+            $currentCall->name = new Identifier('parse');
+            $currentCall->args = [new Arg(new String_($rest))];
+
+            // Rebuild original call from callstack
+            $carbonCall = $this->rebuildCallStack($currentCall, $callStack);
         }
 
         return $carbonCall;
+    }
+
+    private function createStaticCall(FullyQualified $carbonFullyQualified, String_ $string): StaticCall
+    {
+        $startDate = Strings::match($string->value, self::STATIC_DATE_REGEX)[0] ?? 'now';
+        $carbonCall = new StaticCall($carbonFullyQualified, new Identifier($startDate));
+
+        return $carbonCall;
+    }
+
+    private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): ?MethodCall
+    {
+        $unit = match($unit) {
+            'sec', 'second', 'seconds' => 'seconds',
+            'min', 'minute', 'minutes' => 'minutes',
+            'hour', 'hours' => 'hours',
+            'day', 'days' => 'days',
+            'week', 'weeks' => 'weeks',
+            'month', 'months' => 'months',
+            'year', 'years' => 'years',
+            default => null,
+        };
+
+        $operator = match($operator) {
+            '+' => 'add',
+            '-' => 'sub',
+            default => null,
+        };
+
+        if ($unit === null || $operator === null) {
+            return null;
+        }
+
+        $methodName = $operator . ucfirst($unit);
+
+        return new MethodCall($carbonCall, new Identifier($methodName), [new Arg($countLNumber)]);
+    }
+
+    /**
+    * @param MethodCall[] $callStack
+    */
+    private function rebuildCallStack(StaticCall $carbonCall, array $callStack): MethodCall|StaticCall
+    {
+        if (count($callStack) === 0) {
+            return $carbonCall;
+        }
+
+        $currentCall = $carbonCall;
+        $callStack = array_reverse($callStack);
+        foreach($callStack as $call) {
+            $call->var = $currentCall;
+            $currentCall = $call;
+        }
+
+        return $currentCall;
     }
 }

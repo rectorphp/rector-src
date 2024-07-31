@@ -2,11 +2,11 @@
 
 namespace Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\Fixture;
 
-final class DateTimeToday
+final class DateTimeYesterday
 {
     public function run()
     {
-        $date = new \DateTime('today');
+        $date = new \DateTime('yesterday');
     }
 }
 
@@ -16,11 +16,11 @@ final class DateTimeToday
 
 namespace Rector\Tests\Carbon\Rector\New_\DateTimeInstanceToCarbonRector\Fixture;
 
-final class DateTimeToday
+final class DateTimeYesterday
 {
     public function run()
     {
-        $date = \Carbon\Carbon::today();
+        $date = \Carbon\Carbon::yesterday();
     }
 }
 
