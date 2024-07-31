@@ -16,11 +16,4 @@ return static function (RectorConfig $rectorConfig): void {
         DateTimeMethodCallToCarbonRector::class,
         TimeFuncCallToCarbonRector::class,
     ]);
-
-    // Replace instaces where first arg is not a string
-    $rectorConfig
-        ->ruleWithConfiguration(RenameClassRector::class, [
-            'DateTime' => 'Carbon\Carbon',
-            'DateTimeImmutable' => 'Carbon\CarbonImmutable',
-        ]);
 };

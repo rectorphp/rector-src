@@ -7,7 +7,6 @@ class SomeClass
     public function run()
     {
         $date = new \DateTime();
-        $newDate = new \DateTime($date);
     }
 }
 
@@ -22,7 +21,6 @@ class SomeClass
     public function run()
     {
         $date = \Carbon\Carbon::now();
-        $newDate = new \Carbon\Carbon($date);
     }
 }
 
