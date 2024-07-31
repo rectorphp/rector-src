@@ -30,17 +30,17 @@ final class DateTimeWithDateTime
 {
     public function run()
     {
-        $date = \Carbon\Carbon::now()->setDate(2024, 7, 30);
-        $time = \Carbon\Carbon::now()->setTime(11, 12, 13);
-        $datetime = \Carbon\Carbon::now()->setDate(2024, 7, 30)->setTime(11, 12, 13);
+        $date = \Carbon\Carbon::parse('2024-07-30');
+        $time = \Carbon\Carbon::parse('11:12:13');
+        $datetime = \Carbon\Carbon::parse('2024-07-30 11:12:13');
 
-        $tomorrowTime = \Carbon\Carbon::tomorrow()->setTime(12, 0, 0);
-        $yesterdayTime = \Carbon\Carbon::yesterday()->setTime(12, 0, 0);
+        $tomorrowTime = \Carbon\Carbon::parse('12:00 tomorrow');
+        $yesterdayTime = \Carbon\Carbon::parse('12:00 yesterday');
 
-        $dateNoon = \Carbon\Carbon::parse('noon')->setDate(2024, 7, 30);
+        $dateNoon = \Carbon\Carbon::parse('2024-07-30 noon');
         $restStringToParse = \Carbon\Carbon::parse('noon tomorrow');
 
-        $fullDate = \Carbon\Carbon::now()->setDateTime(2024, 7, 30, 11, 12, 13, 0);
+        $fullDate = \Carbon\Carbon::parse('2024-07-30T11:12:13.000Z');
     }
 }
 

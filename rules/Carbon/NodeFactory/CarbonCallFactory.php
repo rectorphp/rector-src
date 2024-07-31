@@ -22,24 +22,6 @@ final class CarbonCallFactory
 
     /**
      * @var string
-     * @see https://regex101.com/r/KFpxbH/1
-     */
-    private const SET_DATETIME_REGEX = '#(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})T(?<hour>\d{1,2}):(?<minute>\d{2}):(?<second>\d{2}).(?<microsecond>\d{3,4})Z#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/tMpHK4/1
-     */
-    private const SET_TIME_REGEX = '#(?<hour>\\d{1,2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?#';
-
-    /**
-     * @var string
-     * @see https://regex101.com/r/HrppaL/1
-     */
-    private const SET_DATE_REGEX = '#(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})?#';
-
-    /**
-     * @var string
      * @see https://regex101.com/r/IhxHTO/1
      */
     private const STATIC_DATE_REGEX = '#now|yesterday|today|tomorrow#';
@@ -51,15 +33,6 @@ final class CarbonCallFactory
     {
         $carbonCall = $this->createStaticCall($carbonFullyQualified, $string);
         $string->value = Strings::replace($string->value, self::STATIC_DATE_REGEX);
-
-        $carbonCall = $this->createSetDateTimeMethodCall($carbonCall, $string);
-        $string->value = Strings::replace($string->value, self::SET_DATETIME_REGEX);
-
-        $carbonCall = $this->createSetDateMethodCall($carbonCall, $string);
-        $string->value = Strings::replace($string->value, self::SET_DATE_REGEX);
-
-        $carbonCall = $this->createSetTimeMethodCall($carbonCall, $string);
-        $string->value = Strings::replace($string->value, self::SET_TIME_REGEX);
 
         // Handle add/sub multiple times
         while ($match = Strings::match($string->value, self::PLUS_MINUS_COUNT_REGEX)) {
@@ -106,76 +79,6 @@ final class CarbonCallFactory
         $carbonCall = new StaticCall($carbonFullyQualified, new Identifier($startDate));
 
         return $carbonCall;
-    }
-
-    private function createSetDateTimeMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
-    {
-        $match = Strings::match($string->value, self::SET_DATETIME_REGEX);
-
-        if ($match === null) {
-            return $carbonCall;
-        }
-
-        $year = (int)($match['year'] ?? 0);
-        $month = (int)($match['month'] ?? 0);
-        $day = (int)($match['day'] ?? 0);
-
-        $hour = (int)($match['hour'] ?? 0);
-        $minute = (int)($match['minute'] ?? 0);
-        $second = (int)($match['second'] ?? 0);
-        $microsecond = (int)($match['microsecond'] ?? 0);
-
-        return new MethodCall($carbonCall, new Identifier('setDateTime'), [
-            new Arg(new LNumber($year)),
-            new Arg(new LNumber($month)),
-            new Arg(new LNumber($day)),
-            new Arg(new LNumber($hour)),
-            new Arg(new LNumber($minute)),
-            new Arg(new LNumber($second)),
-            new Arg(new LNumber($microsecond)),
-        ]);
-    }
-
-    private function createSetDateMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
-    {
-        $match = Strings::match($string->value, self::SET_DATE_REGEX);
-
-        if ($match === null) {
-            return $carbonCall;
-        }
-
-        $year = (int)($match['year'] ?? 0);
-        $month = (int)($match['month'] ?? 0);
-        $day = (int)($match['day'] ?? 0);
-
-        if (($year > 0) && ($month > 0) && ($day > 0)) {
-            return new MethodCall($carbonCall, new Identifier('setDate'), [
-                new Arg(new LNumber($year)),
-                new Arg(new LNumber($month)),
-                new Arg(new LNumber($day)),
-            ]);
-        }
-
-        return $carbonCall;
-    }
-
-    private function createSetTimeMethodCall(StaticCall|MethodCall $carbonCall, String_ $string): StaticCall|MethodCall
-    {
-        $match = Strings::match($string->value, self::SET_TIME_REGEX);
-
-        if ($match === null) {
-            return $carbonCall;
-        }
-
-        $hour = (int)($match['hour'] ?? 0);
-        $minute = (int)($match['minute'] ?? 0);
-        $second = (int)($match['second'] ?? 0);
-
-        return new MethodCall($carbonCall, new Identifier('setTime'), [
-            new Arg(new LNumber($hour)),
-            new Arg(new LNumber($minute)),
-            new Arg(new LNumber($second))
-        ]);
     }
 
     private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): ?MethodCall
