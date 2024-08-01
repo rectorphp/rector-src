@@ -68,7 +68,7 @@ CODE_SAMPLE
     {
         // no kind attribute yet, it means just created
         // no need to reprint, it already will be short array by default
-        if ($node->getAttribute(AttributeKey::KIND) === null) {
+        if (! $node->hasAttribute(AttributeKey::KIND)) {
             return null;
         }
 
