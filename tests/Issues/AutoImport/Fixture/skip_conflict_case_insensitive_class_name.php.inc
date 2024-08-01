@@ -1,9 +1,5 @@
 <?php
 
-class Bar
-{
-	public static function execute()
-    {
-    	echo strtolower(\Foo\BaR::execute());
-    }
-}
+echo foo::class;
+echo PHP_EOL;
+echo Bar\Foo::class;
