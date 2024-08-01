@@ -66,6 +66,12 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
+        // no kind attribute yet, it means just created
+        // no need to reprint, it already will be short array by default
+        if ($node->getAttribute(AttributeKey::KIND) === null) {
+            return null;
+        }
+
         if ($node->getAttribute(AttributeKey::KIND) === Array_::KIND_SHORT) {
             return null;
         }
