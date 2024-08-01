@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Bar\Foo;
 use Acme\Bar\DoNotUpdateExistingTargetNamespace;
 use Rector\Config\RectorConfig;
 use Rector\Renaming\Rector\Name\RenameClassRector;
@@ -45,7 +46,7 @@ return static function (RectorConfig $rectorConfig): void {
             'Doctrine\DBAL\DBALException' => 'Doctrine\DBAL\Exception',
             'NotExistsClass' => 'NewClass',
 
-            foo::class => Bar\Foo::class,
+            foo::class => Foo::class,
 
             /**
              * This test never renamed as it is annotation @IsGranted
