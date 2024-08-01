@@ -26,10 +26,7 @@ final class CarbonCallFactory
      */
     private const STATIC_DATE_REGEX = '#now|yesterday|today|tomorrow#';
 
-    /**
-     * @return \PhpParser\Node\Expr\MethodCall|\PhpParser\Node\Expr\StaticCall
-     */
-    public function createFromDateTimeString(FullyQualified $carbonFullyQualified, String_ $string)
+    public function createFromDateTimeString(FullyQualified $carbonFullyQualified, String_ $string): MethodCall|StaticCall
     {
         $carbonCall = $this->createStaticCall($carbonFullyQualified, $string);
         $string->value = Strings::replace($string->value, self::STATIC_DATE_REGEX);
@@ -37,7 +34,7 @@ final class CarbonCallFactory
         // Handle add/sub multiple times
         while ($match = Strings::match($string->value, self::PLUS_MINUS_COUNT_REGEX)) {
             $methodCall = $this->createModifyMethodCall($carbonCall, new LNumber((int) $match['count']), $match['unit'], $match['operator']);
-            if ($methodCall) {
+            if ($methodCall instanceof MethodCall) {
                 $carbonCall = $methodCall;
                 $string->value = Strings::replace($string->value, self::PLUS_MINUS_COUNT_REGEX, '', 1);
             }
@@ -57,10 +54,8 @@ final class CarbonCallFactory
             }
 
             // If we fallback to a parse we want to include tomorrow/today/yesterday etc
-            if ($currentCall->name instanceof Identifier) {
-                 if ($currentCall->name->name != 'now') {
-                     $rest .= ' ' . $currentCall->name->name;
-                 }
+            if ($currentCall->name instanceof Identifier && $currentCall->name->name != 'now') {
+                 $rest .= ' ' . $currentCall->name->name;
             }
 
             $currentCall->name = new Identifier('parse');
@@ -76,9 +71,8 @@ final class CarbonCallFactory
     private function createStaticCall(FullyQualified $carbonFullyQualified, String_ $string): StaticCall
     {
         $startDate = Strings::match($string->value, self::STATIC_DATE_REGEX)[0] ?? 'now';
-        $carbonCall = new StaticCall($carbonFullyQualified, new Identifier($startDate));
 
-        return $carbonCall;
+        return new StaticCall($carbonFullyQualified, new Identifier($startDate));
     }
 
     private function createModifyMethodCall(MethodCall|StaticCall $carbonCall, LNumber $countLNumber, string $unit, string $operator): ?MethodCall
@@ -112,13 +106,13 @@ final class CarbonCallFactory
     /**
     * @param MethodCall[] $callStack
     */
-    private function rebuildCallStack(StaticCall $carbonCall, array $callStack): MethodCall|StaticCall
+    private function rebuildCallStack(StaticCall $staticCall, array $callStack): MethodCall|StaticCall
     {
-        if (count($callStack) === 0) {
-            return $carbonCall;
+        if ($callStack === []) {
+            return $staticCall;
         }
 
-        $currentCall = $carbonCall;
+        $currentCall = $staticCall;
         $callStack = array_reverse($callStack);
         foreach($callStack as $call) {
             $call->var = $currentCall;

@@ -6,7 +6,6 @@ use Rector\CodingStyle\Rector\String_\UseClassKeywordForClassNameResolutionRecto
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
-use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -49,11 +48,6 @@ return RectorConfig::configure()
 
         // keep configs untouched, as the classes are just strings
         UseClassKeywordForClassNameResolutionRector::class => [__DIR__ . '/config', '*/config/*'],
-
-        // race condition with stmts aware patch and PHPStan type
-        AddMethodCallBasedStrictParamTypeRector::class => [
-            __DIR__ . '/rules/DeadCode/Rector/If_/RemoveUnusedNonEmptyArrayBeforeForeachRector.php',
-        ],
 
         RemovePhpVersionIdCheckRector::class => [
             __DIR__ . '/src/Util/FileHasher.php',
