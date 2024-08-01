@@ -7,7 +7,6 @@ namespace Rector\PostRector\Rector;
 use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\InlineHTML;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
@@ -42,13 +41,5 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
 
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     */
-    public function shouldTraverse(array $stmts): bool
-    {
-        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 }

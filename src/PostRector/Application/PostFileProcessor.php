@@ -49,7 +49,21 @@ final class PostFileProcessor implements ResetableInterface
      */
     public function traverse(array $stmts, File $file): array
     {
+        $shouldSkipImport = false;
+
         foreach ($this->getPostRectors() as $postRector) {
+            if (! $postRector->shouldTraverse($stmts)) {
+                if ($postRector instanceof NameImportingPostRector) {
+                    $shouldSkipImport = true;
+                }
+
+                continue;
+            }
+
+            if ($postRector instanceof DocblockNameImportingPostRector && $shouldSkipImport) {
+                continue;
+            }
+
             if ($this->shouldSkipPostRector($postRector, $file->getFilePath(), $stmts)) {
                 continue;
             }
@@ -69,10 +83,6 @@ final class PostFileProcessor implements ResetableInterface
      */
     private function shouldSkipPostRector(PostRectorInterface $postRector, string $filePath, array $stmts): bool
     {
-        if (! $postRector->shouldTraverse($stmts)) {
-            return true;
-        }
-
         if ($this->skipper->shouldSkipElementAndFilePath($postRector, $filePath)) {
             return true;
         }
