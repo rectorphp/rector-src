@@ -11,7 +11,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeTypeResolver\PhpDoc\NodeAnalyzer\DocBlockNameImporter;
-use Rector\PhpParser\Node\BetterNodeFinder;
 
 final class DocblockNameImportingPostRector extends AbstractPostRector
 {
@@ -19,7 +18,6 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
         private readonly DocBlockNameImporter $docBlockNameImporter,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly DocBlockUpdater $docBlockUpdater,
-        private readonly BetterNodeFinder $betterNodeFinder,
     ) {
     }
 
