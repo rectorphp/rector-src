@@ -17,6 +17,7 @@ use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
 final class NameImportingPostRector extends AbstractPostRector
@@ -38,6 +39,16 @@ final class NameImportingPostRector extends AbstractPostRector
 
         if ($node->isSpecialClassName()) {
             return null;
+        }
+
+        // no \, skip early
+        // verify with toCodeString() which always prepend \
+        // then check its original name is a Name but not FullyQualified
+        if (substr_count($node->toCodeString(), '\\') === 1) {
+            $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
+            if ($originalName instanceof Name && ! $originalName instanceof FullyQualified) {
+                return null;
+            }
         }
 
         $currentUses = $this->useImportsResolver->resolve();
