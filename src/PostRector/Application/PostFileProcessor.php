@@ -62,7 +62,7 @@ final class PostFileProcessor implements ResetableInterface
                 continue;
             }
 
-            if ($postRector instanceof DocblockNameImportingPostRector && $shouldSkipImport) {
+            if (($postRector instanceof DocblockNameImportingPostRector || $postRector instanceof UseAddingPostRector) && $shouldSkipImport) {
                 continue;
             }
 
