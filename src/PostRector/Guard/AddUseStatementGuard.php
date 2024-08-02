@@ -7,10 +7,15 @@ namespace Rector\PostRector\Guard;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeFinder;
+use Rector\PhpParser\Node\BetterNodeFinder;
 
 class AddUseStatementGuard
 {
+    public function __construct(
+        private readonly BetterNodeFinder $betterNodeFinder
+    ) {
+    }
+
     /**
      * @param Stmt[] $stmts
      */
@@ -31,7 +36,6 @@ class AddUseStatementGuard
             }
         }
 
-        $nodeFinder = new NodeFinder();
-        return ! (bool) $nodeFinder->findFirstInstanceOf($stmts, InlineHTML::class);
+        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 }
