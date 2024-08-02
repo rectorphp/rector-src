@@ -53,7 +53,7 @@ final class NameImportingPostRector extends AbstractPostRector
 
     public function shouldTraverse(array $stmts): bool
     {
-        return $this->addUseStatementGuard->shouldTraverse($this->getFile(), $stmts);
+        return $this->addUseStatementGuard->shouldTraverse($stmts);
     }
 
     /**

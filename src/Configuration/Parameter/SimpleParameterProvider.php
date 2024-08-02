@@ -34,6 +34,14 @@ final class SimpleParameterProvider
     /**
      * @param Option::* $name
      */
+    public static function removeParameter(string $name): void
+    {
+        unset(self::$parameters[$name]);
+    }
+
+    /**
+     * @param Option::* $name
+     */
     public static function setParameter(string $name, mixed $value): void
     {
         self::$parameters[$name] = $value;

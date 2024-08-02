@@ -45,6 +45,6 @@ final class DocblockNameImportingPostRector extends AbstractPostRector
 
     public function shouldTraverse(array $stmts): bool
     {
-        return $this->addUseStatementGuard->shouldTraverse($this->getFile(), $stmts);
+        return $this->addUseStatementGuard->shouldTraverse($stmts);
     }
 }

@@ -8,25 +8,15 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeFinder;
-use Rector\Configuration\Parameter\SimpleParameterProvider;
-use Rector\ValueObject\Application\File;
 
 class AddUseStatementGuard
 {
     /**
      * @param Stmt[] $stmts
      */
-    public function shouldTraverse(File $file, array $stmts): bool
+    public function shouldTraverse(array $stmts): bool
     {
-        $shouldAddUseStatement = 'should_add_use_statement_' . $file->getFilePath();
-
-        // already set in current file, no need to repeat the logic
-        if (SimpleParameterProvider::hasParameter($shouldAddUseStatement)) {
-            return SimpleParameterProvider::provideBoolParameter($shouldAddUseStatement);
-        }
-
         $totalNamespaces = 0;
-        $shouldTraverse = true;
 
         // just loop the first level stmts to locate namespace to improve performance
         // as namespace is always on first level
@@ -37,17 +27,11 @@ class AddUseStatementGuard
 
             // skip if 2 namespaces are present
             if ($totalNamespaces === 2) {
-                $shouldTraverse = false;
-                break;
+                return false;
             }
         }
 
-        if ($shouldTraverse) {
-            $nodeFinder = new NodeFinder();
-            $shouldTraverse = ! (bool) $nodeFinder->findFirstInstanceOf($stmts, InlineHTML::class);
-        }
-
-        SimpleParameterProvider::setParameter($shouldAddUseStatement, $shouldTraverse);
-        return $shouldTraverse;
+        $nodeFinder = new NodeFinder();
+        return ! (bool) $nodeFinder->findFirstInstanceOf($stmts, InlineHTML::class);
     }
 }
