@@ -70,6 +70,9 @@ final class UseAddingPostRector extends AbstractPostRector
         );
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     public function shouldTraverse(array $stmts): bool
     {
         return $this->addUseStatementGuard->shouldTraverse($stmts);

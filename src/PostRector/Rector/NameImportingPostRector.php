@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
@@ -51,6 +52,9 @@ final class NameImportingPostRector extends AbstractPostRector
         return $this->nameImporter->importName($node, $this->getFile());
     }
 
+    /**
+     * @param Stmt[] $stmts
+     */
     public function shouldTraverse(array $stmts): bool
     {
         return $this->addUseStatementGuard->shouldTraverse($stmts);
