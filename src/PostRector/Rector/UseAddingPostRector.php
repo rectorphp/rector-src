@@ -10,6 +10,7 @@ use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
 use Rector\PostRector\Collector\UseNodesToAddCollector;
+use Rector\PostRector\Guard\AddUseStatementGuard;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 
 final class UseAddingPostRector extends AbstractPostRector
@@ -18,6 +19,7 @@ final class UseAddingPostRector extends AbstractPostRector
         private readonly TypeFactory $typeFactory,
         private readonly UseImportsAdder $useImportsAdder,
         private readonly UseNodesToAddCollector $useNodesToAddCollector,
+        private readonly AddUseStatementGuard $addUseStatementGuard
     ) {
     }
 
@@ -66,6 +68,11 @@ final class UseAddingPostRector extends AbstractPostRector
             $functionUseImportTypes,
             $rootNode
         );
+    }
+
+    public function shouldTraverse(array $stmts): bool
+    {
+        return $this->addUseStatementGuard->shouldTraverse($this->getFile(), $stmts);
     }
 
     /**

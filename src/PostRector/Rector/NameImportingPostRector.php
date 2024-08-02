@@ -8,16 +8,13 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use Rector\CodingStyle\ClassNameImport\ClassNameImportSkipper;
 use Rector\CodingStyle\Node\NameImporter;
 use Rector\Naming\Naming\AliasNameResolver;
 use Rector\Naming\Naming\UseImportsResolver;
-use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PostRector\Guard\AddUseStatementGuard;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
@@ -26,7 +23,7 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly ClassNameImportSkipper $classNameImportSkipper,
         private readonly UseImportsResolver $useImportsResolver,
         private readonly AliasNameResolver $aliasNameResolver,
-        private readonly BetterNodeFinder $betterNodeFinder,
+        private readonly AddUseStatementGuard $addUseStatementGuard
     ) {
     }
 
@@ -54,27 +51,9 @@ final class NameImportingPostRector extends AbstractPostRector
         return $this->nameImporter->importName($node, $this->getFile());
     }
 
-    /**
-     * @param Stmt[] $stmts
-     */
     public function shouldTraverse(array $stmts): bool
     {
-        $totalNamespaces = 0;
-
-        // just loop the first level stmts to locate namespace to improve performance
-        // as namespace is always on first level
-        foreach ($stmts as $stmt) {
-            if ($stmt instanceof Namespace_) {
-                ++$totalNamespaces;
-            }
-
-            // skip if 2 namespaces are present
-            if ($totalNamespaces === 2) {
-                return false;
-            }
-        }
-
-        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
+        return $this->addUseStatementGuard->shouldTraverse($this->getFile(), $stmts);
     }
 
     /**
