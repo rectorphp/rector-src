@@ -51,7 +51,7 @@ class NullableIntersection extends TestCase
         $this->mock
             ->expects($matcher)
             ->method('__toString')
-            ->willReturnCallback(function (){
+            ->willReturnCallback(function (): (\Exception&\PHPUnit\Framework\MockObject\MockObject)|null{
                 return $this->mock;
             })
         ;
