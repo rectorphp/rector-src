@@ -1,4 +1,4 @@
-# 382 Rules Overview
+# 383 Rules Overview
 
 <br>
 
@@ -58,7 +58,7 @@
 
 - [Strict](#strict) (5)
 
-- [Transform](#transform) (25)
+- [Transform](#transform) (26)
 
 - [TypeDeclaration](#typedeclaration) (57)
 
@@ -6309,6 +6309,21 @@ Add #[\ReturnTypeWillChange] attribute to configured instanceof class with metho
      {
      }
  }
+```
+
+<br>
+
+### ScalarValueToConstFetchRector
+
+Replaces Scalar values with a ConstFetch or ClassConstFetch
+
+:wrench: **configure it!**
+
+- class: [`Rector\Transform\Rector\Scalar\ScalarValueToConstFetchRector`](../rules/Transform/Rector/Scalar/ScalarValueToConstFetchRector.php)
+
+```diff
+-$var = 10;
++$var = \SomeClass::FOOBAR_INT;
 ```
 
 <br>
