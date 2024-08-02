@@ -81,7 +81,7 @@ final class PostFileProcessor implements ResetableInterface
             return true;
         }
 
-        // verify should traverse on last by its PostRector type and its stmts
+        // verify should traverse on last as may needs traverse stmts
         return ! $postRector->shouldTraverse($stmts);
     }
 
