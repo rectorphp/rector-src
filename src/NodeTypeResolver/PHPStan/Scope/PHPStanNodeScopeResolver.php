@@ -292,11 +292,6 @@ final readonly class PHPStanNodeScopeResolver
 
                 return;
             }
-
-            // ensure nothing left behind
-            if ($node instanceof Stmt) {
-                $this->setJustAddedStmtScope($node, $mutatingScope, $nodeCallback);
-            }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
