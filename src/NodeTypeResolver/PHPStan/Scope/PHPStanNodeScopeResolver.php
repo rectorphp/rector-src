@@ -9,12 +9,14 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\AssignOp;
 use PhpParser\Node\Expr\BinaryOp;
 use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Cast;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
@@ -29,14 +31,19 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\EnumCase;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\Return_;
@@ -54,6 +61,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -128,11 +136,15 @@ final readonly class PHPStanNodeScopeResolver
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                $this->decorateStmtAttrGroups($node, $mutatingScope, $nodeCallback);
+
                 return;
             }
 
             if ($node instanceof Trait_) {
                 $this->processTrait($node, $mutatingScope, $nodeCallback);
+                $this->decorateStmtAttrGroups($node, $mutatingScope, $nodeCallback);
+
                 return;
             }
 
@@ -151,6 +163,8 @@ final readonly class PHPStanNodeScopeResolver
             if (! $node instanceof VirtualNode) {
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
+
+            $this->decorateStmtAttrGroups($node, $mutatingScope, $nodeCallback);
 
             if ($node instanceof FileWithoutNamespace) {
                 $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
@@ -270,6 +284,15 @@ final readonly class PHPStanNodeScopeResolver
                 $this->processCallike($node, $mutatingScope);
                 return;
             }
+
+            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
+                foreach ($node->stmts as $stmt) {
+                    // just created and not yet has scope attribute
+                    if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
+                        $this->nodeScopeResolverProcessNodes([$stmt], $mutatingScope, $nodeCallback);
+                    }
+                }
+            }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
@@ -340,12 +363,35 @@ final readonly class PHPStanNodeScopeResolver
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
-    private function decorateTraitAttrGroups(Trait_ $trait, MutatingScope $mutatingScope): void
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function decorateStmtAttrGroups(Node $node, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
-        foreach ($trait->attrGroups as $attrGroup) {
+        // better to have AttrGroupsAwareInterface for all Node definition with attrGroups property
+        // but because may conflict with StmtsAwareInterface patch, this needs to be here
+        if (
+            ! $node instanceof Param &&
+            ! $node instanceof ArrowFunction &&
+            ! $node instanceof Closure &&
+            ! $node instanceof ClassConst &&
+            ! $node instanceof ClassLike &&
+            ! $node instanceof ClassMethod &&
+            ! $node instanceof EnumCase &&
+            ! $node instanceof Function_ &&
+            ! $node instanceof Property
+        ) {
+            return;
+        }
+
+        foreach ($node->attrGroups as $attrGroup) {
             foreach ($attrGroup->attrs as $attr) {
                 foreach ($attr->args as $arg) {
-                    $arg->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    $this->nodeScopeResolverProcessNodes(
+                        [new Expression($arg->value)],
+                        $mutatingScope,
+                        $nodeCallback
+                    );
                 }
             }
         }
@@ -481,26 +527,20 @@ final readonly class PHPStanNodeScopeResolver
         if (! $this->reflectionProvider->hasClass($traitName)) {
             $trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $this->nodeScopeResolverProcessNodes($trait->stmts, $mutatingScope, $nodeCallback);
-            $this->decorateTraitAttrGroups($trait, $mutatingScope);
 
             return;
         }
 
         $traitClassReflection = $this->reflectionProvider->getClass($traitName);
 
-        $traitScope = clone $mutatingScope;
-
         /** @var ScopeContext $scopeContext */
-        $scopeContext = $this->privatesAccessor->getPrivateProperty($traitScope, self::CONTEXT);
-        $traitContext = clone $scopeContext;
+        $scopeContext = $this->privatesAccessor->getPrivateProperty($mutatingScope, self::CONTEXT);
 
         // before entering the class/trait again, we have to tell scope no class was set, otherwise it crashes
-        $this->privatesAccessor->setPrivateProperty($traitContext, 'classReflection', $traitClassReflection);
+        $this->privatesAccessor->setPrivateProperty($scopeContext, 'classReflection', $traitClassReflection);
+        $this->privatesAccessor->setPrivateProperty($mutatingScope, self::CONTEXT, $scopeContext);
 
-        $this->privatesAccessor->setPrivateProperty($traitScope, self::CONTEXT, $traitContext);
-
-        $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
-        $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
-        $this->decorateTraitAttrGroups($trait, $traitScope);
+        $trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+        $this->nodeScopeResolverProcessNodes($trait->stmts, $mutatingScope, $nodeCallback);
     }
 }
