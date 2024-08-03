@@ -287,11 +287,14 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
                 foreach ($node->stmts as $stmt) {
-                    // just created and not yet has scope attribute
-                    if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
-                        $this->nodeScopeResolverProcessNodes([$stmt], $mutatingScope, $nodeCallback);
-                    }
+                    $this->setJustAddedStmtScope($stmt, $mutatingScope, $nodeCallback);
                 }
+
+                return;
+            }
+
+            if ($node instanceof Stmt) {
+                $this->setJustAddedStmtScope($node, $mutatingScope, $nodeCallback);
             }
         };
 
@@ -307,6 +310,17 @@ final readonly class PHPStanNodeScopeResolver
         $nodeTraverser->traverse($stmts);
 
         return $stmts;
+    }
+
+    /**
+     * @param callable(Node $node, MutatingScope $scope): void $nodeCallback
+     */
+    private function setJustAddedStmtScope(Stmt $stmt, MutatingScope $mutatingScope, callable $nodeCallback): void
+    {
+        // just created and not yet has scope attribute
+        if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
+            $this->nodeScopeResolverProcessNodes([$stmt], $mutatingScope, $nodeCallback);
+        }
     }
 
     /**
