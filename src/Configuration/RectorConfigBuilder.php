@@ -147,6 +147,8 @@ final class RectorConfigBuilder
      */
     private array $setGroups = [];
 
+    private ?bool $reportingRealPath = null;
+
     /**
      * @var string[]
      */
@@ -298,6 +300,10 @@ final class RectorConfigBuilder
 
         if ($this->isFluentNewLine !== null) {
             $rectorConfig->newLineOnFluentCall($this->isFluentNewLine);
+        }
+
+        if ($this->reportingRealPath !== null) {
+            $rectorConfig->reportingRealPath($this->reportingRealPath);
         }
     }
 
@@ -977,6 +983,13 @@ final class RectorConfigBuilder
         if ($php71) {
             $this->sets[] = DowngradeLevelSetList::DOWN_TO_PHP_71;
         }
+
+        return $this;
+    }
+
+    public function withRealPathReporting(bool $absolutePath = true): self
+    {
+        $this->reportingRealPath = $absolutePath;
 
         return $this;
     }

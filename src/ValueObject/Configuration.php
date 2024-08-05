@@ -26,6 +26,7 @@ final readonly class Configuration
         private bool $isParallel = false,
         private string|null $memoryLimit = null,
         private bool $isDebug = false,
+        private bool $reportingWithRealPath = false
     ) {
     }
 
@@ -94,5 +95,10 @@ final readonly class Configuration
     public function isDebug(): bool
     {
         return $this->isDebug;
+    }
+
+    public function isReportingWithRealPath(): bool
+    {
+        return $this->reportingWithRealPath;
     }
 }
