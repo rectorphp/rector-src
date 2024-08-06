@@ -83,7 +83,10 @@ CODE_SAMPLE
                 // use current var as next var
                 $node->catches[$key + 1]->var = $node->catches[$key]->var;
                 // merge next types as current merge to next types
-                $node->catches[$key + 1]->types = array_merge($node->catches[$key]->types, $node->catches[$key + 1]->types);
+                $node->catches[$key + 1]->types = array_merge(
+                    $node->catches[$key]->types,
+                    $node->catches[$key + 1]->types
+                );
 
                 unset($node->catches[$key]);
                 $hasChanged = true;

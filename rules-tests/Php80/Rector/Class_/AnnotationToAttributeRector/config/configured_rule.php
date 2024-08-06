@@ -34,6 +34,7 @@ return static function (RectorConfig $rectorConfig): void {
             // validation
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Choice'),
             new AnnotationToAttribute('Symfony\Component\Validator\Constraints\Length'),
+            new AnnotationToAttribute('Symfony\Component\Validator\Constraints\File'),
 
             // JMS + Symfony
             new AnnotationToAttribute('Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter'),

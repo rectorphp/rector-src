@@ -4,14 +4,12 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\S
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ValidationIntegerParameter
+final class ValidationCastIntegerParameter
 {
     /**
      * @Assert\Length(
      *     min="100",
-     *     max="255",
-     *     maxMessage="some Message",
-     *     allowed="true"
+     *     max="255"
      * )
      */
     public function action()
@@ -27,9 +25,9 @@ namespace Rector\Tests\Php80\Rector\Class_\AnnotationToAttributeRector\Fixture\S
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ValidationIntegerParameter
+final class ValidationCastIntegerParameter
 {
-    #[Assert\Length(min: '100', max: '255', maxMessage: 'some Message', allowed: 'true')]
+    #[Assert\Length(min: 100, max: 255)]
     public function action()
     {
     }

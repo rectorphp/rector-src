@@ -31,7 +31,8 @@ final readonly class PhpAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private AttributeArrayNameInliner $attributeArrayNameInliner
+        private AttributeArrayNameInliner $attributeArrayNameInliner,
+        private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
     ) {
     }
 
@@ -57,8 +58,8 @@ final readonly class PhpAttributeGroupFactory
     public function createFromClassWithItems(string $attributeClass, array $items): AttributeGroup
     {
         $fullyQualified = new FullyQualified($attributeClass);
-        $args = $this->createArgsFromItems($items, $attributeClass);
 
+        $args = $this->createArgsFromItems($items);
         $attribute = new Attribute($fullyQualified, $args);
 
         return new AttributeGroup([$attribute]);
@@ -73,11 +74,9 @@ final readonly class PhpAttributeGroupFactory
         array $uses
     ): AttributeGroup {
         $values = $doctrineAnnotationTagValueNode->getValuesWithSilentKey();
-        $args = $this->createArgsFromItems(
-            $values,
-            $annotationToAttribute->getAttributeClass(),
-            $annotationToAttribute->getClassReferenceFields()
-        );
+        $args = $this->createArgsFromItems($values, '', $annotationToAttribute->getClassReferenceFields());
+
+        $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
@@ -105,10 +104,14 @@ final readonly class PhpAttributeGroupFactory
      *
      * @param ArrayItemNode[]|mixed[] $items
      * @param string[] $classReferencedFields
+     *
      * @return Arg[]
      */
-    public function createArgsFromItems(array $items, string $attributeClass, array $classReferencedFields = []): array
-    {
+    public function createArgsFromItems(
+        array $items,
+        string $attributeClass = '',
+        array $classReferencedFields = []
+    ): array {
         $mappedItems = $this->annotationToAttributeMapper->map($items);
 
         $this->mapClassReferences($mappedItems, $classReferencedFields);
