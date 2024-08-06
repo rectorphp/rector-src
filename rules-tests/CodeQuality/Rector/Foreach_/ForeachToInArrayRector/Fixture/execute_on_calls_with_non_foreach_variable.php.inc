@@ -6,7 +6,7 @@ use Rector\Tests\CodeQuality\Rector\Foreach_\ForeachToInArrayRector\Source\Colle
 
 final class ExecuteOnCallsWithNonForeachVariable
 {
-    public function foreachToInArrayWithFunctionCalls($items): bool
+    public function foreachToInArrayWithFunctionCalls(array $items): bool
     {
         $local = 'local';
 
@@ -19,7 +19,7 @@ final class ExecuteOnCallsWithNonForeachVariable
         return false;
     }
 
-    public function foreachToInArrayWithMethodCall($items): bool
+    public function foreachToInArrayWithMethodCall(array $items): bool
     {
         $local = 'local';
 
@@ -32,7 +32,7 @@ final class ExecuteOnCallsWithNonForeachVariable
         return false;
     }
 
-    public function foreachToInArrayWithStaticCall($items): bool
+    public function foreachToInArrayWithStaticCall(array $items): bool
     {
         $local = 'local';
 
@@ -66,19 +66,19 @@ use Rector\Tests\CodeQuality\Rector\Foreach_\ForeachToInArrayRector\Source\Colle
 
 final class ExecuteOnCallsWithNonForeachVariable
 {
-    public function foreachToInArrayWithFunctionCalls($items): bool
+    public function foreachToInArrayWithFunctionCalls(array $items): bool
     {
         $local = 'local';
         return in_array(strtoupper(strtolower($local)), $items);
     }
 
-    public function foreachToInArrayWithMethodCall($items): bool
+    public function foreachToInArrayWithMethodCall(array $items): bool
     {
         $local = 'local';
         return in_array($this->strtoupper($local), $items);
     }
 
-    public function foreachToInArrayWithStaticCall($items): bool
+    public function foreachToInArrayWithStaticCall(array $items): bool
     {
         $local = 'local';
         return in_array(SkipMethodCalls::strtolower($local), $items);

@@ -171,8 +171,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $foreachValueStaticType = $this->getType($foreach->expr);
-        return $foreachValueStaticType instanceof ObjectType;
+        return ! $this->nodeTypeResolver->getNativeType($foreach->expr)->isArray()->yes();
     }
 
     private function shouldSkipIf(If_ $if): bool

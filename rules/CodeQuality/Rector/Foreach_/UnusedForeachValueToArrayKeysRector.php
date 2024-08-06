@@ -96,7 +96,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isArrayType($stmt->expr)) {
+            if (! $this->nodeTypeResolver->getNativeType($stmt->expr)->isArray()->yes()) {
                 continue;
             }
 
@@ -214,16 +214,5 @@ CODE_SAMPLE
         $foreach->keyVar = null;
 
         $foreach->expr = $this->nodeFactory->createFuncCall('array_keys', [$foreach->expr]);
-    }
-
-    private function isArrayType(Expr $expr): bool
-    {
-        $exprType = $this->getType($expr);
-        if ($exprType instanceof ObjectType) {
-            return false;
-        }
-
-        return $exprType->isArray()
-            ->yes();
     }
 }

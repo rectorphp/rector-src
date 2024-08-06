@@ -153,7 +153,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $foreachedExprType = $this->getType($foreach->expr);
+        $foreachedExprType = $this->nodeTypeResolver->getNativeType($foreach->expr);
 
         // only arrays, not traversable/iterable
         if (! $foreachedExprType->isArray()->yes()) {
