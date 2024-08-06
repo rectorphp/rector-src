@@ -15,7 +15,6 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
-use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeManipulator\BinaryOpManipulator;
 use Rector\Php71\ValueObject\TwoNodeMatch;

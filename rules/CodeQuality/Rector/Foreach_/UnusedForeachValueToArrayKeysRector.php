@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Foreach_;
-use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\DeadCode\NodeAnalyzer\ExprUsedInNodeAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
