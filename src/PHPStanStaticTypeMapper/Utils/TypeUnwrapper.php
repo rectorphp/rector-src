@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\PHPStanStaticTypeMapper\Utils;
 
 use PHPStan\Type\Type;
+use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 
@@ -29,20 +30,6 @@ final class TypeUnwrapper
 
     public function removeNullTypeFromUnionType(UnionType $unionType): Type
     {
-        $unionedTypesWithoutNullType = [];
-
-        foreach ($unionType->getTypes() as $type) {
-            if ($type instanceof UnionType) {
-                continue;
-            }
-
-            $unionedTypesWithoutNullType[] = $type;
-        }
-
-        if ($unionedTypesWithoutNullType !== []) {
-            return $unionedTypesWithoutNullType[0];
-        }
-
-        return new UnionType($unionedTypesWithoutNullType);
+        return TypeCombinator::removeNull($unionType);
     }
 }
