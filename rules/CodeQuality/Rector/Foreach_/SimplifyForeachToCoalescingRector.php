@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
+use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
@@ -166,6 +167,10 @@ CODE_SAMPLE
         }
 
         if ($if->else instanceof Else_ || $if->elseifs !== []) {
+            return null;
+        }
+
+        if ($this->isObjectType($foreach->expr, new ObjectType('Generator'))) {
             return null;
         }
 
