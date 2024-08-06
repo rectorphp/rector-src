@@ -67,8 +67,6 @@ CODE_SAMPLE
         if (count($node->catches) < 2) {
             return null;
         }
-
-        $printedCatches = [];
         $hasChanged = false;
 
         foreach ($node->catches as $key => $catch) {
