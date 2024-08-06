@@ -87,8 +87,6 @@ CODE_SAMPLE
 
                 unset($node->catches[$key]);
                 $hasChanged = true;
-
-                ++$key;
             }
         }
 
