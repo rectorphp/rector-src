@@ -78,7 +78,9 @@ CODE_SAMPLE
             $currentPrintedCatch = $this->betterStandardPrinter->print($catch->stmts);
             $nextPrintedCatch = $this->betterStandardPrinter->print($node->catches[$key + 1]->stmts);
 
+            // already duplicated catch → remove it and join the type
             if ($currentPrintedCatch === $nextPrintedCatch) {
+                // merge var and type to previous
                 $node->catches[$key + 1]->var = $node->catches[$key]->var;
                 $node->catches[$key + 1]->types = array_merge($node->catches[$key]->types, $node->catches[$key + 1]->types);
 
