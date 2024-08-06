@@ -32,7 +32,7 @@ final readonly class PhpAttributeGroupFactory
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
         private AttributeArrayNameInliner $attributeArrayNameInliner,
-        private AnnotationToAttributeKeyTypeCaster $annotationToAttributeKeyTypeCaster,
+        private AnnotationToAttributeIntegerValueCaster $annotationToAttributeIntegerValueCaster,
     ) {
     }
 
@@ -76,7 +76,7 @@ final readonly class PhpAttributeGroupFactory
         $values = $doctrineAnnotationTagValueNode->getValuesWithSilentKey();
         $args = $this->createArgsFromItems($values, '', $annotationToAttribute->getClassReferenceFields());
 
-        $this->annotationToAttributeKeyTypeCaster->castAttributeTypes($annotationToAttribute, $args);
+        $this->annotationToAttributeIntegerValueCaster->castAttributeTypes($annotationToAttribute, $args);
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 

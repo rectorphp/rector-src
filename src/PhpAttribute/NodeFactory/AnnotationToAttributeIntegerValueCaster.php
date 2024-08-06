@@ -16,14 +16,12 @@ use PHPStan\Type\IntegerType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Webmozart\Assert\Assert;
 
-final readonly class AnnotationToAttributeKeyTypeCaster
+final readonly class AnnotationToAttributeIntegerValueCaster
 {
     public function __construct(
         private ReflectionProvider $reflectionProvider,
-        private TypeUnwrapper $typeUnwrapper,
     ) {
     }
 
@@ -61,21 +59,26 @@ final readonly class AnnotationToAttributeKeyTypeCaster
                     continue;
                 }
 
-                if (! $this->isNullableIntegerOrIntegerType($parameterReflection->getType())) {
-                    continue;
-                }
-
                 // ensure type is casted to integer
                 if (! $arrayItem->value instanceof String_) {
                     continue;
                 }
 
-                $arrayItem->value = new LNumber((int) $arrayItem->value->value);
+                if (! $this->containsInteger($parameterReflection->getType())) {
+                    continue;
+                }
+
+                $valueString = $arrayItem->value;
+                if (! is_numeric($valueString->value)) {
+                    continue;
+                }
+
+                $arrayItem->value = new LNumber((int) $valueString->value);
             }
         }
     }
 
-    private function isNullableIntegerOrIntegerType(Type $type): bool
+    private function containsInteger(Type $type): bool
     {
         if ($type instanceof IntegerType) {
             return true;
@@ -85,8 +88,13 @@ final readonly class AnnotationToAttributeKeyTypeCaster
             return false;
         }
 
-        $unwrappedType = $this->typeUnwrapper->removeNullTypeFromUnionType($type);
-        return $unwrappedType instanceof IntegerType;
+        foreach ($type->getTypes() as $unionedType) {
+            if ($unionedType instanceof IntegerType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
