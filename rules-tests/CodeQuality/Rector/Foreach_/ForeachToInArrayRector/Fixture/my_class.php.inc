@@ -4,7 +4,7 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachToInArrayRector\Fixtur
 
 final class MyClass
 {
-    public function foreachToInArray($items): bool
+    public function foreachToInArray(array $items): bool
     {
         foreach ($items as $item) {
             if ($item == 'something') {
@@ -15,7 +15,7 @@ final class MyClass
         return false;
     }
 
-    public function foreachToInArrayYoda($items): bool
+    public function foreachToInArrayYoda(array $items): bool
     {
         foreach ($items as $item) {
             if ('something' == $item) {
@@ -26,7 +26,7 @@ final class MyClass
         return false;
     }
 
-    public function foreachToInArrayStrict($items): bool
+    public function foreachToInArrayStrict(array $items): bool
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -37,7 +37,7 @@ final class MyClass
         return false;
     }
 
-    public function invertedForeachToInArrayStrict($items): bool
+    public function invertedForeachToInArrayStrict(array $items): bool
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -48,7 +48,7 @@ final class MyClass
         return true;
     }
 
-    public function foreachToInArrayWithToVariables($items): bool
+    public function foreachToInArrayWithToVariables(array $items): bool
     {
         foreach ($items as $item) {
             if ($something === $item) {
@@ -59,7 +59,7 @@ final class MyClass
         return false;
     }
 
-    public function foreachWithoutReturnFalse($items)
+    public function foreachWithoutReturnFalse(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -68,7 +68,7 @@ final class MyClass
         }
     }
 
-    public function foreachReturnString($items)
+    public function foreachReturnString(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -79,7 +79,7 @@ final class MyClass
         return 'false';
     }
 
-    public function foreachWithSomethingElseAfterIt($items)
+    public function foreachWithSomethingElseAfterIt(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -90,7 +90,7 @@ final class MyClass
         $foo = 'bar';
     }
 
-    public function foreachWithElseNullable($items)
+    public function foreachWithElseNullable(array $items)
     {
         foreach ($items as $item) {
             if ('string') {
@@ -101,7 +101,7 @@ final class MyClass
         return;
     }
 
-    public function alwaysTrue($items): bool
+    public function alwaysTrue(array $items): bool
     {
         foreach ($items as $item) {
             if ($something === $item) {
@@ -121,32 +121,32 @@ namespace Rector\Tests\CodeQuality\Rector\Foreach_\ForeachToInArrayRector\Fixtur
 
 final class MyClass
 {
-    public function foreachToInArray($items): bool
+    public function foreachToInArray(array $items): bool
     {
         return in_array('something', $items);
     }
 
-    public function foreachToInArrayYoda($items): bool
+    public function foreachToInArrayYoda(array $items): bool
     {
         return in_array('something', $items);
     }
 
-    public function foreachToInArrayStrict($items): bool
+    public function foreachToInArrayStrict(array $items): bool
     {
         return in_array('something', $items, true);
     }
 
-    public function invertedForeachToInArrayStrict($items): bool
+    public function invertedForeachToInArrayStrict(array $items): bool
     {
         return !in_array('something', $items, true);
     }
 
-    public function foreachToInArrayWithToVariables($items): bool
+    public function foreachToInArrayWithToVariables(array $items): bool
     {
         return in_array($something, $items, true);
     }
 
-    public function foreachWithoutReturnFalse($items)
+    public function foreachWithoutReturnFalse(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -155,7 +155,7 @@ final class MyClass
         }
     }
 
-    public function foreachReturnString($items)
+    public function foreachReturnString(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -166,7 +166,7 @@ final class MyClass
         return 'false';
     }
 
-    public function foreachWithSomethingElseAfterIt($items)
+    public function foreachWithSomethingElseAfterIt(array $items)
     {
         foreach ($items as $item) {
             if ($item === 'something') {
@@ -177,7 +177,7 @@ final class MyClass
         $foo = 'bar';
     }
 
-    public function foreachWithElseNullable($items)
+    public function foreachWithElseNullable(array $items)
     {
         foreach ($items as $item) {
             if ('string') {
@@ -188,7 +188,7 @@ final class MyClass
         return;
     }
 
-    public function alwaysTrue($items): bool
+    public function alwaysTrue(array $items): bool
     {
         foreach ($items as $item) {
             if ($something === $item) {
