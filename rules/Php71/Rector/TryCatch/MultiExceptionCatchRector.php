@@ -80,8 +80,9 @@ CODE_SAMPLE
 
             // already duplicated catch → remove it and join the type
             if ($currentPrintedCatch === $nextPrintedCatch) {
-                // merge var and type to previous
+                // use current var as next var
                 $node->catches[$key + 1]->var = $node->catches[$key]->var;
+                // merge next types as current merge to next types
                 $node->catches[$key + 1]->types = array_merge($node->catches[$key]->types, $node->catches[$key + 1]->types);
 
                 unset($node->catches[$key]);
