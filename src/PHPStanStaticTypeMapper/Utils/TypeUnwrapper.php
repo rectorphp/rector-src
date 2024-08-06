@@ -27,7 +27,7 @@ final class TypeUnwrapper
         return $type;
     }
 
-    public function removeNullTypeFromUnionType(UnionType $unionType): UnionType
+    public function removeNullTypeFromUnionType(UnionType $unionType): Type
     {
         $unionedTypesWithoutNullType = [];
 
@@ -37,6 +37,10 @@ final class TypeUnwrapper
             }
 
             $unionedTypesWithoutNullType[] = $type;
+        }
+
+        if ($unionedTypesWithoutNullType !== []) {
+            return $unionedTypesWithoutNullType[0];
         }
 
         return new UnionType($unionedTypesWithoutNullType);

@@ -38,7 +38,7 @@ final class PhpAttributeGroupFactoryTest extends AbstractLazyTestCase
         $args = $this->phpAttributeGroupFactory->createArgsFromItems([
             new ArrayItemNode(new StringNode('/path'), 'path'),
             new ArrayItemNode(new StringNode('action'), 'name'),
-        ], 'SomeClass');
+        ]);
 
         $this->assertCount(2, $args);
         $this->assertContainsOnlyInstancesOf(Arg::class, $args);
