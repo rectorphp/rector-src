@@ -170,7 +170,8 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isObjectType($foreach->expr, new ObjectType('Generator'))) {
+        $foreachExprType = $this->nodeTypeResolver->getNativeType($foreach->expr);
+        if (! $foreachExprType->isArray()->yes()) {
             return null;
         }
 

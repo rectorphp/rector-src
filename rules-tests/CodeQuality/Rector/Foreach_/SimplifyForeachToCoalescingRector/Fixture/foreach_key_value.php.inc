@@ -7,7 +7,7 @@ class ForeachKeyValue
     /**
      * @var mixed[]
      */
-    private $oldToNewOption = [];
+    private array $oldToNewOption = [];
 
     public function run()
     {
@@ -33,7 +33,7 @@ class ForeachKeyValue
     /**
      * @var mixed[]
      */
-    private $oldToNewOption = [];
+    private array $oldToNewOption = [];
 
     public function run()
     {

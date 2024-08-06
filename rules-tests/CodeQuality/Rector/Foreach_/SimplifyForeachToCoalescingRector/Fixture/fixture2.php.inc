@@ -1,8 +1,9 @@
 <?php
 
-function simplifyForeachToCoalescing2()
+function simplifyForeachToCoalescing2($currentFunction)
 {
-    foreach ($this->oldToNewFunctions as $oldFunction => $newFunction) {
+    $oldToNewFunctions = ['a' => 'b'];
+    foreach ($oldToNewFunctions as $oldFunction => $newFunction) {
         if ($oldFunction === $currentFunction) {
             return $newFunction;
         }
@@ -15,9 +16,10 @@ function simplifyForeachToCoalescing2()
 -----
 <?php
 
-function simplifyForeachToCoalescing2()
+function simplifyForeachToCoalescing2($currentFunction)
 {
-    return $this->oldToNewFunctions[$currentFunction] ?? 45;
+    $oldToNewFunctions = ['a' => 'b'];
+    return $oldToNewFunctions[$currentFunction] ?? 45;
 }
 
 ?>
