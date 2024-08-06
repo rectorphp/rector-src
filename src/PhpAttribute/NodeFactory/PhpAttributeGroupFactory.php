@@ -31,7 +31,8 @@ final readonly class PhpAttributeGroupFactory
         private AnnotationToAttributeMapper $annotationToAttributeMapper,
         private AttributeNameFactory $attributeNameFactory,
         private NamedArgsFactory $namedArgsFactory,
-        private AttributeArrayNameInliner $attributeArrayNameInliner
+        private AttributeArrayNameInliner $attributeArrayNameInliner,
+        private \Rector\PhpAttribute\NodeFactory\AnnotationToAttributeKeyTypeCaster $annotationToAttributeKeyTypeCaster,
     ) {
     }
 
@@ -78,6 +79,8 @@ final readonly class PhpAttributeGroupFactory
             $annotationToAttribute->getAttributeClass(),
             $annotationToAttribute->getClassReferenceFields()
         );
+
+        $this->annotationToAttributeKeyTypeCaster->castAttributeTypes($annotationToAttribute, $args);
 
         $args = $this->attributeArrayNameInliner->inlineArrayToArgs($args);
 
