@@ -72,20 +72,21 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->catches as $key => $catch) {
-            $currentPrintedCatch = $this->betterStandardPrinter->print($catch->stmts);
-
-            // already duplicated catch → remove it and join the type
-            if (isset($printedCatches[$key - 1]) && $printedCatches[$key - 1] === $currentPrintedCatch) {
-                // merge type to previous
-                $node->catches[$key - 1]->types[] = $catch->types[0];
-
-                unset($node->catches[$key]);
-                $hasChanged = true;
-
-                continue;
+            if (! isset($node->catches[$key + 1])) {
+                break;
             }
 
-            $printedCatches[$key] = $currentPrintedCatch;
+            $currentPrintedCatch = $this->betterStandardPrinter->print($catch->stmts);
+            $nextPrintedCatch = $this->betterStandardPrinter->print($node->catches[$key + 1]->stmts);
+
+            if ($currentPrintedCatch === $nextPrintedCatch) {
+                $node->catches[$key + 1]->var = $node->catches[$key]->var;
+                $node->catches[$key + 1]->types = array_merge($node->catches[$key]->types, $node->catches[$key + 1]->types);
+
+                unset($node->catches[$key]);
+
+                ++$key;
+            }
         }
 
         if ($hasChanged) {
