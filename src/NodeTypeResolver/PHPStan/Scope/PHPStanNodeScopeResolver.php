@@ -61,6 +61,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
+use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -124,7 +125,6 @@ final readonly class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         $hasUnreachableStatementNode = false;
-        // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
             $filePath,
@@ -283,6 +283,15 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof CallLike) {
                 $this->processCallike($node, $mutatingScope);
                 return;
+            }
+
+            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
+                foreach ($node->stmts as $stmt) {
+                    // just being added
+                    if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
+                        $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
+                    }
+                }
             }
         };
 
