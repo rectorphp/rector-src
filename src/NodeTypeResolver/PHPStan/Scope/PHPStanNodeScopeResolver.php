@@ -116,7 +116,6 @@ final readonly class PHPStanNodeScopeResolver
 
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
-        // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $hasUnreachableStatementNode = false;
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
