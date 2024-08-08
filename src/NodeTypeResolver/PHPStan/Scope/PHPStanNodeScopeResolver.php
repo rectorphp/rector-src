@@ -171,6 +171,18 @@ final readonly class PHPStanNodeScopeResolver
                 return;
             }
 
+            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
+                foreach ($node->stmts as $stmt) {
+                    // just being added
+                    if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
+                        $this->nodeScopeResolverProcessNodes([$stmt], $mutatingScope, $nodeCallback);
+                    }
+                }
+
+                // don't return early here
+                // other more specific StmtsAwareInterface instance checked below
+            }
+
             if ((
                 $node instanceof Expression ||
                 $node instanceof Return_ ||
@@ -283,15 +295,6 @@ final readonly class PHPStanNodeScopeResolver
             if ($node instanceof CallLike) {
                 $this->processCallike($node, $mutatingScope);
                 return;
-            }
-
-            if ($node instanceof StmtsAwareInterface && $node->stmts !== null) {
-                foreach ($node->stmts as $stmt) {
-                    // just being added
-                    if ($stmt->getStartTokenPos() < 0 && ! $stmt->hasAttribute(AttributeKey::SCOPE)) {
-                        $stmt->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                    }
-                }
             }
         };
 
