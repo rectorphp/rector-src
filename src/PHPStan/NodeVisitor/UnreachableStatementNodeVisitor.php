@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\PHPStan\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Declare_;
 use PhpParser\NodeVisitorAbstract;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\Scope;
@@ -25,7 +23,7 @@ final class UnreachableStatementNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node): ?Node
     {
-        if (! $node instanceof StmtsAwareInterface && ! $node instanceof ClassLike && ! $node instanceof Declare_) {
+        if (! $node instanceof StmtsAwareInterface) {
             return null;
         }
 
