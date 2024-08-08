@@ -170,7 +170,9 @@ CODE_SAMPLE
             return true;
         }
 
-        return ! $this->nodeTypeResolver->getNativeType($foreach->expr)->isArray()->yes();
+        return ! $this->nodeTypeResolver->getNativeType($foreach->expr)
+            ->isArray()
+            ->yes();
     }
 
     private function shouldSkipIf(If_ $if): bool
