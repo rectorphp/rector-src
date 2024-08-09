@@ -66,7 +66,7 @@ final readonly class FileProcessor
         $rectorWithLineChanges = null;
 
         do {
-            $file->changeHasChanged(false);
+            $file->resetHasChanged();
 
             $newStmts = $this->rectorNodeTraverser->traverse($file->getNewStmts());
 
