@@ -6,6 +6,7 @@ namespace Rector\CodeQuality\Rector\BooleanNot;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BooleanNot;
 use Rector\NodeManipulator\BinaryOpManipulator;
@@ -58,6 +59,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?BinaryOp
     {
+        if ($node->expr instanceof BooleanAnd) {
+            return $this->binaryOpManipulator->inverseBooleanAnd($node->expr);
+        }
+
         if (! $node->expr instanceof BooleanOr) {
             return null;
         }

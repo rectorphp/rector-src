@@ -76,6 +76,28 @@ final readonly class BinaryOpManipulator
         return new $inversedNodeClass($firstInversedExpr, $secondInversedExpr);
     }
 
+    public function inverseBooleanAnd(BooleanAnd $booleanAnd): ?BinaryOp
+    {
+        // no nesting
+        if ($booleanAnd->left instanceof BooleanAnd) {
+            return null;
+        }
+
+        if ($booleanAnd->right instanceof BooleanAnd) {
+            return null;
+        }
+
+        $inversedNodeClass = $this->resolveInversedNodeClass($booleanAnd);
+        if ($inversedNodeClass === null) {
+            return null;
+        }
+
+        $firstInversedExpr = $this->inverseNode($booleanAnd->left);
+        $secondInversedExpr = $this->inverseNode($booleanAnd->right);
+
+        return new $inversedNodeClass($firstInversedExpr, $secondInversedExpr);
+    }
+
     public function invertCondition(BinaryOp $binaryOp): ?BinaryOp
     {
         // no nesting
@@ -152,6 +174,10 @@ final readonly class BinaryOpManipulator
 
         if ($binaryOp instanceof BooleanOr) {
             return BooleanAnd::class;
+        }
+
+        if ($binaryOp instanceof BooleanAnd) {
+            return BooleanOr::class;
         }
 
         return null;
