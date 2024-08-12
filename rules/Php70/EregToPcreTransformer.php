@@ -241,7 +241,7 @@ final class EregToPcreTransformer
             } else {
                 $a = $s[$i];
                 ++$i;
-                if ($a === '-' && ! $start && ! ($i < $l && $s[$i] === ']')) {
+                if ($a === '-' && ! $start && ($i >= $l || $s[$i] !== ']')) {
                     throw new InvalidEregException('"-" is invalid for the start character in the brackets');
                 }
 

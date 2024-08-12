@@ -157,7 +157,7 @@ final readonly class ReturnTypeInferer
             return $unionType;
         }
 
-        if (! ($types[0]->isInteger()->yes() && $types[1]->isString()->yes())) {
+        if (!$types[0]->isInteger()->yes() || !$types[1]->isString()->yes()) {
             return $unionType;
         }
 
