@@ -17,14 +17,14 @@ use Rector\ValueObject\PhpVersionFeature;
 /**
  * @implements TypeMapperInterface<StrictMixedType>
  */
-final class StrictMixedTypeMapper implements TypeMapperInterface
+final readonly class StrictMixedTypeMapper implements TypeMapperInterface
 {
     /**
      * @var string
      */
     private const MIXED = 'mixed';
 
-    public function __construct(private readonly PhpVersionProvider $phpVersionProvider)
+    public function __construct(private PhpVersionProvider $phpVersionProvider)
     {
     }
 
