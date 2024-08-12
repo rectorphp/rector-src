@@ -52,7 +52,7 @@ final readonly class VoidTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if (in_array($typeKind, [TypeKind::PARAM, TypeKind::PROPERTY], true)) {
+        if (in_array($typeKind, [TypeKind::PARAM, TypeKind::PROPERTY, TypeKind::UNION], true)) {
             return null;
         }
 

@@ -9,17 +9,24 @@ use PhpParser\Node\Identifier;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use PHPStan\Type\StrictMixedType;
 use PHPStan\Type\Type;
+use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\ValueObject\PhpVersionFeature;
 
 /**
  * @implements TypeMapperInterface<StrictMixedType>
  */
-final class StrictMixedTypeMapper implements TypeMapperInterface
+final readonly class StrictMixedTypeMapper implements TypeMapperInterface
 {
     /**
      * @var string
      */
     private const MIXED = 'mixed';
+
+    public function __construct(private PhpVersionProvider $phpVersionProvider)
+    {
+    }
 
     public function getNodeClass(): string
     {
@@ -39,6 +46,14 @@ final class StrictMixedTypeMapper implements TypeMapperInterface
      */
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
+        if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
+            return null;
+        }
+
+        if ($typeKind === TypeKind::UNION) {
+            return null;
+        }
+
         return new Identifier(self::MIXED);
     }
 }

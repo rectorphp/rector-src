@@ -11,6 +11,7 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\ValueObject\PhpVersionFeature;
 
 /**
@@ -46,6 +47,10 @@ final readonly class MixedTypeMapper implements TypeMapperInterface
         }
 
         if (! $type->isExplicitMixed()) {
+            return null;
+        }
+
+        if ($typeKind === TypeKind::UNION) {
             return null;
         }
 
