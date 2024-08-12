@@ -24,8 +24,9 @@ final readonly class StrictMixedTypeMapper implements TypeMapperInterface
      */
     private const MIXED = 'mixed';
 
-    public function __construct(private PhpVersionProvider $phpVersionProvider)
-    {
+    public function __construct(
+        private PhpVersionProvider $phpVersionProvider
+    ) {
     }
 
     public function getNodeClass(): string
