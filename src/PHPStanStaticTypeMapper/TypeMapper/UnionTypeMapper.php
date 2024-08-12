@@ -179,7 +179,7 @@ final class UnionTypeMapper implements TypeMapperInterface
 
         foreach ($unionType->getTypes() as $unionedType) {
             // void type and mixed type are not allowed in union,
-            // use instanceof to cover child of provided illegal types
+            // use instanceof to cover child of provided illegal types, eg: \PHPStan\Type\Generic\TemplateMixedType which child of MixedType
             foreach ([MixedType::class, VoidType::class] as $illegalTypeInUnion) {
                 if ($unionedType instanceof $illegalTypeInUnion) {
                     return null;
