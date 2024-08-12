@@ -178,15 +178,8 @@ final class UnionTypeMapper implements TypeMapperInterface
         $phpParserUnionedTypes = [];
 
         foreach ($unionType->getTypes() as $unionedType) {
-            // void type and mixed type are not allowed in union,
-            // use instanceof to cover child of provided illegal types, eg: \PHPStan\Type\Generic\TemplateMixedType which child of \PHPStan\Type\MixedType
-            foreach ([MixedType::class, VoidType::class] as $illegalTypeInUnion) {
-                if ($unionedType instanceof $illegalTypeInUnion) {
-                    return null;
-                }
-            }
-
             // NullType or ConstantBooleanType with false value inside UnionType is allowed
+            // void type and mixed type are not allowed in union
             $phpParserNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType, TypeKind::UNION);
             if ($phpParserNode === null) {
                 return null;
