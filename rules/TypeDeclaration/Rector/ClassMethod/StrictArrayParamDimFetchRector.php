@@ -205,10 +205,8 @@ CODE_SAMPLE
                 }
             }
 
-            if ($node instanceof Empty_) {
-                if ($node->expr instanceof ArrayDimFetch && $node->expr->var instanceof Variable && $node->expr->var->name === $paramName) {
-                    return true;
-                }
+            if ($node instanceof Empty_ && ($node->expr instanceof ArrayDimFetch && $node->expr->var instanceof Variable && $node->expr->var->name === $paramName)) {
+                return true;
             }
         }
 
