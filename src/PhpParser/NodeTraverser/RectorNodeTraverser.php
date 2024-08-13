@@ -49,6 +49,7 @@ final class RectorNodeTraverser extends NodeTraverser
     {
         $this->rectors = $rectors;
         $this->visitors = [];
+        $this->visitorsPerNodeClass = [];
 
         $this->areNodeVisitorsPrepared = false;
     }
