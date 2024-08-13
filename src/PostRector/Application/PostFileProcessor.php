@@ -50,11 +50,13 @@ final class PostFileProcessor implements ResetableInterface
     public function traverse(array $stmts, File $file): array
     {
         foreach ($this->getPostRectors() as $postRector) {
+            // file must be set into PostRector class to ensure it usage
+            // always match on skipping process
+            $postRector->setFile($file);
+
             if ($this->shouldSkipPostRector($postRector, $file->getFilePath(), $stmts)) {
                 continue;
             }
-
-            $postRector->setFile($file);
 
             $nodeTraverser = new NodeTraverser();
             $nodeTraverser->addVisitor($postRector);
