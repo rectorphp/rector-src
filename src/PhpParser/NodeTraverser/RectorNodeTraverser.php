@@ -60,7 +60,7 @@ final class RectorNodeTraverser extends NodeTraverser
      *
      * @return NodeVisitor[]
      */
-    protected function getVisitorsForNode(Node $node): array
+    public function getVisitorsForNode(Node $node): array
     {
         $nodeClass = $node::class;
         if (! isset($this->visitorsPerNodeClass[$nodeClass])) {

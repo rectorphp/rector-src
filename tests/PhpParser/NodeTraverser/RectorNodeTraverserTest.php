@@ -10,13 +10,10 @@ use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 use Rector\Tests\PhpParser\NodeTraverser\Class_\RuleUsingClassRector;
 use Rector\Tests\PhpParser\NodeTraverser\ClassLike\RuleUsingClassLikeRector;
 use Rector\Tests\PhpParser\NodeTraverser\Function_\RuleUsingFunctionRector;
-use Rector\Util\Reflection\PrivatesAccessor;
 
 final class RectorNodeTraverserTest extends AbstractLazyTestCase
 {
     private RectorNodeTraverser $rectorNodeTraverser;
-
-    private PrivatesAccessor $privatesAccessor;
 
     private RuleUsingFunctionRector $ruleUsingFunctionRector;
 
@@ -29,8 +26,6 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $this->rectorNodeTraverser = $this->make(RectorNodeTraverser::class);
         $this->rectorNodeTraverser->refreshPhpRectors([]);
 
-        $this->privatesAccessor = new PrivatesAccessor();
-
         $this->ruleUsingFunctionRector = new RuleUsingFunctionRector();
         $this->ruleUsingClassRector = new RuleUsingClassRector();
         $this->ruleUsingClassLikeRector = new RuleUsingClassLikeRector();
@@ -39,11 +34,8 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     public function testGetVisitorsForNodeWhenNoVisitorsAvailable(): void
     {
         $class = new Class_('test');
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertSame([], $visitors);
     }
@@ -52,11 +44,8 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
     {
         $class = new Class_('test');
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingFunctionRector);
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertSame([], $visitors);
     }
@@ -67,11 +56,7 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingFunctionRector);
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
 
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertEquals([$this->ruleUsingClassRector], $visitors);
     }
@@ -82,11 +67,7 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassLikeRector);
 
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
     }
@@ -97,20 +78,12 @@ final class RectorNodeTraverserTest extends AbstractLazyTestCase
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassRector);
         $this->rectorNodeTraverser->addVisitor($this->ruleUsingClassLikeRector);
 
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
 
         $this->rectorNodeTraverser->removeVisitor($this->ruleUsingClassRector);
-        $visitors = $this->privatesAccessor->callPrivateMethod(
-            $this->rectorNodeTraverser,
-            'getVisitorsForNode',
-            [$class]
-        );
+        $visitors = $this->rectorNodeTraverser->getVisitorsForNode($class);
 
         $this->assertEquals([$this->ruleUsingClassRector, $this->ruleUsingClassLikeRector], $visitors);
     }

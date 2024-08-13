@@ -47,7 +47,7 @@
 +    /**
 +     * @return NodeVisitor[]
 +     */
-+    protected function getVisitorsForNode(Node $node)
++    public function getVisitorsForNode(Node $node)
 +    {
 +        return $this->visitors;
      }
