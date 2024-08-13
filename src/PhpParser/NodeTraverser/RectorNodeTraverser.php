@@ -18,7 +18,7 @@ final class RectorNodeTraverser extends NodeTraverser
     /**
      * @var array<class-string<Node>,RectorInterface[]>
      */
-    private array $visitorsPerNodeClass;
+    private array $visitorsPerNodeClass = [];
 
     /**
      * @param RectorInterface[] $rectors
@@ -93,7 +93,6 @@ final class RectorNodeTraverser extends NodeTraverser
 
         // filer out by version
         $this->visitors = $this->phpVersionedFilter->filter($this->rectors);
-        $this->visitorsPerNodeClass = [];
         $this->areNodeVisitorsPrepared = true;
     }
 }
