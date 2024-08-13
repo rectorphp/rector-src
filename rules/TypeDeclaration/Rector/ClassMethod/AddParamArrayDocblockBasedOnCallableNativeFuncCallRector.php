@@ -21,9 +21,6 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
         return new RuleDefinition('Add param array docblock based on callable native function call', [
             new CodeSample(
                 <<<'CODE_SAMPLE'
-/**
- * @param stdClass[] $items
- */
 function process(array $items): void
 {
 	array_walk($items, function (stdClass $item) {
@@ -33,6 +30,9 @@ function process(array $items): void
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
+/**
+ * @param stdClass[] $items
+ */
 function process(array $items): void
 {
 	array_walk($items, function (stdClass $item) {
