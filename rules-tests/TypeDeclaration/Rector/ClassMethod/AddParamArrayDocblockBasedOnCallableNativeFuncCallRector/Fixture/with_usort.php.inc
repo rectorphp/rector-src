@@ -6,9 +6,10 @@ use stdClass;
 
 final class WithUsort
 {
-    public function process(array $items)
+    public function process(array $classes)
     {
-        usort($items, function (stdClass $item) {
+        usort($classes, function (stdClass $stdClass, stdClass $stdClass2): int {
+            return 1;
         });
     }
 }
@@ -24,11 +25,12 @@ use stdClass;
 final class WithUsort
 {
     /**
-     * @param \stdClass[] $items
+     * @param \stdClass[] $classes
      */
-    public function process(array $items)
+    public function process(array $classes)
     {
-        usort($items, function (stdClass $item) {
+        usort($classes, function (stdClass $stdClass, stdClass $stdClass2): int {
+            return 1;
         });
     }
 }

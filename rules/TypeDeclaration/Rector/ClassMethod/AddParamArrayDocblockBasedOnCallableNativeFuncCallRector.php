@@ -173,11 +173,22 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (count($callbackArgValue->params) !== 1) {
+                // no params or more than 2 params
+                if ($callbackArgValue->params === [] || count($callbackArgValue->params) > 2) {
                     return null;
                 }
 
-                // not typed
+                foreach ($callbackArgValue->params as $callbackArgValueParam) {
+                    // not typed
+                    if (! $callbackArgValueParam->type instanceof Node) {
+                        return null;
+                    }
+                }
+
+                if (isset($callbackArgValue->params[1]->type) && ! $this->nodeComparator->areNodesEqual($callbackArgValue->params[0]->type, $callbackArgValue->params[1]->type)) {
+                    return null;
+                }
+
                 if (! $callbackArgValue->params[0]->type instanceof Node) {
                     return null;
                 }
