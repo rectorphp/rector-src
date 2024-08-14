@@ -185,7 +185,10 @@ CODE_SAMPLE
                     }
                 }
 
-                if (isset($callbackArgValue->params[1]->type) && ! $this->nodeComparator->areNodesEqual($callbackArgValue->params[0]->type, $callbackArgValue->params[1]->type)) {
+                if ($callbackArgValue->params[1]->type !== null && ! $this->nodeComparator->areNodesEqual(
+                    $callbackArgValue->params[0]->type,
+                    $callbackArgValue->params[1]->type
+                )) {
                     return null;
                 }
 
