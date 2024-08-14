@@ -84,6 +84,7 @@ CODE_SAMPLE
         if ($variableNamesWithArrayType === []) {
             return null;
         }
+
         $this->traverseNodesWithCallable(
             $node->stmts,
             function (Node $subNode) use ($variableNamesWithArrayType, $phpDocInfo): ?int {
