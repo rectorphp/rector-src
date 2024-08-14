@@ -18,6 +18,7 @@ use PhpParser\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
+use PHPStan\Type\TypeCombinator;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -114,15 +115,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $hasChanged = false;
+        $paramsWithType = [];
         $this->traverseNodesWithCallable(
             $node->stmts,
-            function (Node $subNode) use (
-                $variableNamesWithArrayType,
-                $phpDocInfo,
-                $node,
-                &$hasChanged
-            ): Node|null|int {
+            function (Node $subNode) use ($variableNamesWithArrayType, $node, &$paramsWithType): null|int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
@@ -183,37 +179,57 @@ CODE_SAMPLE
                 }
 
                 $arrayArgValueName = (string) $this->getName($arrayArgValue);
-                $paramToUpdate = null;
-                foreach ($node->params as $param) {
-                    if ($this->isName($param, $arrayArgValueName)) {
-                        $paramToUpdate = $param;
-                        break;
-                    }
-                }
+                $paramToUpdate = $this->getParamByName($node, $arrayArgValueName);
 
                 if (! $paramToUpdate instanceof Param) {
                     return null;
                 }
 
                 $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callbackArgValue->params[0]->type);
-                $this->phpDocTypeChanger->changeParamType(
-                    $node,
-                    $phpDocInfo,
-                    new ArrayType(new MixedType(), $paramType),
-                    $paramToUpdate,
-                    $this->getName($paramToUpdate)
-                );
-                $hasChanged = true;
+                if ($paramType instanceof MixedType) {
+                    return null;
+                }
 
-                return $subNode;
+                $paramsWithType[$this->getName($paramToUpdate)] = array_unique(
+                    array_merge($paramsWithType[$this->getName($paramToUpdate)] ?? [], [$paramType]),
+                    SORT_REGULAR
+                );
+                return null;
             }
         );
+
+        $hasChanged = false;
+        foreach ($paramsWithType as $paramWithType => $type) {
+            $type = count($type) > 1 ? TypeCombinator::union(...$type) : current($type);
+
+            /** @var Param $paramByName */
+            $paramByName = $this->getParamByName($node, key($paramsWithType));
+            $this->phpDocTypeChanger->changeParamType(
+                $node,
+                $phpDocInfo,
+                new ArrayType(new MixedType(), $type),
+                $paramByName,
+                $paramWithType
+            );
+            $hasChanged = true;
+        }
 
         if (! $hasChanged) {
             return null;
         }
 
         return $node;
+    }
+
+    private function getParamByName(ClassMethod|Function_ $node, string $paramName): ?Param
+    {
+        foreach ($node->params as $param) {
+            if ($this->isName($param, $paramName)) {
+                return $param;
+            }
+        }
+
+        return null;
     }
 
     /**
