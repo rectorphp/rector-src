@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblock
 
 final class FunctionArrayMapReturn
 {
-    public function __construct(array $items)
+    public function process(array $items)
     {
         return array_map(function ($item): int {
             return $item;
@@ -23,7 +23,7 @@ final class FunctionArrayMapReturn
     /**
      * @return int[]
      */
-    public function __construct(array $items)
+    public function process(array $items)
     {
         return array_map(function ($item): int {
             return $item;

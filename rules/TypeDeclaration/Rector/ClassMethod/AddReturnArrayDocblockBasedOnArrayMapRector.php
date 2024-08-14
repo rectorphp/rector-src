@@ -12,6 +12,9 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\MixedType;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
+use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -29,7 +32,10 @@ final class AddReturnArrayDocblockBasedOnArrayMapRector extends AbstractRector
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ReturnPhpDocDecorator $returnPhpDocDecorator,
+        //        private readonly ReturnPhpDocDecorator $returnPhpDocDecorator,
+        private readonly TypeFactory $typeFactory,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
     ) {
     }
 
@@ -102,22 +108,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            $funcCall = $returnScoped->expr;
-            if (! $this->isName($funcCall, 'array_map')) {
+            $arrayMapClosure = $this->matchArrayMapClosure($returnScoped->expr);
+            if (! $arrayMapClosure instanceof Closure) {
                 return null;
             }
 
-            if ($funcCall->isFirstClassCallable()) {
-                return null;
-            }
-
-            // lets infer strict array_map() type
-            $firstArg = $funcCall->getArgs()[0];
-            if (! $firstArg->value instanceof Closure) {
-                return null;
-            }
-
-            $arrayMapClosure = $firstArg->value;
             if (! $arrayMapClosure->returnType instanceof Node) {
                 return null;
             }
@@ -125,14 +120,13 @@ CODE_SAMPLE
             $closureReturnTypes[] = $this->staticTypeMapper->mapPhpParserNodePHPStanType($arrayMapClosure->returnType);
         }
 
-        if (count($closureReturnTypes) !== 1) {
-            // sole type for now
-            return null;
-        }
+        $returnType = $this->typeFactory->createMixedPassedOrUnionType($closureReturnTypes);
+        $arrayType = new ArrayType(new MixedType(), $returnType);
 
-        $arrayType = new ArrayType(new MixedType(), $closureReturnTypes[0]);
+        $functionLikePhpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
 
-        if (! $this->returnPhpDocDecorator->decorateWithArray($arrayType, $node)) {
+        $hasChanged = $this->phpDocTypeChanger->changeReturnType($node, $functionLikePhpDocInfo, $arrayType);
+        if ($hasChanged) {
             return null;
         }
 
@@ -146,5 +140,24 @@ CODE_SAMPLE
         }
 
         return $functionLike->returnType->toLowerString() !== 'array';
+    }
+
+    private function matchArrayMapClosure(FuncCall $funcCall): ?Closure
+    {
+        if (! $this->isName($funcCall, 'array_map')) {
+            return null;
+        }
+
+        if ($funcCall->isFirstClassCallable()) {
+            return null;
+        }
+
+        // lets infer strict array_map() type
+        $firstArg = $funcCall->getArgs()[0];
+        if (! $firstArg->value instanceof Closure) {
+            return null;
+        }
+
+        return $firstArg->value;
     }
 }
