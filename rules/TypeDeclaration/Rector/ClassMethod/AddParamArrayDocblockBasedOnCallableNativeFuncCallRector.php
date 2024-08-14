@@ -32,6 +32,20 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends AbstractRector
 {
+    /**
+     * @var array<string, array<string, int>>
+     */
+    private const NATIVE_FUNC_CALLS_WITH_POSITION = [
+        'array_walk' => [
+            'array' => 0,
+            'callback' => 1,
+        ],
+        'array_map' => [
+            'array' => 1,
+            'callback' => 0,
+        ],
+    ];
+
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ArgsAnalyzer $argsAnalyzer,
@@ -113,7 +127,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->isName($subNode, 'array_walk')) {
+                if (! $this->isNames($subNode, array_keys(self::NATIVE_FUNC_CALLS_WITH_POSITION))) {
                     return null;
                 }
 
@@ -130,42 +144,44 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $firstArgValue = $args[0]->value;
-                if (! $firstArgValue instanceof Variable) {
+                $funcCallName = (string) $this->getName($subNode);
+
+                $arrayArgValue = $args[self::NATIVE_FUNC_CALLS_WITH_POSITION[$funcCallName]['array']]->value;
+                if (! $arrayArgValue instanceof Variable) {
                     return null;
                 }
 
                 // defined on param provided
-                if (! $this->isNames($firstArgValue, $variableNamesWithArrayType)) {
+                if (! $this->isNames($arrayArgValue, $variableNamesWithArrayType)) {
                     return null;
                 }
 
-                $firstArgValueType = $this->nodeTypeResolver->getType($firstArgValue);
+                $arrayArgValueType = $this->nodeTypeResolver->getType($arrayArgValue);
 
                 // type changed, eg: by reassign
-                if (! $firstArgValueType->isArray()->yes()) {
+                if (! $arrayArgValueType->isArray()->yes()) {
                     return null;
                 }
 
-                $secondArgValue = $args[1]->value;
+                $callbackArgValue = $args[self::NATIVE_FUNC_CALLS_WITH_POSITION[$funcCallName]['callback']]->value;
 
-                if (! $secondArgValue instanceof ArrowFunction && ! $secondArgValue instanceof Closure) {
+                if (! $callbackArgValue instanceof ArrowFunction && ! $callbackArgValue instanceof Closure) {
                     return null;
                 }
 
-                if (count($secondArgValue->params) !== 1) {
+                if (count($callbackArgValue->params) !== 1) {
                     return null;
                 }
 
                 // not typed
-                if (! $secondArgValue->params[0]->type instanceof Node) {
+                if (! $callbackArgValue->params[0]->type instanceof Node) {
                     return null;
                 }
 
-                $firstArgValueName = (string) $this->getName($firstArgValue);
+                $arrayArgValueName = (string) $this->getName($arrayArgValue);
                 $paramToUpdate = null;
                 foreach ($node->params as $param) {
-                    if ($this->isName($param, $firstArgValueName)) {
+                    if ($this->isName($param, $arrayArgValueName)) {
                         $paramToUpdate = $param;
                         break;
                     }
@@ -175,7 +191,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($secondArgValue->params[0]->type);
+                $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($callbackArgValue->params[0]->type);
                 $this->phpDocTypeChanger->changeParamType(
                     $node,
                     $phpDocInfo,
