@@ -140,7 +140,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                // already typed
+                // not typed
                 if (! $secondArgValue->params[0]->type instanceof Node) {
                     return null;
                 }
