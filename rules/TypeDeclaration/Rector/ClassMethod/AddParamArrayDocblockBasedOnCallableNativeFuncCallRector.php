@@ -5,13 +5,20 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\Comments\NodeDocBlock\DocBlockUpdater;
+use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,7 +29,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends AbstractRector
 {
     public function __construct(
-        private readonly PhpDocInfoFactory $phpDocInfoFactory
+        private readonly PhpDocInfoFactory $phpDocInfoFactory,
+        private readonly DocBlockUpdater $docBlockUpdater,
+        private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
 
@@ -72,23 +81,76 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
-        $variablesWithArrayType = $this->collectVariablesWithArrayType($node, $phpDocInfo);
+        $variableNamesWithArrayType = $this->collectVariableNamesWithArrayType($node, $phpDocInfo);
 
-        if ($variablesWithArrayType === []) {
+        if ($variableNamesWithArrayType === []) {
             return null;
         }
 
-        // process verify and add...
+        $hasChanged = false;
+        $this->traverseNodesWithCallable(
+            $node->stmts,
+            function (Node $subNode) use ($variableNamesWithArrayType, $phpDocInfo) {
+                if ($subNode instanceof Class_ || $subNode instanceof Function_) {
+                    return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
 
+                if (! $subNode instanceof FuncCall) {
+                    return null;
+                }
+
+                if (! $this->isName($subNode, 'array_walk')) {
+                    return null;
+                }
+
+                if ($subNode->isFirstClassCallable()) {
+                    return null;
+                }
+
+                $args = $subNode->getArgs();
+                if ($this->argsAnalyzer->hasNamedArg($args)) {
+                    return null;
+                }
+
+                if (count($args) < 2) {
+                    return null;
+                }
+
+                $secondArgValue = $args[1]->value;
+                if (! $secondArgValue instanceof ArrowFunction && ! $secondArgValue instanceof Closure) {
+                    return null;
+                }
+
+                if (count($secondArgValue->params) !== 1) {
+                    return null;
+                }
+
+                if (! $this->isNames($secondArgValue->params[0], $variableNamesWithArrayType)) {
+                    return null;
+                }
+
+                if (! $secondArgValue[0]->type instanceof Node) {
+                    return null;
+                }
+
+                // process
+                return null;
+            });
+
+        if (! $hasChanged) {
+            return null;
+        }
+
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
         return $node;
     }
 
     /**
-     * @return Variable[]
+     * @return string[]
      */
-    private function collectVariablesWithArrayType(ClassMethod|Function_ $node, PhpDocInfo $phpDocInfo): array
+    private function collectVariableNamesWithArrayType(ClassMethod|Function_ $node, PhpDocInfo $phpDocInfo): array
     {
-        $variablesWithArrayType = [];
+        $variableNamesWithArrayType = [];
 
         foreach ($node->params as $param) {
             if (! $param->type instanceof Identifier) {
@@ -103,14 +165,15 @@ CODE_SAMPLE
                 continue;
             }
 
-            $paramTag = $phpDocInfo->getParamTagValueByName($this->getName($param));
+            $paramName = $this->getName($param);
+            $paramTag = $phpDocInfo->getParamTagValueByName($paramName);
             if (! $paramTag instanceof ParamTagValueNode) {
                 continue;
             }
 
-            $variablesWithArrayType[] = $param->var;
+            $variableNamesWithArrayType[] = $paramName;
         }
 
-        return $variablesWithArrayType;
+        return $variableNamesWithArrayType;
     }
 }
