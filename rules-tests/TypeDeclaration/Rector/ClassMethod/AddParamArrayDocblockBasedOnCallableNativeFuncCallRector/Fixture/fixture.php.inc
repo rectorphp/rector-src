@@ -24,6 +24,9 @@ use stdClass;
 
 final class Fixture
 {
+    /**
+     * @param \stdClass[] $items
+     */
     public function process(array $items): void
     {
         array_walk($items, function (stdClass $item) {
