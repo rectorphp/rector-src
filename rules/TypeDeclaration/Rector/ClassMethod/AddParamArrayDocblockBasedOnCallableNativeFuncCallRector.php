@@ -10,15 +10,20 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\Type\ArrayType;
+use PHPStan\Type\MixedType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
+use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -29,7 +34,9 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly ArgsAnalyzer $argsAnalyzer
+        private readonly ArgsAnalyzer $argsAnalyzer,
+        private readonly PhpDocTypeChanger $phpDocTypeChanger,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -85,9 +92,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         $this->traverseNodesWithCallable(
             $node->stmts,
-            function (Node $subNode) use ($variableNamesWithArrayType, $phpDocInfo): ?int {
+            function (Node $subNode) use (
+                $variableNamesWithArrayType,
+                $phpDocInfo,
+                $node,
+                &$hasChanged
+            ): Node|null|int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
@@ -145,10 +158,37 @@ CODE_SAMPLE
                     return null;
                 }
 
-                // process
-                return null;
-            });
-        return null;
+                $paramToUpdate = null;
+                foreach ($node->params as $param) {
+                    if ($this->isName($param, $this->getName($firstArgValue))) {
+                        $paramToUpdate = $param;
+                        break;
+                    }
+                }
+
+                if (! $paramToUpdate instanceof Param) {
+                    return null;
+                }
+
+                $paramType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($secondArgValue->params[0]->type);
+                $this->phpDocTypeChanger->changeParamType(
+                    $node,
+                    $phpDocInfo,
+                    new ArrayType(new MixedType(), $paramType),
+                    $paramToUpdate,
+                    $this->getName($paramToUpdate)
+                );
+                $hasChanged = true;
+
+                return $subNode;
+            }
+        );
+
+        if (! $hasChanged) {
+            return null;
+        }
+
+        return $node;
     }
 
     /**
