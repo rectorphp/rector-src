@@ -107,6 +107,10 @@ CODE_SAMPLE
                 return null;
             }
 
+            if ($funcCall->isFirstClassCallable()) {
+                return null;
+            }
+
             // lets infer strict array_map() type
             $firstArg = $funcCall->getArgs()[0];
             if (! $firstArg->value instanceof Closure) {
