@@ -4,12 +4,13 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddParamArrayDocblockB
 
 use stdClass;
 
-final class SkipTypedDoc {
-    /**
-     * @param stdClass[] $items
-     */
-    public function process(array $items): void
+final class SkipReAssign {
+    function process(array $items): void
     {
+        $items = new stdClass;
+        $items->one = new stdClass;
+        $items->two = new stdClass;
+
         array_walk($items, function (stdClass $item) {
             echo $item->value;
         });
