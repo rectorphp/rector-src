@@ -91,8 +91,6 @@ CODE_SAMPLE
                 continue;
             }
 
-            // only process on without @param usage for now
-            // as will add instead of update
             $variablesWithArrayType[] = $param->var;
         }
 
