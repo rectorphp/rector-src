@@ -213,7 +213,7 @@ CODE_SAMPLE
 
             $paramName = $this->getName($param);
             $paramTag = $phpDocInfo->getParamTagValueByName($paramName);
-            if (! $paramTag instanceof ParamTagValueNode) {
+            if ($paramTag instanceof ParamTagValueNode) {
                 continue;
             }
 
