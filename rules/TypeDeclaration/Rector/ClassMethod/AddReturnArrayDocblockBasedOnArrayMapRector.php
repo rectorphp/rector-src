@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -31,7 +33,6 @@ final class AddReturnArrayDocblockBasedOnArrayMapRector extends AbstractRector
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ReturnAnalyzer $returnAnalyzer,
         private readonly StaticTypeMapper $staticTypeMapper,
-        //        private readonly ReturnPhpDocDecorator $returnPhpDocDecorator,
         private readonly TypeFactory $typeFactory,
         private readonly PhpDocTypeChanger $phpDocTypeChanger,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
@@ -108,7 +109,7 @@ CODE_SAMPLE
             }
 
             $arrayMapClosure = $this->matchArrayMapClosure($returnScoped->expr);
-            if (! $arrayMapClosure instanceof Closure) {
+            if (! $arrayMapClosure instanceof FunctionLike) {
                 return null;
             }
 
@@ -141,7 +142,7 @@ CODE_SAMPLE
         return $functionLike->returnType->toLowerString() !== 'array';
     }
 
-    private function matchArrayMapClosure(FuncCall $funcCall): ?Closure
+    private function matchArrayMapClosure(FuncCall $funcCall): Closure|ArrowFunction|null
     {
         if (! $this->isName($funcCall, 'array_map')) {
             return null;
@@ -153,7 +154,7 @@ CODE_SAMPLE
 
         // lets infer strict array_map() type
         $firstArg = $funcCall->getArgs()[0];
-        if (! $firstArg->value instanceof Closure) {
+        if (! $firstArg->value instanceof Closure && ! $firstArg->value instanceof ArrowFunction) {
             return null;
         }
 
