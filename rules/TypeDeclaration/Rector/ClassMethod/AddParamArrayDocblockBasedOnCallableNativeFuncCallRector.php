@@ -10,6 +10,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -71,6 +72,22 @@ CODE_SAMPLE
         }
 
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $variablesWithArrayType = $this->collectVariablesWithArrayType($node, $phpDocInfo);
+
+        if ($variablesWithArrayType === []) {
+            return null;
+        }
+
+        // process verify and add...
+
+        return $node;
+    }
+
+    /**
+     * @return Variable[]
+     */
+    private function collectVariablesWithArrayType(ClassMethod|Function_ $node, PhpDocInfo $phpDocInfo): array
+    {
         $variablesWithArrayType = [];
 
         foreach ($node->params as $param) {
@@ -94,10 +111,6 @@ CODE_SAMPLE
             $variablesWithArrayType[] = $param->var;
         }
 
-        if ($variablesWithArrayType === []) {
-            return null;
-        }
-
-        return $node;
+        return $variablesWithArrayType;
     }
 }
