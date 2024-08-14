@@ -17,7 +17,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -30,7 +29,6 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly DocBlockUpdater $docBlockUpdater,
         private readonly ArgsAnalyzer $argsAnalyzer
     ) {
     }
@@ -86,11 +84,9 @@ CODE_SAMPLE
         if ($variableNamesWithArrayType === []) {
             return null;
         }
-
-        $hasChanged = false;
         $this->traverseNodesWithCallable(
             $node->stmts,
-            function (Node $subNode) use ($variableNamesWithArrayType, $phpDocInfo) {
+            function (Node $subNode) use ($variableNamesWithArrayType, $phpDocInfo): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
@@ -129,20 +125,10 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $secondArgValue[0]->type instanceof Node) {
-                    return null;
-                }
-
                 // process
                 return null;
             });
-
-        if (! $hasChanged) {
-            return null;
-        }
-
-        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-        return $node;
+        return null;
     }
 
     /**
