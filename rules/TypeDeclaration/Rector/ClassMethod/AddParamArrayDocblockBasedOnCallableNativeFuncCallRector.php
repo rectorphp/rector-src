@@ -118,7 +118,15 @@ CODE_SAMPLE
                     return null;
                 }
 
+                // defined on param provided
                 if (! $this->isNames($firstArgValue, $variableNamesWithArrayType)) {
+                    return null;
+                }
+
+                $firstArgValueType = $this->nodeTypeResolver->getType($firstArgValue);
+
+                // type changed, eg: by reassign
+                if (! $firstArgValueType->isArray()->yes()) {
                     return null;
                 }
 
@@ -132,6 +140,7 @@ CODE_SAMPLE
                     return null;
                 }
 
+                // already typed
                 if (! $secondArgValue->params[0]->type instanceof Node) {
                     return null;
                 }
