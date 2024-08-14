@@ -113,7 +113,17 @@ CODE_SAMPLE
                     return null;
                 }
 
+                $firstArgValue = $args[0]->value;
+                if (! $firstArgValue instanceof Variable) {
+                    return null;
+                }
+
+                if (! $this->isNames($firstArgValue, $variableNamesWithArrayType)) {
+                    return null;
+                }
+
                 $secondArgValue = $args[1]->value;
+
                 if (! $secondArgValue instanceof ArrowFunction && ! $secondArgValue instanceof Closure) {
                     return null;
                 }
@@ -122,7 +132,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                if (! $this->isNames($secondArgValue->params[0], $variableNamesWithArrayType)) {
+                if (! $secondArgValue->params[0]->type instanceof Node) {
                     return null;
                 }
 
