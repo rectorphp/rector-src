@@ -44,6 +44,10 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
             'array' => 1,
             'callback' => 0,
         ],
+        'usort' => [
+            'array' => 0,
+            'callback' => 1,
+        ],
     ];
 
     public function __construct(
