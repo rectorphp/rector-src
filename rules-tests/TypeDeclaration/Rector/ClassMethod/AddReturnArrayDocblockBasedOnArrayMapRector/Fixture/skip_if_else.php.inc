@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblock
 
 final class SkipIfElse
 {
-    public function __construct(array $items)
+    public function go(array $items)
     {
         if (rand(0, 1)) {
             return array_map(function ($item): int {

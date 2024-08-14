@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\AddReturnArrayDocblock
 
 final class SkipFirstClassCallable
 {
-    public function __construct(array $items)
+    public function run(array $items)
     {
         return array_map(...);
     }
