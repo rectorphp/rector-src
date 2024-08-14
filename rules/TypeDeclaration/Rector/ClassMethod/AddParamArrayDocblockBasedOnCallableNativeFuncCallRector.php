@@ -199,17 +199,17 @@ CODE_SAMPLE
         );
 
         $hasChanged = false;
-        foreach ($paramsWithType as $paramWithType => $type) {
+        foreach ($paramsWithType as $paramName => $type) {
             $type = count($type) > 1 ? TypeCombinator::union(...$type) : current($type);
 
             /** @var Param $paramByName */
-            $paramByName = $this->getParamByName($node, key($paramsWithType));
+            $paramByName = $this->getParamByName($node, $paramName);
             $this->phpDocTypeChanger->changeParamType(
                 $node,
                 $phpDocInfo,
                 new ArrayType(new MixedType(), $type),
                 $paramByName,
-                $paramWithType
+                $paramName
             );
             $hasChanged = true;
         }
