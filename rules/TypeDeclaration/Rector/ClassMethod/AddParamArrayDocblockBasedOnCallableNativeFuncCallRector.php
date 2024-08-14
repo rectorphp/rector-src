@@ -85,6 +85,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->stmts === null) {
+            return null;
+        }
+
         $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
         $variableNamesWithArrayType = $this->collectVariableNamesWithArrayType($node, $phpDocInfo);
 
@@ -158,9 +162,10 @@ CODE_SAMPLE
                     return null;
                 }
 
+                $firstArgValueName = (string) $this->getName($firstArgValue);
                 $paramToUpdate = null;
                 foreach ($node->params as $param) {
-                    if ($this->isName($param, $this->getName($firstArgValue))) {
+                    if ($this->isName($param, $firstArgValueName)) {
                         $paramToUpdate = $param;
                         break;
                     }
