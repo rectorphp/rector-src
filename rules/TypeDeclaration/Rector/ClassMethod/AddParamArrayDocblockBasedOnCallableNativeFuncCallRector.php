@@ -49,6 +49,10 @@ final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends Abs
             'array' => 0,
             'callback' => 1,
         ],
+        'array_filter' => [
+            'array' => 0,
+            'callback' => 1,
+        ],
     ];
 
     public function __construct(
@@ -156,7 +160,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $arrayArgValueType = $this->nodeTypeResolver->getType($arrayArgValue);
+                $arrayArgValueType = $this->nodeTypeResolver->getNativeType($arrayArgValue);
 
                 // type changed, eg: by reassign
                 if (! $arrayArgValueType->isArray()->yes()) {
