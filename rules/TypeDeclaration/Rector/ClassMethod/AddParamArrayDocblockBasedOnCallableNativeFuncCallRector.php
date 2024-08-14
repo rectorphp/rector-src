@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Rector\TypeDeclaration\Rector\ClassMethod;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -16,6 +20,11 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class AddParamArrayDocblockBasedOnCallableNativeFuncCallRector extends AbstractRector
 {
+    public function __construct(
+        private readonly PhpDocInfoFactory $phpDocInfoFactory
+    ) {
+    }
+
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Add param array docblock based on callable native function call', [
@@ -52,8 +61,45 @@ CODE_SAMPLE
         return [ClassMethod::class, Function_::class];
     }
 
-    public function refactor(): null|ClassMethod|Function_
+    /**
+     * @param ClassMethod|Function_ $node
+     */
+    public function refactor(Node $node): null|ClassMethod|Function_
     {
-        return null;
+        if ($node->params === []) {
+            return null;
+        }
+
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        $variablesWithArrayType = [];
+
+        foreach ($node->params as $param) {
+            if (! $param->type instanceof Identifier) {
+                continue;
+            }
+
+            if ($param->type->toString() !== 'array') {
+                continue;
+            }
+
+            if (! $param->var instanceof Variable) {
+                continue;
+            }
+
+            $paramTag = $phpDocInfo->getParamTagValueByName($this->getName($param));
+            if (! $paramTag instanceof ParamTagValueNode) {
+                continue;
+            }
+
+            // only process on without @param usage for now
+            // as will add instead of update
+            $variablesWithArrayType[] = $param->var;
+        }
+
+        if ($variablesWithArrayType === []) {
+            return null;
+        }
+
+        return $node;
     }
 }
