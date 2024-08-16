@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Rector\PostRector\Rector;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\NodeTraverser;
 use Rector\CodingStyle\Application\UseImportsAdder;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
@@ -66,6 +68,11 @@ final class UseAddingPostRector extends AbstractPostRector
             $functionUseImportTypes,
             $rootNode
         );
+    }
+
+    public function enterNode(Node $node): int
+    {
+        return NodeTraverser::STOP_TRAVERSAL;
     }
 
     /**
