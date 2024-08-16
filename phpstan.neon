@@ -297,5 +297,5 @@ parameters:
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
         # deprecated
-        - '#Property Rector\\TypeDeclaration\\Rector\\ClassMethod\\ReturnTypeFromStrictScalarReturnExprRector\:\:\$hardCodedOnly is never read, only written#'
+        - '#Register "Rector\\Php71\\Rector\\ClassConst\\PublicConstantVisibilityRector" service to "php71\.php" config set#'
         - '#Public method "Rector\\ValueObject\\Error\\SystemError\:\:getFile\(\)" is never used#'
