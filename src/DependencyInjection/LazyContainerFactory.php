@@ -80,6 +80,7 @@ use Rector\NodeTypeResolver\DependencyInjection\PHPStanServicesFactory;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\CastTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver;
+use Rector\NodeTypeResolver\NodeTypeResolver\ClassConstFetchTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ClassMethodOrClassConstTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\NameTypeResolver;
@@ -345,6 +346,7 @@ final class LazyContainerFactory
         NewTypeResolver::class,
         ParamTypeResolver::class,
         PropertyFetchTypeResolver::class,
+        ClassConstFetchTypeResolver::class,
         PropertyTypeResolver::class,
         ScalarTypeResolver::class,
         TraitTypeResolver::class,
