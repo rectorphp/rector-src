@@ -38,6 +38,10 @@ final class ClassConstFetchTypeResolver implements NodeTypeResolverInterface
             return new MixedType();
         }
 
+        if ($node->class instanceof FullyQualified) {
+            return $scope->getType($node);
+        }
+
         if ($node->class instanceof Name && $node->class->hasAttribute(AttributeKey::NAMESPACED_NAME)) {
             $newNode = clone $node;
             $newNode->class = new FullyQualified($node->class->getAttribute(AttributeKey::NAMESPACED_NAME));
