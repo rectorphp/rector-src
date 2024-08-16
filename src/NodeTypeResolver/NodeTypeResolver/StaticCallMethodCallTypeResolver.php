@@ -75,7 +75,7 @@ final class StaticCallMethodCallTypeResolver implements NodeTypeResolverInterfac
         }
 
         if ($callerType instanceof AliasedObjectType) {
-            $callerType = new FullyQualifiedObjectType ($callerType->getFullyQualifiedName());
+            $callerType = new FullyQualifiedObjectType($callerType->getFullyQualifiedName());
         }
 
         foreach ($callerType->getObjectClassReflections() as $objectClassReflection) {
