@@ -16,7 +16,7 @@ use Rector\NodeTypeResolver\Contract\NodeTypeResolverInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
- * @implements NodeTypeResolverInterface<Identifier>
+ * @implements NodeTypeResolverInterface<ClassConstFetch>
  */
 final class ClassConstFetchTypeResolver implements NodeTypeResolverInterface
 {
