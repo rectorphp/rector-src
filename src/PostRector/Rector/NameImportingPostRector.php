@@ -20,6 +20,11 @@ use Rector\PostRector\Guard\AddUseStatementGuard;
 
 final class NameImportingPostRector extends AbstractPostRector
 {
+    /**
+     * @var array<Use_|GroupUse>
+     */
+    private array $currentUses;
+
     public function __construct(
         private readonly NameImporter $nameImporter,
         private readonly ClassNameImportSkipper $classNameImportSkipper,
@@ -27,6 +32,12 @@ final class NameImportingPostRector extends AbstractPostRector
         private readonly AliasNameResolver $aliasNameResolver,
         private readonly AddUseStatementGuard $addUseStatementGuard
     ) {
+    }
+
+    public function beforeTraverse(array $nodes)
+    {
+        $this->currentUses = $this->useImportsResolver->resolve();
+        return $nodes;
     }
 
     public function enterNode(Node $node): Node|int|null
@@ -39,13 +50,12 @@ final class NameImportingPostRector extends AbstractPostRector
             return null;
         }
 
-        $currentUses = $this->useImportsResolver->resolve();
-        if ($this->classNameImportSkipper->shouldSkipName($node, $currentUses)) {
+        if ($this->classNameImportSkipper->shouldSkipName($node, $this->currentUses)) {
             return null;
         }
 
         // make use of existing use import
-        $nameInUse = $this->resolveNameInUse($node, $currentUses);
+        $nameInUse = $this->resolveNameInUse($node);
         if ($nameInUse instanceof Name) {
             $nameInUse->setAttribute(AttributeKey::NAMESPACED_NAME, $node->toString());
             return $nameInUse;
@@ -62,12 +72,9 @@ final class NameImportingPostRector extends AbstractPostRector
         return $this->addUseStatementGuard->shouldTraverse($stmts, $this->getFile()->getFilePath());
     }
 
-    /**
-     * @param array<Use_|GroupUse> $currentUses
-     */
-    private function resolveNameInUse(FullyQualified $fullyQualified, array $currentUses): null|Name
+    private function resolveNameInUse(FullyQualified $fullyQualified): null|Name
     {
-        $aliasName = $this->aliasNameResolver->resolveByName($fullyQualified, $currentUses);
+        $aliasName = $this->aliasNameResolver->resolveByName($fullyQualified, $this->currentUses);
         if (is_string($aliasName)) {
             return new Name($aliasName);
         }
@@ -77,7 +84,7 @@ final class NameImportingPostRector extends AbstractPostRector
         }
 
         $lastName = $fullyQualified->getLast();
-        foreach ($currentUses as $currentUse) {
+        foreach ($this->currentUses as $currentUse) {
             foreach ($currentUse->uses as $useUse) {
                 if ($useUse->name->getLast() !== $lastName) {
                     continue;
