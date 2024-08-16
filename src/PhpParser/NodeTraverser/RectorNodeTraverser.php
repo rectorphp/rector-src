@@ -70,7 +70,7 @@ final class RectorNodeTraverser extends NodeTraverser
                 foreach ($visitor->getNodeTypes() as $nodeType) {
                     if (is_a($nodeClass, $nodeType, true)) {
                         $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
-                        break;
+                        continue 2;
                     }
                 }
             }
