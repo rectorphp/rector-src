@@ -72,6 +72,14 @@ final class UseAddingPostRector extends AbstractPostRector
 
     public function enterNode(Node $node): int
     {
+        /**
+         * We stop the traversal because all the work has already been done in the beforeTraverse() function
+         *
+         * Using STOP_TRAVERSAL is usually dangerous as it will stop the processing of all your nodes for all visitors
+         * but since the PostFileProcessor is using direct new NodeTraverser() and traverse() for only a single
+         * visitor per execution, using stop traversal here is safe,
+         * ref https://github.com/rectorphp/rector-src/blob/fc1e742fa4d9861ccdc5933f3b53613b8223438d/src/PostRector/Application/PostFileProcessor.php#L59-L61
+         */
         return NodeTraverser::STOP_TRAVERSAL;
     }
 
