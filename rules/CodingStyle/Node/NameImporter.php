@@ -40,11 +40,6 @@ final readonly class NameImporter
 
     private function shouldSkipName(FullyQualified $fullyQualified): bool
     {
-        $virtualNode = (bool) $fullyQualified->getAttribute(AttributeKey::VIRTUAL_NODE);
-        if ($virtualNode) {
-            return true;
-        }
-
         // is scalar name?
         if (in_array($fullyQualified->toLowerString(), ['true', 'false', 'bool'], true)) {
             return true;

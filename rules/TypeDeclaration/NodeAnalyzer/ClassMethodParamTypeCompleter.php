@@ -62,10 +62,6 @@ final readonly class ClassMethodParamTypeCompleter
                 continue;
             }
 
-            if ($param->type instanceof Name && $param->type->getAttribute(AttributeKey::VIRTUAL_NODE) === true) {
-                continue;
-            }
-
             // update parameter
             $param->type = $phpParserTypeNode;
             $hasChanged = true;
