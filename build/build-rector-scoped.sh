@@ -34,6 +34,7 @@ wget https://github.com/humbug/php-scoper/releases/download/0.18.10/php-scoper.p
 note "Remove PHPStan to avoid duplicating it"
 php "$BUILD_DIRECTORY/bin/add-phpstan-self-replace.php"
 composer remove phpstan/phpstan -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
+composer remove ocramius/package-versions -W --update-no-dev --working-dir "$BUILD_DIRECTORY"
 
 # Work around possible PHP memory limits
 note "Running php-scoper on /bin, /config, /src, /rules and /vendor"
