@@ -95,6 +95,8 @@ jobs:
 
             -   run: cp -a rector-prefixed-downgraded/. remote-repository
 
+            -   run: rm -rf remote-repository/bin/add-phpstan-self-replace.php remote-repository/bin/test-fixture-stats.php
+
             # 7. setup git
             -
                 working-directory: remote-repository
