@@ -23,7 +23,7 @@ final class NameImportingPostRector extends AbstractPostRector
     /**
      * @var array<Use_|GroupUse>
      */
-    private array $currentUses;
+    private array $currentUses = [];
 
     public function __construct(
         private readonly NameImporter $nameImporter,

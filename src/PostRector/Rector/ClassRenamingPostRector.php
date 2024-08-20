@@ -26,7 +26,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
     /**
      * @var array<string, string>
      */
-    private array $oldToNewClasses;
+    private array $oldToNewClasses = [];
 
     public function __construct(
         private readonly ClassRenamer $classRenamer,
@@ -48,7 +48,7 @@ final class ClassRenamingPostRector extends AbstractPostRector
         return $nodes;
     }
 
-    public function enterNode(Node $node): Node|int|null
+    public function enterNode(Node $node): ?Node
     {
         // no longer need post rename
         if (! $node instanceof Name) {
