@@ -9,6 +9,7 @@ $config = new Configuration();
 
 return $config
     ->addPathToScan(__DIR__ . '/build/config', false)
+    ->addPathToScan('bin', false)
     // prepared test tooling
     ->ignoreErrorsOnPackage('phpunit/phpunit', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     // pinned v3.x version
