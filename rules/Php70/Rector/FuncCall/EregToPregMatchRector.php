@@ -22,6 +22,7 @@ use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Webmozart\Assert\Assert;
 
 /**
  * @see \Rector\Tests\Php70\Rector\FuncCall\EregToPregMatchRector\EregToPregMatchRectorTest
@@ -111,7 +112,8 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         $pattern = $this->eregToPcreTransformer->transform($pattern, $this->isCaseInsensitiveFunction($functionName));
 
         $firstArg = $funcCall->getArgs()[0];
-        $firstArg->value = new String_($pattern);
+        Assert($firstArg->value instanceof String_);
+        $firstArg->value->value = $pattern;
     }
 
     private function processVariablePattern(FuncCall $funcCall, Variable $variable, string $functionName): void
