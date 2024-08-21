@@ -200,7 +200,7 @@ CODE_SAMPLE
         $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
 
         if (is_callable($newParameterType)) {
-            $newParameterType = call_user_func($newParameterType, $args);
+            $newParameterType = call_user_func($newParameterType, $args, $this->nodeTypeResolver);
         }
 
         if (! $newParameterType instanceof Type) {

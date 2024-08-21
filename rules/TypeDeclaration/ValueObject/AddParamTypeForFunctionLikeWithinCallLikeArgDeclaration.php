@@ -8,6 +8,7 @@ use Closure;
 use PhpParser\Node\Arg;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Validation\RectorAssert;
 
 /**
@@ -18,7 +19,7 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     /**
      * @param int<0, max>|string $callLikePosition
      * @param int<0, max> $functionLikePosition
-     * @param Type|Closure(Arg[]): ?Type $paramType
+     * @param Type|Closure(Arg[], NodeTypeResolver): ?Type $paramType
      */
     public function __construct(
         private string $className,
@@ -57,7 +58,7 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     }
 
     /**
-     * @return Type|Closure(Arg[]): ?Type
+     * @return Type|Closure(Arg[], NodeTypeResolver): ?Type
      */
     public function getParamType(): Type|Closure
     {
