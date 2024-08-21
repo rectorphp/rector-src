@@ -112,7 +112,7 @@ final class EregToPregMatchRector extends AbstractRector implements MinPhpVersio
         $pattern = $this->eregToPcreTransformer->transform($pattern, $this->isCaseInsensitiveFunction($functionName));
 
         $firstArg = $funcCall->getArgs()[0];
-        Assert($firstArg->value instanceof String_);
+        Assert::isInstanceOf($firstArg->value, String_::class);
         $firstArg->value->value = $pattern;
     }
 
