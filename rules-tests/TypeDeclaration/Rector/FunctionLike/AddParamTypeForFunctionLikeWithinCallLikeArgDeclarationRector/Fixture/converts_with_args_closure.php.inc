@@ -10,6 +10,10 @@ SomeClass::someDynamicCall(AnotherClass::class, function ($object) {
     return $object;
 });
 
+SomeClass::someDynamicCallWithVar('test', function ($object) {
+    return $object;
+});
+
 ?>
 -----
 <?php
@@ -21,6 +25,10 @@ use SomeNamespace\SomeClassForNamed;
 use SomeNamespace\AnotherClass;
 
 SomeClass::someDynamicCall(AnotherClass::class, function (\SomeNamespace\AnotherClass $object) {
+    return $object;
+});
+
+SomeClass::someDynamicCallWithVar('test', function (string $object) {
     return $object;
 });
 
