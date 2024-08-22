@@ -7,6 +7,7 @@ namespace Rector\Php84\Rector\Param;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
@@ -83,7 +84,9 @@ CODE_SAMPLE
         if ($node->type instanceof UnionType) {
             $node->type->types[] = new Name('null');
         } elseif ($node->type instanceof ComplexType) {
-            $node->type = new UnionType([$node->type, new Name('null')]);
+            /** @var IntersectionType $nodeType */
+            $nodeType = $node->type;
+            $node->type = new UnionType([$nodeType, new Name('null')]);
         } else {
             $node->type = new NullableType($node->type);
         }
