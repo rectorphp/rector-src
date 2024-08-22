@@ -11,6 +11,11 @@ use Rector\PhpParser\Node\BetterNodeFinder;
 
 class AddUseStatementGuard
 {
+    /**
+     * @var array<string, bool>
+     */
+    private array $shouldTraverseOnFiles = [];
+
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder
     ) {
@@ -19,8 +24,12 @@ class AddUseStatementGuard
     /**
      * @param Stmt[] $stmts
      */
-    public function shouldTraverse(array $stmts): bool
+    public function shouldTraverse(array $stmts, string $filePath): bool
     {
+        if (isset($this->shouldTraverseOnFiles[$filePath])) {
+            return $this->shouldTraverseOnFiles[$filePath];
+        }
+
         $totalNamespaces = 0;
 
         // just loop the first level stmts to locate namespace to improve performance
@@ -32,10 +41,10 @@ class AddUseStatementGuard
 
             // skip if 2 namespaces are present
             if ($totalNamespaces === 2) {
-                return false;
+                return $this->shouldTraverseOnFiles[$filePath] = false;
             }
         }
 
-        return ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
+        return $this->shouldTraverseOnFiles[$filePath] = ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
     }
 }
