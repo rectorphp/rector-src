@@ -3,7 +3,6 @@
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector\Fixture;
 
 use SomeNamespace\SomeClass;
-use SomeNamespace\SomeClassForNamed;
 use SomeNamespace\AnotherClass;
 
 SomeClass::someCall(AnotherClass::class, function ($object) {
@@ -21,7 +20,6 @@ SomeClass::someOtherCall('test', function ($object) {
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector\Fixture;
 
 use SomeNamespace\SomeClass;
-use SomeNamespace\SomeClassForNamed;
 use SomeNamespace\AnotherClass;
 
 SomeClass::someCall(AnotherClass::class, function (\SomeNamespace\AnotherClass $object) {

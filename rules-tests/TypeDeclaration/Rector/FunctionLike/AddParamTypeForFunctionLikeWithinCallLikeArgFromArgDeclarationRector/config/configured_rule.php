@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector;
 use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration;
@@ -18,14 +15,16 @@ return static function (RectorConfig $rectorConfig): void {
                 'someCall',
                 1,
                 0,
-                0
+                0,
+                true,
             ),
             new AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration(
                 'SomeNamespace\SomeClass',
                 'someOtherCall',
                 1,
                 0,
-                0
+                0,
+                false,
             ),
         ]);
 
