@@ -70,6 +70,15 @@ CODE_SAMPLE
             return null;
         }
 
+        $newNodeType = TypeCombinator::addNull($nodeType);
+        $paramType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newNodeType, TypeKind::PARAM);
+
+        // ensure it process valid Node, otherwise, just return null
+        if ($paramType === null) {
+            return null;
+        }
+
+        // re-use existing node instead of reprint Node that may cause unnecessary FQCN
         if ($node->type instanceof UnionType) {
             $node->type->types[] = new ConstFetch(new Name('null'));
         } else {
