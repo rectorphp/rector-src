@@ -4,7 +4,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFuncti
 
 use SomeNamespace\SomeClass;
 
-SomeClass::someCall('test', fn(int|string $var) => $var);
+SomeClass::someOtherCall('test', fn(int|string $var) => $var);
 
 ?>
 -----
@@ -14,6 +14,6 @@ namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFuncti
 
 use SomeNamespace\SomeClass;
 
-SomeClass::someCall('test', fn(string $var) => $var);
+SomeClass::someOtherCall('test', fn(string $var) => $var);
 
 ?>

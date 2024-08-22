@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\ValueObject;
 
-use Closure;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
 
 /**
@@ -25,6 +23,7 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarat
         private int|string $callLikePosition,
         private int $functionLikePosition,
         private int|string $fromArgPosition,
+        private bool $onlyAcceptClassString,
     ) {
         RectorAssert::className($className);
     }
@@ -55,8 +54,16 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarat
         return $this->functionLikePosition;
     }
 
+    /**
+     * @return int<0, max>|string
+     */
     public function getFromArgPosition(): int|string
     {
         return $this->fromArgPosition;
+    }
+
+    public function onlyAcceptClassString(): bool
+    {
+        return $this->onlyAcceptClassString;
     }
 }

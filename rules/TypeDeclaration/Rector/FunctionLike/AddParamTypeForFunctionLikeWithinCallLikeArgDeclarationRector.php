@@ -14,7 +14,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php\PhpVersionProvider;
@@ -193,10 +192,6 @@ CODE_SAMPLE
         AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
     ): void {
         $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
-
-        if (! $newParameterType instanceof Type) {
-            return;
-        }
 
         // already set → no change
         if ($param->type !== null) {

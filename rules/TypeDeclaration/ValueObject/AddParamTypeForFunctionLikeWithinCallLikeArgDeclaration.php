@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\ValueObject;
 
-use Closure;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Validation\RectorAssert;
@@ -23,7 +22,7 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
         private string $methodName,
         private int|string $callLikePosition,
         private int $functionLikePosition,
-        private Type|Closure $paramType
+        private Type $paramType
     ) {
         RectorAssert::className($className);
     }

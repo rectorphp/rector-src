@@ -15,8 +15,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\StringType;
-use PHPStan\Type\Type;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -54,20 +52,41 @@ final class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector
         return new RuleDefinition('Add param types where needed', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-(new SomeClass)->process(function ($parameter) {});
+$app->extend(SomeClass::class, function ($parameter) {});
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-(new SomeClass)->process(function (string $parameter) {});
+$app->extend(SomeClass::class, function (SomeClass $parameter) {});
 CODE_SAMPLE
                 ,
                 [
-                    new AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration(
+                    new AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration(
                         'SomeClass',
-                        'process',
+                        'extend',
+                        1,
                         0,
                         0,
-                        new StringType()
+                        true,
+                    ),
+                ]
+            ),
+            new ConfiguredCodeSample(
+                <<<'CODE_SAMPLE'
+$app->tag($stringVar, function ($parameter) {});
+CODE_SAMPLE
+                ,
+                <<<'CODE_SAMPLE'
+$app->tag($stringVar, function (string $parameter) {});
+CODE_SAMPLE
+                ,
+                [
+                    new AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration(
+                        'SomeClass',
+                        'tag',
+                        1,
+                        0,
+                        0,
+                        false,
                     ),
                 ]
             ),
@@ -137,18 +156,18 @@ CODE_SAMPLE
 
     private function processFunctionLike(
         CallLike $callLike,
-        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
     ): void {
         if ($callLike->isFirstClassCallable()) {
             return;
         }
 
-        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition())) {
+        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition())) {
             if ($callLike->getArgs() === []) {
                 return;
             }
 
-            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition()] ?? null;
+            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
 
             if (! $arg instanceof Arg) {
                 return;
@@ -160,13 +179,13 @@ CODE_SAMPLE
             }
         } else {
             $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-                $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+                $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
             ): bool {
                 if ($arg->name === null) {
                     return false;
                 }
 
-                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getCallLikePosition();
+                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition();
             });
 
             if ($args === []) {
@@ -181,45 +200,46 @@ CODE_SAMPLE
             return;
         }
 
-        if (! isset($functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()])) {
+        if (! isset($functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFunctionLikePosition()])) {
             return;
         }
 
-        if (($arg = $this->getArg(
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFromArgPosition(),
+        if (! ($arg = $this->getArg(
+            $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFromArgPosition(),
             $callLike->getArgs()
-        )) === null) {
+        )) instanceof Arg) {
             return;
         }
 
         $this->refactorParameter(
-            $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()],
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+            $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFunctionLikePosition()],
             $arg,
+            $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->onlyAcceptClassString()
         );
     }
 
+    /**
+     * @param Arg[] $args
+     */
     private function getArg(int|string $position, array $args): ?Arg
     {
         return $args[$position] ?? null;
     }
 
-    private function refactorParameter(
-        Param $param,
-        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
-        Arg $arg
-    ): void {
+    private function refactorParameter(Param $param, Arg $arg, bool $classStringOnly): void
+    {
         $paramOrigin = $arg->value;
 
-        if (
-            $paramOrigin instanceof ClassConstFetch &&
-            $paramOrigin->name instanceof Identifier &&
-            $paramOrigin->class instanceof Name &&
-            $paramOrigin->name->name === 'class'
-        ) {
+        if ($classStringOnly &&
+        $paramOrigin instanceof ClassConstFetch &&
+        $paramOrigin->name instanceof Identifier &&
+        $paramOrigin->class instanceof Name &&
+        $paramOrigin->name->name === 'class') {
             $newParameterType = new ObjectType($paramOrigin->class->toString());
-        } else {
+        } elseif (! $classStringOnly) {
             $newParameterType = $this->getType($paramOrigin);
+        } else {
+            return;
         }
 
         // already set → no change
