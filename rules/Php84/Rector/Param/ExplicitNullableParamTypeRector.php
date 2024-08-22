@@ -72,6 +72,11 @@ CODE_SAMPLE
             return null;
         }
 
+        // mixed can't be nullable, ref https://3v4l.org/YUkhH/rfc#vgit.master
+        if ($nodeType instanceof \PHPStan\Type\MixedType) {
+            return null;
+        }
+
         $newNodeType = TypeCombinator::addNull($nodeType);
         $paramType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newNodeType, TypeKind::PARAM);
 
