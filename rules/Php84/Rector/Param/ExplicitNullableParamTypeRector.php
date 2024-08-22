@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Param;
 
+use PHPStan\Type\MixedType;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ConstFetch;
@@ -73,7 +74,7 @@ CODE_SAMPLE
         }
 
         // mixed can't be nullable, ref https://3v4l.org/YUkhH/rfc#vgit.master
-        if ($nodeType instanceof \PHPStan\Type\MixedType) {
+        if ($nodeType instanceof MixedType) {
             return null;
         }
 
