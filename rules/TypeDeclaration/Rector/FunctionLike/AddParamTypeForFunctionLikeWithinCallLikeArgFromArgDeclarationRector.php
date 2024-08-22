@@ -7,33 +7,36 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\StringType;
 use PHPStan\Type\Type;
+use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration;
+use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration;
 use Rector\ValueObject\PhpVersionFeature;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRectorTest
  */
-final class AddParamTypeForFunctionLikeWithinCallLikeArgDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration[]
+     * @var AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration[]
      */
     private array $addParamTypeForFunctionLikeParamDeclarations = [];
 
@@ -127,14 +130,14 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration::class);
+        Assert::allIsAOf($configuration, AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration::class);
 
         $this->addParamTypeForFunctionLikeParamDeclarations = $configuration;
     }
 
     private function processFunctionLike(
         CallLike $callLike,
-        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
     ): void {
         if ($callLike->isFirstClassCallable()) {
             return;
@@ -182,20 +185,41 @@ CODE_SAMPLE
             return;
         }
 
+        if (($arg = $this->getArg(
+            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFromArgPosition(),
+            $callLike->getArgs()
+        )) === null) {
+            return;
+        }
+
         $this->refactorParameter(
             $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()],
             $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+            $arg,
         );
+    }
+
+    private function getArg(int|string $position, array $args): ?Arg
+    {
+        return $args[$position] ?? null;
     }
 
     private function refactorParameter(
         Param $param,
-        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
+        Arg $arg
     ): void {
-        $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
+        $paramOrigin = $arg->value;
 
-        if (! $newParameterType instanceof Type) {
-            return;
+        if (
+            $paramOrigin instanceof ClassConstFetch &&
+            $paramOrigin->name instanceof Identifier &&
+            $paramOrigin->class instanceof Name &&
+            $paramOrigin->name->name === 'class'
+        ) {
+            $newParameterType = new ObjectType($paramOrigin->class->toString());
+        } else {
+            $newParameterType = $this->getType($paramOrigin);
         }
 
         // already set → no change

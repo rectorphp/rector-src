@@ -12,18 +12,19 @@ use Rector\Validation\RectorAssert;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRectorTest
  */
-final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
 {
     /**
      * @param int<0, max>|string $callLikePosition
      * @param int<0, max> $functionLikePosition
+     * @param int<0, max>|string $fromArgPosition
      */
     public function __construct(
         private string $className,
         private string $methodName,
         private int|string $callLikePosition,
         private int $functionLikePosition,
-        private Type|Closure $paramType
+        private int|string $fromArgPosition,
     ) {
         RectorAssert::className($className);
     }
@@ -54,8 +55,8 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration
         return $this->functionLikePosition;
     }
 
-    public function getParamType(): Type
+    public function getFromArgPosition(): int|string
     {
-        return $this->paramType;
+        return $this->fromArgPosition;
     }
 }
