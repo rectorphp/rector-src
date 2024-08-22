@@ -50,6 +50,10 @@ jobs:
                         run: php bin/validate-phpstan-version.php
 
                     -
+                        name: 'Finalize classes'
+                        run: vendor/bin/swiss-knife finalize-classes src tests
+
+                    -
                         name: 'Detect composer dependency issues'
                         run: vendor/bin/composer-dependency-analyser
 

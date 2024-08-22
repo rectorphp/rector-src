@@ -4,7 +4,7 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver
 
 use Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\PropertyTypeResolver\Source\SomeChild;
 
-class ActionClass
+final class ActionClass
 {
     /**
      * @var SomeChild|null

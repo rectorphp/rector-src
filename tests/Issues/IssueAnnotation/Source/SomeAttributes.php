@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\IssueAnnotation\Source;
 
-class SomeAttributes
+final class SomeAttributes
 {
     public function __construct(array $tags)
     {

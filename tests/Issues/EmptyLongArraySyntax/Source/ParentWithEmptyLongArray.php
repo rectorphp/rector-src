@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\EmptyLongArraySyntax\Source;
 
-class ParentWithEmptyLongArray
+final class ParentWithEmptyLongArray
 {
     public function run($default = array())
     {

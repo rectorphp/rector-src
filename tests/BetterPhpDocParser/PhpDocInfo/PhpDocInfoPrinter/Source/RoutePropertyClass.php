@@ -6,7 +6,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocInfo\PhpDocInfoPrinter\Source;
 
 use Symfony\Component\Routing\Annotation\Route;
 
-class RoutePropertyClass
+final class RoutePropertyClass
 {
     /**
      * @Route(

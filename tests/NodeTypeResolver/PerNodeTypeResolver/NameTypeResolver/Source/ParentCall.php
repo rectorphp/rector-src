@@ -4,7 +4,7 @@ namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NameTypeResolver\Sou
 
 use Rector\Tests\NodeTypeResolver\Source\AnotherClass;
 
-class ParentCall extends AnotherClass
+final class ParentCall extends AnotherClass
 {
     public function getParameters()
     {

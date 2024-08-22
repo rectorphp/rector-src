@@ -2,6 +2,6 @@
 
 namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\ClassAnnotationMatcher\Source;
 
-class KnownClass
+final class KnownClass
 {
 }
