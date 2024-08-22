@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use Rector\PhpParser\Node\BetterNodeFinder;
 
-class AddUseStatementGuard
+final class AddUseStatementGuard
 {
     /**
      * @var array<string, bool>
@@ -45,6 +45,9 @@ class AddUseStatementGuard
             }
         }
 
-        return $this->shouldTraverseOnFiles[$filePath] = ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
+        return $this->shouldTraverseOnFiles[$filePath] = ! $this->betterNodeFinder->hasInstancesOf(
+            $stmts,
+            [InlineHTML::class]
+        );
     }
 }

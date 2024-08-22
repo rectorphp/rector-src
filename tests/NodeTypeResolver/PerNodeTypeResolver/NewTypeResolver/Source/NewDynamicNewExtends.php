@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\NodeTypeResolver\PerNodeTypeResolver\NewTypeResolver\Source;
 
-class NewDynamicNewExtends
+final class NewDynamicNewExtends
 {
     public function run()
     {

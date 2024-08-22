@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\Issue7099\Source;
 
-class Document
+final class Document
 {
 
 }

@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Issues\AutoImport\Source;
 
-class stdClass
+final class stdClass
 {
 }

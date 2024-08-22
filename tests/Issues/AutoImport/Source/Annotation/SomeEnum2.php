@@ -10,7 +10,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @Annotation
  * @Target({"METHOD"})
  */
-class SomeEnum2
+final class SomeEnum2
 {
 
 }

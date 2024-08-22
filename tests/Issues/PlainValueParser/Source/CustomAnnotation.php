@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\PlainValueParser\Source;
 
-class CustomAnnotation
+final class CustomAnnotation
 {
     public function __construct(public string $description)
     {

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\ReplaceStmtToExpr\Source;
 
-class SomeUser
+final class SomeUser
 {
 
 }

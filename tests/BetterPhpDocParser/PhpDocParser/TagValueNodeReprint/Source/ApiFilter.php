@@ -8,7 +8,7 @@ namespace Rector\Tests\BetterPhpDocParser\PhpDocParser\TagValueNodeReprint\Sourc
  * @Annotation
  * @Target({"PROPERTY", "CLASS"})
  */
-class ApiFilter
+final class ApiFilter
 {
     public function __construct($options = [])
     {

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Issues\DeadInstanceFlip\Source;
 
-class SomeEvent
+final class SomeEvent
 {
     public function getSomeType(): SomeEventType
     {
