@@ -74,7 +74,7 @@ CODE_SAMPLE
         $paramType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newNodeType, TypeKind::PARAM);
 
         // ensure it process valid Node, otherwise, just return null
-        if ($paramType === null) {
+        if (! $paramType instanceof Node) {
             return null;
         }
 
