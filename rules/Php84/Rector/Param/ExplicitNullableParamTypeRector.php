@@ -6,7 +6,10 @@ namespace Rector\Php84\Rector\Param;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\UnionType;
 use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -67,8 +70,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $newNodeType = TypeCombinator::addNull($nodeType);
-        $node->type = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($newNodeType, TypeKind::PARAM);
+        if ($node->type instanceof UnionType) {
+            $node->type->types[] = new ConstFetch(new Name('null'));
+        } else {
+            $node->type = new NullableType($node->type);
+        }
 
         return $node;
     }
