@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Php84\Rector\Param;
 
 use PhpParser\Node;
+use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
@@ -80,7 +81,9 @@ CODE_SAMPLE
 
         // re-use existing node instead of reprint Node that may cause unnecessary FQCN
         if ($node->type instanceof UnionType) {
-            $node->type->types[] = new ConstFetch(new Name('null'));
+            $node->type->types[] = new Name('null');
+        } elseif ($node->type instanceof ComplexType) {
+            $node->type = new UnionType([$node->type, new Name('null')]);
         } else {
             $node->type = new NullableType($node->type);
         }
