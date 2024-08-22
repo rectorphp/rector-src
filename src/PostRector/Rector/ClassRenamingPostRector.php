@@ -23,6 +23,11 @@ final class ClassRenamingPostRector extends AbstractPostRector
 {
     private FileWithoutNamespace|Namespace_|null $rootNode = null;
 
+    /**
+     * @var array<string, string>
+     */
+    private array $oldToNewClasses = [];
+
     public function __construct(
         private readonly ClassRenamer $classRenamer,
         private readonly RenamedClassesDataCollector $renamedClassesDataCollector,
@@ -50,18 +55,13 @@ final class ClassRenamingPostRector extends AbstractPostRector
             return null;
         }
 
-        $oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
-        if ($oldToNewClasses === []) {
-            return null;
-        }
-
         /** @var Scope|null $scope */
         $scope = $node->getAttribute(AttributeKey::SCOPE);
 
         if ($node instanceof FullyQualified) {
-            $result = $this->classRenamer->renameNode($node, $oldToNewClasses, $scope);
+            $result = $this->classRenamer->renameNode($node, $this->oldToNewClasses, $scope);
         } else {
-            $result = $this->resolveResultWithPhpAttributeName($node, $oldToNewClasses, $scope);
+            $result = $this->resolveResultWithPhpAttributeName($node, $scope);
         }
 
         if (! SimpleParameterProvider::provideBoolParameter(Option::AUTO_IMPORT_NAMES)) {
@@ -88,19 +88,20 @@ final class ClassRenamingPostRector extends AbstractPostRector
         return $nodes;
     }
 
-    /**
-     * @param array<string, string> $oldToNewClasses
-     */
-    private function resolveResultWithPhpAttributeName(
-        Name $name,
-        array $oldToNewClasses,
-        ?Scope $scope
-    ): ?FullyQualified {
+    public function shouldTraverse(array $stmts): bool
+    {
+        $this->oldToNewClasses = $this->renamedClassesDataCollector->getOldToNewClasses();
+
+        return $this->oldToNewClasses !== [];
+    }
+
+    private function resolveResultWithPhpAttributeName(Name $name, ?Scope $scope): ?FullyQualified
+    {
         $phpAttributeName = $name->getAttribute(AttributeKey::PHP_ATTRIBUTE_NAME);
         if (is_string($phpAttributeName)) {
             return $this->classRenamer->renameNode(
                 new FullyQualified($phpAttributeName, $name->getAttributes()),
-                $oldToNewClasses,
+                $this->oldToNewClasses,
                 $scope
             );
         }
