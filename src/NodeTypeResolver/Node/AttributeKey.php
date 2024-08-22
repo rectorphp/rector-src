@@ -18,11 +18,6 @@ final class AttributeKey
     public const RAW_VALUE = 'rawValue';
 
     /**
-     * @var string
-     */
-    public const VIRTUAL_NODE = 'virtual_node';
-
-    /**
      * @see Scope
      * @var string
      */

@@ -55,7 +55,6 @@ expectedArguments(
     \Rector\NodeTypeResolver\Node\AttributeKey::IS_REGULAR_PATTERN,
     \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NAME,
     \Rector\NodeTypeResolver\Node\AttributeKey::COMMENTS,
-    \Rector\NodeTypeResolver\Node\AttributeKey::VIRTUAL_NODE,
     \Rector\NodeTypeResolver\Node\AttributeKey::RAW_VALUE,
 );
 
@@ -71,6 +70,5 @@ expectedArguments(
     \Rector\NodeTypeResolver\Node\AttributeKey::IS_REGULAR_PATTERN,
     \Rector\NodeTypeResolver\Node\AttributeKey::ORIGINAL_NAME,
     \Rector\NodeTypeResolver\Node\AttributeKey::COMMENTS,
-    \Rector\NodeTypeResolver\Node\AttributeKey::VIRTUAL_NODE,
     \Rector\NodeTypeResolver\Node\AttributeKey::RAW_VALUE,
 );
