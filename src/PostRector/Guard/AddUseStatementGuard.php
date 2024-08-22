@@ -45,6 +45,9 @@ class AddUseStatementGuard
             }
         }
 
-        return $this->shouldTraverseOnFiles[$filePath] = ! $this->betterNodeFinder->hasInstancesOf($stmts, [InlineHTML::class]);
+        return $this->shouldTraverseOnFiles[$filePath] = ! $this->betterNodeFinder->hasInstancesOf(
+            $stmts,
+            [InlineHTML::class]
+        );
     }
 }
