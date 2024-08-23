@@ -258,7 +258,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         $configurationFactory = $this->make(ConfigurationFactory::class);
         $configuration = $configurationFactory->createForTests([$filePath]);
 
-        $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration);
+        $processResult = $this->applicationFileProcessor->processFiles([$filePath], $configuration, []);
 
         // return changed file contents
         $changedFileContents = FileSystem::read($filePath);

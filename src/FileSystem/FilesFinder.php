@@ -70,9 +70,16 @@ final readonly class FilesFinder
         // filtering files in directories collection
         $directories = $this->fileAndDirectoryFilter->filterDirectories($filesAndDirectories);
         $filteredFilePathsInDirectories = $this->findInDirectories($directories, $suffixes, $sortByName);
+        return [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
+    }
 
-        $filePaths = [...$filteredFilePaths, ...$filteredFilePathsInDirectories];
-        return $this->unchangedFilesFilter->filterFilePaths($filePaths);
+    /**
+     * @param string[] $allFiles
+     * @return string[]
+     */
+    public function filterUnchangedFiles(array $allFiles): array
+    {
+        return $this->unchangedFilesFilter->filterFilePaths($allFiles);
     }
 
     /**

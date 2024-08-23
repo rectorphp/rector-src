@@ -139,6 +139,7 @@ final class WorkerCommand extends Command
             $processResult = $this->applicationFileProcessor->processFiles(
                 $filePaths,
                 $configuration,
+                null,
                 $preFileCallback
             );
 

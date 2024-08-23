@@ -83,26 +83,14 @@ final class ChangedFilesDetector
         $this->storeConfigurationDataHash($filePath, $configHash);
     }
 
-    private function resolvePath(string $filePath): string
-    {
-        /** @var string|false $realPath */
-        $realPath = realpath($filePath);
-
-        if ($realPath === false) {
-            return $filePath;
-        }
-
-        return $realPath;
-    }
-
     private function getFilePathCacheKey(string $filePath): string
     {
-        return $this->fileHasher->hash($this->resolvePath($filePath));
+        return $this->fileHasher->hash($this->fileHasher->resolvePath($filePath));
     }
 
     private function hashFile(string $filePath): string
     {
-        return $this->fileHasher->hashFiles([$this->resolvePath($filePath)]);
+        return $this->fileHasher->hashFiles([$this->fileHasher->resolvePath($filePath)]);
     }
 
     private function storeConfigurationDataHash(string $filePath, string $configurationHash): void

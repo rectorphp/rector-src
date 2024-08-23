@@ -6,14 +6,19 @@ namespace Rector\Application;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use PhpParser\Node;
 use PHPStan\AnalysedCodeException;
+use PHPStan\Dependency\DependencyResolver;
 use PHPStan\Parser\ParserErrorsException;
 use Rector\Caching\Detector\ChangedFilesDetector;
+use Rector\Caching\FileDependenciesCache;
 use Rector\ChangesReporting\ValueObjectFactory\ErrorFactory;
 use Rector\ChangesReporting\ValueObjectFactory\FileDiffFactory;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\FileSystem\FilePathHelper;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
+use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\NodeTraverser\RectorNodeTraverser;
 use Rector\PhpParser\Parser\ParserErrors;
 use Rector\PhpParser\Parser\RectorParser;
@@ -47,10 +52,16 @@ final readonly class FileProcessor
         private PostFileProcessor $postFileProcessor,
         private RectorParser $rectorParser,
         private NodeScopeAndMetadataDecorator $nodeScopeAndMetadataDecorator,
+        private DependencyResolver $dependencyResolver,
+        private SimpleCallableNodeTraverser $simpleCallableNodeTraverser,
+        private FileDependenciesCache $fileDependenciesCache,
     ) {
     }
 
-    public function processFile(File $file, Configuration $configuration): FileProcessResult
+    /**
+     * @param array<string,true> $allFiles
+     */
+    public function processFile(File $file, array $allFiles, Configuration $configuration): FileProcessResult
     {
         // 1. parse files to nodes
         $parsingSystemError = $this->parseFileAndDecorateNodes($file);
@@ -58,6 +69,8 @@ final readonly class FileProcessor
             // we cannot process this file as the parsing and type resolving itself went wrong
             return new FileProcessResult([$parsingSystemError], null);
         }
+
+        $this->cacheFileDependencies($file, $allFiles);
 
         $fileHasChanged = false;
         $filePath = $file->getFilePath();
@@ -136,6 +149,32 @@ final readonly class FileProcessor
         }
 
         return null;
+    }
+
+    /**
+     * @param array<string,true> $allFiles
+     */
+    private function cacheFileDependencies(File $file, array $allFiles): void
+    {
+        $fileDependencies = [];
+        $dependencyResolver = $this->dependencyResolver;
+        $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
+            $file->getOldStmts(),
+            static function (Node $node) use ($dependencyResolver, $allFiles, $file, &$fileDependencies): Node {
+                $currentScope = $node->getAttribute(AttributeKey::SCOPE);
+                if ($currentScope !== null) {
+                    $dependencies = $dependencyResolver->resolveDependencies($node, $currentScope);
+                    $fileDependencies = [
+                        ...$fileDependencies,
+                        ...$dependencies->getFileDependencies($file->getFilePath(), $allFiles),
+                    ];
+                }
+
+                return $node;
+            }
+        );
+        $fileDependencies = array_values(array_unique($fileDependencies));
+        $this->fileDependenciesCache->cacheFileDependencies($file->getFilePath(), $fileDependencies);
     }
 
     private function printFile(File $file, Configuration $configuration, string $filePath): void
