@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\Php84\Rector\Param;
 
-use PHPStan\Type\MixedType;
 use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ConstFetch;
@@ -13,6 +12,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\UnionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;

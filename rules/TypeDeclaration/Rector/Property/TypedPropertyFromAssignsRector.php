@@ -18,6 +18,8 @@ use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
+use Rector\Doctrine\CodeQuality\Enum\CollectionMapping;
+use Rector\Doctrine\NodeAnalyzer\AttrinationFinder;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -60,7 +62,8 @@ final class TypedPropertyFromAssignsRector extends AbstractRector implements Min
         private readonly ReflectionResolver $reflectionResolver,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly ValueResolver $valueResolver,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly AttrinationFinder $attrinationFinder
     ) {
     }
 
@@ -129,6 +132,11 @@ CODE_SAMPLE
         foreach ($node->getProperties() as $property) {
             // non-private property can be anything with not inline public configured
             if (! $property->isPrivate() && ! $this->inlinePublic) {
+                continue;
+            }
+
+            // doctrine colleciton is handled in doctrine rules
+            if ($this->attrinationFinder->hasByMany($property, CollectionMapping::TO_MANY_CLASSES)) {
                 continue;
             }
 
