@@ -19,6 +19,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover;
 use Rector\Doctrine\CodeQuality\Enum\CollectionMapping;
+use Rector\Doctrine\Enum\MappingClass;
 use Rector\Doctrine\NodeAnalyzer\AttrinationFinder;
 use Rector\Php74\Guard\MakePropertyTypedGuard;
 use Rector\PhpParser\Node\Value\ValueResolver;
@@ -135,8 +136,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            // doctrine colleciton is handled in doctrine rules
-            if ($this->attrinationFinder->hasByMany($property, CollectionMapping::TO_MANY_CLASSES)) {
+            if ($this->isDoctrineMappedProperty($property)) {
                 continue;
             }
 
@@ -216,5 +216,19 @@ CODE_SAMPLE
         }
 
         return TypeCombinator::addNull($inferredType);
+    }
+
+    /**
+     * Doctrine properties are handled in doctrine rules
+     */
+    private function isDoctrineMappedProperty(Property $property): bool
+    {
+        $mappingClasses = array_merge(
+            CollectionMapping::TO_MANY_CLASSES,
+            CollectionMapping::TO_ONE_CLASSES,
+            [MappingClass::COLUMN]
+        );
+
+        return $this->attrinationFinder->hasByMany($property, $mappingClasses);
     }
 }
