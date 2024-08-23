@@ -1,0 +1,11 @@
+--- src/DependencyTestClass.php	2024-08-20 15:47:24
++++ src/DependencyTestClass.php.fixed	2024-08-20 16:06:10
+@@ -2,7 +2,7 @@
+ 
+ class DependencyTestClass
+ {
+-    public function calledFunction(int $a)
++    public function calledFunction(int $a): int
+     {
+         return $a;
+     }

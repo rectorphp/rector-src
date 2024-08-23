@@ -1,0 +1,89 @@
+# This workflow runs system tests: Use the Rector application from the source
+# checkout to process "fixture" projects in e2e/ directory
+# to see if those can be processed successfully
+name: End to End tests processing dependent files
+
+on:
+    pull_request:
+        branches:
+            - main
+    push:
+        branches:
+            - main
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    end_to_end:
+        runs-on: ubuntu-latest
+        timeout-minutes: 3
+        strategy:
+            fail-fast: false
+            matrix:
+                php_version: ['8.2']
+                directory:
+                    - 'e2e/process-dependent-files'
+
+        name: End to end test processing dependent files - ${{ matrix.directory }}
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php_version }}
+                    coverage: none
+
+            # run in root rector-src
+            -   run: composer install --ansi
+
+            # run in e2e subdir
+            -   run: composer install --ansi
+                working-directory: ${{ matrix.directory }}
+
+            # initial run without cache to start from fresh, should find an issue in the dependency file
+            -   run: php ../e2eTestRunner.php
+                working-directory: ${{ matrix.directory }}
+
+            # running without cache should now provide the same result
+            -   run: php ../e2eTestRunnerWithCache.php
+                working-directory: ${{ matrix.directory }}
+
+            # we modify the dependency file where rector found some issues
+            -   run: patch -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
+                working-directory: ${{ matrix.directory }}
+
+            # when we run rector now, it should find the issue in the dependent file
+            -   run: php ../e2eTestRunnerWithCache.php --diff expected-output-2.diff
+                working-directory: ${{ matrix.directory }}
+
+            # if we run rector again, it should continue finding the issue in the dependent file
+            -   run: php ../e2eTestRunnerWithCache.php --diff expected-output-2.diff
+                working-directory: ${{ matrix.directory }}
+
+            # we remove the dependent file
+            -   run: mv src/DependentTestClass.php src/DependentTestClass.php.bak
+                working-directory: ${{ matrix.directory }}
+
+            # when we run rector now, it should not find any changes
+            -   run: php ../e2eTestRunnerWithCache.php --diff expected-output-3.diff
+                working-directory: ${{ matrix.directory }}
+
+            # we recover the dependent file
+            -   run: patch -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
+                working-directory: ${{ matrix.directory }}
+
+            # if we run rector again, it should continue finding the issue in the dependent file
+            -   run: php ../e2eTestRunnerWithCache.php --diff expected-output-2.diff
+                working-directory: ${{ matrix.directory }}
+
+            # we undo the changes in the dependency
+            -   run: patch -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
+                working-directory: ${{ matrix.directory }}
+
+            # it should now find the issue in the dependency again and not show the issue in the dependent file
+            -   run: php ../e2eTestRunnerWithCache.php
+                working-directory: ${{ matrix.directory }}
+

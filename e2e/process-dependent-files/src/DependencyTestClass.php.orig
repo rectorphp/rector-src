@@ -1,0 +1,10 @@
+<?php
+//DependencyTestClass.php
+
+class DependencyTestClass
+{
+    public function calledFunction(int $a): int
+    {
+        return $a;
+    }
+}

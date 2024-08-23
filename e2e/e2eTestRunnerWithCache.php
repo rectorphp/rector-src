@@ -24,6 +24,9 @@ $output = trim(implode("\n", $output));
 $output = str_replace(__DIR__, '.', $output);
 
 $expectedDiff = 'expected-output.diff';
+if (isset($argv[1]) && $argv[1] === '--diff') {
+    $expectedDiff = $argv[2];
+}
 if (!file_exists($expectedDiff)) {
     echo $output;
     exit($exitCode);

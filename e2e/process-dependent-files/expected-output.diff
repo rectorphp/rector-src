@@ -1,0 +1,22 @@
+1 file with changes
+===================
+
+1) src/DependencyTestClass.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class DependencyTestClass
+ {
+-    public function calledFunction(int $a)
++    public function calledFunction(int $a): int
+     {
+         return $a;
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * NumericReturnTypeFromStrictReturnsRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector
