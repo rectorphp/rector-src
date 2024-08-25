@@ -56,7 +56,7 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        $hasYieldOrReturnWithExpr = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+        return ! (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $functionLike,
             function (Node $subNode): bool {
                 if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
@@ -66,8 +66,6 @@ final readonly class SilentVoidResolver
                 return $subNode instanceof Return_ && $subNode->expr instanceof Expr;
             }
         );
-
-        return ! $hasYieldOrReturnWithExpr instanceof Node;
     }
 
     public function hasSilentVoid(FunctionLike $functionLike): bool
