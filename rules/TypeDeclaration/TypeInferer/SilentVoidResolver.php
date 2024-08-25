@@ -56,18 +56,16 @@ final readonly class SilentVoidResolver
             return false;
         }
 
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
+        return ! (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
             $functionLike,
-            [Yield_::class, YieldFrom::class]
-        )) {
-            return false;
-        }
+            function (Node $subNode): bool {
+                if ($subNode instanceof Yield_ || $subNode instanceof YieldFrom) {
+                    return true;
+                }
 
-        $return = $this->betterNodeFinder->findFirstInFunctionLikeScoped(
-            $functionLike,
-            static fn (Node $node): bool => $node instanceof Return_ && $node->expr instanceof Expr
+                return $subNode instanceof Return_ && $subNode->expr instanceof Expr;
+            }
         );
-        return ! $return instanceof Return_;
     }
 
     public function hasSilentVoid(FunctionLike $functionLike): bool
