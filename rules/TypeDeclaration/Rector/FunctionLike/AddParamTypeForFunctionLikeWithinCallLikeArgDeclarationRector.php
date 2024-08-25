@@ -99,11 +99,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (($node->name ?? null) === null) {
-                continue;
-            }
-
-            if (! $node->name instanceof Identifier) {
+            if (! ($node->name ?? null) instanceof Identifier) {
                 continue;
             }
 
