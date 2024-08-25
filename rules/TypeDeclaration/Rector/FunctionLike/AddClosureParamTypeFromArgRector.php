@@ -7,34 +7,31 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\Php\PhpVersionProvider;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\ValueObject\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration;
+use Rector\TypeDeclaration\ValueObject\AddClosureParamTypeFromArg;
 use Rector\ValueObject\PhpVersionFeature;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgRector\AddClosureParamTypeFromArgRectorTest
  */
-final class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddClosureParamTypeFromArgRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
-     * @var AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration[]
+     * @var AddClosureParamTypeFromArg[]
      */
     private array $addParamTypeForFunctionLikeParamDeclarations = [];
 
@@ -52,43 +49,14 @@ final class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarationRector
         return new RuleDefinition('Add param types where needed', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
-$app->extend(SomeClass::class, function ($parameter) {});
+$app->extend($string, function ($parameter) {});
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
-$app->extend(SomeClass::class, function (SomeClass $parameter) {});
+$app->extend($string, function (string $parameter) {});
 CODE_SAMPLE
                 ,
-                [
-                    new AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration(
-                        'SomeClass',
-                        'extend',
-                        1,
-                        0,
-                        0,
-                        true,
-                    ),
-                ]
-            ),
-            new ConfiguredCodeSample(
-                <<<'CODE_SAMPLE'
-$app->tag($stringVar, function ($parameter) {});
-CODE_SAMPLE
-                ,
-                <<<'CODE_SAMPLE'
-$app->tag($stringVar, function (string $parameter) {});
-CODE_SAMPLE
-                ,
-                [
-                    new AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration(
-                        'SomeClass',
-                        'tag',
-                        1,
-                        0,
-                        0,
-                        false,
-                    ),
-                ]
+                [new AddClosureParamTypeFromArg('SomeClass', 'extend', 1, 0, 0)]
             ),
         ]);
     }
@@ -149,14 +117,14 @@ CODE_SAMPLE
      */
     public function configure(array $configuration): void
     {
-        Assert::allIsAOf($configuration, AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration::class);
+        Assert::allIsAOf($configuration, AddClosureParamTypeFromArg::class);
 
         $this->addParamTypeForFunctionLikeParamDeclarations = $configuration;
     }
 
     private function processFunctionLike(
         CallLike $callLike,
-        AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
+        AddClosureParamTypeFromArg $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
     ): void {
         if ($callLike->isFirstClassCallable()) {
             return;
@@ -214,7 +182,6 @@ CODE_SAMPLE
         $this->refactorParameter(
             $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFunctionLikePosition()],
             $arg,
-            $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->onlyAcceptClassString()
         );
     }
 
@@ -226,21 +193,10 @@ CODE_SAMPLE
         return $args[$position] ?? null;
     }
 
-    private function refactorParameter(Param $param, Arg $arg, bool $classStringOnly): void
+    private function refactorParameter(Param $param, Arg $arg): void
     {
         $paramOrigin = $arg->value;
-
-        if ($classStringOnly &&
-        $paramOrigin instanceof ClassConstFetch &&
-        $paramOrigin->name instanceof Identifier &&
-        $paramOrigin->class instanceof Name &&
-        $paramOrigin->name->name === 'class') {
-            $newParameterType = new ObjectType($paramOrigin->class->toString());
-        } elseif (! $classStringOnly) {
-            $newParameterType = $this->getType($paramOrigin);
-        } else {
-            return;
-        }
+        $newParameterType = $this->getType($paramOrigin);
 
         // already set → no change
         if ($param->type !== null) {
