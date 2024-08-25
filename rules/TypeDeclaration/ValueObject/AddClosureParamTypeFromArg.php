@@ -8,9 +8,9 @@ use PHPStan\Type\ObjectType;
 use Rector\Validation\RectorAssert;
 
 /**
- * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRector\AddParamTypeForFunctionLikeWithinCallLikeDeclarationRectorTest
+ * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgRector\AddClosureParamTypeFromArgRectorTest
  */
-final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
+final readonly class AddClosureParamTypeFromArg
 {
     /**
      * @param int<0, max>|string $callLikePosition
@@ -23,7 +23,6 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarat
         private int|string $callLikePosition,
         private int $functionLikePosition,
         private int|string $fromArgPosition,
-        private bool $onlyAcceptClassString,
     ) {
         RectorAssert::className($className);
     }
@@ -60,10 +59,5 @@ final readonly class AddParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclarat
     public function getFromArgPosition(): int|string
     {
         return $this->fromArgPosition;
-    }
-
-    public function onlyAcceptClassString(): bool
-    {
-        return $this->onlyAcceptClassString;
     }
 }
