@@ -72,7 +72,7 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             # we recover the dependent file
-            -   run: patch -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
+            -   run: mv src/DependentTestClass.php.bak src/DependentTestClass.php
                 working-directory: ${{ matrix.directory }}
 
             # if we run rector again, it should continue finding the issue in the dependent file
@@ -80,7 +80,7 @@ jobs:
                 working-directory: ${{ matrix.directory }}
 
             # we undo the changes in the dependency
-            -   run: patch -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
+            -   run: patch -R -u src/DependencyTestClass.php -i patches/DependencyTestClass.php.patch
                 working-directory: ${{ matrix.directory }}
 
             # it should now find the issue in the dependency again and not show the issue in the dependent file
