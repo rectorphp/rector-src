@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\Bridge;
 
 use Rector\Config\RectorConfig;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use ReflectionProperty;
 use Webmozart\Assert\Assert;
@@ -16,6 +17,22 @@ use Webmozart\Assert\Assert;
  */
 final class SetRectorsResolver
 {
+    /**
+     * @return array<class-string<RectorInterface>>
+     */
+    public function resolveFromFilePathForPhpLevel(string $configFilePath): array
+    {
+        $rectorClasses = $this->resolveFromFilePath($configFilePath);
+
+        $nonConfigurableRectorClasses = array_filter(
+            $rectorClasses,
+            fn (string $rectorClass): bool => ! is_a($rectorClass, ConfigurableRectorInterface::class, true)
+        );
+
+        // revert to start from the lowest level
+        return array_reverse($nonConfigurableRectorClasses);
+    }
+
     /**
      * @return array<class-string<RectorInterface>>
      */
@@ -34,7 +51,8 @@ final class SetRectorsResolver
         $tags = $tagsReflectionProperty->getValue($rectorConfig);
 
         $rectorClasses = $tags[RectorInterface::class] ?? [];
-        sort($rectorClasses);
+
+        // avoid sorting to keep original natural order for levels
 
         return array_unique($rectorClasses);
     }
