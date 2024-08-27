@@ -6,6 +6,8 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
@@ -140,7 +142,7 @@ CODE_SAMPLE
         }
 
         $functionLike = $arg->value;
-        if (! $functionLike instanceof Node\Expr\Closure && ! $functionLike instanceof Node\Expr\ArrowFunction) {
+        if (! $functionLike instanceof Closure && ! $functionLike instanceof ArrowFunction) {
             return;
         }
 
