@@ -6,14 +6,12 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\CallLike;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
@@ -69,11 +67,12 @@ CODE_SAMPLE
     }
 
     /**
-     * @param CallLike $node
+     * @param MethodCall|StaticCall $node
      */
     public function refactor(Node $node): ?Node
     {
         $this->hasChanged = false;
+
         foreach ($this->addParamTypeForFunctionLikeParamDeclarations as $addParamTypeForFunctionLikeParamDeclaration) {
             if ($node instanceof MethodCall) {
                 $caller = $node->var;
@@ -95,7 +94,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            $this->processFunctionLike($node, $addParamTypeForFunctionLikeParamDeclaration);
+            $this->processCallLike($node, $addParamTypeForFunctionLikeParamDeclaration);
         }
 
         if (! $this->hasChanged) {
@@ -115,8 +114,8 @@ CODE_SAMPLE
         $this->addParamTypeForFunctionLikeParamDeclarations = $configuration;
     }
 
-    private function processFunctionLike(
-        CallLike $callLike,
+    private function processCallLike(
+        MethodCall|StaticCall $callLike,
         AddClosureParamTypeFromArg $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
     ): void {
         if ($callLike->isFirstClassCallable()) {
@@ -171,15 +170,12 @@ CODE_SAMPLE
     {
         $paramOrigin = $arg->value;
 
-        if (
-            $paramOrigin instanceof ClassConstFetch &&
-            $paramOrigin->name instanceof Identifier &&
-            $paramOrigin->class instanceof Name &&
-            $paramOrigin->name->name === 'class') {
-            $objectType = new ObjectType($paramOrigin->class->toString());
-        } else {
+        $argType = $this->nodeTypeResolver->getType($arg->value);
+        if (! $argType instanceof ConstantStringType) {
             return;
         }
+
+        $objectType = new ObjectType($argType->getValue());
 
         // already set → no change
         if ($param->type !== null) {
