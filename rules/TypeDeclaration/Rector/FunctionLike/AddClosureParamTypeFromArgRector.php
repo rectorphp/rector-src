@@ -48,17 +48,19 @@ final class AddClosureParamTypeFromArgRector extends AbstractRector implements C
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Add param types where needed', [
+        return new RuleDefinition('Add closure param type based on known passed service/string types of method calls', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
+$app = new Container();
 $app->extend(SomeClass::class, function ($parameter) {});
 CODE_SAMPLE
                 ,
                 <<<'CODE_SAMPLE'
+$app = new Container();
 $app->extend(SomeClass::class, function (SomeClass $parameter) {});
 CODE_SAMPLE
                 ,
-                [new AddClosureParamTypeFromArg('SomeClass', 'extend', 1, 0, 0)]
+                [new AddClosureParamTypeFromArg('Container', 'extend', 1, 0, 0)]
             ),
         ]);
     }
