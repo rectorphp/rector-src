@@ -12,14 +12,12 @@ final readonly class AddClosureParamTypeFromArg
     /**
      * @param int<0, max> $callLikePosition
      * @param int<0, max> $functionLikePosition
-     * @param int<0, max> $fromArgPosition
      */
     public function __construct(
         private string $className,
         private string $methodName,
         private int $callLikePosition,
         private int $functionLikePosition,
-        private int $fromArgPosition,
     ) {
         RectorAssert::className($className);
     }
@@ -48,13 +46,5 @@ final readonly class AddClosureParamTypeFromArg
     public function getFunctionLikePosition(): int
     {
         return $this->functionLikePosition;
-    }
-
-    /**
-     * @return int<0, max>
-     */
-    public function getFromArgPosition(): int
-    {
-        return $this->fromArgPosition;
     }
 }

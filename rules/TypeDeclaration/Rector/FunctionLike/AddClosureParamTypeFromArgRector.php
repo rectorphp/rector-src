@@ -36,6 +36,11 @@ use Webmozart\Assert\Assert;
 final class AddClosureParamTypeFromArgRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
+     * @var int
+     */
+    private const DEFAULT_CLOSURE_ARG_POSITION = 0;
+
+    /**
      * @var AddClosureParamTypeFromArg[]
      */
     private array $addClosureParamTypeFromArgs = [];
@@ -61,7 +66,7 @@ $app = new Container();
 $app->extend(SomeClass::class, function (SomeClass $parameter) {});
 CODE_SAMPLE
                 ,
-                [new AddClosureParamTypeFromArg('Container', 'extend', 1, 0, 0)]
+                [new AddClosureParamTypeFromArg('Container', 'extend', 1, 0)]
             ),
         ]);
     }
@@ -135,7 +140,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $callLikeArg = $callLike->getArgs()[$addClosureParamTypeFromArg->getFromArgPosition()] ?? null;
+        $callLikeArg = $callLike->getArgs()[self::DEFAULT_CLOSURE_ARG_POSITION] ?? null;
         if (! $callLikeArg instanceof Arg) {
             return null;
         }
