@@ -49,7 +49,8 @@ final class ProcessCommand extends Command
     {
         $this->setName('process');
         $this->setDescription('Upgrades or refactors source code with provided rectors');
-        $this->setHelp(<<<'EOF'
+        $this->setHelp(
+            <<<'EOF'
 The <info>%command.name%</info> command will run Rector main feature:
 
   <info>%command.full_name%</info>
