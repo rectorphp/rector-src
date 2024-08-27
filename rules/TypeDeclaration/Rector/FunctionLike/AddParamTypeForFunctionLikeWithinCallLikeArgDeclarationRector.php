@@ -99,11 +99,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (($node->name ?? null) === null) {
-                continue;
-            }
-
-            if (! $node->name instanceof Identifier) {
+            if (! ($node->name ?? null) instanceof Identifier) {
                 continue;
             }
 
@@ -183,34 +179,33 @@ CODE_SAMPLE
 
         $this->refactorParameter(
             $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getFunctionLikePosition()],
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
         );
     }
 
     private function refactorParameter(
         Param $param,
-        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration
+        AddParamTypeForFunctionLikeWithinCallLikeArgDeclaration $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration,
     ): void {
+        $newParameterType = $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType();
+
         // already set → no change
         if ($param->type !== null) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-            if ($this->typeComparator->areTypesEqual(
-                $currentParamType,
-                $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType()
-            )) {
+            if ($this->typeComparator->areTypesEqual($currentParamType, $newParameterType)) {
                 return;
             }
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode(
-            $addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType(),
+            $newParameterType,
             TypeKind::PARAM
         );
 
         $this->hasChanged = true;
 
         // remove it
-        if ($addParamTypeForFunctionLikeWithinCallLikeArgDeclaration->getParamType() instanceof MixedType) {
+        if ($newParameterType instanceof MixedType) {
             if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::MIXED_TYPE)) {
                 $param->type = $paramTypeNode;
                 return;
