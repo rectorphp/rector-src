@@ -6,17 +6,20 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\Type;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -36,8 +39,6 @@ final class AddClosureParamTypeFromArgRector extends AbstractRector implements C
      * @var AddClosureParamTypeFromArg[]
      */
     private array $addClosureParamTypeFromArgs = [];
-
-    private bool $hasChanged = false;
 
     public function __construct(
         private readonly TypeComparator $typeComparator,
@@ -78,8 +79,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $this->hasChanged = false;
-
         foreach ($this->addClosureParamTypeFromArgs as $addClosureParamTypeFromArg) {
             if ($node instanceof MethodCall) {
                 $caller = $node->var;
@@ -89,26 +88,14 @@ CODE_SAMPLE
                 continue;
             }
 
-            if (! $this->isObjectType($caller, $addClosureParamTypeFromArg->getObjectType())) {
+            if (! $this->isCallMatch($caller, $addClosureParamTypeFromArg, $node)) {
                 continue;
             }
 
-            if (! $node->name instanceof Identifier) {
-                continue;
-            }
-
-            if (! $this->isName($node->name, $addClosureParamTypeFromArg->getMethodName())) {
-                continue;
-            }
-
-            $this->processCallLike($node, $addClosureParamTypeFromArg);
+            return $this->processCallLike($node, $addClosureParamTypeFromArg);
         }
 
-        if (! $this->hasChanged) {
-            return null;
-        }
-
-        return $node;
+        return null;
     }
 
     /**
@@ -124,82 +111,96 @@ CODE_SAMPLE
     private function processCallLike(
         MethodCall|StaticCall $callLike,
         AddClosureParamTypeFromArg $addClosureParamTypeFromArg
-    ): void {
+    ): MethodCall|StaticCall|null {
         if ($callLike->isFirstClassCallable()) {
-            return;
+            return null;
         }
 
-        if ($callLike->getArgs() === []) {
-            return;
-        }
-
-        $arg = $callLike->args[$addClosureParamTypeFromArg->getCallLikePosition()] ?? null;
-        if (! $arg instanceof Arg) {
-            return;
+        $callLikeArg = $callLike->args[$addClosureParamTypeFromArg->getCallLikePosition()] ?? null;
+        if (! $callLikeArg instanceof Arg) {
+            return null;
         }
 
         // int positions shouldn't have names
-        if ($arg->name instanceof Identifier) {
-            return;
+        if ($callLikeArg->name instanceof Identifier) {
+            return null;
         }
 
-        $functionLike = $arg->value;
+        $functionLike = $callLikeArg->value;
         if (! $functionLike instanceof Closure && ! $functionLike instanceof ArrowFunction) {
-            return;
+            return null;
         }
 
         if (! isset($functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()])) {
-            return;
+            return null;
         }
 
-        if (! ($arg = $this->getArg(
-            $addClosureParamTypeFromArg->getFromArgPosition(),
-            $callLike->getArgs()
-        )) instanceof Arg) {
-            return;
+        $callLikeArg = $callLike->getArgs()[$addClosureParamTypeFromArg->getFromArgPosition()] ?? null;
+        if (! $callLikeArg instanceof Arg) {
+            return null;
         }
 
-        $this->refactorParameter(
+        $hasChanged = $this->refactorParameter(
             $functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()],
-            $arg,
+            $callLikeArg,
         );
+
+        if ($hasChanged) {
+            return $callLike;
+        }
+
+        return null;
     }
 
-    /**
-     * @param Arg[] $args
-     */
-    private function getArg(int $position, array $args): ?Arg
+    private function refactorParameter(Param $param, Arg $arg): bool
     {
-        return $args[$position] ?? null;
-    }
-
-    private function refactorParameter(Param $param, Arg $arg): void
-    {
-        $argType = $this->nodeTypeResolver->getType($arg->value);
-
-        if ($argType instanceof GenericClassStringType) {
-            $closureType = $argType->getGenericType();
-        } elseif ($argType instanceof ConstantStringType) {
-            if ($this->reflectionProvider->hasClass($argType->getValue())) {
-                $closureType = new ObjectType($argType->getValue());
-            } else {
-                $closureType = new StringType();
-            }
-        } else {
-            return;
+        $closureType = $this->resolveClosureType($arg->value);
+        if (! $closureType instanceof Type) {
+            return false;
         }
 
         // already set → no change
-        if ($param->type !== null) {
+        if ($param->type instanceof Node) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
             if ($this->typeComparator->areTypesEqual($currentParamType, $closureType)) {
-                return;
+                return false;
             }
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($closureType, TypeKind::PARAM);
-        $this->hasChanged = true;
-
         $param->type = $paramTypeNode;
+
+        return true;
+    }
+
+    private function isCallMatch(
+        Name|Expr $caller,
+        AddClosureParamTypeFromArg $addClosureParamTypeFromArg,
+        StaticCall|MethodCall $call
+    ): bool {
+        if (! $this->isObjectType($caller, $addClosureParamTypeFromArg->getObjectType())) {
+            return false;
+        }
+
+        return $this->isName($call->name, $addClosureParamTypeFromArg->getMethodName());
+    }
+
+    private function resolveClosureType(Expr $expr): ?Type
+    {
+        $exprType = $this->nodeTypeResolver->getType($expr);
+
+        if ($exprType instanceof GenericClassStringType) {
+            return $exprType->getGenericType();
+        }
+
+        if ($exprType instanceof ConstantStringType) {
+            if ($this->reflectionProvider->hasClass($exprType->getValue())) {
+                return new ObjectType($exprType->getValue());
+            }
+
+            return new StringType();
+        }
+
+        return null;
     }
 }
