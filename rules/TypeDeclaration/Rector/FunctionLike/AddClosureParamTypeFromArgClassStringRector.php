@@ -75,21 +75,19 @@ CODE_SAMPLE
     {
         $this->hasChanged = false;
         foreach ($this->addParamTypeForFunctionLikeParamDeclarations as $addParamTypeForFunctionLikeParamDeclaration) {
-            $type = match (true) {
-                $node instanceof MethodCall => $node->var,
-                $node instanceof StaticCall => $node->class,
-                default => null,
-            };
-
-            if ($type === null) {
+            if ($node instanceof MethodCall) {
+                $caller = $node->var;
+            } elseif ($node instanceof StaticCall) {
+                $caller = $node->class;
+            } else {
                 continue;
             }
 
-            if (! $this->isObjectType($type, $addParamTypeForFunctionLikeParamDeclaration->getObjectType())) {
+            if (! $this->isObjectType($caller, $addParamTypeForFunctionLikeParamDeclaration->getObjectType())) {
                 continue;
             }
 
-            if (! ($node->name ?? null) instanceof Identifier) {
+            if (! $node->name instanceof Identifier) {
                 continue;
             }
 
@@ -125,37 +123,18 @@ CODE_SAMPLE
             return;
         }
 
-        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition())) {
-            if ($callLike->getArgs() === []) {
-                return;
-            }
+        if ($callLike->getArgs() === []) {
+            return;
+        }
 
-            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
+        $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
+        if (! $arg instanceof Arg) {
+            return;
+        }
 
-            if (! $arg instanceof Arg) {
-                return;
-            }
-
-            // int positions shouldn't have names
-            if ($arg->name !== null) {
-                return;
-            }
-        } else {
-            $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-                $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
-            ): bool {
-                if ($arg->name === null) {
-                    return false;
-                }
-
-                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition();
-            });
-
-            if ($args === []) {
-                return;
-            }
-
-            $arg = array_values($args)[0];
+        // int positions shouldn't have names
+        if ($arg->name instanceof Identifier) {
+            return;
         }
 
         $functionLike = $arg->value;
@@ -183,7 +162,7 @@ CODE_SAMPLE
     /**
      * @param Arg[] $args
      */
-    private function getArg(int|string $position, array $args): ?Arg
+    private function getArg(int $position, array $args): ?Arg
     {
         return $args[$position] ?? null;
     }
@@ -211,7 +190,6 @@ CODE_SAMPLE
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
-
         $this->hasChanged = true;
 
         $param->type = $paramTypeNode;

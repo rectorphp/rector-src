@@ -126,38 +126,38 @@ CODE_SAMPLE
             return;
         }
 
-        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition())) {
-            if ($callLike->getArgs() === []) {
-                return;
-            }
-
-            $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
-
-            if (! $arg instanceof Arg) {
-                return;
-            }
-
-            // int positions shouldn't have names
-            if ($arg->name !== null) {
-                return;
-            }
-        } else {
-            $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
-                $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
-            ): bool {
-                if ($arg->name === null) {
-                    return false;
-                }
-
-                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition();
-            });
-
-            if ($args === []) {
-                return;
-            }
-
-            $arg = array_values($args)[0];
+        //        if (is_int($addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition())) {
+        if ($callLike->getArgs() === []) {
+            return;
         }
+
+        $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
+
+        if (! $arg instanceof Arg) {
+            return;
+        }
+
+        // int positions shouldn't have names
+        if ($arg->name !== null) {
+            return;
+        }
+        //        } else {
+        //            $args = array_filter($callLike->getArgs(), static function (Arg $arg) use (
+        //                $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
+        //            ): bool {
+        //                if ($arg->name === null) {
+        //                    return false;
+        //                }
+        //
+        //                return $arg->name->name === $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition();
+        //            });
+        //
+        //            if ($args === []) {
+        //                return;
+        //            }
+        //
+        //            $arg = array_values($args)[0];
+        //        }
 
         $functionLike = $arg->value;
         if (! $functionLike instanceof FunctionLike) {

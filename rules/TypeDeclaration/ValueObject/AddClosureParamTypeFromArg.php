@@ -13,16 +13,16 @@ use Rector\Validation\RectorAssert;
 final readonly class AddClosureParamTypeFromArg
 {
     /**
-     * @param int<0, max>|string $callLikePosition
+     * @param int<0, max> $callLikePosition
      * @param int<0, max> $functionLikePosition
-     * @param int<0, max>|string $fromArgPosition
+     * @param int<0, max> $fromArgPosition
      */
     public function __construct(
         private string $className,
         private string $methodName,
-        private int|string $callLikePosition,
+        private int $callLikePosition,
         private int $functionLikePosition,
-        private int|string $fromArgPosition,
+        private int $fromArgPosition,
     ) {
         RectorAssert::className($className);
     }
@@ -38,9 +38,9 @@ final readonly class AddClosureParamTypeFromArg
     }
 
     /**
-     * @return int<0, max>|string
+     * @return int<0, max>
      */
-    public function getCallLikePosition(): int|string
+    public function getCallLikePosition(): int
     {
         return $this->callLikePosition;
     }
@@ -54,9 +54,9 @@ final readonly class AddClosureParamTypeFromArg
     }
 
     /**
-     * @return int<0, max>|string
+     * @return int<0, max>
      */
-    public function getFromArgPosition(): int|string
+    public function getFromArgPosition(): int
     {
         return $this->fromArgPosition;
     }
