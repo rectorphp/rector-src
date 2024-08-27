@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Fixture;
 
-use SomeNamespace\SomeClass;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SimpleContainer;
 
-SomeClass::someOtherCall(function ($name) {
+SimpleContainer::someOtherCall(function ($name) {
     return $name;
 });

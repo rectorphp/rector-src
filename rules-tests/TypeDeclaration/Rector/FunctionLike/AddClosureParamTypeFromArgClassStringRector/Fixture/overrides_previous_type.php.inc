@@ -2,9 +2,10 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Fixture;
 
-use SomeNamespace\SomeClass;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SimpleContainer;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SomeType;
 
-SomeClass::someCall(SomeClass::class, fn(object $var) => $var);
+SimpleContainer::someCall(SomeType::class, fn(object $var) => $var);
 
 ?>
 -----
@@ -12,8 +13,9 @@ SomeClass::someCall(SomeClass::class, fn(object $var) => $var);
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Fixture;
 
-use SomeNamespace\SomeClass;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SimpleContainer;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SomeType;
 
-SomeClass::someCall(SomeClass::class, fn(\SomeNamespace\SomeClass $var) => $var);
+SimpleContainer::someCall(SomeType::class, fn(\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\SomeType $var) => $var);
 
 ?>

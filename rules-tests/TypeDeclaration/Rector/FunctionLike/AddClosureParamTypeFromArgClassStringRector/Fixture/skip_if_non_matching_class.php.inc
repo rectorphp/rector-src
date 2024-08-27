@@ -2,8 +2,8 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Fixture;
 
-use SomeNamespace\SomeClass;
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromArgClassStringRector\Source\NonTargetedClass;
 
-AnotherClass::someCall(function ($name) {
+NonTargetedClass::someCall(function ($name) {
     return $name;
 });

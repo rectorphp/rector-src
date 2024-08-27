@@ -8,11 +8,13 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantStringType;
+use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\StringType;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -38,6 +40,7 @@ final class AddClosureParamTypeFromArgClassStringRector extends AbstractRector i
     public function __construct(
         private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly ReflectionProvider $reflectionProvider
     ) {
     }
 
@@ -116,7 +119,7 @@ CODE_SAMPLE
 
     private function processCallLike(
         MethodCall|StaticCall $callLike,
-        AddClosureParamTypeFromArg $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration
+        AddClosureParamTypeFromArg $addClosureParamTypeFromArg
     ): void {
         if ($callLike->isFirstClassCallable()) {
             return;
@@ -126,7 +129,7 @@ CODE_SAMPLE
             return;
         }
 
-        $arg = $callLike->args[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getCallLikePosition()] ?? null;
+        $arg = $callLike->args[$addClosureParamTypeFromArg->getCallLikePosition()] ?? null;
         if (! $arg instanceof Arg) {
             return;
         }
@@ -137,23 +140,23 @@ CODE_SAMPLE
         }
 
         $functionLike = $arg->value;
-        if (! $functionLike instanceof FunctionLike) {
+        if (! $functionLike instanceof Node\Expr\Closure && ! $functionLike instanceof Node\Expr\ArrowFunction) {
             return;
         }
 
-        if (! isset($functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFunctionLikePosition()])) {
+        if (! isset($functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()])) {
             return;
         }
 
         if (! ($arg = $this->getArg(
-            $addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFromArgPosition(),
+            $addClosureParamTypeFromArg->getFromArgPosition(),
             $callLike->getArgs()
         )) instanceof Arg) {
             return;
         }
 
         $this->refactorParameter(
-            $functionLike->params[$addParamTypeForFunctionLikeWithinCallLikeArgFromArgDeclaration->getFunctionLikePosition()],
+            $functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()],
             $arg,
         );
     }
@@ -168,24 +171,29 @@ CODE_SAMPLE
 
     private function refactorParameter(Param $param, Arg $arg): void
     {
-        $paramOrigin = $arg->value;
-
         $argType = $this->nodeTypeResolver->getType($arg->value);
-        if (! $argType instanceof ConstantStringType) {
+
+        if ($argType instanceof GenericClassStringType) {
+            $closureType = $argType->getGenericType();
+        } elseif ($argType instanceof ConstantStringType) {
+            if ($this->reflectionProvider->hasClass($argType->getValue())) {
+                $closureType = new ObjectType($argType->getValue());
+            } else {
+                $closureType = new StringType();
+            }
+        } else {
             return;
         }
-
-        $objectType = new ObjectType($argType->getValue());
 
         // already set → no change
         if ($param->type !== null) {
             $currentParamType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($param->type);
-            if ($this->typeComparator->areTypesEqual($currentParamType, $objectType)) {
+            if ($this->typeComparator->areTypesEqual($currentParamType, $closureType)) {
                 return;
             }
         }
 
-        $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($objectType, TypeKind::PARAM);
+        $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($closureType, TypeKind::PARAM);
         $this->hasChanged = true;
 
         $param->type = $paramTypeNode;
