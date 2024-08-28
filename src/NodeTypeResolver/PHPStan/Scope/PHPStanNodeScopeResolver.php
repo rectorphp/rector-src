@@ -274,6 +274,7 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Match_) {
                 $this->processMatch($node, $mutatingScope);
+                return;
             }
         };
 
