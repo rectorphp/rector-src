@@ -295,8 +295,8 @@ final readonly class PHPStanNodeScopeResolver
     {
         $match->cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
         foreach ($match->arms as $arm) {
-            foreach ($arm->conds as $cond) {
-                if ($cond instanceof Expr) {
+            if ($arm->conds !== null) {
+                foreach ($arm->conds as $cond) {
                     $cond->setAttribute(AttributeKey::SCOPE, $mutatingScope);
                 }
             }
