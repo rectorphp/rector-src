@@ -6,5 +6,6 @@ namespace Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterReq
 
 class SomeClass
 {
+    public static function fromString(string $id) {}
     public static function fromInt(int $id) {}
 }

@@ -9,7 +9,10 @@ final class SkipMatchWithFirstClassCallable
     public function run($type):void
     {
         match($type) {
-        	'string' => SomeClass::fromInt(...),
+        	'string' => SomeClass::fromString(...),
+            'int' => function () {
+                return SomeClass::fromInt(...);
+            }
         };
     }
 }
