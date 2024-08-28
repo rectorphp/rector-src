@@ -20,7 +20,7 @@ return RectorConfig::configure()
         naming: true,
         rectorPreset: true,
         // @experimental 2024-06
-        // twig: true,
+        twig: true,
         phpunitCodeQuality: true
     )
     ->withPhpSets()
