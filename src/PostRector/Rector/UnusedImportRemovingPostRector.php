@@ -89,17 +89,17 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 return null;
             }
 
-            $names[] = $node->toString();
-
             if ($node instanceof FullyQualified) {
                 $originalName = $node->getAttribute(AttributeKey::ORIGINAL_NAME);
 
                 if ($originalName instanceof Name) {
-                    // collect original Name as well to cover namespaced used
+                    // collect original Name as cover namespaced used
                     $names[] = $originalName->toString();
+                    return $node;
                 }
             }
 
+            $names[] = $node->toString();
             return $node;
         });
 
