@@ -71,23 +71,17 @@ final readonly class UseImportsResolver
             return null;
         }
 
-        $namespaces = array_filter($newStmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_);
+        /** @var Namespace_[]|FileWithoutNamespace[] $namespaces */
+        $namespaces = array_filter(
+            $newStmts,
+            static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
+        );
 
         // multiple namespaces is not supported
-        if (count($namespaces) > 1) {
+        if (count($namespaces) !== 1) {
             return null;
         }
 
-        $currentNamespace = current($namespaces);
-        if ($currentNamespace instanceof Namespace_) {
-            return $currentNamespace;
-        }
-
-        $currentStmt = current($newStmts);
-        if (! $currentStmt instanceof FileWithoutNamespace) {
-            return null;
-        }
-
-        return $currentStmt;
+        return current($namespaces);
     }
 }
