@@ -26,7 +26,7 @@ final readonly class AliasUsesResolver
     public function resolveFromNode(Node $node, array $stmts): array
     {
         if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
-            /** @var Namespace_[] $namespaces */
+            /** @var Namespace_[]|FileWithoutNamespace[] $namespaces */
             $namespaces = array_filter(
                 $stmts,
                 static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
