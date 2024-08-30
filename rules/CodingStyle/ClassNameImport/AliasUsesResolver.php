@@ -27,7 +27,10 @@ final readonly class AliasUsesResolver
     {
         if (! $node instanceof Namespace_ && ! $node instanceof FileWithoutNamespace) {
             /** @var Namespace_[] $namespaces */
-            $namespaces = array_filter($stmts, static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace);
+            $namespaces = array_filter(
+                $stmts,
+                static fn (Stmt $stmt): bool => $stmt instanceof Namespace_ || $stmt instanceof FileWithoutNamespace
+            );
             if (count($namespaces) !== 1) {
                 return [];
             }
