@@ -18,7 +18,7 @@ use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\Exception\Configuration\InvalidConfigurationException;
-use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
@@ -505,21 +505,10 @@ final class RectorConfigBuilder
         }
 
         if ($pickedArguments === []) {
-            // use composer.json PHP version
-            $projectComposerJsonFilePath = getcwd() . '/composer.json';
-            if (file_exists($projectComposerJsonFilePath)) {
-                $projectPhpVersion = ProjectComposerJsonPhpVersionResolver::resolve($projectComposerJsonFilePath);
-                if (is_int($projectPhpVersion)) {
-                    $this->sets[] = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
+            $projectPhpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
+            $this->sets[] = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
 
-                    return $this;
-                }
-            }
-
-            throw new InvalidConfigurationException(sprintf(
-                'We could not find local "composer.json" to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
-                PHP_EOL
-            ));
+            return $this;
         }
 
         if ($php53) {

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Rector\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+namespace Rector\Tests\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Rector\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver;
+use Rector\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class ProjectComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase
+final class ComposerJsonPhpVersionResolverTest extends AbstractLazyTestCase
 {
     #[DataProvider('provideData')]
     public function test(string $composerJsonFilePath, int|null $expectedPhpVersion): void
     {
-        $resolvePhpVersion = ProjectComposerJsonPhpVersionResolver::resolve($composerJsonFilePath);
+        $resolvePhpVersion = ComposerJsonPhpVersionResolver::resolve($composerJsonFilePath);
         $this->assertSame($expectedPhpVersion, $resolvePhpVersion);
     }
 

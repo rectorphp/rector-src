@@ -10,6 +10,9 @@ use Rector\ValueObject\PhpVersion;
 
 final class PhpLevelSetResolver
 {
+    /**
+     * @param PhpVersion::* $phpVersion
+     */
     public static function resolveFromPhpVersion(int $phpVersion): string
     {
         return match ($phpVersion) {
