@@ -506,7 +506,9 @@ final class RectorConfigBuilder
 
         if ($pickedArguments === []) {
             $projectPhpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
-            $this->sets[] = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
+            $phpLevelSets = PhpLevelSetResolver::resolveFromPhpVersion($projectPhpVersion);
+
+            $this->sets = array_merge($this->sets, $phpLevelSets);
 
             return $this;
         }
