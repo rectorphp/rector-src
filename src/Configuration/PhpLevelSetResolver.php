@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Rector\Configuration;
 
 use Rector\Set\ValueObject\SetList;
+use Rector\Tests\Configuration\PhpLevelSetResolverTest;
 use Rector\ValueObject\PhpVersion;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see PhpLevelSetResolverTest
+ */
 final class PhpLevelSetResolver
 {
     /**
