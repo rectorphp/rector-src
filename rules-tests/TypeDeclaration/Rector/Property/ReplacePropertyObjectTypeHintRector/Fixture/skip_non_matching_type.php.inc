@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Property\ReplacePropertyObjectTypeHintRector;
 
-class Fixture
+class SkipNonMatchingType
 {
     protected \Carbon\CarbonImmutable $carbon;
 }

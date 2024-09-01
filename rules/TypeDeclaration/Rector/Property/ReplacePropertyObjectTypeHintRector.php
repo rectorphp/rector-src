@@ -73,8 +73,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Property
     {
-        $changed = false;
-
         foreach ($this->replaceObjectTypeHints as $replaceObjectTypeHint) {
             if (! $node->type instanceof Identifier && ! $node->type instanceof Name) {
                 continue;
@@ -86,12 +84,8 @@ CODE_SAMPLE
                     TypeKind::PROPERTY
                 );
 
-                $changed = true;
+                return $node;
             }
-        }
-
-        if ($changed) {
-            return $node;
         }
 
         return null;
