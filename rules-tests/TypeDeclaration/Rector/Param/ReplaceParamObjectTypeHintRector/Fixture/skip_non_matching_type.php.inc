@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\Param\ReplaceParamObjectTypeHintRector;
 
-class Fixture
+class SkipNonMatchingType
 {
     public function call(\Carbon\CarbonImmutable $carbon)
     {
