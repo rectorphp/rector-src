@@ -16,12 +16,8 @@ final class LevelRulesResolver
      */
     public static function resolve(int $level, array $availableRules, string $methodName): array
     {
-<<<<<<< HEAD
         // level < 0 is not allowed
         Assert::natural($level, sprintf('Level must be >= 0 on %s', $methodName));
-=======
-        Assert::natural($level);
->>>>>>> 5f823ccbb2 ([DX] [Experimental] Add withPhpLevel() to raise PHP lele one rule at a time)
 
         Assert::allIsAOf($availableRules, RectorInterface::class);
 
@@ -45,8 +41,6 @@ final class LevelRulesResolver
         for ($i = 0; $i <= $level; ++$i) {
             $levelRules[] = $availableRules[$i];
         }
-
-        Assert::allIsAOf($levelRules, RectorInterface::class);
 
         return $levelRules;
     }
