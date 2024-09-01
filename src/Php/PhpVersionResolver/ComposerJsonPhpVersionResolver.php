@@ -5,19 +5,44 @@ declare(strict_types=1);
 namespace Rector\Php\PhpVersionResolver;
 
 use Composer\Semver\VersionParser;
+use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\FileSystem\JsonFileSystem;
 use Rector\Util\PhpVersionFactory;
+use Rector\ValueObject\PhpVersion;
 
 /**
- * @see \Rector\Tests\Php\PhpVersionResolver\ProjectComposerJsonPhpVersionResolver\ProjectComposerJsonPhpVersionResolverTest
+ * @see \Rector\Tests\Php\PhpVersionResolver\ComposerJsonPhpVersionResolver\ComposerJsonPhpVersionResolverTest
  */
-final class ProjectComposerJsonPhpVersionResolver
+final class ComposerJsonPhpVersionResolver
 {
     /**
-     * @var array<string, int|null>
+     * @var array<string, PhpVersion::*|null>
      */
     private static array $cachedPhpVersions = [];
 
+    /**
+     * @return PhpVersion::*
+     */
+    public static function resolveFromCwdOrFail(): int
+    {
+        // use composer.json PHP version
+        $projectComposerJsonFilePath = getcwd() . '/composer.json';
+        if (file_exists($projectComposerJsonFilePath)) {
+            $projectPhpVersion = self::resolve($projectComposerJsonFilePath);
+            if (is_int($projectPhpVersion)) {
+                return $projectPhpVersion;
+            }
+        }
+
+        throw new InvalidConfigurationException(sprintf(
+            'We could not find local "composer.json" to determine your PHP version.%sPlease, fill the PHP version set in withPhpSets() manually.',
+            PHP_EOL
+        ));
+    }
+
+    /**
+     * @return PhpVersion::*|null
+     */
     public static function resolve(string $composerJson): ?int
     {
         if (array_key_exists($composerJson, self::$cachedPhpVersions)) {
@@ -43,6 +68,9 @@ final class ProjectComposerJsonPhpVersionResolver
         return self::$cachedPhpVersions[$composerJson] = null;
     }
 
+    /**
+     * @return PhpVersion::*
+     */
     private static function createIntVersionFromComposerVersion(string $projectPhpVersion): int
     {
         $versionParser = new VersionParser();

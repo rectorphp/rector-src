@@ -299,3 +299,6 @@ parameters:
         # deprecated
         - '#Register "Rector\\Php71\\Rector\\ClassConst\\PublicConstantVisibilityRector" service to "php71\.php" config set#'
         - '#Public method "Rector\\ValueObject\\Error\\SystemError\:\:getFile\(\)" is never used#'
+
+        # known values
+        - '#Method Rector\\Util\\PhpVersionFactory\:\:createIntVersion\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
