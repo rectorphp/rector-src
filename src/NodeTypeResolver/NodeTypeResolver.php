@@ -110,7 +110,7 @@ final class NodeTypeResolver
 
         if ($node instanceof ClassConst) {
             throw new ShouldNotHappenException(
-                'Class constant itself does not have any type. Check the Class_/Interface/Trait_ instead'
+                'Class constant itself does not have any type. Check the Class_/Interface/Trait_ node instead'
             );
         }
 
