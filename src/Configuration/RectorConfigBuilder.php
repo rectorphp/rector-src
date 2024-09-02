@@ -153,6 +153,8 @@ final class RectorConfigBuilder
      */
     private array $groupLoadedSets = [];
 
+    private ?bool $isWithPhpSetsUsed = null;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         // @experimental 2024-06
@@ -489,6 +491,8 @@ final class RectorConfigBuilder
         bool $php53 = false,
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
+        $this->isWithPhpSetsUsed = true;
+
         $pickedArguments = array_filter(func_get_args());
         if ($pickedArguments !== []) {
             Notifier::notifyWithPhpSetsNotSuitableForPHP80();
@@ -556,6 +560,8 @@ final class RectorConfigBuilder
      */
     public function withPhp53Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_53));
 
         return $this;
@@ -563,6 +569,8 @@ final class RectorConfigBuilder
 
     public function withPhp54Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_54));
 
         return $this;
@@ -570,6 +578,8 @@ final class RectorConfigBuilder
 
     public function withPhp55Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_55));
 
         return $this;
@@ -577,6 +587,8 @@ final class RectorConfigBuilder
 
     public function withPhp56Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_56));
 
         return $this;
@@ -584,6 +596,8 @@ final class RectorConfigBuilder
 
     public function withPhp70Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70));
 
         return $this;
@@ -591,6 +605,8 @@ final class RectorConfigBuilder
 
     public function withPhp71Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_71));
 
         return $this;
@@ -598,6 +614,8 @@ final class RectorConfigBuilder
 
     public function withPhp72Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_72));
 
         return $this;
@@ -605,6 +623,8 @@ final class RectorConfigBuilder
 
     public function withPhp73Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_73));
 
         return $this;
@@ -612,6 +632,8 @@ final class RectorConfigBuilder
 
     public function withPhp74Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74));
 
         return $this;
