@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Rector\Skipper\SkipVoter;
 
 use PHPStan\Reflection\ReflectionProvider;
-use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\SkipCriteriaResolver\SkippedClassResolver;
 use Rector\Skipper\Skipper\SkipSkipper;
 
-final readonly class ClassSkipVoter implements SkipVoterInterface
+final readonly class ClassSkipVoter
 {
     public function __construct(
         private SkipSkipper $skipSkipper,

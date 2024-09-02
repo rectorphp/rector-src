@@ -162,9 +162,7 @@ use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\VoidTypeMapper;
 use Rector\PostRector\Application\PostFileProcessor;
 use Rector\Rector\AbstractRector;
-use Rector\Skipper\Contract\SkipVoterInterface;
 use Rector\Skipper\Skipper\Skipper;
-use Rector\Skipper\SkipVoter\ClassSkipVoter;
 use Rector\StaticTypeMapper\Contract\PhpDocParser\PhpDocTypeMapperInterface;
 use Rector\StaticTypeMapper\Contract\PhpParser\PhpParserNodeMapperInterface;
 use Rector\StaticTypeMapper\Mapper\PhpParserNodeMapper;
@@ -367,11 +365,6 @@ final class LazyContainerFactory
     ];
 
     /**
-     * @var array<class-string<SkipVoterInterface>>
-     */
-    private const SKIP_VOTER_CLASSES = [ClassSkipVoter::class];
-
-    /**
      * @var array<class-string<ConverterAttributeDecoratorInterface>>
      */
     private const CONVERTER_ATTRIBUTE_DECORATOR_CLASSES = [
@@ -530,12 +523,6 @@ final class LazyContainerFactory
         $rectorConfig->when(NodeNameResolver::class)
             ->needs('$nodeNameResolvers')
             ->giveTagged(NodeNameResolverInterface::class);
-
-        $rectorConfig->when(Skipper::class)
-            ->needs('$skipVoters')
-            ->giveTagged(SkipVoterInterface::class);
-
-        $this->registerTagged($rectorConfig, self::SKIP_VOTER_CLASSES, SkipVoterInterface::class);
 
         $rectorConfig->when(AttributeGroupNamedArgumentManipulator::class)
             ->needs('$converterAttributeDecorators')
