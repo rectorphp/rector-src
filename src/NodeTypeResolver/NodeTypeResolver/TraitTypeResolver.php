@@ -50,8 +50,8 @@ final readonly class TraitTypeResolver implements NodeTypeResolverInterface
 
         $types = [new ObjectType($traitName)];
 
-        foreach ($classReflection->getTraits() as $usedTraitReflection) {
-            $types[] = new ObjectType($usedTraitReflection->getName());
+        foreach ($classReflection->getTraits() as $trait) {
+            $types[] = new ObjectType($trait->getName());
         }
 
         return new UnionType($types);
