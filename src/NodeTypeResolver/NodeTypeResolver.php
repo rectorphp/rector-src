@@ -17,6 +17,7 @@ use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\UnionType as NodeUnionType;
 use PHPStan\Analyser\Scope;
@@ -56,6 +57,11 @@ final class NodeTypeResolver
      * @var array<class-string<Node>, NodeTypeResolverInterface>
      */
     private array $nodeTypeResolvers = [];
+
+    /**
+     * @var string
+     */
+    private const ERROR_MESSAGE = '%s itself does not have any type. Check the %s node instead';
 
     /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
@@ -102,15 +108,9 @@ final class NodeTypeResolver
         }
 
         // warn about invalid use of this method
-        if ($node instanceof ClassMethod) {
+        if ($node instanceof ClassMethod || $node instanceof ClassConst) {
             throw new ShouldNotHappenException(
-                'ClassMethod itself does not have any type. Check the Class_/Interface/Trait_ node instead'
-            );
-        }
-
-        if ($node instanceof ClassConst) {
-            throw new ShouldNotHappenException(
-                'Class constant itself does not have any type. Check the Class_/Trait_ instead'
+                sprintf(self::ERROR_MESSAGE, $node::class, ClassLike::class)
             );
         }
 
