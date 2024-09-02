@@ -332,10 +332,10 @@ final class LazyContainerFactory
      * @var array<class-string<NodeTypeResolverInterface>>
      */
     private const NODE_TYPE_RESOLVER_CLASSES = [
-        CastTypeResolver::class,
+        // CastTypeResolver::class,
         StaticCallMethodCallTypeResolver::class,
         ClassAndInterfaceTypeResolver::class,
-        ClassMethodOrClassConstTypeResolver::class,
+        //        ClassMethodOrClassConstTypeResolver::class,
         IdentifierTypeResolver::class,
         NameTypeResolver::class,
         NewTypeResolver::class,
