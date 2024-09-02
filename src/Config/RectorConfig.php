@@ -31,7 +31,7 @@ use Webmozart\Assert\Assert;
 final class RectorConfig extends Container
 {
     /**
-     * @var array<class-string<RectorInterface>, mixed[]>>
+     * @var array<class-string<ConfigurableRectorInterface>, mixed[]>>
      */
     private array $ruleConfigurations = [];
 
@@ -417,5 +417,23 @@ final class RectorConfig extends Container
     public function reportingRealPath(bool $absolute = true): void
     {
         SimpleParameterProvider::setParameter(Option::ABSOLUTE_FILE_PATH, $absolute);
+    }
+
+    /**
+     * @internal Used only for bridge
+     * @return array<class-string<ConfigurableRectorInterface>, mixed>
+     */
+    public function getRuleConfigurations(): array
+    {
+        return $this->ruleConfigurations;
+    }
+
+    /**
+     * @internal Used only for bridge
+     * @return array<class-string<RectorInterface>>
+     */
+    public function getRectorClasses(): array
+    {
+        return $this->tags[RectorInterface::class] ?? [];
     }
 }
