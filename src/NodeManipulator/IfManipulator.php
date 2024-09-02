@@ -172,11 +172,6 @@ final readonly class IfManipulator
         return $this->hasOnlyStmtOfType($if, $stmtClass);
     }
 
-    public function isIfWithOnlyOneStmt(If_ $if): bool
-    {
-        return count($if->stmts) === 1;
-    }
-
     public function isIfWithoutElseAndElseIfs(If_ $if): bool
     {
         if ($if->else instanceof Else_) {

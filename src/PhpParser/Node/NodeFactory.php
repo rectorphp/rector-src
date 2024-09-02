@@ -264,20 +264,6 @@ final readonly class NodeFactory
         return new ClassConstFetch($name, $constantName);
     }
 
-    /**
-     * @param Param[] $params
-     * @return Arg[]
-     */
-    public function createArgsFromParams(array $params): array
-    {
-        $args = [];
-        foreach ($params as $param) {
-            $args[] = new Arg($param->var);
-        }
-
-        return $args;
-    }
-
     public function createNull(): ConstFetch
     {
         return new ConstFetch(new Name('null'));
