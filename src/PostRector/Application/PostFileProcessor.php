@@ -23,9 +23,9 @@ use Rector\ValueObject\Application\File;
 final class PostFileProcessor implements ResetableInterface
 {
     /**
-     * @var PostRectorInterface[]
+     * @var PostRectorInterface[]|null
      */
-    private array $postRectors = [];
+    private ?array $postRectors = null;
 
     public function __construct(
         private readonly Skipper $skipper,
@@ -40,7 +40,7 @@ final class PostFileProcessor implements ResetableInterface
 
     public function reset(): void
     {
-        $this->postRectors = [];
+        $this->postRectors = null;
     }
 
     /**
@@ -92,7 +92,8 @@ final class PostFileProcessor implements ResetableInterface
      */
     private function getPostRectors(): array
     {
-        if ($this->postRectors !== []) {
+        // already cached, even only empty array
+        if ($this->postRectors !== null) {
             return $this->postRectors;
         }
 
