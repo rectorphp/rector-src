@@ -13,6 +13,12 @@ use Symfony\Component\Finder\SplFileInfo;
 final class InitFilePathsResolver
 {
     /**
+     * @var string
+     * @see https://regex101.com/r/XkQ6Pe/1
+     */
+    private const DO_NOT_INCLUDE_PATHS_REGEX = '#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|data(?:base)?|storage|migrations|writable)#';
+
+    /**
      * @return string[]
      */
     public function resolve(string $projectDirectory): array
@@ -21,7 +27,7 @@ final class InitFilePathsResolver
             ->directories()
             ->depth(0)
             // system files
-            ->notPath('#(vendor|var|stubs|temp|templates|tmp|e2e|bin|build|Migrations|database|storage|migrations)#')
+            ->notPath(self::DO_NOT_INCLUDE_PATHS_REGEX)
             ->in($projectDirectory)
             ->sortByName();
 
