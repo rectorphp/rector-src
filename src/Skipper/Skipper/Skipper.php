@@ -7,8 +7,7 @@ namespace Rector\Skipper\Skipper;
 use PhpParser\Node;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\ProcessAnalyzer\RectifiedAnalyzer;
-use Rector\Skipper\Contract\SkipVoterInterface;
-use Webmozart\Assert\Assert;
+use Rector\Skipper\SkipVoter\ClassSkipVoter;
 
 /**
  * @api
@@ -16,15 +15,11 @@ use Webmozart\Assert\Assert;
  */
 final readonly class Skipper
 {
-    /**
-     * @param array<SkipVoterInterface> $skipVoters
-     */
     public function __construct(
         private RectifiedAnalyzer $rectifiedAnalyzer,
-        private array $skipVoters,
-        private PathSkipper $pathSkipper
+        private PathSkipper $pathSkipper,
+        private ClassSkipVoter $classSkipVoter,
     ) {
-        Assert::allIsInstanceOf($this->skipVoters, SkipVoterInterface::class);
     }
 
     public function shouldSkipElement(string | object $element): bool
@@ -39,19 +34,11 @@ final readonly class Skipper
 
     public function shouldSkipElementAndFilePath(string | object $element, string $filePath): bool
     {
-        foreach ($this->skipVoters as $skipVoter) {
-            if (! $skipVoter->match($element)) {
-                continue;
-            }
-
-            if (! $skipVoter->shouldSkip($element, $filePath)) {
-                continue;
-            }
-
-            return true;
+        if (! $this->classSkipVoter->match($element)) {
+            return false;
         }
 
-        return false;
+        return $this->classSkipVoter->shouldSkip($element, $filePath);
     }
 
     /**

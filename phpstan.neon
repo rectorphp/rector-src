@@ -271,7 +271,7 @@ parameters:
                 # marker interface
                 - src/Contract/PhpParser/Node/StmtsAwareInterface.php
                 # designed for extension
-                - src/Skipper/Contract/SkipVoterInterface.php
+                #- src/Skipper/Contract/SkipVoterInterface.php
 
         # generated class in /vendor
         -

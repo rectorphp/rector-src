@@ -26,7 +26,7 @@ final readonly class ClassNameImportSkipper
      */
     public function __construct(
         private iterable $classNameImportSkipVoters,
-        private UseImportsResolver $useImportsResolver
+        private UseImportsResolver $useImportsResolver,
     ) {
     }
 
