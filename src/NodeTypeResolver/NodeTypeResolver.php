@@ -103,13 +103,16 @@ final class NodeTypeResolver
 
         // warn about invalid use of this method
         if ($node instanceof ClassMethod) {
-            throw new ShouldNotHappenException('ClassMethod itself does not have any type. Check the Class_/Interface/Trait_ node instead');
+            throw new ShouldNotHappenException(
+                'ClassMethod itself does not have any type. Check the Class_/Interface/Trait_ node instead'
+            );
         }
 
         if ($node instanceof ClassConst) {
-            throw new ShouldNotHappenException('Class constant itself does not have any type. Check the Class_/Trait_ instead');
+            throw new ShouldNotHappenException(
+                'Class constant itself does not have any type. Check the Class_/Trait_ instead'
+            );
         }
-
 
         $resolvedType = $this->getType($node);
         if ($resolvedType instanceof MixedType) {
