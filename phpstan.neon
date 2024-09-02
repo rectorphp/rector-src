@@ -111,9 +111,6 @@ parameters:
                 - src/BetterPhpDocParser/PhpDocParser/StaticDoctrineAnnotationParser/ArrayParser.php
                 - rules/EarlyReturn/Rector/If_/ChangeNestedIfsToEarlyReturnRector.php
                 - rules/Php70/EregToPcreTransformer.php
-                - rules/DeadCode/NodeManipulator/LivingCodeManipulator.php
-                - rules/EarlyReturn/Rector/If_/ChangeAndIfToEarlyReturnRector.php
-                - src/PhpParser/NodeTransformer.php
 
         # mapper re-use
         - '#Parameter \#1 \$type of method Rector\\PHPStanStaticTypeMapper\\TypeMapper\\ObjectWithoutClassTypeMapper\:\:mapToPhpParserNode\(\) expects PHPStan\\Type\\ObjectWithoutClassType, PHPStan\\Type\\Accessory\\Has(Property|Method)Type given#'
@@ -302,3 +299,6 @@ parameters:
 
         # known values
         - '#Method Rector\\Util\\PhpVersionFactory\:\:createIntVersion\(\) should return 50200\|50300\|50400\|50500\|50600\|70000\|70100\|70200\|70300\|70400\|80000\|80100\|80200\|80300\|80400\|100000 but returns int#'
+
+        # soon to be used
+        - '#Property Rector\\Configuration\\RectorConfigBuilder\:\:\$isWithPhpSetsUsed is never read, only written#'

@@ -153,6 +153,11 @@ final class RectorConfigBuilder
      */
     private array $groupLoadedSets = [];
 
+    /**
+     * @api soon to be used
+     */
+    private ?bool $isWithPhpSetsUsed = null;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         // @experimental 2024-06
@@ -489,6 +494,8 @@ final class RectorConfigBuilder
         bool $php53 = false,
         bool $php84 = false, // place on later as BC break when used in php 7.x without named arg
     ): self {
+        $this->isWithPhpSetsUsed = true;
+
         $pickedArguments = array_filter(func_get_args());
         if ($pickedArguments !== []) {
             Notifier::notifyWithPhpSetsNotSuitableForPHP80();
@@ -513,24 +520,51 @@ final class RectorConfigBuilder
         }
 
         if ($php53) {
-            $targetPhpVersion = PhpVersion::PHP_53;
-        } elseif ($php54) {
-            $targetPhpVersion = PhpVersion::PHP_54;
-        } elseif ($php55) {
-            $targetPhpVersion = PhpVersion::PHP_55;
-        } elseif ($php56) {
-            $targetPhpVersion = PhpVersion::PHP_56;
-        } elseif ($php70) {
-            $targetPhpVersion = PhpVersion::PHP_70;
-        } elseif ($php71) {
-            $targetPhpVersion = PhpVersion::PHP_71;
-        } elseif ($php72) {
-            $targetPhpVersion = PhpVersion::PHP_72;
-        } elseif ($php73) {
-            $targetPhpVersion = PhpVersion::PHP_73;
-        } elseif ($php74) {
-            $targetPhpVersion = PhpVersion::PHP_74;
-        } elseif ($php80) {
+            $this->withPhp53Sets();
+            return $this;
+        }
+
+        if ($php54) {
+            $this->withPhp54Sets();
+            return $this;
+        }
+
+        if ($php55) {
+            $this->withPhp55Sets();
+            return $this;
+        }
+
+        if ($php56) {
+            $this->withPhp56Sets();
+            return $this;
+        }
+
+        if ($php70) {
+            $this->withPhp70Sets();
+            return $this;
+        }
+
+        if ($php71) {
+            $this->withPhp71Sets();
+            return $this;
+        }
+
+        if ($php72) {
+            $this->withPhp72Sets();
+            return $this;
+        }
+
+        if ($php73) {
+            $this->withPhp73Sets();
+            return $this;
+        }
+
+        if ($php74) {
+            $this->withPhp74Sets();
+            return $this;
+        }
+
+        if ($php80) {
             $targetPhpVersion = PhpVersion::PHP_80;
         } elseif ($php81) {
             $targetPhpVersion = PhpVersion::PHP_81;
@@ -556,6 +590,8 @@ final class RectorConfigBuilder
      */
     public function withPhp53Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_53));
 
         return $this;
@@ -563,6 +599,8 @@ final class RectorConfigBuilder
 
     public function withPhp54Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_54));
 
         return $this;
@@ -570,6 +608,8 @@ final class RectorConfigBuilder
 
     public function withPhp55Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_55));
 
         return $this;
@@ -577,6 +617,8 @@ final class RectorConfigBuilder
 
     public function withPhp56Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_56));
 
         return $this;
@@ -584,6 +626,8 @@ final class RectorConfigBuilder
 
     public function withPhp70Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_70));
 
         return $this;
@@ -591,6 +635,8 @@ final class RectorConfigBuilder
 
     public function withPhp71Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_71));
 
         return $this;
@@ -598,6 +644,8 @@ final class RectorConfigBuilder
 
     public function withPhp72Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_72));
 
         return $this;
@@ -605,6 +653,8 @@ final class RectorConfigBuilder
 
     public function withPhp73Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_73));
 
         return $this;
@@ -612,6 +662,8 @@ final class RectorConfigBuilder
 
     public function withPhp74Sets(): self
     {
+        $this->isWithPhpSetsUsed = true;
+
         $this->sets = array_merge($this->sets, PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74));
 
         return $this;
@@ -876,13 +928,11 @@ final class RectorConfigBuilder
      */
     public function withDeadCodeLevel(int $level): self
     {
+        Assert::natural($level);
+
         $this->isDeadCodeLevelUsed = true;
 
-        $levelRules = LevelRulesResolver::resolve(
-            $level,
-            DeadCodeLevel::RULES,
-            'RectorConfig::withDeadCodeLevel()'
-        );
+        $levelRules = LevelRulesResolver::resolve($level, DeadCodeLevel::RULES, __METHOD__);
 
         $this->rules = array_merge($this->rules, $levelRules);
 
@@ -895,13 +945,11 @@ final class RectorConfigBuilder
      */
     public function withTypeCoverageLevel(int $level): self
     {
+        Assert::natural($level);
+
         $this->isTypeCoverageLevelUsed = true;
 
-        $levelRules = LevelRulesResolver::resolve(
-            $level,
-            TypeDeclarationLevel::RULES,
-            'RectorConfig::withTypeCoverageLevel()'
-        );
+        $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationLevel::RULES, __METHOD__);
 
         $this->rules = array_merge($this->rules, $levelRules);
 
@@ -914,13 +962,11 @@ final class RectorConfigBuilder
      */
     public function withCodeQualityLevel(int $level): self
     {
+        Assert::natural($level);
+
         $this->isCodeQualityLevelUsed = true;
 
-        $levelRules = LevelRulesResolver::resolve(
-            $level,
-            CodeQualityLevel::RULES,
-            'RectorConfig::withCodeQualityLevel()'
-        );
+        $levelRules = LevelRulesResolver::resolve($level, CodeQualityLevel::RULES, __METHOD__);
 
         $this->rules = array_merge($this->rules, $levelRules);
 
