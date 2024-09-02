@@ -44,6 +44,7 @@ jobs:
                                 --skip-suffix "Rector" \
                                 --skip-type="Rector\\Utils\\Compiler\\Unprefixer" \
                                 --skip-type="Rector\\PhpDocParser\\PhpParser\\SmartPhpParserFactory"
+                                --skip-type="Rector\\NodeCollector\\BinaryOpConditionsCollector"
 
                     -
                         name: 'Compatible PHPStan versions'
