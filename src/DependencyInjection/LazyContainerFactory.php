@@ -342,7 +342,6 @@ final class LazyContainerFactory
         ClassConstFetchTypeResolver::class,
         PropertyTypeResolver::class,
         ScalarTypeResolver::class,
-        TraitTypeResolver::class,
     ];
 
     /**

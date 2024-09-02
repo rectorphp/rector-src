@@ -54,14 +54,14 @@ use Rector\TypeDeclaration\PHPStan\ObjectTypeSpecifier;
 final class NodeTypeResolver
 {
     /**
-     * @var array<class-string<Node>, NodeTypeResolverInterface>
-     */
-    private array $nodeTypeResolvers = [];
-
-    /**
      * @var string
      */
     private const ERROR_MESSAGE = '%s itself does not have any type. Check the %s node instead';
+
+    /**
+     * @var array<class-string<Node>, NodeTypeResolverInterface>
+     */
+    private array $nodeTypeResolvers = [];
 
     /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
@@ -109,9 +109,7 @@ final class NodeTypeResolver
 
         // warn about invalid use of this method
         if ($node instanceof ClassMethod || $node instanceof ClassConst) {
-            throw new ShouldNotHappenException(
-                sprintf(self::ERROR_MESSAGE, $node::class, ClassLike::class)
-            );
+            throw new ShouldNotHappenException(sprintf(self::ERROR_MESSAGE, $node::class, ClassLike::class));
         }
 
         $resolvedType = $this->getType($node);

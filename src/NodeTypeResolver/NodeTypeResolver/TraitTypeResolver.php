@@ -44,16 +44,14 @@ final readonly class TraitTypeResolver implements NodeTypeResolverInterface
         }
 
         $classReflection = $this->reflectionProvider->getClass($traitName);
+        if ($classReflection->getTraits() === []) {
+            return new ObjectType($traitName);
+        }
 
-        $types = [];
-        $types[] = new ObjectType($traitName);
+        $types = [new ObjectType($traitName)];
 
         foreach ($classReflection->getTraits() as $usedTraitReflection) {
             $types[] = new ObjectType($usedTraitReflection->getName());
-        }
-
-        if (count($types) === 1) {
-            return $types[0];
         }
 
         return new UnionType($types);
