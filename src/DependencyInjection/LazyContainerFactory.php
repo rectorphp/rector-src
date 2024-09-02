@@ -79,7 +79,6 @@ use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\CastTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ClassAndInterfaceTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\ClassConstFetchTypeResolver;
-use Rector\NodeTypeResolver\NodeTypeResolver\ClassMethodOrClassConstTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\IdentifierTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\NameTypeResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver\NewTypeResolver;
@@ -335,7 +334,6 @@ final class LazyContainerFactory
         CastTypeResolver::class,
         StaticCallMethodCallTypeResolver::class,
         ClassAndInterfaceTypeResolver::class,
-        ClassMethodOrClassConstTypeResolver::class,
         IdentifierTypeResolver::class,
         NameTypeResolver::class,
         NewTypeResolver::class,
