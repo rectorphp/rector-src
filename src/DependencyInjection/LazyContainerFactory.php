@@ -339,7 +339,7 @@ final class LazyContainerFactory
         NewTypeResolver::class,
         ParamTypeResolver::class,
         PropertyFetchTypeResolver::class,
-        ClassConstFetchTypeResolver::class,
+        //        ClassConstFetchTypeResolver::class,
         PropertyTypeResolver::class,
         ScalarTypeResolver::class,
         TraitTypeResolver::class,
