@@ -10,7 +10,6 @@ use Illuminate\Container\Container;
 use PhpParser\Lexer;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeFactory;
-use PHPStan\File\FileHelper;
 use PHPStan\Parser\Parser;
 use PHPStan\PhpDoc\TypeNodeResolver;
 use PHPStan\PhpDocParser\Parser\ConstExprParser;
@@ -319,7 +318,6 @@ final class LazyContainerFactory
     private const PUBLIC_PHPSTAN_SERVICE_TYPES = [
         ScopeFactory::class,
         TypeNodeResolver::class,
-        FileHelper::class,
         NodeScopeResolver::class,
         ReflectionProvider::class,
         CachingVisitor::class,
