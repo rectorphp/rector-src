@@ -59,6 +59,11 @@ final class NodeTypeResolver
     private array $nodeTypeResolvers = [];
 
     /**
+     * @var string
+     */
+    private const ERROR_MESSAGE = '%s itself does not have any type. Check the %s node instead';
+
+    /**
      * @param NodeTypeResolverInterface[] $nodeTypeResolvers
      */
     public function __construct(
@@ -103,15 +108,9 @@ final class NodeTypeResolver
         }
 
         // warn about invalid use of this method
-        if ($node instanceof ClassMethod) {
+        if ($node instanceof ClassMethod || $node instanceof ClassConst) {
             throw new ShouldNotHappenException(
-                sprintf('ClassMethod itself does not have any type. Check the %s node instead', ClassLike::class)
-            );
-        }
-
-        if ($node instanceof ClassConst) {
-            throw new ShouldNotHappenException(
-                sprintf('Class constant itself does not have any type. Check the %s node instead', ClassLike::class)
+                sprintf(self::ERROR_MESSAGE, $node::class, ClassLike::class)
             );
         }
 
