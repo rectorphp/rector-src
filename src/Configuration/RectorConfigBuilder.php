@@ -522,28 +522,44 @@ final class RectorConfigBuilder
         if ($php53) {
             $this->withPhp53Sets();
             return $this;
-        } elseif ($php54) {
+        }
+
+        if ($php54) {
             $this->withPhp54Sets();
             return $this;
-        } elseif ($php55) {
+        }
+
+        if ($php55) {
             $this->withPhp55Sets();
             return $this;
-        } elseif ($php56) {
+        }
+
+        if ($php56) {
             $this->withPhp56Sets();
             return $this;
-        } elseif ($php70) {
+        }
+
+        if ($php70) {
             $this->withPhp70Sets();
             return $this;
-        } elseif ($php71) {
+        }
+
+        if ($php71) {
             $this->withPhp71Sets();
             return $this;
-        } elseif ($php72) {
+        }
+
+        if ($php72) {
             $this->withPhp72Sets();
             return $this;
-        } elseif ($php73) {
+        }
+
+        if ($php73) {
             $this->withPhp73Sets();
             return $this;
-        } elseif ($php74) {
+        }
+
+        if ($php74) {
             $this->withPhp74Sets();
             return $this;
         }
