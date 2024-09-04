@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Rector\PhpParser\NodeTraverser;
 
+use PhpParser\Node;
 use PhpParser\Node\Stmt;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\VersionBonding\PhpVersionedFilter;
 
 final class RectorNodeTraverser extends NodeTraverser
 {
     private bool $areNodeVisitorsPrepared = false;
+
+    /**
+     * @var array<class-string<Node>,RectorInterface[]>
+     */
+    private array $visitorsPerNodeClass = [];
 
     /**
      * @param RectorInterface[] $rectors
@@ -42,8 +49,34 @@ final class RectorNodeTraverser extends NodeTraverser
     {
         $this->rectors = $rectors;
         $this->visitors = [];
+        $this->visitorsPerNodeClass = [];
 
         $this->areNodeVisitorsPrepared = false;
+    }
+
+    /**
+     * We return the list of visitors (rector rules) that can be applied to each node class
+     * This list is cached so that we don't need to continually check if a rule can be applied to a node
+     *
+     * @return NodeVisitor[]
+     */
+    public function getVisitorsForNode(Node $node): array
+    {
+        $nodeClass = $node::class;
+        if (! isset($this->visitorsPerNodeClass[$nodeClass])) {
+            $this->visitorsPerNodeClass[$nodeClass] = [];
+            foreach ($this->visitors as $visitor) {
+                assert($visitor instanceof RectorInterface);
+                foreach ($visitor->getNodeTypes() as $nodeType) {
+                    if (is_a($nodeClass, $nodeType, true)) {
+                        $this->visitorsPerNodeClass[$nodeClass][] = $visitor;
+                        continue 2;
+                    }
+                }
+            }
+        }
+
+        return $this->visitorsPerNodeClass[$nodeClass];
     }
 
     /**
