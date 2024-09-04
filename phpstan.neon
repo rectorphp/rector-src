@@ -300,3 +300,6 @@ parameters:
 
         # soon to be used
         - '#Property Rector\\Configuration\\RectorConfigBuilder\:\:\$isWithPhpSetsUsed is never read, only written#'
+
+        # used once
+        - '#Interface "Rector\\Configuration\\Deprecation\\Contract\\DeprecatedInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
