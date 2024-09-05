@@ -127,7 +127,7 @@ final readonly class ReturnStrictTypeAnalyzer
             $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
         }
 
-        if ($returnType instanceof MixedType && $returnType->isExplicitMixed()) {
+        if ($returnType instanceof MixedType) {
             if ($returnType->isExplicitMixed()) {
                 return $returnType;
             }
