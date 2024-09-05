@@ -123,6 +123,9 @@ final readonly class ReturnStrictTypeAnalyzer
         if ($parametersAcceptorWithPhpDocs instanceof FunctionVariantWithPhpDocs) {
             // native return type is needed, as docblock can be false
             $returnType = $parametersAcceptorWithPhpDocs->getNativeReturnType();
+            if ($returnType instanceof MixedType) {
+                return new MixedType(true);
+            }
         } else {
             $returnType = $parametersAcceptorWithPhpDocs->getReturnType();
         }
