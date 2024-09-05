@@ -14,7 +14,7 @@ class Cache
 {
 }
 
-class WithMixin
+class SkipWithMixin
 {
     /**
      * @throws GuzzleException
