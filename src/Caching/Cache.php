@@ -18,7 +18,7 @@ final readonly class Cache
      * @param CacheKey::* $variableKey
      * @return mixed|null
      */
-    public function load(string $key, string $variableKey): mixed
+    public function load(string $key, string $variableKey)
     {
         return $this->cacheStorage->load($key, $variableKey);
     }
