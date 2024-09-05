@@ -21,7 +21,9 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractScopeAwareRector;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\NodeAnalyzer\TypeNodeUnwrapper;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
@@ -44,7 +46,8 @@ final class ReturnTypeFromStrictTypedCallRector extends AbstractScopeAwareRector
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly PhpVersionProvider $phpVersionProvider,
         private readonly ClassMethodReturnTypeOverrideGuard $classMethodReturnTypeOverrideGuard,
-        private readonly ReturnAnalyzer $returnAnalyzer
+        private readonly ReturnAnalyzer $returnAnalyzer,
+        private readonly StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -134,7 +137,17 @@ CODE_SAMPLE
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             /** @var PhpParserUnionType[] $returnedStrictTypes */
             $unwrappedTypes = $this->typeNodeUnwrapper->unwrapNullableUnionTypes($returnedStrictTypes);
-            $node->returnType = new PhpParserUnionType($unwrappedTypes);
+            $unionType = new PhpParserUnionType($unwrappedTypes);
+
+            $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($unionType);
+            $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
+
+            // verify type transformed into node
+            if (! $returnType instanceof Node) {
+                return null;
+            }
+
+            $node->returnType = $unionType;
 
             return $node;
         }

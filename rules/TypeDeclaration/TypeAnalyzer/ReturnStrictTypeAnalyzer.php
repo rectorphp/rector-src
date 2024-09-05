@@ -128,6 +128,10 @@ final readonly class ReturnStrictTypeAnalyzer
         }
 
         if ($returnType instanceof MixedType) {
+            if ($returnType->isExplicitMixed()) {
+                return $returnType;
+            }
+
             return null;
         }
 
