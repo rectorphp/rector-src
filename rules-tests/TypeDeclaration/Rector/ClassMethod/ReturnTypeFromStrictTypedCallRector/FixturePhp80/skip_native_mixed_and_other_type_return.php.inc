@@ -5,7 +5,7 @@ namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromStrictTy
 /**
  * mixed only allowed as standalone type https://3v4l.org/ugpkM
  */
-final class WithNativeReturnMixedAndOtherType
+final class SkipWithNativeReturnMixedAndOtherType
 {
     public function getData()
     {
