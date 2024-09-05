@@ -142,7 +142,7 @@ CODE_SAMPLE
             $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnTypeNode);
             $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
 
-            // verify type can be transformed into node
+            // verify type transformed into node
             if (! $returnType instanceof Node) {
                 return null;
             }
