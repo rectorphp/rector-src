@@ -137,15 +137,17 @@ CODE_SAMPLE
         if ($this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_TYPES)) {
             /** @var PhpParserUnionType[] $returnedStrictTypes */
             $unwrappedTypes = $this->typeNodeUnwrapper->unwrapNullableUnionTypes($returnedStrictTypes);
+            $returnTypeNode = new PhpParserUnionType($unwrappedTypes);
 
-            $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType(new PhpParserUnionType($unwrappedTypes));
+            $type = $this->staticTypeMapper->mapPhpParserNodePHPStanType($returnTypeNode);
             $returnType = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::RETURN);
 
+            // verify type can be transformed into node
             if (! $returnType instanceof Node) {
                 return null;
             }
 
-            $node->returnType = new PhpParserUnionType($unwrappedTypes);
+            $node->returnType = $returnTypeNode;
 
             return $node;
         }
