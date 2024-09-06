@@ -25,14 +25,14 @@ final class MethodCallToPropertyFetchRector extends AbstractRector implements Co
 
     public function getRuleDefinition(): RuleDefinition
     {
-        return new RuleDefinition('Turns method call "$this->something()" to property fetch "$this->something"', [
+        return new RuleDefinition('Turns method call "$this->getFirstname()" to property fetch "$this->firstname"', [
             new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 class SomeClass
 {
     public function run()
     {
-        $this->someMethod();
+        $this->getFirstname();
     }
 }
 CODE_SAMPLE
@@ -42,13 +42,13 @@ class SomeClass
 {
     public function run()
     {
-        $this->someProperty;
+        $this->firstname;
     }
 }
 CODE_SAMPLE
                 ,
                 [
-                    'someMethod' => 'someProperty',
+                    new MethodCallToPropertyFetch('ExamplePersonClass', 'getFirstname', 'firstname'),
                 ]
             ),
         ]);
