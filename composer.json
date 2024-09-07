@@ -18,7 +18,7 @@
         "composer/semver": "^3.4",
         "composer/xdebug-handler": "^3.0.5",
         "doctrine/inflector": "^2.0.10",
-        "illuminate/container": "11.20.0",
+        "illuminate/container": "^11.22.0",
         "nette/utils": "^4.0",
         "nikic/php-parser": "^4.19.1",
         "ocramius/package-versions": "^2.9",
