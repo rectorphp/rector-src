@@ -80,7 +80,11 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($this->shouldBeSkipped($class, $node)) {
+            if (! $this->isUsingStatic($node)) {
+                return null;
+            }
+
+            if (! $class->isFinal() && ! $this->isPrivateConstant($node, $class)) {
                 return null;
             }
 
@@ -118,15 +122,6 @@ CODE_SAMPLE
         }
 
         return false;
-    }
-
-    private function shouldBeSkipped(Class_ $class, ClassConstFetch $classConstFetch): bool
-    {
-        if (! $this->isUsingStatic($classConstFetch)) {
-            return true;
-        }
-
-        return ! $this->isPrivateConstant($classConstFetch, $class);
     }
 
     private function getConstantName(ClassConstFetch $classConstFetch): ?string

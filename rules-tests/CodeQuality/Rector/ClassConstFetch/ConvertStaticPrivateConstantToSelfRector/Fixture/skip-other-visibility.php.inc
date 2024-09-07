@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\ClassConstFetch\ConvertStaticPrivateConstantToSelfRector\Fixture;
 
-final class SkipOtherVisibility
+class SkipOtherVisibility
 {
     protected const BAR = 1;
 
