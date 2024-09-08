@@ -29,6 +29,26 @@ final class FilesFinderTest extends AbstractLazyTestCase
         $this->assertCount(0, $foundFiles);
     }
 
+    #[DataProvider('alwaysReturnsAbsolutePathDataProvider')]
+    public function testAlwaysReturnsAbsolutePath(string $relativePath): void
+    {
+        $absolutePath = str_replace('/', DIRECTORY_SEPARATOR, getcwd() . '/' . $relativePath);
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([$absolutePath], ['php']);
+        $this->assertStringStartsWith($absolutePath, $foundFiles[0], 'should return absolute path if absolute is given');
+
+        $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([$relativePath], ['php']);
+        $this->assertStringStartsWith($absolutePath, $foundFiles[0], 'should return absolute path if relative is given');
+    }
+
+    /**
+     * @return Iterator<array<string>>
+     */
+    public static function alwaysReturnsAbsolutePathDataProvider(): Iterator
+    {
+        yield 'directory given' => ['tests/FileSystem/FilesFinder/Source/'];
+        yield 'file given' => ['tests/FileSystem/FilesFinder/Source/SomeFile.php'];
+    }
+
     public function testWithFollowingBrokenSymlinks(): void
     {
         SimpleParameterProvider::setParameter(Option::SKIP, [__DIR__ . '/../SourceWithBrokenSymlinks/folder1']);
