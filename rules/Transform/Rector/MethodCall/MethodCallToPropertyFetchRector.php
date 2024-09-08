@@ -47,9 +47,7 @@ class SomeClass
 }
 CODE_SAMPLE
                 ,
-                [
-                    new MethodCallToPropertyFetch('ExamplePersonClass', 'getFirstname', 'firstname'),
-                ]
+                [new MethodCallToPropertyFetch('ExamplePersonClass', 'getFirstname', 'firstname')]
             ),
         ]);
     }
