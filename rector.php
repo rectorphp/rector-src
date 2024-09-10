@@ -7,6 +7,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
+use Rector\TypeDeclaration\Rector\Expression\InlineVarDocTagToAssertRector;
 
 return RectorConfig::configure()
     ->withPreparedSets(
@@ -57,4 +58,5 @@ return RectorConfig::configure()
         ],
 
         RemoveUnusedPrivatePropertyRector::class => [__DIR__ . '/src/Configuration/RectorConfigBuilder.php'],
+        InlineVarDocTagToAssertRector::class,
     ]);
