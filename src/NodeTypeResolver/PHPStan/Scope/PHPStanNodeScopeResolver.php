@@ -127,10 +127,6 @@ final readonly class PHPStanNodeScopeResolver
             &$hasUnreachableStatementNode,
             &$hasRememberedExpr
         ): void {
-            if ($node instanceof AlwaysRememberedExpr) {
-                $hasRememberedExpr = true;
-            }
-
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
             if ($node instanceof Class_ || $node instanceof Interface_ || $node instanceof Enum_) {
@@ -282,6 +278,7 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Match_) {
                 $this->processMatch($node, $mutatingScope);
+                $hasRememberedExpr = true;
                 return;
             }
         };
