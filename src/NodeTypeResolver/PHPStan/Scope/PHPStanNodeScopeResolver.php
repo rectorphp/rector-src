@@ -49,7 +49,6 @@ use PhpParser\NodeTraverser;
 use PHPStan\Analyser\MutatingScope;
 use PHPStan\Analyser\NodeScopeResolver;
 use PHPStan\Analyser\ScopeContext;
-use PHPStan\Node\Expr\AlwaysRememberedExpr;
 use PHPStan\Node\UnreachableStatementNode;
 use PHPStan\Node\VirtualNode;
 use PHPStan\Reflection\ReflectionProvider;
@@ -119,13 +118,13 @@ final readonly class PHPStanNodeScopeResolver
         $scope = $formerMutatingScope ?? $this->scopeFactory->createFromFile($filePath);
 
         $hasUnreachableStatementNode = false;
-        $hasRememberedExpr = false;
+        $hasMatch = false;
 
         $nodeCallback = function (Node $node, MutatingScope $mutatingScope) use (
             &$nodeCallback,
             $filePath,
             &$hasUnreachableStatementNode,
-            &$hasRememberedExpr
+            &$hasMatch
         ): void {
             // the class reflection is resolved AFTER entering to class node
             // so we need to get it from the first after this one
@@ -278,22 +277,22 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Match_) {
                 $this->processMatch($node, $mutatingScope);
-                $hasRememberedExpr = true;
+                $hasMatch = true;
                 return;
             }
         };
 
         $this->nodeScopeResolverProcessNodes($stmts, $scope, $nodeCallback);
 
-        // no AlwaysRememberedExpr instance and no unreachable statement
+        // no Match_ instance and no unreachable statement
         // return early stmts, no need another traverse
-        if (! $hasRememberedExpr && ! $hasUnreachableStatementNode) {
+        if (! $hasMatch && ! $hasUnreachableStatementNode) {
             return $stmts;
         }
 
         $nodeTraverser = new NodeTraverser();
 
-        if ($hasRememberedExpr) {
+        if ($hasMatch) {
             $nodeTraverser->addVisitor(new WrappedNodeRestoringNodeVisitor());
         }
 
