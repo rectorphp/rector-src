@@ -56,5 +56,5 @@ return RectorConfig::configure()
             __DIR__ . '/src/Console/Notifier.php',
         ],
 
-        RemoveUnusedPrivatePropertyRector::class => [__DIR__ . '/src/Configuration/RectorConfigBuilder.php']
+        RemoveUnusedPrivatePropertyRector::class => [__DIR__ . '/src/Configuration/RectorConfigBuilder.php'],
     ]);
