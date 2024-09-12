@@ -16,7 +16,6 @@ use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
-use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\PhpDocParser\TypeExpressionFromVarTagResolver;
@@ -32,7 +31,6 @@ final class InlineVarDocTagToAssertRector extends AbstractRector implements MinP
 {
     public function __construct(
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
-        private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
         private readonly TypeExpressionFromVarTagResolver $typeExpressionFromVarTagResolver
     ) {
@@ -106,7 +104,7 @@ CODE_SAMPLE
                         new Variable($variableName)
                     );
                     if ($typeExpression !== false) {
-                        $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $tagValueNode);
+                        $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
                         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
                         $arg = new Arg($typeExpression);
