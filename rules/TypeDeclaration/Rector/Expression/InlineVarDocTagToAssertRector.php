@@ -18,7 +18,6 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\PhpDocParser\TypeExpressionFromVarTagResolver;
 use Rector\ValueObject\PhpVersionFeature;
@@ -109,7 +108,6 @@ CODE_SAMPLE
                     if ($typeExpression !== false) {
                         $this->phpDocTagRemover->removeTagValueFromNode($phpDocInfo, $tagValueNode);
                         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-                        $node->setAttribute(AttributeKey::DO_NOT_CHANGE, true);
 
                         $arg = new Arg($typeExpression);
                         $funcCall = new FuncCall(new Name('assert'), [$arg]);

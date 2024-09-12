@@ -35,6 +35,14 @@ $bar = getInt();
 /** @var string $foo this is the string */
 $foo = getString();
 
+/* normal comment */
+/** @var string $foo */
+$foo = getString();
+
+/** @var string $foo */
+// normal comment
+$foo = getString();
+
 ?>
 -----
 <?php
@@ -73,5 +81,13 @@ $bar = getInt();
 
 /** @var string $foo this is the string */
 $foo = getString();
+
+/* normal comment */
+$foo = getString();
+assert(is_string($foo));
+
+// normal comment
+$foo = getString();
+assert(is_string($foo));
 
 ?>
