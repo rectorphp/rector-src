@@ -267,8 +267,14 @@ CODE_SAMPLE;
         $oldPhpDocInfo = $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO);
         $newPhpDocInfo = $newNode->getAttribute(AttributeKey::PHP_DOC_INFO);
 
-        if ($newPhpDocInfo instanceof PhpDocInfo && $oldPhpDocInfo !== $newPhpDocInfo) {
-            return;
+        if ($newPhpDocInfo instanceof PhpDocInfo) {
+            if (! $oldPhpDocInfo instanceof PhpDocInfo) {
+                return;
+            }
+
+            if ((string) $oldPhpDocInfo->getPhpDocNode() !== (string) $newPhpDocInfo->getPhpDocNode()) {
+                return;
+            }
         }
 
         $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);

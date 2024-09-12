@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Expression;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
@@ -88,30 +87,22 @@ CODE_SAMPLE
         }
 
         $expressionVariableName = $node->expr->var->name;
-        foreach ($phpDocInfo->getPhpDocNode()->children as $phpDocChildNode) {
-            if (! $phpDocChildNode instanceof PhpDocTagNode) {
-                continue;
-            }
+        foreach ($phpDocInfo->getPhpDocNode()->getVarTagValues() as $varTagValueNode) {
+            //remove $ from variable name
+            $variableName = substr($varTagValueNode->variableName, 1);
+            if ($variableName === $expressionVariableName && $varTagValueNode->description === '') {
+                $typeExpression = $this->typeExpressionFromVarTagResolver->resolveTypeExpressionFromVarTag(
+                    $varTagValueNode->type,
+                    new Variable($variableName)
+                );
+                if ($typeExpression !== false) {
+                    $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
+                    $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
-            $tagValueNode = $phpDocChildNode->value;
-            // handle only basic types, keep phpstan/psalm helper ones
-            if ($tagValueNode instanceof VarTagValueNode && $phpDocChildNode->name === '@var') {
-                //remove $ from variable name
-                $variableName = substr($tagValueNode->variableName, 1);
-                if ($variableName === $expressionVariableName && $tagValueNode->description === '') {
-                    $typeExpression = $this->typeExpressionFromVarTagResolver->resolveTypeExpressionFromVarTag(
-                        $tagValueNode->type,
-                        new Variable($variableName)
-                    );
-                    if ($typeExpression !== false) {
-                        $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
-                        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
-
-                        $arg = new Arg($typeExpression);
-                        $funcCall = new FuncCall(new Name('assert'), [$arg]);
-                        $expression = new Expression($funcCall);
-                        return [$node, $expression];
-                    }
+                    $arg = new Arg($typeExpression);
+                    $funcCall = new FuncCall(new Name('assert'), [$arg]);
+                    $expression = new Expression($funcCall);
+                    return [$node, $expression];
                 }
             }
         }
