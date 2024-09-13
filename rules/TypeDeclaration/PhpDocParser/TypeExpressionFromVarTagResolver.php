@@ -39,7 +39,7 @@ final readonly class TypeExpressionFromVarTagResolver
     ) {
     }
 
-    public function resolveTypeExpressionFromVarTag(TypeNode $typeNode, Variable $variable): Expr|false
+    public function resolveTypeExpressionFromVarTag(TypeNode $typeNode, Variable $variable): ?Expr
     {
         if ($typeNode instanceof IdentifierTypeNode) {
             $scalarType = $this->scalarStringToTypeMapper->mapScalarStringToType($typeNode->name);
@@ -66,21 +66,21 @@ final readonly class TypeExpressionFromVarTagResolver
         } elseif ($typeNode instanceof NullableTypeNode) {
             $unionExpressions = [];
             $nullableTypeExpression = $this->resolveTypeExpressionFromVarTag($typeNode->type, $variable);
-            if ($nullableTypeExpression === false) {
-                return false;
+            if (! $nullableTypeExpression instanceof Expr) {
+                return null;
             }
 
             $unionExpressions[] = $nullableTypeExpression;
             $nullExpression = $this->resolveTypeExpressionFromVarTag(new IdentifierTypeNode('null'), $variable);
-            assert($nullExpression !== false);
+            assert($nullExpression instanceof Expr);
             $unionExpressions[] = $nullExpression;
             return $this->generateOrExpression($unionExpressions);
         } elseif ($typeNode instanceof BracketsAwareUnionTypeNode) {
             $unionExpressions = [];
             foreach ($typeNode->types as $typeNode) {
                 $unionExpression = $this->resolveTypeExpressionFromVarTag($typeNode, $variable);
-                if ($unionExpression === false) {
-                    return false;
+                if (! $unionExpression instanceof Expr) {
+                    return null;
                 }
 
                 $unionExpressions[] = $unionExpression;
@@ -91,8 +91,8 @@ final readonly class TypeExpressionFromVarTagResolver
             $intersectionExpressions = [];
             foreach ($typeNode->types as $typeNode) {
                 $intersectionExpression = $this->resolveTypeExpressionFromVarTag($typeNode, $variable);
-                if ($intersectionExpression === false) {
-                    return false;
+                if (! $intersectionExpression instanceof Expr) {
+                    return null;
                 }
 
                 $intersectionExpressions[] = $intersectionExpression;
@@ -101,7 +101,7 @@ final readonly class TypeExpressionFromVarTagResolver
             return $this->generateAndExpression($intersectionExpressions);
         }
 
-        return false;
+        return null;
     }
 
     /**

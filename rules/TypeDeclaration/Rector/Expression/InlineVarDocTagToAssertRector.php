@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\Expression;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Variable;
@@ -95,7 +96,7 @@ CODE_SAMPLE
                     $varTagValueNode->type,
                     new Variable($variableName)
                 );
-                if ($typeExpression !== false) {
+                if ($typeExpression instanceof Expr) {
                     $phpDocInfo->removeByType(VarTagValueNode::class, $variableName);
                     $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
