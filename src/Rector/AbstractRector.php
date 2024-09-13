@@ -21,6 +21,7 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Application\ChangedNodeScopeRefresher;
 use Rector\Application\Provider\CurrentFileProvider;
+use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfo;
 use Rector\ChangesReporting\ValueObject\RectorWithLineChange;
 use Rector\Contract\Rector\RectorInterface;
 use Rector\Exception\ShouldNotHappenException;
@@ -263,7 +264,20 @@ CODE_SAMPLE;
             return;
         }
 
-        $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO));
+        $oldPhpDocInfo = $oldNode->getAttribute(AttributeKey::PHP_DOC_INFO);
+        $newPhpDocInfo = $newNode->getAttribute(AttributeKey::PHP_DOC_INFO);
+
+        if ($newPhpDocInfo instanceof PhpDocInfo) {
+            if (! $oldPhpDocInfo instanceof PhpDocInfo) {
+                return;
+            }
+
+            if ((string) $oldPhpDocInfo->getPhpDocNode() !== (string) $newPhpDocInfo->getPhpDocNode()) {
+                return;
+            }
+        }
+
+        $newNode->setAttribute(AttributeKey::PHP_DOC_INFO, $oldPhpDocInfo);
         if (! $newNode instanceof Nop) {
             $newNode->setAttribute(AttributeKey::COMMENTS, $oldNode->getAttribute(AttributeKey::COMMENTS));
         }
