@@ -277,7 +277,7 @@ final class PhpDocInfo
                     $name,
                     '$'
                 )) {
-                    return null;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CHILDREN;
                 }
 
                 $hasChanged = true;
