@@ -41,7 +41,9 @@ final readonly class ConfigurationFactory
             false,
             null,
             false,
-            false
+            false,
+            0,
+            0,
         );
     }
 
@@ -65,11 +67,14 @@ final readonly class ConfigurationFactory
         $isParallel = SimpleParameterProvider::provideBoolParameter(Option::PARALLEL);
         $parallelPort = (string) $input->getOption(Option::PARALLEL_PORT);
         $parallelIdentifier = (string) $input->getOption(Option::PARALLEL_IDENTIFIER);
+        $batchIndex = (int) $input->getOption(Option::BATCH_INDEX);
+        $batchTotal = (int) $input->getOption(Option::BATCH_TOTAL);
         $isDebug = (bool) $input->getOption(Option::DEBUG);
 
-        // using debug disables parallel, so emitting exception is straightforward and easier to debug
+        // using debug disables parallel and batch running, so emitting exception is straightforward and easier to debug
         if ($isDebug) {
             $isParallel = false;
+            $batchTotal = 0;
         }
 
         $memoryLimit = $this->resolveMemoryLimit($input);
@@ -90,6 +95,8 @@ final readonly class ConfigurationFactory
             $memoryLimit,
             $isDebug,
             $isReportingWithRealPath,
+            $batchIndex,
+            $batchTotal,
         );
     }
 
