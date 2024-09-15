@@ -37,7 +37,8 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     public function __construct(
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
+        private readonly \Rector\DeadCode\PhpDoc\TagRemover\VarTagRemover $varTagRemover,
     ) {
     }
 
@@ -127,6 +128,10 @@ CODE_SAMPLE
             }
 
             $property->type = $propertyType;
+
+            // clear var docblock
+            $this->varTagRemover->removeVarPhpTagValueNodeIfNotComment($property, $type);
+
             $hasChanged = true;
         }
 
