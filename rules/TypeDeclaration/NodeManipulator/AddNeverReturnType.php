@@ -79,13 +79,9 @@ final readonly class AddNeverReturnType
 
     private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
     {
-        if ($this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped($node, Return_::class)) {
-            return true;
-        }
-
         return $this->betterNodeFinder->hasInstancesOfInFunctionLikeScoped(
             $node,
-            [Yield_::class, YieldFrom::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
+            [Return_::class, Yield_::class, YieldFrom::class, ...ControlStructure::CONDITIONAL_NODE_SCOPE_TYPES]
         );
     }
 
