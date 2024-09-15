@@ -107,6 +107,7 @@ EOF
                 return ExitCode::FAILURE;
             }
 
+            // read from cli paths arguments, eg: vendor/bin/rector process A B C which A, B, and C not exists
             $isSingular = count($paths) === 1;
             $this->symfonyStyle->error(
                 sprintf(
