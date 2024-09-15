@@ -101,7 +101,7 @@ EOF
             // read from rector.php, no paths definition needs withPaths() config
             if ($paths === []) {
                 $this->symfonyStyle->error(
-                    'No given paths in rector configuration, define paths: https://getrector.com/documentation/define-paths'
+                    'No paths definition in rector configuration, define paths: https://getrector.com/documentation/define-paths'
                 );
 
                 return ExitCode::FAILURE;
