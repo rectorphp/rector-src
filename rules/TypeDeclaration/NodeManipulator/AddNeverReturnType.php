@@ -45,6 +45,8 @@ final readonly class AddNeverReturnType
 
     private function shouldSkip(ClassMethod | Function_ | Closure $node, Scope $scope): bool
     {
+        // already has return type, and non-void
+        // it can be "never" return itself, or other return type
         if ($node->returnType instanceof Node && ! $this->nodeNameResolver->isName($node->returnType, 'void')) {
             return true;
         }
@@ -69,14 +71,10 @@ final readonly class AddNeverReturnType
         }
 
         // skip as most likely intentional
-        if (! $this->classModifierChecker->isInsideFinalClass($node) && $this->nodeNameResolver->isName(
+        return ! $this->classModifierChecker->isInsideFinalClass($node) && $this->nodeNameResolver->isName(
             $node->returnType,
             'void'
-        )) {
-            return true;
-        }
-
-        return $this->nodeNameResolver->isName($node->returnType, 'never');
+        );
     }
 
     private function hasReturnOrYields(ClassMethod|Function_|Closure $node): bool
