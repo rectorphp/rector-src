@@ -34,10 +34,18 @@ final class FilesFinderTest extends AbstractLazyTestCase
     {
         $absolutePath = str_replace('/', DIRECTORY_SEPARATOR, getcwd() . '/' . $relativePath);
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([$absolutePath], ['php']);
-        $this->assertStringStartsWith($absolutePath, $foundFiles[0], 'should return absolute path if absolute is given');
+        $this->assertStringStartsWith(
+            $absolutePath,
+            $foundFiles[0],
+            'should return absolute path if absolute is given'
+        );
 
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([$relativePath], ['php']);
-        $this->assertStringStartsWith($absolutePath, $foundFiles[0], 'should return absolute path if relative is given');
+        $this->assertStringStartsWith(
+            $absolutePath,
+            $foundFiles[0],
+            'should return absolute path if relative is given'
+        );
     }
 
     /**
