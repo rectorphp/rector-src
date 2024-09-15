@@ -98,6 +98,15 @@ EOF
         // 1. add files and directories to static locator
         $this->dynamicSourceLocatorDecorator->addPaths($paths);
         if ($this->dynamicSourceLocatorDecorator->isPathsEmpty()) {
+            // read from rector.php, no paths definition needs withPaths() config
+            if ($paths === []) {
+                $this->symfonyStyle->error(
+                    sprintf('The given paths do not match any files, define paths: https://getrector.com/documentation/define-paths')
+                );
+
+                return ExitCode::FAILURE;
+            }
+
             $isSingular = count($paths) === 1;
             $this->symfonyStyle->error(
                 sprintf(
