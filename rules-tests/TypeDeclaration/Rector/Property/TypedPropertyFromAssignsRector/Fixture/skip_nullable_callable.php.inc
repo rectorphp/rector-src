@@ -11,7 +11,7 @@ final class SkipNullableCallable
         $this->prop = $prop;
     }
 
-    private function reset(): void
+    public function reset(): void
     {
         $this->prop = null;
     }
