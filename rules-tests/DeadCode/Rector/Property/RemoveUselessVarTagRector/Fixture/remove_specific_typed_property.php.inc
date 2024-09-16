@@ -11,7 +11,7 @@ final class RemoveSpecificTypedProperty
     /**
      * @var SomeObject
      */
-    public SomeMoreSpecificObject $name = SomeConstantFloatType::ONE_HALF;
+    public SomeMoreSpecificObject $name;
 }
 
 ?>
@@ -26,7 +26,7 @@ use Rector\Tests\DeadCode\Rector\Property\RemoveUselessVarTagRector\Source\SomeO
 
 final class RemoveSpecificTypedProperty
 {
-    public SomeMoreSpecificObject $name = SomeConstantFloatType::ONE_HALF;
+    public SomeMoreSpecificObject $name;
 }
 
 ?>
