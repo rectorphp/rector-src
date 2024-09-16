@@ -7,6 +7,9 @@ class Fixture
     public function run()
     {
         self::someStatic();
+        static::someStatic();
+        Fixture::someStatic();
+        \Rector\Tests\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector\Fixture\Fixture::someStatic();
     }
 
     private static function someStatic()
@@ -24,6 +27,9 @@ class Fixture
 {
     public function run()
     {
+        $this->someStatic();
+        $this->someStatic();
+        $this->someStatic();
         $this->someStatic();
     }
 
