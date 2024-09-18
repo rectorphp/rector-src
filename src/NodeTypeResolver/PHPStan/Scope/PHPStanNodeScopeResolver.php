@@ -136,7 +136,6 @@ final readonly class PHPStanNodeScopeResolver
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
 
                 return;
             }
@@ -163,12 +162,12 @@ final readonly class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
 
-            $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
-
             if ($node instanceof FileWithoutNamespace) {
                 $this->nodeScopeResolverProcessNodes($node->stmts, $mutatingScope, $nodeCallback);
                 return;
             }
+
+            $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
 
             if ((
                 $node instanceof Expression ||
