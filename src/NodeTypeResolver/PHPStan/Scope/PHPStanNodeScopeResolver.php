@@ -373,6 +373,9 @@ final readonly class PHPStanNodeScopeResolver
         $arrayItem->value->setAttribute(AttributeKey::SCOPE, $mutatingScope);
     }
 
+    /**
+     * @param callable(Node $trait, MutatingScope $scope): void $nodeCallback
+     */
     private function decorateNodeAttrGroups(Node $node, MutatingScope $mutatingScope, callable $nodeCallback): void
     {
         // better to have AttrGroupsAwareInterface for all Node definition with attrGroups property
