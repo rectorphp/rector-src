@@ -143,7 +143,6 @@ final readonly class PHPStanNodeScopeResolver
 
             if ($node instanceof Trait_) {
                 $this->processTrait($node, $mutatingScope, $nodeCallback);
-                $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
 
                 return;
             }
@@ -538,6 +537,7 @@ final readonly class PHPStanNodeScopeResolver
         if (! $this->reflectionProvider->hasClass($traitName)) {
             $trait->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             $this->nodeScopeResolverProcessNodes($trait->stmts, $mutatingScope, $nodeCallback);
+            $this->decorateNodeAttrGroups($trait, $mutatingScope, $nodeCallback);
 
             return;
         }
@@ -557,5 +557,6 @@ final readonly class PHPStanNodeScopeResolver
 
         $trait->setAttribute(AttributeKey::SCOPE, $traitScope);
         $this->nodeScopeResolverProcessNodes($trait->stmts, $traitScope, $nodeCallback);
+        $this->decorateNodeAttrGroups($trait, $traitScope, $nodeCallback);
     }
 }
