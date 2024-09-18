@@ -136,7 +136,6 @@ final readonly class PHPStanNodeScopeResolver
                 /** @var MutatingScope $mutatingScope */
                 $mutatingScope = $this->resolveClassOrInterfaceScope($node, $mutatingScope);
                 $node->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-                $this->decorateNodeAttrGroups($node, $mutatingScope, $nodeCallback);
 
                 return;
             }
