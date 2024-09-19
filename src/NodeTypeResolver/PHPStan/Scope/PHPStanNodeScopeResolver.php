@@ -455,12 +455,6 @@ final readonly class PHPStanNodeScopeResolver
                 $propertyProperty->default->setAttribute(AttributeKey::SCOPE, $mutatingScope);
             }
         }
-
-        foreach ($property->attrGroups as $attrGroup) {
-            foreach ($attrGroup->attrs as $attribute) {
-                $attribute->setAttribute(AttributeKey::SCOPE, $mutatingScope);
-            }
-        }
     }
 
     private function processBinaryOp(BinaryOp $binaryOp, MutatingScope $mutatingScope): void
