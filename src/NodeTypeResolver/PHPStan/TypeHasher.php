@@ -7,7 +7,6 @@ namespace Rector\NodeTypeResolver\PHPStan;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\ConstantType;
 use PHPStan\Type\Generic\GenericObjectType;
-use PHPStan\Type\IterableType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -48,20 +47,6 @@ final class TypeHasher
         }
 
         $type = $this->normalizeObjectType($type);
-
-        // normalize iterable
-        $type = TypeTraverser::map($type, static function (Type $currentType, callable $traverseCallback): Type {
-            if (! $currentType instanceof ObjectType) {
-                return $traverseCallback($currentType);
-            }
-
-            if ($currentType->getClassName() === 'iterable') {
-                return new IterableType(new MixedType(), new MixedType());
-            }
-
-            return $traverseCallback($currentType);
-        });
-
         return $type->describe(VerbosityLevel::value());
     }
 
