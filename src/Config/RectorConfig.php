@@ -138,10 +138,14 @@ final class RectorConfig extends Container
         SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, $removeUnusedImports);
     }
 
-    public function importNames(bool $importNames = true, bool $importDocBlockNames = true): void
-    {
+    public function importNames(
+        bool $importNames = true,
+        bool $importDocBlockNames = true,
+        bool $importInsertSorted = false,
+    ): void {
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_NAMES, $importNames);
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, $importDocBlockNames);
+        SimpleParameterProvider::setParameter(Option::IMPORT_INSERT_SORTED, $importInsertSorted);
     }
 
     public function importShortClasses(bool $importShortClasses = true): void

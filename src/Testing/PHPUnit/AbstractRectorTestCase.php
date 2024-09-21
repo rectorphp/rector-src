@@ -54,6 +54,7 @@ abstract class AbstractRectorTestCase extends AbstractLazyTestCase implements Re
         SimpleParameterProvider::setParameter(Option::AUTO_IMPORT_DOC_BLOCK_NAMES, false);
         SimpleParameterProvider::setParameter(Option::REMOVE_UNUSED_IMPORTS, false);
         SimpleParameterProvider::setParameter(Option::IMPORT_SHORT_CLASSES, true);
+        SimpleParameterProvider::setParameter(Option::IMPORT_INSERT_SORTED, false);
 
         SimpleParameterProvider::setParameter(Option::INDENT_CHAR, ' ');
         SimpleParameterProvider::setParameter(Option::INDENT_SIZE, 4);

@@ -16,7 +16,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->parallel();
 
     // to avoid autoimporting out of the box
-    $rectorConfig->importNames(false, false);
+    $rectorConfig->importNames(false, false, false);
     $rectorConfig->removeUnusedImports(false);
 
     $rectorConfig->importShortClasses();

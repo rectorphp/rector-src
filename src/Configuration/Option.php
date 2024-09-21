@@ -76,6 +76,12 @@ final class Option
     public const IMPORT_SHORT_CLASSES = 'import_short_classes';
 
     /**
+     * @internal Use @see \Rector\Config\RectorConfig::importNames() instead
+     * @var string
+     */
+    public const IMPORT_INSERT_SORTED = 'import_insert_sorted';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::symfonyContainerXml() instead
      * @var string
      */
