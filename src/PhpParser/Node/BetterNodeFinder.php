@@ -225,10 +225,10 @@ final readonly class BetterNodeFinder
      *
      * @template T of Node
      * @param Node[] $nodes
-     * @param class-string<T>|array<class-string<T>> $type
+     * @param class-string<T>|array<class-string<T>> $types
      * @return T[]
      */
-    public function findInstancesOfScoped(array $nodes, string|array $type): array
+    public function findInstancesOfScoped(array $nodes, string|array $types): array
     {
         // here verify only pass single nodes as FunctionLike
         if (count($nodes) === 1
@@ -236,7 +236,9 @@ final readonly class BetterNodeFinder
             $nodes = (array) $nodes[0]->stmts;
         }
 
-        $types = is_string($type) ? [$type] : $type;
+        if (is_string($types)) {
+            $types = [$types];
+        }
 
         /** @var T[] $foundNodes */
         $foundNodes = [];
