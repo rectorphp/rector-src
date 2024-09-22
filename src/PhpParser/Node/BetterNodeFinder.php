@@ -182,11 +182,7 @@ final readonly class BetterNodeFinder
         /** @var T[] $foundNodes */
         $foundNodes = [];
 
-        if (! is_array($type)) {
-            $types = [$type];
-        } else {
-            $types = $type;
-        }
+        $types = is_array($type) ? $type : [$type];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
