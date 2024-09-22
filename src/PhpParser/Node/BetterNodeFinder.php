@@ -221,14 +221,21 @@ final readonly class BetterNodeFinder
     }
 
     /**
+     * @api to be used
+     *
      * @template T of Node
-     * @param array<class-string<T>>|class-string<T> $types
-     * @return array<T>
+     * @param Node[] $nodes
+     * @param class-string<T>|array<class-string<T>> $types
+     * @return T[]
      */
-    public function findInstancesOfInFunctionLikeScoped(
-        ClassMethod | Function_ | Closure $functionLike,
-        string|array $types
-    ): array {
+    public function findInstancesOfScoped(array $nodes, string|array $types): array
+    {
+        // here verify only pass single nodes as FunctionLike
+        if (count($nodes) === 1
+            && ($nodes[0] instanceof ClassMethod || $nodes[0] instanceof Function_ || $nodes[0] instanceof Closure)) {
+            $nodes = (array) $nodes[0]->stmts;
+        }
+
         if (is_string($types)) {
             $types = [$types];
         }
@@ -237,7 +244,7 @@ final readonly class BetterNodeFinder
         $foundNodes = [];
 
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
+            $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
@@ -255,6 +262,18 @@ final readonly class BetterNodeFinder
         );
 
         return $foundNodes;
+    }
+
+    /**
+     * @template T of Node
+     * @param array<class-string<T>>|class-string<T> $types
+     * @return array<T>
+     */
+    public function findInstancesOfInFunctionLikeScoped(
+        ClassMethod | Function_ | Closure $functionLike,
+        string|array $types
+    ): array {
+        return $this->findInstancesOfScoped([$functionLike], $types);
     }
 
     /**
