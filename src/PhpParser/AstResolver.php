@@ -317,6 +317,16 @@ final class AstResolver
                 return [];
             }
 
+            /**
+             * it may cause invalid describe() type
+             *
+             * @see https://github.com/rectorphp/rector/issues/8834
+             * @see https://github.com/rectorphp/rector/issues/8835
+             */
+            if (str_starts_with($fileName, 'phar://')) {
+                return [];
+            }
+
             throw $throwable;
         }
 
