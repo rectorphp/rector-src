@@ -166,18 +166,39 @@ final readonly class BetterNodeFinder
             $types = [$types];
         }
 
-        $isFoundNode = false;
+        return $this->findInstancesOfScoped((array) $functionLike->stmts, $types) !== [];
+    }
+
+    /**
+     * @api to be used
+     *
+     * @template T of Node
+     * @param Node[] $nodes
+     * @param class-string<T>|array<class-string<T>> $type
+     * @return T[]
+     */
+    public function findInstancesOfScoped(array $nodes, string|array $type): array
+    {
+        /** @var T[] $foundNodes */
+        $foundNodes = [];
+
+        if (! is_array($type)) {
+            $types = [$type];
+        } else {
+            $types = $type;
+        }
+
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
-            (array) $functionLike->stmts,
-            static function (Node $subNode) use ($types, &$isFoundNode): ?int {
+            $nodes,
+            static function (Node $subNode) use ($types, &$foundNodes): ?int {
                 if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 foreach ($types as $type) {
                     if ($subNode instanceof $type) {
-                        $isFoundNode = true;
-                        return NodeTraverser::STOP_TRAVERSAL;
+                        $foundNodes[] = $subNode;
+                        return null;
                     }
                 }
 
@@ -185,7 +206,7 @@ final readonly class BetterNodeFinder
             }
         );
 
-        return $isFoundNode;
+        return $foundNodes;
     }
 
     /**
