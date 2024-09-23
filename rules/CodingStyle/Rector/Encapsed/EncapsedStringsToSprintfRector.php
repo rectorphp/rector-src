@@ -244,7 +244,7 @@ CODE_SAMPLE
 
     private function createString(string $value): String_
     {
-        $kind = str_contains($value, '\'') ? String_::KIND_DOUBLE_QUOTED : String_::KIND_SINGLE_QUOTED;
+        $kind = str_contains($value, "'") ? String_::KIND_DOUBLE_QUOTED : String_::KIND_SINGLE_QUOTED;
 
         return new String_($value, [
             'kind' => $kind,
