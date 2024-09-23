@@ -204,7 +204,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $arguments = [new Arg(new String_($mask))];
+        $string = $this->createString($mask);
+
+        $arguments = [new Arg($string)];
         foreach ($argumentVariables as $argumentVariable) {
             $arguments[] = new Arg($argumentVariable);
         }
@@ -238,5 +240,14 @@ CODE_SAMPLE
         }
 
         return null;
+    }
+
+    private function createString(string $value): String_
+    {
+        $kind = str_contains($value, "'") ? String_::KIND_DOUBLE_QUOTED : String_::KIND_SINGLE_QUOTED;
+
+        return new String_($value, [
+            'kind' => $kind,
+        ]);
     }
 }
