@@ -167,7 +167,12 @@ CODE_SAMPLE
             return false;
         }
 
-        $functionReflection = $this->reflectionProvider->getFunction(new Name($functionName), null);
+        $name = new Name($functionName);
+        if (! $this->reflectionProvider->hasFunction($name, null)) {
+            return false;
+        }
+
+        $functionReflection = $this->reflectionProvider->getFunction($name, null);
         if (! $functionReflection->isBuiltin()) {
             return false;
         }
