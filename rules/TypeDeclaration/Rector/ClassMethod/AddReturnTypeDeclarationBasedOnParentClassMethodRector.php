@@ -135,7 +135,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $parameterAcceptor = ParametersAcceptorSelector::selectSingle($parentMethodReflection->getVariants());
+            $parameterAcceptor = ParametersAcceptorSelector::combineAcceptors($parentMethodReflection->getVariants());
 
             if (! $parameterAcceptor instanceof ParametersAcceptorWithPhpDocs) {
                 return null;
