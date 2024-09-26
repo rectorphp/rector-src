@@ -9,7 +9,6 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Reflection\ParametersAcceptorWithPhpDocs;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
@@ -135,11 +134,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $parameterAcceptor = ParametersAcceptorSelector::selectSingle($parentMethodReflection->getVariants());
-
-            if (! $parameterAcceptor instanceof ParametersAcceptorWithPhpDocs) {
-                return null;
-            }
+            $parameterAcceptor = ParametersAcceptorSelector::combineAcceptors($parentMethodReflection->getVariants());
 
             $parentReturnType = $parameterAcceptor->getNativeReturnType();
             if (! $parentReturnType instanceof MixedType) {

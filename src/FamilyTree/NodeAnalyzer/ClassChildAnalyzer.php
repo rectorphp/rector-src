@@ -47,7 +47,7 @@ final readonly class ClassChildAnalyzer
         }
 
         foreach ($parentClassMethods as $parentClassMethod) {
-            $parametersAcceptor = ParametersAcceptorSelector::selectSingle($parentClassMethod->getVariants());
+            $parametersAcceptor = ParametersAcceptorSelector::combineAcceptors($parentClassMethod->getVariants());
             $nativeReturnType = $parametersAcceptor->getNativeReturnType();
 
             if (! $nativeReturnType instanceof MixedType) {

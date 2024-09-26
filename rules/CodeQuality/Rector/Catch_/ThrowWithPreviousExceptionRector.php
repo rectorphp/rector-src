@@ -200,7 +200,7 @@ CODE_SAMPLE
         }
 
         $extendedMethodReflection = $classReflection->getConstructor();
-        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::selectSingle(
+        $parametersAcceptorWithPhpDocs = ParametersAcceptorSelector::combineAcceptors(
             $extendedMethodReflection->getVariants()
         );
 

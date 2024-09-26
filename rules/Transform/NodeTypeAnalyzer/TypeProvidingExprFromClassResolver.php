@@ -67,7 +67,7 @@ final readonly class TypeProvidingExprFromClassResolver
         $methodReflections = $this->getClassMethodReflections($classReflection);
 
         foreach ($methodReflections as $methodReflection) {
-            $functionVariant = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
+            $functionVariant = ParametersAcceptorSelector::combineAcceptors($methodReflection->getVariants());
             $returnType = $functionVariant->getReturnType();
 
             if (! $this->isMatchingType($returnType, $objectType)) {
