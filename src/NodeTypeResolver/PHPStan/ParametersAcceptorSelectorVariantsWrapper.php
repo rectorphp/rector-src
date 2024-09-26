@@ -24,6 +24,10 @@ final class ParametersAcceptorSelectorVariantsWrapper
             return ParametersAcceptorSelector::combineAcceptors($variants);
         }
 
+        if ($node->isFirstClassCallable()) {
+            return ParametersAcceptorSelector::combineAcceptors($variants);
+        }
+
         return ParametersAcceptorSelector::selectFromArgs($scope, $node->getArgs(), $variants);
     }
 }
