@@ -154,11 +154,6 @@ final class AttributeKey
     /**
      * @var string
      */
-    public const IS_ASSIGN_OP = 'is_assigned_to';
-
-    /**
-     * @var string
-     */
     public const IS_GLOBAL_VAR = 'is_global_var';
 
     /**
