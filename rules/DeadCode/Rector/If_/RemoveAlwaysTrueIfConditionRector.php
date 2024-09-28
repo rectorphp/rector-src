@@ -113,7 +113,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->shouldSkipFromParam($node->cond)) {
+        if ($this->shouldSkipFromVariable($node->cond)) {
             return null;
         }
 
@@ -129,7 +129,7 @@ CODE_SAMPLE
         return $node->stmts;
     }
 
-    private function shouldSkipFromParam(Expr $expr): bool
+    private function shouldSkipFromVariable(Expr $expr): bool
     {
         /** @var Variable[] $variables */
         $variables = $this->betterNodeFinder->findInstancesOf($expr, [Variable::class]);
