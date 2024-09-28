@@ -18,7 +18,9 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
+use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantBooleanType;
+use PHPStan\Type\IntersectionType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
@@ -135,6 +137,15 @@ CODE_SAMPLE
         foreach ($variables as $variable) {
             if ($this->exprAnalyzer->isNonTypedFromParam($variable)) {
                 return true;
+            }
+
+            $type = $this->getType($variable);
+            if ($type instanceof IntersectionType) {
+                foreach ($type->getTypes() as $subType) {
+                    if ($subType instanceof ArrayType) {
+                        return true;
+                    }
+                }
             }
         }
 
