@@ -1,3 +1,6 @@
+includes:
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/bleedingEdge.neon
+
 parameters:
     # see https://github.com/rectorphp/rector/issues/3490#issue-634342324
     featureToggles:
