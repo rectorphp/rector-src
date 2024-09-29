@@ -114,7 +114,7 @@ final readonly class StrictReturnNewAnalyzer
 
                 $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($subNode);
                 if (! $reflection instanceof FunctionReflection && ! $reflection instanceof MethodReflection) {
-                    return null;
+                    return false;
                 }
 
                 $scope = $subNode->getAttribute(AttributeKey::SCOPE);
@@ -124,7 +124,7 @@ final readonly class StrictReturnNewAnalyzer
 
                 $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $subNode, $scope);
                 foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
-                    if ($parameterReflection->passedByReference()) {
+                    if ($parameterReflection->passedByReference()->yes()) {
                         return true;
                     }
                 }
