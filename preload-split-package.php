@@ -250,6 +250,7 @@ require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/NodeVisi
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Multiple.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Php5.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Php7.php';
+require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Php8.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/Parser/Tokens.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/ParserFactory.php';
 require_once __DIR__ . '/../../../vendor/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php';
