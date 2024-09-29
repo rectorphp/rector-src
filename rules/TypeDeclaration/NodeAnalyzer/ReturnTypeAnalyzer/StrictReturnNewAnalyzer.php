@@ -16,6 +16,9 @@ use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\FunctionReflection;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -110,12 +113,12 @@ final readonly class StrictReturnNewAnalyzer
                 }
 
                 $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($subNode);
-                if ($reflection === null) {
-                    return false;
+                if (! $reflection instanceof FunctionReflection && ! $reflection instanceof MethodReflection) {
+                    return null;
                 }
 
                 $scope = $subNode->getAttribute(AttributeKey::SCOPE);
-                if ($scope === null) {
+                if (! $scope instanceof Scope) {
                     return false;
                 }
 
