@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Rector\TypeDeclaration\NodeAnalyzer\ReturnTypeAnalyzer;
 
+use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -14,8 +18,11 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\ObjectType;
 use Rector\NodeNameResolver\NodeNameResolver;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\TypeDeclaration\ValueObject\AssignToVariable;
 
@@ -25,7 +32,8 @@ final readonly class StrictReturnNewAnalyzer
         private BetterNodeFinder $betterNodeFinder,
         private NodeNameResolver $nodeNameResolver,
         private NodeTypeResolver $nodeTypeResolver,
-        private ReturnAnalyzer $returnAnalyzer
+        private ReturnAnalyzer $returnAnalyzer,
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -56,6 +64,10 @@ final readonly class StrictReturnNewAnalyzer
             return null;
         }
 
+        if ($this->isUsedAsParamByRef($functionLike, $onlyReturn->expr)) {
+            return null;
+        }
+
         $createdVariablesToTypes = $this->resolveCreatedVariablesToTypes($functionLike);
 
         $returnedVariableName = $this->nodeNameResolver->getName($onlyReturn->expr);
@@ -70,6 +82,53 @@ final readonly class StrictReturnNewAnalyzer
         }
 
         return null;
+    }
+
+    private function isUsedAsParamByRef(ClassMethod|Function_ $functionLike, Variable $variable): bool
+    {
+        return (bool) $this->betterNodeFinder->findFirstInFunctionLikeScoped(
+            $functionLike,
+            function (Node $subNode) use ($variable): bool {
+                if (! $subNode instanceof MethodCall && ! $subNode instanceof StaticCall && ! $subNode instanceof FuncCall) {
+                    return false;
+                }
+
+                if ($subNode->isFirstClassCallable()) {
+                    return false;
+                }
+
+                $isFound = false;
+                foreach ($subNode->getArgs() as $arg) {
+                    if ($arg->value instanceof Variable && $arg->value->name === $variable->name) {
+                        $isFound = true;
+                        break;
+                    }
+                }
+
+                if (! $isFound) {
+                    return false;
+                }
+
+                $reflection = $this->reflectionResolver->resolveFunctionLikeReflectionFromCall($subNode);
+                if ($reflection === null) {
+                    return false;
+                }
+
+                $scope = $subNode->getAttribute(AttributeKey::SCOPE);
+                if ($scope === null) {
+                    return false;
+                }
+
+                $parametersAcceptor = ParametersAcceptorSelectorVariantsWrapper::select($reflection, $subNode, $scope);
+                foreach ($parametersAcceptor->getParameters() as $parameterReflection) {
+                    if ($parameterReflection->passedByReference()) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        );
     }
 
     /**
