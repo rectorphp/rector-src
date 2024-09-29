@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rector\PhpParser\Node;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Expr\Yield_;
 use PhpParser\Node\Expr\YieldFrom;
+use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -171,7 +171,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->stmts,
             static function (Node $subNode) use ($types, &$isFoundNode): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure || $subNode instanceof ArrowFunction) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
@@ -199,7 +199,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             (array) $functionLike->stmts,
             function (Node $subNode) use (&$returns): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
@@ -233,8 +233,8 @@ final readonly class BetterNodeFinder
     {
         // here verify only pass single nodes as FunctionLike
         if (count($nodes) === 1
-            && ($nodes[0] instanceof ClassMethod || $nodes[0] instanceof Function_ || $nodes[0] instanceof Closure)) {
-            $nodes = (array) $nodes[0]->stmts;
+            && ($nodes[0] instanceof FunctionLike)) {
+            $nodes = (array) $nodes[0]->getStmts();
         }
 
         if (is_string($types)) {
@@ -247,7 +247,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $nodes,
             static function (Node $subNode) use ($types, &$foundNodes): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure || $subNode instanceof ArrowFunction) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     return NodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
@@ -293,7 +293,7 @@ final readonly class BetterNodeFinder
             return null;
         }
 
-        if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, Function_::class, Closure::class])) {
+        if (! $this->hasInstancesOf($functionLike->stmts, [Class_::class, FunctionLike::class])) {
             return $foundNode;
         }
 
@@ -301,7 +301,7 @@ final readonly class BetterNodeFinder
         $this->simpleCallableNodeTraverser->traverseNodesWithCallable(
             $functionLike->stmts,
             function (Node $subNode) use (&$scopedNode, $foundNode, $filter): ?int {
-                if ($subNode instanceof Class_ || $subNode instanceof Function_ || $subNode instanceof Closure) {
+                if ($subNode instanceof Class_ || $subNode instanceof FunctionLike) {
                     if ($foundNode instanceof $subNode && $subNode === $foundNode) {
                         $scopedNode = $subNode;
                         return NodeTraverser::STOP_TRAVERSAL;
