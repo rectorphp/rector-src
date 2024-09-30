@@ -7,7 +7,7 @@ use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIter
 class Fixture
 {
     /**
-     * @param Collection<int> $collection
+     * @param Collection<string, int> $collection
      */
     public function run(Collection $collection)
     {

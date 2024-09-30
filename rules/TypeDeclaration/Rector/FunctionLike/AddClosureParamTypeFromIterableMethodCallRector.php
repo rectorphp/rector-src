@@ -4,53 +4,35 @@ namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use Rector\Contract\Rector\ConfigurableRectorInterface;
+use PhpParser\Node\VariadicPlaceholder;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Rector\AbstractRector;
 use PHPStan\Type\ObjectType;
+use PHPStan\Type\CallableType;
+use PHPStan\Type\TypeWithClassName;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
+use PHPStan\Reflection\ParameterReflection;
+use Rector\Reflection\MethodReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\TypeDeclaration\ValueObject\AddClosureParamTypeFromObject;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use Webmozart\Assert\Assert;
+use function PHPStan\dumpType;
 
-class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector implements ConfigurableRectorInterface
+final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector
 {
-    /**
-     * @var int
-     */
-    private const DEFAULT_CLOSURE_ARG_POSITION = 0;
-
-    /**
-     * @var AddClosureParamTypeFromObject[]
-     */
-    private array $addClosureParamTypeFromObjects;
-
     public function __construct(
         private readonly TypeComparator $typeComparator,
-        private readonly StaticTypeMapper $staticTypeMapper
+        private readonly StaticTypeMapper $staticTypeMapper,
+        private readonly MethodReflectionResolver $methodReflectionResolver,
+        private readonly TypeUnwrapper $typeUnwrapper,
     ) {
-    }
-
-    /**
-     * @param AddClosureParamTypeFromObject[] $configuration
-     * @return void
-     */
-    public function configure(array $configuration): void
-    {
-        Assert::allIsAOf($configuration, AddClosureParamTypeFromObject::class);
-
-        $this->addClosureParamTypeFromObjects = $configuration;
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -58,7 +40,7 @@ class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector imp
         return new RuleDefinition(
             '',
             [
-                new ConfiguredCodeSample(<<<'CODE_SAMPLE'
+                new CodeSample(<<<'CODE_SAMPLE'
 class SomeClass
 {
     /**
@@ -86,9 +68,6 @@ class SomeClass
     }
 }
 CODE_SAMPLE,
-                [
-                    new AddClosureParamTypeFromObject(new ObjectType('Collection'), 'map', 0, 0),
-                ]
 )
             ]
         );
@@ -104,68 +83,63 @@ CODE_SAMPLE,
      */
     public function refactor(Node $node): ?Node
     {
-        foreach ($this->addClosureParamTypeFromObjects as $addClosureParamTypeFromObject) {
-            if ($node instanceof MethodCall) {
-                $caller = $node->var;
-            } else {
+        $varType = $this->getType($node->var);
+
+        if (! $varType instanceof IntersectionType || ! $varType->isIterable()->yes()) {
+            return null;
+        }
+
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        $className = $varType->getObjectClassNames()[0] ?? null;
+
+        if ($className === null) {
+            return null;
+        }
+
+        $methodReflection = $this->methodReflectionResolver->resolveMethodReflection(
+            $className,
+            $node->name,
+            $node->getAttribute(AttributeKey::SCOPE),
+        );
+
+        $parameters = $methodReflection->getVariants()[0]->getParameters();
+
+        if (! $this->methodSignatureUsesCallableWithIteratorTypes($className, $parameters)) {
+            return null;
+        }
+
+        if (! $this->callUsesClosures($node->getArgs())) {
+            return null;
+        }
+
+        $nameIndex = [];
+        foreach ($parameters as $index => $parameter) {
+            $nameIndex[$parameter->getName()] = $index;
+        }
+
+        $valueType = $varType->getIterableValueType();
+        $keyType = $varType->getIterableKeyType();
+        var_dump([$valueType, $keyType]);
+
+        foreach ($node->getArgs() as $index => $arg) {
+            if (! $arg instanceof Arg && ! $arg->value instanceof Closure) {
                 continue;
             }
 
-            if (! $this->isCallMatch($caller, $addClosureParamTypeFromObject, $node)) {
-                continue;
-            }
+            $parameter = (is_string($index) ? $nameIndex[$index] : $parameters[$index]) ?? null;
 
-            $type = $this->getType($caller)->getIterableValueType();
-
-            return $this->processCallLike($node, $addClosureParamTypeFromObject, $type);
+            $this->updateClosureWithTypes($parameter, $arg->value, $keyType, $valueType);
         }
 
         return null;
     }
 
-    private function processCallLike(
-        MethodCall $callLike,
-        AddClosureParamTypeFromObject $addClosureParamTypeFromArg,
-        Type $type
-    ): ?MethodCall {
-        if ($callLike->isFirstClassCallable()) {
-            return null;
-        }
+    private function updateClosureWithTypes(ParameterReflection $parameter, Closure $closure, Type $keyType, Type $valueType)
+    {
 
-        $callLikeArg = $callLike->args[$addClosureParamTypeFromArg->getCallLikePosition()] ?? null;
-        if (! $callLikeArg instanceof Arg) {
-            return null;
-        }
-
-        // int positions shouldn't have names
-        if ($callLikeArg->name instanceof Identifier) {
-            return null;
-        }
-
-        $functionLike = $callLikeArg->value;
-        if (! $functionLike instanceof Closure && ! $functionLike instanceof ArrowFunction) {
-            return null;
-        }
-
-        if (! isset($functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()])) {
-            return null;
-        }
-
-        $callLikeArg = $callLike->getArgs()[self::DEFAULT_CLOSURE_ARG_POSITION] ?? null;
-        if (! $callLikeArg instanceof Arg) {
-            return null;
-        }
-
-        $hasChanged = $this->refactorParameter(
-            $functionLike->params[$addClosureParamTypeFromArg->getFunctionLikePosition()],
-            $type,
-        );
-
-        if ($hasChanged) {
-            return $callLike;
-        }
-
-        return null;
     }
 
     private function refactorParameter(Param $param, Type $type): bool
@@ -184,15 +158,43 @@ CODE_SAMPLE,
         return true;
     }
 
-    private function isCallMatch(
-        Name|Expr $name,
-        AddClosureParamTypeFromObject $addClosureParamTypeFromArg,
-        MethodCall $call
-    ): bool {
-        if (! $this->isObjectType($name, $addClosureParamTypeFromArg->getObjectType())) {
-            return false;
+    /**
+     * @param class-string $className
+     * @param ParameterReflection[] $parameters
+     */
+    private function methodSignatureUsesCallableWithIteratorTypes(string $className, array $parameters): bool
+    {
+        foreach ($parameters as $parameter) {
+            $callableType = $this->typeUnwrapper->unwrapFirstCallableTypeFromUnionType($parameter->getType());
+
+            if (! $callableType instanceof CallableType) {
+                continue;
+            }
+
+            foreach ($callableType->getParameters() as $parameterReflection) {
+                if (
+                    $this->typeUnwrapper->isIterableTypeValue($className, $parameterReflection->getType()) ||
+                    $this->typeUnwrapper->isIterableTypeKey($className, $parameterReflection->getType())
+                ) {
+                    return true;
+                }
+            }
         }
 
-        return $this->isName($call->name, $addClosureParamTypeFromArg->getMethodName());
+        return false;
+    }
+
+    /**
+     * @param array<Arg|VariadicPlaceholder> $args
+     */
+    private function callUsesClosures(array $args): bool
+    {
+        foreach ($args as $arg) {
+            if ($arg instanceof Arg && $arg->value instanceof Closure) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -37,10 +37,10 @@ final class Collection implements \Iterator
      *
      * @template TMapValue
      *
-     * @param  callable(TValue, TKey): TMapValue  $callback
+     * @param  callable(TValue, TKey): TMapValue|string  $callback
      * @return static<TKey, TMapValue>
      */
-    public function map(callable $callback)
+    public function map(callable|string $callback)
     {
         return $this;
     }
