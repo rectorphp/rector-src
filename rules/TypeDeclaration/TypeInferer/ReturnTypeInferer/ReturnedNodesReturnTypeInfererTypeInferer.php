@@ -6,7 +6,6 @@ namespace Rector\TypeDeclaration\TypeInferer\ReturnTypeInferer;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\FunctionLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\ClassReflection;
@@ -44,52 +43,36 @@ final readonly class ReturnedNodesReturnTypeInfererTypeInferer
 
         $types = [];
 
+        // empty returns can have yield, use MixedType() instead
         $localReturnNodes = $this->betterNodeFinder->findReturnsScoped($functionLike);
         if ($localReturnNodes === []) {
-            return $this->resolveNoLocalReturnNodes($functionLike, $classReflection);
+            return new MixedType();
         }
 
+        $hasVoid = false;
         foreach ($localReturnNodes as $localReturnNode) {
-            $returnedExprType = $localReturnNode->expr instanceof Expr
-                ? $this->nodeTypeResolver->getNativeType($localReturnNode->expr)
-                : new VoidType();
+            if (! $localReturnNode->expr instanceof Expr) {
+                $hasVoid = true;
+                $types[] = new VoidType();
 
+                continue;
+            }
+
+            $returnedExprType = $this->nodeTypeResolver->getNativeType($localReturnNode->expr);
             $types[] = $this->splArrayFixedTypeNarrower->narrow($returnedExprType);
         }
 
-        if ($this->silentVoidResolver->hasSilentVoid($functionLike)) {
+        if (! $hasVoid && $this->silentVoidResolver->hasSilentVoid($functionLike)) {
             $types[] = new VoidType();
         }
 
-        return $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($types);
-    }
+        $returnType = $this->typeFactory->createMixedPassedOrUnionTypeAndKeepConstant($types);
 
-    private function resolveNoLocalReturnNodes(
-        FunctionLike $functionLike,
-        ?ClassReflection $classReflection,
-    ): VoidType | MixedType {
-        // void type
-        if (! $this->isAbstractMethod($functionLike, $classReflection)) {
-            return new VoidType();
+        // only void?
+        if ($returnType->isVoid()->yes()) {
+            return new MixedType();
         }
 
-        return new MixedType();
-    }
-
-    private function isAbstractMethod(FunctionLike $functionLike, ?ClassReflection $classReflection): bool
-    {
-        if ($functionLike instanceof ClassMethod && $functionLike->isAbstract()) {
-            return true;
-        }
-
-        if (! $classReflection instanceof ClassReflection) {
-            return false;
-        }
-
-        if (! $classReflection->isClass()) {
-            return false;
-        }
-
-        return $classReflection->isAbstract();
+        return $returnType;
     }
 }
