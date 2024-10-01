@@ -49,9 +49,9 @@ final class TypeUnwrapper
         return $type;
     }
 
-    public function isIterableTypeValue(string $className, Type $object): bool
+    public function isIterableTypeValue(string $className, Type $type): bool
     {
-        if (! $object instanceof TypeWithClassName) {
+        if (! $type instanceof TypeWithClassName) {
             return false;
         }
 
@@ -59,26 +59,26 @@ final class TypeUnwrapper
         $classNamespace = $this->namespace($className);
 
         // get the namespace from $parameterReflection
-        $reflectionNamespace = $this->namespace($object->getClassName());
+        $reflectionNamespace = $this->namespace($type->getClassName());
 
         // then match with
-        return $reflectionNamespace === $classNamespace && str_ends_with($object->getClassName(), '\TValue');
+        return $reflectionNamespace === $classNamespace && str_ends_with($type->getClassName(), '\TValue');
     }
 
-    public function isIterableTypeKey(string $className, Type $objectType): bool
+    public function isIterableTypeKey(string $className, Type $type): bool
     {
-        if (! $objectType instanceof TypeWithClassName) {
+        if (! $type instanceof TypeWithClassName) {
             return false;
         }
 
         // get the namespace from $className
-        $classNamespace = $className;
+        $classNamespace = $this->namespace($className);
 
         // get the namespace from $parameterReflection
-        $reflectionNamespace = $objectType->getClassName();
+        $reflectionNamespace = $this->namespace($type->getClassName());
 
         // then match with
-        return $reflectionNamespace === $classNamespace && str_ends_with($objectType->getClassName(), '\TKey');
+        return $reflectionNamespace === $classNamespace && str_ends_with($type->getClassName(), '\TKey');
     }
 
     public function removeNullTypeFromUnionType(UnionType $unionType): Type

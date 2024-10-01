@@ -122,7 +122,8 @@ CODE_SAMPLE,
 
         $valueType = $varType->getIterableValueType();
         $keyType = $varType->getIterableKeyType();
-        var_dump([$valueType, $keyType]);
+
+        $changesMade = false;
 
         foreach ($node->getArgs() as $index => $arg) {
             if (! $arg instanceof Arg && ! $arg->value instanceof Closure) {
@@ -131,15 +132,50 @@ CODE_SAMPLE,
 
             $parameter = (is_string($index) ? $nameIndex[$index] : $parameters[$index]) ?? null;
 
-            $this->updateClosureWithTypes($parameter, $arg->value, $keyType, $valueType);
+            if ($this->updateClosureWithTypes($className, $parameter, $arg->value, $keyType, $valueType)) {
+                $changesMade = true;
+            }
+        }
+
+        if ($changesMade) {
+            return $node;
         }
 
         return null;
     }
 
-    private function updateClosureWithTypes(ParameterReflection $parameter, Closure $closure, Type $keyType, Type $valueType)
+    private function updateClosureWithTypes(string $className, ParameterReflection $parameter, Closure $closure, Type $keyType, Type $valueType): bool
     {
+        // get the ClosureType from the ParameterReflection
+        $callableType = $this->typeUnwrapper->unwrapFirstCallableTypeFromUnionType($parameter->getType());
 
+        if (! $callableType instanceof CallableType) {
+            return false;
+        }
+
+        foreach ($callableType->getParameters() as $index => $parameterReflection) {
+            $closureParameter = $closure->getParams()[$index] ?? null;
+
+            if (! $closureParameter instanceof Param) {
+                continue;
+            }
+
+            if (
+                $this->typeUnwrapper->isIterableTypeValue($className, $parameterReflection->getType())
+            ) {
+                if ($this->refactorParameter($closureParameter, $valueType)) {
+                    $changesMade = true;
+                }
+            } elseif (
+                $this->typeUnwrapper->isIterableTypeKey($className, $parameterReflection->getType())
+            ) {
+                if ($this->refactorParameter($closureParameter, $keyType)) {
+                    $changesMade = true;
+                }
+            }
+        }
+
+        return $changesMade;
     }
 
     private function refactorParameter(Param $param, Type $type): bool

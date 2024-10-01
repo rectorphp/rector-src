@@ -7,11 +7,11 @@ use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIter
 class Fixture
 {
     /**
-     * @param Collection<string, int> $collection
+     * @param Collection<int, string> $collection
      */
     public function run(Collection $collection)
     {
-        return $collection->map(function ($item) {
+        return $collection->map(function ($item, $key) {
             return $item;
         });
     }
@@ -28,11 +28,11 @@ use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIter
 class Fixture
 {
     /**
-     * @param Collection<int> $collection
+     * @param Collection<int, string> $collection
      */
     public function run(Collection $collection)
     {
-        return $collection->map(function (int $item) {
+        return $collection->map(function (string $item, int $key) {
             return $item;
         });
     }
