@@ -53,6 +53,10 @@ parameters:
             message: '#Function "var_dump\(\)" cannot be used/left in the code#'
             path: src/functions/node_helper.php
 
+        -
+            message: '#Function "method_exists\(\)" cannot be used/left in the code#'
+            path: rules/TypeDeclaration/TypeAnalyzer/ReturnStrictTypeAnalyzer.php
+
         # lack of generic array in nikic/php-parser
         - '#Method (.*?) should return array<PhpParser\\Node\\(.*?)\> but returns array<PhpParser\\Node\>#'
 
