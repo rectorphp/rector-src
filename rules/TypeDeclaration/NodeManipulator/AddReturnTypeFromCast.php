@@ -50,7 +50,7 @@ final readonly class AddReturnTypeFromCast
         }
 
         $returnType = $this->returnTypeInferer->inferFunctionLike($functionLike);
-        if ($returnType instanceof UnionType || $returnType->isVoid()->yes()) {
+        if ($returnType instanceof UnionType) {
             return null;
         }
 
