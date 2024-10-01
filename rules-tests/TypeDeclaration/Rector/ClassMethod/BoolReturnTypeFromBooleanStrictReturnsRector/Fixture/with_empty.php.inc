@@ -16,7 +16,7 @@ final class WithEmpty
 
 namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\BoolReturnTypeFromBooleanStrictReturnsRector\Fixture;
 
-final class WithIsset
+final class WithEmpty
 {
     public function resolve($a): bool
     {
