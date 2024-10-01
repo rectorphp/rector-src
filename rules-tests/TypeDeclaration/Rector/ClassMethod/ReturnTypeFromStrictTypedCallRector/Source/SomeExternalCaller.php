@@ -10,4 +10,12 @@ final class SomeExternalCaller
     {
         return 'Yesman';
     }
+
+    /**
+     * @return string
+     */
+    public function getData($data)
+    {
+        return $data;
+    }
 }
