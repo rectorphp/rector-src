@@ -162,13 +162,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         return array_unique($names);
     }
 
-    private function resolveAliasName(UseUse $useUse): ?string
-    {
-        return $useUse->alias instanceof Identifier
-            ? $useUse->alias->toString()
-            : null;
-    }
-
     /**
      * @param string[]  $names
      */
@@ -188,17 +181,12 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             $namespacedPrefix = $comparedName . '\\';
         }
 
-        $alias = $this->resolveAliasName($useUse);
         $lastName = $useUse->name->getLast();
         $namespaceName = $namespaceName instanceof Name ? $namespaceName->toString() : null;
 
         // match partial import
         foreach ($names as $name) {
             if ($this->isSubNamespace($name, $comparedName, $namespacedPrefix)) {
-                return true;
-            }
-
-            if (is_string($alias) && $this->isUsedAlias($alias, $name)) {
                 return true;
             }
 
@@ -216,20 +204,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         }
 
         return false;
-    }
-
-    private function isUsedAlias(string $alias, string $name): bool
-    {
-        if ($alias === $name) {
-            return true;
-        }
-
-        if (! str_contains($name, '\\')) {
-            return false;
-        }
-
-        $namePrefix = Strings::before($name, '\\', 1);
-        return $alias === $namePrefix;
     }
 
     private function isSubNamespace(string $name, string $comparedName, string $namespacedPrefix): bool
