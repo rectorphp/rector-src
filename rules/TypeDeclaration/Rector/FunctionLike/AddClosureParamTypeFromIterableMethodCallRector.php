@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Param;
 use PhpParser\Node\VariadicPlaceholder;
+use PHPStan\Reflection\MethodReflection;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
@@ -22,6 +23,9 @@ use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
+/**
+ * @see \Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeFromIterableMethodCallRector\AddClosureParamTypeFromIterableMethodCallRectorTest
+ */
 final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector
 {
     public function __construct(
@@ -96,11 +100,19 @@ CODE_SAMPLE,
             return null;
         }
 
+        if (! $node->name instanceof Node\Identifier) {
+            return null;
+        }
+
         $methodReflection = $this->methodReflectionResolver->resolveMethodReflection(
             $className,
-            $node->name,
+            $node->name->name,
             $node->getAttribute(AttributeKey::SCOPE),
         );
+
+        if (! $methodReflection instanceof MethodReflection) {
+            return null;
+        }
 
         $parameters = $methodReflection->getVariants()[0]->getParameters();
 
@@ -123,11 +135,11 @@ CODE_SAMPLE,
         $changesMade = false;
 
         foreach ($node->getArgs() as $index => $arg) {
-            if (! $arg instanceof Arg && ! $arg->value instanceof Closure) {
+            if (! $arg instanceof Arg || ! $arg->value instanceof Closure) {
                 continue;
             }
 
-            $parameter = (is_string($index) ? $nameIndex[$index] : $parameters[$index]) ?? null;
+            $parameter = (is_string($index) ? $parameters[$nameIndex[$index]] : $parameters[$index]);
 
             if ($this->updateClosureWithTypes($className, $parameter, $arg->value, $keyType, $valueType)) {
                 $changesMade = true;
@@ -149,6 +161,8 @@ CODE_SAMPLE,
         if (! $callableType instanceof CallableType) {
             return false;
         }
+
+        $changesMade = false;
 
         foreach ($callableType->getParameters() as $index => $parameterReflection) {
             $closureParameter = $closure->getParams()[$index] ?? null;
