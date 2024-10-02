@@ -12,7 +12,7 @@ class Fixture
     public function run(Collection $collection)
     {
         return $collection->map(function ($item, $key) {
-            return $item;
+            return $item . $key;
         });
     }
 }
@@ -33,7 +33,7 @@ class Fixture
     public function run(Collection $collection)
     {
         return $collection->map(function (string $item, int $key) {
-            return $item;
+            return $item . $key;
         });
     }
 }
