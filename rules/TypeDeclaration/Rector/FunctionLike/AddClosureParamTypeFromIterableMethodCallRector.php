@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\TypeDeclaration\Rector\FunctionLike;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParameterReflection;
+use PHPStan\Type\CallableType;
+use PHPStan\Type\IntersectionType;
+use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Rector\AbstractRector;
-use PHPStan\Type\CallableType;
-use PHPStan\Type\IntersectionType;
-use PHPStan\Type\Type;
-use PHPStan\Reflection\ParameterReflection;
 use Rector\Reflection\MethodReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -41,7 +44,8 @@ final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRect
         return new RuleDefinition(
             'Applies type hints to closures on Iterable method calls where key/value types are documented',
             [
-                new CodeSample(<<<'CODE_SAMPLE'
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
 class SomeClass
 {
     /**
@@ -54,8 +58,9 @@ class SomeClass
         });
     }
 }
-CODE_SAMPLE,
-                <<<'CODE_SAMPLE'
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
 class SomeClass
 {
     /**
@@ -68,15 +73,16 @@ class SomeClass
         });
     }
 }
-CODE_SAMPLE,
-)
+CODE_SAMPLE
+                    ,
+                ),
             ]
         );
     }
 
     public function getNodeTypes(): array
     {
-        return [Node\Expr\MethodCall::class];
+        return [MethodCall::class];
     }
 
     /**
@@ -100,7 +106,7 @@ CODE_SAMPLE,
             return null;
         }
 
-        if (! $node->name instanceof Node\Identifier) {
+        if (! $node->name instanceof Identifier) {
             return null;
         }
 
@@ -114,7 +120,8 @@ CODE_SAMPLE,
             return null;
         }
 
-        $parameters = $methodReflection->getVariants()[0]->getParameters();
+        $parameters = $methodReflection->getVariants()[0]
+            ->getParameters();
 
         if (! $this->methodSignatureUsesCallableWithIteratorTypes($className, $parameters)) {
             return null;
@@ -135,10 +142,12 @@ CODE_SAMPLE,
         $changesMade = false;
 
         foreach ($node->getArgs() as $index => $arg) {
-            if (! $arg instanceof Arg || ! $arg->value instanceof Closure) {
+            if (! $arg instanceof Arg) {
                 continue;
             }
-
+            if (! $arg->value instanceof Closure) {
+                continue;
+            }
             $parameter = (is_string($index) ? $parameters[$nameIndex[$index]] : $parameters[$index]);
 
             if ($this->updateClosureWithTypes($className, $parameter, $arg->value, $keyType, $valueType)) {
@@ -153,8 +162,13 @@ CODE_SAMPLE,
         return null;
     }
 
-    private function updateClosureWithTypes(string $className, ParameterReflection $parameter, Closure $closure, Type $keyType, Type $valueType): bool
-    {
+    private function updateClosureWithTypes(
+        string $className,
+        ParameterReflection $parameter,
+        Closure $closure,
+        Type $keyType,
+        Type $valueType
+    ): bool {
         // get the ClosureType from the ParameterReflection
         $callableType = $this->typeUnwrapper->unwrapFirstCallableTypeFromUnionType($parameter->getType());
 

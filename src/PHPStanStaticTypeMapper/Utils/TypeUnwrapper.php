@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\Utils;
 
-use PHPStan\Type\ObjectType;
+use PHPStan\Type\CallableType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\IntersectionType;
-use PHPStan\Type\CallableType;
-use PHPStan\Reflection\ParameterReflection;
 
 final class TypeUnwrapper
 {
