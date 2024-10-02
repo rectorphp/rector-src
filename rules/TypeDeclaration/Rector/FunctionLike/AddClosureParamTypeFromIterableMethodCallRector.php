@@ -13,9 +13,7 @@ use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Rector\AbstractRector;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\CallableType;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
 use PHPStan\Reflection\ParameterReflection;
@@ -23,7 +21,6 @@ use Rector\Reflection\MethodReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
-use function PHPStan\dumpType;
 
 final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRector
 {
@@ -38,18 +35,18 @@ final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRect
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            '',
+            'Applies type hints to closures on Iterable method calls where key/value types are documented',
             [
                 new CodeSample(<<<'CODE_SAMPLE'
 class SomeClass
 {
     /**
-     * @param Collection<string> $string
+     * @param Collection<int, string> $string
      */
     public function run(Collection $collection)
     {
-        return $collection->map(function ($item) {
-            return $item;
+        return $collection->map(function ($item, $key) {
+            return $item . $key;
         });
     }
 }
@@ -62,8 +59,8 @@ class SomeClass
      */
     public function run(Collection $collection)
     {
-        return $collection->map(function (string $item) {
-            return $item;
+        return $collection->map(function (string $item, int $key) {
+            return $item . $key;
         });
     }
 }
