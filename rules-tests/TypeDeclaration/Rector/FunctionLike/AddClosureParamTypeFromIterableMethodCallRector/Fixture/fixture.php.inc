@@ -15,6 +15,16 @@ class Fixture
             return $item . $key;
         });
     }
+
+    /**
+     * @param Collection<int, string> $collection
+     */
+    public function runFoo(Collection $collection)
+    {
+        return $collection->map(callback: function ($item, $key) {
+            return $item . $key;
+        });
+    }
 }
 
 ?>
@@ -33,6 +43,16 @@ class Fixture
     public function run(Collection $collection)
     {
         return $collection->map(function (string $item, int $key) {
+            return $item . $key;
+        });
+    }
+
+    /**
+     * @param Collection<int, string> $collection
+     */
+    public function runFoo(Collection $collection)
+    {
+        return $collection->map(callback: function (string $item, int $key) {
             return $item . $key;
         });
     }
