@@ -424,7 +424,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getAnnotationClassNames(): array
     {
@@ -441,7 +441,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getGenericTagClassNames(): array
     {
@@ -463,7 +463,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getConstFetchNodeClassNames(): array
     {
@@ -490,7 +490,7 @@ final class PhpDocInfo
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
     public function getArrayItemNodeClassNames(): array
     {
