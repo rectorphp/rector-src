@@ -202,7 +202,7 @@ final class WorkerCommandLineFactoryTest extends AbstractLazyTestCase
                 '--' . Option::OUTPUT_FORMAT => ConsoleOutputFormatter::NAME,
                 '--' . Option::MEMORY_LIMIT => '-1',
             ],
-            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit=-1 --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
+            "'" . PHP_BINARY . "' '" . self::DUMMY_MAIN_SCRIPT . "' '" . $cliInputOptionsAsString . "' worker --memory-limit='-1' --port 2000 --identifier 'identifier' 'src' --output-format 'json' --no-ansi",
         ];
     }
 
