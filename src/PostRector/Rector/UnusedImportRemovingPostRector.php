@@ -72,7 +72,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     }
 
     /**
-     * @return list<string>
+     * @return string[]
      */
     private function findNonUseImportNames(Namespace_|FileWithoutNamespace $namespace): array
     {
@@ -107,7 +107,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     }
 
     /**
-     * @return list<string>
+     * @return string[]
      */
     private function findNamesInDocBlocks(Namespace_|FileWithoutNamespace $namespace): array
     {
@@ -151,7 +151,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     }
 
     /**
-     * @return list<string>
+     * @return string[]
      */
     private function resolveUsedPhpAndDocNames(Namespace_|FileWithoutNamespace $namespace): array
     {
@@ -163,7 +163,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
     }
 
     /**
-     * @param list<string> $names
+     * @param string[] $names
      */
     private function isUseImportUsed(UseUse $useUse, array $names, ?Name $namespaceName): bool
     {
