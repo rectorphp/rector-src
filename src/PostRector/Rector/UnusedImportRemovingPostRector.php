@@ -159,17 +159,17 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $docBlockNames = $this->findNamesInDocBlocks($namespace);
 
         $names = [...$phpNames, ...$docBlockNames];
-        return array_unique($names);
+        return array_unique(array_map(strtolower(...), $names));
     }
 
     /**
-     * @param string[]  $names
+     * @param string[] $names
      */
     private function isUseImportUsed(UseUse $useUse, array $names, ?Name $namespaceName): bool
     {
-        $comparedName = $useUse->alias instanceof Identifier
+        $comparedName = strtolower($useUse->alias instanceof Identifier
             ? $useUse->alias->toString()
-            : $useUse->name->toString();
+            : $useUse->name->toString());
 
         if (in_array($comparedName, $names, true)) {
             return true;
@@ -181,8 +181,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             $namespacedPrefix = $comparedName . '\\';
         }
 
-        $lastName = $useUse->name->getLast();
-        $namespaceName = $namespaceName instanceof Name ? $namespaceName->toString() : null;
+        $lastName = strtolower($useUse->name->getLast());
+        $namespaceName = $namespaceName instanceof Name ? strtolower($namespaceName->toString()) : null;
 
         // match partial import
         foreach ($names as $name) {
