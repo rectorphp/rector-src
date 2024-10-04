@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Rector\Transform\Rector\MethodCall;
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\ObjectType;
@@ -13,6 +16,9 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see \Rector\Tests\Transform\Rector\MethodCall\MethodCallToNewRector\MethodCallToNewRectorTest
+ */
 class MethodCallToNewRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
@@ -36,28 +42,24 @@ class MethodCallToNewRector extends AbstractRector implements ConfigurableRector
             [new ConfiguredCodeSample(
                 <<<'CODE_SAMPLE'
 $object->createResponse(['a' => 1]);
-CODE_SAMPLE,
+CODE_SAMPLE
+                ,
                 <<<'CODE_SAMPLE'
 new Response(['a' => 1]);
-CODE_SAMPLE,
-                [
-                    new MethodCallToNew(
-                        new ObjectType('ResponseFactory'),
-                        'createResponse',
-                        'Response',
-                    ),
-                ]
+CODE_SAMPLE
+                ,
+                [new MethodCallToNew(new ObjectType('ResponseFactory'), 'createResponse', 'Response')]
             )]
         );
     }
 
     public function getNodeTypes(): array
     {
-        return [Node\Expr\MethodCall::class];
+        return [MethodCall::class];
     }
 
     /**
-     * @param Node\Expr\MethodCall $node
+     * @param MethodCall $node
      */
     public function refactor(Node $node): ?New_
     {
@@ -65,6 +67,7 @@ CODE_SAMPLE,
             if (! $this->isName($node->name, $methodCallToNew->getMethodName())) {
                 continue;
             }
+
             if (! $this->isObjectType($node->var, $methodCallToNew->getObject())) {
                 continue;
             }
