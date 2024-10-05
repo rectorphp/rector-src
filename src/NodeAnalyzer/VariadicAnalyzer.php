@@ -7,19 +7,14 @@ namespace Rector\NodeAnalyzer;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Stmt\Function_;
 use PHPStan\Reflection\FunctionReflection;
 use PHPStan\Reflection\MethodReflection;
-use Rector\DeadCode\NodeManipulator\VariadicFunctionLikeDetector;
-use Rector\PhpParser\AstResolver;
 use Rector\Reflection\ReflectionResolver;
 
 final readonly class VariadicAnalyzer
 {
     public function __construct(
-        private AstResolver $astResolver,
-        private ReflectionResolver $reflectionResolver,
-        private VariadicFunctionLikeDetector $variadicFunctionLikeDetector
+        private ReflectionResolver $reflectionResolver
     ) {
     }
 
@@ -30,20 +25,7 @@ final readonly class VariadicAnalyzer
             return false;
         }
 
-        if ($this->hasVariadicVariant($functionLikeReflection)) {
-            return true;
-        }
-
-        if ($functionLikeReflection instanceof FunctionReflection) {
-            $function = $this->astResolver->resolveFunctionFromFunctionReflection($functionLikeReflection);
-            if (! $function instanceof Function_) {
-                return false;
-            }
-
-            return $this->variadicFunctionLikeDetector->isVariadic($function);
-        }
-
-        return false;
+        return $this->hasVariadicVariant($functionLikeReflection);
     }
 
     private function hasVariadicVariant(MethodReflection | FunctionReflection $functionLikeReflection): bool
