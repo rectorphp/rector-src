@@ -71,6 +71,7 @@ final class EregToPcreTransformer
     ) {
     }
 
+    // converts the ERE $s into the PCRE $r. triggers error on any invalid input.
     public function transform(string $content, bool $ignorecase): string
     {
         if ($ignorecase) {
