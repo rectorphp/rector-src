@@ -71,19 +71,7 @@ final class EregToPcreTransformer
     ) {
     }
 
-    public function transform(string $ereg, bool $isCaseInsensitive): string
-    {
-        if (! \str_contains($ereg, $this->pcreDelimiter)) {
-            return $this->ere2pcre($ereg, $isCaseInsensitive);
-        }
-
-        // fallback
-        $quotedEreg = preg_quote($ereg, $this->pcreDelimiter);
-        return $this->ere2pcre($quotedEreg, $isCaseInsensitive);
-    }
-
-    // converts the ERE $s into the PCRE $r. triggers error on any invalid input.
-    private function ere2pcre(string $content, bool $ignorecase): string
+    public function transform(string $content, bool $ignorecase): string
     {
         if ($ignorecase) {
             if (isset($this->icache[$content])) {
@@ -201,9 +189,14 @@ final class EregToPcreTransformer
         }
 
         return [
-            str_replace($this->pcreDelimiter, '\\' . $this->pcreDelimiter, implode('|', $r)),
+            $this->normalize(implode('|', $r)),
             $i
         ];
+    }
+
+    private function normalize(string $content): string
+    {
+        return str_replace($this->pcreDelimiter, '\\' . $this->pcreDelimiter, $content);
     }
 
     /**
