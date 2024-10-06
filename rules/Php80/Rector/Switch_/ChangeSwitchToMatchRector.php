@@ -153,11 +153,11 @@ CODE_SAMPLE
         return null;
     }
 
-    private function castMatchCond(Match_ $match)
+    private function castMatchCond(Match_ $match): void
     {
-        $nativeCond = $this->nodeTypeResolver->getNativeType($match->cond);
-        $isNativeCondString = $nativeCond->isString()->yes();
-        $isNativeCondInt = $nativeCond->isInteger()->yes();
+        $type = $this->nodeTypeResolver->getNativeType($match->cond);
+        $isNativeCondString = $type->isString()->yes();
+        $isNativeCondInt = $type->isInteger()->yes();
 
         if (! $isNativeCondString && ! $isNativeCondInt) {
             return;
