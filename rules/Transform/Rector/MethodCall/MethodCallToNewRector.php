@@ -63,6 +63,10 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?New_
     {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
         foreach ($this->methodCallToNew as $methodCallToNew) {
             if (! $this->isName($node->name, $methodCallToNew->getMethodName())) {
                 continue;
