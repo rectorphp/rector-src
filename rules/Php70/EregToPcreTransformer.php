@@ -189,10 +189,7 @@ final class EregToPcreTransformer
             throw new InvalidEregException('empty regular expression or branch');
         }
 
-        return [
-            $this->normalize(implode('|', $r)),
-            $i
-        ];
+        return [$this->normalize(implode('|', $r)), $i];
     }
 
     private function normalize(string $content): string
