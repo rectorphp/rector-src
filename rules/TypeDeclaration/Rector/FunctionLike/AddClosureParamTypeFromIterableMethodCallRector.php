@@ -90,13 +90,13 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $varType = $this->getType($node->var);
-
-        if (! $varType instanceof IntersectionType || ! $varType->isIterable()->yes()) {
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
-        if ($node->isFirstClassCallable()) {
+        $varType = $this->getType($node->var);
+
+        if (! $varType instanceof IntersectionType || ! $varType->isIterable()->yes()) {
             return null;
         }
 
@@ -145,9 +145,11 @@ CODE_SAMPLE
             if (! $arg instanceof Arg) {
                 continue;
             }
+
             if (! $arg->value instanceof Closure) {
                 continue;
             }
+
             $parameter = (is_string($index) ? $parameters[$nameIndex[$index]] : $parameters[$index]);
 
             if ($this->updateClosureWithTypes($className, $parameter, $arg->value, $keyType, $valueType)) {
@@ -214,6 +216,11 @@ CODE_SAMPLE
         }
 
         $paramTypeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($type, TypeKind::PARAM);
+
+        if (! $paramTypeNode instanceof Node) {
+            return false;
+        }
+
         $param->type = $paramTypeNode;
 
         return true;
