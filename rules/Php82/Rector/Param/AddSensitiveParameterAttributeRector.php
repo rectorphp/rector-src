@@ -31,7 +31,7 @@ final class AddSensitiveParameterAttributeRector extends AbstractRector implemen
     private array $sensitiveParameters = [];
 
     public function __construct(
-        protected PhpAttributeAnalyzer $phpAttributeAnalyzer
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer
     ) {
     }
 
