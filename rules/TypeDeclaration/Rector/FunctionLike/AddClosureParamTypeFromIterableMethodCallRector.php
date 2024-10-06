@@ -49,7 +49,7 @@ final class AddClosureParamTypeFromIterableMethodCallRector extends AbstractRect
 class SomeClass
 {
     /**
-     * @param Collection<int, string> $string
+     * @param Collection<int, string> $collection
      */
     public function run(Collection $collection)
     {
@@ -64,7 +64,7 @@ CODE_SAMPLE
 class SomeClass
 {
     /**
-     * @param Collection<string> $string
+     * @param Collection<int, string> $collection
      */
     public function run(Collection $collection)
     {
