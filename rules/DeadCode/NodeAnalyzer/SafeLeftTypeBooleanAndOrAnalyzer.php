@@ -8,12 +8,15 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\CallLike;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PHPStan\Reflection\ClassReflection;
+use PHPStan\Type\MixedType;
 use Rector\NodeAnalyzer\ExprAnalyzer;
+use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
 
@@ -22,7 +25,8 @@ final readonly class SafeLeftTypeBooleanAndOrAnalyzer
     public function __construct(
         private readonly BetterNodeFinder $betterNodeFinder,
         private readonly ExprAnalyzer $exprAnalyzer,
-        private readonly ReflectionResolver $reflectionResolver
+        private readonly ReflectionResolver $reflectionResolver,
+        private readonly NodeTypeResolver $nodeTypeResolver,
     ) {
     }
 
@@ -53,6 +57,16 @@ final readonly class SafeLeftTypeBooleanAndOrAnalyzer
             return ! $booleanAnd->left instanceof Instanceof_;
         }
 
-        return true;
+        return ! (bool) $this->betterNodeFinder->findFirst(
+            $booleanAnd->left,
+            function (Node $node): bool {
+                if (! $node instanceof CallLike) {
+                    return false;
+                }
+
+                $nativeType = $this->nodeTypeResolver->getNativeType($node);
+                return $nativeType instanceof MixedType && ! $nativeType->isExplicitMixed();
+            }
+        );
     }
 }
