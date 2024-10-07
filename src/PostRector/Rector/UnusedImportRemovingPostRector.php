@@ -55,7 +55,8 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             }
 
             $useUse = $namespaceStmt->uses[0];
-            if ($this->isUseImportUsed($useUse, $names, $namespaceName)) {
+            $isCaseSensitive = $namespaceStmt->type === Use_::TYPE_CONSTANT;
+            if ($this->isUseImportUsed($useUse, $isCaseSensitive, $names, $namespaceName)) {
                 continue;
             }
 
@@ -159,17 +160,22 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         $docBlockNames = $this->findNamesInDocBlocks($namespace);
 
         $names = [...$phpNames, ...$docBlockNames];
-        return array_unique(array_map(strtolower(...), $names));
+        return array_unique($names);
     }
 
     /**
      * @param string[] $names
      */
-    private function isUseImportUsed(UseUse $useUse, array $names, ?Name $namespaceName): bool
+    private function isUseImportUsed(UseUse $useUse, bool $isCaseSensitive, array $names, ?Name $namespaceName): bool
     {
-        $comparedName = strtolower($useUse->alias instanceof Identifier
+        $comparedName = $useUse->alias instanceof Identifier
             ? $useUse->alias->toString()
-            : $useUse->name->toString());
+            : $useUse->name->toString();
+
+        if (! $isCaseSensitive) {
+            $comparedName = strtolower($comparedName);
+            $names = array_map(strtolower(...), $names);
+        }
 
         if (in_array($comparedName, $names, true)) {
             return true;
@@ -181,8 +187,13 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             $namespacedPrefix = $comparedName . '\\';
         }
 
-        $lastName = strtolower($useUse->name->getLast());
-        $namespaceName = $namespaceName instanceof Name ? strtolower($namespaceName->toString()) : null;
+        if (! $isCaseSensitive) {
+            $lastName = strtolower($useUse->name->getLast());
+            $namespaceName = $namespaceName instanceof Name ? strtolower($namespaceName->toString()) : null;
+        } else {
+            $lastName = $useUse->name->getLast();
+            $namespaceName = $namespaceName instanceof Name ? $namespaceName->toString() : null;
+        }
 
         // match partial import
         foreach ($names as $name) {
