@@ -1,16 +1,34 @@
 <?php
 
-use const Foo\Bar;
-use const Baz\bar;
+namespace Apple {
+    const Banana = 'test';
+}
 
-bar::class;
+namespace {
+
+    use const Foo\Bar;
+    use const Baz\bar;
+    use const apple\Banana;
+
+    var_dump(bar);
+    var_dump(Banana);
+}
 
 ?>
 -----
 <?php
 
-use const Baz\bar;
+namespace Apple {
+    const Banana = 'test';
+}
 
-bar::class;
+namespace {
+
+    use const Baz\bar;
+    use const apple\Banana;
+
+    var_dump(bar);
+    var_dump(Banana);
+}
 
 ?>
