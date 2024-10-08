@@ -97,16 +97,16 @@ CODE_SAMPLE
         $hasChanged = false;
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
-        foreach ($privateMethods as $stmt) {
-            if ($this->shouldSkip($stmt, $classReflection)) {
+        foreach ($privateMethods as $privateMethod) {
+            if ($this->shouldSkip($privateMethod, $classReflection)) {
                 continue;
             }
 
-            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $stmt, $scope)) {
+            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $privateMethod, $scope)) {
                 continue;
             }
 
-            unset($node->stmts[$stmt->getAttribute(AttributeKey::STMT_KEY)]);
+            unset($node->stmts[$privateMethod->getAttribute(AttributeKey::STMT_KEY)]);
             $hasChanged = true;
         }
 
