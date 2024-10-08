@@ -31,7 +31,7 @@ final readonly class ParentPropertyLookupGuard
     ) {
     }
 
-    public function isLegal(Property $property, ?ClassReflection $classReflection): bool
+    public function isLegal(Property|string $property, ?ClassReflection $classReflection): bool
     {
         if (! $classReflection instanceof ClassReflection) {
             return false;
@@ -41,7 +41,10 @@ final readonly class ParentPropertyLookupGuard
             return false;
         }
 
-        $propertyName = $this->nodeNameResolver->getName($property);
+        $propertyName = $property instanceof Property
+            ? $this->nodeNameResolver->getName($property)
+            : $property;
+
         if ($this->propertyManipulator->isUsedByTrait($classReflection, $propertyName)) {
             return false;
         }
