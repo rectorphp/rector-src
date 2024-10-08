@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use Rector\DeadCode\NodeAnalyzer\IsClassMethodUsedAnalyzer;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Rector\AbstractScopeAwareRector;
 use Rector\Reflection\ReflectionResolver;
@@ -83,7 +84,9 @@ CODE_SAMPLE
         }
 
         $filter = static fn (ClassMethod $classMethod): bool => $classMethod->isPrivate();
-        if (array_filter($classMethods, $filter) === []) {
+        $privateMethods = array_filter($classMethods, $filter);
+
+        if ($privateMethods === []) {
             return null;
         }
 
@@ -94,20 +97,16 @@ CODE_SAMPLE
         $hasChanged = false;
         $classReflection = $this->reflectionResolver->resolveClassReflection($node);
 
-        foreach ($node->stmts as $key => $stmt) {
-            if (! $stmt instanceof ClassMethod) {
+        foreach ($privateMethods as $privateMethod) {
+            if ($this->shouldSkip($privateMethod, $classReflection)) {
                 continue;
             }
 
-            if ($this->shouldSkip($stmt, $classReflection)) {
+            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $privateMethod, $scope)) {
                 continue;
             }
 
-            if ($this->isClassMethodUsedAnalyzer->isClassMethodUsed($node, $stmt, $scope)) {
-                continue;
-            }
-
-            unset($node->stmts[$key]);
+            unset($node->stmts[$privateMethod->getAttribute(AttributeKey::STMT_KEY)]);
             $hasChanged = true;
         }
 
@@ -134,10 +133,6 @@ CODE_SAMPLE
         }
 
         if ($classReflection->isAnonymous()) {
-            return true;
-        }
-
-        if (! $classMethod->isPrivate()) {
             return true;
         }
 
