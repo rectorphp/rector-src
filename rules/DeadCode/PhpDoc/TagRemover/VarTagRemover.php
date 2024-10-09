@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\DeadCode\PhpDoc\TagRemover;
 
+use PhpParser\Node;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Property;
@@ -48,6 +49,27 @@ final readonly class VarTagRemover
 
         $phpDocInfo->removeByType(VarTagValueNode::class);
         $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($property);
+
+        return true;
+    }
+
+    /**
+     * @api generic
+     */
+    public function removeVarTag(Node $node): bool
+    {
+        $phpDocInfo = $this->phpDocInfoFactory->createFromNodeOrEmpty($node);
+        if (! $phpDocInfo instanceof PhpDocInfo) {
+            return false;
+        }
+
+        $varTagValueNode = $phpDocInfo->getVarTagValueNode();
+        if (! $varTagValueNode instanceof VarTagValueNode) {
+            return false;
+        }
+
+        $phpDocInfo->removeByType(VarTagValueNode::class);
+        $this->docBlockUpdater->updateRefactoredNodeWithPhpDocInfo($node);
 
         return true;
     }
