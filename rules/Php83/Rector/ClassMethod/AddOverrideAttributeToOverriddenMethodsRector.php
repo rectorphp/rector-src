@@ -102,7 +102,11 @@ CODE_SAMPLE
         }
 
         $classReflection = $this->reflectionProvider->getClass($className);
-        $parentClassReflections = [...$classReflection->getParents(), ...$classReflection->getInterfaces()];
+        $parentClassReflections = [
+            ...$classReflection->getParents(),
+            ...$classReflection->getInterfaces(),
+            ...$classReflection->getTraits(),
+        ];
 
         $this->processAddOverrideAttribute($node, $parentClassReflections);
 
@@ -150,6 +154,9 @@ CODE_SAMPLE
                 // ignore if it is a private method on the parent
                 $parentMethod = $parentClassReflection->getNativeMethod($classMethod->name->toString());
                 if ($parentMethod->isPrivate()) {
+                    continue;
+                }
+                if ($parentClassReflection->isTrait() && !$parentMethod->isAbstract()) {
                     continue;
                 }
 
