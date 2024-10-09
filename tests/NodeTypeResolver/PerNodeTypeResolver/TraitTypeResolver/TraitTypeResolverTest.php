@@ -18,9 +18,9 @@ final class TraitTypeResolverTest extends AbstractNodeTypeResolverTestCase
 {
     public function test(): void
     {
-        $variableNodes = $this->getNodesForFileOfType(__DIR__ . '/Source/TraitWithTrait.php', Trait_::class);
+        $traitNodes = $this->getNodesForFileOfType(__DIR__ . '/Source/TraitWithTrait.php', Trait_::class);
 
-        $resolvedType = $this->nodeTypeResolver->getType($variableNodes[0]);
+        $resolvedType = $this->nodeTypeResolver->getType($traitNodes[0]);
         $expectedUnionType = $this->createExpectedType();
 
         $this->assertEquals($expectedUnionType, $resolvedType);
