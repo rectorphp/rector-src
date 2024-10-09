@@ -68,8 +68,10 @@ CODE_SAMPLE
             if (! $stmt instanceof If_) {
                 continue;
             }
-
-            if ($stmt->else instanceof Else_ || $stmt->elseifs !== []) {
+            if ($stmt->else instanceof Else_) {
+                continue;
+            }
+            if ($stmt->elseifs !== []) {
                 continue;
             }
 
