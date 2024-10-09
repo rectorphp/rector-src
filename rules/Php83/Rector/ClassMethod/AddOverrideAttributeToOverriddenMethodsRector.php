@@ -156,6 +156,7 @@ CODE_SAMPLE
                 if ($parentMethod->isPrivate()) {
                     continue;
                 }
+
                 if ($parentClassReflection->isTrait() && !$parentMethod->isAbstract()) {
                     continue;
                 }
