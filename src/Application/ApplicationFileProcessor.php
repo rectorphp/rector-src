@@ -16,6 +16,7 @@ use Rector\PhpParser\Parser\ParserErrors;
 use Rector\Reporting\MissConfigurationReporter;
 use Rector\Testing\PHPUnit\StaticPHPUnitEnvironment;
 use Rector\Util\ArrayParametersMerger;
+use Rector\Util\BatchSplitter;
 use Rector\ValueObject\Application\File;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
@@ -60,6 +61,13 @@ final class ApplicationFileProcessor
         $filePaths = $this->filesFinder->findFilesInPaths($configuration->getPaths(), $configuration);
         $this->missConfigurationReporter->reportVendorInPaths($filePaths);
         $this->missConfigurationReporter->reportStartWithShortOpenTag();
+
+        $batchSplitter = new BatchSplitter();
+        $filePaths = $batchSplitter->getItemsInBatch(
+            $filePaths,
+            $configuration->getBatchIndex(),
+            $configuration->getBatchTotal()
+        );
 
         // no files found
         if ($filePaths === []) {
