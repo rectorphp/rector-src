@@ -149,10 +149,6 @@ final class EregToPcreTransformer
                 ++$i;
                 continue;
             } elseif ($char === '|') {
-                if ($r[$rr] === '') {
-                    throw new InvalidEregException('empty branch');
-                }
-
                 $r[] = '';
                 ++$rr;
                 ++$i;
@@ -194,6 +190,8 @@ final class EregToPcreTransformer
 
     private function normalize(string $content): string
     {
+        $content = str_replace("\x0C", '\\\f', $content);
+
         return str_replace($this->pcreDelimiter, '\\' . $this->pcreDelimiter, $content);
     }
 
