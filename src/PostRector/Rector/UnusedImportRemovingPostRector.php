@@ -48,7 +48,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 continue;
             }
 
-            if ($namespaceStmt->uses === []) {
+            if ($namespaceStmt->uses === [] || $namesInOriginalCase === []) {
                 unset($node->stmts[$key]);
                 $hasChanged = true;
 
