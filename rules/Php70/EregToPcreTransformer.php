@@ -104,6 +104,8 @@ final class EregToPcreTransformer
         $r = [''];
         $rr = 0;
         $l = strlen($content);
+        $normalizeUnprintableChar = false;
+
         while ($i < $l) {
             // atom
             $char = $content[$i];
@@ -150,7 +152,7 @@ final class EregToPcreTransformer
                 continue;
             } elseif ($char === '|') {
                 if ($r[$rr] === '') {
-                    throw new InvalidEregException('empty branch');
+                    $normalizeUnprintableChar = true;
                 }
 
                 $r[] = '';
@@ -189,11 +191,15 @@ final class EregToPcreTransformer
             throw new InvalidEregException('empty regular expression or branch');
         }
 
-        return [$this->normalize(implode('|', $r)), $i];
+        return [$this->normalize(implode('|', $r), $normalizeUnprintableChar), $i];
     }
 
-    private function normalize(string $content): string
+    private function normalize(string $content, bool $normalizeUnprintableChar): string
     {
+        if ($normalizeUnprintableChar) {
+            $content = str_replace("\x0C", '\\\f', $content);
+        }
+
         return str_replace($this->pcreDelimiter, '\\' . $this->pcreDelimiter, $content);
     }
 
