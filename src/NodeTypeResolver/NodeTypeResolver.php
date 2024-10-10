@@ -237,9 +237,10 @@ final class NodeTypeResolver
             }
         }
 
-        $type = $this->resolveNativeTypeWithBuiltinMethodCallFallback($expr, $scope);
         if ($expr instanceof ArrayDimFetch) {
             $type = $this->resolveArrayDimFetchType($expr, $scope, $type);
+        } else {
+            $type = $this->resolveNativeTypeWithBuiltinMethodCallFallback($expr, $scope);
         }
 
         if (! $type instanceof UnionType) {
