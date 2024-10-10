@@ -5,7 +5,7 @@ namespace Rector\Tests\Issues\NamespacedUseAutoImport\Fixture;
 use Some\CLASS_;
 use PhpParser\node;
 
-final class SkipConflictLastNameUsed
+final class SkipConflictLastNameUsedInsensitive
 {
     /**
      * @param Node\STMT\Class_ $param
