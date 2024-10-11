@@ -7,16 +7,19 @@ namespace Rector\PHPStanStaticTypeMapper\TypeMapper;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use PHPStan\Type\IntersectionType;
+use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 
 /**
@@ -28,7 +31,7 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         private PhpVersionProvider $phpVersionProvider,
         private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
         private ObjectTypeMapper $objectTypeMapper,
-        private ReflectionProvider $reflectionProvider,
+        private ScalarStringToTypeMapper $scalarStringToTypeMapper,
     ) {
     }
 
@@ -48,14 +51,34 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         $phpDocNodeTraverser->traverseWithCallable(
             $typeNode,
             '',
-            function (AstNode $astNode): ?IdentifierTypeNode {
-                if ($astNode instanceof IdentifierTypeNode &&
-                    ($this->reflectionProvider->hasClass($astNode->name) || str_contains($astNode->name, '\\'))) {
-                    $astNode->name = '\\' . ltrim($astNode->name, '\\');
-                    return $astNode;
+            function (AstNode $astNode): null|int|IdentifierTypeNode {
+                if ($astNode instanceof UnionTypeNode) {
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
-                return null;
+                if ($astNode instanceof ArrayShapeItemNode) {
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if (! $astNode instanceof IdentifierTypeNode) {
+                    return null;
+                }
+
+                $type = $this->scalarStringToTypeMapper->mapScalarStringToType($astNode->name);
+                if ($type->isScalar()->yes()) {
+                    return null;
+                }
+
+                if ($type->isArray()->yes()) {
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
+                }
+
+                if ($type instanceof MixedType && $type->isExplicitMixed()) {
+                    return null;
+                }
+
+                $astNode->name = '\\' . ltrim($astNode->name, '\\');
+                return $astNode;
             }
         );
 
