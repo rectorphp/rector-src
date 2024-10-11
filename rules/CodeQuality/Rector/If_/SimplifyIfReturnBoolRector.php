@@ -222,7 +222,7 @@ CODE_SAMPLE
             return $this->nodeComparator->areNodesEqual($onlyStmt->expr, $ifReturn->expr);
         }
 
-        return ! $this->valueResolver->isTrueOrFalse($onlyStmt->expr);
+        return true;
     }
 
     private function isIfWithSingleReturnExpr(If_ $if): bool
