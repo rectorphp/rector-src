@@ -261,4 +261,11 @@ final class Option
      * @var string
      */
     public const ABSOLUTE_FILE_PATH = 'absolute_file_path';
+
+    /**
+     * @internal To add editor links to console output
+     * @see \Rector\Config\RectorConfig::editorUrl()
+     * @var string
+     */
+    public const EDITOR_URL = 'editor_url';
 }

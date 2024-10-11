@@ -6,10 +6,13 @@ namespace Rector\ChangesReporting\Output;
 
 use Nette\Utils\Strings;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
+use Rector\Configuration\Option;
+use Rector\Configuration\Parameter\SimpleParameterProvider;
 use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
@@ -83,7 +86,14 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
                 $filePath .= ':' . $firstLineNumber;
             }
 
-            $message = sprintf('<options=bold>%d) %s</>', ++$i, $filePath);
+            $filePathWithUrl = $this->addEditorUrl(
+                $filePath,
+                $fileDiff->getAbsoluteFilePath(),
+                $fileDiff->getRelativeFilePath(),
+                (string) $fileDiff->getFirstLineNumber()
+            );
+
+            $message = sprintf('<options=bold>%d) %s</>', ++$i, $filePathWithUrl);
 
             $this->symfonyStyle->writeln($message);
             $this->symfonyStyle->newLine();
@@ -145,5 +155,24 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             $changeCount > 1 ? 's' : '',
             $configuration->isDryRun() ? 'would have been changed (dry-run)' : ($changeCount === 1 ? 'has' : 'have') . ' been changed'
         );
+    }
+
+    private function addEditorUrl(
+        string $filePath,
+        ?string $absoluteFilePath,
+        ?string $relativeFilePath,
+        ?string $lineNumber,
+    ): string {
+        $editorUrl = SimpleParameterProvider::provideStringParameter(Option::EDITOR_URL, '');
+        if ($editorUrl !== '') {
+            $editorUrl = str_replace(
+                ['%file%', '%relFile%', '%line%'],
+                [$absoluteFilePath, $relativeFilePath, $lineNumber],
+                $editorUrl,
+            );
+            $filePath = '<href=' . OutputFormatter::escape($editorUrl) . '>' . $filePath . '</>';
+        }
+
+        return $filePath;
     }
 }
