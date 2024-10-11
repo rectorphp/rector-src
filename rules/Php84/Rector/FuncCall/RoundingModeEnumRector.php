@@ -5,18 +5,11 @@ declare(strict_types=1);
 namespace Rector\Php84\Rector\FuncCall;
 
 use PhpParser\Node;
-use PhpParser\Node\ComplexType;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
-use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
-use PhpParser\Node\UnionType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\TypeCombinator;
 use Rector\PhpParser\Node\Value\ValueResolver;
-use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
@@ -30,10 +23,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RoundingModeEnumRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly ValueResolver    $valueResolver,
+        private readonly ValueResolver $valueResolver,
         private readonly StaticTypeMapper $staticTypeMapper
-    )
-    {
+    ) {
     }
 
     public function getRuleDefinition(): RuleDefinition
@@ -63,7 +55,11 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node\Expr\FuncCall
     {
 
-        if (!$this->isName($node, 'round')) {
+        if (! $this->isName($node, 'round')) {
+            return null;
+        }
+
+        if ($node->isFirstClassCallable()) {
             return null;
         }
 
@@ -92,7 +88,6 @@ CODE_SAMPLE
                 $args[2]->value = new Node\Expr\ClassConstFetch(new Name('RoundingMode'), $enumCase);
             }
         }
-
 
         return $node;
     }
