@@ -20,6 +20,7 @@ use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
+use PHPStan\Type\UnionTypeHelper;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
@@ -116,6 +117,8 @@ CODE_SAMPLE
             if ($value instanceof MixedType) {
                 $values = [];
                 break;
+            } elseif ($value instanceof UnionType) {
+                $values = [...$values, ...$value->getTypes()];
             }
         }
 
@@ -123,11 +126,15 @@ CODE_SAMPLE
             if ($key instanceof MixedType) {
                 $keys = [];
                 break;
+            } elseif ($key instanceof UnionType) {
+                $keys = [...$keys, ...$key->getTypes()];
             }
         }
 
-        $valueType = $this->combineTypes($values);
-        $keyType = $this->combineTypes($keys);
+        $filter = fn(Type $type):bool => !$type instanceof UnionType;
+
+        $valueType = $this->combineTypes(array_filter($values, $filter));
+        $keyType = $this->combineTypes(array_filter($keys, $filter));
 
         if (! $keyType instanceof Type && ! $valueType instanceof Type) {
             return null;
@@ -193,6 +200,6 @@ CODE_SAMPLE
             return $types[0];
         }
 
-        return new UnionType($types);
+        return new UnionType(UnionTypeHelper::sortTypes($types));
     }
 }
