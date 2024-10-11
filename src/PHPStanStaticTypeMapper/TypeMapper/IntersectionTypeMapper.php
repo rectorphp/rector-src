@@ -51,7 +51,7 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         $phpDocNodeTraverser->traverseWithCallable(
             $typeNode,
             '',
-            function (AstNode $astNode): null|int|IdentifierTypeNode {
+            function (AstNode $astNode): int|IdentifierTypeNode {
                 if ($astNode instanceof UnionTypeNode) {
                     return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
@@ -61,12 +61,12 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
                 }
 
                 if (! $astNode instanceof IdentifierTypeNode) {
-                    return null;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $type = $this->scalarStringToTypeMapper->mapScalarStringToType($astNode->name);
                 if ($type->isScalar()->yes()) {
-                    return null;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 if ($type->isArray()->yes()) {
@@ -74,7 +74,7 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
                 }
 
                 if ($type instanceof MixedType && $type->isExplicitMixed()) {
-                    return null;
+                    return PhpDocNodeTraverser::DONT_TRAVERSE_CURRENT_AND_CHILDREN;
                 }
 
                 $astNode->name = '\\' . ltrim($astNode->name, '\\');
