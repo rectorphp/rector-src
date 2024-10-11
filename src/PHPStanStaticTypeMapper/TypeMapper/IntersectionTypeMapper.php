@@ -17,6 +17,7 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ValueObject\PhpVersionFeature;
+use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @implements TypeMapperInterface<IntersectionType>
@@ -27,6 +28,7 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         private PhpVersionProvider $phpVersionProvider,
         private ObjectWithoutClassTypeMapper $objectWithoutClassTypeMapper,
         private ObjectTypeMapper $objectTypeMapper,
+        private ReflectionProvider $reflectionProvider,
     ) {
     }
 
@@ -46,8 +48,8 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
         $phpDocNodeTraverser->traverseWithCallable(
             $typeNode,
             '',
-            static function (AstNode $astNode): ?IdentifierTypeNode {
-                if ($astNode instanceof IdentifierTypeNode) {
+            function (AstNode $astNode): ?IdentifierTypeNode {
+                if ($astNode instanceof IdentifierTypeNode && $this->reflectionProvider->hasClass($astNode->name)) {
                     $astNode->name = '\\' . ltrim($astNode->name, '\\');
                     return $astNode;
                 }
