@@ -212,7 +212,7 @@ CODE_SAMPLE
         }
 
         $onlyStmt = $if->else->stmts[0];
-        return ! $onlyStmt instanceof Return_;
+        return ! $onlyStmt instanceof Return_ || ! $onlyStmt->expr instanceof Expr;
     }
 
     private function isIfWithSingleReturnExpr(If_ $if): bool
