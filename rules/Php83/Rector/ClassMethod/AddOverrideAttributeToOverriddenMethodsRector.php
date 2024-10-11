@@ -157,7 +157,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                if ($parentClassReflection->isTrait() && !$parentMethod->isAbstract()) {
+                if ($parentClassReflection->isTrait() && ! $parentMethod->isAbstract()) {
                     continue;
                 }
 

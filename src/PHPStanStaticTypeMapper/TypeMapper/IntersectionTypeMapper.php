@@ -9,6 +9,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PHPStan\PhpDocParser\Ast\Node as AstNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
@@ -17,7 +18,6 @@ use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
 use Rector\ValueObject\PhpVersionFeature;
-use PHPStan\Reflection\ReflectionProvider;
 
 /**
  * @implements TypeMapperInterface<IntersectionType>
@@ -49,7 +49,8 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
             $typeNode,
             '',
             function (AstNode $astNode): ?IdentifierTypeNode {
-                if ($astNode instanceof IdentifierTypeNode && $this->reflectionProvider->hasClass($astNode->name)) {
+                if ($astNode instanceof IdentifierTypeNode &&
+                    ($this->reflectionProvider->hasClass($astNode->name) || str_contains($astNode->name, '\\'))) {
                     $astNode->name = '\\' . ltrim($astNode->name, '\\');
                     return $astNode;
                 }
