@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\ChangesReporting\Output;
 
 use Nette\Utils\Strings;
-use PHPStan\File\ParentDirectoryRelativePathHelper;
 use Rector\ChangesReporting\Contract\Output\OutputFormatterInterface;
 use Rector\Configuration\Option;
 use Rector\Configuration\Parameter\SimpleParameterProvider;
@@ -13,7 +12,6 @@ use Rector\ValueObject\Configuration;
 use Rector\ValueObject\Error\SystemError;
 use Rector\ValueObject\ProcessResult;
 use Rector\ValueObject\Reporting\FileDiff;
-use ReflectionClass;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -102,28 +100,8 @@ final readonly class ConsoleOutputFormatter implements OutputFormatterInterface
             $this->symfonyStyle->writeln($fileDiff->getDiffConsoleFormatted());
 
             if ($fileDiff->getRectorChanges() !== []) {
-                $relativePathHelper = new ParentDirectoryRelativePathHelper(getcwd());
                 $this->symfonyStyle->writeln('<options=underscore>Applied rules:</>');
-                $appliedRules = [];
-                foreach ($fileDiff->getRectorClasses() as $rectorClass) {
-                    $appliedRuleName = (string) Strings::after($rectorClass, '\\', -1);
-                    $reflectionClass = new ReflectionClass($rectorClass);
-                    $absolutePath = $reflectionClass->getFileName();
-                    if ($absolutePath !== false) {
-                        $relativePath = $relativePathHelper->getRelativePath($absolutePath);
-                        $appliedRuleNameWithUrl = $this->addEditorUrl(
-                            $appliedRuleName,
-                            $absolutePath,
-                            $relativePath,
-                            '0'
-                        );
-                        $appliedRules[] = $appliedRuleNameWithUrl;
-                    } else {
-                        $appliedRules[] = $appliedRuleName;
-                    }
-                }
-
-                $this->symfonyStyle->listing($appliedRules);
+                $this->symfonyStyle->listing($fileDiff->getRectorShortClasses());
                 $this->symfonyStyle->newLine();
             }
         }
