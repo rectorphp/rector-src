@@ -1,5 +1,7 @@
 <?php
 
+namespace Rector\Tests\Php84\Rector\FuncCall\RoundingModeEnumRector;
+
 round(1.5, 0);
 round(1.5);
 round(1.5, 0, PHP_ROUND_HALF_UP);
@@ -12,6 +14,8 @@ round(1.5, 0, PHP_INT_MAX);
 ?>
 -----
 <?php
+
+namespace Rector\Tests\Php84\Rector\FuncCall\RoundingModeEnumRector;
 
 round(1.5, 0);
 round(1.5);
