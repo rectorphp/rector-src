@@ -7,7 +7,7 @@ namespace Rector\Php84\Rector\FuncCall;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -85,7 +85,7 @@ CODE_SAMPLE
                     return null;
                 }
 
-                $args[2]->value = new Node\Expr\ClassConstFetch(new Name('RoundingMode'), $enumCase);
+                $args[2]->value = new Node\Expr\ClassConstFetch(new FullyQualified('RoundingMode'), $enumCase);
             }
         }
 
