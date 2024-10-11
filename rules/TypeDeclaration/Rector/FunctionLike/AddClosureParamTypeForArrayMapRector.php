@@ -140,22 +140,32 @@ CODE_SAMPLE
             return null;
         }
 
-        $this->updateClosureWithTypes($node->args[0]->value, $keyType, $valueType);
+        if ($this->updateClosureWithTypes($node->args[0]->value, $keyType, $valueType)) {
+            return $node;
+        }
 
-        return $node;
+        return null;
     }
 
     private function updateClosureWithTypes(
         Closure $closure,
         ?Type $keyType,
         ?Type $valueType
-    ): void {
-        if ($closure->params[0] ?? null instanceof Param) {
-            $this->refactorParameter($closure->params[0], $valueType);
+    ): bool {
+        $changes = false;
+
+        if (($closure->params[0] ?? null instanceof Param) && $valueType instanceof Type) {
+            if ($this->refactorParameter($closure->params[0], $valueType)) {
+                $changes = true;
+            }
         }
-        if ($closure->params[1] ?? null instanceof Param) {
-            $this->refactorParameter($closure->params[1], $keyType);
+        if (($closure->params[1] ?? null instanceof Param) && $keyType instanceof Type) {
+            if ($this->refactorParameter($closure->params[1], $keyType)) {
+                $changes = true;
+            }
         }
+
+        return $changes;
     }
 
     private function refactorParameter(Param $param, Type $type): bool
@@ -183,8 +193,12 @@ CODE_SAMPLE
      * @param Type[] $types
      * @throws ShouldNotHappenException
      */
-    private function combineTypes(array $types): Type
+    private function combineTypes(array $types): ?Type
     {
+        if ($types === []) {
+            return null;
+        }
+
         $types = array_reduce($types, function(array $types, Type $type): array {
             foreach ($types as $previousType) {
                 if ($this->typeComparator->areTypesEqual($type, $previousType)) {
