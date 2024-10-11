@@ -208,12 +208,11 @@ CODE_SAMPLE
         }
 
         if (count($if->else->stmts) !== 1) {
-            return false;
+            return true;
         }
 
         $onlyStmt = $if->else->stmts[0];
-
-        return $onlyStmt instanceof If_;
+        return ! $onlyStmt instanceof Return_;
     }
 
     private function isIfWithSingleReturnExpr(If_ $if): bool
