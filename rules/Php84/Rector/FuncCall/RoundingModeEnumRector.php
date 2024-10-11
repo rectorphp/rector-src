@@ -22,12 +22,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
  */
 final class RoundingModeEnumRector extends AbstractRector implements MinPhpVersionInterface
 {
-    public function __construct(
-        private readonly ValueResolver $valueResolver,
-        private readonly StaticTypeMapper $staticTypeMapper
-    ) {
-    }
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition('Replace rounding mode constant to RoundMode enum in round()', [
