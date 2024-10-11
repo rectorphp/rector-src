@@ -18,6 +18,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\IntegerType;
+use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\NeverType;
 use PHPStan\Type\Type;
@@ -186,7 +187,13 @@ CODE_SAMPLE
             return;
         }
 
-        $narrowArrayType = new ArrayType(new MixedType(), $arrayType->getItemType());
+        $itemType = $arrayType->getItemType();
+        if ($itemType instanceof IntersectionType) {
+            $narrowArrayType = $arrayType;
+        } else {
+            $narrowArrayType = new ArrayType(new MixedType(), $itemType);
+        }
+
         $this->phpDocTypeChanger->changeReturnType($node, $phpDocInfo, $narrowArrayType);
     }
 

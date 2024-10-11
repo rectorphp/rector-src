@@ -153,11 +153,18 @@ CODE_SAMPLE
         return null;
     }
 
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::MATCH_EXPRESSION;
+    }
+
     private function castMatchCond(Match_ $match): void
     {
         $type = $this->nodeTypeResolver->getNativeType($match->cond);
-        $isNativeCondString = $type->isString()->yes();
-        $isNativeCondInt = $type->isInteger()->yes();
+        $isNativeCondString = $type->isString()
+            ->yes();
+        $isNativeCondInt = $type->isInteger()
+            ->yes();
 
         if (! $isNativeCondString && ! $isNativeCondInt) {
             return;
@@ -187,11 +194,6 @@ CODE_SAMPLE
         if ($newMatchCond instanceof Cast) {
             $match->cond = $newMatchCond;
         }
-    }
-
-    public function provideMinPhpVersion(): int
-    {
-        return PhpVersionFeature::MATCH_EXPRESSION;
     }
 
     /**

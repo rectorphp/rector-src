@@ -76,6 +76,10 @@ final class ScalarStringToTypeMapper
             return new ArrayType(new MixedType(), new MixedType());
         }
 
+        if ($loweredScalarName === 'non-empty-array') {
+            return new ArrayType(new MixedType(), new MixedType());
+        }
+
         if ($loweredScalarName === 'iterable') {
             return new IterableType(new MixedType(), new MixedType());
         }
