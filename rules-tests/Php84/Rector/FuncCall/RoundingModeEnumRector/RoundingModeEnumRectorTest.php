@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php84\Rector\FuncCall\RoundingModeEnumRector;
+namespace Rector\Tests\Php84\Rector\FuncCall\RoundingModeEnumRector;
 
 use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
