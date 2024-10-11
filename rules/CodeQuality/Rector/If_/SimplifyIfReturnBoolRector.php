@@ -212,7 +212,11 @@ CODE_SAMPLE
         }
 
         $onlyStmt = $if->else->stmts[0];
-        return ! $onlyStmt instanceof Return_ || ! $onlyStmt->expr instanceof Expr;
+        if (! $onlyStmt instanceof Return_ || ! $onlyStmt->expr instanceof Expr) {
+            return true;
+        }
+
+        return ! $this->valueResolver->isTrueOrFalse($onlyStmt->expr);
     }
 
     private function isIfWithSingleReturnExpr(If_ $if): bool

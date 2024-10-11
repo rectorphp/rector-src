@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector\Fixture;
 
-class SkipElseReturnNoExpr
+class SkipElseIndirectReturn3
 {
     public function run()
     {
