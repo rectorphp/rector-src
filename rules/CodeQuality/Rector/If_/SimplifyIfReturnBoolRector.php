@@ -123,11 +123,11 @@ CODE_SAMPLE
             return true;
         }
 
-        if ($this->isElseSeparatedThenIf($if)) {
+        if (! $this->isIfWithSingleReturnExpr($if)) {
             return true;
         }
 
-        if (! $this->isIfWithSingleReturnExpr($if)) {
+        if ($this->isElseSeparatedThenIf($if)) {
             return true;
         }
 
@@ -208,12 +208,21 @@ CODE_SAMPLE
         }
 
         if (count($if->else->stmts) !== 1) {
-            return false;
+            return true;
         }
 
         $onlyStmt = $if->else->stmts[0];
+        if (! $onlyStmt instanceof Return_ || ! $onlyStmt->expr instanceof Expr) {
+            return true;
+        }
 
-        return $onlyStmt instanceof If_;
+        if ($this->valueResolver->isTrueOrFalse($onlyStmt->expr)) {
+            /** @var Return_ $ifReturn */
+            $ifReturn = $if->stmts[0];
+            return $this->nodeComparator->areNodesEqual($onlyStmt->expr, $ifReturn->expr);
+        }
+
+        return true;
     }
 
     private function isIfWithSingleReturnExpr(If_ $if): bool

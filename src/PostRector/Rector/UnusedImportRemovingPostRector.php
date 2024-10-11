@@ -64,6 +64,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 if ($namesInLowerCase === null) {
                     $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
                 }
+
                 $names = $namesInLowerCase;
             }
 
