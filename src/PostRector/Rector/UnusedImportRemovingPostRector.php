@@ -55,25 +55,31 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 continue;
             }
 
-            $useUse = $namespaceStmt->uses[0];
             $isCaseSensitive = $namespaceStmt->type === Use_::TYPE_CONSTANT;
 
-            if ($isCaseSensitive) {
-                $names = $namesInOriginalCase;
-            } else {
-                if ($namesInLowerCase === null) {
-                    $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
+            $useCount = count($namespaceStmt->uses);
+            foreach ($namespaceStmt->uses as $useUseKey => $useUse) {
+                if ($isCaseSensitive) {
+                    $names = $namesInOriginalCase;
+                } else {
+                    if ($namesInLowerCase === null) {
+                        $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
+                    }
+
+                    $names = $namesInLowerCase;
                 }
 
-                $names = $namesInLowerCase;
-            }
+                if ($this->isUseImportUsed($useUse, $isCaseSensitive, $names, $namespaceName)) {
+                    continue;
+                }
+                if ($useCount > 1) {
+                    unset($namespaceStmt->uses[$useUseKey]);
+                } else {
+                    unset($node->stmts[$key]);
+                }
 
-            if ($this->isUseImportUsed($useUse, $isCaseSensitive, $names, $namespaceName)) {
-                continue;
+                $hasChanged = true;
             }
-
-            unset($node->stmts[$key]);
-            $hasChanged = true;
         }
 
         if ($hasChanged === false) {
