@@ -9,6 +9,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
+use Rector\Enum\ClassName;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -27,17 +28,12 @@ final class TypedPropertyFromCreateMockAssignRector extends AbstractRector imple
     /**
      * @var string
      */
-    private const TEST_CASE_CLASS = 'PHPUnit\Framework\TestCase';
-
-    /**
-     * @var string
-     */
     private const MOCK_OBJECT_CLASS = 'PHPUnit\Framework\MockObject\MockObject';
 
     public function __construct(
         private readonly AssignToPropertyTypeInferer $assignToPropertyTypeInferer,
         private readonly StaticTypeMapper $staticTypeMapper,
-        private readonly ConstructorAssignDetector $constructorAssignDetector
+        private readonly ConstructorAssignDetector $constructorAssignDetector,
     ) {
     }
 
@@ -86,7 +82,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isObjectType($node, new ObjectType(self::TEST_CASE_CLASS))) {
+        if (! $this->isObjectType($node, new ObjectType(ClassName::TEST_CASE_CLASS))) {
             return null;
         }
 
