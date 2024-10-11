@@ -2,6 +2,7 @@
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Fixture;
 
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar;
 use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo;
 
 class Fixture
@@ -26,6 +27,17 @@ class Fixture
             return get_class($value) . $key;
         }, $array, $arrayTwo);
     }
+
+    /**
+     * @param array<int, string> $array
+     * @param array<int, Foo|Bar> $arrayTwo
+     */
+    public function runThree(array $array, array $arrayTwo)
+    {
+        return array_map(function ($value, $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
 }
 
 ?>
@@ -34,6 +46,7 @@ class Fixture
 
 namespace Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Fixture;
 
+use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar;
 use Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo;
 
 class Fixture
@@ -54,7 +67,18 @@ class Fixture
      */
     public function runTwo(array $array, array $arrayTwo)
     {
-        return array_map(function (string|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo $value, int $key) {
+        return array_map(function (\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|string $value, int $key) {
+            return get_class($value) . $key;
+        }, $array, $arrayTwo);
+    }
+
+    /**
+     * @param array<int, string> $array
+     * @param array<int, Foo|Bar> $arrayTwo
+     */
+    public function runThree(array $array, array $arrayTwo)
+    {
+        return array_map(function (\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Bar|\Rector\Tests\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRector\Source\Foo|string $value, int $key) {
             return get_class($value) . $key;
         }, $array, $arrayTwo);
     }
