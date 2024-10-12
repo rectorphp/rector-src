@@ -10,5 +10,5 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->rules([AddClosureParamTypeForArrayMapRector::class]);
 
-    $rectorConfig->phpVersion(PhpVersionFeature::INTERSECTION_TYPES);
+    $rectorConfig->phpVersion(PhpVersionFeature::UNION_TYPES);
 };
