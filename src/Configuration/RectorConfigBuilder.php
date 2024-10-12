@@ -6,6 +6,7 @@ namespace Rector\Configuration;
 
 use Nette\Utils\FileSystem;
 use Rector\Bridge\SetProviderCollector;
+use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
@@ -160,6 +161,8 @@ final class RectorConfigBuilder
      */
     private ?bool $isWithPhpSetsUsed = null;
 
+    private ?bool $isWithPhpLevelUsed = null;
+
     public function __invoke(RectorConfig $rectorConfig): void
     {
         // @experimental 2024-06
@@ -174,6 +177,13 @@ final class RectorConfigBuilder
         $this->sets = array_merge($this->sets, $this->groupLoadedSets);
 
         $uniqueSets = array_unique($this->sets);
+
+        if ($this->isWithPhpLevelUsed && $this->isWithPhpSetsUsed) {
+            throw new InvalidConfigurationException(sprintf(
+                'Your config uses "withPhp*()" and "withPhpLevel()" methods at the same time.%sPick one of them to avoid rule conflicts.',
+                PHP_EOL
+            ));
+        }
 
         if (in_array(SetList::TYPE_DECLARATION, $uniqueSets, true) && $this->isTypeCoverageLevelUsed === true) {
             throw new InvalidConfigurationException(sprintf(
@@ -958,6 +968,41 @@ final class RectorConfigBuilder
         $levelRules = LevelRulesResolver::resolve($level, TypeDeclarationLevel::RULES, __METHOD__);
 
         $this->rules = array_merge($this->rules, $levelRules);
+
+        return $this;
+    }
+
+    /**
+     * @experimental Since 1.2.5 Raise your PHP level from, one level at a time
+     */
+    public function withPhpLevel(int $level): self
+    {
+        Assert::natural($level);
+
+        $this->isWithPhpLevelUsed = true;
+
+        $phpVersion = ComposerJsonPhpVersionResolver::resolveFromCwdOrFail();
+
+        $setRectorsResolver = new SetRectorsResolver();
+        $setFilePaths = PhpLevelSetResolver::resolveFromPhpVersion($phpVersion);
+
+        $rectorRulesWithConfiguration = $setRectorsResolver->resolveFromFilePathsIncludingConfiguration($setFilePaths);
+
+        foreach ($rectorRulesWithConfiguration as $position => $rectorRuleWithConfiguration) {
+            // add rules untill level is reached
+            if ($position > $level) {
+                continue;
+            }
+
+            if (is_string($rectorRuleWithConfiguration)) {
+                $this->rules[] = $rectorRuleWithConfiguration;
+            } elseif (is_array($rectorRuleWithConfiguration)) {
+                foreach ($rectorRuleWithConfiguration as $rectorRule => $rectorRuleConfiguration) {
+                    /** @var class-string<ConfigurableRectorInterface> $rectorRule */
+                    $this->withConfiguredRule($rectorRule, $rectorRuleConfiguration);
+                }
+            }
+        }
 
         return $this;
     }
