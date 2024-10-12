@@ -41,7 +41,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
             : null;
 
         $namesInOriginalCase = $this->resolveUsedPhpAndDocNames($node);
-        $namesInLowerCase = null; // Initialized as null, lazy loaded when case in-sensitive names are needed
+        $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
 
         foreach ($node->stmts as $key => $namespaceStmt) {
             if (! $namespaceStmt instanceof Use_) {
@@ -62,10 +62,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 if ($isCaseSensitive) {
                     $names = $namesInOriginalCase;
                 } else {
-                    if ($namesInLowerCase === null) {
-                        $namesInLowerCase = array_map(strtolower(...), $namesInOriginalCase);
-                    }
-
                     $names = $namesInLowerCase;
                 }
 
