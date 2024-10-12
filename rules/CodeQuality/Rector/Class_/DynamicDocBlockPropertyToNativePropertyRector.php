@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\CodeQuality\Rector\Class_;
 
 use PhpParser\Node;
-use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -17,7 +16,7 @@ use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTagRemover;
 use Rector\CodeQuality\NodeFactory\TypedPropertyFactory;
 use Rector\Comments\NodeDocBlock\DocBlockUpdater;
-use Rector\Doctrine\NodeAnalyzer\AttributeFinder;
+use Rector\Php80\NodeAnalyzer\PhpAttributeAnalyzer;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
@@ -33,7 +32,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class DynamicDocBlockPropertyToNativePropertyRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly AttributeFinder $attributeFinder,
+        private readonly PhpAttributeAnalyzer $phpAttributeAnalyzer,
         private readonly PhpDocInfoFactory $phpDocInfoFactory,
         private readonly PhpDocTagRemover $phpDocTagRemover,
         private readonly DocBlockUpdater $docBlockUpdater,
@@ -89,11 +88,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $allowDynamicPropertiesAttribute = $this->attributeFinder->findAttributeByClass(
-            $node,
-            'AllowDynamicProperties'
-        );
-        if (! $allowDynamicPropertiesAttribute instanceof Attribute) {
+        if (! $this->phpAttributeAnalyzer->hasPhpAttribute($node, 'AllowDynamicProperties')) {
             return null;
         }
 
