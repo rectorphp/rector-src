@@ -35,7 +35,7 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
         }
 
         $hasChanged = false;
-        $namespaceOriginalName = $node instanceof Namespace_ && $node->name instanceof Name
+        $namespaceOriginalCase = $node instanceof Namespace_ && $node->name instanceof Name
             ? $node->name->toString()
             : null;
         $namesInOriginalCase = $this->resolveUsedPhpAndDocNames($node);
