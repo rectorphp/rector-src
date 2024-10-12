@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeFactory;
 
+use PhpParser\Node;
 use PhpParser\Node\ComplexType;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -45,7 +46,7 @@ final readonly class TypedPropertyFactory
 
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PROPERTY);
 
-        if ($isNullable && ! $typeNode instanceof NullableType && ! $typeNode instanceof ComplexType && $typeNode !== null) {
+        if ($isNullable && ! $typeNode instanceof NullableType && ! $typeNode instanceof ComplexType && $typeNode instanceof Node) {
             return new NullableType($typeNode);
         }
 
