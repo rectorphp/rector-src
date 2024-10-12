@@ -13,8 +13,4 @@ final class SkipNoAllowDynamicPropertiesAttribute
     {
         $this->someDependency = new SomeDependency();
     }
-
-    public function __get($name)
-    {
-    }
 }
