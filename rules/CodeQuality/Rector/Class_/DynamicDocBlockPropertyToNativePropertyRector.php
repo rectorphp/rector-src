@@ -89,7 +89,11 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->attributeFinder->findAttributeByClass($node, 'AllowDynamicProperties') instanceof Attribute) {
+        $allowDynamicPropertiesAttribute = $this->attributeFinder->findAttributeByClass(
+            $node,
+            'AllowDynamicProperties'
+        );
+        if (! $allowDynamicPropertiesAttribute instanceof Attribute) {
             return null;
         }
 
@@ -182,6 +186,17 @@ CODE_SAMPLE
 
     private function shouldSkipClass(Class_ $class): bool
     {
+        // skip magic
+        $getClassMethod = $class->getMethod('__get');
+        if ($getClassMethod instanceof ClassMethod) {
+            return true;
+        }
+
+        $setClassMethod = $class->getMethod('__set');
+        if ($setClassMethod instanceof ClassMethod) {
+            return true;
+        }
+
         if (! $class->extends instanceof Node) {
             return false;
         }

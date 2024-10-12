@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rector\CodeQuality\NodeFactory;
 
-use PhpParser\Node;
+use PhpParser\Node\ComplexType;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Property;
@@ -35,7 +37,7 @@ final readonly class TypedPropertyFactory
         PropertyTagValueNode $propertyTagValueNode,
         Class_ $class,
         bool $isNullable = true
-    ): Node {
+    ): Name|ComplexType|Identifier|null {
         $propertyType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
             $propertyTagValueNode->type,
             $class
@@ -43,7 +45,7 @@ final readonly class TypedPropertyFactory
 
         $typeNode = $this->staticTypeMapper->mapPHPStanTypeToPhpParserNode($propertyType, TypeKind::PROPERTY);
 
-        if ($isNullable && ! $typeNode instanceof NullableType) {
+        if ($isNullable && ! $typeNode instanceof NullableType && ! $typeNode instanceof ComplexType && $typeNode !== null) {
             return new NullableType($typeNode);
         }
 
