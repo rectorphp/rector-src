@@ -55,11 +55,11 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
             $isCaseSensitive = $stmt->type === Use_::TYPE_CONSTANT;
             $names = $isCaseSensitive ? $namesInOriginalCase : $namesInLowerCase;
-            $namespaceName = $namespaceOriginalName === null
+            $namespaceName = $namespaceOriginalCase === null
                 ? null
                 : ($isCaseSensitive
-                        ? $namespaceOriginalName
-                        : strtolower($namespaceOriginalName));
+                        ? $namespaceOriginalCase
+                        : strtolower($namespaceOriginalCase));
 
             foreach ($stmt->uses as $useUseKey => $useUse) {
                 if ($this->isUseImportUsed($useUse, $isCaseSensitive, $names, $namespaceName)) {
