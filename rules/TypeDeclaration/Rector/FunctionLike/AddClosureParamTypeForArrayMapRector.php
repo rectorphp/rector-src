@@ -82,7 +82,9 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[0] instanceof Arg || ! $node->args[0]->value instanceof Closure) {
+        $args = $node->getArgs();
+
+        if (! isset($args[0]) || ! $args[0]->value instanceof Closure) {
             return null;
         }
 
@@ -136,7 +138,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->updateClosureWithTypes($node->args[0]->value, $keyType, $valueType)) {
+        if ($this->updateClosureWithTypes($args[0]->value, $keyType, $valueType)) {
             return $node;
         }
 
