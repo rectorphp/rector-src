@@ -9,21 +9,14 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Param;
-use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\Native\NativeFunctionReflection;
-use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ArrayType;
-use PHPStan\Type\CallableType;
-use PHPStan\Type\IntersectionType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use PHPStan\Type\UnionTypeHelper;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
-use Rector\PHPStanStaticTypeMapper\Utils\TypeUnwrapper;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
@@ -39,7 +32,6 @@ final class AddClosureParamTypeForArrayMapRector extends AbstractRector
         private readonly TypeComparator $typeComparator,
         private readonly StaticTypeMapper $staticTypeMapper,
         private readonly ReflectionResolver $reflectionResolver,
-        private readonly TypeUnwrapper $typeUnwrapper,
     ) {
     }
 
@@ -80,7 +72,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->isName($node,'array_map')) {
+        if (! $this->isName($node, 'array_map')) {
             return null;
         }
 
@@ -90,12 +82,16 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $node->args[0]->value instanceof Closure) {
+        if (! $node->args[0] instanceof Arg || ! $node->args[0]->value instanceof Closure) {
             return null;
         }
 
         /** @var ArrayType[] $types */
-        $types = array_filter(array_map(function (Arg $arg): ?ArrayType {
+        $types = array_filter(array_map(function ($arg): ?ArrayType {
+            if (! $arg instanceof Arg) {
+                return null;
+            }
+
             $type = $this->getType($arg->value);
 
             if ($type instanceof ArrayType) {
@@ -109,8 +105,8 @@ CODE_SAMPLE
         $keys = [];
 
         foreach ($types as $type) {
-           $values[] = $type->getIterableValueType();
-           $keys[] = $type->getIterableKeyType();
+            $values[] = $type->getIterableValueType();
+            $keys[] = $type->getIterableKeyType();
         }
 
         foreach ($values as $value) {
@@ -131,7 +127,7 @@ CODE_SAMPLE
             }
         }
 
-        $filter = fn(Type $type):bool => !$type instanceof UnionType;
+        $filter = fn (Type $type): bool => ! $type instanceof UnionType;
 
         $valueType = $this->combineTypes(array_filter($values, $filter));
         $keyType = $this->combineTypes(array_filter($keys, $filter));
@@ -147,22 +143,24 @@ CODE_SAMPLE
         return null;
     }
 
-    private function updateClosureWithTypes(
-        Closure $closure,
-        ?Type $keyType,
-        ?Type $valueType
-    ): bool {
+    private function updateClosureWithTypes(Closure $closure, ?Type $keyType, ?Type $valueType): bool
+    {
         $changes = false;
+        $valueParam = $closure->params[0] ?? null;
+        $keyParam = $closure->params[1] ?? null;
 
-        if (($closure->params[0] ?? null instanceof Param) && $valueType instanceof Type) {
-            if ($this->refactorParameter($closure->params[0], $valueType)) {
-                $changes = true;
-            }
+        if ($valueParam instanceof Param && $valueType instanceof Type && $this->refactorParameter(
+            $closure->params[0],
+            $valueType
+        )) {
+            $changes = true;
         }
-        if (($closure->params[1] ?? null instanceof Param) && $keyType instanceof Type) {
-            if ($this->refactorParameter($closure->params[1], $keyType)) {
-                $changes = true;
-            }
+
+        if ($keyParam instanceof Param && $keyType instanceof Type && $this->refactorParameter(
+            $closure->params[1],
+            $keyType
+        )) {
+            return true;
         }
 
         return $changes;
@@ -191,7 +189,6 @@ CODE_SAMPLE
 
     /**
      * @param Type[] $types
-     * @throws ShouldNotHappenException
      */
     private function combineTypes(array $types): ?Type
     {
@@ -199,7 +196,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $types = array_reduce($types, function(array $types, Type $type): array {
+        $types = array_reduce($types, function (array $types, Type $type): array {
             foreach ($types as $previousType) {
                 if ($this->typeComparator->areTypesEqual($type, $previousType)) {
                     return $types;
