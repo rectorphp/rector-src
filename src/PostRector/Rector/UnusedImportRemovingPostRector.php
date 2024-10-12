@@ -57,7 +57,6 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
 
             $isCaseSensitive = $namespaceStmt->type === Use_::TYPE_CONSTANT;
 
-            $useCount = count($namespaceStmt->uses);
             foreach ($namespaceStmt->uses as $useUseKey => $useUse) {
                 if ($isCaseSensitive) {
                     $names = $namesInOriginalCase;
@@ -68,13 +67,14 @@ final class UnusedImportRemovingPostRector extends AbstractPostRector
                 if ($this->isUseImportUsed($useUse, $isCaseSensitive, $names, $namespaceName)) {
                     continue;
                 }
-                if ($useCount > 1) {
-                    unset($namespaceStmt->uses[$useUseKey]);
-                } else {
-                    unset($node->stmts[$key]);
-                }
+
+                unset($namespaceStmt->uses[$useUseKey]);
 
                 $hasChanged = true;
+            }
+
+            if ($namespaceStmt->uses === []) {
+                unset($node->stmts[$key]);
             }
         }
 
