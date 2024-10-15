@@ -142,6 +142,10 @@ CODE_SAMPLE
             return false;
         }
 
+        if ($varTagType->isArray()->maybe()) {
+            return false;
+        }
+
         foreach ($varTagType->getTypes() as $unionedType) {
             if ($unionedType->isSuperTypeOf(new ObjectType(self::MOCK_OBJECT_CLASS))->yes()) {
                 return true;

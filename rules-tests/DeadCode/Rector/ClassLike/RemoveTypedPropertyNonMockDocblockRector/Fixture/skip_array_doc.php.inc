@@ -7,26 +7,23 @@ use PHPUnit\Framework\TestCase;
 final class SkipArrayDoc extends TestCase
 {
     /**
-     * @var array<string, array<string, list<mixed>>>|array<string, array<string, string>>|array<string, list<mixed>>|array<string, mixed>|array<string, string>|mixed
+     * @var string[]|mixed
      */
-    private array $structure;
+    private mixed $structure;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->structure = [
-            'foo' => [
-                'bar' => 'Once upon a midnight dreary',
-                'baz' => 'While I pondered weak and weary',
-            ],
-            'boo' => [
-                'far' => 'Upon a tome of long-forgotten lore',
-                'faz' => 'There came a tapping up on the door',
-            ],
-            'AnEmptyFolder' => [],
-            'simpleFile'    => 'A tap-tap-tapping upon my door',
-            '.hidden'       => 'There is no spoon',
-        ];
+        if (rand(0, 1)) {
+            $this->structure = ['test'];
+        } else {
+            $this->structure = $this->some_mixed_function();
+        }
     }
+
+	private function some_mixed_function(): mixed
+	{
+		return null;
+	}
 }
