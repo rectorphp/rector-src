@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\Php52\Rector\Switch_\ContinueToBreakInSwitchRector;
 use Rector\Php73\Rector\BooleanOr\IsCountableRector;
 use Rector\Php73\Rector\ConstFetch\SensitiveConstantNameRector;
 use Rector\Php73\Rector\FuncCall\ArrayKeyFirstLastRector;
@@ -37,7 +36,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rules([
         StringifyStrNeedlesRector::class,
         RegexDashEscapeRector::class,
-        ContinueToBreakInSwitchRector::class,
         SetCookieRector::class,
         IsCountableRector::class,
 
