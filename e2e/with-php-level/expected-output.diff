@@ -1,0 +1,18 @@
+1 file with changes
+===================
+
+1) src/SomeClass.php:0
+
+    ---------- begin diff ----------
+@@ @@
+ <?php
+
+-ldap_first_attribute($ldap, $entry, $more);
++ldap_first_attribute($ldap, $entry);
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveFuncCallArgRector
+
+
+ [OK] 1 file would have been changed (dry-run) by Rector

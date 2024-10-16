@@ -32,6 +32,7 @@ use Rector\Symfony\Set\JMSSetList;
 use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\ValueObject\PhpVersion;
+use Rector\ValueObject\PhpVersionFeature;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Assert\Assert;
 
@@ -289,10 +290,6 @@ final class RectorConfigBuilder
 
         if ($this->phpstanConfigs !== []) {
             $rectorConfig->phpstanConfigs($this->phpstanConfigs);
-        }
-
-        if ($this->phpVersion !== null) {
-            $rectorConfig->phpVersion($this->phpVersion);
         }
 
         if ($this->parallel !== null) {
@@ -903,7 +900,10 @@ final class RectorConfigBuilder
      */
     public function withPhpVersion(int $phpVersion): self
     {
-        $this->phpVersion = $phpVersion;
+        // trigger from new RectorConfig instance
+        // as too late usage on __invoke() on withPhpSets() or withPhpLevel()
+        (new RectorConfig())->phpVersion($phpVersion);
+
         return $this;
     }
 
