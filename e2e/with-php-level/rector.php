@@ -6,4 +6,4 @@ use Rector\ValueObject\PhpVersionFeature;
 return RectorConfig::configure()
     ->withPaths([__DIR__ . '/src'])
     ->withPhpVersion(PhpVersionFeature::ATTRIBUTES)
-    ->withPhpLevel(2);
+    ->withPhpLevel(PHP_INT_MAX);

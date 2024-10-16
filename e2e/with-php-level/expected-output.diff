@@ -1,7 +1,7 @@
 1 file with changes
 ===================
 
-1) src/SomeClass.php:0
+1) src/ldap_test.php:0
 
     ---------- begin diff ----------
 @@ @@
@@ -12,7 +12,7 @@
     ----------- end diff -----------
 
 Applied rules:
- * RemoveFuncCallArgRector
+ * RemoveExtraParametersRector
 
 
  [OK] 1 file would have been changed (dry-run) by Rector

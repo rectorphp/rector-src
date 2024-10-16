@@ -1,3 +1,8 @@
 <?php
 
-ldap_first_attribute($ldap, $entry, $more);
+final class SomeClass
+{
+    public function __construct(private readonly string $b)
+    {
+    }
+}
