@@ -45,7 +45,7 @@ final class SetRectorsResolverTest extends TestCase
         $rectorRulesWithConfiguration = $this->setRectorsResolver->resolveFromFilePathsIncludingConfiguration(
             $configFilePaths
         );
-        $this->assertCount(63, $rectorRulesWithConfiguration);
+        $this->assertCount(62, $rectorRulesWithConfiguration);
     }
 
     public function testResolveWithConfiguration(): void
@@ -53,10 +53,10 @@ final class SetRectorsResolverTest extends TestCase
         $rectorRulesWithConfiguration = $this->setRectorsResolver->resolveFromFilePathIncludingConfiguration(
             SetList::PHP_73
         );
-        $this->assertCount(10, $rectorRulesWithConfiguration);
+        $this->assertCount(9, $rectorRulesWithConfiguration);
 
         $this->assertArrayHasKey(0, $rectorRulesWithConfiguration);
-        $this->assertArrayHasKey(9, $rectorRulesWithConfiguration);
+        $this->assertArrayHasKey(8, $rectorRulesWithConfiguration);
 
         foreach ($rectorRulesWithConfiguration as $rectorRuleWithConfiguration) {
             if (is_string($rectorRuleWithConfiguration)) {
