@@ -185,6 +185,16 @@ final class Option
     public const PARALLEL_PORT = 'port';
 
     /**
+     * @var string
+     */
+    public const BATCH_INDEX = 'batch-index';
+
+    /**
+     * @var string
+     */
+    public const BATCH_TOTAL = 'batch-total';
+
+    /**
      * @internal Use @see \Rector\Config\RectorConfig::parallel() instead with pass int $jobSize parameter
      * @var string
      */

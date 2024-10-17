@@ -129,6 +129,20 @@ final class ConsoleApplication extends Application
             InputOption::VALUE_NONE,
             'Clear cache'
         ));
+
+        $inputDefinition->addOption(new InputOption(
+            Option::BATCH_INDEX,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Index of the current job when running in batch mode'
+        ));
+
+        $inputDefinition->addOption(new InputOption(
+            Option::BATCH_TOTAL,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Total number of jobs when running in batch mode'
+        ));
     }
 
     private function getDefaultConfigPath(): string
