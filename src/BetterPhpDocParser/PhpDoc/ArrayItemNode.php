@@ -31,7 +31,7 @@ final class ArrayItemNode implements PhpDocTagValueNode, Stringable
                 $value .= $singleValue;
             }
         } elseif ($this->value instanceof DoctrineAnnotationTagValueNode) {
-            $value .= $this->value->identifierTypeNode . $this->value;
+            $value .= '@' . ltrim((string) $this->value->identifierTypeNode, '@') . $this->value;
         } else {
             $value .= $this->value;
         }
