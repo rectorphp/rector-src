@@ -13,6 +13,12 @@ final class VersionResolverTest extends TestCase
     {
         $packageVersion = VersionResolver::resolvePackageVersion();
 
+        // latest commit is tagged
+        if (str_contains($packageVersion, '.')) {
+            $this->assertSame(2, substr_count($packageVersion, '.'));
+            return;
+        }
+
         // should be a commit hash size, as we're in untagged test
         $stringLength = strlen($packageVersion);
         $this->assertSame(40, $stringLength);
