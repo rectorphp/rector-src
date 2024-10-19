@@ -87,6 +87,7 @@ CODE_SAMPLE
 
     /**
      * @param If_|ElseIf_|Ternary $node
+     * @return null|Stmt[]|Node
      */
     public function refactor(Node $node): null|array|Node
     {
