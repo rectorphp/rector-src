@@ -117,7 +117,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNotEmpty,
         bool $isOnlyString
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    ): Identical|Instanceof_|BooleanAnd|null {
         $unionType = TypeCombinator::removeNull($unionType);
 
         if ($unionType->isBoolean()->yes()) {
@@ -157,13 +157,13 @@ final readonly class ExactCompareFactory
         UnionType $unionType,
         Expr $expr,
         bool $treatAsNotEmpty
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    ): ?BooleanAnd {
         $compareExprs = $this->collectCompareExprs($unionType, $expr, $treatAsNotEmpty, false);
         return $this->createBooleanAnd($compareExprs);
     }
 
     /**
-     * @return array<Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null>
+     * @return array<Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|FuncCall|null>
      */
     private function collectCompareExprs(
         UnionType $unionType,
@@ -189,11 +189,10 @@ final readonly class ExactCompareFactory
     }
 
     /**
-     * @param array<Identical|BooleanOr|NotIdentical|BooleanAnd|Instanceof_|BooleanNot|null> $compareExprs
+     * @param array<Identical|BooleanOr|NotIdentical|BooleanAnd|Instanceof_|BooleanNot|FuncCall|null> $compareExprs
      */
-    private function createBooleanOr(
-        array $compareExprs
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    private function createBooleanOr(array $compareExprs): ?BooleanOr
+    {
         $truthyExpr = array_shift($compareExprs);
 
         foreach ($compareExprs as $compareExpr) {
@@ -208,15 +207,15 @@ final readonly class ExactCompareFactory
             $truthyExpr = new BooleanOr($truthyExpr, $compareExpr);
         }
 
+        /** @var BooleanOr $truthyExpr */
         return $truthyExpr;
     }
 
     /**
-     * @param array<Identical|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|Instanceof_|null> $compareExprs
+     * @param array<Identical|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|Instanceof_|FuncCall|null> $compareExprs
      */
-    private function createBooleanAnd(
-        array $compareExprs
-    ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+    private function createBooleanAnd(array $compareExprs): ?BooleanAnd
+    {
         $truthyExpr = array_shift($compareExprs);
 
         foreach ($compareExprs as $compareExpr) {
@@ -231,6 +230,7 @@ final readonly class ExactCompareFactory
             $truthyExpr = new BooleanAnd($truthyExpr, $compareExpr);
         }
 
+        /** @var BooleanAnd $truthyExpr */
         return $truthyExpr;
     }
 
@@ -239,7 +239,7 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNonEmpty,
         bool $isOnlyString
-    ): BooleanOr|NotIdentical|Identical|BooleanNot|Instanceof_|BooleanAnd|null {
+    ): BooleanOr|NotIdentical|Identical|BooleanNot|null {
         $unionType = $this->cleanUpPossibleNullableUnionType($unionType);
 
         if ($unionType instanceof UnionType) {
