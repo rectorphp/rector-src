@@ -27,7 +27,7 @@ final class NegatedPregMatch
 {
     public function run(string $param): bool
     {
-        if (preg_match('/^.+$/', $param) === 0 || preg_match('/^.+$/', $param) === false) {
+        if (in_array(preg_match('/^.+$/', $param), [0, false], true)) {
 	        return true;
         }
         return false;

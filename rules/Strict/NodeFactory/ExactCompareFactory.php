@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace Rector\Strict\NodeFactory;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\CallLike;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
@@ -34,36 +40,38 @@ final readonly class ExactCompareFactory
         Expr $expr,
         bool $treatAsNonEmpty,
         bool $isOnlyString = true
-    ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null {
+    ): Identical|BooleanOr|NotIdentical|BooleanNot|Instanceof_|BooleanAnd|null|FuncCall {
+        $result = null;
+
         if ($exprType->isString()->yes()) {
             if ($treatAsNonEmpty || ! $isOnlyString) {
                 return new Identical($expr, new String_(''));
             }
 
-            return new BooleanOr(new Identical($expr, new String_('')), new Identical($expr, new String_('0')));
-        }
-
-        if ($exprType->isInteger()->yes()) {
+            $result = new BooleanOr(new Identical($expr, new String_('')), new Identical($expr, new String_('0')));
+        } elseif ($exprType->isInteger()->yes()) {
             return new Identical($expr, new LNumber(0));
-        }
-
-        if ($exprType->isBoolean()->yes()) {
+        } elseif ($exprType->isBoolean()->yes()) {
             return new Identical($expr, $this->nodeFactory->createFalse());
-        }
-
-        if ($exprType->isArray()->yes()) {
+        } elseif ($exprType->isArray()->yes()) {
             return new Identical($expr, new Array_([]));
-        }
-
-        if ($exprType instanceof NullType) {
+        } elseif ($exprType instanceof NullType) {
             return new Identical($expr, $this->nodeFactory->createNull());
-        }
-
-        if (! $exprType instanceof UnionType) {
+        } elseif (! $exprType instanceof UnionType) {
             return null;
+        } else {
+            $result = $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty, false);
         }
 
-        return $this->createTruthyFromUnionType($exprType, $expr, $treatAsNonEmpty, false);
+        if ($result instanceof BooleanOr && $expr instanceof CallLike && $result->left instanceof Identical && $result->right instanceof Identical) {
+            return new FuncCall(new Name('in_array'), [
+                new Arg($expr),
+                new Arg(new Array_([new ArrayItem($result->left->right), new ArrayItem($result->right->right)])),
+                new Arg(new ConstFetch(new Name('true'))),
+            ]);
+        }
+
+        return $result;
     }
 
     public function createNotIdenticalFalsyCompare(
@@ -72,30 +80,36 @@ final readonly class ExactCompareFactory
         bool $treatAsNotEmpty,
         bool $isOnlyString = true
     ): Identical|Instanceof_|BooleanOr|NotIdentical|BooleanAnd|BooleanNot|null {
+        $result = null;
+
         if ($exprType->isString()->yes()) {
             if ($treatAsNotEmpty || ! $isOnlyString) {
                 return new NotIdentical($expr, new String_(''));
             }
 
-            return new BooleanAnd(
+            $result = new BooleanAnd(
                 new NotIdentical($expr, new String_('')),
                 new NotIdentical($expr, new String_('0'))
             );
-        }
-
-        if ($exprType->isInteger()->yes()) {
+        } elseif ($exprType->isInteger()->yes()) {
             return new NotIdentical($expr, new LNumber(0));
-        }
-
-        if ($exprType->isArray()->yes()) {
+        } elseif ($exprType->isArray()->yes()) {
             return new NotIdentical($expr, new Array_([]));
-        }
-
-        if (! $exprType instanceof UnionType) {
+        } elseif (! $exprType instanceof UnionType) {
             return null;
+        } else {
+            $result = $this->createFromUnionType($exprType, $expr, $treatAsNotEmpty, false);
         }
 
-        return $this->createFromUnionType($exprType, $expr, $treatAsNotEmpty, false);
+        if ($result instanceof BooleanAnd && $expr instanceof CallLike && $result->left instanceof NotIdentical && $result->right instanceof NotIdentical) {
+            return new BooleanNot(new FuncCall(new Name('in_array'), [
+                new Arg($expr),
+                new Arg(new Array_([new ArrayItem($result->left->right), new ArrayItem($result->right->right)])),
+                new Arg(new ConstFetch(new Name('true'))),
+            ]));
+        }
+
+        return $result;
     }
 
     private function createFromUnionType(

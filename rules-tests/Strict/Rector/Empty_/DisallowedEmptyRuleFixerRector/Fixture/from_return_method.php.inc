@@ -30,12 +30,12 @@ final class FromReturnCall
 {
     public function run()
     {
-        return $this->getProperty() === '' || $this->getProperty() === '0';
+        return in_array($this->getProperty(), ['', '0'], true);
     }
 
     public function run2()
     {
-        return $this->getProperty() !== '' && $this->getProperty() !== '0';
+        return !in_array($this->getProperty(), ['', '0'], true);
     }
 
     public function getProperty(): string
