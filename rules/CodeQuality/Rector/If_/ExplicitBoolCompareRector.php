@@ -126,10 +126,7 @@ CODE_SAMPLE
 
             $node->cond = $binaryOp;
 
-            return [
-                $expression,
-                $node,
-            ];
+            return [$expression, $node];
         }
 
         $node->cond = $binaryOp;
