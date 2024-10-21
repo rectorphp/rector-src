@@ -103,6 +103,7 @@ CODE_SAMPLE
             }
 
             $nextCases = [];
+            $reInsert = 0;
             for ($jumpToKey = $key + 1; $jumpToKey < $totalKeys; ++$jumpToKey) {
                 if (! isset($switch->cases[$jumpToKey])) {
                     continue;
@@ -113,6 +114,11 @@ CODE_SAMPLE
                 }
 
                 $nextCase = $switch->cases[$jumpToKey];
+
+                if (isset($switch->cases[$jumpToKey - 1]) && $switch->cases[$jumpToKey - 1]->stmts === []) {
+                    $nextCases[] = $switch->cases[$jumpToKey - 1];
+                    ++$reInsert;
+                }
 
                 unset($switch->cases[$jumpToKey]);
 
@@ -125,7 +131,7 @@ CODE_SAMPLE
                 continue;
             }
 
-            array_splice($switch->cases, $key + 1, 0, $nextCases);
+            array_splice($switch->cases, $key + 1, $reInsert, $nextCases);
 
             for ($jumpToKey = $key; $jumpToKey < $key + count($nextCases); ++$jumpToKey) {
                 $switch->cases[$jumpToKey]->stmts = [];
