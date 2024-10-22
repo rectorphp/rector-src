@@ -123,6 +123,7 @@ CODE_SAMPLE
                     foreach ($match->arms as $arm) {
                         if ($arm->conds === null) {
                             $this->mirrorComments($arm, $returnStatement);
+                            break;
                         }
                     }
                 }
