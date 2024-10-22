@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
-use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
 use Rector\Php80\NodeResolver\SwitchExprsResolver;
@@ -116,16 +115,19 @@ CODE_SAMPLE
 
             $match = $matchResult->getMatch();
             if ($matchResult->shouldRemoveNextStmt() && $isReturn) {
-                $returnComment = $node->stmts[$key + 1]->getComments();
-                unset($node->stmts[$key + 1]);
+                /** @var Return_ $returnStatement */
+                $returnStatement = $node->stmts[$key + 1];
+                $returnComment = $returnStatement->getComments();
 
                 if ($returnComment !== []) {
                     foreach ($match->arms as $arm) {
                         if ($arm->conds === null) {
-                            $arm->setAttribute(AttributeKey::COMMENTS, $returnComment);
+                            $this->mirrorComments($arm, $returnStatement);
                         }
                     }
                 }
+
+                unset($node->stmts[$key + 1]);
             }
 
             $assignVar = $this->resolveAssignVar($condAndExprs);
