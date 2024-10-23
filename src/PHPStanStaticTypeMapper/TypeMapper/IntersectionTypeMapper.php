@@ -95,10 +95,6 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_INTERSECTION_TYPES)) {
-            return null;
-        }
-
         $intersectionedTypeNodes = [];
         foreach ($type->getTypes() as $type) {
             if ($type instanceof ObjectWithoutClassType) {
@@ -124,6 +120,10 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
 
         if (count($intersectionedTypeNodes) === 1) {
             return current($intersectionedTypeNodes);
+        }
+
+        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_INTERSECTION_TYPES)) {
+            return null;
         }
 
         return new Node\IntersectionType($intersectionedTypeNodes);
