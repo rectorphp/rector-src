@@ -19,6 +19,7 @@ use PHPStan\Type\Type;
 use Rector\Php\PhpVersionProvider;
 use Rector\PhpDocParser\PhpDocParser\PhpDocNodeTraverser;
 use Rector\PHPStanStaticTypeMapper\Contract\TypeMapperInterface;
+use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\StaticTypeMapper\Mapper\ScalarStringToTypeMapper;
 use Rector\ValueObject\PhpVersionFeature;
 
@@ -91,6 +92,10 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
     public function mapToPhpParserNode(Type $type, string $typeKind): ?Node
     {
         if (! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::INTERSECTION_TYPES)) {
+            return null;
+        }
+
+        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_INTERSECTION_TYPES)) {
             return null;
         }
 

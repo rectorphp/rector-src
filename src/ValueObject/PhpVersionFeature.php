@@ -594,6 +594,12 @@ final class PhpVersionFeature
     public const INTERSECTION_TYPES = PhpVersion::PHP_81;
 
     /**
+     * @see https://php.watch/versions/8.2/dnf-types
+     * @var int
+     */
+    public const UNION_INTERSECTION_TYPES = PhpVersion::PHP_82;
+
+    /**
      * @see https://wiki.php.net/rfc/array_unpacking_string_keys
      * @var int
      */
