@@ -12,6 +12,7 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
+use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
 final readonly class DeadVarTagValueNodeAnalyzer
 {
@@ -34,6 +35,11 @@ final readonly class DeadVarTagValueNodeAnalyzer
         // is strict type superior to doc type? keep strict type only
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
+
+        // NonExistingObjectType may refer to @template tag defined in class
+        if ($docType instanceof NonExistingObjectType && ! str_contains($docType->getClassName(), '\\')) {
+            return false;
+        }
 
         if ($propertyType instanceof UnionType && ! $docType instanceof UnionType) {
             return ! $docType instanceof IntersectionType;
