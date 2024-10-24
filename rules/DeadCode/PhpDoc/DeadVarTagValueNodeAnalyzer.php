@@ -38,6 +38,7 @@ final readonly class DeadVarTagValueNodeAnalyzer
 
         // NonExistingObjectType may refer to @template tag defined in class
         if ($docType instanceof NonExistingObjectType && ! str_contains($docType->getClassName(), '\\')) {
+            dump($docType);
             return false;
         }
 
