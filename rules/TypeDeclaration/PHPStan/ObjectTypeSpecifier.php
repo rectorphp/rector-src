@@ -15,11 +15,11 @@ use PHPStan\PhpDoc\Tag\TemplateTag;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
+use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\Generic\TemplateTypeFactory;
 use PHPStan\Type\Generic\TemplateTypeScope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
@@ -43,7 +43,7 @@ final readonly class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         Scope|null $scope
-    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | Type {
+    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
         $uses = $this->useImportsResolver->resolve();
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
@@ -76,7 +76,6 @@ final readonly class ObjectTypeSpecifier
         $classReflection = $scope->getClassReflection();
         if ($classReflection instanceof ClassReflection) {
             $templateTags = $classReflection->getTemplateTags();
-            $types = [];
             $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
             $templateTypeScope = $nameScope->getTemplateTypeScope();
 

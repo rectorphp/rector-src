@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node\Stmt\Property;
-use PHPStan\PhpDoc\Tag\TemplateTag;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
@@ -35,10 +34,6 @@ final readonly class DeadVarTagValueNodeAnalyzer
         // is strict type superior to doc type? keep strict type only
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
-
-        if ($docType instanceof TemplateTag) {
-            return false;
-        }
 
         if ($propertyType instanceof UnionType && ! $docType instanceof UnionType) {
             return ! $docType instanceof IntersectionType;
