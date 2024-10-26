@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rector\DeadCode\PhpDoc;
 
 use PhpParser\Node\Stmt\Property;
+use PHPStan\PhpDoc\Tag\TemplateTag;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\ObjectType;
@@ -12,7 +13,6 @@ use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
 use Rector\StaticTypeMapper\StaticTypeMapper;
-use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
 final readonly class DeadVarTagValueNodeAnalyzer
 {
@@ -36,9 +36,7 @@ final readonly class DeadVarTagValueNodeAnalyzer
         $propertyType = $this->staticTypeMapper->mapPhpParserNodePHPStanType($property->type);
         $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType($varTagValueNode->type, $property);
 
-        // NonExistingObjectType may refer to @template tag defined in class
-        if ($docType instanceof NonExistingObjectType && ! str_contains($docType->getClassName(), '\\')) {
-            dump($docType);
+        if ($docType instanceof TemplateTag) {
             return false;
         }
 
