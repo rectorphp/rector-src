@@ -73,31 +73,33 @@ final readonly class ObjectTypeSpecifier
             }
         }
 
-        $classReflection = $scope->getClassReflection();
-        if ($classReflection instanceof ClassReflection) {
-            $templateTags = $classReflection->getTemplateTags();
-            $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
-            $templateTypeScope = $nameScope->getTemplateTypeScope();
+        if ($scope instanceof \PHPStan\Analyser\Scope) {
+            $classReflection = $scope->getClassReflection();
+            if ($classReflection instanceof ClassReflection) {
+                $templateTags = $classReflection->getTemplateTags();
+                $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
+                $templateTypeScope = $nameScope->getTemplateTypeScope();
 
-            if (! $templateTypeScope instanceof TemplateTypeScope) {
-                // invalid type
-                return new NonExistingObjectType($className);
+                if (! $templateTypeScope instanceof TemplateTypeScope) {
+                    // invalid type
+                    return new NonExistingObjectType($className);
+                }
+
+                // only support single @template for now
+                if (count($templateTags) !== 1) {
+                    // invalid type
+                    return new NonExistingObjectType($className);
+                }
+
+                /** @var TemplateTag $currentTemplateTag */
+                $currentTemplateTag = current($templateTags);
+                return TemplateTypeFactory::create(
+                    $templateTypeScope,
+                    $currentTemplateTag->getName(),
+                    $currentTemplateTag->getBound(),
+                    $currentTemplateTag->getVariance()
+                );
             }
-
-            // only support single @template for now
-            if (count($templateTags) !== 1) {
-                // invalid type
-                return new NonExistingObjectType($className);
-            }
-
-            /** @var TemplateTag $currentTemplateTag */
-            $currentTemplateTag = current($templateTags);
-            return TemplateTypeFactory::create(
-                $templateTypeScope,
-                $currentTemplateTag->getName(),
-                $currentTemplateTag->getBound(),
-                $currentTemplateTag->getVariance()
-            );
         }
 
         // invalid type
