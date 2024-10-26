@@ -11,6 +11,7 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ConstantScalarType;
+use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
@@ -37,6 +38,16 @@ final readonly class TypeComparator
 
     public function areTypesEqual(Type $firstType, Type $secondType): bool
     {
+        // unless it by ref, object param has its own life vs redefined variable
+        // see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
+        $firstType = $firstType instanceof TemplateType
+            ? $firstType->getBound()
+            : $firstType;
+
+        $secondType = $secondType instanceof TemplateType
+            ? $secondType->getBound()
+            : $secondType;
+
         $firstTypeHash = $this->typeHasher->createTypeHash($firstType);
         $secondTypeHash = $this->typeHasher->createTypeHash($secondType);
 
@@ -105,6 +116,16 @@ final readonly class TypeComparator
 
     public function isSubtype(Type $checkedType, Type $mainType): bool
     {
+        // unless it by ref, object param has its own life vs redefined variable
+        // see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
+        $checkedType = $checkedType instanceof TemplateType
+            ? $checkedType->getBound()
+            : $checkedType;
+
+        $mainType = $mainType instanceof TemplateType
+            ? $mainType->getBound()
+            : $mainType;
+
         if ($mainType instanceof MixedType) {
             return false;
         }
