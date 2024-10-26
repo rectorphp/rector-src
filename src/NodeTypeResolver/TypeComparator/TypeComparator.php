@@ -38,15 +38,8 @@ final readonly class TypeComparator
 
     public function areTypesEqual(Type $firstType, Type $secondType): bool
     {
-        // unless it by ref, object param has its own life vs redefined variable
-        // see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
-        $firstType = $firstType instanceof TemplateType
-            ? $firstType->getBound()
-            : $firstType;
-
-        $secondType = $secondType instanceof TemplateType
-            ? $secondType->getBound()
-            : $secondType;
+        $firstType = $this->normalizeTemplateType($firstType);
+        $secondType = $this->normalizeTemplateType($secondType);
 
         $firstTypeHash = $this->typeHasher->createTypeHash($firstType);
         $secondTypeHash = $this->typeHasher->createTypeHash($secondType);
@@ -116,15 +109,8 @@ final readonly class TypeComparator
 
     public function isSubtype(Type $checkedType, Type $mainType): bool
     {
-        // unless it by ref, object param has its own life vs redefined variable
-        // see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
-        $checkedType = $checkedType instanceof TemplateType
-            ? $checkedType->getBound()
-            : $checkedType;
-
-        $mainType = $mainType instanceof TemplateType
-            ? $mainType->getBound()
-            : $mainType;
+        $checkedType = $this->normalizeTemplateType($checkedType);
+        $mainType = $this->normalizeTemplateType($mainType);
 
         if ($mainType instanceof MixedType) {
             return false;
@@ -141,6 +127,17 @@ final readonly class TypeComparator
         }
 
         return $this->arrayTypeComparator->isSubtype($checkedType, $mainType);
+    }
+
+    /**
+     * unless it by ref, object param has its own life vs redefined variable
+     * see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
+     */
+    private function normalizeTemplateType(Type $type): Type
+    {
+        return $type instanceof TemplateType
+            ? $type->getBound()
+            : $type;
     }
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool
