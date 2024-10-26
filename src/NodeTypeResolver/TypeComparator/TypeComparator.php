@@ -11,7 +11,6 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\BooleanType;
 use PHPStan\Type\Constant\ConstantBooleanType;
 use PHPStan\Type\ConstantScalarType;
-use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
@@ -75,10 +74,6 @@ final readonly class TypeComparator
             $phpStanDocTypeNode,
             $node
         );
-
-        if ($phpStanDocType instanceof TemplateType) {
-            return false;
-        }
 
         if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype(
             $phpStanDocType,

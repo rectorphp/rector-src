@@ -12,6 +12,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
+use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
@@ -44,6 +45,14 @@ final readonly class DeadReturnTagValueNodeAnalyzer
         }
 
         if ($returnTagValueNode->description !== '') {
+            return false;
+        }
+
+        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+            $returnTagValueNode->type,
+            $functionLike
+        );
+        if ($docType instanceof TemplateType) {
             return false;
         }
 
