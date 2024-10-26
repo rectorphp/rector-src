@@ -122,7 +122,9 @@ final readonly class IntersectionTypeMapper implements TypeMapperInterface
             return current($intersectionedTypeNodes);
         }
 
-        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(PhpVersionFeature::UNION_INTERSECTION_TYPES)) {
+        if ($typeKind === TypeKind::UNION && ! $this->phpVersionProvider->isAtLeastPhpVersion(
+            PhpVersionFeature::UNION_INTERSECTION_TYPES
+        )) {
             return null;
         }
 

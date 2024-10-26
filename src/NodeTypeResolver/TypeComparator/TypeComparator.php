@@ -38,6 +38,9 @@ final readonly class TypeComparator
 
     public function areTypesEqual(Type $firstType, Type $secondType): bool
     {
+        $firstType = $this->normalizeTemplateType($firstType);
+        $secondType = $this->normalizeTemplateType($secondType);
+
         $firstTypeHash = $this->typeHasher->createTypeHash($firstType);
         $secondTypeHash = $this->typeHasher->createTypeHash($secondType);
 
@@ -76,10 +79,6 @@ final readonly class TypeComparator
             $node
         );
 
-        if ($phpStanDocType instanceof TemplateType) {
-            return false;
-        }
-
         if (! $this->areTypesEqual($phpParserNodeType, $phpStanDocType) && $this->isSubtype(
             $phpStanDocType,
             $phpParserNodeType
@@ -110,6 +109,9 @@ final readonly class TypeComparator
 
     public function isSubtype(Type $checkedType, Type $mainType): bool
     {
+        $checkedType = $this->normalizeTemplateType($checkedType);
+        $mainType = $this->normalizeTemplateType($mainType);
+
         if ($mainType instanceof MixedType) {
             return false;
         }
@@ -125,6 +127,17 @@ final readonly class TypeComparator
         }
 
         return $this->arrayTypeComparator->isSubtype($checkedType, $mainType);
+    }
+
+    /**
+     * unless it by ref, object param has its own life vs redefined variable
+     * see https://3v4l.org/dI5Pe vs https://3v4l.org/S8i71
+     */
+    private function normalizeTemplateType(Type $type): Type
+    {
+        return $type instanceof TemplateType
+            ? $type->getBound()
+            : $type;
     }
 
     private function areAliasedObjectMatchingFqnObject(Type $firstType, Type $secondType): bool

@@ -9,6 +9,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\Type\Generic\TemplateType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
@@ -16,6 +17,7 @@ use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\TypeDeclaration\NodeAnalyzer\ParamAnalyzer;
 
 final readonly class DeadParamTagValueNodeAnalyzer
@@ -27,7 +29,8 @@ final readonly class DeadParamTagValueNodeAnalyzer
         private MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
         private ParamAnalyzer $paramAnalyzer,
         private PhpDocTypeChanger $phpDocTypeChanger,
-        private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard
+        private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
+        private StaticTypeMapper $staticTypeMapper
     ) {
     }
 
@@ -43,6 +46,14 @@ final readonly class DeadParamTagValueNodeAnalyzer
         }
 
         if ($paramTagValueNode->description !== '') {
+            return false;
+        }
+
+        $docType = $this->staticTypeMapper->mapPHPStanPhpDocTypeNodeToPHPStanType(
+            $paramTagValueNode->type,
+            $functionLike
+        );
+        if ($docType instanceof TemplateType) {
             return false;
         }
 
