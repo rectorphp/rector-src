@@ -73,7 +73,7 @@ final readonly class ObjectTypeSpecifier
             }
         }
 
-        if ($scope instanceof \PHPStan\Analyser\Scope) {
+        if ($scope instanceof Scope) {
             $classReflection = $scope->getClassReflection();
             if ($classReflection instanceof ClassReflection) {
                 $templateTags = $classReflection->getTemplateTags();
