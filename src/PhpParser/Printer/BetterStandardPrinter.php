@@ -38,7 +38,7 @@ use Rector\PhpParser\Node\CustomNode\FileWithoutNamespace;
  *
  * @property array<string, array{string, bool, string, null}> $insertionMap
  */
-final class BetterStandardPrinter extends Standard
+class BetterStandardPrinter extends Standard
 {
     /**
      * @var string
