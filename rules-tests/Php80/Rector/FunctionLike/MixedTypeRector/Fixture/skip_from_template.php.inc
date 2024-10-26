@@ -5,7 +5,7 @@ namespace Rector\Tests\Php80\Rector\FunctionLike\MixedTypeRector\Fixture;
 /**
  * @template T as mixed
  */
-class NoMixedParamDoc
+class SkipFromTemplate
 {
     /**
      * @param T $param
