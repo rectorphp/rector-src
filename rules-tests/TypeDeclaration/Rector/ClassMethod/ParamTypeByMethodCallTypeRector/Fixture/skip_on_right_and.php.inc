@@ -1,10 +1,7 @@
 <?php
 
-namespace shop\basket\viewmodel;
+namespace Rector\Tests\TypeDeclaration\Rector\ClassMethod\ParamTypeByMethodCallTypeRector\Fixture;
 
-/**
- * @immutable
- */
 final class SkipOnRightAnd
 {
     public string $code;
