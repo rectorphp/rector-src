@@ -11,13 +11,19 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PHPStan\Analyser\Scope;
+use PHPStan\PhpDoc\Tag\TemplateTag;
+use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Generic\GenericObjectType;
+use PHPStan\Type\Generic\TemplateType;
+use PHPStan\Type\Generic\TemplateTypeFactory;
+use PHPStan\Type\Generic\TemplateTypeScope;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\Naming\Naming\UseImportsResolver;
+use Rector\StaticTypeMapper\Naming\NameScopeFactory;
 use Rector\StaticTypeMapper\ValueObject\Type\AliasedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\FullyQualifiedObjectType;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
@@ -29,6 +35,7 @@ final readonly class ObjectTypeSpecifier
     public function __construct(
         private ReflectionProvider $reflectionProvider,
         private UseImportsResolver $useImportsResolver,
+        private NameScopeFactory $nameScopeFactory
     ) {
     }
 
@@ -36,7 +43,7 @@ final readonly class ObjectTypeSpecifier
         Node $node,
         ObjectType $objectType,
         Scope|null $scope
-    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType {
+    ): TypeWithClassName | NonExistingObjectType | UnionType | MixedType | TemplateType {
         $uses = $this->useImportsResolver->resolve();
 
         $aliasedObjectType = $this->matchAliasedObjectType($objectType, $uses);
@@ -63,6 +70,35 @@ final readonly class ObjectTypeSpecifier
                 if ($this->reflectionProvider->hasClass($newClassName)) {
                     return new FullyQualifiedObjectType($newClassName);
                 }
+            }
+        }
+
+        if ($scope instanceof Scope) {
+            $classReflection = $scope->getClassReflection();
+            if ($classReflection instanceof ClassReflection) {
+                $templateTags = $classReflection->getTemplateTags();
+                $nameScope = $this->nameScopeFactory->createNameScopeFromNodeWithoutTemplateTypes($node);
+                $templateTypeScope = $nameScope->getTemplateTypeScope();
+
+                if (! $templateTypeScope instanceof TemplateTypeScope) {
+                    // invalid type
+                    return new NonExistingObjectType($className);
+                }
+
+                // only support single @template for now
+                if (count($templateTags) !== 1) {
+                    // invalid type
+                    return new NonExistingObjectType($className);
+                }
+
+                /** @var TemplateTag $currentTemplateTag */
+                $currentTemplateTag = current($templateTags);
+                return TemplateTypeFactory::create(
+                    $templateTypeScope,
+                    $currentTemplateTag->getName(),
+                    $currentTemplateTag->getBound(),
+                    $currentTemplateTag->getVariance()
+                );
             }
         }
 
