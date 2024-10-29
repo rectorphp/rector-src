@@ -81,6 +81,13 @@ CODE_SAMPLE
             return null;
         }
 
+        $leftStartLine = $node->left->getStartLine();
+        $rightStartLine = $node->right->getStartLine();
+
+        if ($leftStartLine > 0 && $rightStartLine > 0 && $rightStartLine > $leftStartLine) {
+            return null;
+        }
+
         return $this->joinConcatIfStrings($node->left, $node->right);
     }
 
