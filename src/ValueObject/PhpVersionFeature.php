@@ -689,4 +689,10 @@ final class PhpVersionFeature
      * @var int
      */
     public const DEPRECATE_HOST_PORT_SEPARATE_ARGS = PhpVersion::PHP_83;
+
+    /**
+     * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.core.get-class
+     * @var int
+     */
+    public const DEPRECATE_GET_CLASS_WITHOUT_ARGS = PhpVersion::PHP_83;
 }

@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rector\Php83\Rector\FuncCall;
+
+use PhpParser\Node;
+use Rector\Rector\AbstractRector;
+use Rector\ValueObject\PhpVersionFeature;
+use Rector\VersionBonding\Contract\MinPhpVersionInterface;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+
+/**
+ * @see https://php.watch/versions/8.3/get_class-get_parent_class-parameterless-deprecated
+ * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.core.get-class
+ * @see \Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassNoArgsRector\RemoveGetClassNoArgsRectorTest
+ */
+final class RemoveGetClassNoArgsRector extends AbstractRector implements MinPhpVersionInterface
+{
+    public function getRuleDefinition(): RuleDefinition
+    {
+        $r = new RuleDefinition(
+            'Replace calls to get_class() without arguments with __CLASS__ magic constant',
+            [
+                new CodeSample(
+                    <<<'CODE_SAMPLE'
+class Example {
+    public function doWork() {
+        return get_class();
+    }
+}
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+class Example {
+    public function doWork() {
+        return __CLASS__;
+    }
+}
+CODE_SAMPLE
+                ),
+            ]
+        );
+
+        return $r;
+    }
+
+    /**
+     * @return array<class-string<Node>>
+     */
+    public function getNodeTypes(): array
+    {
+        return [Node\Expr\FuncCall::class];
+    }
+
+    /**
+     * @param Node\Expr\FuncCall $node
+     */
+    public function refactor(Node $node): ?Node
+    {
+        if ($node->isFirstClassCallable()) {
+            return null;
+        }
+
+        if (! ($this->isName($node, 'get_class'))) {
+            return null;
+        }
+
+        if (count($node->getArgs()) !== 0) {
+            return null;
+        }
+
+        return new Node\Scalar\MagicConst\Class_();
+    }
+
+    public function provideMinPhpVersion(): int
+    {
+        return PhpVersionFeature::DEPRECATE_GET_CLASS_WITHOUT_ARGS;
+    }
+}
