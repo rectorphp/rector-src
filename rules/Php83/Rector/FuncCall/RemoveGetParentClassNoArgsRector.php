@@ -12,8 +12,6 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
- * @see https://php.watch/versions/8.3/get_class-get_parent_class-parameterless-deprecated
- * @see https://www.php.net/manual/en/migration83.deprecated.php#migration83.deprecated.core.get-class
  * @see \Rector\Tests\Php83\Rector\FuncCall\RemoveGetParentClassNoArgsRector\RemoveGetParentClassNoArgsRectorTest
  */
 final class RemoveGetParentClassNoArgsRector extends AbstractRector implements MinPhpVersionInterface
