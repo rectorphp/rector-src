@@ -121,6 +121,10 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             return false;
         }
 
+        if ($nodeType instanceof UnionType) {
+            return false;
+        }
+
         foreach ($docType->getTypes() as $type) {
             if (! $this->typeComparator->areTypesEqual($type, $nodeType) && ! $this->typeComparator->isSubtype($type, $nodeType)) {
                 return true;
