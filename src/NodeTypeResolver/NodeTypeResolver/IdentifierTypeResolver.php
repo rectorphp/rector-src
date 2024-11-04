@@ -34,7 +34,6 @@ final class IdentifierTypeResolver implements NodeTypeResolverInterface
 
     /**
      * @param Identifier $node
-     * @return StringType|BooleanType|ConstantBooleanType|NullType|ObjectWithoutClassType|ArrayType|IterableType|IntegerType|FloatType|MixedType
      */
     public function resolve(Node $node): Type
     {

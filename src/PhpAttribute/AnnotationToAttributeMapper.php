@@ -29,9 +29,6 @@ final readonly class AnnotationToAttributeMapper
         Assert::notEmpty($annotationToAttributeMappers);
     }
 
-    /**
-     * @return mixed|DocTagNodeState::REMOVE_ARRAY
-     */
     public function map(mixed $value): mixed
     {
         foreach ($this->annotationToAttributeMappers as $annotationToAttributeMapper) {

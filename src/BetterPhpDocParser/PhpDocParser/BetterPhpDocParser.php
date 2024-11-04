@@ -147,9 +147,6 @@ final class BetterPhpDocParser extends PhpDocParser
         return $phpDocTagValueNode;
     }
 
-    /**
-     * @return PhpDocTextNode|PhpDocTagNode
-     */
     private function parseChildAndStoreItsPositions(TokenIterator $tokenIterator): PhpDocChildNode
     {
         $betterTokenIterator = $this->tokenIteratorFactory->createFromTokenIterator($tokenIterator);

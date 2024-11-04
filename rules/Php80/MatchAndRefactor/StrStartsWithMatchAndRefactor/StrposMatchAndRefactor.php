@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\BinaryOp\Equal;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BinaryOp\NotEqual;
 use PhpParser\Node\Expr\BinaryOp\NotIdentical;
-use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -47,9 +46,6 @@ final readonly class StrposMatchAndRefactor implements StrStartWithMatchAndRefac
         return $this->processBinaryOpRight($binaryOp, $isPositive);
     }
 
-    /**
-     * @return FuncCall|BooleanNot
-     */
     public function refactorStrStartsWith(StrStartsWith $strStartsWith): Node
     {
         $strposFuncCall = $strStartsWith->getFuncCall();
