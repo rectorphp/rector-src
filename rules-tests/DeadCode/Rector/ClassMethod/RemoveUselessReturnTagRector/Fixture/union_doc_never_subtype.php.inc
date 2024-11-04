@@ -8,7 +8,7 @@ use stdClass;
 class UnionDocNeverSubType
 {
     /**
-     * @return DateTime|array
+     * @return stdClass|array
      */
     function foo(): stdClass
     {

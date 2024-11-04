@@ -122,15 +122,9 @@ final readonly class DeadReturnTagValueNodeAnalyzer
         }
 
         foreach ($docType->getTypes() as $type) {
-            if ($this->typeComparator->areTypesEqual($type, $nodeType)) {
-                continue;
+            if (! $this->typeComparator->areTypesEqual($type, $nodeType) && ! $this->typeComparator->isSubtype($type, $nodeType)) {
+                return true;
             }
-
-            if ($this->typeComparator->isSubtype($type, $nodeType)) {
-                continue;
-            }
-
-            return true;
         }
 
         return false;
