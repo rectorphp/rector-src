@@ -117,10 +117,23 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             $functionLike
         );
 
-        return $docType instanceof UnionType && $this->typeComparator->areTypesEqual(
-            TypeCombinator::removeNull($docType),
-            $nodeType
-        );
+        if (! $docType instanceof UnionType) {
+            return false;
+        }
+
+        foreach ($docType->getTypes() as $type) {
+            if ($this->typeComparator->areTypesEqual($type, $nodeType)) {
+                continue;
+            }
+
+            if ($this->typeComparator->isSubtype($type, $nodeType)) {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private function hasTrueFalsePseudoType(BracketsAwareUnionTypeNode $bracketsAwareUnionTypeNode): bool
