@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetParentClassNoArgsRector\Fixture;
+namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Fixture;
 
 class Fixture
 {
@@ -14,7 +14,7 @@ class Fixture
 -----
 <?php
 
-namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetParentClassNoArgsRector\Fixture;
+namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Fixture;
 
 class Fixture
 {

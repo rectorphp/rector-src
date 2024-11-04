@@ -1,6 +1,6 @@
 <?php
 
-namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassNoArgsRector\Fixture;
+namespace Rector\Tests\Php83\Rector\FuncCall\RemoveGetClassGetParentClassNoArgsRector\Fixture;
 
 class SkipDifferentFuncCall
 {
