@@ -24,6 +24,16 @@ gc_disable();
 
 define('__RECTOR_RUNNING__', true);
 
+// very early load preload to ensure no overlapped by project autoload
+if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
+    require_once __DIR__ . '/../preload.php';
+}
+
+// require rector-src on split packages
+if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
+    require_once __DIR__ . '/../preload-split-package.php';
+}
+
 // Require Composer autoload.php
 $autoloadIncluder = new AutoloadIncluder();
 $autoloadIncluder->includeDependencyOrRepositoryVendorAutoloadIfExists();
@@ -111,15 +121,6 @@ final class AutoloadIncluder
 
         require_once $filePath;
     }
-}
-
-if (file_exists(__DIR__ . '/../preload.php') && is_dir(__DIR__ . '/../vendor')) {
-    require_once __DIR__ . '/../preload.php';
-}
-
-// require rector-src on split packages
-if (file_exists(__DIR__ . '/../preload-split-package.php') && is_dir(__DIR__ . '/../../../../vendor')) {
-    require_once __DIR__ . '/../preload-split-package.php';
 }
 
 $autoloadIncluder->loadIfExistsAndNotLoadedYet(__DIR__ . '/../vendor/scoper-autoload.php');
