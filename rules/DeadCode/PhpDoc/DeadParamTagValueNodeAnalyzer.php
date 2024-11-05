@@ -9,10 +9,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\Type\Generic\TemplateType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
+use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
@@ -30,7 +30,8 @@ final readonly class DeadParamTagValueNodeAnalyzer
         private ParamAnalyzer $paramAnalyzer,
         private PhpDocTypeChanger $phpDocTypeChanger,
         private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
-        private StaticTypeMapper $staticTypeMapper
+        private StaticTypeMapper $staticTypeMapper,
+        private TemplateTypeRemovalGuard $templateTypeRemovalGuard
     ) {
     }
 
@@ -53,7 +54,7 @@ final readonly class DeadParamTagValueNodeAnalyzer
             $paramTagValueNode->type,
             $functionLike
         );
-        if ($docType instanceof TemplateType) {
+        if (! $this->templateTypeRemovalGuard->isLegal($docType)) {
             return false;
         }
 

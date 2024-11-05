@@ -12,12 +12,12 @@ use PHPStan\Analyser\Scope;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ThisTypeNode;
-use PHPStan\Type\Generic\TemplateType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\BetterPhpDocParser\ValueObject\Type\BracketsAwareUnionTypeNode;
 use Rector\DeadCode\PhpDoc\Guard\StandaloneTypeRemovalGuard;
+use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
 use Rector\DeadCode\TypeNodeAnalyzer\GenericTypeNodeAnalyzer;
 use Rector\DeadCode\TypeNodeAnalyzer\MixedArrayTypeNodeAnalyzer;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -32,7 +32,8 @@ final readonly class DeadReturnTagValueNodeAnalyzer
         private MixedArrayTypeNodeAnalyzer $mixedArrayTypeNodeAnalyzer,
         private StandaloneTypeRemovalGuard $standaloneTypeRemovalGuard,
         private PhpDocTypeChanger $phpDocTypeChanger,
-        private StaticTypeMapper $staticTypeMapper
+        private StaticTypeMapper $staticTypeMapper,
+        private TemplateTypeRemovalGuard $templateTypeRemovalGuard,
     ) {
     }
 
@@ -52,7 +53,7 @@ final readonly class DeadReturnTagValueNodeAnalyzer
             $returnTagValueNode->type,
             $functionLike
         );
-        if ($docType instanceof TemplateType) {
+        if (! $this->templateTypeRemovalGuard->isLegal($docType)) {
             return false;
         }
 
