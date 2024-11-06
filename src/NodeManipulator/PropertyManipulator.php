@@ -43,6 +43,7 @@ final readonly class PropertyManipulator
         'Doctrine\ORM\Mapping\Entity',
         'Doctrine\ORM\Mapping\Table',
         'Doctrine\ORM\Mapping\MappedSuperclass',
+        'Doctrine\ORM\Mapping\Embeddable',
     ];
 
     public function __construct(
