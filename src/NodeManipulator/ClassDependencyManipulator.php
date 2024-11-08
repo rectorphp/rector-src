@@ -25,6 +25,9 @@ use Rector\TypeDeclaration\NodeAnalyzer\AutowiredClassMethodOrPropertyAnalyzer;
 use Rector\ValueObject\MethodName;
 use Rector\ValueObject\PhpVersionFeature;
 
+/**
+ * @see \Rector\Tests\NodeManipulator\ClassDependencyManipulatorTest
+ */
 final readonly class ClassDependencyManipulator
 {
     public function __construct(
@@ -143,6 +146,7 @@ final readonly class ClassDependencyManipulator
         } else {
             $constructClassMethod = $this->nodeFactory->createPublicMethod(MethodName::CONSTRUCT);
             $constructClassMethod->params[] = $param;
+
             $this->classInsertManipulator->addAsFirstMethod($class, $constructClassMethod);
         }
     }

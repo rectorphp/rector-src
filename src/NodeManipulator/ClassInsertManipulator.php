@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeManipulator;
 
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -23,20 +22,54 @@ final readonly class ClassInsertManipulator
     /**
      * @api
      */
-    public function addAsFirstMethod(Class_ $class, Property | ClassConst | ClassMethod $stmt): void
+    public function addAsFirstMethod(Class_ $class, Property | ClassConst | ClassMethod $addedStmt): void
     {
         $scope = $class->getAttribute(AttributeKey::SCOPE);
-        $stmt->setAttribute(AttributeKey::SCOPE, $scope);
+        $addedStmt->setAttribute(AttributeKey::SCOPE, $scope);
 
-        if ($this->isSuccessToInsertBeforeFirstMethod($class, $stmt)) {
+        // no stmts? add this one
+        if ($class->stmts === []) {
+            $class->stmts[] = $addedStmt;
             return;
         }
 
-        if ($this->isSuccessToInsertAfterLastProperty($class, $stmt)) {
+        $newClassStmts = [];
+        $isAdded = false;
+
+        foreach ($class->stmts as $key => $classStmt) {
+            $nextStmt = $class->stmts[$key + 1] ?? null;
+
+            if ($isAdded === false) {
+                // first class method
+                if ($classStmt instanceof ClassMethod) {
+                    $newClassStmts[] = $addedStmt;
+                    $newClassStmts[] = $classStmt;
+                    $isAdded = true;
+                    continue;
+                }
+
+                // after last property
+                if ($classStmt instanceof Property && ! $nextStmt instanceof Property) {
+                    $newClassStmts[] = $classStmt;
+                    $newClassStmts[] = $addedStmt;
+                    $isAdded = true;
+                    continue;
+                }
+            }
+
+            $newClassStmts[] = $classStmt;
+        }
+
+        // still not added? try after last trait
+        // @todo
+
+        if ($isAdded) {
+            $class->stmts = $newClassStmts;
             return;
         }
 
-        $class->stmts[] = $stmt;
+        // keep added at least as first stmt
+        $class->stmts = array_merge([$addedStmt], $class->stmts);
     }
 
     /**
@@ -51,47 +84,5 @@ final readonly class ClassInsertManipulator
 
         $property = $this->nodeFactory->createPrivatePropertyFromNameAndType($name, $type);
         $this->addAsFirstMethod($class, $property);
-    }
-
-    /**
-     * @param Stmt[] $stmts
-     * @return Stmt[]
-     */
-    private function insertBefore(array $stmts, Stmt $stmt, int $key): array
-    {
-        array_splice($stmts, $key, 0, [$stmt]);
-
-        return $stmts;
-    }
-
-    private function isSuccessToInsertBeforeFirstMethod(Class_ $class, ClassConst|ClassMethod|Property $stmt): bool
-    {
-        foreach ($class->stmts as $key => $classStmt) {
-            if (! $classStmt instanceof ClassMethod) {
-                continue;
-            }
-
-            $class->stmts = $this->insertBefore($class->stmts, $stmt, $key);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function isSuccessToInsertAfterLastProperty(Class_ $class, ClassConst|ClassMethod|Property $stmt): bool
-    {
-        $previousElement = null;
-        foreach ($class->stmts as $key => $classStmt) {
-            if ($previousElement instanceof Property && ! $classStmt instanceof Property) {
-                $class->stmts = $this->insertBefore($class->stmts, $stmt, $key);
-
-                return true;
-            }
-
-            $previousElement = $classStmt;
-        }
-
-        return false;
     }
 }
