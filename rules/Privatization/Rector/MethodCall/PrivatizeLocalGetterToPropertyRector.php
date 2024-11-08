@@ -134,6 +134,10 @@ CODE_SAMPLE
 
     private function matchLocalPropertyFetchInGetterMethod(ClassMethod $classMethod): ?PropertyFetch
     {
+        if ($classMethod->params !== []) {
+            return null;
+        }
+
         $stmts = (array) $classMethod->stmts;
         if (count($stmts) !== 1) {
             return null;
