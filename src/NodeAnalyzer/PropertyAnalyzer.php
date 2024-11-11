@@ -23,7 +23,7 @@ final readonly class PropertyAnalyzer
     public function hasForbiddenType(Property $property): bool
     {
         $propertyType = $this->nodeTypeResolver->getType($property);
-        if ($propertyType instanceof NullType) {
+        if ($propertyType->isNull()->yes()) {
             return true;
         }
 

@@ -108,7 +108,7 @@ final readonly class CallTypesResolver
             return $staticTypeByArgumentPosition;
         }
 
-        if (! $staticTypeByArgumentPosition[0] instanceof NullType) {
+        if (! $staticTypeByArgumentPosition[0]->isNull()->yes()) {
             return $staticTypeByArgumentPosition;
         }
 

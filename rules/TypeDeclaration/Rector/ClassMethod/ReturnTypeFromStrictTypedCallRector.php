@@ -175,7 +175,7 @@ CODE_SAMPLE
         NullableType $nullableType
     ): Closure | ClassMethod | Function_ {
         $types = $unionType->getTypes();
-        $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType
+        $returnType = $types[0] instanceof ObjectType && $types[1]->isNull()->yes()
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
             : $nullableType;
 

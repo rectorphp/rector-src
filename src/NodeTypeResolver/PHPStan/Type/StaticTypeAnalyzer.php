@@ -44,7 +44,7 @@ final readonly class StaticTypeAnalyzer
             return true;
         }
 
-        if ($type instanceof ConstantScalarType && ! $type instanceof NullType) {
+        if ($type instanceof ConstantScalarType && ! $type->isNull()->yes()) {
             return (bool) $type->getValue();
         }
 
