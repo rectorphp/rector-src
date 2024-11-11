@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\NodeTypeResolver\TypeComparator;
 
-use PHPStan\Type\ClassStringType;
 use PHPStan\Type\Type;
 
 /**
@@ -68,7 +67,7 @@ final class ScalarTypeComparator
             return $firstType::class !== $secondType::class;
         }
 
-        if (! $secondType instanceof ClassStringType) {
+        if (! $secondType->isClassStringType()->yes()) {
             return $firstType::class !== $secondType::class;
         }
 
