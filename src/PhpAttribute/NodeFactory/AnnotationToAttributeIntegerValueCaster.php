@@ -12,7 +12,6 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ParameterReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\Php80\ValueObject\AnnotationToAttribute;
@@ -80,7 +79,7 @@ final readonly class AnnotationToAttributeIntegerValueCaster
 
     private function containsInteger(Type $type): bool
     {
-        if ($type instanceof IntegerType) {
+        if ($type->isInteger()->yes()) {
             return true;
         }
 
@@ -89,7 +88,7 @@ final readonly class AnnotationToAttributeIntegerValueCaster
         }
 
         foreach ($type->getTypes() as $unionedType) {
-            if ($unionedType instanceof IntegerType) {
+            if ($unionedType->isInteger()->yes()) {
                 return true;
             }
         }
