@@ -28,7 +28,7 @@ final class TypeUnwrapper
         return $type;
     }
 
-    public function unwrapFirstCallableTypeFromUnionType(Type $type): ?Type
+    public function unwrapFirstCallableTypeFromUnionType(Type $type): Type
     {
         if (! $type instanceof UnionType) {
             return $type;
