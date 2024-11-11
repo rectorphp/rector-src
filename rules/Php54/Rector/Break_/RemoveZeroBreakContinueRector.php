@@ -115,7 +115,7 @@ CODE_SAMPLE
     {
         $staticType = $this->getType($numVariable);
 
-        if ($staticType instanceof ConstantType) {
+        if ($staticType->isConstantValue()->yes()) {
             if ($staticType instanceof ConstantIntegerType) {
                 if ($staticType->getValue() === 0) {
                     $stmt->num = null;
