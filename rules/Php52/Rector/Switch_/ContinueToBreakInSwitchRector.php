@@ -21,7 +21,6 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\Constant\ConstantIntegerType;
-use PHPStan\Type\ConstantType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\PhpParser\Node\Value\ValueResolver;
 use Rector\Rector\AbstractRector;
@@ -153,7 +152,7 @@ CODE_SAMPLE
     private function processVariableNum(Continue_ $continue, Variable $numVariable): Continue_ | Break_
     {
         $staticType = $this->getType($numVariable);
-        if (! $staticType instanceof ConstantType) {
+        if (! $staticType->isConstantValue()->yes()) {
             return $continue;
         }
 
