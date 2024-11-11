@@ -9,7 +9,7 @@ class ConstantScalarType_
 {
     public function run(ConstantScalarType $type)
     {
-        if ($type->isNull()->yes()) {
+        if ($type instanceof NullType) {
             return null;
         }
 
@@ -34,7 +34,7 @@ class ConstantScalarType_
 {
     public function run(ConstantScalarType $type)
     {
-        if ($type->isNull()->yes()) {
+        if ($type instanceof NullType) {
             return null;
         }
         return (bool) $type->getValue();
