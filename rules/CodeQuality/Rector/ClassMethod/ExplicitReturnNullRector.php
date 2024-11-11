@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeTraverser;
 use PHPStan\Type\NullType;
 use PHPStan\Type\UnionType;
-use PHPStan\Type\VoidType;
 use Rector\BetterPhpDocParser\PhpDocInfo\PhpDocInfoFactory;
 use Rector\BetterPhpDocParser\PhpDocManipulator\PhpDocTypeChanger;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
@@ -157,7 +156,7 @@ CODE_SAMPLE
         $newTypes = [];
         $hasChanged = false;
         foreach ($returnType->getTypes() as $type) {
-            if ($type instanceof VoidType) {
+            if ($type->isVoid()->yes()) {
                 $type = new NullType();
                 $hasChanged = true;
             }
