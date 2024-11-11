@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\CallableType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
@@ -59,6 +58,6 @@ final readonly class PropertyAnalyzer
             return false;
         }
 
-        return $type instanceof CallableType;
+        return $type->isCallable()->yes();
     }
 }

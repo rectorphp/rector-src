@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rector\PHPStanStaticTypeMapper\Utils;
 
-use PHPStan\Type\CallableType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\TypeWithClassName;
@@ -36,7 +35,7 @@ final class TypeUnwrapper
         }
 
         foreach ($type->getTypes() as $unionedType) {
-            if (! $unionedType instanceof CallableType) {
+            if (! $unionedType->isCallable()->yes()) {
                 continue;
             }
 

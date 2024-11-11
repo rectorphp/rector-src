@@ -13,7 +13,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParameterReflection;
-use PHPStan\Type\CallableType;
 use PHPStan\Type\IntersectionType;
 use PHPStan\Type\Type;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -174,7 +173,7 @@ CODE_SAMPLE
         // get the ClosureType from the ParameterReflection
         $callableType = $this->typeUnwrapper->unwrapFirstCallableTypeFromUnionType($parameter->getType());
 
-        if (! $callableType instanceof CallableType) {
+        if (! $callableType->isCallable()->yes()) {
             return false;
         }
 
@@ -235,7 +234,7 @@ CODE_SAMPLE
         foreach ($parameters as $parameter) {
             $callableType = $this->typeUnwrapper->unwrapFirstCallableTypeFromUnionType($parameter->getType());
 
-            if (! $callableType instanceof CallableType) {
+            if (! $callableType->isCallable()->yes()) {
                 continue;
             }
 
