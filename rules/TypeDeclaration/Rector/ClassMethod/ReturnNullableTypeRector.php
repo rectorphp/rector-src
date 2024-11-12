@@ -9,6 +9,7 @@ use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Type\UnionType;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
 use Rector\PHPStanStaticTypeMapper\TypeMapper\UnionTypeMapper;
 use Rector\Rector\AbstractRector;
@@ -84,7 +85,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($node);
         // empty body, nothing to resolve
         if ($node->stmts === null || $node->stmts === []) {
             return null;

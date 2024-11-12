@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeCollector\ScopeResolver\ParentClassScopeResolver;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Privatization\NodeManipulator\VisibilityManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\Visibility;
@@ -89,7 +90,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($node);
         if ($this->methodVisibilities === []) {
             return null;
         }

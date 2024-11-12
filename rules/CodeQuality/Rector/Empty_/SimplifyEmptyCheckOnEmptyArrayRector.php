@@ -23,6 +23,7 @@ use PHPStan\Type\Type;
 use Rector\NodeAnalyzer\ExprAnalyzer;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\AstResolver;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\TypeDeclaration\TypeInferer\PropertyTypeInferer\AllAssignNodePropertyTypeInferer;
@@ -78,7 +79,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($node);
         if ($node instanceof BooleanNot) {
             if ($node->expr instanceof Empty_ && $this->isAllowedExpr($node->expr->expr, $scope)) {
                 return new NotIdentical($node->expr->expr, new Array_());

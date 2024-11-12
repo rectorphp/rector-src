@@ -6,6 +6,7 @@ namespace Rector\TypeDeclaration\Rector\Closure;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeManipulator\AddNeverReturnType;
 use Rector\ValueObject\PhpVersionFeature;
@@ -56,7 +57,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($node);
         return $this->addNeverReturnType->add($node, $scope);
     }
 

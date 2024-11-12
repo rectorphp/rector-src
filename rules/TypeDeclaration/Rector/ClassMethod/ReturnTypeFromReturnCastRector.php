@@ -7,6 +7,7 @@ namespace Rector\TypeDeclaration\Rector\ClassMethod;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
+use Rector\PHPStan\ScopeFetcher;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeManipulator\AddReturnTypeFromCast;
 use Rector\ValueObject\PhpVersionFeature;
@@ -74,7 +75,7 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
+        $scope = ScopeFetcher::fetch($node);
         return $this->addReturnTypeFromCast->add($node, $scope);
     }
 

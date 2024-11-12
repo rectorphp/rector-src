@@ -70,7 +70,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
         $hasChanged = false;
 
         $this->traverseNodesWithCallable($node, function (Node $node) use (&$hasChanged): int|null|Ternary {

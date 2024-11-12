@@ -67,7 +67,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
         $className = $node->isFinal() ? 'self' : 'static';
 
         $hasChanged = false;

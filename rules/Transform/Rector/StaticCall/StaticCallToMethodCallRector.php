@@ -97,7 +97,6 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        $scope = \Rector\PHPStan\ScopeFetcher::fetch($node);
         $class = $node;
         $hasChanged = false;
 
