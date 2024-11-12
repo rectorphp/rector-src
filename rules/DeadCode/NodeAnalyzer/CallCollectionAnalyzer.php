@@ -11,10 +11,10 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Enum\ObjectReference;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class CallCollectionAnalyzer
 {
@@ -33,7 +33,8 @@ final readonly class CallCollectionAnalyzer
             $callerRoot = $call instanceof StaticCall ? $call->class : $call->var;
             $callerType = $this->nodeTypeResolver->getType($callerRoot);
 
-            if (! $callerType instanceof TypeWithClassName) {
+            $callerTypeClasName = ClassNameFromObjectTypeResolver::resolve($callerType);
+            if ($callerTypeClasName === null) {
                 // handle fluent by $this->bar()->baz()->qux()
                 // that methods don't have return type
                 if ($callerType instanceof MixedType && ! $callerType->isExplicitMixed()) {
@@ -66,7 +67,7 @@ final readonly class CallCollectionAnalyzer
                 return true;
             }
 
-            if ($callerType->getClassName() !== $className) {
+            if ($callerTypeClasName !== $className) {
                 continue;
             }
 
