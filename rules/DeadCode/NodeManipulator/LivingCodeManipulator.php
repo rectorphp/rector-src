@@ -67,7 +67,7 @@ final readonly class LivingCodeManipulator
         if ($expr instanceof ArrayDimFetch) {
             $type = $this->nodeTypeResolver->getType($expr->var);
 
-            if ($type instanceof ObjectType) {
+            if ($type->isObject()->yes()) {
                 $objectType = new ObjectType('ArrayAccess');
                 if ($objectType->isSuperTypeOf($type)->yes()) {
                     return [$expr];
