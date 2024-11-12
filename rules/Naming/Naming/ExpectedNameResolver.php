@@ -215,13 +215,13 @@ final readonly class ExpectedNameResolver
     /**
      * Skip date time, as custom naming
      */
-    private function isDateTimeType(ObjectType $type): bool
+    private function isDateTimeType(ObjectType $objectType): bool
     {
-        if ($type->isInstanceOf('DateTimeInterface')->yes()) {
+        if ($objectType->isInstanceOf('DateTimeInterface')->yes()) {
             return true;
         }
 
-        return $type->isInstanceOf('DateTime')
+        return $objectType->isInstanceOf('DateTime')
             ->yes();
     }
 }
