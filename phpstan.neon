@@ -300,3 +300,7 @@ parameters:
 
         # used once
         - '#Interface "Rector\\Configuration\\Deprecation\\Contract\\DeprecatedInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
+
+        # rector internal deprecation
+        - '#Class Rector\\Set\\ValueObject\\(Level)?SetList implements deprecated interface#'
+        - '#Fetching class constant class of deprecated class Rector#'
