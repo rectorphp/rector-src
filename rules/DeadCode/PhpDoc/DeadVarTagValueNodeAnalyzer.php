@@ -7,7 +7,6 @@ namespace Rector\DeadCode\PhpDoc;
 use PhpParser\Node\Stmt\Property;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
 use PHPStan\Type\IntersectionType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\TypeCombinator;
 use PHPStan\Type\UnionType;
 use Rector\DeadCode\PhpDoc\Guard\TemplateTypeRemovalGuard;
@@ -45,7 +44,7 @@ final readonly class DeadVarTagValueNodeAnalyzer
             return ! $docType instanceof IntersectionType;
         }
 
-        if ($propertyType instanceof ObjectType && $docType instanceof ObjectType) {
+        if ($propertyType->isObject()->yes() && $docType->isObject()->yes()) {
             // more specific type is already in the property
             return $docType->isSuperTypeOf($propertyType)
                 ->yes();
