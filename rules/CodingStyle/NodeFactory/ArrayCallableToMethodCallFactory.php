@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class ArrayCallableToMethodCallFactory
 {
@@ -46,7 +46,9 @@ final readonly class ArrayCallableToMethodCallFactory
         }
 
         $firstItemType = $this->nodeTypeResolver->getType($firstItem->value);
-        if (! $firstItemType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($firstItemType);
+
+        if ($className === null) {
             return null;
         }
 
