@@ -10,10 +10,10 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\Enum\TypeKind;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\StaticTypeMapper\StaticTypeMapper;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodParamVendorLockResolver;
 
@@ -134,11 +134,7 @@ final readonly class ClassMethodParamTypeCompleter
 
     private function isClosureObjectType(Type $type): bool
     {
-        if (! $type instanceof ObjectType) {
-            return false;
-        }
-
-        return $type->getClassName() === 'Closure';
+        return ClassNameFromObjectTypeResolver::resolve($type) === 'Closure';
     }
 
     private function isTooDetailedUnionType(Type $currentType, Type $newType, int $maxUnionTypes): bool
