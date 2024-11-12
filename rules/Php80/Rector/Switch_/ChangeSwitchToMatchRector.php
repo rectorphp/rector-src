@@ -14,7 +14,6 @@ use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PHPStan\Type\ObjectType;
 use Rector\Contract\PhpParser\Node\StmtsAwareInterface;
 use Rector\Php80\NodeAnalyzer\MatchSwitchAnalyzer;
 use Rector\Php80\NodeFactory\MatchFactory;
@@ -104,7 +103,7 @@ CODE_SAMPLE
 
             $isReturn = $this->matchSwitchAnalyzer->isReturnCondsAndExprs($condAndExprs);
 
-            if ($this->nodeTypeResolver->getType($stmt->cond) instanceof ObjectType) {
+            if ($this->nodeTypeResolver->getType($stmt->cond)->isObject()->yes()) {
                 continue;
             }
 
