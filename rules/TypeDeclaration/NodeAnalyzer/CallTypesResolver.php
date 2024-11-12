@@ -13,11 +13,11 @@ use PHPStan\Type\MixedType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\NodeTypeResolver\PHPStan\Type\TypeFactory;
 use Rector\NodeTypeResolver\TypeComparator\TypeComparator;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class CallTypesResolver
 {
@@ -124,11 +124,10 @@ final readonly class CallTypesResolver
             return $type;
         }
 
-        /** @var TypeWithClassName $firstUnionedType */
         $firstUnionedType = $type->getTypes()[0];
-
         foreach ($type->getTypes() as $unionedType) {
-            if (! $unionedType instanceof TypeWithClassName) {
+            $className = ClassNameFromObjectTypeResolver::resolve($unionedType);
+            if ($className === null) {
                 return $type;
             }
 
@@ -143,7 +142,8 @@ final readonly class CallTypesResolver
     private function isTypeWithClassNameOnly(UnionType $unionType): bool
     {
         foreach ($unionType->getTypes() as $unionedType) {
-            if (! $unionedType instanceof TypeWithClassName) {
+            $className = ClassNameFromObjectTypeResolver::resolve($unionedType);
+            if ($className === null) {
                 return false;
             }
         }

@@ -9,10 +9,10 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class LocalMethodCallFinder
 {
@@ -50,11 +50,8 @@ final readonly class LocalMethodCallFinder
                 $callerType = $subNode instanceof MethodCall
                     ? $this->nodeTypeResolver->getType($subNode->var)
                     : $this->nodeTypeResolver->getType($subNode->class);
-                if (! $callerType instanceof TypeWithClassName) {
-                    return false;
-                }
 
-                return $callerType->getClassName() === $className;
+                return ClassNameFromObjectTypeResolver::resolve($callerType) === $className;
             }
         );
 

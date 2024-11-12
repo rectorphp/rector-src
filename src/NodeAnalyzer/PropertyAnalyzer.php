@@ -6,9 +6,9 @@ namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\Property;
 use PHPStan\Type\Type;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\NonExistingObjectType;
 
 final readonly class PropertyAnalyzer
@@ -54,7 +54,7 @@ final readonly class PropertyAnalyzer
 
     private function isCallableType(Type $type): bool
     {
-        if ($type instanceof TypeWithClassName && $type->getClassName() === 'Closure') {
+        if (ClassNameFromObjectTypeResolver::resolve($type) === 'Closure') {
             return false;
         }
 

@@ -23,7 +23,6 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StaticType;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeAnalyzer\PropertyFetchAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -33,6 +32,7 @@ use Rector\PhpDocParser\NodeTraverser\SimpleCallableNodeTraverser;
 use Rector\PhpParser\AstResolver;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\ReflectionResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class PropertyFetchFinder
 {
@@ -268,13 +268,13 @@ final readonly class PropertyFetchFinder
         }
 
         $propertyFetchVarType = $this->nodeTypeResolver->getType($propertyFetch->var);
-        if (! $propertyFetchVarType instanceof TypeWithClassName) {
+        $propertyFetchVarTypeClassName = ClassNameFromObjectTypeResolver::resolve($propertyFetchVarType);
+
+        if ($propertyFetchVarTypeClassName === null) {
             return false;
         }
 
-        $propertyFetchVarTypeClassName = $propertyFetchVarType->getClassName();
         $classLikeName = $this->nodeNameResolver->getName($class);
-
         return $propertyFetchVarTypeClassName === $classLikeName;
     }
 

@@ -18,7 +18,6 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\ConstantType;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Enum\ObjectReference;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ConstFetchAnalyzer;
@@ -27,6 +26,7 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\Reflection\ClassReflectionAnalyzer;
 use Rector\Reflection\ReflectionResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use TypeError;
 
 /**
@@ -206,7 +206,7 @@ final class ValueResolver
                 $value = $this->extractConstantArrayTypeValue($valueType);
             } elseif ($valueType instanceof ConstantScalarType) {
                 $value = $valueType->getValue();
-            } elseif ($valueType instanceof TypeWithClassName) {
+            } elseif (ClassNameFromObjectTypeResolver::resolve($valueType) !== null) {
                 continue;
             } else {
                 return null;

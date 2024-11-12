@@ -27,13 +27,13 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\Php\PhpFunctionReflection;
 use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
-use PHPStan\Type\TypeWithClassName;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\NodeScopeAndMetadataDecorator;
 use Rector\NodeTypeResolver\NodeTypeResolver;
 use Rector\PhpDocParser\PhpParser\SmartPhpParser;
 use Rector\PhpParser\Node\BetterNodeFinder;
 use Rector\Reflection\MethodReflectionResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\ValueObject\MethodName;
 use Throwable;
 
@@ -172,7 +172,8 @@ final class AstResolver
             ? $this->nodeTypeResolver->getType($call->var)
             : $this->nodeTypeResolver->getType($call->class);
 
-        if (! $callerStaticType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($callerStaticType);
+        if ($className === null) {
             return null;
         }
 
@@ -181,7 +182,7 @@ final class AstResolver
             return null;
         }
 
-        return $this->resolveClassMethod($callerStaticType->getClassName(), $methodName);
+        return $this->resolveClassMethod($className, $methodName);
     }
 
     public function resolveClassFromClassReflection(
