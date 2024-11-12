@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
@@ -81,7 +80,7 @@ CODE_SAMPLE
         }
 
         $firstArgStaticType = $this->getType($node->args[1]->value);
-        if (! $firstArgStaticType instanceof ObjectType) {
+        if (! $firstArgStaticType->isObject()->yes()) {
             return null;
         }
 
