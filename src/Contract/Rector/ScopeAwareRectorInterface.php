@@ -8,6 +8,10 @@ use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PHPStan\Analyser\Scope;
 
+/**
+ * @deprecated This class is deprecated, as too granular.
+ * Use \Rector\Rector\AbstractRector instead with help of \Rector\PHPStan\ScopeFetcher
+ */
 interface ScopeAwareRectorInterface extends RectorInterface
 {
     /**

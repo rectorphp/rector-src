@@ -19,7 +19,8 @@ use Rector\CodingStyle\Reflection\VendorLocationDetector;
 use Rector\NodeTypeResolver\PHPStan\ParametersAcceptorSelectorVariantsWrapper;
 use Rector\Php80\NodeResolver\ArgumentSorter;
 use Rector\Php80\NodeResolver\RequireOptionalParamResolver;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\PHPStan\ScopeFetcher;
+use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -27,7 +28,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\CodeQuality\Rector\ClassMethod\OptionalParametersAfterRequiredRector\OptionalParametersAfterRequiredRectorTest
  */
-final class OptionalParametersAfterRequiredRector extends AbstractScopeAwareRector
+final class OptionalParametersAfterRequiredRector extends AbstractRector
 {
     /**
      * @var string
@@ -86,10 +87,10 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_|New_|MethodCall|StaticCall|FuncCall $node
      */
-    public function refactorWithScope(
-        Node $node,
-        Scope $scope
-    ): ClassMethod|Function_|null|New_|MethodCall|StaticCall|FuncCall {
+    public function refactor(Node $node): ClassMethod|Function_|null|New_|MethodCall|StaticCall|FuncCall
+    {
+        $scope = ScopeFetcher::fetch($node);
+
         if ($node instanceof ClassMethod || $node instanceof Function_) {
             return $this->refactorClassMethodOrFunction($node, $scope);
         }

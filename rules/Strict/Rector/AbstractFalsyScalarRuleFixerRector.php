@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\Strict\Rector;
 
 use Rector\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\Rector\AbstractRector;
 use Webmozart\Assert\Assert;
 
 /**
@@ -13,7 +13,7 @@ use Webmozart\Assert\Assert;
  *
  * @internal
  */
-abstract class AbstractFalsyScalarRuleFixerRector extends AbstractScopeAwareRector implements ConfigurableRectorInterface
+abstract class AbstractFalsyScalarRuleFixerRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @api
