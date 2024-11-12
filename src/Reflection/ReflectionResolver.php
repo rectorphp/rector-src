@@ -25,12 +25,12 @@ use PHPStan\Reflection\Php\PhpPropertyReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Type\BenevolentUnionType;
 use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeAnalyzer\ClassAnalyzer;
 use Rector\NodeNameResolver\NodeNameResolver;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\NodeTypeResolver\NodeTypeResolver;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Rector\StaticTypeMapper\ValueObject\Type\ShortenedObjectType;
 use Rector\ValueObject\MethodName;
 
@@ -84,11 +84,11 @@ final readonly class ReflectionResolver
             ? $this->nodeTypeResolver->getType($node->class)
             : $this->nodeTypeResolver->getType($node->var);
 
-        if (! $objectType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($objectType);
+        if ($className === null) {
             return null;
         }
 
-        $className = $objectType->getClassName();
         if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
@@ -175,7 +175,8 @@ final readonly class ReflectionResolver
             $callerType = TypeCombinator::removeFalsey($callerType);
         }
 
-        if (! $callerType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($callerType);
+        if ($className === null) {
             return null;
         }
 
@@ -185,7 +186,7 @@ final readonly class ReflectionResolver
         }
 
         $scope = $methodCall->getAttribute(AttributeKey::SCOPE);
-        return $this->resolveMethodReflection($callerType->getClassName(), $methodName, $scope);
+        return $this->resolveMethodReflection($className, $methodName, $scope);
     }
 
     public function resolveFunctionLikeReflectionFromCall(
@@ -233,12 +234,14 @@ final readonly class ReflectionResolver
     public function resolveMethodReflectionFromNew(New_ $new): ?MethodReflection
     {
         $newClassType = $this->nodeTypeResolver->getType($new->class);
-        if (! $newClassType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($newClassType);
+
+        if ($className === null) {
             return null;
         }
 
         $scope = $new->getAttribute(AttributeKey::SCOPE);
-        return $this->resolveMethodReflection($newClassType->getClassName(), MethodName::CONSTRUCT, $scope);
+        return $this->resolveMethodReflection($className, MethodName::CONSTRUCT, $scope);
     }
 
     public function resolvePropertyReflectionFromPropertyFetch(
@@ -253,15 +256,16 @@ final readonly class ReflectionResolver
             ? $this->nodeTypeResolver->getType($propertyFetch->var)
             : $this->nodeTypeResolver->getType($propertyFetch->class);
 
-        if (! $fetcheeType instanceof TypeWithClassName) {
+        $className = ClassNameFromObjectTypeResolver::resolve($fetcheeType);
+        if ($className === null) {
             return null;
         }
 
-        if (! $this->reflectionProvider->hasClass($fetcheeType->getClassName())) {
+        if (! $this->reflectionProvider->hasClass($className)) {
             return null;
         }
 
-        $classReflection = $this->reflectionProvider->getClass($fetcheeType->getClassName());
+        $classReflection = $this->reflectionProvider->getClass($className);
 
         if (! $classReflection->hasProperty($propertyName)) {
             return null;
