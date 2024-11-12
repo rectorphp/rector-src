@@ -177,11 +177,11 @@ final readonly class TypeComparator
 
     private function isMutualObjectSubtypes(Type $firstArrayItemType, Type $secondArrayItemType): bool
     {
-        if (! $firstArrayItemType instanceof ObjectType) {
+        if (! $firstArrayItemType->isObject()->yes()) {
             return false;
         }
 
-        if (! $secondArrayItemType instanceof ObjectType) {
+        if (! $secondArrayItemType->isObject()->yes()) {
             return false;
         }
 
