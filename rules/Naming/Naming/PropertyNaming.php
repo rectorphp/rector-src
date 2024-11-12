@@ -11,6 +11,7 @@ use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
+use PHPStan\Type\TypeWithClassName;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
@@ -297,8 +298,11 @@ final readonly class PropertyNaming
             return null;
         }
 
-        return $type instanceof AliasedObjectType
-            ? $className
-            : $this->nodeTypeResolver->getFullyQualifiedClassName($type);
+        if ($type instanceof AliasedObjectType) {
+            return $className;
+        }
+
+        /** @var TypeWithClassName $type */
+        return $this->nodeTypeResolver->getFullyQualifiedClassName($type);
     }
 }
