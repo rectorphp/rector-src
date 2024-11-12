@@ -23,9 +23,9 @@ use PhpParser\Node\Scalar\LNumber;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
 use Rector\PhpParser\Node\NodeFactory;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 
 final readonly class ExactCompareFactory
 {
@@ -123,8 +123,9 @@ final readonly class ExactCompareFactory
             return new Identical($expr, $this->nodeFactory->createTrue());
         }
 
-        if ($unionType instanceof TypeWithClassName) {
-            return new Instanceof_($expr, new FullyQualified($unionType->getClassName()));
+        $className = ClassNameFromObjectTypeResolver::resolve($unionType);
+        if ($className !== null) {
+            return new Instanceof_($expr, new FullyQualified($className));
         }
 
         $nullConstFetch = $this->nodeFactory->createNull();
@@ -250,8 +251,9 @@ final readonly class ExactCompareFactory
             return new NotIdentical($expr, $this->nodeFactory->createTrue());
         }
 
-        if ($unionType instanceof TypeWithClassName) {
-            return new BooleanNot(new Instanceof_($expr, new FullyQualified($unionType->getClassName())));
+        $className = ClassNameFromObjectTypeResolver::resolve($unionType);
+        if ($className !== null) {
+            return new BooleanNot(new Instanceof_($expr, new FullyQualified($className)));
         }
 
         $toNullIdentical = new Identical($expr, $this->nodeFactory->createNull());
