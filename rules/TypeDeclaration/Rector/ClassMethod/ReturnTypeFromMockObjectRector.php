@@ -15,7 +15,8 @@ use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use Rector\Enum\ClassName;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\PHPStan\ScopeFetcher;
+use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeAnalyzer\ReturnAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
 use Rector\VendorLocker\NodeVendorLocker\ClassMethodReturnTypeOverrideGuard;
@@ -26,7 +27,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 /**
  * @see \Rector\Tests\TypeDeclaration\Rector\ClassMethod\ReturnTypeFromMockObjectRector\ReturnTypeFromMockObjectRectorTest
  */
-final class ReturnTypeFromMockObjectRector extends AbstractScopeAwareRector implements MinPhpVersionInterface
+final class ReturnTypeFromMockObjectRector extends AbstractRector implements MinPhpVersionInterface
 {
     /**
      * @var string
@@ -78,8 +79,9 @@ CODE_SAMPLE
     /**
      * @param ClassMethod $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
+        $scope = ScopeFetcher::fetch($node);
         // type is already known
         if ($node->returnType instanceof Node) {
             return null;

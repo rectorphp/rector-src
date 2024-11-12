@@ -22,14 +22,15 @@ use Rector\NodeAnalyzer\VariableAnalyzer;
 use Rector\NodeManipulator\StmtsManipulator;
 use Rector\Php\ReservedKeywordAnalyzer;
 use Rector\PhpParser\Node\BetterNodeFinder;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\PHPStan\ScopeFetcher;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 /**
  * @see \Rector\Tests\DeadCode\Rector\Assign\RemoveUnusedVariableAssignRector\RemoveUnusedVariableAssignRectorTest
  */
-final class RemoveUnusedVariableAssignRector extends AbstractScopeAwareRector
+final class RemoveUnusedVariableAssignRector extends AbstractRector
 {
     public function __construct(
         private readonly ReservedKeywordAnalyzer $reservedKeywordAnalyzer,
@@ -77,7 +78,7 @@ CODE_SAMPLE
     /**
      * @param ClassMethod|Function_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): null|ClassMethod|Function_
+    public function refactor(Node $node): null|ClassMethod|Function_
     {
         $stmts = $node->stmts;
         if ($stmts === null || $stmts === []) {
@@ -103,6 +104,8 @@ CODE_SAMPLE
 
             /** @var Assign $assign */
             $assign = $currentStmt->expr;
+
+            $scope = ScopeFetcher::fetch($node);
 
             if ($this->hasCallLikeInAssignExpr($assign, $scope)) {
                 // clean safely

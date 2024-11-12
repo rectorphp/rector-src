@@ -12,6 +12,10 @@ use Rector\Contract\Rector\ScopeAwareRectorInterface;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
+/**
+ * @deprecated This class is deprecated, as too granular.
+ * Use \Rector\Rector\AbstractRector instead with help of \Rector\PHPStan\ScopeFetcher
+ */
 abstract class AbstractScopeAwareRector extends AbstractRector implements ScopeAwareRectorInterface
 {
     /**

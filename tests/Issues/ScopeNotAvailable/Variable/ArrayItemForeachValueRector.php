@@ -7,12 +7,11 @@ namespace Rector\Tests\Issues\ScopeNotAvailable\Variable;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use PHPStan\Analyser\Scope;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class ArrayItemForeachValueRector extends AbstractScopeAwareRector
+final class ArrayItemForeachValueRector extends AbstractRector
 {
     public function getRuleDefinition(): RuleDefinition
     {
@@ -27,7 +26,7 @@ final class ArrayItemForeachValueRector extends AbstractScopeAwareRector
         return [Variable::class];
     }
 
-    public function refactorWithScope(Node $node, Scope $scope): Node
+    public function refactor(Node $node): Node
     {
         return $node;
     }

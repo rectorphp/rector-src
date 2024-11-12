@@ -19,7 +19,8 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\ReflectionProvider;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeManipulator\ClassManipulator;
-use Rector\Rector\AbstractScopeAwareRector;
+use Rector\PHPStan\ScopeFetcher;
+use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
 use Rector\Renaming\Contract\MethodCallRenameInterface;
 use Rector\Renaming\ValueObject\MethodCallRename;
@@ -31,7 +32,7 @@ use Webmozart\Assert\Assert;
 /**
  * @see \Rector\Tests\Renaming\Rector\MethodCall\RenameMethodRector\RenameMethodRectorTest
  */
-final class RenameMethodRector extends AbstractScopeAwareRector implements ConfigurableRectorInterface
+final class RenameMethodRector extends AbstractRector implements ConfigurableRectorInterface
 {
     /**
      * @var MethodCallRenameInterface[]
@@ -75,8 +76,9 @@ CODE_SAMPLE
     /**
      * @param MethodCall|NullsafeMethodCall|StaticCall|Class_|Interface_ $node
      */
-    public function refactorWithScope(Node $node, Scope $scope): ?Node
+    public function refactor(Node $node): ?Node
     {
+        $scope = ScopeFetcher::fetch($node);
         if ($node instanceof Class_ || $node instanceof Interface_) {
             return $this->refactorClass($node, $scope);
         }
