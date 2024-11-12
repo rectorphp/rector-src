@@ -298,7 +298,7 @@ final readonly class PropertyNaming
         }
 
         return $type instanceof AliasedObjectType
-            ? $type->getClassName()
+            ? $className
             : $this->nodeTypeResolver->getFullyQualifiedClassName($type);
     }
 }

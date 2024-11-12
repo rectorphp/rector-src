@@ -57,10 +57,10 @@ final class TypeUnwrapper
         $classNamespace = $this->namespace($className);
 
         // get the namespace from $parameterReflection
-        $reflectionNamespace = $this->namespace($type->getClassName());
+        $reflectionNamespace = $this->namespace($typeClassName);
 
         // then match with
-        return $reflectionNamespace === $classNamespace && str_ends_with($type->getClassName(), '\TValue');
+        return $reflectionNamespace === $classNamespace && str_ends_with($typeClassName, '\TValue');
     }
 
     public function isIterableTypeKey(string $className, Type $type): bool
@@ -74,10 +74,10 @@ final class TypeUnwrapper
         $classNamespace = $this->namespace($className);
 
         // get the namespace from $parameterReflection
-        $reflectionNamespace = $this->namespace($type->getClassName());
+        $reflectionNamespace = $this->namespace($typeClassName);
 
         // then match with
-        return $reflectionNamespace === $classNamespace && str_ends_with($type->getClassName(), '\TKey');
+        return $reflectionNamespace === $classNamespace && str_ends_with($typeClassName, '\TKey');
     }
 
     public function removeNullTypeFromUnionType(UnionType $unionType): Type
