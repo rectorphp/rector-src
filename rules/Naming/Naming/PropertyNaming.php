@@ -11,7 +11,6 @@ use PHPStan\Type\StaticType;
 use PHPStan\Type\ThisType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Exception\ShouldNotHappenException;
 use Rector\Naming\RectorNamingInflector;
 use Rector\Naming\ValueObject\ExpectedName;
