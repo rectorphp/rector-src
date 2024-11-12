@@ -289,21 +289,9 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Expr\\Closure" types as the only types passed to this method#'
         -
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
-            path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
-
-        # deprecated
-        - '#Register "Rector\\Php71\\Rector\\ClassConst\\PublicConstantVisibilityRector" service to "php71\.php" config set#'
-        - '#Public method "Rector\\ValueObject\\Error\\SystemError\:\:getFile\(\)" is never used#'
-
-        # soon to be used
-        - '#Property Rector\\Configuration\\RectorConfigBuilder\:\:\$isWithPhpSetsUsed is never read, only written#'
-
-        # used once
-        - '#Interface "Rector\\Configuration\\Deprecation\\Contract\\DeprecatedInterface" has only single implementer\. Consider using the class directly as there is no point in using the interface#'
-
-        # rector internal deprecation
-        - '#Class Rector\\Set\\ValueObject\\(Level)?SetList implements deprecated interface#'
-        - '#Fetching class constant class of deprecated class Rector#'
+            paths:
+                 - src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
+                 - rules/Privatization/NodeManipulator/VisibilityManipulator.php
 
         # more advanced usage, but not always working
         # see https://github.com/rectorphp/rector-src/actions/runs/11798721617/job/32865546672?pr=6422#step:5:110

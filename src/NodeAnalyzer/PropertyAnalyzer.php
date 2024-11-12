@@ -58,6 +58,7 @@ final readonly class PropertyAnalyzer
             return false;
         }
 
-        return $type->isCallable()->yes();
+        return $type->isCallable()
+            ->yes();
     }
 }

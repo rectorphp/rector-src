@@ -22,11 +22,6 @@ final readonly class SystemError implements SerializableInterface
         return $this->message;
     }
 
-    public function getFile(): string|null
-    {
-        return $this->relativeFilePath;
-    }
-
     public function getLine(): int|null
     {
         return $this->line;

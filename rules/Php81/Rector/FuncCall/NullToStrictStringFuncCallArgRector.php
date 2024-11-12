@@ -262,7 +262,8 @@ CODE_SAMPLE
     private function shouldSkipType(Type $type): bool
     {
         return ! $type instanceof MixedType &&
-            ! $type->isNull()->yes() &&
+            ! $type->isNull()
+                ->yes() &&
             ! $this->isValidUnionType($type);
     }
 
