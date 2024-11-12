@@ -14,8 +14,8 @@ use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\Generic\GenericClassStringType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
-use PHPStan\Type\TypeWithClassName;
 use Rector\Rector\AbstractRector;
+use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -106,11 +106,7 @@ CODE_SAMPLE
             $type = $type->getGenericType();
         }
 
-        if (! $type instanceof TypeWithClassName) {
-            return null;
-        }
-
-        return $type->getClassName();
+        return ClassNameFromObjectTypeResolver::resolve($type);
     }
 
     private function isFirstObjectType(Expr $expr): bool
