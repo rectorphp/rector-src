@@ -159,6 +159,7 @@ CODE_SAMPLE
             return null;
         }
 
+        $hasChanged = false;
         foreach ($promotionCandidates as $promotionCandidate) {
             $param = $promotionCandidate->getParam();
 
@@ -185,6 +186,8 @@ CODE_SAMPLE
             if (! $this->renameProperty && $paramName !== $propertyName) {
                 continue;
             }
+
+            $hasChanged = true;
 
             // remove property from class
             $propertyStmtKey = $property->getAttribute(AttributeKey::STMT_KEY);
@@ -247,6 +250,10 @@ CODE_SAMPLE
 
                 return new PropertyFetch(new Variable('this'), $propertyName);
             });
+        }
+
+        if (! $hasChanged) {
+            return null;
         }
 
         return $node;
