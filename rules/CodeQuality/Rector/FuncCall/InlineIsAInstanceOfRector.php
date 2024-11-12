@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified;
 use PHPStan\Type\Generic\GenericClassStringType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\ObjectWithoutClassType;
 use Rector\Rector\AbstractRector;
 use Rector\StaticTypeMapper\Resolver\ClassNameFromObjectTypeResolver;
@@ -116,6 +115,6 @@ CODE_SAMPLE
             return true;
         }
 
-        return $exprType instanceof ObjectType;
+        return $exprType->isObject()->yes();
     }
 }
