@@ -20,7 +20,6 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeTraverser;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use Rector\NodeManipulator\IfManipulator;
 use Rector\Rector\AbstractRector;
 use Rector\Reflection\ReflectionResolver;
@@ -158,7 +157,7 @@ CODE_SAMPLE
         }
 
         $exprType = $this->nodeTypeResolver->getNativeType($instanceof->expr);
-        if (! $exprType instanceof ObjectType) {
+        if (! $exprType->isObject()->yes()) {
             return null;
         }
 
