@@ -10,7 +10,6 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafeMethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
-use PHPStan\Type\ObjectType;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\TypeAnalyzer\ReturnStrictTypeAnalyzer;
 use Rector\ValueObject\PhpVersionFeature;
@@ -94,7 +93,7 @@ CODE_SAMPLE
         }
 
         $returnType = $this->returnStrictTypeAnalyzer->resolveMethodCallReturnType($node->var);
-        if (! $returnType instanceof ObjectType) {
+        if (! $returnType->isObject()->yes()) {
             return null;
         }
 
