@@ -8,7 +8,6 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\PHPStanStaticTypeMapper\TypeAnalyzer\UnionTypeAnalyzer;
@@ -39,7 +38,7 @@ final readonly class StaticTypeAnalyzer
         }
 
         // always trueish
-        if ($type instanceof ObjectType) {
+        if ($type->isObject()->yes()) {
             return true;
         }
 
