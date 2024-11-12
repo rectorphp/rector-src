@@ -291,9 +291,6 @@ parameters:
             message: '#Parameters should have "PhpParser\\Node\\Stmt\\ClassMethod" types as the only types passed to this method#'
             path: src/VendorLocker/ParentClassMethodTypeOverrideGuard.php
 
-        # deprecated
-        - '#Public method "Rector\\ValueObject\\Error\\SystemError\:\:getFile\(\)" is never used#'
-
         # soon to be used
         - '#Property Rector\\Configuration\\RectorConfigBuilder\:\:\$isWithPhpSetsUsed is never read, only written#'
 

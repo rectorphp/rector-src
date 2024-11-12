@@ -129,7 +129,8 @@ final readonly class ClassMethodParamTypeCompleter
             return true;
         }
 
-        return $argumentStaticType->isCallable()->yes() && $this->isClosureObjectType($parameterStaticType);
+        return $argumentStaticType->isCallable()
+            ->yes() && $this->isClosureObjectType($parameterStaticType);
     }
 
     private function isClosureObjectType(Type $type): bool
