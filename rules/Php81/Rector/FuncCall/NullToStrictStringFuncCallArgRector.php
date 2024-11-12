@@ -22,7 +22,6 @@ use PHPStan\Reflection\Native\NativeParameterWithPhpDocsReflection;
 use PHPStan\Reflection\ParametersAcceptor;
 use PHPStan\Type\ErrorType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
 use Rector\NodeAnalyzer\ArgsAnalyzer;
@@ -263,7 +262,7 @@ CODE_SAMPLE
     private function shouldSkipType(Type $type): bool
     {
         return ! $type instanceof MixedType &&
-            ! $type instanceof NullType &&
+            ! $type->isNull()->yes() &&
             ! $this->isValidUnionType($type);
     }
 

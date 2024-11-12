@@ -16,7 +16,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType as PhpParserUnionType;
 use PHPStan\Analyser\Scope;
-use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\UnionType;
 use Rector\Php\PhpVersionProvider;
@@ -175,7 +174,7 @@ CODE_SAMPLE
         NullableType $nullableType
     ): Closure | ClassMethod | Function_ {
         $types = $unionType->getTypes();
-        $returnType = $types[0] instanceof ObjectType && $types[1] instanceof NullType
+        $returnType = $types[0] instanceof ObjectType && $types[1]->isNull()->yes()
             ? new NullableType(new FullyQualified($types[0]->getClassName()))
             : $nullableType;
 

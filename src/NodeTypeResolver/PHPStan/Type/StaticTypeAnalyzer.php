@@ -8,7 +8,6 @@ use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantScalarType;
 use PHPStan\Type\MixedType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\Type;
 use PHPStan\Type\UnionType;
@@ -44,7 +43,7 @@ final readonly class StaticTypeAnalyzer
             return true;
         }
 
-        if ($type instanceof ConstantScalarType && ! $type instanceof NullType) {
+        if ($type instanceof ConstantScalarType && ! $type->isNull()->yes()) {
             return (bool) $type->getValue();
         }
 

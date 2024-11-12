@@ -7,7 +7,6 @@ namespace Rector\DeadCode\Rector\If_;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 use PhpParser\Node\Stmt\If_;
-use PHPStan\Type\Constant\ConstantBooleanType;
 use Rector\DeadCode\NodeAnalyzer\SafeLeftTypeBooleanAndOrAnalyzer;
 use Rector\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -79,11 +78,7 @@ CODE_SAMPLE
         $booleanOr = $node->cond;
 
         $conditionStaticType = $this->getType($booleanOr->left);
-        if (! $conditionStaticType instanceof ConstantBooleanType) {
-            return null;
-        }
-
-        if ($conditionStaticType->getValue()) {
+        if (! $conditionStaticType->isFalse()->yes()) {
             return null;
         }
 

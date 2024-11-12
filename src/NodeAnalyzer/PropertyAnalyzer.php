@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Rector\NodeAnalyzer;
 
 use PhpParser\Node\Stmt\Property;
-use PHPStan\Type\CallableType;
-use PHPStan\Type\NullType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeWithClassName;
 use PHPStan\Type\UnionType;
@@ -23,7 +21,7 @@ final readonly class PropertyAnalyzer
     public function hasForbiddenType(Property $property): bool
     {
         $propertyType = $this->nodeTypeResolver->getType($property);
-        if ($propertyType instanceof NullType) {
+        if ($propertyType->isNull()->yes()) {
             return true;
         }
 
@@ -60,6 +58,6 @@ final readonly class PropertyAnalyzer
             return false;
         }
 
-        return $type instanceof CallableType;
+        return $type->isCallable()->yes();
     }
 }
