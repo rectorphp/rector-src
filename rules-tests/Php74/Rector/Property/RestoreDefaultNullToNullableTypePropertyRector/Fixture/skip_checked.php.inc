@@ -6,8 +6,14 @@ final class SkipChecked
 {
     private ?string $name;
 
-    public function __construct(?string $name)
+    public function __construct(array $items)
     {
-        $this->name = $name;
+        foreach ($items as $item) {
+            $this->name = $item;
+        }
+
+        if (! isset($this->item)) {
+            throw new \InvalidArgumentException();
+        }
     }
 }
