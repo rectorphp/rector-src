@@ -1,0 +1,9 @@
+{
+    "packages": [
+        {
+            "name": "twig/twig",
+            "version": "v2.4.0",
+            "version_normalized": "2.4.0.0"
+        }
+    ]
+}

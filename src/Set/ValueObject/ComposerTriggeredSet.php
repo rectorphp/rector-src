@@ -50,7 +50,7 @@ final readonly class ComposerTriggeredSet implements SetInterface
                 continue;
             }
 
-            return Semver::satisfies($this->version, '^' . $installedPackage->getVersion());
+            return Semver::satisfies($installedPackage->getVersion(), '^' . $this->version);
         }
 
         return false;

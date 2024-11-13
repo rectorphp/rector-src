@@ -4,43 +4,56 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Set\SetManager;
 
-use DG\BypassFinals;
+use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Composer\InstalledPackageResolver;
-use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
+use Rector\Symfony\Set\TwigSetList;
 use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
 final class SetManagerTest extends AbstractLazyTestCase
 {
-    private SetManager $setManager;
-
-    protected function setUp(): void
+    public function testMatchComposerTriggered(): void
     {
-        parent::setUp();
+        $setManager = $this->createSetManagerWithProjectDirectory(getcwd());
 
-        BypassFinals::enable();
-
-        $setProviderCollector = new SetProviderCollector();
-
-        // fake that Twig 2.0 is installed, as data are fetched from currently installed packages
-        $installedPackageResolverMock = $this->createMock(InstalledPackageResolver::class);
-        $installedPackageResolverMock->method('resolve')
-            ->willReturn([new InstalledPackage('twig/twig', '2.0.0')]);
-
-        $this->setManager = new SetManager($setProviderCollector, $installedPackageResolverMock);
-    }
-
-    public function test(): void
-    {
-        $twigComposerTriggeredSet = $this->setManager->matchComposerTriggered(SetGroup::TWIG);
+        $twigComposerTriggeredSet = $setManager->matchComposerTriggered(SetGroup::TWIG);
         $this->assertCount(6, $twigComposerTriggeredSet);
     }
 
-    public function testByVersion(): void
+    /**
+     * @param string[] $expectedSets
+     */
+    #[DataProvider('provideInstalledTwigData')]
+    public function testByVersion(string $projectDirectory, array $expectedSets): void
     {
-        $composerTriggeredSets = $this->setManager->matchBySetGroups([SetGroup::TWIG]);
-        $this->assertCount(2, $composerTriggeredSets);
+        $setManager = $this->createSetManagerWithProjectDirectory($projectDirectory);
+
+        $composerTriggeredSets = $setManager->matchBySetGroups([SetGroup::TWIG]);
+
+        $this->assertCount(count($expectedSets), $composerTriggeredSets);
+        $this->assertSame($expectedSets, $composerTriggeredSets);
+    }
+
+    public static function provideInstalledTwigData(): Iterator
+    {
+        // here we cannot used features coming up in 2.4, as we only have 2.0
+        yield [__DIR__ . '/Fixture/project-twig-20', [realpath(TwigSetList::TWIG_20)]];
+
+        yield [__DIR__ . '/Fixture/project-twig-24', [realpath(TwigSetList::TWIG_20), realpath(TwigSetList::TWIG_24)]];
+
+        yield [
+            __DIR__ . '/Fixture/project-twig-127',
+            [realpath(TwigSetList::TWIG_112), realpath(TwigSetList::TWIG_127)]];
+    }
+
+    private function createSetManagerWithProjectDirectory(string $projectDirectory): SetManager
+    {
+        $setProviderCollector = new SetProviderCollector();
+        $installedPackageResolver = new InstalledPackageResolver($projectDirectory);
+
+        return new SetManager($setProviderCollector, $installedPackageResolver);
     }
 }

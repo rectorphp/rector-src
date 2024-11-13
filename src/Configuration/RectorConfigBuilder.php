@@ -166,11 +166,8 @@ final class RectorConfigBuilder
 
     public function __invoke(RectorConfig $rectorConfig): void
     {
-        // @experimental 2024-06
         if ($this->setGroups !== []) {
-            $setProviderCollector = $rectorConfig->make(SetProviderCollector::class);
-            $setManager = new SetManager($setProviderCollector, new InstalledPackageResolver());
-
+            $setManager = new SetManager(new SetProviderCollector(), new InstalledPackageResolver(getcwd()));
             $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
         }
 
@@ -705,7 +702,6 @@ final class RectorConfigBuilder
         bool $doctrineCodeQuality = false,
         bool $symfonyCodeQuality = false,
         bool $symfonyConfigs = false,
-        bool $phpunit = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
@@ -769,10 +765,6 @@ final class RectorConfigBuilder
             $this->sets[] = SymfonySetList::CONFIGS;
         }
 
-        if ($phpunit) {
-            $this->setGroups[] = SetGroup::PHPUNIT;
-        }
-
         return $this;
     }
 
@@ -785,7 +777,7 @@ final class RectorConfigBuilder
         ];
 
         foreach ($setMap as $isEnabled => $setPath) {
-            if ($isEnabled) {
+            if ($isEnabled !== 0) {
                 $this->setGroups[] = $setPath;
             }
         }

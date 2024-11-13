@@ -44,6 +44,12 @@ final class SetGroup
     public const SYMFONY = 'symfony';
 
     /**
+     * Version-based set provider
+     * @var string
+     */
+    public const LARAVEL = 'laravel';
+
+    /**
      * @var string
      */
     public const ATTRIBUTES = 'attributes';

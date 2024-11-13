@@ -73,9 +73,7 @@ final readonly class SetProviderCollector
     {
         return array_filter(
             $this->provideSets(),
-            function (SetInterface $set): bool {
-                return $set instanceof ComposerTriggeredSet;
-            }
+            fn (SetInterface $set): bool => $set instanceof ComposerTriggeredSet
         );
     }
 }

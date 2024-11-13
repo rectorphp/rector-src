@@ -6,6 +6,7 @@ namespace Rector\Set;
 
 use Rector\Bridge\SetProviderCollector;
 use Rector\Composer\InstalledPackageResolver;
+use Rector\Set\Enum\SetGroup;
 use Rector\Set\ValueObject\ComposerTriggeredSet;
 
 /**
@@ -36,13 +37,12 @@ final readonly class SetManager
     }
 
     /**
-     * @param string[] $setGroups
+     * @param SetGroup::*[] $setGroups
      * @return string[]
      */
     public function matchBySetGroups(array $setGroups): array
     {
-        $installedComposerPackages = $this->installedPackageResolver->resolve(getcwd());
-
+        $installedComposerPackages = $this->installedPackageResolver->resolve();
         $groupLoadedSets = [];
 
         foreach ($setGroups as $setGroup) {
@@ -51,7 +51,7 @@ final readonly class SetManager
             foreach ($composerTriggeredSets as $composerTriggeredSet) {
                 if ($composerTriggeredSet->matchInstalledPackages($installedComposerPackages)) {
                     // it matched composer package + version requirements → load set
-                    $groupLoadedSets[] = $composerTriggeredSet->getSetFilePath();
+                    $groupLoadedSets[] = realpath($composerTriggeredSet->getSetFilePath());
                 }
             }
         }
