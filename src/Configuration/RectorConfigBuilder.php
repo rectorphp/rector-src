@@ -705,64 +705,28 @@ final class RectorConfigBuilder
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
-        if ($deadCode) {
-            $this->sets[] = SetList::DEAD_CODE;
-        }
+        $setMap = [
+            $deadCode => SetList::DEAD_CODE,
+            $codeQuality => SetList::CODE_QUALITY,
+            $codingStyle => SetList::CODING_STYLE,
+            $typeDeclarations => SetList::TYPE_DECLARATION,
+            $privatization => SetList::PRIVATIZATION,
+            $naming => SetList::NAMING,
+            $instanceOf => SetList::INSTANCEOF,
+            $earlyReturn => SetList::EARLY_RETURN,
+            $strictBooleans => SetList::STRICT_BOOLEANS,
+            $carbon => SetList::CARBON,
+            $rectorPreset => SetList::RECTOR_PRESET,
+            $phpunitCodeQuality => PHPUnitSetList::PHPUNIT_CODE_QUALITY,
+            $doctrineCodeQuality => DoctrineSetList::DOCTRINE_CODE_QUALITY,
+            $symfonyCodeQuality => SymfonySetList::SYMFONY_CODE_QUALITY,
+            $symfonyConfigs => SymfonySetList::CONFIGS,
+        ];
 
-        if ($codeQuality) {
-            $this->sets[] = SetList::CODE_QUALITY;
-        }
-
-        if ($codingStyle) {
-            $this->sets[] = SetList::CODING_STYLE;
-        }
-
-        if ($typeDeclarations) {
-            $this->sets[] = SetList::TYPE_DECLARATION;
-        }
-
-        if ($privatization) {
-            $this->sets[] = SetList::PRIVATIZATION;
-        }
-
-        if ($naming) {
-            $this->sets[] = SetList::NAMING;
-        }
-
-        if ($instanceOf) {
-            $this->sets[] = SetList::INSTANCEOF;
-        }
-
-        if ($earlyReturn) {
-            $this->sets[] = SetList::EARLY_RETURN;
-        }
-
-        if ($strictBooleans) {
-            $this->sets[] = SetList::STRICT_BOOLEANS;
-        }
-
-        if ($carbon) {
-            $this->sets[] = SetList::CARBON;
-        }
-
-        if ($rectorPreset) {
-            $this->sets[] = SetList::RECTOR_PRESET;
-        }
-
-        if ($phpunitCodeQuality) {
-            $this->sets[] = PHPUnitSetList::PHPUNIT_CODE_QUALITY;
-        }
-
-        if ($doctrineCodeQuality) {
-            $this->sets[] = DoctrineSetList::DOCTRINE_CODE_QUALITY;
-        }
-
-        if ($symfonyCodeQuality) {
-            $this->sets[] = SymfonySetList::SYMFONY_CODE_QUALITY;
-        }
-
-        if ($symfonyConfigs) {
-            $this->sets[] = SymfonySetList::CONFIGS;
+        foreach ($setMap as $isEnabled => $setPath) {
+            if ($isEnabled) {
+                $this->sets[] = $setPath;
+            }
         }
 
         return $this;
@@ -777,7 +741,7 @@ final class RectorConfigBuilder
         ];
 
         foreach ($setMap as $isEnabled => $setPath) {
-            if ($isEnabled !== 0) {
+            if ($isEnabled) {
                 $this->setGroups[] = $setPath;
             }
         }
