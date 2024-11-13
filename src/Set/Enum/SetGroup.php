@@ -20,21 +20,25 @@ final class SetGroup
     public const PHP = 'php';
 
     /**
+     * Version-based set provider
      * @var string
      */
     public const TWIG = 'twig';
 
     /**
+     * Version-based set provider
      * @var string
      */
     public const PHPUNIT = 'phpunit';
 
     /**
+     * Version-based set provider
      * @var string
      */
     public const DOCTRINE = 'doctrine';
 
     /**
+     * Version-based set provider
      * @var string
      */
     public const SYMFONY = 'symfony';

@@ -10,6 +10,7 @@ use Rector\Set\Contract\SetInterface;
 use Rector\Set\Contract\SetProviderInterface;
 use Rector\Set\SetProvider\CoreSetProvider;
 use Rector\Set\SetProvider\PHPSetProvider;
+use Rector\Set\ValueObject\ComposerTriggeredSet;
 use Rector\Symfony\Set\SetProvider\SymfonySetProvider;
 use Rector\Symfony\Set\SetProvider\TwigSetProvider;
 
@@ -63,5 +64,18 @@ final readonly class SetProviderCollector
         }
 
         return $sets;
+    }
+
+    /**
+     * @return array<ComposerTriggeredSet>
+     */
+    public function provideComposerTriggeredSets(): array
+    {
+        return array_filter(
+            $this->provideSets(),
+            function (SetInterface $set): bool {
+                return $set instanceof ComposerTriggeredSet;
+            }
+        );
     }
 }

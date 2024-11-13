@@ -4,21 +4,43 @@ declare(strict_types=1);
 
 namespace Rector\Tests\Set\SetManager;
 
-use PHPUnit\Framework\TestCase;
+use DG\BypassFinals;
 use Rector\Bridge\SetProviderCollector;
+use Rector\Composer\InstalledPackageResolver;
+use Rector\Composer\ValueObject\InstalledPackage;
 use Rector\Set\Enum\SetGroup;
 use Rector\Set\SetManager;
-use Rector\Tests\Set\SetManager\Source\SomeSetProvider;
+use Rector\Testing\PHPUnit\AbstractLazyTestCase;
 
-final class SetManagerTest extends TestCase
+final class SetManagerTest extends AbstractLazyTestCase
 {
+    private SetManager $setManager;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        BypassFinals::enable();
+
+        $setProviderCollector = new SetProviderCollector();
+
+        // fake that Twig 2.0 is installed, as data are fetched from currently installed packages
+        $installedPackageResolverMock = $this->createMock(InstalledPackageResolver::class);
+        $installedPackageResolverMock->method('resolve')
+            ->willReturn([new InstalledPackage('twig/twig', '2.0.0')]);
+
+        $this->setManager = new SetManager($setProviderCollector, $installedPackageResolverMock);
+    }
+
     public function test(): void
     {
-        $setProviderCollector = new SetProviderCollector([new SomeSetProvider()]);
+        $twigComposerTriggeredSet = $this->setManager->matchComposerTriggered(SetGroup::TWIG);
+        $this->assertCount(6, $twigComposerTriggeredSet);
+    }
 
-        $setManager = new SetManager($setProviderCollector);
-
-        $twigComposerTriggeredSet = $setManager->matchComposerTriggered(SetGroup::TWIG);
-        $this->assertGreaterThan(6, count($twigComposerTriggeredSet));
+    public function testByVersion(): void
+    {
+        $composerTriggeredSets = $this->setManager->matchBySetGroups([SetGroup::TWIG]);
+        $this->assertCount(2, $composerTriggeredSets);
     }
 }

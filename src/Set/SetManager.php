@@ -14,7 +14,8 @@ use Rector\Set\ValueObject\ComposerTriggeredSet;
 final readonly class SetManager
 {
     public function __construct(
-        private SetProviderCollector $setProviderCollector
+        private SetProviderCollector $setProviderCollector,
+        private InstalledPackageResolver $installedPackageResolver,
     ) {
     }
 
@@ -25,13 +26,9 @@ final readonly class SetManager
     {
         $matchedSets = [];
 
-        foreach ($this->setProviderCollector->provideSets() as $set) {
-            if (! $set instanceof ComposerTriggeredSet) {
-                continue;
-            }
-
-            if ($set->getGroupName() === $groupName) {
-                $matchedSets[] = $set;
+        foreach ($this->setProviderCollector->provideComposerTriggeredSets() as $composerTriggeredSet) {
+            if ($composerTriggeredSet->getGroupName() === $groupName) {
+                $matchedSets[] = $composerTriggeredSet;
             }
         }
 
@@ -44,8 +41,7 @@ final readonly class SetManager
      */
     public function matchBySetGroups(array $setGroups): array
     {
-        $installedPackageResolver = new InstalledPackageResolver();
-        $installedComposerPackages = $installedPackageResolver->resolve(getcwd());
+        $installedComposerPackages = $this->installedPackageResolver->resolve(getcwd());
 
         $groupLoadedSets = [];
 
@@ -54,9 +50,6 @@ final readonly class SetManager
 
             foreach ($composerTriggeredSets as $composerTriggeredSet) {
                 if ($composerTriggeredSet->matchInstalledPackages($installedComposerPackages)) {
-                    // @todo add debug note somewhere
-                    // echo sprintf('Loaded "%s" set as it meets the conditions', $composerTriggeredSet->getSetFilePath());
-
                     // it matched composer package + version requirements → load set
                     $groupLoadedSets[] = $composerTriggeredSet->getSetFilePath();
                 }

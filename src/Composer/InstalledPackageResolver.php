@@ -42,16 +42,24 @@ final class InstalledPackageResolver
         $installedPackageFileContents = FileSystem::read($installedPackagesFilePath);
         $installedPackagesFilePath = Json::decode($installedPackageFileContents, true);
 
-        $installedPackages = [];
-
-        foreach ($installedPackagesFilePath['packages'] as $installedPackage) {
-            $installedPackages[] = new InstalledPackage(
-                $installedPackage['name'],
-                $installedPackage['version_normalized']
-            );
-        }
+        $installedPackages = $this->createInstalledPackages($installedPackagesFilePath['packages']);
 
         $this->resolvedInstalledPackages[$projectDirectory] = $installedPackages;
+
+        return $installedPackages;
+    }
+
+    /**
+     * @param mixed[] $packages
+     * @return InstalledPackage[]
+     */
+    private function createInstalledPackages(array $packages): array
+    {
+        $installedPackages = [];
+
+        foreach ($packages as $package) {
+            $installedPackages[] = new InstalledPackage($package['name'], $package['version_normalized']);
+        }
 
         return $installedPackages;
     }

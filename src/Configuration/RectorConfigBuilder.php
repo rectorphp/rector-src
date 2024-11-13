@@ -8,6 +8,7 @@ use Nette\Utils\FileSystem;
 use Rector\Bridge\SetProviderCollector;
 use Rector\Bridge\SetRectorsResolver;
 use Rector\Caching\Contract\ValueObject\Storage\CacheStorageInterface;
+use Rector\Composer\InstalledPackageResolver;
 use Rector\Config\Level\CodeQualityLevel;
 use Rector\Config\Level\DeadCodeLevel;
 use Rector\Config\Level\TypeDeclarationLevel;
@@ -168,7 +169,7 @@ final class RectorConfigBuilder
         // @experimental 2024-06
         if ($this->setGroups !== []) {
             $setProviderCollector = $rectorConfig->make(SetProviderCollector::class);
-            $setManager = new SetManager($setProviderCollector);
+            $setManager = new SetManager($setProviderCollector, new InstalledPackageResolver());
 
             $this->groupLoadedSets = $setManager->matchBySetGroups($this->setGroups);
         }
@@ -704,8 +705,6 @@ final class RectorConfigBuilder
         bool $doctrineCodeQuality = false,
         bool $symfonyCodeQuality = false,
         bool $symfonyConfigs = false,
-        // composer based
-        bool $twig = false,
         bool $phpunit = false,
     ): self {
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
@@ -770,13 +769,25 @@ final class RectorConfigBuilder
             $this->sets[] = SymfonySetList::CONFIGS;
         }
 
-        // @experimental 2024-06
-        if ($twig) {
-            $this->setGroups[] = SetGroup::TWIG;
-        }
-
         if ($phpunit) {
             $this->setGroups[] = SetGroup::PHPUNIT;
+        }
+
+        return $this;
+    }
+
+    public function withComposerBased(bool $twig = false, bool $doctrine = false, bool $phpunit = false): self
+    {
+        $setMap = [
+            $twig => SetGroup::TWIG,
+            $doctrine => SetGroup::DOCTRINE,
+            $phpunit => SetGroup::PHPUNIT,
+        ];
+
+        foreach ($setMap as $isEnabled => $setPath) {
+            if ($isEnabled) {
+                $this->setGroups[] = $setPath;
+            }
         }
 
         return $this;
