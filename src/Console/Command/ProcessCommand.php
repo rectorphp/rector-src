@@ -83,6 +83,12 @@ EOF
         }
 
         $configuration = $this->configurationFactory->createFromInput($input);
+
+        if ($configuration->getBatchTotal() !== 0 && $configuration->getBatchIndex() >= $configuration->getBatchTotal()) {
+            $this->symfonyStyle->error('The job index needs to be less than the job total');
+            return ExitCode::FAILURE;
+        }
+
         $this->memoryLimiter->adjust($configuration);
 
         // disable console output in case of json output formatter

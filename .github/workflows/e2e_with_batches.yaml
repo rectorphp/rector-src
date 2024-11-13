@@ -1,0 +1,42 @@
+# This workflow runs system tests: Use the Rector application from the source
+# checkout to process "fixture" projects in e2e/batch-run directory
+# to see if those can be processed successfully in batches
+name: End to End tests with batches
+
+on:
+    pull_request: null
+
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    COMPOSER_ROOT_VERSION: "dev-main"
+
+jobs:
+    end_to_end:
+        runs-on: ubuntu-latest
+        timeout-minutes: 3
+        strategy:
+            fail-fast: false
+            matrix:
+                batches: [0, 1]
+
+        name: End to end test with batches - batch ${{ strategy.job-index }}
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: none
+
+            # run in root rector-src
+            -   run: composer install --ansi
+
+            # run in e2e subdir
+            -
+                run: composer install --ansi
+                working-directory: e2e/batch-run
+
+            # run e2e test
+            -   run: php ../e2eTestRunnerWithBatches.php ${{ strategy.job-index }} ${{ strategy.job-total }}
+                working-directory: e2e/batch-run

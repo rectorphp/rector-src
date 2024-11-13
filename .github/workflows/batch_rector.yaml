@@ -1,0 +1,44 @@
+# Test workflow to show how this feature works. DO NOT MERGE, REMOVE IN FINAL VERSION OF PR
+name: Rector
+
+on:
+    pull_request: null
+
+jobs:
+    no_batch_rector:
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -
+                uses: actions/checkout@v4
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: none
+
+            -   run: composer install --no-progress --ansi
+
+            -   run: bin/rector process --ansi
+    batch_rector:
+        strategy:
+            matrix:
+                batches: [0, 1, 2, 3]
+
+        runs-on: ubuntu-latest
+
+        steps:
+            -
+                uses: actions/checkout@v4
+
+            -
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.2
+                    coverage: none
+
+            -   run: composer install --no-progress --ansi
+
+            -   run: bin/rector process --batch-index=${{ strategy.job-index }} --batch-total=${{ strategy.job-total }} --ansi

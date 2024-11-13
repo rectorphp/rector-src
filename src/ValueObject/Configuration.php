@@ -26,7 +26,9 @@ final readonly class Configuration
         private bool $isParallel = false,
         private string|null $memoryLimit = null,
         private bool $isDebug = false,
-        private bool $reportingWithRealPath = false
+        private bool $reportingWithRealPath = false,
+        private int $batchIndex = 0,
+        private int $batchTotal = 0,
     ) {
     }
 
@@ -100,5 +102,15 @@ final readonly class Configuration
     public function isReportingWithRealPath(): bool
     {
         return $this->reportingWithRealPath;
+    }
+
+    public function getBatchIndex(): int
+    {
+        return $this->batchIndex;
+    }
+
+    public function getBatchTotal(): int
+    {
+        return $this->batchTotal;
     }
 }
