@@ -37,7 +37,6 @@ return RectorConfig::configure()
     ->withImportNames(removeUnusedImports: true)
     ->withSkip([
         StringClassNameToClassConstantRector::class,
-        __DIR__ . '/bin/validate-phpstan-version.php',
         // tests
         '*/Fixture*',
         '*/Source*',
