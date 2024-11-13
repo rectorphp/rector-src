@@ -706,24 +706,24 @@ final class RectorConfigBuilder
         Notifier::notifyNotSuitableMethodForPHP74(__METHOD__);
 
         $setMap = [
-            $deadCode => SetList::DEAD_CODE,
-            $codeQuality => SetList::CODE_QUALITY,
-            $codingStyle => SetList::CODING_STYLE,
-            $typeDeclarations => SetList::TYPE_DECLARATION,
-            $privatization => SetList::PRIVATIZATION,
-            $naming => SetList::NAMING,
-            $instanceOf => SetList::INSTANCEOF,
-            $earlyReturn => SetList::EARLY_RETURN,
-            $strictBooleans => SetList::STRICT_BOOLEANS,
-            $carbon => SetList::CARBON,
-            $rectorPreset => SetList::RECTOR_PRESET,
-            $phpunitCodeQuality => PHPUnitSetList::PHPUNIT_CODE_QUALITY,
-            $doctrineCodeQuality => DoctrineSetList::DOCTRINE_CODE_QUALITY,
-            $symfonyCodeQuality => SymfonySetList::SYMFONY_CODE_QUALITY,
-            $symfonyConfigs => SymfonySetList::CONFIGS,
+            SetList::DEAD_CODE => $deadCode,
+            SetList::CODE_QUALITY => $codeQuality,
+            SetList::CODING_STYLE => $codingStyle,
+            SetList::TYPE_DECLARATION => $typeDeclarations,
+            SetList::PRIVATIZATION => $privatization,
+            SetList::NAMING => $naming,
+            SetList::INSTANCEOF => $instanceOf,
+            SetList::EARLY_RETURN => $earlyReturn,
+            SetList::STRICT_BOOLEANS => $strictBooleans,
+            SetList::CARBON => $carbon,
+            SetList::RECTOR_PRESET => $rectorPreset,
+            PHPUnitSetList::PHPUNIT_CODE_QUALITY => $phpunitCodeQuality,
+            DoctrineSetList::DOCTRINE_CODE_QUALITY => $doctrineCodeQuality,
+            SymfonySetList::SYMFONY_CODE_QUALITY => $symfonyCodeQuality,
+            SymfonySetList::CONFIGS => $symfonyConfigs,
         ];
 
-        foreach ($setMap as $isEnabled => $setPath) {
+        foreach ($setMap as $setPath => $isEnabled) {
             if ($isEnabled) {
                 $this->sets[] = $setPath;
             }
@@ -735,12 +735,12 @@ final class RectorConfigBuilder
     public function withComposerBased(bool $twig = false, bool $doctrine = false, bool $phpunit = false): self
     {
         $setMap = [
-            $twig => SetGroup::TWIG,
-            $doctrine => SetGroup::DOCTRINE,
-            $phpunit => SetGroup::PHPUNIT,
+            SetGroup::TWIG => $twig,
+            SetGroup::DOCTRINE => $doctrine,
+            SetGroup::PHPUNIT => $phpunit,
         ];
 
-        foreach ($setMap as $isEnabled => $setPath) {
+        foreach ($setMap as $setPath => $isEnabled) {
             if ($isEnabled) {
                 $this->setGroups[] = $setPath;
             }
