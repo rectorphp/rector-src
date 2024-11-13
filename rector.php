@@ -8,7 +8,6 @@ use Rector\DeadCode\Rector\ConstFetch\RemovePhpVersionIdCheckRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return RectorConfig::configure()
-    ->withComposerBased(twig: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
