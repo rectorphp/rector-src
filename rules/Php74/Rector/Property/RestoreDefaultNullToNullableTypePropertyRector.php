@@ -71,7 +71,7 @@ CODE_SAMPLE
         $hasChanged = false;
 
         foreach ($node->getProperties() as $property) {
-            if ($this->shouldSkip($property, $node)) {
+            if ($this->shouldSkipProperty($property, $node)) {
                 continue;
             }
 
@@ -93,7 +93,7 @@ CODE_SAMPLE
         return PhpVersionFeature::TYPED_PROPERTIES;
     }
 
-    private function shouldSkip(Property $property, Class_ $class): bool
+    private function shouldSkipProperty(Property $property, Class_ $class): bool
     {
         if ($property->type === null) {
             return true;
@@ -103,8 +103,7 @@ CODE_SAMPLE
             return true;
         }
 
-        $onlyProperty = $property->props[0];
-        if ($onlyProperty->default instanceof Expr) {
+        if ($property->props[0]->default instanceof Expr) {
             return true;
         }
 
@@ -118,7 +117,7 @@ CODE_SAMPLE
 
         // is variable assigned in constructor
         $propertyName = $this->getName($property);
-        return $this->constructorAssignDetector->isPropertyAssigned($class, $propertyName);
+        return $this->constructorAssignDetector->isPropertyAssignedConditionally($class, $propertyName);
     }
 
     private function isReadonlyProperty(Property $property): bool

@@ -2,7 +2,7 @@
 
 namespace Rector\Tests\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector\Fixture;
 
-class SkipAssignedInConstruct
+final class SkipAssignedInConstruct
 {
     public ?string $name;
 

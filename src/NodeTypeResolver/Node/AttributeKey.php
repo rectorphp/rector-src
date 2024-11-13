@@ -285,4 +285,9 @@ final class AttributeKey
      * @var string
      */
     public const ATTRIBUTE_COMMENT = 'attribute_comment';
+
+    /**
+     * @var string
+     */
+    public const IS_FIRST_LEVEL_STATEMENT = 'first_level_stmt';
 }

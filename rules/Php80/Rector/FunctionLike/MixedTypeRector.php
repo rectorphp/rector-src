@@ -94,11 +94,8 @@ CODE_SAMPLE
 
         $this->refactorParamTypes($node, $phpDocInfo);
         $hasChanged = $this->paramTagRemover->removeParamTagsIfUseless($phpDocInfo, $node, new MixedType());
-        if ($this->hasChanged) {
-            return $node;
-        }
 
-        if ($hasChanged) {
+        if ($this->hasChanged || $hasChanged) {
             return $node;
         }
 

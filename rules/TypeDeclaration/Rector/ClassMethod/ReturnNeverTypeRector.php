@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use Rector\PHPStan\ScopeFetcher;
+use Rector\PHPUnit\NodeAnalyzer\TestsNodeAnalyzer;
 use Rector\Rector\AbstractRector;
 use Rector\TypeDeclaration\NodeManipulator\AddNeverReturnType;
 use Rector\ValueObject\PhpVersionFeature;
@@ -21,7 +22,8 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class ReturnNeverTypeRector extends AbstractRector implements MinPhpVersionInterface
 {
     public function __construct(
-        private readonly AddNeverReturnType $addNeverReturnType
+        private readonly AddNeverReturnType $addNeverReturnType,
+        private readonly TestsNodeAnalyzer $testsNodeAnalyzer
     ) {
     }
 
@@ -67,11 +69,33 @@ CODE_SAMPLE
     public function refactor(Node $node): ?Node
     {
         $scope = ScopeFetcher::fetch($node);
+
+        if ($this->isTestClassMethodWithFilledReturnType($node)) {
+            return null;
+        }
+
         return $this->addNeverReturnType->add($node, $scope);
     }
 
     public function provideMinPhpVersion(): int
     {
         return PhpVersionFeature::NEVER_TYPE;
+    }
+
+    private function isTestClassMethodWithFilledReturnType(ClassMethod|Function_ $callLike): bool
+    {
+        if (! $callLike instanceof ClassMethod) {
+            return false;
+        }
+
+        if (! $callLike->isPublic()) {
+            return false;
+        }
+
+        if (! $this->testsNodeAnalyzer->isInTestClass($callLike)) {
+            return false;
+        }
+
+        return $callLike->returnType instanceof Node;
     }
 }
